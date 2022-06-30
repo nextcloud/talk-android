@@ -32,8 +32,6 @@ import androidx.room.Update
 import com.nextcloud.talk.data.user.model.UserEntity
 import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
 import java.lang.Boolean.FALSE
 import java.lang.Boolean.TRUE
 
@@ -85,36 +83,19 @@ abstract class UsersDao {
     abstract fun getUserWithUsernameAndServer(username: String, server: String): Maybe<UserEntity>
 
     @Transaction
-    open suspend fun setUserAsActiveWithId(id: Long): Boolean {
-        val users = getUsers()
-        var result = TRUE
-
-        users.subscribe(object : SingleObserver<List<UserEntity>> {
-            override fun onSuccess(users: List<UserEntity>) {
-                for (user in users) {
-                    // removed from clause: && UserStatus.ACTIVE == user.status
-                    if (user.id != id) {
-                        user.current = TRUE
-                        updateUser(user)
-                    } // removed from clause: && UserStatus.ACTIVE != user.status
-                    else if (user.id == id) {
-                        user.current = TRUE
-                        updateUser(user)
-                    }
+    open fun setUserAsActiveWithId(id: Long): Single<Boolean> {
+        return getUsers()
+            .map { users ->
+                users.forEach { user ->
+                    user.current = user.id == id
+                    updateUser(user)
                 }
+                true
             }
-
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
-
-            override fun onError(e: Throwable) {
+            .onErrorReturn { e ->
                 Log.e(TAG, "Error setting user active", e)
-                result = FALSE
+                false
             }
-        })
-
-        return result
     }
 
     @Transaction

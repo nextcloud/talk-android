@@ -39,7 +39,7 @@ interface UsersRepository {
     fun getUserWithUsernameAndServer(username: String, server: String): Maybe<User>
     fun updateUser(user: User): Int
     fun insertUser(user: User): Long
-    suspend fun setUserAsActiveWithId(id: Long): Boolean
+    fun setUserAsActiveWithId(id: Long): Single<Boolean>
     fun deleteUserWithId(id: Long)
     suspend fun setAnyUserAsActive(): Boolean
     suspend fun markUserForDeletion(id: Long): Boolean

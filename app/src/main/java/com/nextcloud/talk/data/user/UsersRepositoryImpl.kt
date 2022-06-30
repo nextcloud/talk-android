@@ -73,7 +73,7 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         return usersDao.saveUser(UserMapper.toEntity(user))
     }
 
-    override suspend fun setUserAsActiveWithId(id: Long): Boolean {
+    override fun setUserAsActiveWithId(id: Long): Single<Boolean> {
         return usersDao.setUserAsActiveWithId(id)
     }
 
