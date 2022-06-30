@@ -25,9 +25,9 @@ import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PollCreateDialogFragment(
-    private val roomToken: String
-) : DialogFragment(), PollCreateOptionsItemListener {
+class PollCreateDialogFragment() : DialogFragment(), PollCreateOptionsItemListener {
+
+    lateinit var roomToken: String
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -42,6 +42,8 @@ class PollCreateDialogFragment(
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollCreateViewModel::class.java]
+
+        roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
     }
 
     @SuppressLint("InflateParams")
@@ -150,10 +152,15 @@ class PollCreateDialogFragment(
      */
     companion object {
         private val TAG = PollCreateDialogFragment::class.java.simpleName
+        private const val KEY_ROOM_TOKEN = "keyRoomToken"
 
         @JvmStatic
-        fun newInstance(
-            roomTokenParam: String
-        ): PollCreateDialogFragment = PollCreateDialogFragment(roomTokenParam)
+        fun newInstance(roomTokenParam: String): PollCreateDialogFragment {
+            val args = Bundle()
+            args.putString(KEY_ROOM_TOKEN, roomTokenParam)
+            val fragment = PollCreateDialogFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

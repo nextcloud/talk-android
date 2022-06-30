@@ -19,12 +19,12 @@ import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PollMainDialogFragment(
-    private val user: UserEntity,
-    private val pollId: String,
-    private val roomToken: String,
-    private val pollTitle: String
-) : DialogFragment() {
+class PollMainDialogFragment() : DialogFragment() {
+
+    lateinit var user: UserEntity
+    lateinit var roomToken: String
+    lateinit var pollId: String
+    lateinit var pollTitle: String
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -37,6 +37,11 @@ class PollMainDialogFragment(
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollMainViewModel::class.java]
+
+        user = arguments?.getParcelable(KEY_USER_ENTITY)!!
+        roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
+        pollId = arguments?.getString(KEY_POLL_ID)!!
+        pollTitle = arguments?.getString(KEY_POLL_TITLE)!!
     }
 
     @SuppressLint("InflateParams")
@@ -79,11 +84,13 @@ class PollMainDialogFragment(
     }
 
     private fun showVoteScreen() {
-        val contentFragment = PollVoteFragment(
+
+        val contentFragment = PollVoteFragment.newInstance(
             viewModel,
             roomToken,
             pollId
         )
+
         val transaction = childFragmentManager.beginTransaction()
         transaction.replace(binding.messagePollContentFragment.id, contentFragment)
         transaction.commit()
@@ -113,12 +120,26 @@ class PollMainDialogFragment(
      * Fragment creator
      */
     companion object {
+        private const val KEY_USER_ENTITY = "keyUserEntity"
+        private const val KEY_ROOM_TOKEN = "keyRoomToken"
+        private const val KEY_POLL_ID = "keyPollId"
+        private const val KEY_POLL_TITLE = "keyPollTitle"
+
         @JvmStatic
         fun newInstance(
             user: UserEntity,
             roomTokenParam: String,
             pollId: String,
             name: String
-        ): PollMainDialogFragment = PollMainDialogFragment(user, pollId, roomTokenParam, name)
+        ): PollMainDialogFragment {
+            val args = Bundle()
+            args.putParcelable(KEY_USER_ENTITY, user)
+            args.putString(KEY_ROOM_TOKEN, roomTokenParam)
+            args.putString(KEY_POLL_ID, pollId)
+            args.putString(KEY_POLL_TITLE, name)
+            val fragment = PollMainDialogFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 }
