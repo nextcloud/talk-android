@@ -123,7 +123,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
                 pollResponse.id,
                 pollResponse.question,
                 pollResponse.options,
-                pollResponse.votes,
+                convertVotes(pollResponse.votes),
                 pollResponse.actorType,
                 pollResponse.actorId,
                 pollResponse.actorDisplayName,
@@ -135,6 +135,14 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
                 pollDetails,
             )
             return poll
+        }
+
+        private fun convertVotes(votes: Map<String, Int>?): Map<String, Int> {
+            val resultMap: MutableMap<String, Int> = HashMap()
+            votes?.forEach {
+                resultMap[it.key.replace("option-", "")] = it.value
+            }
+            return resultMap
         }
 
         private fun mapToPollDetails(pollDetailsResponse: PollDetailsResponse): PollDetails {
