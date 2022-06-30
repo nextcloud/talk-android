@@ -44,10 +44,10 @@ object LegacyUserEntityMapper {
                 entity.baseUrl,
                 entity.token,
                 entity.displayName,
-                LoganSquare.parse(entity.pushConfigurationState, PushConfigurationState::class.java),
-                LoganSquare.parse(entity.capabilities, Capabilities::class.java),
+                entity.pushConfigurationState?.let { LoganSquare.parse(it, PushConfigurationState::class.java) },
+                entity.capabilities?.let { LoganSquare.parse(it, Capabilities::class.java) },
                 entity.clientCertificate,
-                LoganSquare.parse(entity.externalSignalingServer, ExternalSignalingServer::class.java),
+                entity.externalSignalingServer?.let { LoganSquare.parse(it, ExternalSignalingServer::class.java) },
                 entity.current,
                 entity.scheduledForDeletion
             )
