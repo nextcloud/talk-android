@@ -84,8 +84,7 @@ class PollMainDialogFragment() : DialogFragment() {
     }
 
     private fun showVoteScreen() {
-
-        val contentFragment = PollVoteFragment.newInstance(
+        val contentFragment = PollVoteFragment(
             viewModel,
             roomToken,
             pollId
