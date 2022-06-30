@@ -80,11 +80,11 @@ class PollVoteFragment(
         parentViewModel.viewState.observe(viewLifecycleOwner) { state ->
             if (state is PollMainViewModel.PollVoteState) {
                 initPollOptions(state.poll)
-                initCloseButton(state.showCloseButton)
+                initEndPollButton(state.showEndPollButton)
                 updateSubmitButton()
             } else if (state is PollMainViewModel.PollVoteHiddenState) {
                 initPollOptions(state.poll)
-                initCloseButton(state.showCloseButton)
+                initEndPollButton(state.showEndPollButton)
                 updateSubmitButton()
             }
         }
@@ -168,8 +168,8 @@ class PollVoteFragment(
         }
     }
 
-    private fun initCloseButton(showCloseButton: Boolean) {
-        if (showCloseButton) {
+    private fun initEndPollButton(showEndPollButton: Boolean) {
+        if (showEndPollButton) {
             _binding?.pollVoteEndPollButton?.visibility = View.VISIBLE
             _binding?.pollVoteEndPollButton?.setOnClickListener {
                 AlertDialog.Builder(requireContext())

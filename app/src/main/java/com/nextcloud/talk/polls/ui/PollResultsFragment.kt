@@ -84,7 +84,7 @@ class PollResultsFragment(
                 initAdapter()
                 viewModel.setPoll(state.poll)
                 initEditButton(state.showEditButton)
-                initCloseButton(state.showCloseButton)
+                initEndPollButton(state.showEndPollButton)
             }
         }
 
@@ -113,10 +113,10 @@ class PollResultsFragment(
         }
     }
 
-    private fun initCloseButton(showCloseButton: Boolean) {
-        if (showCloseButton) {
-            _binding?.pollResultsClosePollButton?.visibility = View.VISIBLE
-            _binding?.pollResultsClosePollButton?.setOnClickListener {
+    private fun initEndPollButton(showEndPollButton: Boolean) {
+        if (showEndPollButton) {
+            _binding?.pollResultsEndPollButton?.visibility = View.VISIBLE
+            _binding?.pollResultsEndPollButton?.setOnClickListener {
                 AlertDialog.Builder(requireContext())
                     .setTitle(R.string.polls_end_poll)
                     .setMessage(R.string.polls_end_poll_confirm)
@@ -125,10 +125,9 @@ class PollResultsFragment(
                     })
                     .setNegativeButton(R.string.nc_cancel, null)
                     .show()
-
             }
         } else {
-            _binding?.pollResultsClosePollButton?.visibility = View.GONE
+            _binding?.pollResultsEndPollButton?.visibility = View.GONE
         }
     }
 

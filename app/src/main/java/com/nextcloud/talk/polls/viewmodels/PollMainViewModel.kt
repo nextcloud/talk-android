@@ -38,18 +38,18 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     object InitialState : ViewState
     open class PollVoteState(
         val poll: Poll,
-        val showCloseButton: Boolean
+        val showEndPollButton: Boolean
     ) : ViewState
 
     open class PollVoteHiddenState(
         val poll: Poll,
-        val showCloseButton: Boolean
+        val showEndPollButton: Boolean
     ) : ViewState
 
     open class PollResultState(
         val poll: Poll,
         val showEditButton: Boolean,
-        val showCloseButton: Boolean
+        val showEndPollButton: Boolean
     ) : ViewState
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)

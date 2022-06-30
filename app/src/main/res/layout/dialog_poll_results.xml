@@ -38,7 +38,7 @@
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/poll_results_close_poll_button"
+        android:id="@+id/poll_results_end_poll_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/polls_end_poll"
