@@ -99,7 +99,7 @@ abstract class UsersDao {
     }
 
     @Transaction
-    open suspend fun markUserForDeletion(id: Long): Boolean {
+    open fun markUserForDeletion(id: Long): Boolean {
         getUserWithId(id).blockingGet()?.let { user ->
             user.current = FALSE
             updateUser(user)
@@ -109,7 +109,7 @@ abstract class UsersDao {
     }
 
     @Transaction
-    open suspend fun setAnyUserAsActive(): Boolean {
+    open fun setAnyUserAsActive(): Boolean {
         val users = getUsers().blockingGet()
 
         val result = users.firstOrNull()?.let { user ->

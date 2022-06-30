@@ -81,11 +81,11 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         usersDao.deleteUserWithId(id)
     }
 
-    override suspend fun setAnyUserAsActive(): Boolean {
+    override fun setAnyUserAsActive(): Boolean {
         return usersDao.setAnyUserAsActive()
     }
 
-    override suspend fun markUserForDeletion(id: Long): Boolean {
+    override fun markUserForDeletion(id: Long): Boolean {
         return usersDao.markUserForDeletion(id)
     }
 }
