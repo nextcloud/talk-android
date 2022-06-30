@@ -21,14 +21,17 @@
 
 package com.nextcloud.talk.polls.ui
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
+import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollResultsBinding
 import com.nextcloud.talk.models.database.UserEntity
@@ -114,7 +117,15 @@ class PollResultsFragment(
         if (showCloseButton) {
             _binding?.pollResultsClosePollButton?.visibility = View.VISIBLE
             _binding?.pollResultsClosePollButton?.setOnClickListener {
-                parentViewModel.closePoll()
+                AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.polls_end_poll)
+                    .setMessage(R.string.polls_end_poll_confirm)
+                    .setPositiveButton(R.string.polls_end_poll, DialogInterface.OnClickListener { _, _ ->
+                        parentViewModel.closePoll()
+                    })
+                    .setNegativeButton(R.string.nc_cancel, null)
+                    .show()
+
             }
         } else {
             _binding?.pollResultsClosePollButton?.visibility = View.GONE

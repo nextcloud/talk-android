@@ -21,6 +21,7 @@
 
 package com.nextcloud.talk.polls.ui
 
+import android.content.DialogInterface
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
@@ -31,9 +32,11 @@ import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
+import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollVoteBinding
 import com.nextcloud.talk.polls.model.Poll
@@ -167,12 +170,19 @@ class PollVoteFragment(
 
     private fun initCloseButton(showCloseButton: Boolean) {
         if (showCloseButton) {
-            _binding?.pollVoteClosePollButton?.visibility = View.VISIBLE
-            _binding?.pollVoteClosePollButton?.setOnClickListener {
-                parentViewModel.closePoll()
+            _binding?.pollVoteEndPollButton?.visibility = View.VISIBLE
+            _binding?.pollVoteEndPollButton?.setOnClickListener {
+                AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.polls_end_poll)
+                    .setMessage(R.string.polls_end_poll_confirm)
+                    .setPositiveButton(R.string.polls_end_poll, DialogInterface.OnClickListener { _, _ ->
+                        parentViewModel.closePoll()
+                    })
+                    .setNegativeButton(R.string.nc_cancel, null)
+                    .show()
             }
         } else {
-            _binding?.pollVoteClosePollButton?.visibility = View.GONE
+            _binding?.pollVoteEndPollButton?.visibility = View.GONE
         }
     }
 

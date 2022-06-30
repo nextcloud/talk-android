@@ -540,6 +540,7 @@
     <string name="polls_amount_voters">Poll results - %1$s votes</string>
     <string name="polls_add_option">Add Option</string>
     <string name="polls_end_poll">End Poll</string>
+    <string name="polls_end_poll_confirm">Do you really want to end this poll? This can\'t be undone.</string>
 
     <string name="title_attachments">Attachments</string>
 
