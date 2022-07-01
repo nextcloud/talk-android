@@ -16,60 +16,62 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:background="@color/white">
+    tools:background="@color/white"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:id="@+id/vote_options_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="@dimen/standard_half_padding">
 
         <LinearLayout
-            android:id="@+id/vote_options_checkboxes_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:id="@+id/vote_options_checkboxes_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <RadioGroup
+                android:id="@+id/poll_vote_radio_group"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                tools:layout_height="400dp"
+                tools:layout_width="match_parent" />
         </LinearLayout>
+    </ScrollView>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end">
 
-        <RadioGroup
-            android:id="@+id/poll_vote_radio_group"
-            android:layout_height="wrap_content"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/poll_vote_end_poll_button"
             android:layout_width="wrap_content"
-            tools:layout_height="400dp"
-            tools:layout_width="match_parent" />
+            android:layout_height="wrap_content"
+            android:text="@string/polls_end_poll"
+            style="@style/OutlinedButton"
+            android:layout_marginEnd="@dimen/standard_margin"
+            app:cornerRadius="@dimen/button_corner_radius" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/poll_vote_submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit"
+            android:theme="@style/Button.Primary"
+            app:cornerRadius="@dimen/button_corner_radius" />
     </LinearLayout>
 
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/poll_vote_end_poll_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/polls_end_poll"
-        style="@style/OutlinedButton"
-        android:layout_marginEnd="@dimen/standard_margin"
-        app:cornerRadius="@dimen/button_corner_radius"
-        app:layout_constraintEnd_toStartOf="@+id/poll_vote_submit_button"
-        app:layout_constraintTop_toBottomOf="@+id/vote_options_wrapper" />
-
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/poll_vote_submit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cornerRadius="@dimen/button_corner_radius"
-        android:text="@string/nc_common_submit"
-        android:theme="@style/Button.Primary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vote_options_wrapper" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

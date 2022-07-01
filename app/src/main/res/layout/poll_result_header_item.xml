@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingStart="@dimen/standard_half_padding"
+    android:paddingEnd="@dimen/standard_half_padding"
     tools:background="@color/white">
 
     <TextView

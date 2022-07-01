@@ -16,19 +16,19 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:background="@color/white">
+    tools:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/poll_results_list_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/poll_results_list"
@@ -37,25 +37,27 @@
             tools:listitem="@layout/poll_result_header_item" />
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/poll_results_end_poll_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/polls_end_poll"
-        style="@style/OutlinedButton"
-        android:layout_marginEnd="@dimen/standard_margin"
-        app:cornerRadius="@dimen/button_corner_radius"
-        app:layout_constraintEnd_toStartOf="@+id/edit_vote_button"
-        app:layout_constraintTop_toBottomOf="@+id/poll_results_list_wrapper" />
+        android:gravity="end">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/edit_vote_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/edit"
-        android:theme="@style/Button.Primary"
-        app:cornerRadius="@dimen/button_corner_radius"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/poll_results_list_wrapper" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/poll_results_end_poll_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/polls_end_poll"
+            style="@style/OutlinedButton"
+            android:layout_marginEnd="@dimen/standard_margin"
+            app:cornerRadius="@dimen/button_corner_radius" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_vote_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit"
+            android:theme="@style/Button.Primary"
+            app:cornerRadius="@dimen/button_corner_radius" />
+    </LinearLayout>
+
+</LinearLayout>
