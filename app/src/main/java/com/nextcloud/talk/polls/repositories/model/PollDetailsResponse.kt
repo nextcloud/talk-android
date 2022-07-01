@@ -38,8 +38,7 @@ data class PollDetailsResponse(
 
     @JsonField(name = ["optionId"])
     var optionId: Int,
-
-    ) : Parcelable {
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, "", "", 0)
 }

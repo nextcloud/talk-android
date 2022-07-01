@@ -65,8 +65,7 @@ data class PollResponse(
 
     @JsonField(name = ["details"])
     var details: ArrayList<PollDetailsResponse>? = null,
-
-    ) : Parcelable {
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this("id", null, null, null, null, null, null, 0, 0, 0, null, 0, null)
 }
