@@ -69,6 +69,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppT
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerSettingsBinding
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
@@ -86,6 +87,8 @@ import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ARE_CALL_SOUNDS
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
@@ -100,7 +103,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import java.net.URI
 import java.net.URISyntaxException
-import java.util.ArrayList
 import java.util.Arrays
 import java.util.Locale
 import javax.inject.Inject
@@ -115,8 +117,11 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     @Inject
     lateinit var userUtils: UserUtils
 
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
+
     private var saveStateHandler: LovelySaveStateHandler? = null
-    private var currentUser: UserEntity? = null
+    private var currentUser: User? = null
     private var credentials: String? = null
     private var proxyTypeChangeListener: OnPreferenceValueChangedListener<String>? = null
     private var proxyCredentialsChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
@@ -134,7 +139,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
             resources!!.getString(R.string.nc_settings)
 
     private fun getCurrentUser() {
-        currentUser = userUtils.currentUser
+        currentUser = currentUserProvider.currentUser.blockingGet()
         credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
     }
 
@@ -144,6 +149,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         sharedApplication!!.componentApplication.inject(this)
 
         ViewCompat.setTransitionName((binding.avatarImage), "userAvatar.transitionTag")
+
         getCurrentUser()
 
         if (saveStateHandler == null) {
@@ -184,7 +190,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     }
 
     private fun setupPhoneBookIntegration() {
-        if (CapabilitiesUtil.isPhoneBookIntegrationAvailable(userUtils.currentUser)) {
+        if (CapabilitiesUtilNew.isPhoneBookIntegrationAvailable(currentUser!!)) {
             binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
         } else {
             binding.settingsPhoneBookIntegration.visibility = View.GONE
@@ -424,7 +430,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     }
 
     private fun removeCurrentAccount() {
-        val otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser!!.id)
+        val otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser!!.id!!)
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         WorkManager.getInstance().enqueue(accountRemovalWork)
         if (otherUserExists && view != null) {
@@ -456,7 +462,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         super.onAttach(view)
         actionBar?.show()
         dispose(null)
-        getCurrentUser()
 
         binding.settingsVersion.setOnClickListener {
             sendLogs()
@@ -639,7 +644,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
     private fun setupServerAgeWarning() {
         when {
-            CapabilitiesUtil.isServerEOL(currentUser) -> {
+            CapabilitiesUtilNew.isServerEOL(currentUser!!) -> {
                 binding.serverAgeWarningText.setTextColor(ContextCompat.getColor((context)!!, R.color.nc_darkRed))
                 binding.serverAgeWarningText.setText(R.string.nc_settings_server_eol)
                 binding.serverAgeWarningIcon.setColorFilter(
@@ -647,7 +652,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                     PorterDuff.Mode.SRC_IN
                 )
             }
-            CapabilitiesUtil.isServerAlmostEOL(currentUser) -> {
+            CapabilitiesUtilNew.isServerAlmostEOL(currentUser!!) -> {
                 binding.serverAgeWarningText.setTextColor(
                     ContextCompat.getColor((context)!!, R.color.nc_darkYellow)
                 )
@@ -679,7 +684,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
         if (CapabilitiesUtil.isReadStatusAvailable(userUtils.currentUser)) {
             (binding.settingsReadPrivacy.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-                !CapabilitiesUtil.isReadStatusPrivate(currentUser)
+                !CapabilitiesUtilNew.isReadStatusPrivate(currentUser!!)
         } else {
             binding.settingsReadPrivacy.visibility = View.GONE
         }

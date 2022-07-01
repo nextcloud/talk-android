@@ -33,7 +33,7 @@ data class SignalingSettingsOcs(
     @JsonField(name = ["meta"])
     var meta: GenericMeta?,
     @JsonField(name = ["data"])
-    var settings: Settings? = null
+    var settings: SignalingSettings? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

@@ -25,9 +25,11 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.Serializable
 
 @Parcelize
 @JsonObject
+@Serializable
 data class NotificationsCapability(
     @JsonField(name = ["ocs-endpoints"])
     var features: List<String>?

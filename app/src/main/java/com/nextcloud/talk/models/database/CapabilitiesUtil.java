@@ -33,6 +33,10 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * Deprecated, please migrate to {@link com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew}.
+ */
+@Deprecated
 public abstract class CapabilitiesUtil {
     private static final String TAG = CapabilitiesUtil.class.getSimpleName();
 
@@ -123,6 +127,7 @@ public abstract class CapabilitiesUtil {
         return 1000;
     }
 
+    @Deprecated
     public static boolean isPhoneBookIntegrationAvailable(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
             try {
@@ -156,6 +161,7 @@ public abstract class CapabilitiesUtil {
         return false;
     }
 
+    @Deprecated
     public static boolean isReadStatusPrivate(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
             try {
@@ -280,6 +286,7 @@ public abstract class CapabilitiesUtil {
         return false;
     }
 
+    @Deprecated
     private static Capabilities parseUserCapabilities(@NonNull final UserEntity user) throws IOException {
         return LoganSquare.parse(user.getCapabilities(), Capabilities.class);
     }

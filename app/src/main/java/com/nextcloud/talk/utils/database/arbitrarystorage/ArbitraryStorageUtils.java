@@ -20,8 +20,10 @@
 package com.nextcloud.talk.utils.database.arbitrarystorage;
 
 import androidx.annotation.Nullable;
+
 import com.nextcloud.talk.models.database.ArbitraryStorage;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
+
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import io.requery.Persistable;
@@ -29,6 +31,10 @@ import io.requery.query.Result;
 import io.requery.reactivex.ReactiveEntityStore;
 import io.requery.reactivex.ReactiveScalar;
 
+/**
+ * @deprecated use {@link com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager} instead.
+ */
+@Deprecated
 public class ArbitraryStorageUtils {
     private ReactiveEntityStore<Persistable> dataStore;
 
@@ -45,16 +51,16 @@ public class ArbitraryStorageUtils {
         arbitraryStorageEntity.setObject(object);
 
         dataStore.upsert(arbitraryStorageEntity)
-                .toObservable()
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+            .toObservable()
+            .subscribeOn(Schedulers.io())
+            .subscribe();
     }
 
     public ArbitraryStorageEntity getStorageSetting(long accountIdentifier, String key, @Nullable String object) {
         Result findStorageQueryResult = dataStore.select(ArbitraryStorage.class)
-                .where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier)
-                        .and(ArbitraryStorageEntity.KEY.eq(key)).and(ArbitraryStorageEntity.OBJECT.eq(object)))
-                .limit(1).get();
+            .where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier)
+                       .and(ArbitraryStorageEntity.KEY.eq(key)).and(ArbitraryStorageEntity.OBJECT.eq(object)))
+            .limit(1).get();
 
         return (ArbitraryStorageEntity) findStorageQueryResult.firstOrNull();
     }
@@ -63,6 +69,6 @@ public class ArbitraryStorageUtils {
         ReactiveScalar<Integer> deleteResult = dataStore.delete(ArbitraryStorage.class).where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier)).get();
 
         return deleteResult.single().toObservable()
-                .subscribeOn(Schedulers.io());
+            .subscribeOn(Schedulers.io());
     }
 }

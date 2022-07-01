@@ -25,10 +25,12 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.Serializable
 
 @Parcelize
 @JsonObject
-data class Settings(
+@Serializable
+data class SignalingSettings(
     @JsonField(name = ["stunservers"])
     var stunServers: List<IceServer>? = null,
     @JsonField(name = ["turnservers"])

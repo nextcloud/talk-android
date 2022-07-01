@@ -46,9 +46,11 @@ import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.SecurityUtils
@@ -57,8 +59,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
-import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.Observer
+import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -73,9 +75,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     lateinit var binding: ActivityMainBinding
 
     @Inject
-    lateinit var userUtils: UserUtils
-
-    @Inject
     lateinit var dataStore: ReactiveEntityStore<Persistable>
 
     @Inject
@@ -83,6 +82,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     @Inject
     lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var userManager: UserManager
 
     private var router: Router? = null
 
@@ -114,11 +116,31 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {
             if (hasDb) {
-                if (userUtils.anyUserExists()) {
-                    setDefaultRootController()
-                } else {
-                    launchLoginScreen()
+                if (!appPreferences.isDbRoomMigrated) {
+                    appPreferences.isDbRoomMigrated = true
                 }
+
+                userManager.users.subscribe(object : SingleObserver<List<User>> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onSuccess(users: List<User>) {
+                        if (users.isNotEmpty()) {
+                            runOnUiThread {
+                                setDefaultRootController()
+                            }
+                        } else {
+                            runOnUiThread {
+                                launchLoginScreen()
+                            }
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Error loading existing users", e)
+                    }
+                })
             } else {
                 launchLoginScreen()
             }
@@ -178,9 +200,23 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     fun resetConversationsList() {
-        if (userUtils.anyUserExists()) {
-            setDefaultRootController()
-        }
+        userManager.users.subscribe(object : SingleObserver<List<User>> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
+            }
+
+            override fun onSuccess(users: List<User>) {
+                if (users.isNotEmpty()) {
+                    runOnUiThread {
+                        setDefaultRootController()
+                    }
+                }
+            }
+
+            override fun onError(e: Throwable) {
+                Log.e(TAG, "Error loading existing users", e)
+            }
+        })
     }
 
     fun openSettings() {
@@ -218,7 +254,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
                     val user = userId.substringBeforeLast("@")
                     val baseUrl = userId.substringAfterLast("@")
-                    if (userUtils.currentUser?.baseUrl?.endsWith(baseUrl) == true) {
+
+                    if (userManager.currentUser.blockingGet()?.baseUrl?.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
                         Snackbar.make(
@@ -234,14 +271,16 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     private fun startConversation(userId: String) {
         val roomType = "1"
-        val currentUser = userUtils.currentUser ?: return
+
+        val currentUser = userManager.currentUser.blockingGet()
 
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
-        val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+        val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            apiVersion, currentUser.baseUrl, roomType,
+            apiVersion, currentUser?.baseUrl, roomType,
             null, userId, null
         )
+
         ncApi.createRoom(
             credentials,
             retrofitBucket.url, retrofitBucket.queryMap
@@ -252,6 +291,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
+
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putParcelable(KEY_USER_ENTITY, currentUser)
@@ -263,7 +303,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion,
-                            currentUser.baseUrl,
+                            currentUser?.baseUrl,
                             roomOverall.ocs!!.data!!.token
                         )
                     )
@@ -273,13 +313,14 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                             override fun onSubscribe(d: Disposable) {
                                 // unused atm
                             }
+
                             override fun onNext(roomOverall: RoomOverall) {
                                 bundle.putParcelable(
                                     KEY_ACTIVE_CONVERSATION,
                                     Parcels.wrap(roomOverall.ocs!!.data)
                                 )
                                 remapChatController(
-                                    router!!, currentUser.id,
+                                    router!!, currentUser!!.id!!,
                                     roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }
@@ -287,6 +328,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                             override fun onError(e: Throwable) {
                                 // unused atm
                             }
+
                             override fun onComplete() {
                                 // unused atm
                             }
@@ -296,6 +338,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 override fun onError(e: Throwable) {
                     // unused atm
                 }
+
                 override fun onComplete() {
                     // unused atm
                 }
@@ -351,6 +394,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     companion object {
-        private val TAG = "MainActivity"
+        private const val TAG = "MainActivity"
     }
 }

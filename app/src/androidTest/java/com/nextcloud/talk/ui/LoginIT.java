@@ -29,8 +29,6 @@ import android.os.Bundle;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
 
-import junit.framework.AssertionFailedError;
-
 import org.junit.Test;
 
 import java.util.Objects;
@@ -52,7 +50,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.web.sugar.Web.onWebView;
 import static androidx.test.espresso.web.webdriver.DriverAtoms.findElement;
 import static androidx.test.espresso.web.webdriver.DriverAtoms.webClick;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 
 
@@ -143,10 +140,8 @@ public class LoginIT {
         onView(withId(R.id.user_name)).check(matches(withText("User One")));
 
         activityScenario.onActivity(activity -> {
-            assertEquals(loginName, Objects.requireNonNull(activity.userUtils.getCurrentUser()).getUserId());
+            assertEquals(loginName,
+                         Objects.requireNonNull(activity.userManager.getCurrentUser().blockingGet()).getUserId());
         });
-
     }
-
-
 }

@@ -30,6 +30,10 @@ import io.requery.Generated;
 import io.requery.Key;
 import io.requery.Persistable;
 
+/**
+ * Legacy user entity, please migrate to {@link com.nextcloud.talk.data.user.model.User}.
+ */
+@Deprecated
 @Entity
 public interface User extends Parcelable, Persistable, Serializable {
     String TAG = "UserEntity";

@@ -1,0 +1,138 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 8,
+    "identityHash": "055a9d64f28216e2981bea2fb6cc4b28",
+    "entities": [
+      {
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userId` TEXT, `username` TEXT, `baseUrl` TEXT, `token` TEXT, `displayName` TEXT, `pushConfigurationState` TEXT, `capabilities` TEXT, `clientCertificate` TEXT, `externalSignalingServer` TEXT, `current` INTEGER NOT NULL, `scheduledForDeletion` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "baseUrl",
+            "columnName": "baseUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "token",
+            "columnName": "token",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "displayName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pushConfigurationState",
+            "columnName": "pushConfigurationState",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "capabilities",
+            "columnName": "capabilities",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "clientCertificate",
+            "columnName": "clientCertificate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "externalSignalingServer",
+            "columnName": "externalSignalingServer",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "current",
+            "columnName": "current",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scheduledForDeletion",
+            "columnName": "scheduledForDeletion",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ArbitraryStorage",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`accountIdentifier` INTEGER NOT NULL, `key` TEXT, `object` TEXT, `value` TEXT, PRIMARY KEY(`accountIdentifier`))",
+        "fields": [
+          {
+            "fieldPath": "accountIdentifier",
+            "columnName": "accountIdentifier",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "storageObject",
+            "columnName": "object",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "value",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "accountIdentifier"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '055a9d64f28216e2981bea2fb6cc4b28')"
+    ]
+  }
+}

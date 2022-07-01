@@ -24,6 +24,7 @@ package com.nextcloud.talk.dagger.modules;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.data.source.local.TalkDatabase;
 import com.nextcloud.talk.models.database.Models;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import dagger.Module;
@@ -35,6 +36,7 @@ import io.requery.reactivex.ReactiveSupport;
 import io.requery.sql.Configuration;
 import io.requery.sql.EntityDataStore;
 import net.orange_box.storebox.StoreBox;
+import net.sqlcipher.database.SQLiteDatabase;
 
 import javax.inject.Singleton;
 
@@ -44,7 +46,13 @@ public class DatabaseModule {
 
     @Provides
     @Singleton
-    public SqlCipherDatabaseSource provideSqlCipherDatabaseSource(@NonNull final Context context) {
+    public SqlCipherDatabaseSource provideSqlCipherDatabaseSource(
+        @NonNull final Context context,
+        final AppPreferences appPreferences) {
+        int version = DB_VERSION;
+        if (appPreferences.getIsDbRoomMigrated()) {
+            version++;
+        }
         return new SqlCipherDatabaseSource(
             context,
             Models.DEFAULT,
@@ -56,7 +64,14 @@ public class DatabaseModule {
                 .trim()
                 + ".sqlite",
             context.getString(R.string.nc_talk_database_encryption_key),
-            DB_VERSION);
+            version) {
+            @Override
+            public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                if (newVersion < 7) {
+                    super.onDowngrade(db, oldVersion, newVersion);
+                }
+            }
+        };
     }
 
     @Provides
@@ -70,8 +85,14 @@ public class DatabaseModule {
     @Provides
     @Singleton
     public AppPreferences providePreferences(@NonNull final Context poContext) {
-        AppPreferences preferences =  StoreBox.create(poContext, AppPreferences.class);
+        AppPreferences preferences = StoreBox.create(poContext, AppPreferences.class);
         preferences.removeLinkPreviews();
         return preferences;
+    }
+
+    @Provides
+    @Singleton
+    public TalkDatabase provideTalkDatabase(@NonNull final Context context) {
+        return TalkDatabase.getInstance(context);
     }
 }

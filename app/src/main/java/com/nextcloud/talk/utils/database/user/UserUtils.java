@@ -35,6 +35,10 @@ import io.requery.Persistable;
 import io.requery.query.Result;
 import io.requery.reactivex.ReactiveEntityStore;
 
+/**
+ * @deprecated use {@link com.nextcloud.talk.users.UserManager} instead.
+ */
+@Deprecated
 public class UserUtils implements CurrentUserProvider {
     private ReactiveEntityStore<Persistable> dataStore;
 
@@ -44,24 +48,24 @@ public class UserUtils implements CurrentUserProvider {
 
     public boolean anyUserExists() {
         return (dataStore.count(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE))
-                .limit(1).get().value() > 0);
+            .limit(1).get().value() > 0);
     }
 
     public boolean hasMultipleUsers() {
         return (dataStore.count(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE))
-                .get().value() > 1);
+            .get().value() > 1);
     }
 
     public List getUsers() {
         Result findUsersQueryResult = dataStore.select(User.class).where
-                (UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)).get();
+            (UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)).get();
 
         return findUsersQueryResult.toList();
     }
 
     public List getUsersScheduledForDeletion() {
         Result findUsersQueryResult = dataStore.select(User.class)
-                .where(UserEntity.SCHEDULED_FOR_DELETION.eq(Boolean.TRUE)).get();
+            .where(UserEntity.SCHEDULED_FOR_DELETION.eq(Boolean.TRUE)).get();
 
         return findUsersQueryResult.toList();
     }
@@ -69,8 +73,8 @@ public class UserUtils implements CurrentUserProvider {
 
     public UserEntity getAnyUserAndSetAsActive() {
         Result findUserQueryResult = dataStore.select(User.class)
-                .where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE))
-                .limit(1).get();
+            .where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE))
+            .limit(1).get();
 
         UserEntity userEntity;
         if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
@@ -83,10 +87,11 @@ public class UserUtils implements CurrentUserProvider {
     }
 
     @Override
-    public @Nullable UserEntity getCurrentUser() {
+    public @Nullable
+    UserEntity getCurrentUser() {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.CURRENT.eq(Boolean.TRUE)
-                .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)))
-                .limit(1).get();
+                                                                            .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)))
+            .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();
     }
@@ -97,8 +102,8 @@ public class UserUtils implements CurrentUserProvider {
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
 
         return dataStore.delete(user)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread());
 
     }
 
@@ -108,20 +113,20 @@ public class UserUtils implements CurrentUserProvider {
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
 
         return dataStore.delete(user)
-                .subscribeOn(Schedulers.io());
+            .subscribeOn(Schedulers.io());
 
     }
 
     public UserEntity getUserById(String id) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USER_ID.eq(id))
-                .limit(1).get();
+            .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();
     }
 
     public UserEntity getUserWithId(long id) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id))
-                .limit(1).get();
+            .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();
     }
@@ -139,8 +144,8 @@ public class UserUtils implements CurrentUserProvider {
 
     public boolean checkIfUserIsScheduledForDeletion(String username, String server) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username))
-                .and(UserEntity.BASE_URL.eq(server))
-                .limit(1).get();
+            .and(UserEntity.BASE_URL.eq(server))
+            .limit(1).get();
 
         UserEntity userEntity;
         if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
@@ -152,23 +157,23 @@ public class UserUtils implements CurrentUserProvider {
 
     public UserEntity getUserWithInternalId(long internalId) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)
-                .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)))
-                .limit(1).get();
+                                                                            .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)))
+            .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();
     }
 
     public boolean getIfUserWithUsernameAndServer(String username, String server) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username)
-                .and(UserEntity.BASE_URL.eq(server)))
-                .limit(1).get();
+                                                                            .and(UserEntity.BASE_URL.eq(server)))
+            .limit(1).get();
 
         return findUserQueryResult.firstOrNull() != null;
     }
 
     public boolean scheduleUserForDeletionWithId(long id) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id))
-                .limit(1).get();
+            .limit(1).get();
 
         UserEntity userEntity;
         if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
@@ -193,7 +198,7 @@ public class UserUtils implements CurrentUserProvider {
         Result findUserQueryResult;
         if (internalId == null) {
             findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
-                    and(UserEntity.BASE_URL.eq(serverUrl))).limit(1).get();
+                                                                         and(UserEntity.BASE_URL.eq(serverUrl))).limit(1).get();
         } else {
             findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)).get();
         }
@@ -242,7 +247,7 @@ public class UserUtils implements CurrentUserProvider {
             }
 
             if ((displayName != null && user.getDisplayName() == null) || (displayName != null && user.getDisplayName()
-                    != null && !displayName.equals(user.getDisplayName()))) {
+                != null && !displayName.equals(user.getDisplayName()))) {
                 user.setDisplayName(displayName);
             }
 

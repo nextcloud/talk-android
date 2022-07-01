@@ -28,6 +28,7 @@ import android.util.Log;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -123,7 +124,7 @@ public class ApiUtils {
         return getConversationApiVersion(capabilities, versions);
     }
 
-    public static int getConversationApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
+    public static int getConversationApiVersion(User user, int[] versions) throws NoSupportedApiException {
         boolean hasApiV4 = false;
         for (int version : versions) {
             hasApiV4 |= version == APIv4;
@@ -135,23 +136,28 @@ public class ApiUtils {
         }
 
         for (int version : versions) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "conversation-v" + version)) {
+            if (user.hasSpreedFeatureCapability("conversation-v" + version)) {
                 return version;
             }
 
             // Fallback for old API versions
             if ((version == APIv1 || version == APIv2)) {
-                if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "conversation-v2")) {
+                if (user.hasSpreedFeatureCapability("conversation-v2")) {
                     return version;
                 }
                 if (version == APIv1  &&
-                        CapabilitiesUtil.hasSpreedFeatureCapability(user, "mention-flag") &&
-                        !CapabilitiesUtil.hasSpreedFeatureCapability(user, "conversation-v4")) {
+                    user.hasSpreedFeatureCapability("mention-flag") &&
+                    !user.hasSpreedFeatureCapability("conversation-v4")) {
                     return version;
                 }
             }
         }
         throw new NoSupportedApiException();
+    }
+
+    @Deprecated
+    public static int getConversationApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
+        return getConversationApiVersion(LegacyUserEntityMapper.toModel(user), versions);
     }
 
     public static int getSignalingApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {

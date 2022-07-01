@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Álvaro Brey
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Nextcloud GmbH
  *
@@ -22,6 +24,11 @@
 package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.data.source.local.TalkDatabase
+import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
+import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
+import com.nextcloud.talk.data.user.UsersRepository
+import com.nextcloud.talk.data.user.UsersRepositoryImpl
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepositoryImpl
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
@@ -49,5 +56,15 @@ class RepositoryModule {
     fun provideRemoteFileBrowserItemsRepository(okHttpClient: OkHttpClient, userProvider: CurrentUserProvider):
         RemoteFileBrowserItemsRepository {
         return RemoteFileBrowserItemsRepositoryImpl(okHttpClient, userProvider)
+    }
+
+    @Provides
+    fun provideUsersRepository(database: TalkDatabase): UsersRepository {
+        return UsersRepositoryImpl(database.usersDao())
+    }
+
+    @Provides
+    fun provideArbitraryStoragesRepository(database: TalkDatabase): ArbitraryStoragesRepository {
+        return ArbitraryStoragesRepositoryImpl(database.arbitraryStoragesDao())
     }
 }

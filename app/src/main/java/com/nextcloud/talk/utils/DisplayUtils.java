@@ -79,6 +79,7 @@ import com.facebook.widget.text.span.BetterImageSpan;
 import com.google.android.material.chip.ChipDrawable;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.UserMentionClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.text.Spans;
@@ -92,6 +93,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -489,9 +491,13 @@ public class DisplayUtils {
      * @param color the color
      * @return true if primaryColor is lighter than MAX_LIGHTNESS
      */
+    @SuppressWarnings("correctness")
     public static boolean lightTheme(int color) {
         float[] hsl = colorToHSL(color);
 
+        // spotbugs dislikes fixed index access
+        // which is enforced by having such an
+        // array from Android-API itself
         return hsl[INDEX_LUMINATION] >= MAX_LIGHTNESS;
     }
 
@@ -565,7 +571,12 @@ public class DisplayUtils {
         }
     }
 
+    @Deprecated
     public static void loadAvatarImage(UserEntity user, SimpleDraweeView avatarImageView, boolean deleteCache) {
+        loadAvatarImage(Objects.requireNonNull(LegacyUserEntityMapper.toModel(user)), avatarImageView, deleteCache);
+    }
+
+    public static void loadAvatarImage(User user, SimpleDraweeView avatarImageView, boolean deleteCache) {
         String avatarId;
         if (!TextUtils.isEmpty(user.getUserId())) {
             avatarId = user.getUserId();

@@ -21,7 +21,10 @@ package com.nextcloud.talk.utils.database.arbitrarystorage;
 
 import autodagger.AutoInjector;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager;
 import com.nextcloud.talk.dagger.modules.DatabaseModule;
+import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository;
+
 import dagger.Module;
 import dagger.Provides;
 import io.requery.Persistable;
@@ -40,5 +43,10 @@ public class ArbitraryStorageModule {
     @Provides
     public ArbitraryStorageUtils provideArbitraryStorageUtils(ReactiveEntityStore<Persistable> dataStore) {
         return new ArbitraryStorageUtils(dataStore);
+    }
+
+    @Provides
+    public ArbitraryStorageManager provideArbitraryStorageManager(ArbitraryStoragesRepository repository) {
+        return new ArbitraryStorageManager(repository);
     }
 }

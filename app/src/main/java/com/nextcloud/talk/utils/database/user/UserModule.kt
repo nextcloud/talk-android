@@ -20,6 +20,8 @@
 package com.nextcloud.talk.utils.database.user
 
 import com.nextcloud.talk.dagger.modules.DatabaseModule
+import com.nextcloud.talk.data.user.UsersRepository
+import com.nextcloud.talk.users.UserManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -32,10 +34,18 @@ abstract class UserModule {
     @Binds
     abstract fun bindCurrentUserProvider(userUtils: UserUtils): CurrentUserProvider
 
+    @Binds
+    abstract fun bindCurrentUserProviderNew(userManager: UserManager): CurrentUserProviderNew
+
     companion object {
         @Provides
         fun provideUserUtils(dataStore: ReactiveEntityStore<Persistable?>?): UserUtils {
             return UserUtils(dataStore)
+        }
+
+        @Provides
+        fun provideUserManager(userRepository: UsersRepository): UserManager {
+            return UserManager(userRepository)
         }
     }
 }
