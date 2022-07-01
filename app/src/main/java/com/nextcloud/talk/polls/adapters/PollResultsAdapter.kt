@@ -34,25 +34,25 @@ class PollResultsAdapter(
     internal var list: MutableList<PollResultItem> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PollResultViewHolder {
+        var viewHolder: PollResultViewHolder? = null
+
         when (viewType) {
             PollResultHeaderItem.VIEW_TYPE -> {
                 val itemBinding = PollResultHeaderItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent,
                     false
                 )
-                return PollResultHeaderViewHolder(itemBinding)
+                viewHolder = PollResultHeaderViewHolder(itemBinding)
             }
             PollResultVoterItem.VIEW_TYPE -> {
                 val itemBinding = PollResultVoterItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent,
                     false
                 )
-                return PollResultVoterViewHolder(user, itemBinding)
+                viewHolder = PollResultVoterViewHolder(user, itemBinding)
             }
         }
-
-        val itemBinding = PollResultHeaderItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PollResultHeaderViewHolder(itemBinding)
+        return viewHolder!!
     }
 
     override fun onBindViewHolder(holder: PollResultViewHolder, position: Int) {

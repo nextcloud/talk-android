@@ -40,7 +40,6 @@
 
 package com.nextcloud.talk.polls.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -86,7 +85,7 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
         _items.value = ArrayList()
 
         val votersAmount = getVotersAmount(poll)
-        val oneVoteInPercent = 100 / votersAmount
+        val oneVoteInPercent = HUNDRED / votersAmount
 
         poll.options?.forEachIndexed { index, option ->
             val votersAmountForThisOption = getVotersAmountForOption(poll, index)
@@ -117,13 +116,13 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun getVotersAmount(poll: Poll): Int {
+        var votersAmount = 0
         if (poll.details != null) {
-            return poll.details.size
+            votersAmount = poll.details.size
         } else if (poll.votes != null) {
-            return poll.numVoters
+            votersAmount = poll.numVoters
         }
-        Log.e(TAG, "something went wrong while getting amount of voters.")
-        return 0
+        return votersAmount
     }
 
     private fun getVotersAmountForOption(poll: Poll, index: Int): Int {
@@ -156,5 +155,6 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
 
     companion object {
         private val TAG = PollResultsViewModel::class.java.simpleName
+        private const val HUNDRED = 100
     }
 }

@@ -45,12 +45,13 @@ class PollResultVoterViewHolder(
     }
 
     private fun getAvatarDraweeController(pollDetail: PollDetails): DraweeController? {
+        var draweeController: DraweeController? = null
         if (pollDetail.actorType == "guests") {
             var displayName = NextcloudTalkApplication.sharedApplication?.resources?.getString(R.string.nc_guest)
             if (!TextUtils.isEmpty(pollDetail.actorDisplayName)) {
                 displayName = pollDetail.actorDisplayName!!
             }
-            return Fresco.newDraweeControllerBuilder()
+            draweeController = Fresco.newDraweeControllerBuilder()
                 .setAutoPlayAnimations(true)
                 .setImageRequest(
                     DisplayUtils.getImageRequestForUrl(
@@ -64,7 +65,7 @@ class PollResultVoterViewHolder(
                 )
                 .build()
         } else if (pollDetail.actorType == "users") {
-            return Fresco.newDraweeControllerBuilder()
+            draweeController = Fresco.newDraweeControllerBuilder()
                 .setAutoPlayAnimations(true)
                 .setImageRequest(
                     DisplayUtils.getImageRequestForUrl(
@@ -78,6 +79,6 @@ class PollResultVoterViewHolder(
                 )
                 .build()
         }
-        return null
+        return draweeController
     }
 }
