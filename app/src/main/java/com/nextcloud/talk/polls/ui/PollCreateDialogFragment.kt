@@ -83,9 +83,6 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.options.observe(viewLifecycleOwner) { options -> adapter?.updateOptionsList(options) }
-        viewModel.question.observe(viewLifecycleOwner) { binding.pollCreateQuestion.setText(it) }
-        viewModel.privatePoll.observe(viewLifecycleOwner) { binding.pollPrivatePollCheckbox.isChecked = it }
-        viewModel.multipleAnswer.observe(viewLifecycleOwner) { binding.pollMultipleAnswersCheckbox.isChecked = it }
 
         binding.pollCreateOptionsList.layoutManager = LinearLayoutManager(context)
 
@@ -118,7 +115,7 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
             }
 
             override fun onTextChanged(question: CharSequence, start: Int, before: Int, count: Int) {
-                if (question.toString() != viewModel.question.value) {
+                if (question.toString() != viewModel.question) {
                     viewModel.setQuestion(question.toString())
                     binding.pollCreateQuestion.setSelection(binding.pollCreateQuestion.length())
                 }
