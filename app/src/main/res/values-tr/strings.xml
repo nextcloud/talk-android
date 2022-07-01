@@ -355,7 +355,7 @@
     <string name="send_to">Şuraya gönder</string>
     <string name="send_to_forbidden">Bu sohbette içerik paylaşma izniniz yok</string>
     <string name="send_to_three_dots">Şuraya gönder …</string>
-    <string name="send_without_notification">Bildirim olmadan gönderildi</string>
+    <string name="send_without_notification">Bildirim olmadan gönder</string>
     <string name="set_status">Durumu ayarla</string>
     <string name="set_status_message">Durum iletisini ayarla</string>
     <string name="share">Paylaş</string>
