@@ -64,8 +64,10 @@ class PollVoteFragment : Fragment() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         viewModel = ViewModelProvider(this, viewModelFactory)[PollVoteViewModel::class.java]
 
-        parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[PollMainViewModel::class
-            .java]
+        parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[
+            PollMainViewModel::class
+                .java
+        ]
 
         roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
         pollId = arguments?.getString(KEY_POLL_ID)!!
@@ -164,8 +166,10 @@ class PollVoteFragment : Fragment() {
     }
 
     private fun areSelectedOptionsDifferentToVotedOptions(): Boolean {
-        return !(viewModel.votedOptions.containsAll(viewModel.selectedOptions) &&
-            viewModel.selectedOptions.containsAll(viewModel.votedOptions))
+        return !(
+            viewModel.votedOptions.containsAll(viewModel.selectedOptions) &&
+                viewModel.selectedOptions.containsAll(viewModel.votedOptions)
+            )
     }
 
     private fun makeOptionBoldIfSelfVoted(button: CompoundButton, poll: Poll, index: Int) {

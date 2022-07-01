@@ -45,7 +45,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         options: List<String>,
         resultMode: Int,
         maxVotes:
-        Int
+            Int
     ): Observable<Poll>? {
         return ncApi.createPoll(
             credentials,

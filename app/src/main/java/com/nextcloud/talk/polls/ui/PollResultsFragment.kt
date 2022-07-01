@@ -61,8 +61,10 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         viewModel = ViewModelProvider(this, viewModelFactory)[PollResultsViewModel::class.java]
-        parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[PollMainViewModel::class
-            .java]
+        parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[
+            PollMainViewModel::class
+                .java
+        ]
 
         user = arguments?.getParcelable(KEY_USER_ENTITY)!!
     }
