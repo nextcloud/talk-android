@@ -33,7 +33,8 @@ data class Poll(
     val maxVotes: Int,
     val votedSelf: List<Int>?,
     val numVoters: Int,
-    val details: List<PollDetails>?
+    val details: List<PollDetails>?,
+    val totalVotes: Int
 ) {
     companion object {
         const val STATUS_OPEN: Int = 0

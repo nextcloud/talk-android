@@ -115,7 +115,7 @@ class PollMainDialogFragment : DialogFragment() {
     }
 
     private fun showResultsScreen(poll: Poll) {
-        initVotersAmount(poll.numVoters)
+        initVotesAmount(poll.totalVotes)
 
         val contentFragment = PollResultsFragment.newInstance(
             user
@@ -126,11 +126,11 @@ class PollMainDialogFragment : DialogFragment() {
         transaction.commit()
     }
 
-    private fun initVotersAmount(numVoters: Int) {
+    private fun initVotesAmount(totalVotes: Int) {
         binding.pollDetailsText.visibility = View.VISIBLE
         binding.pollDetailsText.text = String.format(
             resources.getString(R.string.polls_amount_voters),
-            numVoters
+            totalVotes
         )
     }
 

@@ -134,6 +134,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
                 pollResponse.votedSelf,
                 pollResponse.numVoters,
                 pollDetails,
+                getTotalVotes(pollResponse.votes)
             )
         }
 
@@ -152,6 +153,14 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
                 pollDetailsResponse.actorDisplayName,
                 pollDetailsResponse.optionId,
             )
+        }
+
+        private fun getTotalVotes(votes: Map<String, Int>?): Int {
+            var totalVotes = 0
+            votes?.forEach {
+                totalVotes += it.value
+            }
+            return totalVotes
         }
     }
 }
