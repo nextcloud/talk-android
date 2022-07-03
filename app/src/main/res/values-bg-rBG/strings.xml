@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Слушалки с кабел</string>
     <string name="avatar">Аватар</string>
     <string name="away">Винаги</string>
+    <string name="call_without_notification">Обаждане без известие</string>
     <string name="choose_avatar_from_cloud">Избор на аватар от облака</string>
     <string name="clear_status_message">Изчистване на съобщението за състоянието</string>
     <string name="clear_status_message_after">Изчистване на съобщение за състоянието след</string>
@@ -348,6 +349,7 @@
     <string name="selected_list_item">Избранo</string>
     <string name="send_to">Изпращане до</string>
     <string name="send_to_three_dots">Изпращане до …</string>
+    <string name="send_without_notification">Изпращане без известие</string>
     <string name="set_status">Задаване на състояние</string>
     <string name="set_status_message">Задаване на съобщение за състояние</string>
     <string name="share">Споделяне</string>
