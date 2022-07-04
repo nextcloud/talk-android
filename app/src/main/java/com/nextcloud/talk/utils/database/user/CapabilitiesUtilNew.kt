@@ -25,41 +25,40 @@ import com.nextcloud.talk.data.user.model.User
 
 @Suppress("TooManyFunctions")
 object CapabilitiesUtilNew {
-    fun hasNotificationsCapability(user: User, capabilityName: String): Boolean {
-        return user.capabilities?.spreedCapability?.features?.contains(capabilityName) == true
+    fun hasNotificationsCapability(user: User?, capabilityName: String): Boolean {
+        return user?.capabilities?.spreedCapability?.features?.contains(capabilityName) == true
     }
 
-    fun hasExternalCapability(user: User, capabilityName: String?): Boolean {
-        if (user.capabilities?.externalCapability?.containsKey("v1") == true) {
+    fun hasExternalCapability(user: User?, capabilityName: String?): Boolean {
+        if (user?.capabilities?.externalCapability?.containsKey("v1") == true) {
             return user.capabilities!!.externalCapability!!["v1"]?.contains(capabilityName!!) == true
         }
         return false
     }
 
-    fun isServerEOL(user: User): Boolean {
+    fun isServerEOL(user: User?): Boolean {
         // Capability is available since Talk 4 => Nextcloud 14 => Autmn 2018
         return !hasSpreedFeatureCapability(user, "no-ping")
     }
 
-    fun isServerAlmostEOL(user: User): Boolean {
+    fun isServerAlmostEOL(user: User?): Boolean {
         // Capability is available since Talk 8 => Nextcloud 18 => January 2020
         return !hasSpreedFeatureCapability(user, "chat-replies")
     }
 
-    fun canSetChatReadMarker(user: User): Boolean {
+    fun canSetChatReadMarker(user: User?): Boolean {
         return hasSpreedFeatureCapability(user, "chat-read-marker")
     }
 
-    fun hasSpreedFeatureCapability(user: User, capabilityName: String): Boolean {
-        if (user.capabilities?.spreedCapability?.features != null) {
+    fun hasSpreedFeatureCapability(user: User?, capabilityName: String): Boolean {
+        if (user?.capabilities?.spreedCapability?.features != null) {
             return user.capabilities!!.spreedCapability!!.features!!.contains(capabilityName)
         }
         return false
     }
 
-    fun getMessageMaxLength(user: User): Int {
-        val capabilities = user.capabilities!!
-        if (user.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
+    fun getMessageMaxLength(user: User?): Int {
+        if (user?.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
             val chatConfigHashMap = user.capabilities!!.spreedCapability!!.config!!["chat"]
             if (chatConfigHashMap?.containsKey("max-length") == true) {
                 val chatSize = chatConfigHashMap["max-length"]!!.toInt()
@@ -74,20 +73,20 @@ object CapabilitiesUtilNew {
         return DEFAULT_CHAT_SIZE
     }
 
-    fun isPhoneBookIntegrationAvailable(user: User): Boolean {
-        return user.capabilities?.spreedCapability?.features?.contains("phonebook-search") == true
+    fun isPhoneBookIntegrationAvailable(user: User?): Boolean {
+        return user?.capabilities?.spreedCapability?.features?.contains("phonebook-search") == true
     }
 
-    fun isReadStatusAvailable(user: User): Boolean {
-        if (user.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
+    fun isReadStatusAvailable(user: User?): Boolean {
+        if (user?.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
             val map: Map<String, String>? = user.capabilities!!.spreedCapability!!.config!!["chat"]
             return map != null && map.containsKey("read-privacy")
         }
         return false
     }
 
-    fun isReadStatusPrivate(user: User): Boolean {
-        if (user.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
+    fun isReadStatusPrivate(user: User?): Boolean {
+        if (user?.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
             val map = user.capabilities!!.spreedCapability!!.config!!["chat"]
             if (map?.containsKey("read-privacy") == true) {
                 return map["read-privacy"]!!.toInt() == 1
@@ -97,13 +96,13 @@ object CapabilitiesUtilNew {
         return false
     }
 
-    fun isUserStatusAvailable(user: User): Boolean {
-        return user.capabilities?.userStatusCapability?.enabled == true &&
+    fun isUserStatusAvailable(user: User?): Boolean {
+        return user?.capabilities?.userStatusCapability?.enabled == true &&
             user.capabilities?.userStatusCapability?.supportsEmoji == true
     }
 
-    fun getAttachmentFolder(user: User): String? {
-        if (user.capabilities?.spreedCapability?.config?.containsKey("attachments") == true) {
+    fun getAttachmentFolder(user: User?): String? {
+        if (user?.capabilities?.spreedCapability?.config?.containsKey("attachments") == true) {
             val map = user.capabilities!!.spreedCapability!!.config!!["attachments"]
             if (map?.containsKey("folder") == true) {
                 return map["folder"]
@@ -112,25 +111,25 @@ object CapabilitiesUtilNew {
         return "/Talk"
     }
 
-    fun getServerName(user: User): String? {
-        if (user.capabilities?.themingCapability != null) {
+    fun getServerName(user: User?): String? {
+        if (user?.capabilities?.themingCapability != null) {
             return user.capabilities!!.themingCapability!!.name
         }
         return ""
     }
 
     // TODO later avatar can also be checked via user fields, for now it is in Talk capability
-    fun isAvatarEndpointAvailable(user: User): Boolean {
-        return user.capabilities?.spreedCapability?.features?.contains("temp-user-avatar-api") == true
+    fun isAvatarEndpointAvailable(user: User?): Boolean {
+        return user?.capabilities?.spreedCapability?.features?.contains("temp-user-avatar-api") == true
     }
 
-    fun canEditScopes(user: User): Boolean {
-        return user.capabilities?.provisioningCapability?.accountPropertyScopesVersion != null &&
+    fun canEditScopes(user: User?): Boolean {
+        return user?.capabilities?.provisioningCapability?.accountPropertyScopesVersion != null &&
             user.capabilities!!.provisioningCapability!!.accountPropertyScopesVersion!! > 1
     }
 
-    fun isAbleToCall(user: User): Boolean {
-        if (user.capabilities != null) {
+    fun isAbleToCall(user: User?): Boolean {
+        if (user?.capabilities != null) {
             val capabilities = user.capabilities
             return if (
                 capabilities?.spreedCapability?.config?.containsKey("call") == true &&
@@ -150,5 +149,5 @@ object CapabilitiesUtilNew {
         return hasSpreedFeatureCapability(user, "unified-search")
     }
 
-    const val DEFAULT_CHAT_SIZE = 1000
+    private const val DEFAULT_CHAT_SIZE = 1000
 }
