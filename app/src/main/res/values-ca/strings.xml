@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Icona del compte</string>
     <string name="appbar_search_in">Cerca a %s</string>
+    <string name="audio_output_dialog_headline">Sortida d\'àudio</string>
     <string name="audio_output_phone">Telèfon</string>
     <string name="avatar">Avatar</string>
     <string name="away">Absent</string>

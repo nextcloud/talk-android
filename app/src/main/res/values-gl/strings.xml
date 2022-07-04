@@ -35,10 +35,12 @@
     <string name="nc_account_scheduled_for_deletion">A conta está programada para a súa eliminación e non pode ser cambiada</string>
     <string name="nc_add_attachment">Engadir o anexo</string>
     <string name="nc_add_emojis">Engadir emojis</string>
+    <string name="nc_add_file">Engadir a conversa</string>
     <string name="nc_add_participants">Engadir participantes</string>
     <string name="nc_add_to_favorites">Engadir a favoritos</string>
     <string name="nc_all_ok_operation">Conforme, todo feito!</string>
     <string name="nc_allow_guests">Permitir convidados</string>
+    <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nome da conversa</string>

@@ -18,7 +18,9 @@
     <string name="dnd">Не безпокойте</string>
     <string name="dontClear">Да не се изчиства</string>
     <string name="edit">Променяне</string>
+    <string name="emoji_backspace">Backspace /Назад/</string>
     <string name="emoji_category_recent">Скорошни</string>
+    <string name="emoji_search">Търсене на емотикони</string>
     <string name="encrypted">Криптиран</string>
     <string name="failed_to_save">Неуспешно записване %1$s</string>
     <string name="file_list_folder">папка</string>
@@ -305,6 +307,8 @@
     <string name="nc_share_text_pass">\nПарола: %1$s</string>
     <string name="nc_share_this_location">Споделяне на това местоположение</string>
     <string name="nc_shared_items">Споделени елементи</string>
+    <string name="nc_shared_items_description">Изображения, файлове, гласови съобщения ...</string>
+    <string name="nc_shared_items_empty">Няма споделени елементи</string>
     <string name="nc_shared_location">Споделено местоположение</string>
     <string name="nc_sort_by">Сортиране по</string>
     <string name="nc_start_time">Начало</string>
@@ -313,6 +317,7 @@
     <string name="nc_upload_confirm_send_single">Да се ​​изпрати ли този файл до %1$s?</string>
     <string name="nc_upload_failed">За съжаление качването беше  неуспешно</string>
     <string name="nc_upload_from_cloud">Споделяне от %1$s</string>
+    <string name="nc_upload_from_device">Качване от устройство</string>
     <string name="nc_upload_in_progess">Качване</string>
     <string name="nc_upload_local_file">Качване на локален файл</string>
     <string name="nc_upload_picture_from_cam">Снимане</string>
@@ -348,6 +353,7 @@
     <string name="secondsAgo">преди секунди</string>
     <string name="selected_list_item">Избранo</string>
     <string name="send_to">Изпращане до</string>
+    <string name="send_to_forbidden">Нямате право да споделяте съдържание в този чат</string>
     <string name="send_to_three_dots">Изпращане до …</string>
     <string name="send_without_notification">Изпращане без известие</string>
     <string name="set_status">Задаване на състояние</string>
