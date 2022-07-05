@@ -193,12 +193,20 @@ public class DisplayUtils {
         return bitmap;
     }
 
+    public static ImageRequest getImageRequestForUrl(String url) {
+        return getImageRequestForUrl(url, (User) null);
+    }
+
     public static ImageRequest getImageRequestForUrl(String url, @Nullable UserEntity userEntity) {
+        return getImageRequestForUrl(url, LegacyUserEntityMapper.toModel(userEntity));
+    }
+
+    public static ImageRequest getImageRequestForUrl(String url, @Nullable User user) {
         Map<String, String> headers = new HashMap<>();
-        if (userEntity != null &&
-            url.startsWith(userEntity.getBaseUrl()) &&
+        if (user != null &&
+            url.startsWith(user.getBaseUrl()) &&
             (url.contains("index.php/core/preview?fileId=") || url.contains("/avatar/"))) {
-            headers.put("Authorization", ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()));
+            headers.put("Authorization", ApiUtils.getCredentials(user.getUsername(), user.getToken()));
         }
 
         return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
@@ -327,7 +335,7 @@ public class DisplayUtils {
                     conversationUser.getBaseUrl(),
                     String.valueOf(label), true);
             }
-            ImageRequest imageRequest = getImageRequestForUrl(url, null);
+            ImageRequest imageRequest = getImageRequestForUrl(url);
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
             DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(
                 imageRequest,
@@ -599,7 +607,7 @@ public class DisplayUtils {
         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
             .setOldController(avatarImageView.getController())
             .setAutoPlayAnimations(true)
-            .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarString, null))
+            .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarString))
             .build();
         avatarImageView.setController(draweeController);
     }
