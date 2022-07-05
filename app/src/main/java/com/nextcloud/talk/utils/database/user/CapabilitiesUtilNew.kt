@@ -36,6 +36,7 @@ object CapabilitiesUtilNew {
         return false
     }
 
+    @JvmStatic
     fun isServerEOL(user: User): Boolean {
         // Capability is available since Talk 4 => Nextcloud 14 => Autmn 2018
         return !hasSpreedFeatureCapability(user, "no-ping")
@@ -50,6 +51,7 @@ object CapabilitiesUtilNew {
         return hasSpreedFeatureCapability(user, "chat-read-marker")
     }
 
+    @JvmStatic
     fun hasSpreedFeatureCapability(user: User, capabilityName: String): Boolean {
         if (user.capabilities?.spreedCapability?.features != null) {
             return user.capabilities!!.spreedCapability!!.features!!.contains(capabilityName)
@@ -97,6 +99,7 @@ object CapabilitiesUtilNew {
         return false
     }
 
+    @JvmStatic
     fun isUserStatusAvailable(user: User): Boolean {
         return user.capabilities?.userStatusCapability?.enabled == true &&
             user.capabilities?.userStatusCapability?.supportsEmoji == true
@@ -146,6 +149,7 @@ object CapabilitiesUtilNew {
         return false
     }
 
+    @JvmStatic
     fun isUnifiedSearchAvailable(user: User): Boolean {
         return hasSpreedFeatureCapability(user, "unified-search")
     }
