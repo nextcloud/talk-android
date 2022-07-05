@@ -36,11 +36,13 @@ object CapabilitiesUtilNew {
         return false
     }
 
+    @JvmStatic
     fun isServerEOL(user: User?): Boolean {
         // Capability is available since Talk 4 => Nextcloud 14 => Autmn 2018
         return !hasSpreedFeatureCapability(user, "no-ping")
     }
 
+    @JvmStatic
     fun isServerAlmostEOL(user: User?): Boolean {
         // Capability is available since Talk 8 => Nextcloud 18 => January 2020
         return !hasSpreedFeatureCapability(user, "chat-replies")
@@ -50,6 +52,7 @@ object CapabilitiesUtilNew {
         return hasSpreedFeatureCapability(user, "chat-read-marker")
     }
 
+    @JvmStatic
     fun hasSpreedFeatureCapability(user: User?, capabilityName: String): Boolean {
         if (user?.capabilities?.spreedCapability?.features != null) {
             return user.capabilities!!.spreedCapability!!.features!!.contains(capabilityName)
@@ -96,11 +99,13 @@ object CapabilitiesUtilNew {
         return false
     }
 
+    @JvmStatic
     fun isUserStatusAvailable(user: User?): Boolean {
         return user?.capabilities?.userStatusCapability?.enabled == true &&
             user.capabilities?.userStatusCapability?.supportsEmoji == true
     }
 
+    @JvmStatic
     fun getAttachmentFolder(user: User?): String? {
         if (user?.capabilities?.spreedCapability?.config?.containsKey("attachments") == true) {
             val map = user.capabilities!!.spreedCapability!!.config!!["attachments"]
@@ -145,6 +150,7 @@ object CapabilitiesUtilNew {
         return false
     }
 
+    @JvmStatic
     fun isUnifiedSearchAvailable(user: User): Boolean {
         return hasSpreedFeatureCapability(user, "unified-search")
     }
