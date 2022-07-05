@@ -25,6 +25,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.users.UserManager
+import io.reactivex.Maybe
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -53,7 +54,7 @@ class ShareUtilsTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        Mockito.`when`(userManager!!.currentUser.blockingGet()).thenReturn(user)
+        Mockito.`when`(userManager!!.currentUser).thenReturn(Maybe.just(user))
         Mockito.`when`(user!!.baseUrl).thenReturn(baseUrl)
         Mockito.`when`(context!!.resources).thenReturn(resources)
         Mockito.`when`(resources!!.getString(R.string.nc_share_text))
