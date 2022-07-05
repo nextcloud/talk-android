@@ -160,7 +160,7 @@ ext {
     butterknifeVersion = "10.2.3"
     coilKtVersion = "2.1.0"
     daggerVersion = "2.42"
-    lifecycleVersion = '2.2.0'
+    lifecycleVersion = '2.5.0'
     okhttpVersion = "4.10.0"
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
@@ -214,8 +214,9 @@ dependencies {
     implementation "androidx.camera:camera-view:${androidxCameraVersion}"
     implementation "androidx.exifinterface:exifinterface:1.3.3"
 
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:${lifecycleVersion}"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${lifecycleVersion}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycleVersion}"
 
     implementation 'androidx.biometric:biometric:1.1.0'
 
@@ -254,8 +255,6 @@ dependencies {
     implementation "androidx.room:room-rxjava2:${roomVersion}"
     kapt "androidx.room:room-compiler:${roomVersion}"
     implementation "androidx.room:room-ktx:${roomVersion}"
-
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${lifecycleVersion}"
 
     implementation "org.parceler:parceler-api:$parcelerVersion"
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
@@ -337,8 +336,6 @@ dependencies {
     gplayImplementation 'com.google.android.gms:play-services-base:18.0.1'
     gplayImplementation "com.google.firebase:firebase-messaging:23.0.5"
 
-    // TODO: Define variable for version
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
     // implementation 'androidx.activity:activity-ktx:1.4.0'
 }
 
