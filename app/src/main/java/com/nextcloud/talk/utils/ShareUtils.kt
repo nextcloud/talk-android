@@ -23,7 +23,6 @@ import android.content.Context
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.UserUtils
 
 object ShareUtils {
     fun getStringForIntent(
