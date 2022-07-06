@@ -87,6 +87,7 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOveral
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.LegacyUserEntityMapper;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -1352,7 +1353,8 @@ public class CallActivity extends CallBaseActivity {
                         ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
-                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
+                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(
+                            LegacyUserEntityMapper.toModel(conversationUser));
                         callOrJoinRoomViaWebSocket();
                     }
 
@@ -1415,7 +1417,7 @@ public class CallActivity extends CallBaseActivity {
 
                         if (!TextUtils.isEmpty(roomToken)) {
                             NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(),
-                                                                                          conversationUser,
+                                                                                          Objects.requireNonNull(LegacyUserEntityMapper.toModel(conversationUser)),
                                                                                           roomToken);
                         }
 

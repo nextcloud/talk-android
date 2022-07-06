@@ -44,9 +44,9 @@ import com.nextcloud.talk.adapters.ReactionItemClickListener
 import com.nextcloud.talk.adapters.ReactionsAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageReactionsBinding
 import com.nextcloud.talk.databinding.ItemReactionsTabBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -57,14 +57,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.Collections
-import java.util.Comparator
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ShowReactionsDialog(
     activity: Activity,
     private val currentConversation: Conversation?,
     private val chatMessage: ChatMessage,
-    private val userEntity: UserEntity?,
+    private val user: User?,
     private val hasChatPermission: Boolean,
     private val ncApi: NcApi
 ) : BottomSheetDialog(activity), ReactionItemClickListener {
@@ -80,7 +79,7 @@ class ShowReactionsDialog(
         binding = DialogMessageReactionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        adapter = ReactionsAdapter(this, userEntity)
+        adapter = ReactionsAdapter(this, user)
         binding.reactionsList.adapter = adapter
         binding.reactionsList.layoutManager = LinearLayoutManager(context)
         initEmojiReactions()
@@ -145,12 +144,12 @@ class ShowReactionsDialog(
     private fun updateParticipantsForEmoji(chatMessage: ChatMessage, emoji: String?) {
         adapter?.list?.clear()
 
-        val credentials = ApiUtils.getCredentials(userEntity?.username, userEntity?.token)
+        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
 
         ncApi.getReactions(
             credentials,
             ApiUtils.getUrlForMessageReaction(
-                userEntity?.baseUrl,
+                user?.baseUrl,
                 currentConversation!!.token,
                 chatMessage.id
             ),
@@ -173,7 +172,7 @@ class ShowReactionsDialog(
                             }
                         }
 
-                        Collections.sort(reactionVoters, ReactionComparator(userEntity?.userId))
+                        Collections.sort(reactionVoters, ReactionComparator(user?.userId))
 
                         adapter?.list?.addAll(reactionVoters)
                         adapter?.notifyDataSetChanged()
@@ -193,19 +192,19 @@ class ShowReactionsDialog(
     }
 
     override fun onClick(reactionItem: ReactionItem) {
-        if (hasChatPermission && reactionItem.reactionVoter.actorId?.equals(userEntity?.userId) == true) {
+        if (hasChatPermission && reactionItem.reactionVoter.actorId?.equals(user?.userId) == true) {
             deleteReaction(chatMessage, reactionItem.reaction!!)
             dismiss()
         }
     }
 
     private fun deleteReaction(message: ChatMessage, emoji: String) {
-        val credentials = ApiUtils.getCredentials(userEntity?.username, userEntity?.token)
+        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
 
         ncApi.deleteReaction(
             credentials,
             ApiUtils.getUrlForMessageReaction(
-                userEntity?.baseUrl,
+                user?.baseUrl,
                 currentConversation!!.token,
                 message.id
             ),

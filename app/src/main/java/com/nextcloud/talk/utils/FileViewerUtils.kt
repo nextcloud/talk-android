@@ -42,14 +42,12 @@ import com.nextcloud.talk.activities.FullScreenImageActivity
 import com.nextcloud.talk.activities.FullScreenMediaActivity
 import com.nextcloud.talk.activities.FullScreenTextViewerActivity
 import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.Mimetype.AUDIO_MPEG
 import com.nextcloud.talk.utils.Mimetype.AUDIO_OGG
-import com.nextcloud.talk.utils.Mimetype.AUDIO_PREFIX
 import com.nextcloud.talk.utils.Mimetype.AUDIO_WAV
 import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
@@ -59,8 +57,12 @@ import com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN
 import com.nextcloud.talk.utils.Mimetype.VIDEO_MP4
 import com.nextcloud.talk.utils.Mimetype.VIDEO_OGG
 import com.nextcloud.talk.utils.Mimetype.VIDEO_QUICKTIME
+import com.nextcloud.talk.utils.MimetypeUtils.isAudioOnly
+import com.nextcloud.talk.utils.MimetypeUtils.isGif
+import com.nextcloud.talk.utils.MimetypeUtils.isMarkdown
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import java.io.File
 import java.util.concurrent.ExecutionException
 
@@ -70,7 +72,7 @@ import java.util.concurrent.ExecutionException
  * Example:
  *   - SharedItemsViewHolder
  */
-class FileViewerUtils(private val context: Context, private val userEntity: UserEntity) {
+class FileViewerUtils(private val context: Context, private val user: User) {
 
     fun openFile(
         message: ChatMessage,
@@ -208,10 +210,10 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     }
 
     fun openFileInFilesApp(link: String, keyID: String) {
-        val accountString = userEntity.username + "@" +
-            userEntity.baseUrl
-                .replace("https://", "")
-                .replace("http://", "")
+        val accountString = user.username + "@" +
+            user.baseUrl
+                ?.replace("https://", "")
+                ?.replace("http://", "")
 
         if (canWeOpenFilesApp(context, accountString)) {
             val filesAppIntent = Intent(Intent.ACTION_VIEW, null)
@@ -276,18 +278,6 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
         }
     }
 
-    private fun isGif(mimetype: String): Boolean {
-        return IMAGE_GIF == mimetype
-    }
-
-    private fun isMarkdown(mimetype: String): Boolean {
-        return TEXT_MARKDOWN == mimetype
-    }
-
-    private fun isAudioOnly(mimetype: String): Boolean {
-        return mimetype.startsWith(AUDIO_PREFIX)
-    }
-
     @SuppressLint("LongLogTag")
     private fun downloadFileToCache(
         fileInfo: FileInfo,
@@ -318,11 +308,11 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
         }
 
         val data: Data = Data.Builder()
-            .putString(DownloadFileToCacheWorker.KEY_BASE_URL, userEntity.baseUrl)
-            .putString(DownloadFileToCacheWorker.KEY_USER_ID, userEntity.userId)
+            .putString(DownloadFileToCacheWorker.KEY_BASE_URL, user.baseUrl)
+            .putString(DownloadFileToCacheWorker.KEY_USER_ID, user.userId)
             .putString(
                 DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER,
-                CapabilitiesUtil.getAttachmentFolder(userEntity)
+                CapabilitiesUtilNew.getAttachmentFolder(user)
             )
             .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileInfo.fileName)
             .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)

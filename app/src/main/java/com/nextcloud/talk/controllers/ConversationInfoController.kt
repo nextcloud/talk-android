@@ -51,7 +51,6 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.nextcloud.talk.R
-import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.adapters.items.ParticipantItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -59,12 +58,11 @@ import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
@@ -74,11 +72,13 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
+import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
 import com.yarolegovich.lovelydialog.LovelyStandardDialog
@@ -115,7 +115,7 @@ class ConversationInfoController(args: Bundle) :
     var eventBus: EventBus? = null
 
     private val conversationToken: String?
-    private val conversationUser: UserEntity?
+    private val conversationUser: User?
     private val hasAvatarSpacing: Boolean
     private val credentials: String?
     private var roomDisposable: Disposable? = null
@@ -134,7 +134,7 @@ class ConversationInfoController(args: Bundle) :
             if (!TextUtils.isEmpty(conversationToken) && conversationUser != null) {
                 val data = Data.Builder()
                 data.putString(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
-                data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id)
+                data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id!!)
                 return data.build()
             }
 
@@ -176,7 +176,7 @@ class ConversationInfoController(args: Bundle) :
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog(null) }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
             binding.showSharedItemsAction.setOnClickListener { showSharedItems() }
         } else {
             binding.categorySharedItems.visibility = View.GONE
@@ -206,7 +206,7 @@ class ConversationInfoController(args: Bundle) :
     }
 
     private fun setupWebinaryView() {
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") &&
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") &&
             webinaryRoomType(conversation!!) &&
             conversation!!.canModerate(conversationUser!!)
         ) {
@@ -624,7 +624,7 @@ class ConversationInfoController(args: Bundle) :
 
                         if (conversationCopy!!.canModerate(conversationUser)) {
                             binding.addParticipantsAction.visibility = View.VISIBLE
-                            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "clear-history")) {
+                            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "clear-history")) {
                                 binding.clearConversationHistory.visibility = View.VISIBLE
                             } else {
                                 binding.clearConversationHistory.visibility = View.GONE
@@ -701,7 +701,7 @@ class ConversationInfoController(args: Bundle) :
         if (conversation != null) {
             if (
                 conversationUser != null &&
-                CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "notification-levels")
+                CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")
             ) {
                 binding.notificationSettingsView.conversationInfoMessageNotifications.isEnabled = true
                 binding.notificationSettingsView.conversationInfoMessageNotifications.alpha = 1.0f
@@ -730,7 +730,7 @@ class ConversationInfoController(args: Bundle) :
     private fun setProperNotificationValue(conversation: Conversation?) {
         if (conversation!!.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             // hack to see if we get mentioned always or just on mention
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "mention-flag")) {
+            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag")) {
                 binding.notificationSettingsView.conversationInfoMessageNotifications.value = "always"
             } else {
                 binding.notificationSettingsView.conversationInfoMessageNotifications.value = "mention"

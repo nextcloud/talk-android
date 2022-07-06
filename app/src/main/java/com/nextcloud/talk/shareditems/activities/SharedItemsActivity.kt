@@ -36,8 +36,8 @@ import autodagger.AutoInjector
 import com.google.android.material.tabs.TabLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
@@ -62,7 +62,7 @@ class SharedItemsActivity : AppCompatActivity() {
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
-        val userEntity = intent.getParcelableExtra<UserEntity>(KEY_USER_ENTITY)!!
+        val user = intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!
 
         binding = ActivitySharedItemsBinding.inflate(layoutInflater)
         setSupportActionBar(binding.sharedItemsToolbar)
@@ -104,7 +104,7 @@ class SharedItemsActivity : AppCompatActivity() {
                         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
                     }
 
-                    val adapter = SharedItemsAdapter(showGrid, userEntity).apply {
+                    val adapter = SharedItemsAdapter(showGrid, user).apply {
                         items = sharedMediaItems.items
                     }
                     binding.imageRecycler.adapter = adapter
@@ -125,7 +125,7 @@ class SharedItemsActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.initialize(userEntity, roomToken)
+        viewModel.initialize(user, roomToken)
     }
 
     private fun clearEmptyLoading() {

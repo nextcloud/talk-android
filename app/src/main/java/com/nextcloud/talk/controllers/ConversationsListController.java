@@ -74,6 +74,7 @@ import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
@@ -82,8 +83,6 @@ import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker;
 import com.nextcloud.talk.messagesearch.MessageSearchHelper;
-import com.nextcloud.talk.models.database.CapabilitiesUtil;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.domain.SearchMessageEntry;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.status.Status;
@@ -91,6 +90,7 @@ import com.nextcloud.talk.models.json.statuses.StatusesOverall;
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository;
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.AttendeePermissionsUtil;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
@@ -98,7 +98,7 @@ import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.UriUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.rx.SearchViewObservable;
 import com.webianks.library.PopupBubble;
@@ -162,7 +162,7 @@ public class ConversationsListController extends BaseController implements Flexi
 
     private final Bundle bundle;
     @Inject
-    UserUtils userUtils;
+    UserManager userManager;
 
     @Inject
     EventBus eventBus;
@@ -197,7 +197,7 @@ public class ConversationsListController extends BaseController implements Flexi
     @BindView(R.id.newMentionPopupBubble)
     PopupBubble newMentionPopupBubble;
 
-    private UserEntity currentUser;
+    private User currentUser;
     private Disposable roomsQueryDisposable;
     private Disposable openConversationsQueryDisposable;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
@@ -320,15 +320,15 @@ public class ConversationsListController extends BaseController implements Flexi
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this);
         }
-        currentUser = userUtils.getCurrentUser();
+        currentUser = userManager.getCurrentUser().blockingGet();
 
         if (currentUser != null) {
-            if (CapabilitiesUtil.isServerEOL(currentUser)) {
+            if (CapabilitiesUtilNew.isServerEOL(currentUser)) {
                 showServerEOLDialog();
                 return;
             }
 
-            if (CapabilitiesUtil.isUnifiedSearchAvailable(currentUser)) {
+            if (CapabilitiesUtilNew.isUnifiedSearchAvailable(currentUser)) {
                 searchHelper = new MessageSearchHelper(unifiedSearchRepository);
             }
 
@@ -518,7 +518,7 @@ public class ConversationsListController extends BaseController implements Flexi
 
     @SuppressLint("LongLogTag")
     public void fetchData() {
-        if (CapabilitiesUtil.isUserStatusAvailable(userUtils.getCurrentUser())) {
+        if (CapabilitiesUtilNew.isUserStatusAvailable(userManager.getCurrentUser().blockingGet())) {
             fetchUserStatusesAndRooms();
         } else {
             fetchRooms();
@@ -682,7 +682,7 @@ public class ConversationsListController extends BaseController implements Flexi
         searchableConversationItems.clear();
         searchableConversationItems.addAll(conversationItemsWithHeader);
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "listable-rooms")) {
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "listable-rooms")) {
             List<AbstractFlexibleItem> openConversationItems = new ArrayList<>();
 
             openConversationsQueryDisposable = ncApi.getOpenConversations(
@@ -904,7 +904,7 @@ public class ConversationsListController extends BaseController implements Flexi
             clearMessageSearchResults();
             adapter.setFilter(filter);
             adapter.filterItems();
-            if (CapabilitiesUtil.isUnifiedSearchAvailable(currentUser)) {
+            if (CapabilitiesUtilNew.isUnifiedSearchAvailable(currentUser)) {
                 startMessageSearch(filter);
             }
         } else {
@@ -1088,7 +1088,7 @@ public class ConversationsListController extends BaseController implements Flexi
                 conversationsListBottomDialog = new ConversationsListBottomDialog(
                     getActivity(),
                     this,
-                    userUtils.getCurrentUser(),
+                    userManager.getCurrentUser().blockingGet(),
                     conversation);
                 conversationsListBottomDialog.show();
             }
@@ -1156,7 +1156,7 @@ public class ConversationsListController extends BaseController implements Flexi
                 .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, filesToShareArray)
                 .putString(
                     UploadAndShareFilesWorker.NC_TARGETPATH,
-                    CapabilitiesUtil.getAttachmentFolder(currentUser))
+                    CapabilitiesUtilNew.getAttachmentFolder(currentUser))
                 .putString(UploadAndShareFilesWorker.ROOM_TOKEN, selectedConversation.getToken())
                 .build();
             OneTimeWorkRequest uploadWorker = new OneTimeWorkRequest.Builder(UploadAndShareFilesWorker.class)
@@ -1285,7 +1285,9 @@ public class ConversationsListController extends BaseController implements Flexi
                 .setPositiveButton(R.string.nc_delete, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser.getId());
+                        boolean otherUserExists = userManager
+                            .scheduleUserForDeletionWithId(currentUser.getId())
+                            .blockingGet();
 
                         OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
                         WorkManager.getInstance().enqueue(accountRemovalWork);
@@ -1328,7 +1330,9 @@ public class ConversationsListController extends BaseController implements Flexi
             .setPositiveButton(R.string.nc_settings_remove_account, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser.getId());
+                    boolean otherUserExists = userManager
+                        .scheduleUserForDeletionWithId(currentUser.getId())
+                        .blockingGet();
 
                     OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
                     WorkManager.getInstance().enqueue(accountRemovalWork);
@@ -1347,7 +1351,7 @@ public class ConversationsListController extends BaseController implements Flexi
             .setNegativeButton(R.string.nc_cancel, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (userUtils.hasMultipleUsers()) {
+                    if (userManager.getUsers().blockingGet().size() > 0) {
                         getRouter().pushController(RouterTransaction.with(new SwitchAccountController()));
                     } else {
                         getActivity().finishAffinity();

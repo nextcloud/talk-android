@@ -46,8 +46,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -288,7 +288,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         popupMenu.show();
     }
 
-    private void fetchFileInformation(String url, UserEntity activeUser) {
+    private void fetchFileInformation(String url, User activeUser) {
         Single.fromCallable(new Callable<ReadFilesystemOperation>() {
             @Override
             public ReadFilesystemOperation call() {

@@ -297,8 +297,11 @@ public class DisplayUtils {
         return drawable;
     }
 
-    public static Drawable getDrawableForMentionChipSpan(Context context, String id, CharSequence label,
-                                                         UserEntity conversationUser, String type,
+    public static Drawable getDrawableForMentionChipSpan(Context context,
+                                                         String id,
+                                                         CharSequence label,
+                                                         User conversationUser,
+                                                         String type,
                                                          @XmlRes int chipResource,
                                                          @Nullable EditText emojiEditText) {
         ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
@@ -369,7 +372,7 @@ public class DisplayUtils {
 
     public static Spannable searchAndReplaceWithMentionSpan(Context context, Spannable text,
                                                             String id, String label, String type,
-                                                            UserEntity conversationUser,
+                                                            User conversationUser,
                                                             @XmlRes int chipXmlRes) {
 
         Spannable spannableString = new SpannableString(text);

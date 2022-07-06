@@ -175,7 +175,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setOldController(holder.binding.avatarDraweeView.getController())
                 .setAutoPlayAnimations(true)
-                .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarUrl, null))
+                .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarUrl))
                 .build();
             holder.binding.avatarDraweeView.setController(draweeController);
         }

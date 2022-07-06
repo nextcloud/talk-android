@@ -26,8 +26,7 @@ package com.nextcloud.talk.models.json.conversations
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
@@ -35,6 +34,7 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumReadOnlyConversationConverter
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -140,25 +140,25 @@ data class Conversation(
             ParticipantType.GUEST_MODERATOR == participantType ||
             ParticipantType.MODERATOR == participantType
 
-    private fun isLockedOneToOne(conversationUser: UserEntity): Boolean {
+    private fun isLockedOneToOne(conversationUser: User): Boolean {
         return type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "locked-one-to-one-rooms")
+            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "locked-one-to-one-rooms")
     }
 
-    fun canModerate(conversationUser: UserEntity): Boolean {
+    fun canModerate(conversationUser: User): Boolean {
         return isParticipantOwnerOrModerator && !isLockedOneToOne(conversationUser)
     }
 
-    fun shouldShowLobby(conversationUser: UserEntity): Boolean {
+    fun shouldShowLobby(conversationUser: User): Boolean {
         return LobbyState.LOBBY_STATE_MODERATORS_ONLY == lobbyState && !canModerate(conversationUser)
     }
 
-    fun isLobbyViewApplicable(conversationUser: UserEntity): Boolean {
+    fun isLobbyViewApplicable(conversationUser: User): Boolean {
         return !canModerate(conversationUser) &&
             (type == ConversationType.ROOM_GROUP_CALL || type == ConversationType.ROOM_PUBLIC_CALL)
     }
 
-    fun isNameEditable(conversationUser: UserEntity): Boolean {
+    fun isNameEditable(conversationUser: User): Boolean {
         return canModerate(conversationUser) && ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != type
     }
 
@@ -171,7 +171,7 @@ data class Conversation(
         }
     }
 
-    fun canDelete(conversationUser: UserEntity): Boolean {
+    fun canDelete(conversationUser: User): Boolean {
         return if (canDeleteConversation != null) {
             // Available since APIv2
             canDeleteConversation!!

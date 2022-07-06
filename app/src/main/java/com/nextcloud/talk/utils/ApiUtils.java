@@ -32,6 +32,7 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -184,6 +185,16 @@ public class ApiUtils {
     public static int getChatApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
         for (int version : versions) {
             if (version == APIv1 && CapabilitiesUtil.hasSpreedFeatureCapability(user, "chat-v2")) {
+                // Do not question that chat-v2 capability shows the availability of api/v1/ endpoint *see no evil*
+                return version;
+            }
+        }
+        throw new NoSupportedApiException();
+    }
+
+    public static int getChatApiVersion(User user, int[] versions) throws NoSupportedApiException {
+        for (int version : versions) {
+            if (version == APIv1 && CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "chat-v2")) {
                 // Do not question that chat-v2 capability shows the availability of api/v1/ endpoint *see no evil*
                 return version;
             }

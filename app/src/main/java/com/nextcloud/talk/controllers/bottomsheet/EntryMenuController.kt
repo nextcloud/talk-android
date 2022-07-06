@@ -45,10 +45,10 @@ import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerEntryMenuBinding
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.vanniktech.emoji.EmojiPopup
 import okhttp3.internal.immutableListOf
@@ -65,13 +65,11 @@ class EntryMenuController(args: Bundle) :
     ) {
     private val binding: ControllerEntryMenuBinding by viewBinding(ControllerEntryMenuBinding::bind)
 
-    @JvmField
     @Inject
-    var eventBus: EventBus? = null
+    lateinit var eventBus: EventBus
 
-    @JvmField
     @Inject
-    var userUtils: UserUtils? = null
+    lateinit var userManager: UserManager
 
     private val operation: ConversationOperationEnum
     private var conversation: Conversation? = null
@@ -271,7 +269,7 @@ class EntryMenuController(args: Bundle) :
                 ShareUtils.getStringForIntent(
                     activity,
                     binding.textEdit.text.toString(),
-                    userUtils,
+                    userManager,
                     conversation
                 )
             )

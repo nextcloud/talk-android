@@ -61,8 +61,7 @@ class ReactionsViewHolder(
                             baseUrl,
                             displayName,
                             false
-                        ),
-                        null
+                        )
                     )
                 )
                 .build()
@@ -77,8 +76,7 @@ class ReactionsViewHolder(
                             baseUrl,
                             reactionItem.reactionVoter.actorId,
                             false
-                        ),
-                        null
+                        )
                     )
                 )
                 .build()

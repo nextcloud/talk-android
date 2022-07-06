@@ -21,7 +21,6 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 

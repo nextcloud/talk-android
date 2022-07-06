@@ -181,8 +181,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
                 .setImageRequest(DisplayUtils.getImageRequestForUrl(
                     ApiUtils.getUrlForGuestAvatar(userEntity.getBaseUrl(),
                                                   displayName,
-                                                  false),
-                    null))
+                                                  false)))
                 .build();
             holder.binding.avatarDraweeView.setController(draweeController);
 
@@ -194,8 +193,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
                 .setImageRequest(DisplayUtils.getImageRequestForUrl(
                     ApiUtils.getUrlForAvatar(userEntity.getBaseUrl(),
                                              participant.getCalculatedActorId(),
-                                             false),
-                    null))
+                                             false)))
                 .build();
             holder.binding.avatarDraweeView.setController(draweeController);
         }

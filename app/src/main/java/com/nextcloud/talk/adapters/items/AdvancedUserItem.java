@@ -141,8 +141,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
                         ApiUtils.getUrlForAvatar(
                             userEntity.getBaseUrl(),
                             participant.getCalculatedActorId(),
-                            true),
-                        null))
+                            true)))
                 .build();
             holder.binding.userIcon.setController(draweeController);
         }

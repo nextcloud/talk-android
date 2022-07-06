@@ -25,7 +25,7 @@ import android.util.Log;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.dagger.modules.RestModule;
-import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.utils.ApiUtils;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class ReadFilesystemOperation {
     private final int depth;
     private final String basePath;
 
-    public ReadFilesystemOperation(OkHttpClient okHttpClient, UserEntity currentUser, String path, int depth) {
+    public ReadFilesystemOperation(OkHttpClient okHttpClient, User currentUser, String path, int depth) {
         OkHttpClient.Builder okHttpClientBuilder = okHttpClient.newBuilder();
         okHttpClientBuilder.followRedirects(false);
         okHttpClientBuilder.followSslRedirects(false);

@@ -52,16 +52,15 @@ object CapabilitiesUtilNew {
     }
 
     @JvmStatic
-    fun hasSpreedFeatureCapability(user: User, capabilityName: String): Boolean {
-        if (user.capabilities?.spreedCapability?.features != null) {
+    fun hasSpreedFeatureCapability(user: User?, capabilityName: String): Boolean {
+        if (user?.capabilities?.spreedCapability?.features != null) {
             return user.capabilities!!.spreedCapability!!.features!!.contains(capabilityName)
         }
         return false
     }
 
-    fun getMessageMaxLength(user: User): Int {
-        val capabilities = user.capabilities!!
-        if (user.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
+    fun getMessageMaxLength(user: User?): Int {
+        if (user?.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
             val chatConfigHashMap = user.capabilities!!.spreedCapability!!.config!!["chat"]
             if (chatConfigHashMap?.containsKey("max-length") == true) {
                 val chatSize = chatConfigHashMap["max-length"]!!.toInt()
@@ -105,6 +104,7 @@ object CapabilitiesUtilNew {
             user.capabilities?.userStatusCapability?.supportsEmoji == true
     }
 
+    @JvmStatic
     fun getAttachmentFolder(user: User): String? {
         if (user.capabilities?.spreedCapability?.config?.containsKey("attachments") == true) {
             val map = user.capabilities!!.spreedCapability!!.config!!["attachments"]
@@ -115,8 +115,8 @@ object CapabilitiesUtilNew {
         return "/Talk"
     }
 
-    fun getServerName(user: User): String? {
-        if (user.capabilities?.themingCapability != null) {
+    fun getServerName(user: User?): String? {
+        if (user?.capabilities?.themingCapability != null) {
             return user.capabilities!!.themingCapability!!.name
         }
         return ""
@@ -132,8 +132,8 @@ object CapabilitiesUtilNew {
             user.capabilities!!.provisioningCapability!!.accountPropertyScopesVersion!! > 1
     }
 
-    fun isAbleToCall(user: User): Boolean {
-        if (user.capabilities != null) {
+    fun isAbleToCall(user: User?): Boolean {
+        if (user?.capabilities != null) {
             val capabilities = user.capabilities
             return if (
                 capabilities?.spreedCapability?.config?.containsKey("call") == true &&
