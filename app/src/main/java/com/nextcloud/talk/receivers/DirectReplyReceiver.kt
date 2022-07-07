@@ -42,7 +42,6 @@ import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.NotificationUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.database.user.UserUtils
@@ -56,10 +55,12 @@ import javax.inject.Inject
 class DirectReplyReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var userUtils: UserUtils
+    @JvmField
+    var userUtils: UserUtils? = null
 
     @Inject
-    lateinit var ncApi: NcApi
+    @JvmField
+    var ncApi: NcApi? = null
 
     lateinit var context: Context
     lateinit var currentUser: UserEntity
@@ -73,14 +74,12 @@ class DirectReplyReceiver : BroadcastReceiver() {
 
     override fun onReceive(receiveContext: Context, intent: Intent?) {
         context = receiveContext
+        currentUser = userUtils!!.currentUser!!
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
         systemNotificationId = intent!!.getIntExtra(KEY_SYSTEM_NOTIFICATION_ID, 0)
         roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
-
-        val id = intent.getLongExtra(KEY_INTERNAL_USER_ID, userUtils.currentUser!!.getId())
-        currentUser = userUtils.getUserWithId(id)
 
         replyMessage = getMessageText(intent)
         sendDirectReply()
@@ -95,7 +94,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
         val apiVersion = ApiUtils.getChatApiVersion(currentUser, intArrayOf(1))
         val url = ApiUtils.getUrlForChat(apiVersion, currentUser.baseUrl, roomToken)
 
-        ncApi.sendChatMessage(credentials, url, replyMessage, currentUser.displayName, null, false)
+        ncApi!!.sendChatMessage(credentials, url, replyMessage, currentUser.displayName, null, false)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
