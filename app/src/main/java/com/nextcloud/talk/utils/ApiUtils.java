@@ -182,6 +182,15 @@ public class ApiUtils {
         throw new NoSupportedApiException();
     }
 
+    /**
+     * migrate to {@link #getChatApiVersion(User, int[])}.
+     *
+     * @param user     User
+     * @param versions API versions
+     * @return to be used verison
+     * @throws NoSupportedApiException if no supported version available
+     */
+    @Deprecated
     public static int getChatApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
         for (int version : versions) {
             if (version == APIv1 && CapabilitiesUtil.hasSpreedFeatureCapability(user, "chat-v2")) {
