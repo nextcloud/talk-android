@@ -52,6 +52,7 @@ import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.push.NotificationUser;
 import com.nextcloud.talk.receivers.DirectReplyReceiver;
+import com.nextcloud.talk.receivers.MarkAsReadReceiver;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
@@ -401,6 +402,7 @@ public class NotificationWorker extends Worker {
 
         notificationBuilder.setOnlyAlertOnce(true);
         addReplyAction(notificationBuilder, systemNotificationId);
+        addMarkAsReadAction(notificationBuilder, systemNotificationId);
 
         if ("user".equals(userType) || "guest".equals(userType)) {
             String baseUrl = signatureVerification.getUserEntity().getBaseUrl();
@@ -411,6 +413,39 @@ public class NotificationWorker extends Worker {
         }
 
         notificationBuilder.setStyle(getStyle(person.build(), style));
+    }
+
+    private void addMarkAsReadAction(NotificationCompat.Builder notificationBuilder, int systemNotificationId) {
+        String label = context.getResources().getString(R.string.nc_mark_as_read);
+
+        // Build a PendingIntent for the reply action
+        Intent actualIntent = new Intent(context, MarkAsReadReceiver.class);
+
+        // NOTE - systemNotificationId is an internal ID used on the device only.
+        // It is NOT the same as the notification ID used in communication with the server.
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), Objects.requireNonNull(signatureVerification.getUserEntity()).getId());
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
+        if (decryptedPushMessage.getNotificationId() != null) {
+            actualIntent.putExtra(BundleKeys.KEY_MESSAGE_ID, decryptedPushMessage.getNotificationId().intValue());
+        }
+
+        int intentFlag;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            intentFlag = PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT;
+        } else {
+            intentFlag = PendingIntent.FLAG_UPDATE_CURRENT;
+        }
+        PendingIntent pendingIntent =
+            PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, intentFlag);
+
+        NotificationCompat.Action action =
+            new NotificationCompat.Action.Builder(R.drawable.ic_eye, label, pendingIntent)
+                .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
+                .setShowsUserInterface(false)
+                .build();
+
+        notificationBuilder.addAction(action);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
