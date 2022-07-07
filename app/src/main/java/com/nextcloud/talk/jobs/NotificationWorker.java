@@ -426,6 +426,7 @@ public class NotificationWorker extends Worker {
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), Objects.requireNonNull(signatureVerification.getUserEntity()).getId());
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
 
