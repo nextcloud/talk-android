@@ -23,6 +23,7 @@ package com.nextcloud.talk.controllers
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -52,6 +53,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getError
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getFile
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.with
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -76,13 +78,14 @@ import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
 import com.nextcloud.talk.utils.database.user.UserUtils
+import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -91,10 +94,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.LinkedList
-import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
+@Suppress("Detekt.TooManyFunctions")
 class ProfileController : NewBaseController(R.layout.controller_profile) {
     private val binding: ControllerProfileBinding by viewBinding(ControllerProfileBinding::bind)
 
@@ -103,6 +106,9 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     @Inject
     lateinit var userUtils: UserUtils
+
+    @Inject
+    lateinit var permissionUtil: PlatformPermissionUtil
 
     private var currentUser: UserEntity? = null
     private var edit = false
@@ -197,6 +203,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
         binding.avatarUpload.setOnClickListener { sendSelectLocalFileIntent() }
         binding.avatarChoose.setOnClickListener { showBrowserScreen() }
+        binding.avatarCamera.setOnClickListener { checkPermissionAndTakePicture() }
         binding.avatarDelete.setOnClickListener {
             ncApi.deleteAvatar(
                 credentials,
@@ -493,7 +500,19 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         startActivityForResult(avatarIntent, REQUEST_CODE_SELECT_REMOTE_FILES)
     }
 
-    fun handleAvatar(remotePath: String?) {
+    private fun checkPermissionAndTakePicture() {
+        if (permissionUtil.isCameraPermissionGranted()) {
+            takePictureForAvatar()
+        } else {
+            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), REQUEST_PERMISSION_CAMERA)
+        }
+    }
+
+    private fun takePictureForAvatar() {
+        startActivityForResult(TakePhotoActivity.createIntent(context), REQUEST_CODE_TAKE_PICTURE)
+    }
+
+    private fun handleAvatar(remotePath: String?) {
         val uri = currentUser!!.baseUrl + "/index.php/apps/files/api/v1/thumbnail/512/512/" +
             Uri.encode(remotePath, "/")
         val downloadCall = ncApi.downloadResizedImage(
@@ -511,30 +530,54 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         })
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSION_CAMERA) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePictureForAvatar()
+            } else {
+                Toast
+                    .makeText(context, context.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+    }
+
     // only possible with API26
     private fun saveBitmapAndPassToImagePicker(bitmap: Bitmap) {
-        var file: File? = null
+        val file: File = saveBitmapToTempFile(bitmap) ?: return
+        openImageWithPicker(file)
+    }
+
+    private fun saveBitmapToTempFile(bitmap: Bitmap): File? {
         try {
-            FileUtils.removeTempCacheFile(
-                this.context!!,
-                AVATAR_PATH
-            )
-            file = FileUtils.getTempCacheFile(
-                this.context!!,
-                AVATAR_PATH
-            )
+            val file = createTempFileForAvatar()
             try {
-                FileOutputStream(file).use { out -> bitmap.compress(Bitmap.CompressFormat.PNG, FULL_QUALITY, out) }
+                FileOutputStream(file).use { out ->
+                    bitmap.compress(Bitmap.CompressFormat.PNG, FULL_QUALITY, out)
+                }
+                return file
             } catch (e: IOException) {
                 Log.e(TAG, "Error compressing bitmap", e)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error creating temporary avatar image", e)
         }
-        if (file == null) {
-            // TODO exception
-            return
-        }
+        return null
+    }
+
+    private fun createTempFileForAvatar(): File? {
+        FileUtils.removeTempCacheFile(
+            this.context,
+            AVATAR_PATH
+        )
+        return FileUtils.getTempCacheFile(
+            context,
+            AVATAR_PATH
+        )
+    }
+
+    private fun openImageWithPicker(file: File) {
         val intent = with(activity!!)
             .fileOnly()
             .crop()
@@ -546,20 +589,24 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_IMAGE_PICKER) {
-                uploadAvatar(getFile(intent))
+                uploadAvatar(getFile(data))
             } else if (requestCode == REQUEST_CODE_SELECT_REMOTE_FILES) {
-                val pathList = intent?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
+                val pathList = data?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
                 if (pathList?.size!! >= 1) {
                     handleAvatar(pathList[0])
+                }
+            } else if (requestCode == REQUEST_CODE_TAKE_PICTURE) {
+                data?.data?.path?.let {
+                    openImageWithPicker(File(it))
                 }
             } else {
                 Log.w(TAG, "Unknown intent request code")
             }
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
-            Toast.makeText(activity, getError(intent), Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, getError(data), Toast.LENGTH_SHORT).show()
         } else {
             Log.i(TAG, "Task Cancelled")
         }
@@ -570,11 +617,11 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         builder.setType(MultipartBody.FORM)
         builder.addFormDataPart(
             "files[]", file!!.name,
-            RequestBody.create(IMAGE_PREFIX_GENERIC.toMediaTypeOrNull(), file)
+            file.asRequestBody(IMAGE_PREFIX_GENERIC.toMediaTypeOrNull())
         )
         val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
             "files[]", file.name,
-            RequestBody.create(IMAGE_JPG.toMediaTypeOrNull(), file)
+            file.asRequestBody(IMAGE_JPG.toMediaTypeOrNull())
         )
 
         // upload file
@@ -595,7 +642,11 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                 }
 
                 override fun onError(e: Throwable) {
-                    Toast.makeText(applicationContext, "Error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext, context.getString(R.string.default_error_msg),
+                        Toast
+                            .LENGTH_LONG
+                    ).show()
                     Log.e(TAG, "Error uploading avatar", e)
                 }
 
@@ -706,7 +757,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                     )
                 }
                 if (controller.edit &&
-                    controller.editableFields.contains(item.field.toString().toLowerCase(Locale.ROOT))
+                    controller.editableFields.contains(item.field.toString().lowercase())
                 ) {
                     holder.binding.userInfoEditText.isEnabled = true
                     holder.binding.userInfoEditText.isFocusableInTouchMode = true
@@ -823,6 +874,8 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         private const val DEFAULT_RETRIES: Long = 3
         private const val MAX_SIZE: Int = 1024
         private const val REQUEST_CODE_IMAGE_PICKER: Int = 1
+        private const val REQUEST_CODE_TAKE_PICTURE: Int = 2
+        private const val REQUEST_PERMISSION_CAMERA: Int = 1
         private const val FULL_QUALITY: Int = 100
         private const val HIGH_EMPHASIS_ALPHA: Float = 0.87f
         private const val MEDIUM_EMPHASIS_ALPHA: Float = 0.6f
