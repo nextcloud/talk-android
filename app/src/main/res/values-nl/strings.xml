@@ -6,6 +6,7 @@
     <string name="audio_output_speaker">Speaker</string>
     <string name="avatar">Avatar</string>
     <string name="away">Afwezig</string>
+    <string name="call_without_notification">Oproepen zonder melding</string>
     <string name="choose_avatar_from_cloud">Kies een avatar uit de cloud</string>
     <string name="clear_status_message">Statusbericht wissen</string>
     <string name="clear_status_message_after">Statusbericht wissen na</string>
