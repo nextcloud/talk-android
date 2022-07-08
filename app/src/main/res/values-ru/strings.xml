@@ -3,8 +3,10 @@
     <string name="account_icon">Значок учётной записи</string>
     <string name="appbar_search_in">Искать в %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Аудиовыход</string>
     <string name="audio_output_phone">Телефон</string>
     <string name="audio_output_speaker">Динамик</string>
+    <string name="audio_output_wired_headset">Проводная гарнитура</string>
     <string name="avatar">Аватар</string>
     <string name="away">Отошёл</string>
     <string name="call_without_notification">Звонок без уведомления</string>
@@ -16,6 +18,7 @@
     <string name="dnd">Не беспокоить</string>
     <string name="dontClear">Не очищать</string>
     <string name="edit">Редактировать</string>
+    <string name="emoji_backspace">Вернуться</string>
     <string name="emoji_category_recent">Недавние</string>
     <string name="emoji_search">Поиск эмодзи</string>
     <string name="encrypted">Зашифровано</string>
@@ -304,6 +307,8 @@
     <string name="nc_share_text_pass">\nПароль: %1$s</string>
     <string name="nc_share_this_location">Поделиться этим местом</string>
     <string name="nc_shared_items">Общие элементы</string>
+    <string name="nc_shared_items_description">Изображения, файлы, голосовые сообщения ...</string>
+    <string name="nc_shared_items_empty">Нет общих элементов</string>
     <string name="nc_shared_location">Местоположением поделились</string>
     <string name="nc_sort_by">Сортировать по</string>
     <string name="nc_start_time">Время начала</string>
@@ -312,6 +317,7 @@
     <string name="nc_upload_confirm_send_single">Отправить этот файл %1$s?</string>
     <string name="nc_upload_failed">Ошибка передачи на сервер</string>
     <string name="nc_upload_from_cloud">Поделиться с %1$s</string>
+    <string name="nc_upload_from_device">Загрузить с устройства</string>
     <string name="nc_upload_in_progess">Выгружается</string>
     <string name="nc_upload_local_file">Передать на сервер локальный файл</string>
     <string name="nc_upload_picture_from_cam">Сфотографировать</string>
@@ -347,6 +353,7 @@
     <string name="secondsAgo">несколько секунд назад</string>
     <string name="selected_list_item">Выбрано</string>
     <string name="send_to">Отправить в</string>
+    <string name="send_to_forbidden">Вам не разрешено делиться контентом в этом чате</string>
     <string name="send_to_three_dots">Отправить …</string>
     <string name="send_without_notification">Отправить без уведомления</string>
     <string name="set_status">Установить статус</string>
