@@ -356,6 +356,7 @@
     <string name="send_to_forbidden">Nemáte oprávnění sdílet obsah do tohoto chatu</string>
     <string name="send_to_three_dots">Odeslat k…</string>
     <string name="send_without_notification">Odeslat bez upozornění</string>
+    <string name="set_avatar_from_camera">Získat zástupný obrázek z kamery</string>
     <string name="set_status">Nastavit stav</string>
     <string name="set_status_message">Nastavit stavovou zprávu</string>
     <string name="share">Sdílet</string>

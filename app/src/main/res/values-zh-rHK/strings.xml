@@ -356,6 +356,7 @@
     <string name="send_to_forbidden">您不能在此聊天中分享內容</string>
     <string name="send_to_three_dots">傳送到 …</string>
     <string name="send_without_notification">傳送而不通知</string>
+    <string name="set_avatar_from_camera">從相機設置頭像</string>
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>
