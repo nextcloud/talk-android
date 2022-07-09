@@ -356,6 +356,7 @@
     <string name="send_to_forbidden">Nie możesz udostępniać treści na tym czacie</string>
     <string name="send_to_three_dots">Wyślij do…</string>
     <string name="send_without_notification">Wyślij bez powiadomienia</string>
+    <string name="set_avatar_from_camera">Ustaw awatar z aparatu</string>
     <string name="set_status">Ustaw status</string>
     <string name="set_status_message">Ustaw komunikat statusu</string>
     <string name="share">Udostępnij</string>

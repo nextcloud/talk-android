@@ -356,6 +356,7 @@
     <string name="send_to_forbidden">Você não tem permissão para compartilhar conteúdo neste bate-papo</string>
     <string name="send_to_three_dots">Enviar para …</string>
     <string name="send_without_notification">Enviar sem notificação</string>
+    <string name="set_avatar_from_camera">Definir avatar da câmera</string>
     <string name="set_status">Definir status</string>
     <string name="set_status_message">Definir mensagem de status</string>
     <string name="share">Compartilhar </string>

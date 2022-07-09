@@ -356,6 +356,7 @@
     <string name="send_to_forbidden">Ez duzu edukirik partekatzeko baimentik txat honetan</string>
     <string name="send_to_three_dots">Bidali honi …</string>
     <string name="send_without_notification">Bidali jakinarazpenik gabe</string>
+    <string name="set_avatar_from_camera">Ezarri avatarra kameraren bidez</string>
     <string name="set_status">Ezarri egoera</string>
     <string name="set_status_message">Ezarri egoera-mezua</string>
     <string name="share">Partekatu</string>
