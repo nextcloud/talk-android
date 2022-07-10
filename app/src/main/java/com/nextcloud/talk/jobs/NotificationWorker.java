@@ -247,6 +247,8 @@ public class NotificationWorker extends Worker {
                             }
                         }
 
+                        decryptedPushMessage.setObjectId(notification.getObjectId());
+
                         showNotification(intent);
                     }
 
@@ -427,7 +429,9 @@ public class NotificationWorker extends Worker {
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
         if (decryptedPushMessage.getNotificationId() != null) {
-            actualIntent.putExtra(BundleKeys.KEY_MESSAGE_ID, decryptedPushMessage.getNotificationId().intValue());
+            // TODO - improve parsing when server returns unexpected objectId
+            int messageId = Integer.parseInt(decryptedPushMessage.getObjectId().split("/")[1]);
+            actualIntent.putExtra(BundleKeys.KEY_MESSAGE_ID, messageId);
         }
 
         int intentFlag;
