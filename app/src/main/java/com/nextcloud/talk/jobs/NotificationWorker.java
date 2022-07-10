@@ -417,22 +417,16 @@ public class NotificationWorker extends Worker {
         notificationBuilder.setStyle(getStyle(person.build(), style));
     }
 
-    private void addMarkAsReadAction(NotificationCompat.Builder notificationBuilder, int systemNotificationId) {
-        String label = context.getResources().getString(R.string.nc_mark_as_read);
-
-        // Build a PendingIntent for the reply action
-        Intent actualIntent = new Intent(context, MarkAsReadReceiver.class);
+    private PendingIntent buildIntentForAction(Class<?> cls, int systemNotificationId, int messageId) {
+        Intent actualIntent = new Intent(context, cls);
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), Objects.requireNonNull(signatureVerification.getUserEntity()).getId());
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
+                              Objects.requireNonNull(signatureVerification.getUserEntity()).getId());
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
-        if (decryptedPushMessage.getNotificationId() != null) {
-            // TODO - improve parsing when server returns unexpected objectId
-            int messageId = Integer.parseInt(decryptedPushMessage.getObjectId().split("/")[1]);
-            actualIntent.putExtra(BundleKeys.KEY_MESSAGE_ID, messageId);
-        }
+        actualIntent.putExtra(BundleKeys.KEY_MESSAGE_ID, messageId);
 
         int intentFlag;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -440,8 +434,18 @@ public class NotificationWorker extends Worker {
         } else {
             intentFlag = PendingIntent.FLAG_UPDATE_CURRENT;
         }
-        PendingIntent pendingIntent =
-            PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, intentFlag);
+
+        return PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, intentFlag);
+    }
+
+    private void addMarkAsReadAction(NotificationCompat.Builder notificationBuilder, int systemNotificationId) {
+        String label = context.getResources().getString(R.string.nc_mark_as_read);
+
+        // TODO - improve parsing when server returns unexpected objectId
+        int messageId = Integer.parseInt(decryptedPushMessage.getObjectId().split("/")[1]);
+
+        // Build a PendingIntent for the mark as read action
+        PendingIntent pendingIntent = buildIntentForAction(MarkAsReadReceiver.class, systemNotificationId, messageId);
 
         NotificationCompat.Action action =
             new NotificationCompat.Action.Builder(R.drawable.ic_eye, label, pendingIntent)
@@ -461,22 +465,7 @@ public class NotificationWorker extends Worker {
             .build();
 
         // Build a PendingIntent for the reply action
-        Intent actualIntent = new Intent(context, DirectReplyReceiver.class);
-
-        // NOTE - systemNotificationId is an internal ID used on the device only.
-        // It is NOT the same as the notification ID used in communication with the server.
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), Objects.requireNonNull(signatureVerification.getUserEntity()).getId());
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
-
-        int intentFlag;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            intentFlag = PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT;
-        } else {
-            intentFlag = PendingIntent.FLAG_UPDATE_CURRENT;
-        }
-        PendingIntent replyPendingIntent =
-            PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, intentFlag);
+        PendingIntent replyPendingIntent = buildIntentForAction(DirectReplyReceiver.class, systemNotificationId, 0);
 
         NotificationCompat.Action replyAction =
             new NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
