@@ -104,7 +104,7 @@ class MarkAsReadReceiver : BroadcastReceiver() {
 
                 @RequiresApi(Build.VERSION_CODES.N)
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Failed to send reply", e)
+                    Log.e(TAG, "Failed to set chat read marker", e)
                 }
 
                 override fun onComplete() {
