@@ -499,7 +499,7 @@ public class NotificationWorker extends Worker {
         MessagingStyle newStyle = new MessagingStyle(person);
 
         newStyle.setConversationTitle(decryptedPushMessage.getSubject());
-        newStyle.setGroupConversation(!conversationType.equals("one2one"));
+        newStyle.setGroupConversation(!"one2one".equals(conversationType));
 
         if (style != null) {
             style.getMessages().forEach(message -> newStyle.addMessage(
@@ -512,7 +512,7 @@ public class NotificationWorker extends Worker {
         return newStyle;
     }
 
-    private int parseMessageId(@NonNull String objectId) throws NumberFormatException {
+    private int parseMessageId(@NonNull String objectId) {
         String[] objectIdParts = objectId.split("/");
         if (objectIdParts.length < 2) {
             throw new NumberFormatException("Invalid objectId, doesn't contain at least one '/'");
@@ -531,7 +531,7 @@ public class NotificationWorker extends Worker {
             return;
         }
 
-        if (!notification.category.equals(Notification.CATEGORY_CALL) || !muteCall) {
+        if (!Notification.CATEGORY_CALL.equals(notification.category) || !muteCall) {
             Uri soundUri = NotificationUtils.INSTANCE.getMessageRingtoneUri(context, appPreferences);
             if (soundUri != null && !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
                     (DoNotDisturbUtils.INSTANCE.shouldPlaySound() || importantConversation)) {
@@ -611,14 +611,14 @@ public class NotificationWorker extends Worker {
                         ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
                                 JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
-                        boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed");
+                        boolean shouldShowNotification = "spreed".equals(decryptedPushMessage.getApp());
 
                         if (shouldShowNotification) {
                             Intent intent;
                             Bundle bundle = new Bundle();
 
 
-                            boolean startACall = decryptedPushMessage.getType().equals("call");
+                            boolean startACall = "call".equals(decryptedPushMessage.getType());
                             if (startACall) {
                                 intent = new Intent(context, CallActivity.class);
                             } else {
