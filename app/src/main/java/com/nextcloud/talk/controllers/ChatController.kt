@@ -1685,6 +1685,7 @@ class ChatController(args: Bundle) :
             currentConversation?.sessionId != "0"
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onAttach(view: View) {
         super.onAttach(view)
         Log.d(
@@ -1724,7 +1725,13 @@ class ChatController(args: Bundle) :
                     )
                 },
                 onEmojiClickListener = {
-                    binding.messageInputView.inputEditText?.editableText?.append(" ")
+                    try {
+                        binding.messageInputView.inputEditText?.editableText?.append(" ")
+                    } catch (npe: NullPointerException) {
+                        // view binding can be null
+                        // since this is called asynchronously and UI might have been destroyed in the meantime
+                        Log.i(WebViewLoginController.TAG, "UI destroyed - view binding already gone")
+                    }
                 }
             )
         }
