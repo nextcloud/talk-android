@@ -446,26 +446,28 @@ public class NotificationWorker extends Worker {
 
     private void addMarkAsReadAction(NotificationCompat.Builder notificationBuilder, int systemNotificationId) {
         if (decryptedPushMessage.getObjectId() != null) {
+            int messageId = 0;
             try {
-                int messageId = parseMessageId(decryptedPushMessage.getObjectId());
-
-                // Build a PendingIntent for the mark as read action
-                PendingIntent pendingIntent = buildIntentForAction(MarkAsReadReceiver.class,
-                                                                   systemNotificationId,
-                                                                   messageId);
-
-                NotificationCompat.Action action =
-                    new NotificationCompat.Action.Builder(R.drawable.ic_eye,
-                                                          context.getResources().getString(R.string.nc_mark_as_read),
-                                                          pendingIntent)
-                        .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
-                        .setShowsUserInterface(false)
-                        .build();
-
-                notificationBuilder.addAction(action);
+                messageId = parseMessageId(decryptedPushMessage.getObjectId());
             } catch (NumberFormatException nfe) {
                 Log.e(TAG, "Failed to parse messageId from objectId, skip adding mark-as-read action.", nfe);
+                return;
             }
+
+            // Build a PendingIntent for the mark as read action
+            PendingIntent pendingIntent = buildIntentForAction(MarkAsReadReceiver.class,
+                                                               systemNotificationId,
+                                                               messageId);
+
+            NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(R.drawable.ic_eye,
+                                                      context.getResources().getString(R.string.nc_mark_as_read),
+                                                      pendingIntent)
+                    .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
+                    .setShowsUserInterface(false)
+                    .build();
+
+            notificationBuilder.addAction(action);
         }
     }
 
