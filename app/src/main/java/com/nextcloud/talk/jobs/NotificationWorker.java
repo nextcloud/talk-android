@@ -134,8 +134,10 @@ public class NotificationWorker extends Worker {
 
         ArbitraryStorageEntity arbitraryStorageEntity;
 
-        if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(userEntity.getId(),
-                "important_conversation", intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
+        if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(
+            userEntity.getId(),
+            "important_conversation",
+            intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
             importantConversation = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
         }
 
@@ -202,8 +204,9 @@ public class NotificationWorker extends Worker {
 
                         if (notification.getMessageRichParameters() != null &&
                                 notification.getMessageRichParameters().size() > 0) {
-                            decryptedPushMessage.setText(ChatUtils.Companion.getParsedMessage(notification.getMessageRich(),
-                                    notification.getMessageRichParameters()));
+                            decryptedPushMessage.setText(ChatUtils.Companion.getParsedMessage(
+                                notification.getMessageRich(),
+                                notification.getMessageRichParameters()));
                         } else {
                             decryptedPushMessage.setText(notification.getMessage());
                         }
@@ -335,10 +338,13 @@ public class NotificationWorker extends Worker {
         }
 
         Bundle notificationInfo = new Bundle();
-        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), signatureVerification.getUserEntity().getId());
+        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
+                                 signatureVerification.getUserEntity().getId());
         // could be an ID or a TOKEN
-        notificationInfo.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
-        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_NOTIFICATION_ID(), decryptedPushMessage.getNotificationId());
+        notificationInfo.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(),
+                                   decryptedPushMessage.getId());
+        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_NOTIFICATION_ID(),
+                                 decryptedPushMessage.getNotificationId());
         notificationBuilder.setExtras(notificationInfo);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -439,21 +445,28 @@ public class NotificationWorker extends Worker {
     }
 
     private void addMarkAsReadAction(NotificationCompat.Builder notificationBuilder, int systemNotificationId) {
-        String label = context.getResources().getString(R.string.nc_mark_as_read);
+        if (decryptedPushMessage.getObjectId() != null) {
+            try {
+                int messageId = parseMessageId(decryptedPushMessage.getObjectId());
 
-        // TODO - improve parsing when server returns unexpected objectId
-        int messageId = Integer.parseInt(decryptedPushMessage.getObjectId().split("/")[1]);
+                // Build a PendingIntent for the mark as read action
+                PendingIntent pendingIntent = buildIntentForAction(MarkAsReadReceiver.class,
+                                                                   systemNotificationId,
+                                                                   messageId);
 
-        // Build a PendingIntent for the mark as read action
-        PendingIntent pendingIntent = buildIntentForAction(MarkAsReadReceiver.class, systemNotificationId, messageId);
+                NotificationCompat.Action action =
+                    new NotificationCompat.Action.Builder(R.drawable.ic_eye,
+                                                          context.getResources().getString(R.string.nc_mark_as_read),
+                                                          pendingIntent)
+                        .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
+                        .setShowsUserInterface(false)
+                        .build();
 
-        NotificationCompat.Action action =
-            new NotificationCompat.Action.Builder(R.drawable.ic_eye, label, pendingIntent)
-                .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
-                .setShowsUserInterface(false)
-                .build();
-
-        notificationBuilder.addAction(action);
+                notificationBuilder.addAction(action);
+            } catch (NumberFormatException nfe) {
+                Log.e(TAG, "Failed to parse messageId from objectId, skip adding mark-as-read action.", nfe);
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -489,11 +502,23 @@ public class NotificationWorker extends Worker {
         newStyle.setGroupConversation(!conversationType.equals("one2one"));
 
         if (style != null) {
-            style.getMessages().forEach(message -> newStyle.addMessage(new MessagingStyle.Message(message.getText(), message.getTimestamp(), message.getPerson())));
+            style.getMessages().forEach(message -> newStyle.addMessage(
+                new MessagingStyle.Message(message.getText(),
+                                           message.getTimestamp(),
+                                           message.getPerson())));
         }
 
         newStyle.addMessage(decryptedPushMessage.getText(), decryptedPushMessage.getTimestamp(), person);
         return newStyle;
+    }
+
+    private int parseMessageId(@NonNull String objectId) throws NumberFormatException {
+        String[] objectIdParts = objectId.split("/");
+        if (objectIdParts.length < 2) {
+            throw new NumberFormatException("Invalid objectId, doesn't contain at least one '/'");
+        } else {
+            return Integer.parseInt(objectIdParts[1]);
+        }
     }
 
     private void sendNotification(int notificationId, Notification notification) {
@@ -564,12 +589,20 @@ public class NotificationWorker extends Worker {
 
                     decryptedPushMessage.setTimestamp(System.currentTimeMillis());
                     if (decryptedPushMessage.getDelete()) {
-                        NotificationUtils.INSTANCE.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), decryptedPushMessage.getNotificationId());
+                        NotificationUtils.INSTANCE.cancelExistingNotificationWithId(
+                            context,
+                            signatureVerification.getUserEntity(),
+                            decryptedPushMessage.getNotificationId());
                     } else if (decryptedPushMessage.getDeleteAll()) {
-                        NotificationUtils.INSTANCE.cancelAllNotificationsForAccount(context, signatureVerification.getUserEntity());
+                        NotificationUtils.INSTANCE.cancelAllNotificationsForAccount(
+                            context,
+                            signatureVerification.getUserEntity());
                     } else if (decryptedPushMessage.getDeleteMultiple()) {
                         for (long notificationId : decryptedPushMessage.getNotificationIds()) {
-                            NotificationUtils.INSTANCE.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), notificationId);
+                            NotificationUtils.INSTANCE.cancelExistingNotificationWithId(
+                                context,
+                                signatureVerification.getUserEntity(),
+                                notificationId);
                         }
                     } else {
                         credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUsername(),
@@ -596,7 +629,8 @@ public class NotificationWorker extends Worker {
 
                             bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
 
-                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), signatureVerification.getUserEntity());
+                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(),
+                                                 signatureVerification.getUserEntity());
 
                             bundle.putBoolean(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL(),
                                     startACall);
