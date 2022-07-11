@@ -83,10 +83,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.parceler.Parcels
 import java.io.IOException
-import java.util.ArrayList
 import java.util.Collections
-import java.util.HashMap
-import java.util.HashSet
 import java.util.Locale
 import javax.inject.Inject
 
@@ -154,7 +151,7 @@ class ContactsController(args: Bundle) :
         super.onAttach(view)
         eventBus.register(this)
         if (isNewConversationView) {
-            toggleNewCallHeaderVisibility(!isPublicCall)
+            toggleConversationPrivacyLayout(!isPublicCall)
         }
         if (isAddingParticipantsView) {
             binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.GONE
@@ -260,6 +257,7 @@ class ContactsController(args: Bundle) :
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
+
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser)
@@ -280,6 +278,7 @@ class ContactsController(args: Bundle) :
                             override fun onSubscribe(d: Disposable) {
                                 // unused atm
                             }
+
                             override fun onNext(roomOverall: RoomOverall) {
                                 bundle.putParcelable(
                                     BundleKeys.KEY_ACTIVE_CONVERSATION,
@@ -823,6 +822,7 @@ class ContactsController(args: Bundle) :
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
+
                 override fun onNext(roomOverall: RoomOverall) {
                     if (activity != null) {
                         val bundle = Bundle()
@@ -846,6 +846,7 @@ class ContactsController(args: Bundle) :
                 override fun onError(e: Throwable) {
                     // unused atm
                 }
+
                 override fun onComplete() {
                     // unused atm
                 }
@@ -895,15 +896,9 @@ class ContactsController(args: Bundle) :
     }
 
     private fun toggleCallHeader() {
-        toggleNewCallHeaderVisibility(isPublicCall)
+        toggleConversationPrivacyLayout(isPublicCall)
         isPublicCall = !isPublicCall
-
-        if (isPublicCall) {
-            binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.GONE
-            updateGroupParticipantSelection()
-        } else {
-            binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.VISIBLE
-        }
+        toggleConversationViaLinkVisibility(isPublicCall)
 
         enableContactForNonPublicCall()
         checkAndHandleDoneMenuItem()
@@ -939,7 +934,7 @@ class ContactsController(args: Bundle) :
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun toggleNewCallHeaderVisibility(showInitialLayout: Boolean) {
+    private fun toggleConversationPrivacyLayout(showInitialLayout: Boolean) {
         try {
             if (showInitialLayout) {
                 binding.conversationPrivacyToggle.initialRelativeLayout.visibility = View.VISIBLE
@@ -947,6 +942,22 @@ class ContactsController(args: Bundle) :
             } else {
                 binding.conversationPrivacyToggle.initialRelativeLayout.visibility = View.GONE
                 binding.conversationPrivacyToggle.secondaryRelativeLayout.visibility = View.VISIBLE
+            }
+        } catch (npe: NullPointerException) {
+            // view binding can be null
+            // since this is called asynchronously and UI might have been destroyed in the meantime
+            Log.i(TAG, "UI destroyed - view binding already gone")
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun toggleConversationViaLinkVisibility(isPublicCall: Boolean) {
+        try {
+            if (isPublicCall) {
+                binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.GONE
+                updateGroupParticipantSelection()
+            } else {
+                binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.VISIBLE
             }
         } catch (npe: NullPointerException) {
             // view binding can be null
