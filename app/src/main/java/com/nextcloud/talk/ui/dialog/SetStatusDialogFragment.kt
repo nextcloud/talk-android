@@ -90,7 +90,6 @@ class SetStatusDialogFragment :
     DialogFragment(), PredefinedStatusClickListener {
 
     private var selectedPredefinedStatus: PredefinedStatus? = null
-    private val logTag = SetStatusDialogFragment::class.java.simpleName
 
     private lateinit var binding: DialogSetStatusBinding
 
@@ -139,14 +138,14 @@ class SetStatusDialogFragment :
                             currentStatus?.messageId?.isNotEmpty() == true
                         ) {
                             val messageId = currentStatus!!.messageId
-                            selectedPredefinedStatus = predefinedStatusesList.first { ps -> messageId == ps.id }
+                            selectedPredefinedStatus = predefinedStatusesList.firstOrNull { ps -> messageId == ps.id }
                         }
 
                         adapter.notifyDataSetChanged()
                     }
 
                     override fun onError(e: Throwable) {
-                        // unused atm
+                        Log.e(TAG, "Error while fetching predefined statuses", e)
                     }
 
                     override fun onComplete() {
@@ -352,11 +351,13 @@ class SetStatusDialogFragment :
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
+
                 override fun onNext(statusOverall: GenericOverall) {
                     // unused atm
                 }
+
                 override fun onError(e: Throwable) {
-                    Log.e(logTag, "Failed to clear status", e)
+                    Log.e(TAG, "Failed to clear status", e)
                 }
 
                 override fun onComplete() {
@@ -377,12 +378,13 @@ class SetStatusDialogFragment :
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
+
                 override fun onNext(statusOverall: GenericOverall) {
-                    Log.d(logTag, "statusType successfully set")
+                    Log.d(TAG, "statusType successfully set")
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(logTag, "Failed to set statusType", e)
+                    Log.e(TAG, "Failed to set statusType", e)
                     clearTopStatus()
                 }
 
@@ -415,7 +417,7 @@ class SetStatusDialogFragment :
                 binding.invisibleStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
                 binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
             }
-            else -> Log.d(logTag, "unknown status")
+            else -> Log.d(TAG, "unknown status")
         }
     }
 
@@ -461,12 +463,12 @@ class SetStatusDialogFragment :
                     }
 
                     override fun onNext(t: GenericOverall) {
-                        Log.d(logTag, "CustomStatusMessage successfully set")
+                        Log.d(TAG, "CustomStatusMessage successfully set")
                         dismiss()
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(logTag, "failed to set CustomStatusMessage", e)
+                        Log.e(TAG, "failed to set CustomStatusMessage", e)
                     }
 
                     override fun onComplete() {
@@ -486,12 +488,12 @@ class SetStatusDialogFragment :
                     override fun onSubscribe(d: Disposable) = Unit
 
                     override fun onNext(t: GenericOverall) {
-                        Log.d(logTag, "PredefinedStatusMessage successfully set")
+                        Log.d(TAG, "PredefinedStatusMessage successfully set")
                         dismiss()
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(logTag, "failed to set PredefinedStatusMessage", e)
+                        Log.e(TAG, "failed to set PredefinedStatusMessage", e)
                     }
 
                     override fun onComplete() = Unit
@@ -545,6 +547,8 @@ class SetStatusDialogFragment :
      * Fragment creator
      */
     companion object {
+        private val TAG = SetStatusDialogFragment::class.simpleName
+
         @JvmStatic
         fun newInstance(user: User, status: Status): SetStatusDialogFragment {
             val args = Bundle()
