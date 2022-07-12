@@ -52,6 +52,7 @@ import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.push.NotificationUser;
 import com.nextcloud.talk.receivers.DirectReplyReceiver;
+import com.nextcloud.talk.receivers.MarkAsReadReceiver;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
@@ -133,8 +134,10 @@ public class NotificationWorker extends Worker {
 
         ArbitraryStorageEntity arbitraryStorageEntity;
 
-        if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(userEntity.getId(),
-                "important_conversation", intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
+        if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(
+            userEntity.getId(),
+            "important_conversation",
+            intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
             importantConversation = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
         }
 
@@ -201,8 +204,9 @@ public class NotificationWorker extends Worker {
 
                         if (notification.getMessageRichParameters() != null &&
                                 notification.getMessageRichParameters().size() > 0) {
-                            decryptedPushMessage.setText(ChatUtils.Companion.getParsedMessage(notification.getMessageRich(),
-                                    notification.getMessageRichParameters()));
+                            decryptedPushMessage.setText(ChatUtils.Companion.getParsedMessage(
+                                notification.getMessageRich(),
+                                notification.getMessageRichParameters()));
                         } else {
                             decryptedPushMessage.setText(notification.getMessage());
                         }
@@ -245,6 +249,8 @@ public class NotificationWorker extends Worker {
                                 decryptedPushMessage.setNotificationUser(notificationUser);
                             }
                         }
+
+                        decryptedPushMessage.setObjectId(notification.getObjectId());
 
                         showNotification(intent);
                     }
@@ -332,10 +338,13 @@ public class NotificationWorker extends Worker {
         }
 
         Bundle notificationInfo = new Bundle();
-        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), signatureVerification.getUserEntity().getId());
+        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
+                                 signatureVerification.getUserEntity().getId());
         // could be an ID or a TOKEN
-        notificationInfo.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
-        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_NOTIFICATION_ID(), decryptedPushMessage.getNotificationId());
+        notificationInfo.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(),
+                                   decryptedPushMessage.getId());
+        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_NOTIFICATION_ID(),
+                                 decryptedPushMessage.getNotificationId());
         notificationBuilder.setExtras(notificationInfo);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -401,6 +410,7 @@ public class NotificationWorker extends Worker {
 
         notificationBuilder.setOnlyAlertOnce(true);
         addReplyAction(notificationBuilder, systemNotificationId);
+        addMarkAsReadAction(notificationBuilder, systemNotificationId);
 
         if ("user".equals(userType) || "guest".equals(userType)) {
             String baseUrl = signatureVerification.getUserEntity().getBaseUrl();
@@ -413,6 +423,54 @@ public class NotificationWorker extends Worker {
         notificationBuilder.setStyle(getStyle(person.build(), style));
     }
 
+    private PendingIntent buildIntentForAction(Class<?> cls, int systemNotificationId, int messageId) {
+        Intent actualIntent = new Intent(context, cls);
+
+        // NOTE - systemNotificationId is an internal ID used on the device only.
+        // It is NOT the same as the notification ID used in communication with the server.
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
+                              Objects.requireNonNull(signatureVerification.getUserEntity()).getId());
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
+        actualIntent.putExtra(BundleKeys.KEY_MESSAGE_ID, messageId);
+
+        int intentFlag;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            intentFlag = PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT;
+        } else {
+            intentFlag = PendingIntent.FLAG_UPDATE_CURRENT;
+        }
+
+        return PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, intentFlag);
+    }
+
+    private void addMarkAsReadAction(NotificationCompat.Builder notificationBuilder, int systemNotificationId) {
+        if (decryptedPushMessage.getObjectId() != null) {
+            int messageId = 0;
+            try {
+                messageId = parseMessageId(decryptedPushMessage.getObjectId());
+            } catch (NumberFormatException nfe) {
+                Log.e(TAG, "Failed to parse messageId from objectId, skip adding mark-as-read action.", nfe);
+                return;
+            }
+
+            // Build a PendingIntent for the mark as read action
+            PendingIntent pendingIntent = buildIntentForAction(MarkAsReadReceiver.class,
+                                                               systemNotificationId,
+                                                               messageId);
+
+            NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(R.drawable.ic_eye,
+                                                      context.getResources().getString(R.string.nc_mark_as_read),
+                                                      pendingIntent)
+                    .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
+                    .setShowsUserInterface(false)
+                    .build();
+
+            notificationBuilder.addAction(action);
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void addReplyAction(NotificationCompat.Builder notificationBuilder, int systemNotificationId) {
         String replyLabel = context.getResources().getString(R.string.nc_reply);
@@ -422,22 +480,7 @@ public class NotificationWorker extends Worker {
             .build();
 
         // Build a PendingIntent for the reply action
-        Intent actualIntent = new Intent(context, DirectReplyReceiver.class);
-
-        // NOTE - systemNotificationId is an internal ID used on the device only.
-        // It is NOT the same as the notification ID used in communication with the server.
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), Objects.requireNonNull(signatureVerification.getUserEntity()).getId());
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
-
-        int intentFlag;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            intentFlag = PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT;
-        } else {
-            intentFlag = PendingIntent.FLAG_UPDATE_CURRENT;
-        }
-        PendingIntent replyPendingIntent =
-            PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, intentFlag);
+        PendingIntent replyPendingIntent = buildIntentForAction(DirectReplyReceiver.class, systemNotificationId, 0);
 
         NotificationCompat.Action replyAction =
             new NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
@@ -458,14 +501,26 @@ public class NotificationWorker extends Worker {
         MessagingStyle newStyle = new MessagingStyle(person);
 
         newStyle.setConversationTitle(decryptedPushMessage.getSubject());
-        newStyle.setGroupConversation(!conversationType.equals("one2one"));
+        newStyle.setGroupConversation(!"one2one".equals(conversationType));
 
         if (style != null) {
-            style.getMessages().forEach(message -> newStyle.addMessage(new MessagingStyle.Message(message.getText(), message.getTimestamp(), message.getPerson())));
+            style.getMessages().forEach(message -> newStyle.addMessage(
+                new MessagingStyle.Message(message.getText(),
+                                           message.getTimestamp(),
+                                           message.getPerson())));
         }
 
         newStyle.addMessage(decryptedPushMessage.getText(), decryptedPushMessage.getTimestamp(), person);
         return newStyle;
+    }
+
+    private int parseMessageId(@NonNull String objectId) {
+        String[] objectIdParts = objectId.split("/");
+        if (objectIdParts.length < 2) {
+            throw new NumberFormatException("Invalid objectId, doesn't contain at least one '/'");
+        } else {
+            return Integer.parseInt(objectIdParts[1]);
+        }
     }
 
     private void sendNotification(int notificationId, Notification notification) {
@@ -478,7 +533,7 @@ public class NotificationWorker extends Worker {
             return;
         }
 
-        if (!notification.category.equals(Notification.CATEGORY_CALL) || !muteCall) {
+        if (!Notification.CATEGORY_CALL.equals(notification.category) || !muteCall) {
             Uri soundUri = NotificationUtils.INSTANCE.getMessageRingtoneUri(context, appPreferences);
             if (soundUri != null && !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
                     (DoNotDisturbUtils.INSTANCE.shouldPlaySound() || importantConversation)) {
@@ -536,12 +591,20 @@ public class NotificationWorker extends Worker {
 
                     decryptedPushMessage.setTimestamp(System.currentTimeMillis());
                     if (decryptedPushMessage.getDelete()) {
-                        NotificationUtils.INSTANCE.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), decryptedPushMessage.getNotificationId());
+                        NotificationUtils.INSTANCE.cancelExistingNotificationWithId(
+                            context,
+                            signatureVerification.getUserEntity(),
+                            decryptedPushMessage.getNotificationId());
                     } else if (decryptedPushMessage.getDeleteAll()) {
-                        NotificationUtils.INSTANCE.cancelAllNotificationsForAccount(context, signatureVerification.getUserEntity());
+                        NotificationUtils.INSTANCE.cancelAllNotificationsForAccount(
+                            context,
+                            signatureVerification.getUserEntity());
                     } else if (decryptedPushMessage.getDeleteMultiple()) {
                         for (long notificationId : decryptedPushMessage.getNotificationIds()) {
-                            NotificationUtils.INSTANCE.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), notificationId);
+                            NotificationUtils.INSTANCE.cancelExistingNotificationWithId(
+                                context,
+                                signatureVerification.getUserEntity(),
+                                notificationId);
                         }
                     } else {
                         credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUsername(),
@@ -550,14 +613,14 @@ public class NotificationWorker extends Worker {
                         ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
                                 JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
-                        boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed");
+                        boolean shouldShowNotification = "spreed".equals(decryptedPushMessage.getApp());
 
                         if (shouldShowNotification) {
                             Intent intent;
                             Bundle bundle = new Bundle();
 
 
-                            boolean startACall = decryptedPushMessage.getType().equals("call");
+                            boolean startACall = "call".equals(decryptedPushMessage.getType());
                             if (startACall) {
                                 intent = new Intent(context, CallActivity.class);
                             } else {
@@ -568,7 +631,8 @@ public class NotificationWorker extends Worker {
 
                             bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
 
-                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), signatureVerification.getUserEntity());
+                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(),
+                                                 signatureVerification.getUserEntity());
 
                             bundle.putBoolean(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL(),
                                     startACall);

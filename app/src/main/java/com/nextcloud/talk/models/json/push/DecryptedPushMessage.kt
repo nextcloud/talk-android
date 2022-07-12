@@ -62,10 +62,13 @@ data class DecryptedPushMessage(
     var text: String?,
 
     @JsonIgnore
-    var timestamp: Long
+    var timestamp: Long,
+
+    @JsonIgnore
+    var objectId: String?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, "", null, 0, null, false, false, false, null, null, 0)
+    constructor() : this(null, null, "", null, 0, null, false, false, false, null, null, 0, null)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -88,6 +91,7 @@ data class DecryptedPushMessage(
         if (notificationUser != other.notificationUser) return false
         if (text != other.text) return false
         if (timestamp != other.timestamp) return false
+        if (objectId != other.objectId) return false
 
         return true
     }
@@ -105,6 +109,7 @@ data class DecryptedPushMessage(
         result = 31 * result + (notificationUser?.hashCode() ?: 0)
         result = 31 * result + (text?.hashCode() ?: 0)
         result = 31 * result + (timestamp?.hashCode() ?: 0)
+        result = 31 * result + (objectId?.hashCode() ?: 0)
         return result
     }
 }
