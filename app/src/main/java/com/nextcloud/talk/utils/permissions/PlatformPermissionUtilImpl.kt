@@ -25,8 +25,11 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import androidx.core.content.PermissionChecker
+import com.nextcloud.talk.BuildConfig
 
 class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermissionUtil {
+    override val privateBroadcastPermission: String =
+        "${BuildConfig.APPLICATION_ID}.${BuildConfig.PERMISSION_LOCAL_BROADCAST}"
 
     override fun isCameraPermissionGranted(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

@@ -53,7 +53,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.ParticipantDisplayItem;
 import com.nextcloud.talk.adapters.ParticipantsAdapter;
@@ -92,6 +91,7 @@ import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
@@ -185,6 +185,8 @@ public class CallActivity extends CallBaseActivity {
     AppPreferences appPreferences;
     @Inject
     Cache cache;
+    @Inject
+    PlatformPermissionUtil permissionUtil;
 
     public static final String TAG = "CallActivity";
 
@@ -2588,7 +2590,7 @@ public class CallActivity extends CallBaseActivity {
                 };
             registerReceiver(mReceiver,
                              new IntentFilter(MICROPHONE_PIP_INTENT_NAME),
-                             BuildConfig.PERMISSION_LOCAL_BROADCAST,
+                             permissionUtil.getPrivateBroadcastPermission(),
                              null);
 
             updateUiForPipMode();

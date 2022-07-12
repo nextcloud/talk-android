@@ -91,7 +91,7 @@ android {
         testInstrumentationRunnerArgument "TEST_SERVER_USERNAME", "${NC_TEST_SERVER_USERNAME}"
         testInstrumentationRunnerArgument "TEST_SERVER_PASSWORD", "${NC_TEST_SERVER_PASSWORD}"
 
-        def localBroadcastPermission = "com.nextcloud.talk.permission.PRIVATE_BROADCAST"
+        def localBroadcastPermission = "PRIVATE_BROADCAST"
         manifestPlaceholders.broadcastPermission = localBroadcastPermission
         buildConfigField "String", "PERMISSION_LOCAL_BROADCAST", "\"${localBroadcastPermission}\""
     }
