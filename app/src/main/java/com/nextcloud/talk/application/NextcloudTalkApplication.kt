@@ -57,6 +57,7 @@ import com.nextcloud.talk.dagger.modules.ContextModule
 import com.nextcloud.talk.dagger.modules.DatabaseModule
 import com.nextcloud.talk.dagger.modules.RepositoryModule
 import com.nextcloud.talk.dagger.modules.RestModule
+import com.nextcloud.talk.dagger.modules.UtilsModule
 import com.nextcloud.talk.dagger.modules.ViewModelModule
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
@@ -99,7 +100,8 @@ import javax.inject.Singleton
         UserModule::class,
         ArbitraryStorageModule::class,
         ViewModelModule::class,
-        RepositoryModule::class
+        RepositoryModule::class,
+        UtilsModule::class
     ]
 )
 @Singleton
