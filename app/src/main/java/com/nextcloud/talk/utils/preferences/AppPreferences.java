@@ -126,6 +126,17 @@ public interface AppPreferences {
     @RemoveMethod
     void removePushToken();
 
+    @KeyByString("push_server_url")
+    @DefaultValue(R.string.nc_push_server_url)
+    String getPushServerUrl();
+
+    @KeyByString("push_server_url")
+    void setPushServerUrl(String pushServerUrl);
+
+    @KeyByString("push_server_url")
+    @RemoveMethod
+    void removePushServerUrl();
+
     @KeyByString("tempClientCertAlias")
     String getTemporaryClientCertAlias();
 
