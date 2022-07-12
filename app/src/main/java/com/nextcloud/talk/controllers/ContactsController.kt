@@ -384,7 +384,6 @@ class ContactsController(args: Bundle) :
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun fetchData() {
         dispose(null)
         alreadyFetching = true
@@ -440,33 +439,21 @@ class ContactsController(args: Bundle) :
                         adapter?.filterItems()
                     }
 
-                    try {
+                    withNullableControllerViewBinding {
                         binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
-                    } catch (npe: NullPointerException) {
-                        // view binding can be null
-                        // since this is called asynchronously and UI might have been destroyed in the meantime
-                        Log.i(TAG, "UI destroyed - view binding already gone")
                     }
                 }
 
                 override fun onError(e: Throwable) {
-                    try {
+                    withNullableControllerViewBinding {
                         binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
-                    } catch (npe: NullPointerException) {
-                        // view binding can be null
-                        // since this is called asynchronously and UI might have been destroyed in the meantime
-                        Log.i(TAG, "UI destroyed - view binding already gone")
                     }
                     dispose(contactsQueryDisposable)
                 }
 
                 override fun onComplete() {
-                    try {
+                    withNullableControllerViewBinding {
                         binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
-                    } catch (npe: NullPointerException) {
-                        // view binding can be null
-                        // since this is called asynchronously and UI might have been destroyed in the meantime
-                        Log.i(TAG, "UI destroyed - view binding already gone")
                     }
                     dispose(contactsQueryDisposable)
                     alreadyFetching = false
@@ -692,7 +679,6 @@ class ContactsController(args: Bundle) :
         dispose(null)
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onQueryTextChange(newText: String): Boolean {
         if (newText != "" && adapter?.hasNewFilter(newText) == true) {
             adapter?.setFilter(newText)
@@ -702,12 +688,8 @@ class ContactsController(args: Bundle) :
             adapter?.updateDataSet(contactItems as List<Nothing>?)
         }
 
-        try {
+        withNullableControllerViewBinding {
             binding.controllerGenericRv.swipeRefreshLayout.isEnabled = !adapter!!.hasFilter()
-        } catch (npe: NullPointerException) {
-            // view binding can be null
-            // since this is called asynchronously and UI might have been destroyed in the meantime
-            Log.i(TAG, "UI destroyed - view binding already gone")
         }
 
         return true
@@ -933,9 +915,8 @@ class ContactsController(args: Bundle) :
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun toggleConversationPrivacyLayout(showInitialLayout: Boolean) {
-        try {
+        withNullableControllerViewBinding {
             if (showInitialLayout) {
                 binding.conversationPrivacyToggle.initialRelativeLayout.visibility = View.VISIBLE
                 binding.conversationPrivacyToggle.secondaryRelativeLayout.visibility = View.GONE
@@ -943,26 +924,17 @@ class ContactsController(args: Bundle) :
                 binding.conversationPrivacyToggle.initialRelativeLayout.visibility = View.GONE
                 binding.conversationPrivacyToggle.secondaryRelativeLayout.visibility = View.VISIBLE
             }
-        } catch (npe: NullPointerException) {
-            // view binding can be null
-            // since this is called asynchronously and UI might have been destroyed in the meantime
-            Log.i(TAG, "UI destroyed - view binding already gone")
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun toggleConversationViaLinkVisibility(isPublicCall: Boolean) {
-        try {
+        withNullableControllerViewBinding {
             if (isPublicCall) {
                 binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.GONE
                 updateGroupParticipantSelection()
             } else {
                 binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.VISIBLE
             }
-        } catch (npe: NullPointerException) {
-            // view binding can be null
-            // since this is called asynchronously and UI might have been destroyed in the meantime
-            Log.i(TAG, "UI destroyed - view binding already gone")
         }
     }
 
