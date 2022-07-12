@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.services.firebase
+package com.nextcloud.talk.services.unifiedpush
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -33,13 +33,14 @@ import android.util.Base64
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.emoji.text.EmojiCompat
+import androidx.work.Configuration
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
-import com.google.firebase.messaging.FirebaseMessagingService
-import com.google.firebase.messaging.RemoteMessage
+import com.nextcloud.talk.utils.unifiedpush.UnifiedPushMessagingService
+import com.nextcloud.talk.utils.unifiedpush.RemoteMessage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallNotificationActivity
 import com.nextcloud.talk.api.NcApi
@@ -83,12 +84,11 @@ import javax.inject.Inject
 
 @SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication::class)
-class ChatAndCallMessagingService : FirebaseMessagingService() {
+class ChatAndCallMessagingService : UnifiedPushMessagingService() {
 
     @Inject
     lateinit var appPreferences: AppPreferences
 
-    private var isServiceInForeground: Boolean = false
     private var decryptedPushMessage: DecryptedPushMessage? = null
     private var signatureVerification: SignatureVerification? = null
     private var handler: Handler = Handler()
@@ -101,6 +101,10 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
 
     @Inject
     lateinit var eventBus: EventBus
+
+    init {
+        Configuration.Builder().setJobSchedulerJobIdRange(0, 1000)
+    }
 
     override fun onCreate() {
         super.onCreate()

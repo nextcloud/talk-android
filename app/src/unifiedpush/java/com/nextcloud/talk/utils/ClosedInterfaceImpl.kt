@@ -4,9 +4,11 @@
  * @author Mario Danic
  * @author Andy Scherzinger
  * @author Marcel Hibbe
+ * @author Jindrich Kolman
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2022 Jindrich Kolman <kolman.jindrich@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,19 +32,15 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.security.ProviderInstaller
+import com.nextcloud.talk.utils.unifiedpush.ProviderInstaller
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.interfaces.ClosedInterface
-import com.nextcloud.talk.jobs.GetFirebasePushTokenWorker
-import com.nextcloud.talk.jobs.PushRegistrationWorker
-import java.util.concurrent.TimeUnit
+import android.util.Log
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallListener {
 
-    override val isGooglePlayServicesAvailable: Boolean = isGPlayServicesAvailable()
+    override val isGooglePlayServicesAvailable: Boolean = isUnifiedPushAvailable()
 
     override fun providerInstallerInstallIfNeededAsync() {
         NextcloudTalkApplication.sharedApplication?.let {
@@ -61,79 +59,21 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
         // unused atm
     }
 
-    private fun isGPlayServicesAvailable(): Boolean {
-        val api = GoogleApiAvailability.getInstance()
-        val code =
+    private fun isUnifiedPushAvailable(): Boolean {
+        val unifiedPushAvailable =
             NextcloudTalkApplication.sharedApplication?.let {
-                api.isGooglePlayServicesAvailable(
+                ProviderInstaller.isUnifiedPushAvailable(
                     it.applicationContext
                 )
             }
-        return code == ConnectionResult.SUCCESS
+        return unifiedPushAvailable == true
     }
 
     override fun setUpPushTokenRegistration() {
-        registerLocalToken()
-        setUpPeriodicLocalTokenRegistration()
-        setUpPeriodicTokenRefreshFromFCM()
-    }
-
-    private fun registerLocalToken() {
-        val data: Data = Data.Builder().putString(
-            PushRegistrationWorker.ORIGIN,
-            "ClosedInterfaceImpl#registerLocalToken"
-        )
-            .build()
-        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
-            .setInputData(data)
-            .build()
-        WorkManager.getInstance().enqueue(pushRegistrationWork)
-    }
-
-    private fun setUpPeriodicLocalTokenRegistration() {
-        val data: Data = Data.Builder().putString(
-            PushRegistrationWorker.ORIGIN,
-            "ClosedInterfaceImpl#setUpPeriodicLocalTokenRegistration"
-        )
-            .build()
-
-        val periodicTokenRegistration = PeriodicWorkRequest.Builder(
-            PushRegistrationWorker::class.java,
-            DAILY,
-            TimeUnit.HOURS,
-            FLEX_INTERVAL,
-            TimeUnit.HOURS
-        )
-            .setInputData(data)
-            .build()
-
-        WorkManager.getInstance()
-            .enqueueUniquePeriodicWork(
-                "periodicTokenRegistration", ExistingPeriodicWorkPolicy.REPLACE,
-                periodicTokenRegistration
-            )
-    }
-
-    private fun setUpPeriodicTokenRefreshFromFCM() {
-        val periodicTokenRefreshFromFCM = PeriodicWorkRequest.Builder(
-            GetFirebasePushTokenWorker::class.java,
-            MONTHLY,
-            TimeUnit.DAYS,
-            FLEX_INTERVAL,
-            TimeUnit.DAYS,
-        )
-            .build()
-
-        WorkManager.getInstance()
-            .enqueueUniquePeriodicWork(
-                "periodicTokenRefreshFromFCM", ExistingPeriodicWorkPolicy.REPLACE,
-                periodicTokenRefreshFromFCM
-            )
+        android.util.Log.d(TAG, "setUpPushTokenRegistration")
     }
 
     companion object {
-        const val DAILY: Long = 24
-        const val MONTHLY: Long = 30
-        const val FLEX_INTERVAL: Long = 10
+        const val TAG = "ClosedInterfaceImpl"
     }
 }

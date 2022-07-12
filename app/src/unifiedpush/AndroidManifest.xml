@@ -36,17 +36,21 @@
         tools:replace="label, icon, theme, name, allowBackup"
         tools:ignore="UnusedAttribute, ExportedService">
 
-        <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
-        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
-
         <service
-            android:name=".services.firebase.ChatAndCallMessagingService"
+            android:name=".services.unifiedpush.ChatAndCallMessagingService"
             android:exported="false"
-            android:foregroundServiceType="phoneCall">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
+            android:foregroundServiceType="phoneCall"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
+      <receiver
+            android:name=".utils.unifiedpush.UnifiedPushMessagingReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.unifiedpush.android.connector.MESSAGE"/>
+                <action android:name="org.unifiedpush.android.connector.UNREGISTERED"/>
+                <action android:name="org.unifiedpush.android.connector.NEW_ENDPOINT"/>
+                <action android:name="org.unifiedpush.android.connector.REGISTRATION_REFUSED"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

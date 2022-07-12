@@ -62,6 +62,10 @@ android {
                 applicationId 'com.nextcloud.talk2'
                 dimension "default"
             }
+            unifiedpush {
+                applicationId 'com.nextcloud.talk2'
+                dimension "default"
+            }
             qa {
                 applicationId "com.nextcloud.talk2.qa"
                 dimension "default"
@@ -335,6 +339,8 @@ dependencies {
 
     gplayImplementation 'com.google.android.gms:play-services-base:18.0.1'
     gplayImplementation "com.google.firebase:firebase-messaging:23.0.5"
+
+    unifiedpushImplementation 'com.github.UnifiedPush:android-connector:2.0.1'
 
     // implementation 'androidx.activity:activity-ktx:1.4.0'
 }
