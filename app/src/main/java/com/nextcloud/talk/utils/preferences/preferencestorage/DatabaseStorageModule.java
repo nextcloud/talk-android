@@ -28,12 +28,12 @@ import android.util.Log;
 
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
-import com.nextcloud.talk.models.database.CapabilitiesUtil;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.yarolegovich.mp.io.StorageModule;
 
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +58,7 @@ public class DatabaseStorageModule implements StorageModule {
     NcApi ncApi;
 
 
-    private UserEntity conversationUser;
+    private User conversationUser;
     private String conversationToken;
     private long accountIdentifier;
 
@@ -66,7 +66,7 @@ public class DatabaseStorageModule implements StorageModule {
 
     private String messageNotificationLevel;
 
-    public DatabaseStorageModule(UserEntity conversationUser, String conversationToken) {
+    public DatabaseStorageModule(User conversationUser, String conversationToken) {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         this.conversationUser = conversationUser;
@@ -122,7 +122,7 @@ public class DatabaseStorageModule implements StorageModule {
         if (!key.equals("message_notification_level")) {
             arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, value, conversationToken);
         } else {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
+            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
                 if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(value)) {
                     int intValue;
                     switch (value) {

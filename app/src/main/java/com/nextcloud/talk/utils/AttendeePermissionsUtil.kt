@@ -20,8 +20,9 @@
 
 package com.nextcloud.talk.utils
 
-import com.nextcloud.talk.models.database.CapabilitiesUtil
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 
 /**
  * see https://nextcloud-talk.readthedocs.io/en/latest/constants/#attendee-permissions
@@ -49,8 +50,13 @@ class AttendeePermissionsUtil(flag: Int) {
         hasChatPermission = (flag and CHAT) == CHAT
     }
 
+    @Deprecated("use hasChatPermission(user: User) instead")
     fun hasChatPermission(user: UserEntity): Boolean {
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "chat-permission")) {
+        return hasChatPermission(LegacyUserEntityMapper.toModel(user)!!)
+    }
+
+    fun hasChatPermission(user: User): Boolean {
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "chat-permission")) {
             return hasChatPermission
         }
         // if capability is not available then the spreed version doesn't support to restrict this

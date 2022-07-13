@@ -41,6 +41,7 @@ import com.facebook.imagepipeline.image.CloseableBitmap
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -189,7 +190,7 @@ object NotificationUtils {
 
     private inline fun scanNotifications(
         context: Context?,
-        conversationUser: UserEntity,
+        conversationUser: User,
         callback: (
             notificationManager: NotificationManager,
             statusBarNotification: StatusBarNotification,
@@ -218,13 +219,19 @@ object NotificationUtils {
     }
 
     fun cancelAllNotificationsForAccount(context: Context?, conversationUser: UserEntity) {
-        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, _ ->
+        scanNotifications(
+            context,
+            LegacyUserEntityMapper.toModel(conversationUser)!!
+        ) { notificationManager, statusBarNotification, _ ->
             notificationManager.cancel(statusBarNotification.id)
         }
     }
 
     fun cancelExistingNotificationWithId(context: Context?, conversationUser: UserEntity, notificationId: Long?) {
-        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
+        scanNotifications(
+            context,
+            LegacyUserEntityMapper.toModel(conversationUser)!!
+        ) { notificationManager, statusBarNotification, notification ->
             if (notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
                 notificationManager.cancel(statusBarNotification.id)
             }
@@ -236,7 +243,10 @@ object NotificationUtils {
         conversationUser: UserEntity,
         roomTokenOrId: String
     ): StatusBarNotification? {
-        scanNotifications(context, conversationUser) { _, statusBarNotification, notification ->
+        scanNotifications(
+            context,
+            LegacyUserEntityMapper.toModel(conversationUser)!!
+        ) { _, statusBarNotification, notification ->
             if (roomTokenOrId == notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)) {
                 return statusBarNotification
             }
@@ -246,7 +256,7 @@ object NotificationUtils {
 
     fun cancelExistingNotificationsForRoom(
         context: Context?,
-        conversationUser: UserEntity,
+        conversationUser: User,
         roomTokenOrId: String
     ) {
         scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
@@ -313,7 +323,7 @@ object NotificationUtils {
     fun loadAvatarSync(avatarUrl: String): IconCompat? {
         // TODO - how to handle errors here?
         var avatarIcon: IconCompat? = null
-        val imageRequest = DisplayUtils.getImageRequestForUrl(avatarUrl, null)
+        val imageRequest = DisplayUtils.getImageRequestForUrl(avatarUrl)
         val dataSource = Fresco.getImagePipeline().fetchDecodedImage(imageRequest, null)
         val closeableImageRef = DataSources.waitForFinalResult(dataSource) as CloseableReference<CloseableBitmap>?
         val bitmap = closeableImageRef?.get()?.underlyingBitmap

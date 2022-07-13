@@ -20,13 +20,13 @@
 
 package com.nextcloud.talk.utils.singletons;
 
-import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.data.user.model.User;
 
 public class ApplicationWideCurrentRoomHolder {
     private static final ApplicationWideCurrentRoomHolder holder = new ApplicationWideCurrentRoomHolder();
     private String currentRoomId = "";
     private String currentRoomToken = "";
-    private UserEntity userInRoom = new UserEntity();
+    private User userInRoom = new User();
     private boolean inCall = false;
     private boolean isDialing = false;
     private String session = "";
@@ -37,7 +37,7 @@ public class ApplicationWideCurrentRoomHolder {
 
     public void clear() {
         currentRoomId = "";
-        userInRoom = new UserEntity();
+        userInRoom = new User();
         inCall = false;
         isDialing = false;
         currentRoomToken = "";
@@ -60,11 +60,11 @@ public class ApplicationWideCurrentRoomHolder {
         this.currentRoomId = currentRoomId;
     }
 
-    public UserEntity getUserInRoom() {
+    public User getUserInRoom() {
         return userInRoom;
     }
 
-    public void setUserInRoom(UserEntity userInRoom) {
+    public void setUserInRoom(User userInRoom) {
         this.userInRoom = userInRoom;
     }
 

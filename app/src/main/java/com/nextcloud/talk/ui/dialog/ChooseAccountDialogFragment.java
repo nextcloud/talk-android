@@ -132,8 +132,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                         ApiUtils.getUrlForAvatar(
                             user.getBaseUrl(),
                             user.getUserId(),
-                            false),
-                        null))
+                            false)))
                     .build();
                 binding.currentAccount.userIcon.setController(draweeController);
 

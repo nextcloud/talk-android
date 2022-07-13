@@ -27,8 +27,8 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemSearchMessageBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.utils.DisplayUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -40,7 +40,7 @@ import eu.davidea.viewholders.FlexibleViewHolder
 
 data class MessageResultItem constructor(
     private val context: Context,
-    private val currentUser: UserEntity,
+    private val currentUser: User,
     val messageEntry: SearchMessageEntry,
     private val showHeader: Boolean = false
 ) :

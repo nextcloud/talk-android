@@ -335,7 +335,7 @@ public class CallNotificationActivity extends CallBaseActivity {
             DisplayUtils.getImageRequestForUrl(
                 ApiUtils.getUrlForAvatar(userBeingCalled.getBaseUrl(),
                                          currentConversation.getName(),
-                                         true), null);
+                                         true));
 
         ImagePipeline imagePipeline = Fresco.getImagePipeline();
         DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);

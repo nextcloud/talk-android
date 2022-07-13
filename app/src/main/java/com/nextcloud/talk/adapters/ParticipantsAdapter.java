@@ -124,7 +124,7 @@ public class ParticipantsAdapter extends BaseAdapter {
             imageView.setController(null);
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                     .setOldController(imageView.getController())
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(participantDisplayItem.getUrlForAvatar(), null))
+                    .setImageRequest(DisplayUtils.getImageRequestForUrl(participantDisplayItem.getUrlForAvatar()))
                     .build();
             imageView.setController(draweeController);
         }

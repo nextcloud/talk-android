@@ -113,7 +113,7 @@ class RemoteFileBrowserItemsListViewHolder(
             if (path.isNotEmpty()) {
                 val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
                     .setAutoPlayAnimations(true)
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(path, null))
+                    .setImageRequest(DisplayUtils.getImageRequestForUrl(path))
                     .build()
                 binding.fileIcon.controller = draweeController
             }

@@ -31,7 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.databinding.DialogAttachmentBinding
-import com.nextcloud.talk.models.database.CapabilitiesUtil
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 
 class AttachmentDialog(val activity: Activity, var chatController: ChatController) : BottomSheetDialog(activity) {
 
@@ -43,7 +43,7 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
         setContentView(dialogAttachmentBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        var serverName = CapabilitiesUtil.getServerName(chatController.conversationUser)
+        var serverName = CapabilitiesUtilNew.getServerName(chatController.conversationUser)
         dialogAttachmentBinding.txtAttachFileFromCloud.text = chatController.resources?.let {
             if (serverName.isNullOrEmpty()) {
                 serverName = it.getString(R.string.nc_server_product_name)
@@ -51,7 +51,7 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
             String.format(it.getString(R.string.nc_upload_from_cloud), serverName)
         }
 
-        if (!CapabilitiesUtil.hasSpreedFeatureCapability(
+        if (!CapabilitiesUtilNew.hasSpreedFeatureCapability(
                 chatController.conversationUser,
                 "geo-location-sharing"
             )

@@ -33,7 +33,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.hovercard.HoverCardAction
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
@@ -51,7 +51,7 @@ import org.parceler.Parcels
 
 private const val TAG = "ProfileBottomSheet"
 
-class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val router: Router) {
+class ProfileBottomSheet(val ncApi: NcApi, val userEntity: User, val router: Router) {
 
     private val allowedAppIds = listOf(SPREED.stringValue, PROFILE.stringValue, EMAIL.stringValue)
 
@@ -172,7 +172,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
                                     Parcels.wrap(roomOverall.ocs!!.data)
                                 )
                                 ConductorRemapping.remapChatController(
-                                    router, userEntity.id,
+                                    router, userEntity.id!!,
                                     roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }
