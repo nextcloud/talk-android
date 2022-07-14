@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
-        android:text="Question" />
+        android:text="@string/polls_question" />
 
     <com.nextcloud.talk.utils.EmojiTextInputEditText
         android:id="@+id/poll_create_question"
@@ -51,7 +51,7 @@
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         android:layout_marginTop="@dimen/standard_margin"
-        android:text="Options" />
+        android:text="@string/polls_options" />
 
     <LinearLayout
         android:id="@+id/poll_create_options_list_wrapper"
@@ -86,19 +86,19 @@
         android:layout_marginTop="@dimen/standard_margin"
         android:layout_marginBottom="@dimen/standard_half_margin"
 
-        android:text="Settings" />
+        android:text="@string/polls_settings" />
 
     <CheckBox
         android:id="@+id/poll_private_poll_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Private poll" />
+        android:text="@string/polls_private_poll" />
 
     <CheckBox
         android:id="@+id/poll_multiple_answers_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Multiple answers" />
+        android:text="@string/polls_multiple_answers" />
 
     <LinearLayout
         android:layout_width="match_parent"

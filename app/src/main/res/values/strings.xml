@@ -544,6 +544,11 @@
     <string name="polls_end_poll_confirm">Do you really want to end this poll? This can\'t be undone.</string>
     <string name="polls_max_votes_reached">You can\'t vote with more options for this poll.</string>
     <string name="polls_results_subtitle">Results</string>
+    <string name="polls_question">Question</string>
+    <string name="polls_options">Options</string>
+    <string name="polls_settings">Settings</string>
+    <string name="polls_private_poll">Private poll</string>
+    <string name="polls_multiple_answers">Multiple answers</string>
 
     <string name="title_attachments">Attachments</string>
 
