@@ -61,7 +61,8 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     open class PollVoteState(
         val poll: Poll,
         val showVotersAmount: Boolean,
-        val showEndPollButton: Boolean
+        val showEndPollButton: Boolean,
+        val showDismissEditButton: Boolean
     ) : ViewState
 
     open class PollVoteHiddenState(
@@ -96,6 +97,10 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     fun editVotes() {
         editVotes = true
+        loadPoll()
+    }
+
+    fun dismissEditVotes() {
         loadPoll()
     }
 
@@ -141,13 +146,13 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
             if (votedForOpenHiddenPoll(poll)) {
                 _viewState.value = PollVoteHiddenState(poll, showVotersAmount, showEndPollButton)
             } else if (editVotes && poll.status == Poll.STATUS_OPEN) {
-                _viewState.value = PollVoteState(poll, false, showEndPollButton)
+                _viewState.value = PollVoteState(poll, false, showEndPollButton, true)
                 editVotes = false
             } else if (poll.status == Poll.STATUS_CLOSED || poll.votedSelf?.isNotEmpty() == true) {
                 val showEditButton = poll.status == Poll.STATUS_OPEN && poll.resultMode == Poll.RESULT_MODE_PUBLIC
                 _viewState.value = PollResultState(poll, showVotersAmount, showEndPollButton, showEditButton)
             } else if (poll.votedSelf.isNullOrEmpty()) {
-                _viewState.value = PollVoteState(poll, showVotersAmount, showEndPollButton)
+                _viewState.value = PollVoteState(poll, showVotersAmount, showEndPollButton, false)
             } else {
                 Log.w(TAG, "unknown poll state")
             }

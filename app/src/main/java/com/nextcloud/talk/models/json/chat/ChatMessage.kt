@@ -125,7 +125,7 @@ data class ChatMessage(
     var voiceMessageDownloadProgress: Int = 0,
 ) : Parcelable, MessageContentType, MessageContentType.Image {
 
-    // TODO: messageTypesToIgnore is weird. must be deleted by refactoring!
+    // messageTypesToIgnore is weird. must be deleted by refactoring!!!
     @JsonIgnore
     var messageTypesToIgnore = Arrays.asList(
         MessageType.REGULAR_TEXT_MESSAGE,

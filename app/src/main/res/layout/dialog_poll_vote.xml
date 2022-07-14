@@ -67,6 +67,17 @@
             app:cornerRadius="@dimen/button_corner_radius" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/poll_vote_edit_dismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nc_common_dismiss"
+            style="@style/OutlinedButton"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:visibility="gone"
+            app:cornerRadius="@dimen/button_corner_radius"
+            tools:visibility="visible"/>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/poll_vote_submit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

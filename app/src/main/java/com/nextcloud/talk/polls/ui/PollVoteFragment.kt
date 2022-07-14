@@ -89,6 +89,7 @@ class PollVoteFragment : Fragment() {
                 initPollOptions(state.poll)
                 initEndPollButton(state.showEndPollButton)
                 updateSubmitButton()
+                updateDismissEditButton(state.showDismissEditButton)
             } else if (state is PollMainViewModel.PollVoteHiddenState) {
                 initPollOptions(state.poll)
                 initEndPollButton(state.showEndPollButton)
@@ -116,6 +117,18 @@ class PollVoteFragment : Fragment() {
 
         binding.pollVoteSubmitButton.setOnClickListener {
             viewModel.vote(roomToken, pollId)
+        }
+
+        binding.pollVoteEditDismiss.setOnClickListener {
+            parentViewModel.dismissEditVotes()
+        }
+    }
+
+    private fun updateDismissEditButton(showDismissEditButton: Boolean) {
+        if (showDismissEditButton) {
+            binding.pollVoteEditDismiss.visibility = View.VISIBLE
+        } else {
+            binding.pollVoteEditDismiss.visibility = View.GONE
         }
     }
 
