@@ -357,6 +357,7 @@
     <string name="send_to_forbidden">No tienes permiso para compartir contenido en este chat</string>
     <string name="send_to_three_dots">Enviar a …</string>
     <string name="send_without_notification">Enviar sin notificación</string>
+    <string name="set_avatar_from_camera">Crea un nuevo avatar con tu cámara</string>
     <string name="set_status">Establecer estado</string>
     <string name="set_status_message">Establecer mensaje de estado</string>
     <string name="share">Compartir</string>
