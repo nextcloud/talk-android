@@ -106,6 +106,8 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
             resultMode = 1
         }
 
+        _options.value = _options.value?.filter { it.pollOption.isNotEmpty() } as ArrayList<PollCreateOptionItem>
+
         if (_question.isNotEmpty() && _options.value?.isNotEmpty() == true) {
             repository.createPoll(
                 roomToken, _question, _options.value!!.map { it.pollOption }, resultMode,
