@@ -65,8 +65,8 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
 
     private var _unfilteredItems: ArrayList<PollResultItem> = ArrayList()
 
-    private var _items: MutableLiveData<ArrayList<PollResultItem>> = MutableLiveData<ArrayList<PollResultItem>>()
-    val items: LiveData<ArrayList<PollResultItem>>
+    private var _items: MutableLiveData<ArrayList<PollResultItem>?> = MutableLiveData<ArrayList<PollResultItem>?>()
+    val items: MutableLiveData<ArrayList<PollResultItem>?>
         get() = _items
 
     private var disposable: Disposable? = null

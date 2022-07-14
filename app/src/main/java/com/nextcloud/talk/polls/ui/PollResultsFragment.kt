@@ -92,7 +92,9 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
 
         viewModel.items.observe(viewLifecycleOwner) {
             val adapter = PollResultsAdapter(user, this).apply {
-                list = it
+                if (it != null) {
+                    list = it
+                }
             }
             binding.pollResultsList.adapter = adapter
         }
