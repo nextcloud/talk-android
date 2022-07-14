@@ -32,17 +32,17 @@ import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogPollMainBinding
-import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class PollMainDialogFragment : DialogFragment() {
 
-    lateinit var user: UserEntity
+    lateinit var user: User
     lateinit var roomToken: String
+    private var isOwnerOrModerator: Boolean = false
     lateinit var pollId: String
     lateinit var pollTitle: String
 
@@ -60,6 +60,7 @@ class PollMainDialogFragment : DialogFragment() {
 
         user = arguments?.getParcelable(KEY_USER_ENTITY)!!
         roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
+        isOwnerOrModerator = arguments?.getBoolean(KEY_OWNER_OR_MODERATOR)!!
         pollId = arguments?.getString(KEY_POLL_ID)!!
         pollTitle = arguments?.getString(KEY_POLL_TITLE)!!
     }
@@ -83,19 +84,28 @@ class PollMainDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.setIsOwnerOrModerator(isOwnerOrModerator)
+
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 PollMainViewModel.InitialState -> {}
                 is PollMainViewModel.PollVoteHiddenState -> {
-                    binding.pollDetailsText.visibility = View.VISIBLE
-                    binding.pollDetailsText.text = context?.resources?.getString(R.string.polls_private_voted)
+                    binding.pollVotedHidden.visibility = View.VISIBLE
+                    initVotersAmount(state.showVotersAmount, state.poll.numVoters, false)
                     showVoteScreen()
                 }
                 is PollMainViewModel.PollVoteState -> {
-                    binding.pollDetailsText.visibility = View.GONE
+                    binding.pollVotedHidden.visibility = View.GONE
+                    initVotersAmount(state.showVotersAmount, state.poll.numVoters, false)
                     showVoteScreen()
                 }
-                is PollMainViewModel.PollResultState -> showResultsScreen(state.poll)
+                is PollMainViewModel.PollResultState -> {
+                    binding.pollVotedHidden.visibility = View.GONE
+                    initVotersAmount(state.showVotersAmount, state.poll.numVoters, true)
+                    showResultsScreen()
+                }
+                else -> {}
             }
         }
 
@@ -103,7 +113,6 @@ class PollMainDialogFragment : DialogFragment() {
     }
 
     private fun showVoteScreen() {
-
         val contentFragment = PollVoteFragment.newInstance(
             roomToken,
             pollId
@@ -114,9 +123,7 @@ class PollMainDialogFragment : DialogFragment() {
         transaction.commit()
     }
 
-    private fun showResultsScreen(poll: Poll) {
-        initVotesAmount(poll.totalVotes)
-
+    private fun showResultsScreen() {
         val contentFragment = PollResultsFragment.newInstance(
             user
         )
@@ -126,12 +133,24 @@ class PollMainDialogFragment : DialogFragment() {
         transaction.commit()
     }
 
-    private fun initVotesAmount(totalVotes: Int) {
-        binding.pollDetailsText.visibility = View.VISIBLE
-        binding.pollDetailsText.text = String.format(
-            resources.getString(R.string.polls_amount_voters),
-            totalVotes
-        )
+    private fun initVotersAmount(showVotersAmount: Boolean, numVoters: Int, showResultSubtitle: Boolean) {
+        if (showVotersAmount) {
+            binding.pollVotesAmount.visibility = View.VISIBLE
+            binding.pollVotesAmount.text = String.format(
+                resources.getString(R.string.polls_amount_voters),
+                numVoters
+            )
+        } else {
+            binding.pollVotesAmount.visibility = View.GONE
+        }
+
+        if (showResultSubtitle) {
+            binding.pollResultsSubtitle.visibility = View.VISIBLE
+            binding.pollResultsSubtitleSeperator.visibility = View.VISIBLE
+        } else {
+            binding.pollResultsSubtitle.visibility = View.GONE
+            binding.pollResultsSubtitleSeperator.visibility = View.GONE
+        }
     }
 
     /**
@@ -140,19 +159,22 @@ class PollMainDialogFragment : DialogFragment() {
     companion object {
         private const val KEY_USER_ENTITY = "keyUserEntity"
         private const val KEY_ROOM_TOKEN = "keyRoomToken"
+        private const val KEY_OWNER_OR_MODERATOR = "keyIsOwnerOrModerator"
         private const val KEY_POLL_ID = "keyPollId"
         private const val KEY_POLL_TITLE = "keyPollTitle"
 
         @JvmStatic
         fun newInstance(
-            user: UserEntity,
+            user: User,
             roomTokenParam: String,
+            isOwnerOrModerator: Boolean,
             pollId: String,
             name: String
         ): PollMainDialogFragment {
             val args = Bundle()
             args.putParcelable(KEY_USER_ENTITY, user)
             args.putString(KEY_ROOM_TOKEN, roomTokenParam)
+            args.putBoolean(KEY_OWNER_OR_MODERATOR, isOwnerOrModerator)
             args.putString(KEY_POLL_ID, pollId)
             args.putString(KEY_POLL_TITLE, name)
             val fragment = PollMainDialogFragment()

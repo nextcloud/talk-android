@@ -26,14 +26,14 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.PollResultVoterItemBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.polls.model.PollDetails
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 
 class PollResultVoterViewHolder(
-    private val user: UserEntity,
+    private val user: User,
     override val binding: PollResultVoterItemBinding
 ) : PollResultViewHolder(binding) {
 
@@ -60,7 +60,7 @@ class PollResultVoterViewHolder(
                             displayName,
                             false
                         ),
-                        null
+                        user
                     )
                 )
                 .build()
@@ -74,7 +74,7 @@ class PollResultVoterViewHolder(
                             pollDetail.actorId,
                             false
                         ),
-                        null
+                        user
                     )
                 )
                 .build()

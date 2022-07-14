@@ -487,7 +487,7 @@ class ChatController(args: Bundle) :
             val messageHolders = MessageHolders()
             val profileBottomSheet = ProfileBottomSheet(ncApi!!, conversationUser!!, router)
 
-            val payload = MessagePayload(roomToken!!, profileBottomSheet)
+            val payload = MessagePayload(currentConversation!!, profileBottomSheet)
 
             messageHolders.setIncomingTextConfig(
                 MagicIncomingTextMessageViewHolder::class.java,

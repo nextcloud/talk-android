@@ -33,8 +33,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogPollResultsBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.polls.adapters.PollResultHeaderItem
 import com.nextcloud.talk.polls.adapters.PollResultItemClickListener
 import com.nextcloud.talk.polls.adapters.PollResultsAdapter
@@ -51,7 +51,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
     private lateinit var parentViewModel: PollMainViewModel
     lateinit var viewModel: PollResultsViewModel
 
-    lateinit var user: UserEntity
+    lateinit var user: User
 
     lateinit var binding: DialogPollResultsBinding
 
@@ -108,7 +108,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
         if (showEditButton) {
             binding.editVoteButton.visibility = View.VISIBLE
             binding.editVoteButton.setOnClickListener {
-                parentViewModel.edit()
+                parentViewModel.editVotes()
             }
         } else {
             binding.editVoteButton.visibility = View.GONE
@@ -142,7 +142,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
 
         @JvmStatic
         fun newInstance(
-            user: UserEntity
+            user: User
         ): PollResultsFragment {
             val args = Bundle()
             args.putParcelable(KEY_USER_ENTITY, user)

@@ -23,12 +23,12 @@ package com.nextcloud.talk.polls.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.PollResultHeaderItemBinding
 import com.nextcloud.talk.databinding.PollResultVoterItemBinding
-import com.nextcloud.talk.models.database.UserEntity
 
 class PollResultsAdapter(
-    private val user: UserEntity,
+    private val user: User,
     private val clickListener: PollResultItemClickListener,
 ) : RecyclerView.Adapter<PollResultViewHolder>() {
     internal var list: MutableList<PollResultItem> = ArrayList()

@@ -137,12 +137,14 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         if (pollId != null && pollName != null) {
             binding.messagePollTitle.text = pollName
 
-            val roomToken = (payload as? MessagePayload)!!.roomToken
+            val roomToken = (payload as? MessagePayload)!!.currentConversation.token!!
+            val isOwnerOrModerator = (payload as? MessagePayload)!!.currentConversation.isParticipantOwnerOrModerator
 
             binding.bubble.setOnClickListener {
                 val pollVoteDialog = PollMainDialogFragment.newInstance(
                     message.activeUser!!,
                     roomToken,
+                    isOwnerOrModerator,
                     pollId,
                     pollName
                 )

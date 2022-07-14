@@ -52,24 +52,29 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     private lateinit var roomToken: String
     private lateinit var pollId: String
 
-    private var editPoll: Boolean = false
+    private var isOwnerOrModerator: Boolean = false
+
+    private var editVotes: Boolean = false
 
     sealed interface ViewState
     object InitialState : ViewState
     open class PollVoteState(
         val poll: Poll,
+        val showVotersAmount: Boolean,
         val showEndPollButton: Boolean
     ) : ViewState
 
     open class PollVoteHiddenState(
         val poll: Poll,
+        val showVotersAmount: Boolean,
         val showEndPollButton: Boolean
     ) : ViewState
 
     open class PollResultState(
         val poll: Poll,
-        val showEditButton: Boolean,
-        val showEndPollButton: Boolean
+        val showVotersAmount: Boolean,
+        val showEndPollButton: Boolean,
+        val showEditButton: Boolean
     ) : ViewState
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
@@ -89,8 +94,8 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
         loadPoll()
     }
 
-    fun edit() {
-        editPoll = true
+    fun editVotes() {
+        editVotes = true
         loadPoll()
     }
 
@@ -130,28 +135,34 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
         }
 
         override fun onComplete() {
-            val showEndPollButton = poll.status == Poll.STATUS_OPEN && isPollCreatedByCurrentUser(poll)
+            val showEndPollButton = showEndPollButton(poll)
+            val showVotersAmount = showVotersAmount(poll)
 
             if (votedForOpenHiddenPoll(poll)) {
-                _viewState.value = PollVoteHiddenState(poll, showEndPollButton)
-            } else if (editPoll && poll.status == Poll.STATUS_OPEN) {
-                _viewState.value = PollVoteState(poll, showEndPollButton)
-                editPoll = false
+                _viewState.value = PollVoteHiddenState(poll, showVotersAmount, showEndPollButton)
+            } else if (editVotes && poll.status == Poll.STATUS_OPEN) {
+                _viewState.value = PollVoteState(poll, false, showEndPollButton)
+                editVotes = false
             } else if (poll.status == Poll.STATUS_CLOSED || poll.votedSelf?.isNotEmpty() == true) {
-                setPollResultState(poll)
+                val showEditButton = poll.status == Poll.STATUS_OPEN && poll.resultMode == Poll.RESULT_MODE_PUBLIC
+                _viewState.value = PollResultState(poll, showVotersAmount, showEndPollButton, showEditButton)
             } else if (poll.votedSelf.isNullOrEmpty()) {
-                _viewState.value = PollVoteState(poll, showEndPollButton)
+                _viewState.value = PollVoteState(poll, showVotersAmount, showEndPollButton)
             } else {
                 Log.w(TAG, "unknown poll state")
             }
         }
     }
 
-    private fun setPollResultState(poll: Poll) {
-        val showEditButton = poll.status == Poll.STATUS_OPEN && poll.resultMode == Poll.RESULT_MODE_PUBLIC
-        val showEndPollButton = poll.status == Poll.STATUS_OPEN && isPollCreatedByCurrentUser(poll)
+    private fun showEndPollButton(poll: Poll): Boolean {
+        return poll.status == Poll.STATUS_OPEN && (isPollCreatedByCurrentUser(poll) || isOwnerOrModerator)
+    }
 
-        _viewState.value = PollResultState(poll, showEditButton, showEndPollButton)
+    private fun showVotersAmount(poll: Poll): Boolean {
+        return votedForPublicPoll(poll) ||
+            poll.status == Poll.STATUS_CLOSED ||
+            isOwnerOrModerator ||
+            isPollCreatedByCurrentUser(poll)
     }
 
     private fun votedForOpenHiddenPoll(poll: Poll): Boolean {
@@ -160,8 +171,17 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
             poll.votedSelf?.isNotEmpty() == true
     }
 
+    private fun votedForPublicPoll(poll: Poll): Boolean {
+        return poll.resultMode == Poll.RESULT_MODE_PUBLIC &&
+            poll.votedSelf?.isNotEmpty() == true
+    }
+
     private fun isPollCreatedByCurrentUser(poll: Poll): Boolean {
         return userUtils.currentUser?.userId == poll.actorId
+    }
+
+    fun setIsOwnerOrModerator(ownerOrModerator: Boolean) {
+        isOwnerOrModerator = ownerOrModerator
     }
 
     companion object {

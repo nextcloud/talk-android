@@ -49,13 +49,51 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/poll_results_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/low_emphasis_text"
+            android:text="@string/polls_results_subtitle"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/poll_results_subtitle_seperator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/low_emphasis_text"
+            android:text=" - "
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/poll_votes_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/low_emphasis_text"
+            tools:text="93 votes" />
+
+    </LinearLayout>
+
+
+
     <TextView
-        android:id="@+id/poll_details_text"
+        android:id="@+id/poll_voted_hidden"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:textColor="@color/low_emphasis_text"
-        tools:text="Poll results - 93 votes" />
+        android:text="@string/polls_private_voted" />
 
     <FrameLayout
         android:id="@+id/message_poll_content_fragment"
