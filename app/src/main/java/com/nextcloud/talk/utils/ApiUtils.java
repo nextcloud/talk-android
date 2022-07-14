@@ -121,7 +121,12 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/capabilities";
     }
 
+    @Deprecated
     public static int getCallApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
+        return getCallApiVersion(LegacyUserEntityMapper.toModel(capabilities), versions);
+    }
+
+    public static int getCallApiVersion(User capabilities, int[] versions) throws NoSupportedApiException {
         return getConversationApiVersion(capabilities, versions);
     }
 
@@ -161,20 +166,25 @@ public class ApiUtils {
         return getConversationApiVersion(LegacyUserEntityMapper.toModel(user), versions);
     }
 
+    @Deprecated
     public static int getSignalingApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
+        return getSignalingApiVersion(LegacyUserEntityMapper.toModel(user), versions);
+    }
+
+    public static int getSignalingApiVersion(User user, int[] versions) throws NoSupportedApiException {
         for (int version : versions) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "signaling-v" + version)) {
+            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "signaling-v" + version)) {
                 return version;
             }
 
             if (version == APIv2 &&
-                    CapabilitiesUtil.hasSpreedFeatureCapability(user, "sip-support") &&
-                    !CapabilitiesUtil.hasSpreedFeatureCapability(user, "signaling-v3")) {
+                CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "sip-support") &&
+                !CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "signaling-v3")) {
                 return version;
             }
 
             if (version == APIv1 &&
-                    !CapabilitiesUtil.hasSpreedFeatureCapability(user, "signaling-v3")) {
+                !CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "signaling-v3")) {
                 // Has no capability, we just assume it is always there when there is no v3 or later
                 return version;
             }
