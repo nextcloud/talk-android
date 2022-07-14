@@ -1831,7 +1831,6 @@ class ChatController(args: Bundle) :
 
         adapter = null
         inConversation = false
-        disposables.dispose()
     }
 
     private fun joinRoomWithPassword() {
