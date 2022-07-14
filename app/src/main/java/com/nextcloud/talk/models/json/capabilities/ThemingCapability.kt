@@ -43,6 +43,11 @@ data class ThemingCapability(
     var colorText: String?,
     @JsonField(name = ["color-element"])
     var colorElement: String?,
+    // TODO check what happens with users with already fetched capabilities
+    @JsonField(name = ["color-element-bright"])
+    var colorElementBright: String?,
+    @JsonField(name = ["color-element-dark"])
+    var colorElementDark: String?,
     @JsonField(name = ["logo"])
     var logo: String?,
     @JsonField(name = ["background"])
@@ -53,5 +58,5 @@ data class ThemingCapability(
     var backgroundDefault: Boolean?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null, null, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null)
 }
