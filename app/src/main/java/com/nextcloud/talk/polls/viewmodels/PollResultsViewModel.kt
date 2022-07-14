@@ -84,7 +84,7 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
     private fun initPollResults(poll: Poll) {
         _items.value = ArrayList()
 
-        val oneVoteInPercent = HUNDRED / poll.totalVotes
+        val oneVoteInPercent = HUNDRED / poll.numVoters
 
         poll.options?.forEachIndexed { index, option ->
             val votersAmountForThisOption = getVotersAmountForOption(poll, index)
