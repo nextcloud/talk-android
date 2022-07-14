@@ -43,6 +43,12 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
         setContentView(dialogAttachmentBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
+        initItemsStrings()
+        initItemsVisibility()
+        initItemsClickListeners()
+    }
+
+    private fun initItemsStrings() {
         var serverName = CapabilitiesUtilNew.getServerName(chatController.conversationUser)
         dialogAttachmentBinding.txtAttachFileFromCloud.text = chatController.resources?.let {
             if (serverName.isNullOrEmpty()) {
@@ -50,7 +56,9 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
             }
             String.format(it.getString(R.string.nc_upload_from_cloud), serverName)
         }
+    }
 
+    private fun initItemsVisibility() {
         if (!CapabilitiesUtilNew.hasSpreedFeatureCapability(
                 chatController.conversationUser,
                 "geo-location-sharing"
@@ -59,6 +67,12 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
             dialogAttachmentBinding.menuShareLocation.visibility = View.GONE
         }
 
+        if (!CapabilitiesUtilNew.hasSpreedFeatureCapability(chatController.conversationUser, "talk-polls")) {
+            dialogAttachmentBinding.menuAttachPoll.visibility = View.GONE
+        }
+    }
+
+    private fun initItemsClickListeners() {
         dialogAttachmentBinding.menuShareLocation.setOnClickListener {
             chatController.showShareLocationScreen()
             dismiss()
