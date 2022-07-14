@@ -61,6 +61,7 @@ import com.nextcloud.talk.dagger.modules.ViewModelModule
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
+import com.nextcloud.talk.ui.theme.ThemeModule
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -96,7 +97,8 @@ import javax.inject.Singleton
         ArbitraryStorageModule::class,
         ViewModelModule::class,
         RepositoryModule::class,
-        UtilsModule::class
+        UtilsModule::class,
+        ThemeModule::class
     ]
 )
 @Singleton
@@ -120,6 +122,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         override fun preKey(database: SQLiteDatabase) {
             // unused atm
         }
+
         override fun postKey(database: SQLiteDatabase) {
             Log.i("TalkApplication", "DB cipher_migrate START")
             database.rawExecSQL("PRAGMA cipher_migrate;")

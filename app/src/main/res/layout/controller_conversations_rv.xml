@@ -115,11 +115,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:backgroundTint="@color/colorPrimary"
         android:contentDescription="@string/nc_new_conversation"
         app:borderWidth="0dp"
         app:srcCompat="@drawable/ic_add_white_24px"
-        app:tint="@color/white" />
+        app:tint="@color/white"
+        app:backgroundTint="@color/colorPrimary"/>
 
     <com.nextcloud.ui.popupbubble.PopupBubble
         android:id="@+id/newMentionPopupBubble"

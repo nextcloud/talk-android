@@ -92,6 +92,8 @@ import com.nextcloud.talk.models.json.statuses.StatusesOverall;
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository;
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog;
+import com.nextcloud.talk.ui.theme.ServerTheme;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.AttendeePermissionsUtil;
@@ -180,6 +182,9 @@ public class ConversationsListController extends BaseController implements Flexi
 
     @Inject
     UnifiedSearchRepository unifiedSearchRepository;
+
+    @Inject
+    ServerTheme serverTheme;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -784,6 +789,7 @@ public class ConversationsListController extends BaseController implements Flexi
             ContactAddressBookWorker.Companion.run(context);
             showNewConversationsScreen();
         });
+        new ViewThemeUtils(serverTheme).themeFAB(floatingActionButton);
 
         if (getActivity() != null && getActivity() instanceof MainActivity) {
             MainActivity activity = (MainActivity) getActivity();
