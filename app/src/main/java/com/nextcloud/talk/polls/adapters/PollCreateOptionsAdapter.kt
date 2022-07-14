@@ -39,7 +39,13 @@ class PollCreateOptionsAdapter(
 
     override fun onBindViewHolder(holder: PollCreateOptionViewHolder, position: Int) {
         val currentItem = list[position]
-        holder.bind(currentItem, clickListener, position)
+        var focus = false
+
+        if (list.size - 1 == position && currentItem.pollOption.isBlank()) {
+            focus = true
+        }
+
+        holder.bind(currentItem, clickListener, position, focus)
     }
 
     override fun getItemCount(): Int {

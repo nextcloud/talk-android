@@ -38,7 +38,8 @@ class PollCreateOptionViewHolder(
     fun bind(
         pollCreateOptionItem: PollCreateOptionItem,
         itemsListener: PollCreateOptionsItemListener,
-        position: Int
+        position: Int,
+        focus: Boolean
     ) {
 
         textListener?.let {
@@ -46,6 +47,10 @@ class PollCreateOptionViewHolder(
         }
 
         binding.pollOptionText.setText(pollCreateOptionItem.pollOption)
+
+        if (focus) {
+            binding.pollOptionText.requestFocus()
+        }
 
         binding.pollOptionDelete.setOnClickListener {
             itemsListener.onRemoveOptionsItemClick(pollCreateOptionItem, position)
