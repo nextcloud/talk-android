@@ -24,11 +24,13 @@ package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.User
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 
 @Suppress("TooManyFunctions")
 interface UsersRepository {
     fun getActiveUser(): Maybe<User>
+    fun getActiveUserObservable(): Observable<User>
     fun getUsers(): Single<List<User>>
     fun getUserWithId(id: Long): Maybe<User>
     fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<User>

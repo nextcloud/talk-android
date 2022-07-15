@@ -30,6 +30,7 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 
 @Suppress("TooManyFunctions")
@@ -45,7 +46,12 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             return userRepository.getActiveUser()
         }
 
-    fun deleteUser(internalId: Long): Int {
+    override val currentUserObservable: Observable<User>
+        get() {
+            return userRepository.getActiveUserObservable()
+        }
+
+    fun deleteUser(internalId: Long) {
         return userRepository.deleteUser(userRepository.getUserWithId(internalId).blockingGet())
     }
 

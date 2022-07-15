@@ -22,7 +22,9 @@ package com.nextcloud.talk.utils.database.user
 
 import com.nextcloud.talk.data.user.model.User
 import io.reactivex.Maybe
+import io.reactivex.Observable
 
 interface CurrentUserProviderNew {
     val currentUser: Maybe<User>
+    val currentUserObservable: Observable<User>
 }
