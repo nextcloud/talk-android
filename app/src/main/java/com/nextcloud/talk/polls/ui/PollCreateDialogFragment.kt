@@ -117,7 +117,6 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
             override fun onTextChanged(question: CharSequence, start: Int, before: Int, count: Int) {
                 if (question.toString() != viewModel.question) {
                     viewModel.setQuestion(question.toString())
-                    binding.pollCreateQuestion.setSelection(binding.pollCreateQuestion.length())
                 }
             }
         })
