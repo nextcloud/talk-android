@@ -93,6 +93,7 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository;
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog;
 import com.nextcloud.talk.ui.theme.ServerTheme;
+import com.nextcloud.talk.ui.theme.ServerThemeProvider;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
