@@ -30,19 +30,17 @@ import android.view.View
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
-import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerOperationsMenuBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.events.OpenConversationEvent
 import com.nextcloud.talk.models.RetrofitBucket
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -50,6 +48,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation.ConversationTyp
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NoSupportedApiException
@@ -66,7 +65,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SERVER_CAPABILITIES
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
-import com.nextcloud.talk.utils.database.user.UserUtils
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -90,14 +89,14 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var eventBus: EventBus
 
     private val operation: ConversationOperationEnum?
     private var conversation: Conversation? = null
-    private var currentUser: UserEntity? = null
+    private var currentUser: User? = null
     private val callPassword: String
     private val callUrl: String
     private var baseUrl: String? = null
@@ -116,7 +115,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     override fun onViewBound(view: View) {
         super.onViewBound(view)
         sharedApplication!!.componentApplication.inject(this)
-        currentUser = userUtils.currentUser
+        currentUser = userManager.currentUser.blockingGet()
 
         if (!TextUtils.isEmpty(callUrl) && callUrl.contains("/call")) {
             conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1)
@@ -144,11 +143,11 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
 
     @Throws(IOException::class)
     private fun useBundledCapabilitiesForGuest() {
-        currentUser = UserEntity()
+        currentUser = User()
         currentUser!!.baseUrl = baseUrl
         currentUser!!.userId = "?"
         try {
-            currentUser!!.capabilities = LoganSquare.serialize(serverCapabilities)
+            currentUser!!.capabilities = serverCapabilities
         } catch (e: IOException) {
             Log.e("OperationsMenu", "Failed to serialize capabilities")
             throw e
@@ -172,12 +171,11 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 }
 
                 override fun onNext(capabilitiesOverall: CapabilitiesOverall) {
-                    currentUser = UserEntity()
+                    currentUser = User()
                     currentUser!!.baseUrl = baseUrl
                     currentUser!!.userId = "?"
                     try {
-                        currentUser!!.capabilities = LoganSquare
-                            .serialize(capabilitiesOverall.ocs!!.data!!.capabilities)
+                        currentUser!!.capabilities = capabilitiesOverall.ocs!!.data!!.capabilities
                     } catch (e: IOException) {
                         Log.e("OperationsMenu", "Failed to serialize capabilities")
                     }
@@ -469,12 +467,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                         try {
                             bundle.putParcelable(
                                 KEY_SERVER_CAPABILITIES,
-                                Parcels.wrap<Capabilities>(
-                                    LoganSquare.parse<Capabilities>(
-                                        currentUser!!.capabilities,
-                                        Capabilities::class.java
-                                    )
-                                )
+                                Parcels.wrap<Capabilities>(currentUser!!.capabilities)
                             )
                         } catch (e: IOException) {
                             Log.e(TAG, "Failed to parse capabilities for guest")
@@ -604,7 +597,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     }
 
     @kotlin.Throws(NoSupportedApiException::class)
-    private fun checkCapabilities(currentUser: UserEntity) {
+    private fun checkCapabilities(currentUser: User) {
         ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
         ApiUtils.getCallApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
         ApiUtils.getChatApiVersion(currentUser, intArrayOf(1))
@@ -619,7 +612,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
         }
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, API_CONVERSATION_VERSIONS)
         if (localInvitedUsers!!.size > 0 || localInvitedGroups.size > 0 &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails")
+            CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails")
         ) {
             addGroupsToConversation(localInvitedUsers, localInvitedGroups, apiVersion)
             addUsersToConversation(localInvitedUsers, localInvitedGroups, apiVersion)
@@ -676,7 +669,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     ) {
         var retrofitBucket: RetrofitBucket
         if (localInvitedGroups!!.size > 0 &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails")
+            CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails")
         ) {
             for (i in localInvitedGroups.indices) {
                 val groupId = localInvitedGroups[i]
