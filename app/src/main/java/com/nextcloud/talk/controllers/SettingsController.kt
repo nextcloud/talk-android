@@ -75,10 +75,9 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.checkPermission
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
@@ -89,7 +88,6 @@ import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ARE_CALL_SOUNDS
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
@@ -115,7 +113,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderNew
@@ -328,19 +326,8 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                         finalAlias = ""
                     }
 
-                    userUtils.createOrUpdateUser(
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        currentUser!!.id,
-                        null,
-                        finalAlias,
-                        null
-                    )
+                    currentUser!!.clientCertificate = finalAlias
+                    userManager.updateUser(currentUser!!)
                 },
                 arrayOf("RSA", "EC"),
                 null,
@@ -430,7 +417,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     }
 
     private fun removeCurrentAccount() {
-        val otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser!!.id!!)
+        val otherUserExists = userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         WorkManager.getInstance().enqueue(accountRemovalWork)
         if (otherUserExists && view != null) {
@@ -613,28 +600,9 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                         displayName = userProfileOverall.ocs!!.data!!.displayNameAlt
                     }
                     if ((!TextUtils.isEmpty(displayName) && !(displayName == currentUser!!.displayName))) {
-                        dbQueryDisposable = userUtils.createOrUpdateUser(
-                            null,
-                            null,
-                            null,
-                            displayName,
-                            null,
-                            null,
-                            null,
-                            currentUser!!.id,
-                            null,
-                            null,
-                            null
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                { userEntityResult: UserEntity ->
-                                    binding.displayNameText.text = userEntityResult.displayName
-                                },
-                                { dispose(dbQueryDisposable) },
-                                { dispose(dbQueryDisposable) }
-                            )
+                        currentUser!!.displayName = displayName
+                        userManager.updateUser(currentUser!!)
+                        binding.displayNameText.text = currentUser!!.displayName
                     }
                 },
                 { dispose(profileQueryDisposable) },
@@ -682,7 +650,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                 appPreferences!!.isKeyboardIncognito
         }
 
-        if (CapabilitiesUtil.isReadStatusAvailable(userUtils.currentUser)) {
+        if (CapabilitiesUtilNew.isReadStatusAvailable(userManager.currentUser.blockingGet())) {
             (binding.settingsReadPrivacy.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
                 !CapabilitiesUtilNew.isReadStatusPrivate(currentUser!!)
         } else {
