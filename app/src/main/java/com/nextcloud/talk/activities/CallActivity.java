@@ -1208,26 +1208,12 @@ public class CallActivity extends CallBaseActivity {
                         }
                         Log.d(TAG, "   hasExternalSignalingServer: " + hasExternalSignalingServer);
 
-                        if (!"?".equals(conversationUser.getUserId())) {
-                            try {
-                                userManager.createOrUpdateUser(
-                                        null,
-                                        new UserManager.UserAttributes(
-                                            conversationUser.getId(),
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            LoganSquare.serialize(externalSignalingServer)))
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe();
-                            } catch (IOException exception) {
-                                Log.e(TAG, "Failed to serialize external signaling server", exception);
-                            }
+                        if (!"?".equals(conversationUser.getUserId()) && conversationUser.getId() != null) {
+                            Log.d(TAG, "Update externalSignalingServer for: " + conversationUser.getId() +
+                                " / " + conversationUser.getUserId());
+                            userManager.updateExternalSignalingServer(conversationUser.getId(), externalSignalingServer)
+                                .subscribeOn(Schedulers.io())
+                                .subscribe();
                         } else {
                             conversationUser.setExternalSignalingServer(externalSignalingServer);
                         }

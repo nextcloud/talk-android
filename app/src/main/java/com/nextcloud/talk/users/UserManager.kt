@@ -116,6 +116,14 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             }.map { TRUE }
     }
 
+    fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Single<Int> {
+        return userRepository.getUserWithId(id).map { user ->
+            user.externalSignalingServer = externalSignalingServer
+            userRepository.updateUser(user)
+        }.toSingle()
+    }
+
+    @Deprecated("Only available for migration, use updateExternalSignalingServer or create new methods")
     fun createOrUpdateUser(
         username: String?,
         userAttributes: UserAttributes,
