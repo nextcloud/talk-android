@@ -283,7 +283,8 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                                                  null,
                                                  null,
                                                  Boolean.TRUE,
-                                                 null, userEntity.getId(),
+                                                 null,
+                                                 userEntity.getId(),
                                                  null,
                                                  null,
                                                  null)
