@@ -86,6 +86,7 @@
     <string name="nc_group">Група</string>
     <string name="nc_groups">Групе</string>
     <string name="nc_guest">Гост</string>
+    <string name="nc_hint_enter_a_message">Unesite poruku ...</string>
     <string name="nc_important_conversation">Битан разговор</string>
     <string name="nc_join_via_link">Придружи се преко везе</string>
     <string name="nc_join_via_web">Придружи се преко веба</string>
