@@ -58,6 +58,7 @@ import com.nextcloud.talk.adapters.ParticipantDisplayItem;
 import com.nextcloud.talk.adapters.ParticipantsAdapter;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.CallActivityBinding;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.events.MediaStreamEvent;
@@ -66,7 +67,6 @@ import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.ExternalSignalingServer;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
@@ -85,13 +85,12 @@ import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.LegacyUserEntityMapper;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -181,7 +180,7 @@ public class CallActivity extends CallBaseActivity {
     @Inject
     EventBus eventBus;
     @Inject
-    UserUtils userUtils;
+    UserManager userManager;
     @Inject
     AppPreferences appPreferences;
     @Inject
@@ -228,7 +227,7 @@ public class CallActivity extends CallBaseActivity {
     private List<PeerConnection.IceServer> iceServers;
     private CameraEnumerator cameraEnumerator;
     private String roomToken;
-    private UserEntity conversationUser;
+    private User conversationUser;
     private String conversationName;
     private String callSession;
     private MediaStream localStream;
@@ -1209,30 +1208,14 @@ public class CallActivity extends CallBaseActivity {
                         }
                         Log.d(TAG, "   hasExternalSignalingServer: " + hasExternalSignalingServer);
 
-                        if (!conversationUser.getUserId().equals("?")) {
-                            try {
-                                userUtils.createOrUpdateUser(null,
-                                                             null,
-                                                             null,
-                                                             null,
-                                                             null,
-                                                             null,
-                                                             null,
-                                                             conversationUser.getId(),
-                                                             null,
-                                                             null,
-                                                             LoganSquare.serialize(externalSignalingServer))
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe();
-                            } catch (IOException exception) {
-                                Log.e(TAG, "Failed to serialize external signaling server", exception);
-                            }
+                        if (!"?".equals(conversationUser.getUserId()) && conversationUser.getId() != null) {
+                            Log.d(TAG, "Update externalSignalingServer for: " + conversationUser.getId() +
+                                " / " + conversationUser.getUserId());
+                            userManager.updateExternalSignalingServer(conversationUser.getId(), externalSignalingServer)
+                                .subscribeOn(Schedulers.io())
+                                .subscribe();
                         } else {
-                            try {
-                                conversationUser.setExternalSignalingServer(LoganSquare.serialize(externalSignalingServer));
-                            } catch (IOException exception) {
-                                Log.e(TAG, "Failed to serialize external signaling server", exception);
-                            }
+                            conversationUser.setExternalSignalingServer(externalSignalingServer);
                         }
 
                         if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
@@ -1353,8 +1336,7 @@ public class CallActivity extends CallBaseActivity {
                         ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
-                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(
-                            LegacyUserEntityMapper.toModel(conversationUser));
+                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
                         callOrJoinRoomViaWebSocket();
                     }
 
@@ -1417,7 +1399,7 @@ public class CallActivity extends CallBaseActivity {
 
                         if (!TextUtils.isEmpty(roomToken)) {
                             NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(),
-                                                                                          Objects.requireNonNull(LegacyUserEntityMapper.toModel(conversationUser)),
+                                                                                          conversationUser,
                                                                                           roomToken);
                         }
 

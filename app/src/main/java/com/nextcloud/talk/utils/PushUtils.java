@@ -31,11 +31,13 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
@@ -79,6 +81,9 @@ public class PushUtils {
     UserUtils userUtils;
 
     @Inject
+    UserManager userManager;
+
+    @Inject
     AppPreferences appPreferences;
 
     @Inject
@@ -103,27 +108,23 @@ public class PushUtils {
     }
 
     public SignatureVerification verifySignature(byte[] signatureBytes, byte[] subjectBytes) {
-        Signature signature = null;
-        PushConfigurationState pushConfigurationState;
-        PublicKey publicKey;
         SignatureVerification signatureVerification = new SignatureVerification();
         signatureVerification.setSignatureValid(false);
 
-        List<UserEntity> userEntities = userUtils.getUsers();
+        List<User> users = userManager.getUsers().blockingGet();
         try {
-            signature = Signature.getInstance("SHA512withRSA");
-            if (userEntities != null && userEntities.size() > 0) {
-                for (UserEntity userEntity : userEntities) {
-                    if (!TextUtils.isEmpty(userEntity.getPushConfigurationState())) {
-                        pushConfigurationState = LoganSquare.parse(userEntity.getPushConfigurationState(),
-                                                                   PushConfigurationState.class);
+            Signature signature = Signature.getInstance("SHA512withRSA");
+            if (users != null && users.size() > 0) {
+                PublicKey publicKey;
+                for (User user : users) {
+                    if (user.getPushConfigurationState() != null) {
                         publicKey = (PublicKey) readKeyFromString(true,
-                                                                  pushConfigurationState.getUserPublicKey());
+                                                                  user.getPushConfigurationState().getUserPublicKey());
                         signature.initVerify(publicKey);
                         signature.update(subjectBytes);
                         if (signature.verify(signatureBytes)) {
                             signatureVerification.setSignatureValid(true);
-                            signatureVerification.setUserEntity(userEntity);
+                            signatureVerification.setUser(user);
                             return signatureVerification;
                         }
                     }
@@ -131,8 +132,6 @@ public class PushUtils {
             }
         } catch (NoSuchAlgorithmException e) {
             Log.d(TAG, "No such algorithm");
-        } catch (IOException e) {
-            Log.d(TAG, "Error while trying to parse push configuration state");
         } catch (InvalidKeyException e) {
             Log.d(TAG, "Invalid key while trying to verify");
         } catch (SignatureException e) {

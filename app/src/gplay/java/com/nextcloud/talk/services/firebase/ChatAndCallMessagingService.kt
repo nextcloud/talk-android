@@ -189,26 +189,18 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
             Log.d(TAG, this.toString())
             timestamp = System.currentTimeMillis()
             if (delete) {
-                cancelExistingNotificationWithId(
-                    applicationContext,
-                    signatureVerification!!.userEntity!!,
-                    notificationId
-                )
+                cancelExistingNotificationWithId(applicationContext, signatureVerification!!.user!!, notificationId)
             } else if (deleteAll) {
-                cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity!!)
+                cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.user!!)
             } else if (deleteMultiple) {
                 notificationIds!!.forEach {
-                    cancelExistingNotificationWithId(
-                        applicationContext,
-                        signatureVerification!!.userEntity!!,
-                        it
-                    )
+                    cancelExistingNotificationWithId(applicationContext, signatureVerification!!.user!!, it)
                 }
             } else if (type == "call") {
                 val fullScreenIntent = Intent(applicationContext, CallNotificationActivity::class.java)
                 val bundle = Bundle()
                 bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage!!.id)
-                bundle.putParcelable(KEY_USER_ENTITY, signatureVerification!!.userEntity)
+                bundle.putParcelable(KEY_USER_ENTITY, signatureVerification!!.user)
                 bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
                 fullScreenIntent.putExtras(bundle)
 
@@ -226,7 +218,7 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
 
                 val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences)
                 val notificationChannelId = NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4
-                val uri = Uri.parse(signatureVerification!!.userEntity!!.baseUrl)
+                val uri = Uri.parse(signatureVerification!!.user!!.baseUrl)
                 val baseUrl = uri.host
 
                 val notification =
@@ -274,18 +266,18 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
         var inCallOnDifferentDevice = false
 
         val apiVersion = ApiUtils.getConversationApiVersion(
-            signatureVerification.userEntity,
+            signatureVerification.user,
             intArrayOf(ApiUtils.APIv4, 1)
         )
 
         ncApi.getPeersForCall(
             ApiUtils.getCredentials(
-                signatureVerification.userEntity!!.username,
-                signatureVerification.userEntity!!.token
+                signatureVerification.user!!.username,
+                signatureVerification.user!!.token
             ),
             ApiUtils.getUrlForCall(
                 apiVersion,
-                signatureVerification.userEntity!!.baseUrl,
+                signatureVerification.user!!.baseUrl,
                 decryptedPushMessage.id
             )
         )
@@ -303,7 +295,7 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
                     hasParticipantsInCall = participantList.isNotEmpty()
                     if (hasParticipantsInCall) {
                         for (participant in participantList) {
-                            if (participant.actorId == signatureVerification.userEntity!!.userId &&
+                            if (participant.actorId == signatureVerification.user!!.userId &&
                                 participant.actorType == Participant.ActorType.USERS
                             ) {
                                 inCallOnDifferentDevice = true

@@ -27,9 +27,9 @@ import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.NetworkEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
@@ -90,7 +90,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     @Inject
     Context context;
 
-    private UserEntity conversationUser;
+    private User conversationUser;
     private String webSocketTicket;
     private String resumeId;
     private String sessionId;
@@ -109,7 +109,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     private List<String> messagesQueue = new ArrayList<>();
 
-    MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
+    MagicWebSocketInstance(User conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         this.connectionUrl = connectionUrl;

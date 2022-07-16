@@ -43,7 +43,6 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RingtoneSettings
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import java.io.IOException
@@ -218,20 +217,14 @@ object NotificationUtils {
         }
     }
 
-    fun cancelAllNotificationsForAccount(context: Context?, conversationUser: UserEntity) {
-        scanNotifications(
-            context,
-            LegacyUserEntityMapper.toModel(conversationUser)!!
-        ) { notificationManager, statusBarNotification, _ ->
+    fun cancelAllNotificationsForAccount(context: Context?, conversationUser: User) {
+        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, _ ->
             notificationManager.cancel(statusBarNotification.id)
         }
     }
 
-    fun cancelExistingNotificationWithId(context: Context?, conversationUser: UserEntity, notificationId: Long?) {
-        scanNotifications(
-            context,
-            LegacyUserEntityMapper.toModel(conversationUser)!!
-        ) { notificationManager, statusBarNotification, notification ->
+    fun cancelExistingNotificationWithId(context: Context?, conversationUser: User, notificationId: Long?) {
+        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
             if (notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
                 notificationManager.cancel(statusBarNotification.id)
             }
@@ -240,13 +233,10 @@ object NotificationUtils {
 
     fun findNotificationForRoom(
         context: Context?,
-        conversationUser: UserEntity,
+        conversationUser: User,
         roomTokenOrId: String
     ): StatusBarNotification? {
-        scanNotifications(
-            context,
-            LegacyUserEntityMapper.toModel(conversationUser)!!
-        ) { _, statusBarNotification, notification ->
+        scanNotifications(context, conversationUser) { _, statusBarNotification, notification ->
             if (roomTokenOrId == notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)) {
                 return statusBarNotification
             }
@@ -254,11 +244,7 @@ object NotificationUtils {
         return null
     }
 
-    fun cancelExistingNotificationsForRoom(
-        context: Context?,
-        conversationUser: User,
-        roomTokenOrId: String
-    ) {
+    fun cancelExistingNotificationsForRoom(context: Context?, conversationUser: User, roomTokenOrId: String) {
         scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
             if (roomTokenOrId == notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)) {
                 notificationManager.cancel(statusBarNotification.id)
