@@ -42,6 +42,7 @@ import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -130,20 +131,20 @@ public class NotificationWorker extends Worker {
     }
 
     private void showNotificationForCallWithNoPing(Intent intent) {
-        UserEntity userEntity = signatureVerification.getUserEntity();
+        User user = signatureVerification.getUser();
 
         ArbitraryStorageEntity arbitraryStorageEntity;
 
         if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(
-            userEntity.getId(),
+            user.getId(),
             "important_conversation",
             intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
             importantConversation = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
         }
 
-        int apiVersion = ApiUtils.getConversationApiVersion(userEntity, new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.APIv4, 1});
 
-        ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, userEntity.getBaseUrl(),
+        ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, user.getBaseUrl(),
                 intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())))
                 .blockingSubscribe(new Observer<RoomOverall>() {
                     @Override
@@ -188,8 +189,8 @@ public class NotificationWorker extends Worker {
     }
 
     private void showNotificationWithObjectData(Intent intent) {
-        UserEntity userEntity = signatureVerification.getUserEntity();
-        ncApi.getNotification(credentials, ApiUtils.getUrlForNotificationWithId(userEntity.getBaseUrl(),
+        User user = signatureVerification.getUser();
+        ncApi.getNotification(credentials, ApiUtils.getUrlForNotificationWithId(user.getBaseUrl(),
                 Long.toString(decryptedPushMessage.getNotificationId())))
                 .blockingSubscribe(new Observer<NotificationOverall>() {
                     @Override
@@ -309,7 +310,7 @@ public class NotificationWorker extends Worker {
         }
         PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode, intent, intentFlag);
 
-        Uri uri = Uri.parse(signatureVerification.getUserEntity().getBaseUrl());
+        Uri uri = Uri.parse(signatureVerification.getUser().getBaseUrl());
         String baseUrl = uri.getHost();
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "1")
@@ -339,7 +340,7 @@ public class NotificationWorker extends Worker {
 
         Bundle notificationInfo = new Bundle();
         notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
-                                 signatureVerification.getUserEntity().getId());
+                                 signatureVerification.getUser().getId());
         // could be an ID or a TOKEN
         notificationInfo.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(),
                                    decryptedPushMessage.getId());
@@ -358,12 +359,13 @@ public class NotificationWorker extends Worker {
 
         notificationBuilder.setContentIntent(pendingIntent);
 
-        String groupName = signatureVerification.getUserEntity().getId() + "@" + decryptedPushMessage.getId();
+        String groupName = signatureVerification.getUser().getId() + "@" + decryptedPushMessage.getId();
         notificationBuilder.setGroup(Long.toString(calculateCRC32(groupName)));
 
         StatusBarNotification activeStatusBarNotification =
                 NotificationUtils.INSTANCE.findNotificationForRoom(context,
-                        signatureVerification.getUserEntity(), decryptedPushMessage.getId());
+                                                                   signatureVerification.getUser(),
+                                                                   decryptedPushMessage.getId());
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
@@ -404,7 +406,7 @@ public class NotificationWorker extends Worker {
 
         Person.Builder person =
                 new Person.Builder()
-                    .setKey(signatureVerification.getUserEntity().getId() + "@" + notificationUser.getId())
+                    .setKey(signatureVerification.getUser().getId() + "@" + notificationUser.getId())
                     .setName(EmojiCompat.get().process(notificationUser.getName()))
                     .setBot("bot".equals(userType));
 
@@ -413,7 +415,7 @@ public class NotificationWorker extends Worker {
         addMarkAsReadAction(notificationBuilder, systemNotificationId);
 
         if ("user".equals(userType) || "guest".equals(userType)) {
-            String baseUrl = signatureVerification.getUserEntity().getBaseUrl();
+            String baseUrl = signatureVerification.getUser().getBaseUrl();
             String avatarUrl = "user".equals(userType) ?
                 ApiUtils.getUrlForAvatar(baseUrl, notificationUser.getId(), false) :
                 ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.getName(), false);
@@ -430,7 +432,7 @@ public class NotificationWorker extends Worker {
         // It is NOT the same as the notification ID used in communication with the server.
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
-                              Objects.requireNonNull(signatureVerification.getUserEntity()).getId());
+                              Objects.requireNonNull(signatureVerification.getUser()).getId());
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
         actualIntent.putExtra(BundleKeys.KEY_MESSAGE_ID, messageId);
 
@@ -593,22 +595,22 @@ public class NotificationWorker extends Worker {
                     if (decryptedPushMessage.getDelete()) {
                         NotificationUtils.INSTANCE.cancelExistingNotificationWithId(
                             context,
-                            signatureVerification.getUserEntity(),
+                            signatureVerification.getUser(),
                             decryptedPushMessage.getNotificationId());
                     } else if (decryptedPushMessage.getDeleteAll()) {
                         NotificationUtils.INSTANCE.cancelAllNotificationsForAccount(
                             context,
-                            signatureVerification.getUserEntity());
+                            signatureVerification.getUser());
                     } else if (decryptedPushMessage.getDeleteMultiple()) {
                         for (long notificationId : decryptedPushMessage.getNotificationIds()) {
                             NotificationUtils.INSTANCE.cancelExistingNotificationWithId(
                                 context,
-                                signatureVerification.getUserEntity(),
+                                signatureVerification.getUser(),
                                 notificationId);
                         }
                     } else {
-                        credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUsername(),
-                                signatureVerification.getUserEntity().getToken());
+                        credentials = ApiUtils.getCredentials(signatureVerification.getUser().getUsername(),
+                                signatureVerification.getUser().getToken());
 
                         ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
                                 JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
@@ -632,7 +634,7 @@ public class NotificationWorker extends Worker {
                             bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
 
                             bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(),
-                                                 signatureVerification.getUserEntity());
+                                                 signatureVerification.getUser());
 
                             bundle.putBoolean(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL(),
                                     startACall);

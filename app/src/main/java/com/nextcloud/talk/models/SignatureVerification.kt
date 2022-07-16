@@ -22,11 +22,11 @@
 package com.nextcloud.talk.models
 
 import android.os.Parcelable
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class SignatureVerification(
     var signatureValid: Boolean = false,
-    var userEntity: UserEntity? = null
+    var user: User? = null
 ) : Parcelable

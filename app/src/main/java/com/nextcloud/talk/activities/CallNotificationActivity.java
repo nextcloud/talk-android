@@ -46,10 +46,9 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding;
 import com.nextcloud.talk.events.CallNotificationClick;
-import com.nextcloud.talk.models.database.CapabilitiesUtil;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
@@ -59,6 +58,7 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import org.greenrobot.eventbus.EventBus;
@@ -106,7 +106,7 @@ public class CallNotificationActivity extends CallBaseActivity {
     private List<Disposable> disposablesList = new ArrayList<>();
     private Bundle originalBundle;
     private String roomId;
-    private UserEntity userBeingCalled;
+    private User userBeingCalled;
     private String credentials;
     private Conversation currentConversation;
     private MediaPlayer mediaPlayer;
@@ -285,8 +285,8 @@ public class CallNotificationActivity extends CallBaseActivity {
 
                     if (apiVersion >= 3) {
                         boolean hasCallFlags =
-                            CapabilitiesUtil.hasSpreedFeatureCapability(userBeingCalled,
-                                                                        "conversation-call-flags");
+                            CapabilitiesUtilNew.hasSpreedFeatureCapability(userBeingCalled,
+                                                                           "conversation-call-flags");
                         if (hasCallFlags) {
                             if (isInCallWithVideo(currentConversation.getCallFlag())) {
                                 binding.incomingCallVoiceOrVideoTextView.setText(
@@ -308,7 +308,7 @@ public class CallNotificationActivity extends CallBaseActivity {
 
                 @Override
                 public void onComplete() {
-
+                    // unused atm
                 }
             });
     }
