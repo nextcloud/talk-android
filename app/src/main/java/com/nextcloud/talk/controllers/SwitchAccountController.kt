@@ -39,25 +39,22 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerGenericRvBinding
 import com.nextcloud.talk.models.ImportAccount
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.utils.AccountUtils.findAccounts
+import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.AccountUtils.findAccountsForUsers
 import com.nextcloud.talk.utils.AccountUtils.getInformationFromAccount
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
-import com.nextcloud.talk.utils.database.user.UserUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
 import org.osmdroid.config.Configuration
 import java.net.CookieManager
-import java.util.ArrayList
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -69,7 +66,7 @@ class SwitchAccountController(args: Bundle? = null) :
     private val binding: ControllerGenericRvBinding by viewBinding(ControllerGenericRvBinding::bind)
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var cookieManager: CookieManager
@@ -85,33 +82,17 @@ class SwitchAccountController(args: Bundle? = null) :
         }
         true
     }
+
     private val onSwitchItemClickListener = FlexibleAdapter.OnItemClickListener { _, position ->
         if (userItems.size > position) {
-            val userEntity = (userItems[position] as AdvancedUserItem).entity
-            userUtils.createOrUpdateUser(
-                null,
-                null, null, null,
-                null, java.lang.Boolean.TRUE, null, userEntity.id, null, null, null
-            )
-                .subscribe(object : Observer<UserEntity> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-                    override fun onNext(userEntity: UserEntity) {
-                        cookieManager.cookieStore.removeAll()
-                        userUtils.disableAllUsersWithoutId(userEntity.id)
-                        if (activity != null) {
-                            activity!!.runOnUiThread { router.popCurrentController() }
-                        }
-                    }
+            val user = (userItems[position] as AdvancedUserItem).entity
 
-                    override fun onError(e: Throwable) {
-                        // unused atm
-                    }
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
+            if (userManager.setUserAsActive(user).blockingGet()) {
+                cookieManager.cookieStore.removeAll()
+                if (activity != null) {
+                    activity!!.runOnUiThread { router.popCurrentController() }
+                }
+            }
         }
         true
     }
@@ -143,23 +124,21 @@ class SwitchAccountController(args: Bundle? = null) :
 
         if (adapter == null) {
             adapter = FlexibleAdapter(userItems, activity, false)
-            var userEntity: UserEntity?
             var participant: Participant
+
             if (!isAccountImport) {
-                for (userEntityObject in userUtils.users) {
-                    userEntity = userEntityObject as UserEntity?
-                    if (!userEntity!!.current) {
-                        var userId: String?
-                        userId = if (userEntity.userId != null) {
-                            userEntity.userId
+                for (user in userManager.users.blockingGet()) {
+                    if (!user.current) {
+                        val userId: String? = if (user.userId != null) {
+                            user.userId
                         } else {
-                            userEntity.username
+                            user.username
                         }
                         participant = Participant()
                         participant.actorType = Participant.ActorType.USERS
                         participant.actorId = userId
-                        participant.displayName = userEntity.displayName
-                        userItems.add(AdvancedUserItem(participant, userEntity, null))
+                        participant.displayName = user.displayName
+                        userItems.add(AdvancedUserItem(participant, user, null))
                     }
                 }
                 adapter!!.addListener(onSwitchItemClickListener)
@@ -167,16 +146,17 @@ class SwitchAccountController(args: Bundle? = null) :
             } else {
                 var account: Account
                 var importAccount: ImportAccount
-                for (accountObject in findAccounts(userUtils.users as List<UserEntity>)) {
+                var user: User
+                for (accountObject in findAccountsForUsers(userManager.users.blockingGet())) {
                     account = accountObject
                     importAccount = getInformationFromAccount(account)
                     participant = Participant()
                     participant.actorType = Participant.ActorType.USERS
                     participant.actorId = importAccount.getUsername()
                     participant.displayName = importAccount.getUsername()
-                    userEntity = UserEntity()
-                    userEntity.baseUrl = importAccount.getBaseUrl()
-                    userItems.add(AdvancedUserItem(participant, userEntity, account))
+                    user = User()
+                    user.baseUrl = importAccount.getBaseUrl()
+                    userItems.add(AdvancedUserItem(participant, user, account))
                 }
                 adapter!!.addListener(onImportItemClickListener)
                 adapter!!.updateDataSet(userItems, false)

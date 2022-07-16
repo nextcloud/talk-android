@@ -131,6 +131,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }
     }
 
+    fun setUserAsActive(user: User): Single<Boolean> {
+        return userRepository.setUserAsActiveWithId(user.id!!)
+    }
+
     @Deprecated("Only available for migration, use updateExternalSignalingServer or create new methods")
     fun createOrUpdateUser(
         username: String?,

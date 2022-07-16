@@ -44,17 +44,16 @@ import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.DialogChooseAccountBinding;
-import com.nextcloud.talk.models.database.CapabilitiesUtil;
-import com.nextcloud.talk.models.database.User;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.models.json.status.StatusOverall;
 import com.nextcloud.talk.ui.StatusDrawable;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 
 import java.net.CookieManager;
 import java.util.ArrayList;
@@ -80,7 +79,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     private static final float STATUS_SIZE_IN_DP = 9f;
 
     @Inject
-    UserUtils userUtils;
+    UserManager userManager;
 
     @Inject
     CookieManager cookieManager;
@@ -115,7 +114,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         binding.currentAccount.userIcon.setTag("");
 
         // Defining user texts, accounts, etc.
-        User user = userUtils.getCurrentUser();
+        User user = userManager.getCurrentUser().blockingGet();
         if (user != null) {
             binding.currentAccount.userName.setText(user.getDisplayName());
             binding.currentAccount.ticker.setVisibility(View.GONE);
@@ -171,11 +170,11 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(userItems, getActivity(), false);
 
-            UserEntity userEntity;
+            User userEntity;
             Participant participant;
 
-            for (Object userEntityObject : userUtils.getUsers()) {
-                userEntity = (UserEntity) userEntityObject;
+            for (Object userItem : userManager.getUsers().blockingGet()) {
+                userEntity = (User) userItem;
                 if (!userEntity.getCurrent()) {
                     String userId;
                     if (userEntity.getUserId() != null) {
@@ -202,7 +201,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     private void loadCurrentStatus(User user) {
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
-        if (CapabilitiesUtil.isUserStatusAvailable(userUtils.getCurrentUser())) {
+        if (CapabilitiesUtilNew.isUserStatusAvailable(userManager.getCurrentUser().blockingGet())) {
             binding.statusView.setVisibility(View.VISIBLE);
 
             ncApi.status(credentials, ApiUtils.getUrlForStatus(user.getBaseUrl())).
@@ -276,45 +275,16 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             @Override
             public boolean onItemClick(View view, int position) {
                 if (userItems.size() > position) {
-                    UserEntity userEntity = (userItems.get(position)).getEntity();
-                    userUtils.createOrUpdateUser(null,
-                                                 null,
-                                                 null,
-                                                 null,
-                                                 null,
-                                                 Boolean.TRUE,
-                                                 null,
-                                                 userEntity.getId(),
-                                                 null,
-                                                 null,
-                                                 null)
-                        .subscribe(new Observer<UserEntity>() {
-                            @Override
-                            public void onSubscribe(@NonNull Disposable d) {
-                                // unused atm
-                            }
+                    User user = (userItems.get(position)).getEntity();
 
-                            @Override
-                            public void onNext(@NonNull UserEntity userEntity) {
-                                cookieManager.getCookieStore().removeAll();
-                                userUtils.disableAllUsersWithoutId(userEntity.getId());
-                                if (getActivity() != null) {
-                                    getActivity().runOnUiThread(
-                                        () -> ((MainActivity) getActivity()).resetConversationsList());
-                                }
-                                dismiss();
-                            }
-
-                            @Override
-                            public void onError(@NonNull Throwable e) {
-                                Log.w(TAG, "Error updating user", e);
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                // unused atm
-                            }
-                        });
+                    if (userManager.setUserAsActive(user).blockingGet()) {
+                        cookieManager.getCookieStore().removeAll();
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(
+                                () -> ((MainActivity) getActivity()).resetConversationsList());
+                        }
+                        dismiss();
+                    }
                 }
 
                 return true;

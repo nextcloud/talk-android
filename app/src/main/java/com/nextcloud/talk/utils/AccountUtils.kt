@@ -30,9 +30,9 @@ import android.content.pm.PackageManager
 import android.util.Log
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.ImportAccount
 import com.nextcloud.talk.models.database.UserEntity
-import java.util.ArrayList
 import java.util.Arrays
 
 object AccountUtils {
@@ -40,14 +40,19 @@ object AccountUtils {
     private const val TAG = "AccountUtils"
     private const val MIN_SUPPORTED_FILES_APP_VERSION = 30060151
 
+    @Deprecated("Migrate to findAccountsForUsers")
     fun findAccounts(userEntitiesList: List<UserEntity>): List<Account> {
+        return findAccountsForUsers(LegacyUserEntityMapper.toModel(userEntitiesList))
+    }
+
+    fun findAccountsForUsers(userEntitiesList: List<User>): List<Account> {
         val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
         val accMgr = AccountManager.get(context)
         val accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type))
 
         val accountsAvailable = ArrayList<Account>()
         var importAccount: ImportAccount
-        var internalUserEntity: UserEntity
+        var internalUserEntity: User
         var accountFound: Boolean
         for (account in accounts) {
             accountFound = false
