@@ -32,8 +32,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.RvItemContactBinding;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -57,15 +57,15 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
     public static final String PARTICIPANT_SOURCE_USERS = "users";
 
     private final Participant participant;
-    private final UserEntity userEntity;
+    private final User user;
     private GenericTextHeaderItem header;
     public boolean isOnline = true;
 
     public ContactItem(Participant participant,
-                       UserEntity userEntity,
+                       User user,
                        GenericTextHeaderItem genericTextHeaderItem) {
         this.participant = participant;
-        this.userEntity = userEntity;
+        this.user = user;
         this.header = genericTextHeaderItem;
     }
 
@@ -179,7 +179,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
                 .setOldController(holder.binding.avatarDraweeView.getController())
                 .setAutoPlayAnimations(true)
                 .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForGuestAvatar(userEntity.getBaseUrl(),
+                    ApiUtils.getUrlForGuestAvatar(user.getBaseUrl(),
                                                   displayName,
                                                   false)))
                 .build();
@@ -191,7 +191,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
                 .setOldController(holder.binding.avatarDraweeView.getController())
                 .setAutoPlayAnimations(true)
                 .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForAvatar(userEntity.getBaseUrl(),
+                    ApiUtils.getUrlForAvatar(user.getBaseUrl(),
                                              participant.getCalculatedActorId(),
                                              false)))
                 .build();
