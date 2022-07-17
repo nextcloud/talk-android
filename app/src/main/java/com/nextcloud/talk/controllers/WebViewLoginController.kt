@@ -57,18 +57,16 @@ import com.nextcloud.talk.databinding.ControllerWebViewLoginBinding
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.models.LoginData
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ORIGINAL_PROTOCOL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.nextcloud.talk.utils.ssl.MagicTrustManager
 import de.cotech.hw.fido.WebViewFidoBridge
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import io.requery.Persistable
 import io.requery.reactivex.ReactiveEntityStore
 import org.greenrobot.eventbus.EventBus
@@ -89,7 +87,7 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
     private val binding: ControllerWebViewLoginBinding by viewBinding(ControllerWebViewLoginBinding::bind)
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var dataStore: ReactiveEntityStore<Persistable>
@@ -223,13 +221,13 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
             }
 
             override fun onReceivedClientCertRequest(view: WebView, request: ClientCertRequest) {
-                val userEntity = userUtils.currentUser
+                val user = userManager.currentUser.blockingGet()
                 var alias: String? = null
                 if (!isPasswordUpdate) {
                     alias = appPreferences!!.temporaryClientCertAlias
                 }
-                if (TextUtils.isEmpty(alias) && userEntity != null) {
-                    alias = userEntity.clientCertificate
+                if (TextUtils.isEmpty(alias) && user != null) {
+                    alias = user.clientCertificate
                 }
                 if (!TextUtils.isEmpty(alias)) {
                     val finalAlias = alias
@@ -327,15 +325,16 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
         val loginData = parseLoginData(assembledPrefix, dataString)
         if (loginData != null) {
             dispose()
-            val currentUser = userUtils.currentUser
+            val currentUser = userManager.currentUser.blockingGet()
             var messageType: ApplicationWideMessageHolder.MessageType? = null
-            if (!isPasswordUpdate && userUtils.getIfUserWithUsernameAndServer(loginData.username, baseUrl)) {
+            if (!isPasswordUpdate &&
+                userManager.getIfUserWithUsernameAndServer(loginData.username!!, baseUrl!!).blockingGet()
+            ) {
                 messageType = ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED
             }
-            if (userUtils.checkIfUserIsScheduledForDeletion(loginData.username, baseUrl)) {
-                ApplicationWideMessageHolder.getInstance().setMessageType(
+            if (userManager.checkIfUserIsScheduledForDeletion(loginData.username!!, baseUrl!!).blockingGet()) {
+                ApplicationWideMessageHolder.getInstance().messageType =
                     ApplicationWideMessageHolder.MessageType.ACCOUNT_SCHEDULED_FOR_DELETION
-                )
                 if (!isPasswordUpdate) {
                     router.popToRoot()
                 } else {
@@ -366,47 +365,35 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
             } else {
                 if (isPasswordUpdate) {
                     if (currentUser != null) {
-                        userQueryDisposable = userUtils.createOrUpdateUser(
-                            null,
-                            loginData.token,
-                            null,
-                            null,
-                            "",
-                            java.lang.Boolean.TRUE,
-                            null,
-                            currentUser.id,
-                            null,
-                            appPreferences!!.temporaryClientCertAlias,
-                            null
+                        currentUser.clientCertificate = appPreferences!!.temporaryClientCertAlias
+                        currentUser.token = loginData.token
+                        val rowsUpdated = userManager.updateUser(currentUser).blockingGet()
+                        Log.d(TAG, "User rows updated: $rowsUpdated")
+
+                        if (finalMessageType != null) {
+                            ApplicationWideMessageHolder.getInstance().messageType = finalMessageType
+                        }
+
+                        val data = Data.Builder().putString(
+                            PushRegistrationWorker.ORIGIN,
+                            "WebViewLoginController#parseAndLoginFromWebView"
+                        ).build()
+
+                        val pushRegistrationWork = OneTimeWorkRequest.Builder(
+                            PushRegistrationWorker::class.java
                         )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    if (finalMessageType != null) {
-                                        ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType)
-                                    }
-                                    val data = Data.Builder().putString(
-                                        PushRegistrationWorker.ORIGIN,
-                                        "WebViewLoginController#parseAndLoginFromWebView"
-                                    ).build()
-                                    val pushRegistrationWork = OneTimeWorkRequest.Builder(
-                                        PushRegistrationWorker::class.java
-                                    )
-                                        .setInputData(data)
-                                        .build()
-                                    WorkManager.getInstance().enqueue(pushRegistrationWork)
-                                    router.popCurrentController()
-                                },
-                                { dispose() }
-                            ) { dispose() }
+                            .setInputData(data)
+                            .build()
+
+                        WorkManager.getInstance().enqueue(pushRegistrationWork)
+                        router.popCurrentController()
                     }
                 } else {
                     if (finalMessageType != null) {
                         // FIXME when the user registers a new account that was setup before (aka
                         //  ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED)
-                        //  The token is not updated in the database and therefor the account not visible/usable
-                        ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType)
+                        //  The token is not updated in the database and therefore the account not visible/usable
+                        ApplicationWideMessageHolder.getInstance().messageType = finalMessageType
                     }
                     router.popToRoot()
                 }
