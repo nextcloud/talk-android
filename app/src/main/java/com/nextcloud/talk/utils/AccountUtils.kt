@@ -1,7 +1,9 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Andy Scherzinger
  * @author Mario Danic
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,18 +34,12 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.ImportAccount
-import com.nextcloud.talk.models.database.UserEntity
 import java.util.Arrays
 
 object AccountUtils {
 
     private const val TAG = "AccountUtils"
     private const val MIN_SUPPORTED_FILES_APP_VERSION = 30060151
-
-    @Deprecated("Migrate to findAccountsForUsers")
-    fun findAccounts(userEntitiesList: List<UserEntity>): List<Account> {
-        return findAccountsForUsers(LegacyUserEntityMapper.toModel(userEntitiesList))
-    }
 
     fun findAccountsForUsers(users: List<User>): List<Account> {
         val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
