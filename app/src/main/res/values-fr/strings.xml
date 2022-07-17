@@ -24,7 +24,7 @@
     <string name="encrypted">Chiffré</string>
     <string name="failed_to_save">Echec de la sauvegarde %1$s</string>
     <string name="file_list_folder">Dossier</string>
-    <string name="file_list_loading">Chargement...</string>
+    <string name="file_list_loading">Chargement …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 heures</string>
     <string name="invisible">Invisible</string>
@@ -38,7 +38,7 @@
     <string name="menu_item_sort_by_size_smallest_first">Le plus petit en premier</string>
     <string name="message_search_begin_empty">Aucun résultat</string>
     <string name="message_search_begin_typing">Commencer à taper pour lancer la recherche</string>
-    <string name="message_search_hint">Recherche...</string>
+    <string name="message_search_hint">Recherche …</string>
     <string name="messages">Messages</string>
     <string name="nc_Server_account_imported">Le compte sélectionné est maintenant importé et disponible</string>
     <string name="nc_about">À propos</string>
@@ -59,7 +59,7 @@
     <string name="nc_call_name">Nom de la conversation</string>
     <string name="nc_call_name_is_same">Le nom que vous avez entré est le même que celui existant</string>
     <string name="nc_call_notifications">Notifications d\'appel</string>
-    <string name="nc_call_reconnecting">Reconnexion...</string>
+    <string name="nc_call_reconnecting">Reconnexion …</string>
     <string name="nc_call_ringing">APPEL EN COURS</string>
     <string name="nc_call_state_in_call">%1$s en ligne</string>
     <string name="nc_call_state_with_phone">%1$savec un téléphone</string>
@@ -127,7 +127,7 @@
     <string name="nc_group">Groupe</string>
     <string name="nc_groups">Groupes</string>
     <string name="nc_guest">Invité</string>
-    <string name="nc_hint_enter_a_message">Saisir un message...</string>
+    <string name="nc_hint_enter_a_message">Saisir un message …</string>
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent sur les paramètres Ne Pas Déranger</string>
     <string name="nc_join_via_link">Joindre via un lien</string>
@@ -136,7 +136,7 @@
     <string name="nc_last_moderator_title">Impossible de quitter la conversation</string>
     <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
     <string name="nc_leave">Quitter la conversation</string>
-    <string name="nc_leaving_call">Fin d\'appel...</string>
+    <string name="nc_leaving_call">Fin d\'appel …</string>
     <string name="nc_license_summary">Licence Publique Générale GNU, Version 3</string>
     <string name="nc_license_title">Licence</string>
     <string name="nc_limit_hit">La limite de %s caractères a été atteinte</string>

@@ -37,7 +37,7 @@
     <string name="menu_item_sort_by_size_biggest_first">サイズ（降順）</string>
     <string name="menu_item_sort_by_size_smallest_first">サイズ（昇順）</string>
     <string name="message_search_begin_empty">検索結果なし</string>
-    <string name="message_search_begin_typing">入力して検索を開始...</string>
+    <string name="message_search_begin_typing">入力して検索を開始 …</string>
     <string name="message_search_hint">検索…</string>
     <string name="messages">メッセージ</string>
     <string name="nc_Server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
@@ -59,7 +59,7 @@
     <string name="nc_call_name">会話名</string>
     <string name="nc_call_name_is_same">入力した名前は既存の名前と同じです</string>
     <string name="nc_call_notifications">通話通知</string>
-    <string name="nc_call_reconnecting">再接続中...</string>
+    <string name="nc_call_reconnecting">再接続中 …</string>
     <string name="nc_call_ringing">呼び出し中</string>
     <string name="nc_call_state_in_call">%1$s着信</string>
     <string name="nc_call_state_with_phone">%1$sと電話</string>
@@ -121,7 +121,7 @@
     <string name="nc_following_link">公開リンクをたどっているユーザー</string>
     <string name="nc_formatted_message_you">あなた：%1$s</string>
     <string name="nc_forward_message">転送</string>
-    <string name="nc_forward_to_three_dots">次に転送...</string>
+    <string name="nc_forward_to_three_dots">次に転送 …</string>
     <string name="nc_get_from_provider">まだサーバーがありませんか？\ nプロバイダーから取得するにはここをクリックしてください</string>
     <string name="nc_get_source_code">ソースコードを入手</string>
     <string name="nc_group">グループ</string>
@@ -136,7 +136,7 @@
     <string name="nc_last_moderator_title">会話を退出できませんでした</string>
     <string name="nc_last_modified">%1$s最終更新:%2$s</string>
     <string name="nc_leave">会話を離れる</string>
-    <string name="nc_leaving_call">通話を終了...</string>
+    <string name="nc_leaving_call">通話を終了 …</string>
     <string name="nc_license_summary">GNU General Public License, version 3</string>
     <string name="nc_license_title">ライセンス</string>
     <string name="nc_limit_hit">%s文字の制限に達しました</string>
@@ -307,7 +307,7 @@
     <string name="nc_share_text_pass">\nパスワード：%1$s</string>
     <string name="nc_share_this_location">この位置を共有</string>
     <string name="nc_shared_items">共有済みアイテム</string>
-    <string name="nc_shared_items_description">画像、ファイル、ボイスメッセージ...</string>
+    <string name="nc_shared_items_description">画像、ファイル、ボイスメッセージ …</string>
     <string name="nc_shared_items_empty">共有アイテムがありません</string>
     <string name="nc_shared_location">共有された位置情報</string>
     <string name="nc_sort_by">ソート: </string>

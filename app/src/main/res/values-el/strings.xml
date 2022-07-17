@@ -19,7 +19,7 @@
     <string name="encrypted">Κρυπτογραφημένο</string>
     <string name="failed_to_save">Αποτυχία αποθήκευσης %1$s</string>
     <string name="file_list_folder">φάκελος</string>
-    <string name="file_list_loading">Φόρτωση...</string>
+    <string name="file_list_loading">Φόρτωση …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ώρες</string>
     <string name="invisible">Αόρατο</string>
@@ -76,7 +76,7 @@
     <string name="nc_common_set">Ορισμός</string>
     <string name="nc_common_skip">Παράλειψη</string>
     <string name="nc_configure_cert_auth">Επιλογή πιστοποιητικού πιστοποίησης</string>
-    <string name="nc_connecting_call">Σύνδεση ...</string>
+    <string name="nc_connecting_call">Σύνδεση …</string>
     <string name="nc_contacts_done">Ολοκληρώθηκε</string>
     <string name="nc_conversation_link">Σύνδεσμος συνομιλίας</string>
     <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>

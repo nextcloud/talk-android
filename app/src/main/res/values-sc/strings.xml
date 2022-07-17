@@ -17,7 +17,7 @@
     <string name="encrypted">Tzifradu</string>
     <string name="failed_to_save">No at fatu a sarvare %1$s</string>
     <string name="file_list_folder">cartella</string>
-    <string name="file_list_loading">Carrigamentu...</string>
+    <string name="file_list_loading">Carrigamentu …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 oras</string>
     <string name="invisible">Invisìbile</string>
@@ -77,7 +77,7 @@
     <string name="nc_common_set">Imposta</string>
     <string name="nc_common_skip">Brinca</string>
     <string name="nc_configure_cert_auth">Seletziona tzertificadu autenticatzione</string>
-    <string name="nc_connecting_call">Connetende ...</string>
+    <string name="nc_connecting_call">Connetende …</string>
     <string name="nc_contacts_done">Fatu</string>
     <string name="nc_conversation_link">Ligòngiu resonada</string>
     <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
