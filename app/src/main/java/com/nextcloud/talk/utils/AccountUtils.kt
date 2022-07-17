@@ -45,42 +45,18 @@ object AccountUtils {
         return findAccountsForUsers(LegacyUserEntityMapper.toModel(userEntitiesList))
     }
 
-    fun findAccountsForUsers(userEntitiesList: List<User>): List<Account> {
+    fun findAccountsForUsers(users: List<User>): List<Account> {
         val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
         val accMgr = AccountManager.get(context)
         val accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type))
 
         val accountsAvailable = ArrayList<Account>()
-        var importAccount: ImportAccount
-        var internalUserEntity: User
         var accountFound: Boolean
         for (account in accounts) {
             accountFound = false
 
-            for (i in userEntitiesList.indices) {
-                internalUserEntity = userEntitiesList[i]
-                importAccount = getInformationFromAccount(account)
-                if (importAccount.token != null) {
-                    if (UriUtils.hasHttpProtocollPrefixed(importAccount.baseUrl)) {
-                        if (
-                            internalUserEntity.username == importAccount.username &&
-                            internalUserEntity.baseUrl == importAccount.baseUrl
-                        ) {
-                            accountFound = true
-                            break
-                        }
-                    } else {
-                        if (internalUserEntity.username == importAccount.username &&
-                            (
-                                internalUserEntity.baseUrl == "http://" + importAccount.baseUrl ||
-                                    internalUserEntity.baseUrl == "https://" + importAccount.baseUrl
-                                )
-                        ) {
-                            accountFound = true
-                            break
-                        }
-                    }
-                } else {
+            for (user in users) {
+                if (matchAccounts(getInformationFromAccount(account), user)) {
                     accountFound = true
                     break
                 }
@@ -92,6 +68,33 @@ object AccountUtils {
         }
 
         return accountsAvailable
+    }
+
+    private fun matchAccounts(importAccount: ImportAccount, user: User): Boolean {
+        var accountFound = false
+        if (importAccount.token != null) {
+            if (UriUtils.hasHttpProtocollPrefixed(importAccount.baseUrl)) {
+                if (
+                    user.username == importAccount.username &&
+                    user.baseUrl == importAccount.baseUrl
+                ) {
+                    accountFound = true
+                }
+            } else {
+                if (user.username == importAccount.username &&
+                    (
+                        user.baseUrl == "http://" + importAccount.baseUrl ||
+                            user.baseUrl == "https://" + importAccount.baseUrl
+                        )
+                ) {
+                    accountFound = true
+                }
+            }
+        } else {
+            accountFound = true
+        }
+
+        return accountFound
     }
 
     fun getAppNameBasedOnPackage(packageName: String): String {
