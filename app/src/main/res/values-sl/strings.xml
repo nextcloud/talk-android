@@ -86,7 +86,7 @@
     <string name="nc_common_set">Nastavi</string>
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
-    <string name="nc_connecting_call">Poteka vzpostavljanje povezave ...</string>
+    <string name="nc_connecting_call">Poteka vzpostavljanje povezave …</string>
     <string name="nc_contacts_done">Začni pogovor</string>
     <string name="nc_conversation_link">Povezava pogovora</string>
     <string name="nc_conversation_menu_conversation_info">Podrobnosti pogovora</string>
@@ -134,7 +134,7 @@
     <string name="nc_last_moderator_title">Pogovora ni mogoče zapustiti</string>
     <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
     <string name="nc_leave">Zapusti pogovor</string>
-    <string name="nc_leaving_call">Poteka prekinjanje klica ...</string>
+    <string name="nc_leaving_call">Poteka prekinjanje klica …</string>
     <string name="nc_license_summary">Splošno Javno dovoljenje GNU GPL, različice 3</string>
     <string name="nc_license_title">Dovoljenje</string>
     <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>

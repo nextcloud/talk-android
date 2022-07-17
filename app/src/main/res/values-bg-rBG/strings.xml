@@ -88,7 +88,7 @@
     <string name="nc_common_set">Настройка</string>
     <string name="nc_common_skip">Пропусни</string>
     <string name="nc_configure_cert_auth">Изберете сертификат за удостоверяване</string>
-    <string name="nc_connecting_call">Свързване ...</string>
+    <string name="nc_connecting_call">Свързване …</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_link">Връзка за разговор</string>
     <string name="nc_conversation_menu_conversation_info">Информация за разговор</string>
@@ -307,7 +307,7 @@
     <string name="nc_share_text_pass">\nПарола: %1$s</string>
     <string name="nc_share_this_location">Споделяне на това местоположение</string>
     <string name="nc_shared_items">Споделени елементи</string>
-    <string name="nc_shared_items_description">Изображения, файлове, гласови съобщения ...</string>
+    <string name="nc_shared_items_description">Изображения, файлове, гласови съобщения …</string>
     <string name="nc_shared_items_empty">Няма споделени елементи</string>
     <string name="nc_shared_location">Споделено местоположение</string>
     <string name="nc_sort_by">Сортиране по</string>

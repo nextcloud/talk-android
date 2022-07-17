@@ -17,7 +17,7 @@
     <string name="encrypted">Đã mã hóa</string>
     <string name="failed_to_save">Lưu %1$s thất bại</string>
     <string name="file_list_folder">thư mục</string>
-    <string name="file_list_loading">Đang tải...</string>
+    <string name="file_list_loading">Đang tải …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 tiếng</string>
     <string name="invisible">Vô hình</string>

@@ -18,7 +18,7 @@
     <string name="emoji_category_recent">최근 항목</string>
     <string name="encrypted">암호화</string>
     <string name="file_list_folder">폴더</string>
-    <string name="file_list_loading">불러오는 중 ...</string>
+    <string name="file_list_loading">불러오는 중 …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 시간</string>
     <string name="invisible">숨겨짐</string>
@@ -68,7 +68,7 @@
     <string name="nc_common_set">설정</string>
     <string name="nc_common_skip">건너뛰기</string>
     <string name="nc_configure_cert_auth">인증서 선택</string>
-    <string name="nc_connecting_call">연결 중...</string>
+    <string name="nc_connecting_call">연결 중 …</string>
     <string name="nc_contacts_done">완료</string>
     <string name="nc_conversation_link">대화 링크</string>
     <string name="nc_conversation_menu_conversation_info">대화 정보</string>

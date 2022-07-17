@@ -24,7 +24,7 @@
     <string name="encrypted">Zifratua</string>
     <string name="failed_to_save">%1$s gordetzeak huts egin du</string>
     <string name="file_list_folder">karpeta</string>
-    <string name="file_list_loading">Kargatzen ...</string>
+    <string name="file_list_loading">Kargatzen …</string>
     <string name="filename_progress">%1$s(%2$d)</string>
     <string name="fourHours">4 ordu</string>
     <string name="invisible">Ikusezina</string>
@@ -37,8 +37,8 @@
     <string name="menu_item_sort_by_size_biggest_first">Handienak lehenengo</string>
     <string name="menu_item_sort_by_size_smallest_first">Txikienak lehenengo</string>
     <string name="message_search_begin_empty">Ez dago bilaketaren emaitzarik</string>
-    <string name="message_search_begin_typing">Hasi idazten bilatzeko ...</string>
-    <string name="message_search_hint">Bilatu ...</string>
+    <string name="message_search_begin_typing">Hasi idazten bilatzeko …</string>
+    <string name="message_search_hint">Bilatu …</string>
     <string name="messages">Mezuak</string>
     <string name="nc_Server_account_imported">Aukeratutako kontua inportatu da eta eskuragarri dago</string>
     <string name="nc_about">Honi buruz</string>
@@ -88,7 +88,7 @@
     <string name="nc_common_set">Ezarri</string>
     <string name="nc_common_skip">Jauzi</string>
     <string name="nc_configure_cert_auth">Aukeratu autentifikazio ziurtagiria</string>
-    <string name="nc_connecting_call">Konektatzen ...</string>
+    <string name="nc_connecting_call">Konektatzen …</string>
     <string name="nc_contacts_done">Egina</string>
     <string name="nc_conversation_link">Elkarrizketa esteka</string>
     <string name="nc_conversation_menu_conversation_info">Elkarrizketen informazioa</string>
@@ -307,7 +307,7 @@
     <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
     <string name="nc_share_this_location">Partekatu kokapen hau</string>
     <string name="nc_shared_items">Partekatutako elementuak</string>
-    <string name="nc_shared_items_description">Irudiak, fitxategiak, ahots-mezuak ...</string>
+    <string name="nc_shared_items_description">Irudiak, fitxategiak, ahots-mezuak …</string>
     <string name="nc_shared_items_empty">Ez dago partekatutako elementurik</string>
     <string name="nc_shared_location">Partekatutako kokalekua</string>
     <string name="nc_sort_by">Ordenatu honen arabera</string>

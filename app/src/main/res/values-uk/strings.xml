@@ -22,7 +22,7 @@
     <string name="encrypted">Зашифровано</string>
     <string name="failed_to_save">Не вдалося зберегти %1$s</string>
     <string name="file_list_folder">тека</string>
-    <string name="file_list_loading">Завантаження...</string>
+    <string name="file_list_loading">Завантаження …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 години</string>
     <string name="invisible">Невидимка</string>
@@ -111,7 +111,7 @@
     <string name="nc_file_browser_reshare_forbidden">Вам заборонено поширювати цей файл</string>
     <string name="nc_formatted_message_you">Ви: %1$s</string>
     <string name="nc_forward_message">Переслати</string>
-    <string name="nc_forward_to_three_dots">Переслати...</string>
+    <string name="nc_forward_to_three_dots">Переслати …</string>
     <string name="nc_get_from_provider">Ще не маєте сервера?\nНатисніть тут щоб отримати в провайдера</string>
     <string name="nc_get_source_code">Отримати вихідний код</string>
     <string name="nc_group">Група</string>
