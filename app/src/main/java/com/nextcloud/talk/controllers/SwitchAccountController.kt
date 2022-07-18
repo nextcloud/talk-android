@@ -85,7 +85,7 @@ class SwitchAccountController(args: Bundle? = null) :
 
     private val onSwitchItemClickListener = FlexibleAdapter.OnItemClickListener { _, position ->
         if (userItems.size > position) {
-            val user = (userItems[position] as AdvancedUserItem).entity
+            val user = (userItems[position] as AdvancedUserItem).user
 
             if (userManager.setUserAsActive(user).blockingGet()) {
                 cookieManager.cookieStore.removeAll()

@@ -82,7 +82,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         return participant;
     }
 
-    public User getEntity() {
+    public User getUser() {
         return user;
     }
 

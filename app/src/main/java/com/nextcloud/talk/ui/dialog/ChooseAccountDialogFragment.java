@@ -275,7 +275,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             @Override
             public boolean onItemClick(View view, int position) {
                 if (userItems.size() > position) {
-                    User user = (userItems.get(position)).getEntity();
+                    User user = (userItems.get(position)).getUser();
 
                     if (userManager.setUserAsActive(user).blockingGet()) {
                         cookieManager.getCookieStore().removeAll();
