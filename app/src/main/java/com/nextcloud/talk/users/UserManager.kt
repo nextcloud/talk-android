@@ -123,7 +123,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }.toSingle()
     }
 
-    fun updateUser(user: User): Single<Int> {
+    fun updateOrCreateUser(user: User): Single<Int> {
         return Single.fromCallable {
             when (user.id) {
                 null -> userRepository.insertUser(user).toInt()

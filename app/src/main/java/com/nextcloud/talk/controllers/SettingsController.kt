@@ -327,7 +327,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                     }
 
                     currentUser!!.clientCertificate = finalAlias
-                    userManager.updateUser(currentUser!!)
+                    userManager.updateOrCreateUser(currentUser!!)
                 },
                 arrayOf("RSA", "EC"),
                 null,
@@ -601,7 +601,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                     }
                     if ((!TextUtils.isEmpty(displayName) && !(displayName == currentUser!!.displayName))) {
                         currentUser!!.displayName = displayName
-                        userManager.updateUser(currentUser!!)
+                        userManager.updateOrCreateUser(currentUser!!)
                         binding.displayNameText.text = currentUser!!.displayName
                     }
                 },
