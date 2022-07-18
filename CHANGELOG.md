@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [14.1.0] - 2022-07-18
+### Added
+- Search within messages
+- Quick reply via notification (@starypatyk)
+### Changed
+- Scroll to oldest unread message when opening a conversation
+### Fixed
+- No conversations loaded when user status app is limited to groups (server setting)
+- Minor bugfixes
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/52?closed=1
+
 ## [14.0.2] - 2022-05-13
 ### Added
 - Handling for "event.participants.update.all" from HPB
