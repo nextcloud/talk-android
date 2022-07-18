@@ -367,7 +367,7 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
                     if (currentUser != null) {
                         currentUser.clientCertificate = appPreferences!!.temporaryClientCertAlias
                         currentUser.token = loginData.token
-                        val rowsUpdated = userManager.updateUser(currentUser).blockingGet()
+                        val rowsUpdated = userManager.updateOrCreateUser(currentUser).blockingGet()
                         Log.d(TAG, "User rows updated: $rowsUpdated")
 
                         if (finalMessageType != null) {
