@@ -123,6 +123,19 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }.toSingle()
     }
 
+    fun updateOrCreateUser(user: User): Single<Int> {
+        return Single.fromCallable {
+            when (user.id) {
+                null -> userRepository.insertUser(user).toInt()
+                else -> userRepository.updateUser(user)
+            }
+        }
+    }
+
+    fun setUserAsActive(user: User): Single<Boolean> {
+        return userRepository.setUserAsActiveWithId(user.id!!)
+    }
+
     @Deprecated("Only available for migration, use updateExternalSignalingServer or create new methods")
     fun createOrUpdateUser(
         username: String?,

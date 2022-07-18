@@ -59,10 +59,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerProfileBinding
 import com.nextcloud.talk.databinding.UserInfoDetailsTableItemBinding
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.Scope
 import com.nextcloud.talk.models.json.userprofile.UserProfileData
@@ -70,6 +69,7 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.ui.dialog.ScopeDialog
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
@@ -77,7 +77,7 @@ import com.nextcloud.talk.utils.Mimetype.IMAGE_JPG
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
-import com.nextcloud.talk.utils.database.user.UserUtils
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -105,12 +105,12 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
 
-    private var currentUser: UserEntity? = null
+    private var currentUser: User? = null
     private var edit = false
     private var adapter: UserInfoAdapter? = null
     private var userInfo: UserProfileData? = null
@@ -151,7 +151,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                 item.setTitle(R.string.save)
                 binding.emptyList.root.visibility = View.GONE
                 binding.userinfoList.visibility = View.VISIBLE
-                if (CapabilitiesUtil.isAvatarEndpointAvailable(currentUser)) {
+                if (CapabilitiesUtilNew.isAvatarEndpointAvailable(currentUser!!)) {
                     // TODO later avatar can also be checked via user fields, for now it is in Talk capability
                     binding.avatarButtons.visibility = View.VISIBLE
                 }
@@ -199,7 +199,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         adapter = UserInfoAdapter(null, activity!!.resources.getColor(R.color.colorPrimary), this)
         binding.userinfoList.adapter = adapter
         binding.userinfoList.setItemViewCacheSize(DEFAULT_CACHE_SIZE)
-        currentUser = userUtils.currentUser
+        currentUser = userManager.currentUser.blockingGet()
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
         binding.avatarUpload.setOnClickListener { sendSelectLocalFileIntent() }
         binding.avatarChoose.setOnClickListener { showBrowserScreen() }
@@ -310,7 +310,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         }
 
         // show edit button
-        if (CapabilitiesUtil.canEditScopes(currentUser)) {
+        if (CapabilitiesUtilNew.canEditScopes(currentUser!!)) {
             ncApi.getEditableUserProfileFields(
                 ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
                 ApiUtils.getUrlForUserFields(currentUser!!.baseUrl)

@@ -30,9 +30,9 @@ import android.content.pm.PackageManager
 import android.util.Log
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.ImportAccount
 import com.nextcloud.talk.models.database.UserEntity
-import java.util.ArrayList
 import java.util.Arrays
 
 object AccountUtils {
@@ -40,42 +40,23 @@ object AccountUtils {
     private const val TAG = "AccountUtils"
     private const val MIN_SUPPORTED_FILES_APP_VERSION = 30060151
 
+    @Deprecated("Migrate to findAccountsForUsers")
     fun findAccounts(userEntitiesList: List<UserEntity>): List<Account> {
+        return findAccountsForUsers(LegacyUserEntityMapper.toModel(userEntitiesList))
+    }
+
+    fun findAccountsForUsers(users: List<User>): List<Account> {
         val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
         val accMgr = AccountManager.get(context)
         val accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type))
 
         val accountsAvailable = ArrayList<Account>()
-        var importAccount: ImportAccount
-        var internalUserEntity: UserEntity
         var accountFound: Boolean
         for (account in accounts) {
             accountFound = false
 
-            for (i in userEntitiesList.indices) {
-                internalUserEntity = userEntitiesList[i]
-                importAccount = getInformationFromAccount(account)
-                if (importAccount.token != null) {
-                    if (UriUtils.hasHttpProtocollPrefixed(importAccount.baseUrl)) {
-                        if (
-                            internalUserEntity.username == importAccount.username &&
-                            internalUserEntity.baseUrl == importAccount.baseUrl
-                        ) {
-                            accountFound = true
-                            break
-                        }
-                    } else {
-                        if (internalUserEntity.username == importAccount.username &&
-                            (
-                                internalUserEntity.baseUrl == "http://" + importAccount.baseUrl ||
-                                    internalUserEntity.baseUrl == "https://" + importAccount.baseUrl
-                                )
-                        ) {
-                            accountFound = true
-                            break
-                        }
-                    }
-                } else {
+            for (user in users) {
+                if (matchAccounts(getInformationFromAccount(account), user)) {
                     accountFound = true
                     break
                 }
@@ -87,6 +68,33 @@ object AccountUtils {
         }
 
         return accountsAvailable
+    }
+
+    private fun matchAccounts(importAccount: ImportAccount, user: User): Boolean {
+        var accountFound = false
+        if (importAccount.token != null) {
+            if (UriUtils.hasHttpProtocollPrefixed(importAccount.baseUrl)) {
+                if (
+                    user.username == importAccount.username &&
+                    user.baseUrl == importAccount.baseUrl
+                ) {
+                    accountFound = true
+                }
+            } else {
+                if (user.username == importAccount.username &&
+                    (
+                        user.baseUrl == "http://" + importAccount.baseUrl ||
+                            user.baseUrl == "https://" + importAccount.baseUrl
+                        )
+                ) {
+                    accountFound = true
+                }
+            }
+        } else {
+            accountFound = true
+        }
+
+        return accountFound
     }
 
     fun getAppNameBasedOnPackage(packageName: String): String {

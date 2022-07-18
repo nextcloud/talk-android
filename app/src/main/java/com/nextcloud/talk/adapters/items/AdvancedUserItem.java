@@ -31,8 +31,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.AccountItemBinding;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -51,13 +51,13 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         IFilterable<String> {
 
     private final Participant participant;
-    private final UserEntity userEntity;
+    private final User user;
     @Nullable
     private final Account account;
 
-    public AdvancedUserItem(Participant participant, UserEntity userEntity, @Nullable Account account) {
+    public AdvancedUserItem(Participant participant, User user, @Nullable Account account) {
         this.participant = participant;
-        this.userEntity = userEntity;
+        this.user = user;
         this.account = account;
     }
 
@@ -82,8 +82,8 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         return participant;
     }
 
-    public UserEntity getEntity() {
-        return userEntity;
+    public User getUser() {
+        return user;
     }
 
     @Nullable
@@ -117,21 +117,21 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
             holder.binding.userName.setText(participant.getDisplayName());
         }
 
-        if (userEntity != null && !TextUtils.isEmpty(userEntity.getBaseUrl())) {
-            String host = Uri.parse(userEntity.getBaseUrl()).getHost();
+        if (user != null && !TextUtils.isEmpty(user.getBaseUrl())) {
+            String host = Uri.parse(user.getBaseUrl()).getHost();
             if (!TextUtils.isEmpty(host)) {
-                holder.binding.account.setText(Uri.parse(userEntity.getBaseUrl()).getHost());
+                holder.binding.account.setText(Uri.parse(user.getBaseUrl()).getHost());
             } else {
-                holder.binding.account.setText(userEntity.getBaseUrl());
+                holder.binding.account.setText(user.getBaseUrl());
             }
         }
 
         holder.binding.userIcon.getHierarchy().setPlaceholderImage(R.drawable.account_circle_48dp);
         holder.binding.userIcon.getHierarchy().setFailureImage(R.drawable.account_circle_48dp);
 
-        if (userEntity != null && userEntity.getBaseUrl() != null &&
-                userEntity.getBaseUrl().startsWith("http://") ||
-                userEntity.getBaseUrl().startsWith("https://")) {
+        if (user != null && user.getBaseUrl() != null &&
+                user.getBaseUrl().startsWith("http://") ||
+                user.getBaseUrl().startsWith("https://")) {
 
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setOldController(holder.binding.userIcon.getController())
@@ -139,7 +139,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
                 .setImageRequest(
                     DisplayUtils.getImageRequestForUrl(
                         ApiUtils.getUrlForAvatar(
-                            userEntity.getBaseUrl(),
+                            user.getBaseUrl(),
                             participant.getCalculatedActorId(),
                             true)))
                 .build();
