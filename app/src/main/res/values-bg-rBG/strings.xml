@@ -356,6 +356,7 @@
     <string name="send_to_forbidden">Нямате право да споделяте съдържание в този чат</string>
     <string name="send_to_three_dots">Изпращане до …</string>
     <string name="send_without_notification">Изпращане без известие</string>
+    <string name="set_avatar_from_camera">Задаване на аватар от камерата</string>
     <string name="set_status">Задаване на състояние</string>
     <string name="set_status_message">Задаване на съобщение за състояние</string>
     <string name="share">Споделяне</string>
