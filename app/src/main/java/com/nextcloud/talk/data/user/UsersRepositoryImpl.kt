@@ -77,8 +77,8 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         return Single.just(usersDao.setUserAsActiveWithId(id))
     }
 
-    override fun deleteUserWithId(id: Long) {
-        usersDao.deleteUserWithId(id)
+    override fun deleteUser(user: User): Int {
+        return usersDao.deleteUser(UserMapper.toEntity(user))
     }
 
     override fun setAnyUserAsActive(): Boolean {

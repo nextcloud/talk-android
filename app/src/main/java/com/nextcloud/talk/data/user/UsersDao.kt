@@ -24,6 +24,7 @@ package com.nextcloud.talk.data.user
 
 import android.util.Log
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -45,8 +46,8 @@ abstract class UsersDao {
     @Query("SELECT * FROM User where current = 1")
     abstract fun getActiveUserSynchronously(): UserEntity?
 
-    @Query("DELETE FROM User WHERE id = :id")
-    abstract fun deleteUserWithId(id: Long)
+    @Delete
+    abstract fun deleteUser(user: UserEntity): Int
 
     @Update
     abstract fun updateUser(user: UserEntity): Int
