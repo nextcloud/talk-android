@@ -136,7 +136,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
             }
 
             val credentials = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)
-            ncApi!!.getPoll(
+            ncApi.getPoll(
                 credentials,
                 ApiUtils.getUrlForPoll(
                     message.activeUser?.baseUrl,
@@ -153,10 +153,10 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
                     override fun onNext(pollOverall: PollOverall) {
                         if (pollOverall.ocs!!.data!!.status == 0) {
                             binding.messagePollSubtitle.text =
-                                context?.resources?.getString(R.string.message_poll_tap_to_vote)
+                                context.resources?.getString(R.string.message_poll_tap_to_vote)
                         } else {
                             binding.messagePollSubtitle.text =
-                                context?.resources?.getString(R.string.message_poll_tap_see_results)
+                                context.resources?.getString(R.string.message_poll_tap_see_results)
                         }
                     }
 
@@ -201,8 +201,8 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
         } else if (message.actorType == "bots" && message.actorId == "changelog") {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
-                layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
+                layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+                layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
                 binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
             } else {
@@ -215,7 +215,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
                 .endConfig()
                 .buildRound(
                     ">",
-                    ResourcesCompat.getColor(context!!.resources, R.color.black, null)
+                    ResourcesCompat.getColor(context.resources, R.color.black, null)
                 )
             binding.messageUserAvatar.visibility = View.VISIBLE
             binding.messageUserAvatar.setImageDrawable(drawable)
@@ -248,7 +248,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
             parentChatMessage!!.activeUser = message.activeUser
-            parentChatMessage!!.imageUrl?.let {
+            parentChatMessage.imageUrl?.let {
                 binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
                 binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
@@ -260,11 +260,11 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
                 binding.messageQuote.quotedMessageImage.visibility = View.GONE
             }
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-                ?: context!!.getText(R.string.nc_nick_guest)
+                ?: context.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
             binding.messageQuote.quotedMessageAuthor
-                .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
+                .setTextColor(ContextCompat.getColor(context, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)

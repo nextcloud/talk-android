@@ -79,7 +79,7 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(context!!.resources.getColor(R.color.white60))
+        binding.messageTime.setTextColor(context.resources.getColor(R.color.white60))
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
@@ -97,13 +97,13 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         }
 
         readStatusDrawableInt?.let { drawableInt ->
-            AppCompatResources.getDrawable(context!!, drawableInt)?.let {
-                it.setColorFilter(context?.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
+            AppCompatResources.getDrawable(context, drawableInt)?.let {
+                it.setColorFilter(context.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
                 binding.checkMark.setImageDrawable(it)
             }
         }
 
-        binding.checkMark.setContentDescription(readStatusContentDescriptionString)
+        binding.checkMark.contentDescription = readStatusContentDescriptionString
 
         setPollPreview(message)
 
@@ -152,7 +152,7 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
             }
 
             val credentials = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)
-            ncApi!!.getPoll(
+            ncApi.getPoll(
                 credentials,
                 ApiUtils.getUrlForPoll(
                     message.activeUser?.baseUrl,
@@ -203,12 +203,12 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
                 binding.messageQuote.quotedMessageImage.visibility = View.GONE
             }
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-                ?: context!!.getText(R.string.nc_nick_guest)
+                ?: context.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
             binding.messageQuote.quotedMessage.setTextColor(
-                context!!.resources.getColor(R.color.nc_outcoming_text_default)
+                context.resources.getColor(R.color.nc_outcoming_text_default)
             )
-            binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey))
+            binding.messageQuote.quotedMessageAuthor.setTextColor(context.resources.getColor(R.color.nc_grey))
 
             binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
 
