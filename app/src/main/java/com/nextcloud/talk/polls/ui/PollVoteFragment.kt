@@ -110,6 +110,10 @@ class PollVoteFragment : Fragment() {
             }
         }
 
+        viewModel.submitButtonEnabled.observe(viewLifecycleOwner) { enabled ->
+            binding.pollVoteSubmitButton.isEnabled = enabled
+        }
+
         binding.pollVoteRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             viewModel.selectOption(checkedId, true)
             updateSubmitButton()
@@ -174,15 +178,7 @@ class PollVoteFragment : Fragment() {
     }
 
     private fun updateSubmitButton() {
-        binding.pollVoteSubmitButton.isEnabled =
-            areSelectedOptionsDifferentToVotedOptions() && viewModel.selectedOptions.isNotEmpty()
-    }
-
-    private fun areSelectedOptionsDifferentToVotedOptions(): Boolean {
-        return !(
-            viewModel.votedOptions.containsAll(viewModel.selectedOptions) &&
-                viewModel.selectedOptions.containsAll(viewModel.votedOptions)
-            )
+        viewModel.updateSubmitButton()
     }
 
     private fun makeOptionBoldIfSelfVoted(button: CompoundButton, poll: Poll, index: Int) {

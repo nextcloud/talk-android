@@ -45,6 +45,10 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
     val viewState: LiveData<ViewState>
         get() = _viewState
 
+    private val _submitButtonEnabled: MutableLiveData<Boolean> = MutableLiveData()
+    val submitButtonEnabled: LiveData<Boolean>
+        get() = _submitButtonEnabled
+
     private var disposable: Disposable? = null
 
     private var _votedOptions: List<Int> = emptyList()
@@ -75,7 +79,7 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
     fun vote(roomToken: String, pollId: String) {
         if (_selectedOptions.isNotEmpty()) {
             repository.vote(roomToken, pollId, _selectedOptions)
-                ?.doOnSubscribe { disposable = it }
+                .doOnSubscribe { disposable = it }
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(PollObserver())
@@ -85,6 +89,15 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
     override fun onCleared() {
         super.onCleared()
         disposable?.dispose()
+    }
+
+    fun updateSubmitButton() {
+        val areSelectedOptionsDifferentToVotedOptions = !(
+            votedOptions.containsAll(selectedOptions) &&
+                selectedOptions.containsAll(votedOptions)
+            )
+
+        _submitButtonEnabled.value = areSelectedOptionsDifferentToVotedOptions && selectedOptions.isNotEmpty()
     }
 
     inner class PollObserver : Observer<Poll> {
