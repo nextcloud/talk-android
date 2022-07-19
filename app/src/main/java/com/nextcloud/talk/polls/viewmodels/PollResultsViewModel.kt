@@ -40,7 +40,6 @@
 
 package com.nextcloud.talk.polls.viewmodels
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.polls.adapters.PollResultHeaderItem
@@ -58,10 +57,6 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
     private var _poll: Poll? = null
     val poll: Poll?
         get() = _poll
-
-    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
-    val viewState: LiveData<ViewState>
-        get() = _viewState
 
     private var _unfilteredItems: ArrayList<PollResultItem> = ArrayList()
 
