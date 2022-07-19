@@ -92,7 +92,6 @@
     <string name="nc_failed_signaling_settings">Målserver støtte ikkje deltaking i offentlege samtalar via mobiltelefonar. Du kan prøve å delta i samtalen via nettlesaren.</string>
     <string name="nc_failed_to_perform_operation">Orsak, noko gjekk galt!</string>
     <string name="nc_file_browser_back">Tilbake</string>
-    <string name="nc_file_browser_reshare_forbidden">Du har ikkje lov til å dele vidare denne fila</string>
     <string name="nc_following_link">Brukar følg ei offentleg lenkje</string>
     <string name="nc_formatted_message_you">Deg: %1$s</string>
     <string name="nc_get_from_provider">Har du ikkje eigen server til no?\nKlikk her for å få ein frå tilbyder</string>

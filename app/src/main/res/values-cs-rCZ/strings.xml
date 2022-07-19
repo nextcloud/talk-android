@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování se k veřejným konverzacím prostřednictvím mobilních telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
     <string name="nc_file_browser_back">Zpět</string>
-    <string name="nc_file_browser_reshare_forbidden">Nemáte oprávnění sdílet tento soubor dál dalším</string>
     <string name="nc_following_link">Uživatel následující veřejný odkaz</string>
     <string name="nc_formatted_message_you">Vy: %1$s</string>
     <string name="nc_forward_message">Přeposlat</string>
@@ -319,7 +318,6 @@
     <string name="nc_upload_from_cloud">Nasdílet z %1$s</string>
     <string name="nc_upload_from_device">Nahrát ze zařízení</string>
     <string name="nc_upload_in_progess">Nahrávání</string>
-    <string name="nc_upload_local_file">Nahrát soubor ze zařízení</string>
     <string name="nc_upload_picture_from_cam">Vyfotit</string>
     <string name="nc_user">Uživatel</string>
     <string name="nc_voice_message_filename">Nahrávka z Talk z %1$s (%2$s)</string>

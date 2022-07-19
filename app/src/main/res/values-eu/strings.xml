@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du telefono mugikorraren bidez elkarrizketa publikoetara sartzerik onartzen. Elkarrizketara web nabigatzaile baten bidez sartzen saiatu.</string>
     <string name="nc_failed_to_perform_operation">Barkatu, zerbait txarto joan da!</string>
     <string name="nc_file_browser_back">Itzuli</string>
-    <string name="nc_file_browser_reshare_forbidden">Ez zaude fitxategi hau birpartekatzeko baimenduta</string>
     <string name="nc_following_link">Erabiltzailea esteka publiko bat jarraitzen ari da</string>
     <string name="nc_formatted_message_you">Zu: %1$s</string>
     <string name="nc_forward_message">Birbidali</string>
@@ -319,7 +318,6 @@
     <string name="nc_upload_from_cloud">Partekatu %1$s(e)tik</string>
     <string name="nc_upload_from_device">Kargatu gailutik</string>
     <string name="nc_upload_in_progess">Kargatzen</string>
-    <string name="nc_upload_local_file">Kargatu fitxategi lokala</string>
     <string name="nc_upload_picture_from_cam">Atera argazkia</string>
     <string name="nc_user">Erabiltzailea</string>
     <string name="nc_voice_message_filename">Hizketaldia hemendik grabatzen %1$s (%2$s)</string>

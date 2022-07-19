@@ -110,7 +110,6 @@
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons. Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
     <string name="nc_file_browser_back">Terug</string>
-    <string name="nc_file_browser_reshare_forbidden">Je mag het bestand niet verder delen</string>
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
     <string name="nc_formatted_message_you">Jij: %1$s</string>
     <string name="nc_forward_message">Doorsturen</string>
@@ -309,7 +308,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_upload_failed">Sorry, uploaden mislukt</string>
     <string name="nc_upload_from_cloud">Delen van %1$s</string>
     <string name="nc_upload_in_progess">Uploaden</string>
-    <string name="nc_upload_local_file">Upload lokaal bestand</string>
     <string name="nc_upload_picture_from_cam">Neem foto</string>
     <string name="nc_user">Gebruiker</string>
     <string name="nc_voice_message_filename">Talk neemt op vanaf%1$s (%2$s)</string>

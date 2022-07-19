@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil Môžete sa pokúsiť pripojiť na rozhovor cez webový prehliadač.</string>
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa nepodarilo!</string>
     <string name="nc_file_browser_back">Späť</string>
-    <string name="nc_file_browser_reshare_forbidden">Nemáte oprávnenie k ďalšiemu zdieľaniu tohoto súboru</string>
     <string name="nc_following_link">Používateľ z verejného odkazu</string>
     <string name="nc_formatted_message_you">Vy: %1$s</string>
     <string name="nc_forward_message">Preposlať</string>
@@ -319,7 +318,6 @@
     <string name="nc_upload_from_cloud">Zdieľať z %1$s</string>
     <string name="nc_upload_from_device">Nahrať zo zariadenia</string>
     <string name="nc_upload_in_progess">Nahrávanie</string>
-    <string name="nc_upload_local_file">Nahrať miestny súbor</string>
     <string name="nc_upload_picture_from_cam">Urobiť fotografiu</string>
     <string name="nc_user">Používateľ</string>
     <string name="nc_voice_message_filename">Nahrávanie hovoru od %1$s (%2$s)</string>

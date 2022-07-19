@@ -114,7 +114,6 @@
     <string name="nc_failed_signaling_settings">لا يدعم الخادم الانضمام إلى المحادثات العامة عبر الهواتف المحمولة. يمكنك محاولة الانضمام إلى المحادثة عبر متصفح الويب.</string>
     <string name="nc_failed_to_perform_operation">حدث خطأ ما!</string>
     <string name="nc_file_browser_back">العودة</string>
-    <string name="nc_file_browser_reshare_forbidden">لا يسمح لك بإعادة مشاركة هذا الملف</string>
     <string name="nc_following_link">المستخدم يتابع رابط عام</string>
     <string name="nc_formatted_message_you">أنت: %1$s</string>
     <string name="nc_forward_message">إعادة توجيه</string>
@@ -306,7 +305,6 @@
     <string name="nc_upload_failed">عذرًا، فشل الرفع</string>
     <string name="nc_upload_from_cloud">شارك من %1$s</string>
     <string name="nc_upload_in_progess">جاري الرفع…</string>
-    <string name="nc_upload_local_file">رفع الملف المحلي</string>
     <string name="nc_upload_picture_from_cam">التقط صورة</string>
     <string name="nc_user">مستخدم</string>
     <string name="nc_voice_message_filename">تسجيل Talk من %1$s (%2$s)</string>

@@ -105,7 +105,6 @@
     <string name="nc_failed_signaling_settings">Ο υπόψη διακομιστής δεν υποστηρίζει την σύνδεση στις δημόσιες συζητήσεις από κινητά τηλέφωνα. Προσπαθήστε να συνδεθείτε μέσω φυλλομετρητή.</string>
     <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>
     <string name="nc_file_browser_back">Πίσω</string>
-    <string name="nc_file_browser_reshare_forbidden">Δεν επιτρέπεται ο εκ νέου διαμοιρασμός αυτού του αρχείου</string>
     <string name="nc_following_link">Χρήστης από δημόσιο σύνδεσμο</string>
     <string name="nc_formatted_message_you">Εσείς: %1$s</string>
     <string name="nc_forward_message">Προώθηση</string>
@@ -292,7 +291,6 @@
     <string name="nc_upload_failed">Λυπούμαστε, η μεταφόρτωση απέτυχε</string>
     <string name="nc_upload_from_cloud">Διαμοιρασμός από %1$s</string>
     <string name="nc_upload_in_progess">Γίνεται μεταφόρτωση</string>
-    <string name="nc_upload_local_file">Μεταφόρτωση τοπικού αρχείου</string>
     <string name="nc_upload_picture_from_cam">Βγάλε φωτογραφία</string>
     <string name="nc_user">Χρήστης</string>
     <string name="nc_voice_message_hold_to_record_info">Κρατήστε για εγγραφή, αφήστε για αποστολή.</string>

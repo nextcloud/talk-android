@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">Su serbidore de destinatzione non permitit de intrare in una resonada pùblica cun telèfonos mòbiles. Podes proare a intrare tràmite navigadore in sa rete.</string>
     <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>
     <string name="nc_file_browser_back">In segus</string>
-    <string name="nc_file_browser_reshare_forbidden">Non tenes su permissu de torrare a cumpartzire custu archìviu</string>
     <string name="nc_following_link">Utente chi sighit unu ligòngiu pùblicu</string>
     <string name="nc_formatted_message_you">Tue: %1$s</string>
     <string name="nc_forward_message">Torra a imbiare</string>
@@ -292,7 +291,6 @@
     <string name="nc_upload_failed">Carrigamentu faddidu</string>
     <string name="nc_upload_from_cloud">Cumpartzidu dae %1$s</string>
     <string name="nc_upload_in_progess">Carrigamentu</string>
-    <string name="nc_upload_local_file">Càrriga archìviu locale</string>
     <string name="nc_user">Utente</string>
     <string name="nc_voice_message_filename">Registratzione Talk dae %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podera pro registrare, lassa pro imbiare.</string>

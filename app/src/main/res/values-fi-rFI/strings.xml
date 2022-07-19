@@ -98,7 +98,6 @@
     <string name="nc_email">Sähköposti</string>
     <string name="nc_failed_to_perform_operation">Pahoittelut, jokin meni vikaan!</string>
     <string name="nc_file_browser_back">Takaisin</string>
-    <string name="nc_file_browser_reshare_forbidden">Sinulla ei ole oikeutta jakaa tätä tiedostoa uudelleen</string>
     <string name="nc_formatted_message_you">Sinä: %1$s</string>
     <string name="nc_forward_message">Välitä</string>
     <string name="nc_forward_to_three_dots">Välitä viesti …</string>
@@ -278,7 +277,6 @@
     <string name="nc_upload_failed">Lähetys epäonnistui</string>
     <string name="nc_upload_from_device">Lähetä laitteelta</string>
     <string name="nc_upload_in_progess">Lähetys</string>
-    <string name="nc_upload_local_file">Lähetä paikallinen tiedosto</string>
     <string name="nc_upload_picture_from_cam">Ota kuva</string>
     <string name="nc_user">Käyttäjä</string>
     <string name="nc_voice_message_missing_audio_permission">Oikeus äänen tallentamiseen vaaditaan</string>

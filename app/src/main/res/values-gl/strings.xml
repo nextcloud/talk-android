@@ -250,7 +250,6 @@
     <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>
     <string name="nc_upload_failed">Sentímolo, produciuse un fallo no envío</string>
     <string name="nc_upload_in_progess">Enviando</string>
-    <string name="nc_upload_local_file">Enviar un ficheiro local</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_webinar">Seminario web</string>
     <string name="nc_wrong_link">A ligazón da conversa non é válida</string>

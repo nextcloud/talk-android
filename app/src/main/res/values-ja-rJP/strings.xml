@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。Webブラウザー経由で会話への参加を試みてください。</string>
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
     <string name="nc_file_browser_back">戻る</string>
-    <string name="nc_file_browser_reshare_forbidden">このファイルの再共有を許可されていません</string>
     <string name="nc_following_link">公開リンクをたどっているユーザー</string>
     <string name="nc_formatted_message_you">あなた：%1$s</string>
     <string name="nc_forward_message">転送</string>
@@ -318,7 +317,6 @@
     <string name="nc_upload_failed">アップロードできませんでした</string>
     <string name="nc_upload_from_cloud">%1$sから共有</string>
     <string name="nc_upload_in_progess">アップロード中</string>
-    <string name="nc_upload_local_file">ローカルファイルをアップロード</string>
     <string name="nc_upload_picture_from_cam">写真を撮る</string>
     <string name="nc_user">ユーザー</string>
     <string name="nc_voice_message_filename">%1$s(%2$s)からの会話録音</string>
