@@ -28,7 +28,6 @@
     <string name="nc_common_set">Set</string>
     <string name="nc_common_dismiss">Dismiss</string>
     <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
-    <string name="nc_common_submit">Submit</string>
 
     <!-- Bottom Navigation -->
     <string name="nc_settings">Settings</string>
@@ -535,10 +534,12 @@
     <!-- Polls -->
     <string name="message_poll_tap_to_vote">Tap to vote</string>
     <string name="message_poll_tap_see_results">Tap to see results</string>
-    <string name="polls_amount_voters">%1$s voters</string>
-    <string name="polls_add_option">Add Option</string>
+    <string name="polls_amount_voters">%1$s votes</string>
+    <string name="polls_add_option">Add option</string>
     <string name="polls_private_voted">You successfully voted for this private poll.</string>
-    <string name="polls_end_poll">End Poll</string>
+    <string name="polls_edit_vote">Edit vote</string>
+    <string name="polls_submit_vote">Vote</string>
+    <string name="polls_end_poll">End poll</string>
     <string name="polls_end_poll_confirm">Do you really want to end this poll? This can\'t be undone.</string>
     <string name="polls_max_votes_reached">You can\'t vote with more options for this poll.</string>
     <string name="polls_results_subtitle">Results</string>
