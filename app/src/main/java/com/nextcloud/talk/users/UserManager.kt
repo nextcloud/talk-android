@@ -31,8 +31,6 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Maybe
 import io.reactivex.Single
-import java.lang.Boolean.FALSE
-import java.lang.Boolean.TRUE
 
 @Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) : CurrentUserProviderNew {

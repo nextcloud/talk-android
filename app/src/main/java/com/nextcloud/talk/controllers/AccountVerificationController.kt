@@ -277,8 +277,7 @@ class AccountVerificationController(args: Bundle? = null) :
                     } else {
                         activity!!.runOnUiThread {
                             binding.progressText.text =
-                                """
-                                    ${binding.progressText.text}
+                                """ ${binding.progressText.text}
                                     ${resources!!.getString(R.string.nc_push_disabled)}
                                 """.trimIndent()
                         }
@@ -289,10 +288,9 @@ class AccountVerificationController(args: Bundle? = null) :
                 @SuppressLint("SetTextI18n")
                 override fun onError(e: Throwable) {
                     binding.progressText.text =
+                        """ ${binding.progressText.text}
                         """
-                            ${binding.progressText.text}
-                    """.trimIndent() +
-                            resources!!.getString(R.string.nc_display_name_not_stored)
+                        .trimIndent() + resources!!.getString(R.string.nc_display_name_not_stored)
                     abortVerification()
                 }
 
@@ -484,7 +482,7 @@ class AccountVerificationController(args: Bundle? = null) :
             if (internalAccountId != -1L) {
                 val count = userManager.deleteUser(internalAccountId)
                 if (count > 0) {
-                        activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, DELAY_IN_MILLIS) }
+                    activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, DELAY_IN_MILLIS) }
                 }
             } else {
                 activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, DELAY_IN_MILLIS) }
