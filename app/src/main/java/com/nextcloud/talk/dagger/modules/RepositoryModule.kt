@@ -24,13 +24,13 @@
 package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.polls.repositories.PollRepository
-import com.nextcloud.talk.polls.repositories.PollRepositoryImpl
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
+import com.nextcloud.talk.polls.repositories.PollRepository
+import com.nextcloud.talk.polls.repositories.PollRepositoryImpl
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepositoryImpl
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
@@ -38,6 +38,7 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -55,7 +56,7 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideDialogPollRepository(ncApi: NcApi, userProvider: CurrentUserProvider): PollRepository {
+    fun provideDialogPollRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): PollRepository {
         return PollRepositoryImpl(ncApi, userProvider)
     }
 

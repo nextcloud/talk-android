@@ -23,21 +23,20 @@
 package com.nextcloud.talk.polls.repositories
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.model.PollDetails
 import com.nextcloud.talk.polls.repositories.model.PollDetailsResponse
 import com.nextcloud.talk.polls.repositories.model.PollResponse
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
 
-class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvider: CurrentUserProvider) :
+class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvider: CurrentUserProviderNew) :
     PollRepository {
 
-    val credentials = ApiUtils.getCredentials(
-        currentUserProvider.currentUser?.username,
-        currentUserProvider.currentUser?.token
-    )
+    val currentUser: User = currentUserProvider.currentUser.blockingGet()
+    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
 
     override fun createPoll(
         roomToken: String,
@@ -50,7 +49,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         return ncApi.createPoll(
             credentials,
             ApiUtils.getUrlForPoll(
-                currentUserProvider.currentUser?.baseUrl,
+                currentUser.baseUrl,
                 roomToken
             ),
             question,
@@ -65,29 +64,11 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         return ncApi.getPoll(
             credentials,
             ApiUtils.getUrlForPoll(
-                currentUserProvider.currentUser?.baseUrl,
+                currentUser.baseUrl,
                 roomToken,
                 pollId
             ),
         ).map { mapToPoll(it.ocs?.data!!) }
-
-        // return Observable.just(
-        //     Poll(
-        //         id = "aaa",
-        //         question = "what if?",
-        //         options = listOf("yes", "no", "maybe", "I don't know"),
-        //         votes = listOf(0, 0, 0, 0),
-        //         actorType = "",
-        //         actorId = "",
-        //         actorDisplayName = "",
-        //         status = 0,
-        //         resultMode = 0,
-        //         maxVotes = 1,
-        //         votedSelf = listOf(0, 0, 0, 0),
-        //         numVoters = 0,
-        //         details = emptyList()
-        //     )
-        // )
     }
 
     override fun vote(roomToken: String, pollId: String, options: List<Int>): Observable<Poll>? {
@@ -95,7 +76,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         return ncApi.votePoll(
             credentials,
             ApiUtils.getUrlForPoll(
-                currentUserProvider.currentUser?.baseUrl,
+                currentUser.baseUrl,
                 roomToken,
                 pollId
             ),
@@ -108,7 +89,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         return ncApi.closePoll(
             credentials,
             ApiUtils.getUrlForPoll(
-                currentUserProvider.currentUser?.baseUrl,
+                currentUser.baseUrl,
                 roomToken,
                 pollId
             ),
