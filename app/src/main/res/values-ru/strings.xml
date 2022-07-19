@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте присоединиться к беседе используя веб-браузер.</string>
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
     <string name="nc_file_browser_back">Назад</string>
-    <string name="nc_file_browser_reshare_forbidden">Вам не разрешено делиться этим файлом повторно</string>
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
     <string name="nc_formatted_message_you">Вы: %1$s</string>
     <string name="nc_forward_message">Вперёд</string>
@@ -319,7 +318,6 @@
     <string name="nc_upload_from_cloud">Поделиться с %1$s</string>
     <string name="nc_upload_from_device">Загрузить с устройства</string>
     <string name="nc_upload_in_progess">Выгружается</string>
-    <string name="nc_upload_local_file">Передать на сервер локальный файл</string>
     <string name="nc_upload_picture_from_cam">Сфотографировать</string>
     <string name="nc_user">Пользователь</string>
     <string name="nc_voice_message_filename">Запись разговора с %1$s (%2$s)</string>

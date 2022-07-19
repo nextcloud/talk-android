@@ -89,7 +89,6 @@
     <string name="nc_external_server_failed">" دریافت  تنظیمات سیگنال نا‌موفق بود"</string>
     <string name="nc_failed_to_perform_operation">با عرض پوزش، مشکلی پیش آمده</string>
     <string name="nc_file_browser_back">بازگشت</string>
-    <string name="nc_file_browser_reshare_forbidden">شما اجازه‌ی به‌اشتراک‌گذاری مجدد این فایل را ندارید</string>
     <string name="nc_following_link"> کاربر  پس از  یک  پیوند  عمومی</string>
     <string name="nc_formatted_message_you">شما: %1$s</string>
     <string name="nc_forward_message">ارسال کردن</string>

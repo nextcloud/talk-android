@@ -115,7 +115,6 @@
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom po mobilnih telefonih. Poskusite se povezati v spletnem brskalniku.</string>
     <string name="nc_failed_to_perform_operation">Prišlo je do napake!</string>
     <string name="nc_file_browser_back">Nazaj</string>
-    <string name="nc_file_browser_reshare_forbidden">Nadaljnje omogočanje uporabi te datoteke ni dovoljeno</string>
     <string name="nc_following_link">Uporabnik, ki je sledil javni povezavi</string>
     <string name="nc_formatted_message_you">→ %1$s</string>
     <string name="nc_forward_message">Posreduj</string>
@@ -313,7 +312,6 @@
     <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
     <string name="nc_upload_from_cloud">Souporaba %1$s</string>
     <string name="nc_upload_in_progess">Poteka pošiljanje</string>
-    <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
     <string name="nc_upload_picture_from_cam">Zajemi sliko</string>
     <string name="nc_user">Uporabnik</string>
     <string name="nc_voice_message_filename">Posnetek %1$s (%2$s)</string>

@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı desteklemiyor. Görüşmeye web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_failed_to_perform_operation">Ne yazık ki bir şeyler ters gitti!</string>
     <string name="nc_file_browser_back">Geri</string>
-    <string name="nc_file_browser_reshare_forbidden">Bu dosyayı paylaşma izniniz yok</string>
     <string name="nc_following_link">Herkese açık bir bağlantıyı izleyen kullanıcı</string>
     <string name="nc_formatted_message_you">Siz: %1$s</string>
     <string name="nc_forward_message">İlet</string>
@@ -319,7 +318,6 @@
     <string name="nc_upload_from_cloud">%1$s üzerinden paylaş</string>
     <string name="nc_upload_from_device">Aygıttan yükle</string>
     <string name="nc_upload_in_progess">Yükleniyor</string>
-    <string name="nc_upload_local_file">Yerel dosya yükle</string>
     <string name="nc_upload_picture_from_cam">Fotoğraf çek</string>
     <string name="nc_user">Kullanıcı</string>
     <string name="nc_voice_message_filename">%1$s Talk kaydı (%2$s)</string>

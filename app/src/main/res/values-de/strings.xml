@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht, öffentlichen Unterhaltungen via Mobiltelefon beizutreten. Sie können versuchen, der Unterhaltung mit einem Internetbrowser beizutreten.</string>
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
     <string name="nc_file_browser_back">Zurück</string>
-    <string name="nc_file_browser_reshare_forbidden">Sie dürfen diese Datei nicht weiterteilen</string>
     <string name="nc_following_link">Benutzer kommt von einem öffentlichen Link</string>
     <string name="nc_formatted_message_you">Sie: %1$s</string>
     <string name="nc_forward_message">Weiterleiten</string>
@@ -319,7 +318,6 @@
     <string name="nc_upload_from_cloud">Freigabe von %1$s</string>
     <string name="nc_upload_from_device">Von Gerät hochladen</string>
     <string name="nc_upload_in_progess">Lade hoch</string>
-    <string name="nc_upload_local_file">Lokale Datei hochladen</string>
     <string name="nc_upload_picture_from_cam">Foto aufnehmen</string>
     <string name="nc_user">Benutzer</string>
     <string name="nc_voice_message_filename">Talk-Aufnahme von %1$s (%2$s)</string>

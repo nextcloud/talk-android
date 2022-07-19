@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas a través de teléfonos móviles. Puedes intentar unirte a la llamada a través del navegador web.</string>
     <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>
     <string name="nc_file_browser_back">Volver</string>
-    <string name="nc_file_browser_reshare_forbidden">Usted no está autorizado para volver a compartir este archivo</string>
     <string name="nc_following_link">Usuario que sigue un enlace público</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
     <string name="nc_forward_message">Reenviar</string>
@@ -320,7 +319,6 @@
     <string name="nc_upload_from_cloud">Compartido por %1$s</string>
     <string name="nc_upload_from_device">Subir desde dispositivo</string>
     <string name="nc_upload_in_progess">Subiendo</string>
-    <string name="nc_upload_local_file">Subir archivo local</string>
     <string name="nc_upload_picture_from_cam">Hacer foto</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_voice_message_filename">Grabando Talk desde %1$s (%2$s)</string>

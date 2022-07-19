@@ -111,7 +111,6 @@
     <string name="nc_failed_signaling_settings">Ciljni poslužitelj ne podržava pridruživanje javnim razgovorima putem mobilnih telefona. Možete se pokušati pridružiti razgovoru putem web-preglednika.</string>
     <string name="nc_failed_to_perform_operation">Oprostite, nešto je pošlo po krivu!</string>
     <string name="nc_file_browser_back">Natrag</string>
-    <string name="nc_file_browser_reshare_forbidden">Nije vam dopušteno ponovno dijeliti ovu datoteku</string>
     <string name="nc_following_link">Korisnik slijedi javnu poveznicu</string>
     <string name="nc_formatted_message_you">Vi: %1$s</string>
     <string name="nc_forward_message">Proslijedi</string>
@@ -305,7 +304,6 @@
     <string name="nc_upload_failed">Nažalost, otpremanje nije uspjelo</string>
     <string name="nc_upload_from_cloud">Dijeli iz %1$s</string>
     <string name="nc_upload_in_progess">Otpremanje</string>
-    <string name="nc_upload_local_file">Otpremi lokalnu datoteku</string>
     <string name="nc_upload_picture_from_cam">Snimi fotografiju</string>
     <string name="nc_user">Korisnik</string>
     <string name="nc_voice_message_filename">Snimka iz aplikacije Talk od %1$s (%2$s)</string>

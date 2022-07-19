@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">目標伺服器不支持通過流動電話加入公共對話。您可以嘗試通過網絡瀏覽器加入對話。</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了：（</string>
     <string name="nc_file_browser_back">返回</string>
-    <string name="nc_file_browser_reshare_forbidden">您無權重新分享此檔案</string>
     <string name="nc_following_link">用戶關注公共連結</string>
     <string name="nc_formatted_message_you">你： %1$s</string>
     <string name="nc_forward_message">轉寄</string>
@@ -319,7 +318,6 @@
     <string name="nc_upload_from_cloud">分享來自 %1$s</string>
     <string name="nc_upload_from_device">從裝置上傳</string>
     <string name="nc_upload_in_progess">上傳中</string>
-    <string name="nc_upload_local_file">上傳本地文件</string>
     <string name="nc_upload_picture_from_cam">拍照</string>
     <string name="nc_user">用戶</string>
     <string name="nc_voice_message_filename">談話錄音來自 %1$s（%2$s）</string>

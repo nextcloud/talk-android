@@ -107,7 +107,6 @@
     <string name="nc_failed_signaling_settings">目标服务器不支持通过移动电话加入公共对话。你可以尝试通过浏览器加入对话。</string>
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
     <string name="nc_file_browser_back">返回</string>
-    <string name="nc_file_browser_reshare_forbidden">你不被允许重新共享此文件</string>
     <string name="nc_following_link">使用公共链接的用户</string>
     <string name="nc_formatted_message_you">您：%1$s</string>
     <string name="nc_forward_message">转发</string>
@@ -301,7 +300,6 @@
     <string name="nc_upload_failed">抱歉，上传失败</string>
     <string name="nc_upload_from_cloud">分享来源：%1$s</string>
     <string name="nc_upload_in_progess">上传中</string>
-    <string name="nc_upload_local_file">上传本地文件</string>
     <string name="nc_upload_picture_from_cam">拍照</string>
     <string name="nc_user">用户</string>
     <string name="nc_voice_message_filename">来自 %1$s 的 Talk 录音 (%2$s)</string>

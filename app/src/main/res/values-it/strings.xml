@@ -115,7 +115,6 @@
     <string name="nc_failed_signaling_settings">Il server di destinazione non supporta la partecipazione a stanze pubbliche tramite cellulare. Puoi provare a unirti alla conversazioni tramite un browser web.</string>
     <string name="nc_failed_to_perform_operation">Spiacenti, qualcosa non ha funzionato!</string>
     <string name="nc_file_browser_back">Indietro</string>
-    <string name="nc_file_browser_reshare_forbidden">Non ti è consentito ricondividere questo file</string>
     <string name="nc_following_link">Utente che segue un collegamento pubblico</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
     <string name="nc_forward_message">Inoltra</string>
@@ -313,7 +312,6 @@
     <string name="nc_upload_failed">Spiacenti, caricamento non riuscito</string>
     <string name="nc_upload_from_cloud">Condividi da %1$s</string>
     <string name="nc_upload_in_progess">Caricamento</string>
-    <string name="nc_upload_local_file">Carica file locale</string>
     <string name="nc_upload_picture_from_cam">Scatta foto</string>
     <string name="nc_user">Utente</string>
     <string name="nc_voice_message_filename">Registrazione Talk da %1$s (%2$s)</string>

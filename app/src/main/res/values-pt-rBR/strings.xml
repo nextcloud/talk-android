@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">O servidor de destino não oferece suporte para ingressar em conversas públicas por meio de telefones celulares. Você pode tentar entrar na conversa por meio do navegador da web.</string>
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
     <string name="nc_file_browser_back">Voltar</string>
-    <string name="nc_file_browser_reshare_forbidden">Você não tem permissão para re-compartilhar este arquivo.</string>
     <string name="nc_following_link">Usuário seguindo um link público</string>
     <string name="nc_formatted_message_you">Você: %1$s</string>
     <string name="nc_forward_message">Enviar</string>
@@ -319,7 +318,6 @@
     <string name="nc_upload_from_cloud">Compartilhar de 1%1$s</string>
     <string name="nc_upload_from_device">Enviar do dispositivo</string>
     <string name="nc_upload_in_progess">Enviando</string>
-    <string name="nc_upload_local_file">Enviar arquivo local</string>
     <string name="nc_upload_picture_from_cam">Tirar fotos</string>
     <string name="nc_user">Usuário</string>
     <string name="nc_voice_message_filename">Gravação de conversa de %1$s (%2$s)</string>

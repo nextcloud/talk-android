@@ -107,7 +107,6 @@
     <string name="nc_failed_signaling_settings">目的伺服器不支援經由行動電話加入公開交談</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>
     <string name="nc_file_browser_back">返回</string>
-    <string name="nc_file_browser_reshare_forbidden">你不被允許再分享這個檔案</string>
     <string name="nc_following_link">使用者追隨一個公開連結</string>
     <string name="nc_formatted_message_you">你: %1$s</string>
     <string name="nc_forward_message">轉貼</string>

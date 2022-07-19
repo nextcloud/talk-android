@@ -108,7 +108,6 @@
     <string name="nc_failed_signaling_settings">Цільовий сервер не підтримує приєднання до публічних чатів із використанням телефону. Ви можете спробувати приєднатися до розмови з веб-баузера.</string>
     <string name="nc_failed_to_perform_operation">Вибачте, щось пішло не так!</string>
     <string name="nc_file_browser_back">Назад</string>
-    <string name="nc_file_browser_reshare_forbidden">Вам заборонено поширювати цей файл</string>
     <string name="nc_formatted_message_you">Ви: %1$s</string>
     <string name="nc_forward_message">Переслати</string>
     <string name="nc_forward_to_three_dots">Переслати …</string>
@@ -272,7 +271,6 @@
     <string name="nc_upload_choose_local_files">Виберіть файли</string>
     <string name="nc_upload_failed">Вибачте, помилка завантаження</string>
     <string name="nc_upload_in_progess">Uploading</string>
-    <string name="nc_upload_local_file">завантажити локальний файл</string>
     <string name="nc_upload_picture_from_cam">Зробити фото</string>
     <string name="nc_user">Користувач</string>
     <string name="nc_webinar">Вебінар</string>

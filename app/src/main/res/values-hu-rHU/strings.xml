@@ -117,7 +117,6 @@
     <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
     <string name="nc_file_browser_back">Vissza</string>
-    <string name="nc_file_browser_reshare_forbidden">Nincs jogosultsága ennek a fájlnak az újramegosztására</string>
     <string name="nc_following_link">Nyilvános hivatkozást használó felhasználó</string>
     <string name="nc_formatted_message_you">Ön: %1$s</string>
     <string name="nc_forward_message">Továbbítás</string>
@@ -319,7 +318,6 @@
     <string name="nc_upload_from_cloud">Megosztás innen: %1$s</string>
     <string name="nc_upload_from_device">Feltöltés az eszközről</string>
     <string name="nc_upload_in_progess">Feltöltés</string>
-    <string name="nc_upload_local_file">Helyi fájl feltöltése</string>
     <string name="nc_upload_picture_from_cam">Fénykép készítése</string>
     <string name="nc_user">Felhasználó</string>
     <string name="nc_voice_message_filename">Beszédrögzítés innen: %1$s (%2$s)</string>
