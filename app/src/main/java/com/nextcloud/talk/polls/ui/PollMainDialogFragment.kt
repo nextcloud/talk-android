@@ -27,6 +27,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -40,12 +41,6 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class PollMainDialogFragment : DialogFragment() {
 
-    lateinit var user: User
-    lateinit var roomToken: String
-    private var isOwnerOrModerator: Boolean = false
-    lateinit var pollId: String
-    lateinit var pollTitle: String
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -58,11 +53,13 @@ class PollMainDialogFragment : DialogFragment() {
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollMainViewModel::class.java]
 
-        user = arguments?.getParcelable(KEY_USER_ENTITY)!!
-        roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
-        isOwnerOrModerator = arguments?.getBoolean(KEY_OWNER_OR_MODERATOR)!!
-        pollId = arguments?.getString(KEY_POLL_ID)!!
-        pollTitle = arguments?.getString(KEY_POLL_TITLE)!!
+        val user: User = arguments?.getParcelable(KEY_USER_ENTITY)!!
+        val roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
+        val isOwnerOrModerator = arguments?.getBoolean(KEY_OWNER_OR_MODERATOR)!!
+        val pollId = arguments?.getString(KEY_POLL_ID)!!
+        val pollTitle = arguments?.getString(KEY_POLL_TITLE)!!
+
+        viewModel.initialize(user, roomToken, isOwnerOrModerator, pollId, pollTitle)
     }
 
     @SuppressLint("InflateParams")
@@ -73,7 +70,7 @@ class PollMainDialogFragment : DialogFragment() {
             .setView(binding.root)
             .create()
 
-        binding.messagePollTitle.text = pollTitle
+        binding.messagePollTitle.text = viewModel.pollTitle
 
         return dialog
     }
@@ -84,8 +81,6 @@ class PollMainDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.setIsOwnerOrModerator(isOwnerOrModerator)
 
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -108,14 +103,12 @@ class PollMainDialogFragment : DialogFragment() {
                 else -> {}
             }
         }
-
-        viewModel.initialize(roomToken, pollId)
     }
 
     private fun showVoteScreen() {
         val contentFragment = PollVoteFragment.newInstance(
-            roomToken,
-            pollId
+            viewModel.roomToken,
+            viewModel.pollId
         )
 
         val transaction = childFragmentManager.beginTransaction()
@@ -125,7 +118,7 @@ class PollMainDialogFragment : DialogFragment() {
 
     private fun showResultsScreen() {
         val contentFragment = PollResultsFragment.newInstance(
-            user
+            viewModel.user
         )
 
         val transaction = childFragmentManager.beginTransaction()
@@ -171,12 +164,15 @@ class PollMainDialogFragment : DialogFragment() {
             pollId: String,
             name: String
         ): PollMainDialogFragment {
-            val args = Bundle()
-            args.putParcelable(KEY_USER_ENTITY, user)
-            args.putString(KEY_ROOM_TOKEN, roomTokenParam)
-            args.putBoolean(KEY_OWNER_OR_MODERATOR, isOwnerOrModerator)
-            args.putString(KEY_POLL_ID, pollId)
-            args.putString(KEY_POLL_TITLE, name)
+
+            val args = bundleOf(
+                KEY_USER_ENTITY to user,
+                KEY_ROOM_TOKEN to roomTokenParam,
+                KEY_OWNER_OR_MODERATOR to isOwnerOrModerator,
+                KEY_POLL_ID to pollId,
+                KEY_POLL_TITLE to name
+            )
+
             val fragment = PollMainDialogFragment()
             fragment.arguments = args
             return fragment

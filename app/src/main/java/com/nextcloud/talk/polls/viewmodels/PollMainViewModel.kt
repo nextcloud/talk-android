@@ -24,6 +24,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.repositories.PollRepository
 import com.nextcloud.talk.utils.database.user.UserUtils
@@ -49,10 +50,11 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     @Inject
     lateinit var userUtils: UserUtils
 
-    private lateinit var roomToken: String
-    private lateinit var pollId: String
-
+    lateinit var user: User
+    lateinit var roomToken: String
     private var isOwnerOrModerator: Boolean = false
+    lateinit var pollId: String
+    lateinit var pollTitle: String
 
     private var editVotes: Boolean = false
 
@@ -84,9 +86,12 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     private var disposable: Disposable? = null
 
-    fun initialize(roomToken: String, pollId: String) {
+    fun initialize(user: User, roomToken: String, isOwnerOrModerator: Boolean, pollId: String, pollTitle: String) {
+        this.user = user
         this.roomToken = roomToken
+        this.isOwnerOrModerator = isOwnerOrModerator
         this.pollId = pollId
+        this.pollTitle = pollTitle
 
         loadPoll()
     }
@@ -106,7 +111,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     private fun loadPoll() {
         repository.getPoll(roomToken, pollId)
-            ?.doOnSubscribe { disposable = it }
+            .doOnSubscribe { disposable = it }
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(PollObserver())
@@ -114,7 +119,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     fun closePoll() {
         repository.closePoll(roomToken, pollId)
-            ?.doOnSubscribe { disposable = it }
+            .doOnSubscribe { disposable = it }
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(PollObserver())
