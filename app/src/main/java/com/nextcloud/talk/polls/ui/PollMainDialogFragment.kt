@@ -106,10 +106,7 @@ class PollMainDialogFragment : DialogFragment() {
     }
 
     private fun showVoteScreen() {
-        val contentFragment = PollVoteFragment.newInstance(
-            viewModel.roomToken,
-            viewModel.pollId
-        )
+        val contentFragment = PollVoteFragment.newInstance()
 
         val transaction = childFragmentManager.beginTransaction()
         transaction.replace(binding.messagePollContentFragment.id, contentFragment)
@@ -117,9 +114,7 @@ class PollMainDialogFragment : DialogFragment() {
     }
 
     private fun showResultsScreen() {
-        val contentFragment = PollResultsFragment.newInstance(
-            viewModel.user
-        )
+        val contentFragment = PollResultsFragment.newInstance()
 
         val transaction = childFragmentManager.beginTransaction()
         transaction.replace(binding.messagePollContentFragment.id, contentFragment)

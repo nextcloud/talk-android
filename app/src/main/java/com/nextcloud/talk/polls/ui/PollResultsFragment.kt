@@ -33,7 +33,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogPollResultsBinding
 import com.nextcloud.talk.polls.adapters.PollResultHeaderItem
 import com.nextcloud.talk.polls.adapters.PollResultItemClickListener
@@ -51,8 +50,6 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
     private lateinit var parentViewModel: PollMainViewModel
     lateinit var viewModel: PollResultsViewModel
 
-    lateinit var user: User
-
     lateinit var binding: DialogPollResultsBinding
 
     private var adapter: PollResultsAdapter? = null
@@ -61,12 +58,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         viewModel = ViewModelProvider(this, viewModelFactory)[PollResultsViewModel::class.java]
-        parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[
-            PollMainViewModel::class
-                .java
-        ]
-
-        user = arguments?.getParcelable(KEY_USER_ENTITY)!!
+        parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[PollMainViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -91,7 +83,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
         }
 
         viewModel.items.observe(viewLifecycleOwner) {
-            val adapter = PollResultsAdapter(user, this).apply {
+            val adapter = PollResultsAdapter(parentViewModel.user, this).apply {
                 if (it != null) {
                     list = it
                 }
@@ -101,7 +93,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
     }
 
     private fun initAdapter() {
-        adapter = PollResultsAdapter(user, this)
+        adapter = PollResultsAdapter(parentViewModel.user, this)
         binding.pollResultsList.adapter = adapter
         binding.pollResultsList.layoutManager = LinearLayoutManager(context)
     }
@@ -140,17 +132,9 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
     }
 
     companion object {
-        private const val KEY_USER_ENTITY = "keyUserEntity"
-
         @JvmStatic
-        fun newInstance(
-            user: User
-        ): PollResultsFragment {
-            val args = Bundle()
-            args.putParcelable(KEY_USER_ENTITY, user)
-            val fragment = PollResultsFragment()
-            fragment.arguments = args
-            return fragment
+        fun newInstance(): PollResultsFragment {
+            return PollResultsFragment()
         }
     }
 }

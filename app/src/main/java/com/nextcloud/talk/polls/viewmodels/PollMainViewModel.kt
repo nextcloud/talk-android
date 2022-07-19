@@ -34,17 +34,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-/**
- * @startuml
- * hide empty description
- * [*] --> InitialState
- * InitialState --> PollOpenState
- * note left
- *      Open second viewmodel for child fragment
- * end note
- * InitialState --> PollClosedState
- * @enduml
- */
 class PollMainViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
 
     @Inject
@@ -188,10 +177,6 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     private fun isPollCreatedByCurrentUser(poll: Poll): Boolean {
         return userUtils.currentUser?.userId == poll.actorId
-    }
-
-    fun setIsOwnerOrModerator(ownerOrModerator: Boolean) {
-        isOwnerOrModerator = ownerOrModerator
     }
 
     companion object {

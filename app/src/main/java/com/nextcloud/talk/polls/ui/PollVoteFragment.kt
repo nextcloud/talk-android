@@ -47,10 +47,6 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class PollVoteFragment : Fragment() {
 
-    lateinit var roomToken: String
-
-    lateinit var pollId: String
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -64,13 +60,7 @@ class PollVoteFragment : Fragment() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         viewModel = ViewModelProvider(this, viewModelFactory)[PollVoteViewModel::class.java]
 
-        parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[
-            PollMainViewModel::class
-                .java
-        ]
-
-        roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
-        pollId = arguments?.getString(KEY_POLL_ID)!!
+        parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[PollMainViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -120,7 +110,7 @@ class PollVoteFragment : Fragment() {
         }
 
         binding.pollVoteSubmitButton.setOnClickListener {
-            viewModel.vote(roomToken, pollId)
+            viewModel.vote(parentViewModel.roomToken, parentViewModel.pollId)
         }
 
         binding.pollVoteEditDismiss.setOnClickListener {
@@ -209,20 +199,9 @@ class PollVoteFragment : Fragment() {
         private val TAG = PollVoteFragment::class.java.simpleName
         private const val UNLIMITED_VOTES = 0
 
-        private const val KEY_ROOM_TOKEN = "keyRoomToken"
-        private const val KEY_POLL_ID = "keyPollId"
-
         @JvmStatic
-        fun newInstance(
-            roomTokenParam: String,
-            pollId: String
-        ): PollVoteFragment {
-            val args = Bundle()
-            args.putString(KEY_ROOM_TOKEN, roomTokenParam)
-            args.putString(KEY_POLL_ID, pollId)
-            val fragment = PollVoteFragment()
-            fragment.arguments = args
-            return fragment
+        fun newInstance(): PollVoteFragment {
+            return PollVoteFragment()
         }
     }
 }
