@@ -33,11 +33,11 @@ interface PollRepository {
         options: List<String>,
         resultMode: Int,
         maxVotes: Int
-    ): Observable<Poll>?
+    ): Observable<Poll>
 
-    fun getPoll(roomToken: String, pollId: String): Observable<Poll>?
+    fun getPoll(roomToken: String, pollId: String): Observable<Poll>
 
-    fun vote(roomToken: String, pollId: String, options: List<Int>): Observable<Poll>?
+    fun vote(roomToken: String, pollId: String, options: List<Int>): Observable<Poll>
 
-    fun closePoll(roomToken: String, pollId: String): Observable<Poll>?
+    fun closePoll(roomToken: String, pollId: String): Observable<Poll>
 }
