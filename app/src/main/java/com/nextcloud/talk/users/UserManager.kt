@@ -117,8 +117,8 @@ class UserManager internal constructor(private val userRepository: UsersReposito
                     val user = it.first()
                     user.apply {
                         current = true
-                    }.also { user ->
-                        userRepository.updateUser(user)
+                    }.also { currentUser ->
+                        userRepository.updateUser(currentUser)
                     }
                     Maybe.just(user)
                 } else {
