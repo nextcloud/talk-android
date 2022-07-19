@@ -22,7 +22,6 @@
 package com.nextcloud.talk.users
 
 import android.text.TextUtils
-import android.util.Log
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.model.User
@@ -47,15 +46,16 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         val results = userRepository.getUsersNotScheduledForDeletion()
 
         // TODO needs to return Empty in case no user was found (and set active)
-        return results.map { users ->
-            users
-                .firstOrNull()
-                ?.apply {
-                    current = true
-                }.also { user ->
-                    userRepository.updateUser(user!!)
-                }
-        }
+        return results
+            .map { users ->
+                users
+                    .firstOrNull()
+                    ?.apply {
+                        current = true
+                    }.also { user ->
+                        userRepository.updateUser(user!!)
+                    }
+            }
     }
 
     override val currentUser: Maybe<User>
@@ -91,45 +91,36 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }
     }
 
-    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Maybe<Boolean> {
+    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Single<Boolean> {
         return userRepository
             .getUserWithUsernameAndServer(username, server)
-            .switchIfEmpty(Maybe.empty())
-            .map { user: User? ->
-                when (user) {
-                    null -> FALSE
-                    else -> user.scheduledForDeletion
-                }
-            }
+            .map { it.scheduledForDeletion }
+            .switchIfEmpty(Single.just(false))
     }
 
     fun getUserWithInternalId(id: Long): Maybe<User> {
         return userRepository.getUserWithIdNotScheduledForDeletion(id)
     }
 
-    fun getIfUserWithUsernameAndServer(username: String, server: String): Maybe<Boolean> {
+    fun checkIfUserExists(username: String, server: String): Single<Boolean> {
         return userRepository
             .getUserWithUsernameAndServer(username, server)
-            .map { user: User? ->
-                when (user) {
-                    null -> FALSE
-                    else -> TRUE
-                }
-            }
+            .map { true }
+            .switchIfEmpty(Single.just(false))
     }
 
     fun scheduleUserForDeletionWithId(id: Long): Single<Boolean> {
         // TODO needs to return false in case getAnyUserAndSetAsActive doesn't return a user
         // or getUserWithId(id) doesn't return a user
-        return userRepository.getUserWithId(id).map { user ->
-            user.scheduledForDeletion = true
-            user.current = false
-            userRepository.updateUser(user)
-        }
+        return userRepository.getUserWithId(id)
+            .map { user ->
+                user.scheduledForDeletion = true
+                user.current = false
+                userRepository.updateUser(user)
+            }
             .toSingle()
-            .flatMap {
-                getAnyUserAndSetAsActive()
-            }.map { TRUE }
+            .flatMap { getAnyUserAndSetAsActive() }
+            .map { true }
     }
 
     fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Single<Int> {

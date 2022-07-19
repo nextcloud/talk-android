@@ -328,7 +328,7 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
             val currentUser = userManager.currentUser.blockingGet()
             var messageType: ApplicationWideMessageHolder.MessageType? = null
             if (!isPasswordUpdate &&
-                userManager.getIfUserWithUsernameAndServer(loginData.username!!, baseUrl!!).blockingGet()
+                userManager.checkIfUserExists(loginData.username!!, baseUrl!!).blockingGet()
             ) {
                 messageType = ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED
             }
