@@ -40,22 +40,6 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     val usersScheduledForDeletion: Single<List<User>>
         get() = userRepository.getUsersScheduledForDeletion()
 
-    private fun getAnyUserAndSetAsActive(): Single<User> {
-        val results = userRepository.getUsersNotScheduledForDeletion()
-
-        // TODO needs to return Empty in case no user was found (and set active)
-        return results
-            .map { users ->
-                users
-                    .firstOrNull()
-                    ?.apply {
-                        current = true
-                    }.also { user ->
-                        userRepository.updateUser(user!!)
-                    }
-            }
-    }
-
     override val currentUser: Maybe<User>
         get() {
             return userRepository.getActiveUser()
@@ -107,18 +91,40 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             .switchIfEmpty(Single.just(false))
     }
 
+    /**
+     * Don't ask
+     *
+     * @return `true` if the user was updated **AND** there is another user to set as active, `false` otherwise
+     */
     fun scheduleUserForDeletionWithId(id: Long): Single<Boolean> {
-        // TODO needs to return false in case getAnyUserAndSetAsActive doesn't return a user
-        // or getUserWithId(id) doesn't return a user
         return userRepository.getUserWithId(id)
             .map { user ->
                 user.scheduledForDeletion = true
                 user.current = false
                 userRepository.updateUser(user)
             }
-            .toSingle()
             .flatMap { getAnyUserAndSetAsActive() }
             .map { true }
+            .switchIfEmpty(Single.just(false))
+    }
+
+    private fun getAnyUserAndSetAsActive(): Maybe<User> {
+        val results = userRepository.getUsersNotScheduledForDeletion()
+
+        return results
+            .flatMapMaybe {
+                if (it.isNotEmpty()) {
+                    val user = it.first()
+                    user.apply {
+                        current = true
+                    }.also { user ->
+                        userRepository.updateUser(user)
+                    }
+                    Maybe.just(user)
+                } else {
+                    Maybe.empty()
+                }
+            }
     }
 
     fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Single<Int> {
@@ -181,9 +187,8 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     @Deprecated("Only available for migration, use updateExternalSignalingServer or create new methods")
     fun createOrUpdateUser(
         username: String?,
-        userAttributes: UserAttributes,
+        userAttributes: UserAttributes
     ): Maybe<User> {
-
         val userMaybe: Maybe<User> = findUser(username, userAttributes)
 
         return userMaybe
