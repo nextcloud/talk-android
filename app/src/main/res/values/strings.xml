@@ -440,10 +440,6 @@
     <string name="play_pause_voice_message">Play/pause voice message</string>
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
 
-    <!-- polls -->
-    <string name="message_poll_tap_to_vote">Tap to vote</string>
-    <string name="message_poll_tap_see_results">Tap to see results</string>
-
     <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_key" translatable="false">phone_book_integration</string>
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>
@@ -537,6 +533,8 @@
     <string name="message_search_begin_empty">No search results</string>
 
     <!-- Polls -->
+    <string name="message_poll_tap_to_vote">Tap to vote</string>
+    <string name="message_poll_tap_see_results">Tap to see results</string>
     <string name="polls_amount_voters">%1$s voters</string>
     <string name="polls_add_option">Add Option</string>
     <string name="polls_private_voted">You successfully voted for this private poll.</string>
