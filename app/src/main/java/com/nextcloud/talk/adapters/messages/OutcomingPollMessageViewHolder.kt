@@ -57,17 +57,14 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
     private val binding: ItemCustomOutcomingPollMessageBinding =
         ItemCustomOutcomingPollMessageBinding.bind(itemView)
 
-    @JvmField
     @Inject
-    var context: Context? = null
-
-    @JvmField
-    @Inject
-    var appPreferences: AppPreferences? = null
+    lateinit var context: Context
 
     @Inject
-    @JvmField
-    var ncApi: NcApi? = null
+    lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var ncApi: NcApi
 
     lateinit var message: ChatMessage
 

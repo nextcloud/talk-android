@@ -60,17 +60,14 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
     private val binding: ItemCustomIncomingPollMessageBinding =
         ItemCustomIncomingPollMessageBinding.bind(itemView)
 
-    @JvmField
     @Inject
-    var context: Context? = null
-
-    @JvmField
-    @Inject
-    var appPreferences: AppPreferences? = null
+    lateinit var context: Context
 
     @Inject
-    @JvmField
-    var ncApi: NcApi? = null
+    lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var ncApi: NcApi
 
     lateinit var message: ChatMessage
 
