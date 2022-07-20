@@ -17,7 +17,8 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,103 +27,98 @@
     android:padding="@dimen/standard_padding"
     tools:background="@color/white">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"
-        android:text="@string/polls_question" />
-
-    <EditText
-        android:id="@+id/poll_create_question"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        tools:ignore="Autofill,LabelFor"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/standard_margin"
-        android:text="@string/polls_options" />
-
     <LinearLayout
-        android:id="@+id/poll_create_options_list_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:text="@string/polls_question" />
+
+        <EditText
+            android:id="@+id/poll_create_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            tools:ignore="Autofill,LabelFor"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:text="@string/polls_options" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/poll_create_options_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/poll_create_options_item" />
-    </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/poll_add_options_item"
-        style="@style/OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_half_margin"
-        app:icon="@drawable/ic_add_grey600_24px"
-        app:cornerRadius="@dimen/button_corner_radius"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/polls_add_option" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/standard_margin"
-        android:layout_marginBottom="@dimen/standard_half_margin"
-
-        android:text="@string/polls_settings" />
-
-    <CheckBox
-        android:id="@+id/poll_private_poll_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/polls_private_poll" />
-
-    <CheckBox
-        android:id="@+id/poll_multiple_answers_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/polls_multiple_answers" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/standard_margin"
-
-        android:gravity="end">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/poll_dismiss"
+            android:id="@+id/poll_add_options_item"
             style="@style/OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/standard_half_margin"
+            app:icon="@drawable/ic_add_grey600_24px"
             app:cornerRadius="@dimen/button_corner_radius"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/nc_common_dismiss" />
+            android:text="@string/polls_add_option" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/poll_create_button"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/standard_half_margin"
-            app:cornerRadius="@dimen/button_corner_radius"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/nc_create_poll"
-            android:theme="@style/Button.Primary" />
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_half_margin"
+            android:text="@string/polls_settings" />
 
+        <CheckBox
+            android:id="@+id/poll_private_poll_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/polls_private_poll" />
+
+        <CheckBox
+            android:id="@+id/poll_multiple_answers_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/polls_multiple_answers" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:gravity="end">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/poll_dismiss"
+                style="@style/OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/standard_half_margin"
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/nc_common_dismiss" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/poll_create_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/standard_half_margin"
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/nc_create_poll"
+                android:theme="@style/Button.Primary" />
+
+        </LinearLayout>
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
