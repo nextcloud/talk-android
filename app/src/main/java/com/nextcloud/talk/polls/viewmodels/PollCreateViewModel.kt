@@ -113,7 +113,7 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
                 roomToken, _question, _options.value!!.map { it.pollOption }, resultMode,
                 maxVotes
             )
-                ?.doOnSubscribe { disposable = it }
+                .doOnSubscribe { disposable = it }
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(PollObserver())

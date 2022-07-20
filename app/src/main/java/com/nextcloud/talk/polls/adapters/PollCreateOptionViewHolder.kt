@@ -49,7 +49,7 @@ class PollCreateOptionViewHolder(
         binding.pollOptionText.setText(pollCreateOptionItem.pollOption)
 
         if (focus) {
-            binding.pollOptionText.requestFocus()
+            itemsListener.requestFocus(binding.pollOptionText)
         }
 
         binding.pollOptionDelete.setOnClickListener {
