@@ -112,6 +112,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -178,6 +179,9 @@ public class ConversationsListController extends BaseController implements Flexi
 
     @Inject
     UnifiedSearchRepository unifiedSearchRepository;
+
+    @Inject
+    CookieManager cookieManager;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -561,6 +565,8 @@ public class ConversationsListController extends BaseController implements Flexi
         conversationItemsWithHeader = new ArrayList<>();
 
         int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[]{ApiUtils.APIv4, ApiUtils.APIv3, 1});
+
+        cookieManager.getCookieStore().removeAll();
 
         long startNanoTime = System.nanoTime();
         Log.d(TAG, "fetchData - getRooms - calling: " + startNanoTime);
