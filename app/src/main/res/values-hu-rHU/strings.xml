@@ -354,6 +354,7 @@
     <string name="send_to_forbidden">Nincs jogosultsága, hogy tartalmat osszon meg ebben a csevegésben</string>
     <string name="send_to_three_dots">Küldés…</string>
     <string name="send_without_notification">Küldés értesítés nélkül</string>
+    <string name="set_avatar_from_camera">Profilkép beállítása a kamerával</string>
     <string name="set_status">Állapot beállítása</string>
     <string name="set_status_message">Állapotüzenet beállítása</string>
     <string name="share">Megosztás</string>
