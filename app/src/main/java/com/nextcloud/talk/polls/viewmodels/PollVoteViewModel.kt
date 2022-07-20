@@ -79,6 +79,8 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
 
     fun vote(roomToken: String, pollId: String) {
         if (_selectedOptions.isNotEmpty()) {
+            _submitButtonEnabled.value = false
+
             repository.vote(roomToken, pollId, _selectedOptions)
                 .doOnSubscribe { disposable = it }
                 ?.subscribeOn(Schedulers.io())
