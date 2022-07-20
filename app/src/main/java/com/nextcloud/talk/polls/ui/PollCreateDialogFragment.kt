@@ -47,8 +47,6 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener {
 
-    lateinit var roomToken: String
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -62,8 +60,8 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollCreateViewModel::class.java]
-
-        roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
+        val roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
+        viewModel.initialize(roomToken)
     }
 
     @SuppressLint("InflateParams")
@@ -88,8 +86,6 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
 
         adapter = PollCreateOptionsAdapter(this)
         binding.pollCreateOptionsList.adapter = adapter
-
-        viewModel.initialize(roomToken)
 
         setupListeners()
         setupStateObserver()
