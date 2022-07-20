@@ -49,17 +49,12 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     sealed interface ViewState
     object InitialState : ViewState
+    object DismissDialogState : ViewState
     open class PollVoteState(
         val poll: Poll,
         val showVotersAmount: Boolean,
         val showEndPollButton: Boolean,
         val showDismissEditButton: Boolean
-    ) : ViewState
-
-    open class PollVoteHiddenState(
-        val poll: Poll,
-        val showVotersAmount: Boolean,
-        val showEndPollButton: Boolean
     ) : ViewState
 
     open class PollResultState(
@@ -138,7 +133,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
             val showVotersAmount = showVotersAmount(poll)
 
             if (votedForOpenHiddenPoll(poll)) {
-                _viewState.value = PollVoteHiddenState(poll, showVotersAmount, showEndPollButton)
+                _viewState.value = PollVoteState(poll, showVotersAmount, showEndPollButton, false)
             } else if (editVotes && poll.status == Poll.STATUS_OPEN) {
                 _viewState.value = PollVoteState(poll, false, showEndPollButton, true)
                 editVotes = false
@@ -177,6 +172,10 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     private fun isPollCreatedByCurrentUser(poll: Poll): Boolean {
         return userUtils.currentUser?.userId == poll.actorId
+    }
+
+    fun dismissDialog() {
+        _viewState.value = DismissDialogState
     }
 
     companion object {

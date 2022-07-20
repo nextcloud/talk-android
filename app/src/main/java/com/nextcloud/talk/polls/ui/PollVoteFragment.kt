@@ -80,10 +80,6 @@ class PollVoteFragment : Fragment() {
                 initEndPollButton(state.showEndPollButton)
                 updateSubmitButton()
                 updateDismissEditButton(state.showDismissEditButton)
-            } else if (state is PollMainViewModel.PollVoteHiddenState) {
-                initPollOptions(state.poll)
-                initEndPollButton(state.showEndPollButton)
-                updateSubmitButton()
             }
         }
 
@@ -93,6 +89,10 @@ class PollVoteFragment : Fragment() {
                 is PollVoteViewModel.PollVoteFailedState -> {
                     Log.e(TAG, "Failed to vote on poll.")
                     Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                }
+                is PollVoteViewModel.PollVoteHiddenSuccessState -> {
+                    Toast.makeText(context, R.string.polls_voted_hidden_success, Toast.LENGTH_LONG).show()
+                    parentViewModel.dismissDialog()
                 }
                 is PollVoteViewModel.PollVoteSuccessState -> {
                     parentViewModel.voted()

@@ -85,20 +85,16 @@ class PollMainDialogFragment : DialogFragment() {
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 PollMainViewModel.InitialState -> {}
-                is PollMainViewModel.PollVoteHiddenState -> {
-                    binding.pollVotedHidden.visibility = View.VISIBLE
-                    initVotersAmount(state.showVotersAmount, state.poll.numVoters, false)
-                    showVoteScreen()
-                }
                 is PollMainViewModel.PollVoteState -> {
-                    binding.pollVotedHidden.visibility = View.GONE
                     initVotersAmount(state.showVotersAmount, state.poll.numVoters, false)
                     showVoteScreen()
                 }
                 is PollMainViewModel.PollResultState -> {
-                    binding.pollVotedHidden.visibility = View.GONE
                     initVotersAmount(state.showVotersAmount, state.poll.numVoters, true)
                     showResultsScreen()
+                }
+                is PollMainViewModel.DismissDialogState -> {
+                    dismiss()
                 }
                 else -> {}
             }

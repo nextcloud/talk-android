@@ -85,16 +85,6 @@
 
     </LinearLayout>
 
-
-
-    <TextView
-        android:id="@+id/poll_voted_hidden"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/low_emphasis_text"
-        android:text="@string/polls_private_voted" />
-
     <FrameLayout
         android:id="@+id/message_poll_content_fragment"
         android:layout_width="match_parent"

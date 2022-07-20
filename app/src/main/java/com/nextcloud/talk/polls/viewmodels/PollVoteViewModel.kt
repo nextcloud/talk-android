@@ -38,7 +38,8 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
 
     sealed interface ViewState
     object InitialState : ViewState
-    open class PollVoteSuccessState(val poll: Poll) : ViewState
+    open class PollVoteSuccessState : ViewState
+    open class PollVoteHiddenSuccessState : ViewState
     open class PollVoteFailedState : ViewState
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
@@ -116,7 +117,11 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
         }
 
         override fun onComplete() {
-            _viewState.value = PollVoteSuccessState(poll)
+            if (poll.resultMode == 1) {
+                _viewState.value = PollVoteHiddenSuccessState()
+            } else {
+                _viewState.value = PollVoteSuccessState()
+            }
         }
     }
 
