@@ -197,6 +197,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.File
 import java.io.IOException
+import java.net.CookieManager
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -235,6 +236,9 @@ class ChatController(args: Bundle) :
 
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
+
+    @Inject
+    lateinit var cookieManager: CookieManager
 
     val disposables = DisposableSet()
 
@@ -2017,6 +2021,8 @@ class ChatController(args: Bundle) :
 
         if (conversationUser != null) {
             val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+
+            cookieManager.cookieStore.removeAll()
 
             ncApi!!.sendChatMessage(
                 credentials,
