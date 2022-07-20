@@ -417,7 +417,7 @@ public class ApiUtils {
 
     public static String getUrlPushProxy() {
         return NextcloudTalkApplication.Companion.getSharedApplication().
-                getApplicationContext().getResources().getString(R.string.nc_push_server_url) + "/devices";
+                appPreferences.getPushServerUrl() + "/devices";
     }
 
     public static String getUrlForNotificationWithId(String baseUrl, String notificationId) {

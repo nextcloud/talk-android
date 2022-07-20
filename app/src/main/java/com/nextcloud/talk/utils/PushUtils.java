@@ -103,8 +103,7 @@ public class PushUtils {
         String keyPath = NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore", Context.MODE_PRIVATE).getAbsolutePath();
         publicKeyFile = new File(keyPath, "push_key.pub");
         privateKeyFile = new File(keyPath, "push_key.priv");
-        proxyServer = NextcloudTalkApplication.Companion.getSharedApplication().getResources().
-            getString(R.string.nc_push_server_url);
+        proxyServer = appPreferences.getPushServerUrl();
     }
 
     public SignatureVerification verifySignature(byte[] signatureBytes, byte[] subjectBytes) {
