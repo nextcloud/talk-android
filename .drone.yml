@@ -11,6 +11,7 @@ steps:
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - pull_request
     - push
@@ -29,6 +30,7 @@ steps:
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - push
     - pull_request
@@ -69,6 +71,7 @@ services:
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - push
     - pull_request
@@ -91,7 +94,7 @@ steps:
       LOG_PASSWORD:
         from_secret: LOG_PASSWORD
     commands:
-      - export BRANCH=$(scripts/analysis/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
+      - export BRANCH=$(git branch | grep '*' | cut -d' ' -f2)
       - scripts/analysis/analysis-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER $DRONE_PULL_REQUEST
 
   - name: notify
@@ -124,6 +127,7 @@ steps:
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - push
     - pull_request

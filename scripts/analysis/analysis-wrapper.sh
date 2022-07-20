@@ -8,8 +8,14 @@
 #6: DRONE_BUILD_NUMBER
 #7: PULL_REQUEST_NUMBER
 
-stableBranch="master"
+
 repository="talk"
+
+if [[ $3 = \stable-* ]] ; then
+  stableBranch=$3
+else
+  stableBranch="master"
+fi
 
 ruby scripts/analysis/lint-up.rb $1 $2 $3
 lintValue=$?
