@@ -128,7 +128,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
     }
 
     override fun onClick(pollResultHeaderItem: PollResultHeaderItem) {
-        viewModel.filterItems()
+        viewModel.toggleDetails()
     }
 
     companion object {

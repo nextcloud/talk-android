@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.polls.adapters.PollResultHeaderItem
 import com.nextcloud.talk.polls.adapters.PollResultItem
 import com.nextcloud.talk.polls.adapters.PollResultVoterItem
+import com.nextcloud.talk.polls.adapters.PollResultVotersOverviewItem
 import com.nextcloud.talk.polls.model.Poll
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
@@ -40,7 +41,8 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
     val poll: Poll?
         get() = _poll
 
-    private var _unfilteredItems: ArrayList<PollResultItem> = ArrayList()
+    private var _itemsOverviewList: ArrayList<PollResultItem> = ArrayList()
+    private var _itemsDetailsList: ArrayList<PollResultItem> = ArrayList()
 
     private var _items: MutableLiveData<ArrayList<PollResultItem>?> = MutableLiveData<ArrayList<PollResultItem>?>()
     val items: MutableLiveData<ArrayList<PollResultItem>?>
@@ -72,23 +74,23 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
                 optionsPercent,
                 isOptionSelfVoted(poll, index)
             )
-            addToItems(pollResultHeaderItem)
+            _itemsOverviewList.add(pollResultHeaderItem)
+            _itemsDetailsList.add(pollResultHeaderItem)
 
             val voters = poll.details?.filter { it.optionId == index }
+
+            if (!voters.isNullOrEmpty()) {
+                _itemsOverviewList.add(PollResultVotersOverviewItem(voters))
+            }
+
             if (!voters.isNullOrEmpty()) {
                 voters.forEach {
-                    addToItems(PollResultVoterItem(it))
+                    _itemsDetailsList.add(PollResultVoterItem(it))
                 }
             }
         }
 
-        _unfilteredItems = _items.value?.let { ArrayList(it) }!!
-    }
-
-    private fun addToItems(pollResultItem: PollResultItem) {
-        val tempList = _items.value
-        tempList!!.add(pollResultItem)
-        _items.value = tempList
+        _items.value = _itemsOverviewList
     }
 
     private fun getVotersAmountForOption(poll: Poll, index: Int): Int {
@@ -108,14 +110,11 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
         return poll.votedSelf?.contains(index) == true
     }
 
-    fun filterItems() {
-        if (_items.value?.containsAll(_unfilteredItems) == true) {
-            val filteredList = _items.value?.filter { it.getViewType() == PollResultHeaderItem.VIEW_TYPE } as
-                MutableList<PollResultItem>
-
-            _items.value = ArrayList(filteredList)
+    fun toggleDetails() {
+        if (_items.value?.containsAll(_itemsDetailsList) == true) {
+            _items.value = _itemsOverviewList
         } else {
-            _items.value = _unfilteredItems
+            _items.value = _itemsDetailsList
         }
     }
 

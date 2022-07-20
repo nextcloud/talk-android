@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.PollResultHeaderItemBinding
 import com.nextcloud.talk.databinding.PollResultVoterItemBinding
+import com.nextcloud.talk.databinding.PollResultVotersOverviewItemBinding
 
 class PollResultsAdapter(
     private val user: User,
@@ -51,6 +52,13 @@ class PollResultsAdapter(
                 )
                 viewHolder = PollResultVoterViewHolder(user, itemBinding)
             }
+            PollResultVotersOverviewItem.VIEW_TYPE -> {
+                val itemBinding = PollResultVotersOverviewItemBinding.inflate(
+                    LayoutInflater.from(parent.context), parent,
+                    false
+                )
+                viewHolder = PollResultVotersOverviewViewHolder(user, itemBinding)
+            }
         }
         return viewHolder!!
     }
@@ -64,6 +72,10 @@ class PollResultsAdapter(
             PollResultVoterItem.VIEW_TYPE -> {
                 val pollResultItem = list[position]
                 holder.bind(pollResultItem as PollResultVoterItem, clickListener)
+            }
+            PollResultVotersOverviewItem.VIEW_TYPE -> {
+                val pollResultItem = list[position]
+                holder.bind(pollResultItem as PollResultVotersOverviewItem, clickListener)
             }
         }
     }
