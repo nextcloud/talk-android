@@ -2593,6 +2593,11 @@ class ChatController(args: Bundle) :
 
                 chatMessageIterator.remove()
             }
+
+            // delete poll system messages
+            else if (isPollVotedMessage(currentMessage)) {
+                chatMessageIterator.remove()
+            }
         }
         return chatMessageMap.values.toList()
     }
@@ -2606,6 +2611,10 @@ class ChatController(args: Bundle) :
         return currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
+    }
+
+    private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
+        return currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
