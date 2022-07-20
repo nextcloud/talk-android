@@ -75,7 +75,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     private var disposable: Disposable? = null
 
-    fun initialize(user: User, roomToken: String, isOwnerOrModerator: Boolean, pollId: String, pollTitle: String) {
+    fun setData(user: User, roomToken: String, isOwnerOrModerator: Boolean, pollId: String, pollTitle: String) {
         this.user = user
         this.roomToken = roomToken
         this.isOwnerOrModerator = isOwnerOrModerator

@@ -70,7 +70,12 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
 
     private var disposable: Disposable? = null
 
-    fun initialize(roomToken: String) {
+    init {
+        addOption()
+        addOption()
+    }
+
+    fun setData(roomToken: String) {
         this.roomToken = roomToken
         updateCreationState()
     }

@@ -62,7 +62,7 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollCreateViewModel::class.java]
         val roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
-        viewModel.initialize(roomToken)
+        viewModel.setData(roomToken)
     }
 
     @SuppressLint("InflateParams")
@@ -90,9 +90,6 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
 
         setupListeners()
         setupStateObserver()
-
-        viewModel.addOption()
-        viewModel.addOption()
     }
 
     private fun setupListeners() {

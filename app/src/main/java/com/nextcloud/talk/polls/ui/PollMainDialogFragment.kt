@@ -59,7 +59,7 @@ class PollMainDialogFragment : DialogFragment() {
         val pollId = arguments?.getString(KEY_POLL_ID)!!
         val pollTitle = arguments?.getString(KEY_POLL_TITLE)!!
 
-        viewModel.initialize(user, roomToken, isOwnerOrModerator, pollId, pollTitle)
+        viewModel.setData(user, roomToken, isOwnerOrModerator, pollId, pollTitle)
     }
 
     @SuppressLint("InflateParams")
