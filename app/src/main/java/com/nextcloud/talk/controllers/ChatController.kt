@@ -168,7 +168,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -222,16 +221,10 @@ class ChatController(args: Bundle) :
     private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
 
     @Inject
-    @JvmField
-    var ncApi: NcApi? = null
+    lateinit var ncApi: NcApi
 
     @Inject
-    @JvmField
-    var userUtils: UserUtils? = null
-
-    @Inject
-    @JvmField
-    var eventBus: EventBus? = null
+    lateinit var eventBus: EventBus
 
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
@@ -332,7 +325,7 @@ class ChatController(args: Bundle) :
 
             val startNanoTime = System.nanoTime()
             Log.d(TAG, "getRoomInfo - getRoom - calling: " + startNanoTime)
-            ncApi?.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser.baseUrl, roomToken))
+            ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser.baseUrl, roomToken))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<RoomOverall> {
@@ -399,7 +392,7 @@ class ChatController(args: Bundle) :
         }
 
         Log.d(TAG, "handleFromNotification - getRooms - calling")
-        ncApi?.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl))
+        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl))
             ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<RoomsOverall> {
                 override fun onSubscribe(d: Disposable) {
@@ -1687,7 +1680,7 @@ class ChatController(args: Bundle) :
             "onAttach: Controller: " + System.identityHashCode(this).toString() +
                 " Activity: " + System.identityHashCode(activity).toString()
         )
-        eventBus?.register(this)
+        eventBus.register(this)
 
         if (conversationUser?.userId != "?" &&
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag") ?: false &&
@@ -1777,7 +1770,7 @@ class ChatController(args: Bundle) :
                 " Activity: " + System.identityHashCode(activity).toString()
         )
 
-        eventBus?.unregister(this)
+        eventBus.unregister(this)
 
         if (activity != null) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
@@ -1849,7 +1842,7 @@ class ChatController(args: Bundle) :
 
             val startNanoTime = System.nanoTime()
             Log.d(TAG, "joinRoomWithPassword - joinRoom - calling: " + startNanoTime)
-            ncApi?.joinRoom(
+            ncApi.joinRoom(
                 credentials,
                 ApiUtils.getUrlForParticipantsActive(apiVersion, conversationUser?.baseUrl, roomToken),
                 roomPassword
@@ -1935,7 +1928,7 @@ class ChatController(args: Bundle) :
 
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "leaveRoom - leaveRoom - calling: " + startNanoTime)
-        ncApi?.leaveRoom(
+        ncApi.leaveRoom(
             credentials,
             ApiUtils.getUrlForParticipantsActive(
                 apiVersion,
@@ -2150,7 +2143,7 @@ class ChatController(args: Bundle) :
         if (lookIntoFuture > 0) {
             val finalTimeout = timeout
             Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - calling")
-            ncApi?.pullChatMessages(
+            ncApi.pullChatMessages(
                 credentials,
                 ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken), fieldMap
             )
@@ -2192,7 +2185,7 @@ class ChatController(args: Bundle) :
                 })
         } else {
             Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - calling")
-            ncApi?.pullChatMessages(
+            ncApi.pullChatMessages(
                 credentials,
                 ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken), fieldMap
             )
@@ -2700,7 +2693,7 @@ class ChatController(args: Bundle) :
                 apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
             }
 
-            ncApi?.deleteChatMessage(
+            ncApi.deleteChatMessage(
                 credentials,
                 ApiUtils.getUrlForChatMessage(
                     apiVersion,
@@ -3066,7 +3059,7 @@ class ChatController(args: Bundle) :
                 null
             )
 
-            ncApi?.createRoom(
+            ncApi.createRoom(
                 credentials,
                 retrofitBucket.url, retrofitBucket.queryMap
             )
