@@ -65,6 +65,7 @@ import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.dialog.ContactsBottomDialog
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -102,6 +103,9 @@ class ContactsController(args: Bundle) :
 
     @Inject
     lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private var credentials: String? = null
     private var currentUser: User? = null
@@ -492,7 +496,7 @@ class ContactsController(args: Bundle) :
                 val headerTitle = getHeaderTitle(participant)
                 var genericTextHeaderItem: GenericTextHeaderItem
                 if (!userHeaderItems.containsKey(headerTitle)) {
-                    genericTextHeaderItem = GenericTextHeaderItem(headerTitle)
+                    genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
                     userHeaderItems.put(headerTitle, genericTextHeaderItem)
                 }
                 val newContactItem = ContactItem(

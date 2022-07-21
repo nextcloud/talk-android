@@ -26,9 +26,10 @@ import android.content.Context
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import javax.inject.Inject
 
 // TODO cache theme, keyed by server url
-internal class ServerThemeProviderImpl(
+internal class ServerThemeProviderImpl @Inject constructor(
     private val context: Context,
     private val userProvider: CurrentUserProviderNew
 ) :

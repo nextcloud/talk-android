@@ -30,6 +30,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemSearchMessageBinding
 import com.nextcloud.talk.models.domain.SearchMessageEntry
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -42,7 +43,8 @@ data class MessageResultItem constructor(
     private val context: Context,
     private val currentUser: User,
     val messageEntry: SearchMessageEntry,
-    private val showHeader: Boolean = false
+    private val showHeader: Boolean = false,
+    private val viewThemeUtils: ViewThemeUtils
 ) :
     AbstractFlexibleItem<MessageResultItem.ViewHolder>(),
     IFilterable<String>,
@@ -104,7 +106,7 @@ data class MessageResultItem constructor(
         const val VIEW_TYPE: Int = R.layout.rv_item_search_message
     }
 
-    override fun getHeader(): GenericTextHeaderItem = MessagesTextHeaderItem(context)
+    override fun getHeader(): GenericTextHeaderItem = MessagesTextHeaderItem(context, viewThemeUtils)
         .apply {
             isHidden = showHeader // FlexibleAdapter needs this hack for some reason
         }

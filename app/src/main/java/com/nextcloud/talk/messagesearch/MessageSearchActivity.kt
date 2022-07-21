@@ -41,6 +41,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMessageSearchBinding
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -63,6 +64,9 @@ class MessageSearchActivity : BaseActivity() {
 
     @Inject
     lateinit var userProvider: CurrentUserProviderNew
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private lateinit var binding: ActivityMessageSearchBinding
     private lateinit var searchView: SearchView
@@ -105,7 +109,9 @@ class MessageSearchActivity : BaseActivity() {
         DisplayUtils.applyColorToStatusBar(
             this,
             ResourcesCompat.getColor(
-                resources, R.color.appbar, null
+                resources,
+                R.color.appbar,
+                null
             )
         )
         DisplayUtils.applyColorToNavigationBar(
@@ -154,7 +160,7 @@ class MessageSearchActivity : BaseActivity() {
             emptyList()
         }
         val newItems =
-            state.results.map { MessageResultItem(this, user, it) } + loadMoreItems
+            state.results.map { MessageResultItem(this, user, it, false, viewThemeUtils) } + loadMoreItems
 
         if (adapter != null) {
             adapter!!.updateDataSet(newItems)
