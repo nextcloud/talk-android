@@ -53,11 +53,11 @@ import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerLocationBinding
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.database.user.UserUtils
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import io.reactivex.Observer
@@ -96,7 +96,7 @@ class LocationPickerController(args: Bundle) :
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var okHttpClient: OkHttpClient
@@ -135,11 +135,13 @@ class LocationPickerController(args: Bundle) :
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onDetach(view: View) {
         super.onDetach(view)
+
         try {
             locationManager!!.removeUpdates(this)
         } catch (e: Exception) {
             Log.e(TAG, "error when trying to remove updates for location Manager", e)
         }
+
         locationOverlay.disableMyLocation()
     }
 
@@ -404,11 +406,12 @@ class LocationPickerController(args: Bundle) :
             "{\"type\":\"geo-location\",\"id\":\"geo:$selectedLat,$selectedLon\",\"latitude\":\"$selectedLat\"," +
                 "\"longitude\":\"$selectedLon\",\"name\":\"$locationNameToShare\"}"
 
-        val apiVersion = ApiUtils.getChatApiVersion(userUtils.currentUser, intArrayOf(1))
+        val currentUser = userManager.currentUser.blockingGet()
+        val apiVersion = ApiUtils.getChatApiVersion(currentUser, intArrayOf(1))
 
         ncApi.sendLocation(
-            ApiUtils.getCredentials(userUtils.currentUser?.username, userUtils.currentUser?.token),
-            ApiUtils.getUrlToSendLocation(apiVersion, userUtils.currentUser?.baseUrl, roomToken),
+            ApiUtils.getCredentials(currentUser?.username, currentUser?.token),
+            ApiUtils.getUrlToSendLocation(apiVersion, currentUser?.baseUrl, roomToken),
             "geo-location",
             objectId,
             metaData
