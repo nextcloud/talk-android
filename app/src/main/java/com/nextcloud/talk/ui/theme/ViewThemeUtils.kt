@@ -24,8 +24,11 @@ package com.nextcloud.talk.ui.theme
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import javax.inject.Inject
 
@@ -47,20 +50,67 @@ class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
         else -> theme.colorElementBright
     }
 
-    fun themeFAB(fab: FloatingActionButton) {
-        fab.backgroundTintList = ColorStateList.valueOf(getElementColor(fab.context))
-        fab.imageTintList = ColorStateList.valueOf(theme.colorText)
+    private fun withElementColor(view: View, block: (Int) -> Unit) {
+        block(getElementColor(view.context))
     }
 
-    fun colorTextView(textView: TextView) {
-        textView.setTextColor(getElementColor(textView.context))
+    fun themeFAB(fab: FloatingActionButton) {
+        withElementColor(fab) { color ->
+            fab.backgroundTintList = ColorStateList.valueOf(color)
+            fab.imageTintList = ColorStateList.valueOf(theme.colorText)
+        }
+    }
+
+    fun colorTextViewElement(textView: TextView) {
+        withElementColor(textView) { color ->
+            textView.setTextColor(color)
+        }
+    }
+
+    fun colorTextViewText(textView: TextView) {
+        textView.setTextColor(theme.colorText)
     }
 
     /**
      * Colors the background as element color and the foreground as text color.
      */
     fun colorImageViewButton(imageView: ImageView) {
+        withElementColor(imageView) { color ->
+            imageView.imageTintList = ColorStateList.valueOf(theme.colorText)
+            imageView.backgroundTintList = ColorStateList.valueOf(color)
+        }
+    }
+
+    /**
+     * Tints the image with element color
+     */
+    fun colorImageView(imageView: ImageView) {
+        withElementColor(imageView) { color ->
+            imageView.imageTintList = ColorStateList.valueOf(color)
+        }
+    }
+
+    /**
+     * Tints the image with text color
+     */
+    fun colorImageViewText(imageView: ImageView) {
         imageView.imageTintList = ColorStateList.valueOf(theme.colorText)
-        imageView.backgroundTintList = ColorStateList.valueOf(getElementColor(imageView.context))
+    }
+
+    fun colorMaterialButtonText(button: MaterialButton) {
+        colorTextViewElement(button)
+    }
+
+    fun colorMaterialButtonBackground(button: MaterialButton) {
+        withElementColor(button) { color ->
+            button.setBackgroundColor(color)
+            button.setTextColor(theme.colorText)
+        }
+    }
+
+    fun colorCardViewBackground(card: MaterialCardView) {
+        withElementColor(card) { color ->
+            card.setCardBackgroundColor(color)
+        }
     }
 }

@@ -29,6 +29,7 @@ import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
 // TODO cache theme, keyed by server url
+// TODO reload UI when account changes
 internal class ServerThemeProviderImpl @Inject constructor(
     private val context: Context,
     private val userProvider: CurrentUserProviderNew
