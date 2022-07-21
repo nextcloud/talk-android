@@ -1,10 +1,12 @@
 /*
  * Nextcloud Talk application
  *
- * @author Mario Danic
+ * @author Andy Scherzinger
  * @author Marcel Hibbe
- * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * @author Mario Danic
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,9 +91,6 @@ public class PushUtils {
     @Inject
     EventBus eventBus;
 
-    @Inject
-    NcApi ncApi;
-
     private final File publicKeyFile;
     private final File privateKeyFile;
 
@@ -100,10 +99,17 @@ public class PushUtils {
     public PushUtils() {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        String keyPath = NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore", Context.MODE_PRIVATE).getAbsolutePath();
+        String keyPath = NextcloudTalkApplication
+            .Companion
+            .getSharedApplication()
+            .getDir("PushKeystore", Context.MODE_PRIVATE)
+            .getAbsolutePath();
         publicKeyFile = new File(keyPath, "push_key.pub");
         privateKeyFile = new File(keyPath, "push_key.priv");
-        proxyServer = NextcloudTalkApplication.Companion.getSharedApplication().getResources().
+        proxyServer = NextcloudTalkApplication
+            .Companion
+            .getSharedApplication()
+            .getResources().
             getString(R.string.nc_push_server_url);
     }
 
@@ -216,7 +222,7 @@ public class PushUtils {
         return -2;
     }
 
-    public void pushRegistrationToServer() {
+    public void pushRegistrationToServer(NcApi ncApi) {
         String token = appPreferences.getPushToken();
 
         if (!TextUtils.isEmpty(token)) {
@@ -227,7 +233,10 @@ public class PushUtils {
                 String devicePublicKeyBase64 = new String(devicePublicKeyBytes);
                 devicePublicKeyBase64 = devicePublicKeyBase64.replaceAll("(.{64})", "$1\n");
 
-                devicePublicKeyBase64 = "-----BEGIN PUBLIC KEY-----\n" + devicePublicKeyBase64 + "\n-----END PUBLIC KEY-----\n";
+                devicePublicKeyBase64 =
+                    "-----BEGIN PUBLIC KEY-----\n"
+                        + devicePublicKeyBase64
+                        + "\n-----END PUBLIC KEY-----\n";
 
                 if (userUtils.anyUserExists()) {
                     for (Object userEntityObject : userUtils.getUsers()) {
@@ -240,7 +249,7 @@ public class PushUtils {
                             nextcloudRegisterPushMap.put("devicePublicKey", devicePublicKeyBase64);
                             nextcloudRegisterPushMap.put("proxyServer", proxyServer);
 
-                            registerDeviceWithNextcloud(nextcloudRegisterPushMap, token, userEntity);
+                            registerDeviceWithNextcloud(ncApi, nextcloudRegisterPushMap, token, userEntity);
                         }
                     }
                 }
@@ -250,7 +259,10 @@ public class PushUtils {
         }
     }
 
-    private void registerDeviceWithNextcloud(Map<String, String> nextcloudRegisterPushMap, String token, UserEntity userEntity) {
+    private void registerDeviceWithNextcloud(NcApi ncApi,
+                                             Map<String, String> nextcloudRegisterPushMap,
+                                             String token,
+                                             UserEntity userEntity) {
         String credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
 
         ncApi.registerDeviceForNotificationsWithNextcloud(
@@ -269,14 +281,14 @@ public class PushUtils {
 
                     Map<String, String> proxyMap = new HashMap<>();
                     proxyMap.put("pushToken", token);
-                    proxyMap.put("deviceIdentifier", pushRegistrationOverall.getOcs().getData().
-                        getDeviceIdentifier());
-                    proxyMap.put("deviceIdentifierSignature", pushRegistrationOverall.getOcs()
-                        .getData().getSignature());
-                    proxyMap.put("userPublicKey", pushRegistrationOverall.getOcs()
-                        .getData().getPublicKey());
+                    proxyMap.put("deviceIdentifier",
+                                 pushRegistrationOverall.getOcs().getData().getDeviceIdentifier());
+                    proxyMap.put("deviceIdentifierSignature",
+                                 pushRegistrationOverall.getOcs().getData().getSignature());
+                    proxyMap.put("userPublicKey",
+                                 pushRegistrationOverall.getOcs().getData().getPublicKey());
 
-                    registerDeviceWithPushProxy(proxyMap, userEntity);
+                    registerDeviceWithPushProxy(ncApi, proxyMap, userEntity);
                 }
 
                 @Override
@@ -292,7 +304,7 @@ public class PushUtils {
             });
     }
 
-    private void registerDeviceWithPushProxy(Map<String, String> proxyMap, UserEntity userEntity) {
+    private void registerDeviceWithPushProxy(NcApi ncApi, Map<String, String> proxyMap, UserEntity userEntity) {
         ncApi.registerDeviceForNotificationsWithPushProxy(ApiUtils.getUrlPushProxy(), proxyMap)
             .subscribeOn(Schedulers.io())
             .subscribe(new Observer<Void>() {
