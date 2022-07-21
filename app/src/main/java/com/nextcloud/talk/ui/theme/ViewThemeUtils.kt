@@ -24,13 +24,19 @@ package com.nextcloud.talk.ui.theme
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.children
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.nextcloud.talk.R
 import com.yarolegovich.mp.MaterialPreferenceCategory
+import com.yarolegovich.mp.MaterialSwitchPreference
 import javax.inject.Inject
 
 class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
@@ -119,6 +125,45 @@ class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
     fun colorPreferenceCategory(category: MaterialPreferenceCategory) {
         withElementColor(category) { color ->
             category.setTitleColor(color)
+        }
+    }
+
+    fun colorSwitchPreference(preference: MaterialSwitchPreference) {
+        val children = preference.children
+        val switch = children.find { it is SwitchCompat }
+        if (switch != null) {
+            val switchCompat = (switch as SwitchCompat)
+            colorSwitchCompat(switchCompat)
+        }
+    }
+
+    // TODO cleanup
+    fun colorSwitchCompat(switchCompat: SwitchCompat) {
+        withElementColor(switchCompat) { color ->
+
+            val context = switchCompat.context
+
+            val thumbUncheckedColor = ResourcesCompat.getColor(
+                context.resources,
+                R.color.switch_thumb_color_unchecked,
+                context.theme
+            )
+            val trackUncheckedColor = ResourcesCompat.getColor(
+                context.resources,
+                R.color.switch_track_color_unchecked,
+                context.theme
+            )
+
+            val trackColor = Color.argb(77, Color.red(color), Color.green(color), Color.blue(color))
+            switchCompat.thumbTintList = ColorStateList(
+                arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf()),
+                intArrayOf(color, thumbUncheckedColor)
+            )
+
+            switchCompat.trackTintList = ColorStateList(
+                arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf()),
+                intArrayOf(trackColor, trackUncheckedColor)
+            )
         }
     }
 }

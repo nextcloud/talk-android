@@ -111,4 +111,7 @@
     <color name="dialog_background">#FFFFFF</color>
     <color name="vote_dialog_background">#FFFFFF</color>
 
+    <color name="switch_thumb_color_unchecked">#ececec</color>
+    <color name="switch_track_color_unchecked">#b2b2b2</color>
+
 </resources>

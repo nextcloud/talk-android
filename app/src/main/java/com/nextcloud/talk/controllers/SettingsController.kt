@@ -518,6 +518,20 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         }
 
         themeCategories()
+        themeSwitchPreferences()
+    }
+
+    private fun themeSwitchPreferences() {
+        binding.run {
+            listOf(
+                settingsScreenLock,
+                settingsScreenSecurity,
+                settingsIncognitoKeyboard,
+                settingsPhoneBookIntegration,
+                settingsReadPrivacy,
+                settingsProxyUseCredentials
+            ).forEach(viewThemeUtils::colorSwitchPreference)
+        }
     }
 
     private fun themeCategories() {

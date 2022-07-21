@@ -76,4 +76,8 @@
 
     <color name="dialog_background">#353535</color>
     <color name="vote_dialog_background">#424242</color>
+
+    <color name="switch_thumb_color_unchecked">#cbcbcb</color>
+    <color name="switch_track_color_unchecked">#5a5a5a</color>
+
 </resources>
