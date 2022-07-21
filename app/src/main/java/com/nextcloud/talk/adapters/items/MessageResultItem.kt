@@ -24,7 +24,6 @@ package com.nextcloud.talk.adapters.items
 import android.content.Context
 import android.text.SpannableString
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
@@ -79,7 +78,7 @@ data class MessageResultItem constructor(
 
     private fun bindMessageExcerpt(holder: ViewHolder) {
         val messageSpannable = SpannableString(messageEntry.messageExcerpt)
-        val highlightColor = ContextCompat.getColor(context, R.color.colorPrimary)
+        val highlightColor = viewThemeUtils.getElementColor(holder.binding.messageExcerpt.context)
         val highlightedSpan = DisplayUtils.searchAndColor(messageSpannable, messageEntry.searchTerm, highlightColor)
         holder.binding.messageExcerpt.text = highlightedSpan
     }

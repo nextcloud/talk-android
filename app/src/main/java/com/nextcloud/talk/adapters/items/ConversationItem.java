@@ -46,6 +46,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.ui.StatusDrawable;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
@@ -76,22 +77,22 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     private final Context context;
     private GenericTextHeaderItem header;
     private final Status status;
+    private final ViewThemeUtils viewThemeUtils;
 
 
-    public ConversationItem(Conversation conversation, User user, Context activityContext, Status status) {
+    public ConversationItem(Conversation conversation, User user, Context activityContext, Status status, final ViewThemeUtils viewThemeUtils) {
         this.conversation = conversation;
         this.user = user;
         this.context = activityContext;
         this.status = status;
+        this.viewThemeUtils = viewThemeUtils;
     }
 
     public ConversationItem(Conversation conversation, User user,
-                            Context activityContext, GenericTextHeaderItem genericTextHeaderItem, Status status) {
-        this.conversation = conversation;
-        this.user = user;
-        this.context = activityContext;
+                            Context activityContext, GenericTextHeaderItem genericTextHeaderItem, Status status,
+                            final ViewThemeUtils viewThemeUtils) {
+        this(conversation, user, activityContext, status, viewThemeUtils);
         this.header = genericTextHeaderItem;
-        this.status = status;
     }
 
     @Override
@@ -146,11 +147,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.binding.dialogName, conversation.getDisplayName(),
                                         String.valueOf(adapter.getFilter(String.class)),
-                                        NextcloudTalkApplication
-                                            .Companion
-                                            .getSharedApplication()
-                                            .getResources()
-                                            .getColor(R.color.colorPrimary));
+                                        viewThemeUtils.getElementColor(holder.binding.dialogName.getContext()));
         } else {
             holder.binding.dialogName.setText(conversation.getDisplayName());
         }

@@ -39,7 +39,10 @@ class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
         else -> false
     }
 
-    private fun getElementColor(context: Context): Int = when {
+    /**
+     * Color for painting elements
+     */
+    fun getElementColor(context: Context): Int = when {
         isDarkMode(context) -> theme.colorElementDark
         else -> theme.colorElementBright
     }
