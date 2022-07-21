@@ -51,6 +51,7 @@ import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.models.json.status.StatusOverall;
 import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.users.UserManager;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
@@ -87,6 +88,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     @Inject
     NcApi ncApi;
 
+    @Inject
+    ViewThemeUtils viewThemeUtils;
+
     private DialogChooseAccountBinding binding;
     private View dialogView;
 
@@ -119,6 +123,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             binding.currentAccount.userName.setText(user.getDisplayName());
             binding.currentAccount.ticker.setVisibility(View.GONE);
             binding.currentAccount.account.setText((Uri.parse(user.getBaseUrl()).getHost()));
+
+            viewThemeUtils.colorImageView(binding.currentAccount.accountMenu);
+
 
             if (user.getBaseUrl() != null &&
                 (user.getBaseUrl().startsWith("http://") || user.getBaseUrl().startsWith("https://"))) {
