@@ -631,7 +631,8 @@ public class ConversationsListController extends BaseController implements Flexi
                             conversation,
                             currentUser,
                             getActivity(),
-                            userStatuses.get(conversation.getName()));
+                            userStatuses.get(conversation.getName()),
+                            viewThemeUtils);
                         conversationItems.add(conversationItem);
 
                         ConversationItem conversationItemWithHeader = new ConversationItem(
@@ -639,7 +640,8 @@ public class ConversationsListController extends BaseController implements Flexi
                             currentUser,
                             getActivity(),
                             callHeaderItems.get(headerTitle),
-                            userStatuses.get(conversation.getName()));
+                            userStatuses.get(conversation.getName()),
+                            viewThemeUtils);
                         conversationItemsWithHeader.add(conversationItemWithHeader);
                     }
                 }
@@ -712,7 +714,8 @@ public class ConversationsListController extends BaseController implements Flexi
                             currentUser,
                             getActivity(),
                             callHeaderItems.get(headerTitle),
-                            userStatuses.get(conversation.getName()));
+                            userStatuses.get(conversation.getName()),
+                            viewThemeUtils);
 
                         openConversationItems.add(conversationItem);
                     }
