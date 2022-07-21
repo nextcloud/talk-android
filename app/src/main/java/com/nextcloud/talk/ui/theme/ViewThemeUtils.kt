@@ -24,6 +24,7 @@ package com.nextcloud.talk.ui.theme
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import javax.inject.Inject
@@ -48,7 +49,15 @@ class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
         fab.imageTintList = ColorStateList.valueOf(theme.colorText)
     }
 
-    fun colorTextView(titleTextView: TextView) {
-        titleTextView.setTextColor(getElementColor(titleTextView.context))
+    fun colorTextView(textView: TextView) {
+        textView.setTextColor(getElementColor(textView.context))
+    }
+
+    /**
+     * Colors the background as element color and the foreground as text color.
+     */
+    fun colorImageViewButton(imageView: ImageView) {
+        imageView.imageTintList = ColorStateList.valueOf(theme.colorText)
+        imageView.backgroundTintList = ColorStateList.valueOf(getElementColor(imageView.context))
     }
 }
