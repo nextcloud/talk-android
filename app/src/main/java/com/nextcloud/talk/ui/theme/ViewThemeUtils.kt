@@ -30,6 +30,7 @@ import android.widget.TextView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.yarolegovich.mp.MaterialPreferenceCategory
 import javax.inject.Inject
 
 class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
@@ -111,6 +112,13 @@ class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
     fun colorCardViewBackground(card: MaterialCardView) {
         withElementColor(card) { color ->
             card.setCardBackgroundColor(color)
+        }
+    }
+
+    // TODO split this util into classes depending on framework views vs library views
+    fun colorPreferenceCategory(category: MaterialPreferenceCategory) {
+        withElementColor(category) { color ->
+            category.setTitleColor(color)
         }
     }
 }

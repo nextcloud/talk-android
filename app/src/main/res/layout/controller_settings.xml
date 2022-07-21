@@ -27,6 +27,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/white"
     android:id="@+id/settings_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -43,6 +44,7 @@
             android:id="@+id/message_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:text="This is a test message"
             android:gravity="center" />
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
@@ -105,10 +107,10 @@
                         android:id="@+id/server_age_warning_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:layout_toEndOf="@id/server_age_warning_icon"
                         android:paddingStart="@dimen/standard_padding"
                         android:paddingEnd="0dp"
-                        android:layout_centerHorizontal="true"
                         android:textAlignment="viewStart"
                         android:textColor="@color/nc_darkRed"
                         tools:text="@string/nc_settings_server_almost_eol" />
@@ -142,6 +144,7 @@
     <com.yarolegovich.mp.MaterialPreferenceCategory
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/settings_appearance_category"
         android:animateLayoutChanges="true"
         apc:cardBackgroundColor="@color/bg_default"
         apc:cardElevation="0dp"
@@ -186,6 +189,7 @@
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:id="@+id/settings_privacy_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
@@ -249,6 +253,7 @@
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:id="@+id/settings_advanced_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
@@ -323,6 +328,7 @@
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:id="@+id/settings_about_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
