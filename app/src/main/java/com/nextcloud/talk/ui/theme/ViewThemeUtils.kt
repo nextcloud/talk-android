@@ -24,9 +24,11 @@ package com.nextcloud.talk.ui.theme
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import javax.inject.Inject
 
-class ViewThemeUtils(val theme: ServerTheme) {
+class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
 
     private fun isDarkMode(context: Context): Boolean = when (
         context.resources.configuration.uiMode and
@@ -44,5 +46,9 @@ class ViewThemeUtils(val theme: ServerTheme) {
     fun themeFAB(fab: FloatingActionButton) {
         fab.backgroundTintList = ColorStateList.valueOf(getElementColor(fab.context))
         fab.imageTintList = ColorStateList.valueOf(theme.colorText)
+    }
+
+    fun colorTextView(titleTextView: TextView) {
+        titleTextView.setTextColor(getElementColor(titleTextView.context))
     }
 }

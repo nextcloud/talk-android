@@ -21,25 +21,24 @@
 
 package com.nextcloud.talk.ui.theme
 
-import android.content.Context
 import com.nextcloud.talk.dagger.modules.ContextModule
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.database.user.UserModule
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 
 @Module(includes = [ContextModule::class, UserModule::class])
-class ThemeModule {
+internal abstract class ThemeModule {
 
-    @Provides
+    @Binds
     @Reusable
-    fun provideServerThemeProvider(context: Context, userProvider: CurrentUserProviderNew): ServerThemeProvider {
-        return ServerThemeProviderImpl(context, userProvider)
-    }
+    abstract fun bindServerThemeProvider(provider: ServerThemeProviderImpl): ServerThemeProvider
 
-    @Provides
-    fun provideCurrentServerTheme(themeProvider: ServerThemeProvider): ServerTheme {
-        return themeProvider.getServerThemeForCurrentUser()
+    companion object {
+        @Provides
+        fun provideCurrentServerTheme(themeProvider: ServerThemeProvider): ServerTheme {
+            return themeProvider.getServerThemeForCurrentUser()
+        }
     }
 }
