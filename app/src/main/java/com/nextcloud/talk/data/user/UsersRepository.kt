@@ -33,14 +33,14 @@ interface UsersRepository {
     fun getUserWithId(id: Long): Maybe<User>
     fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<User>
     fun getUserWithUserId(userId: String): Maybe<User>
-    fun getUsersWithoutUserId(userId: Long): Single<List<User>>
+    fun getUsersWithoutUserId(id: Long): Single<List<User>>
     fun getUsersScheduledForDeletion(): Single<List<User>>
     fun getUsersNotScheduledForDeletion(): Single<List<User>>
     fun getUserWithUsernameAndServer(username: String, server: String): Maybe<User>
     fun updateUser(user: User): Int
     fun insertUser(user: User): Long
     fun setUserAsActiveWithId(id: Long): Single<Boolean>
-    fun deleteUserWithId(id: Long)
+    fun deleteUser(user: User): Int
     fun setAnyUserAsActive(): Boolean
     fun markUserForDeletion(id: Long): Boolean
 }

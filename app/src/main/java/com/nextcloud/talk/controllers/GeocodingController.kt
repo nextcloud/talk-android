@@ -45,7 +45,6 @@ import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerGeocodingBinding
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.UserUtils
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import kotlinx.coroutines.CoroutineScope
@@ -68,9 +67,6 @@ class GeocodingController(args: Bundle) :
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var userUtils: UserUtils
 
     @Inject
     lateinit var okHttpClient: OkHttpClient

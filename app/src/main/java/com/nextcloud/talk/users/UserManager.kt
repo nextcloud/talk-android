@@ -31,7 +31,6 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Maybe
 import io.reactivex.Single
-import java.lang.Boolean.TRUE
 
 @Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) : CurrentUserProviderNew {
@@ -41,31 +40,13 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     val usersScheduledForDeletion: Single<List<User>>
         get() = userRepository.getUsersScheduledForDeletion()
 
-    private fun setAnyUserAndSetAsActive(): Single<User> {
-        val results = userRepository.getUsersNotScheduledForDeletion()
-
-        return results.map { users ->
-            users
-                .firstOrNull()
-                ?.apply {
-                    current = true
-                }.also { user ->
-                    userRepository.updateUser(user!!)
-                }
-        }
-    }
-
     override val currentUser: Maybe<User>
         get() {
             return userRepository.getActiveUser()
         }
 
-    fun deleteUser(internalId: Long) {
-        userRepository.deleteUserWithId(internalId)
-    }
-
-    fun deleteUserWithId(internalId: Long) {
-        userRepository.deleteUserWithId(internalId)
+    fun deleteUser(internalId: Long): Int {
+        return userRepository.deleteUser(userRepository.getUserWithId(internalId).blockingGet())
     }
 
     fun getUserById(userId: String): Maybe<User> {
@@ -76,8 +57,8 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return userRepository.getUserWithId(id)
     }
 
-    fun disableAllUsersWithoutId(userId: Long): Single<Int> {
-        val results = userRepository.getUsersWithoutUserId(userId)
+    fun disableAllUsersWithoutId(id: Long): Single<Int> {
+        val results = userRepository.getUsersWithoutUserId(id)
 
         return results.map { users ->
             var count = 0
@@ -92,28 +73,58 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }
     }
 
-    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Maybe<Boolean> {
-        return userRepository.getUserWithUsernameAndServer(username, server).map { it.scheduledForDeletion }
+    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Single<Boolean> {
+        return userRepository
+            .getUserWithUsernameAndServer(username, server)
+            .map { it.scheduledForDeletion }
+            .switchIfEmpty(Single.just(false))
     }
 
     fun getUserWithInternalId(id: Long): Maybe<User> {
         return userRepository.getUserWithIdNotScheduledForDeletion(id)
     }
 
-    fun getIfUserWithUsernameAndServer(username: String, server: String): Maybe<Boolean> {
-        return userRepository.getUserWithUsernameAndServer(username, server).map { TRUE }
+    fun checkIfUserExists(username: String, server: String): Single<Boolean> {
+        return userRepository
+            .getUserWithUsernameAndServer(username, server)
+            .map { true }
+            .switchIfEmpty(Single.just(false))
     }
 
+    /**
+     * Don't ask
+     *
+     * @return `true` if the user was updated **AND** there is another user to set as active, `false` otherwise
+     */
     fun scheduleUserForDeletionWithId(id: Long): Single<Boolean> {
-        return userRepository.getUserWithId(id).map { user ->
-            user.scheduledForDeletion = true
-            user.current = false
-            userRepository.updateUser(user)
-        }
-            .toSingle()
-            .flatMap {
-                setAnyUserAndSetAsActive()
-            }.map { TRUE }
+        return userRepository.getUserWithId(id)
+            .map { user ->
+                user.scheduledForDeletion = true
+                user.current = false
+                userRepository.updateUser(user)
+            }
+            .flatMap { getAnyUserAndSetAsActive() }
+            .map { true }
+            .switchIfEmpty(Single.just(false))
+    }
+
+    private fun getAnyUserAndSetAsActive(): Maybe<User> {
+        val results = userRepository.getUsersNotScheduledForDeletion()
+
+        return results
+            .flatMapMaybe {
+                if (it.isNotEmpty()) {
+                    val user = it.first()
+                    user.apply {
+                        current = true
+                    }.also { currentUser ->
+                        userRepository.updateUser(currentUser)
+                    }
+                    Maybe.just(user)
+                } else {
+                    Maybe.empty()
+                }
+            }
     }
 
     fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Single<Int> {
@@ -136,19 +147,49 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return userRepository.setUserAsActiveWithId(user.id!!)
     }
 
+    fun storeProfile(username: String?, userAttributes: UserAttributes): Maybe<User> {
+        val userMaybe: Maybe<User> = findUser(null, userAttributes)
+
+        return userMaybe
+            .map { user: User? ->
+                when (user) {
+                    null -> createUser(
+                        username,
+                        userAttributes
+                    )
+                    else -> {
+                        user.token = userAttributes.token
+                        user.baseUrl = userAttributes.serverUrl
+                        user.current = true
+                        user.userId = userAttributes.userId
+                        user.token = userAttributes.token
+                        user.displayName = userAttributes.displayName
+                        user.clientCertificate = userAttributes.certificateAlias
+
+                        updateUserData(
+                            user,
+                            userAttributes
+                        )
+
+                        user
+                    }
+                }
+            }
+            .switchIfEmpty(Maybe.just(createUser(username, userAttributes)))
+            .map { user ->
+                userRepository.insertUser(user)
+            }
+            .flatMap { id ->
+                userRepository.getUserWithId(id)
+            }
+    }
+
     @Deprecated("Only available for migration, use updateExternalSignalingServer or create new methods")
     fun createOrUpdateUser(
         username: String?,
-        userAttributes: UserAttributes,
+        userAttributes: UserAttributes
     ): Maybe<User> {
-
-        val userMaybe: Maybe<User> = if (userAttributes.id != null) {
-            userRepository.getUserWithId(userAttributes.id)
-        } else if (username != null && userAttributes.serverUrl != null) {
-            userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
-        } else {
-            Maybe.empty()
-        }
+        val userMaybe: Maybe<User> = findUser(username, userAttributes)
 
         return userMaybe
             .map { user: User? ->
@@ -173,6 +214,16 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             .flatMap { id ->
                 userRepository.getUserWithId(id)
             }
+    }
+
+    private fun findUser(username: String?, userAttributes: UserAttributes): Maybe<User> {
+        return if (userAttributes.id != null) {
+            userRepository.getUserWithId(userAttributes.id)
+        } else if (username != null && userAttributes.serverUrl != null) {
+            userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
+        } else {
+            Maybe.empty()
+        }
     }
 
     fun getUserWithUsernameAndServer(username: String, server: String): Maybe<User> {
@@ -224,7 +275,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             user.externalSignalingServer = LoganSquare
                 .parse(userAttributes.externalSignalingServer, ExternalSignalingServer::class.java)
         }
-        user.current = true
+        user.current = userAttributes.currentUser == true
         return user
     }
 

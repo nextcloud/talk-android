@@ -3,8 +3,8 @@
  *
  * @author Andy Scherzinger
  * @author Mario Danic
- * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
- * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,15 +44,14 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerServerSelectionBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.generic.Status
-import com.nextcloud.talk.utils.AccountUtils.findAccounts
+import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.AccountUtils.findAccountsForUsers
 import com.nextcloud.talk.utils.AccountUtils.getAppNameBasedOnPackage
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -70,7 +69,7 @@ class ServerSelectionController :
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     private var statusQueryDisposable: Disposable? = null
 
@@ -119,9 +118,9 @@ class ServerSelectionController :
             if (
                 (
                     TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type)) ||
-                        findAccounts(userUtils.users as List<UserEntity>).isEmpty()
+                        findAccountsForUsers(userManager.users.blockingGet()).isEmpty()
                     ) &&
-                userUtils.users.size == 0
+                userManager.users.blockingGet().isEmpty()
             ) {
                 binding.helperTextView.setText(R.string.nc_get_from_provider)
                 binding.helperTextView.setOnClickListener {
@@ -134,12 +133,12 @@ class ServerSelectionController :
                     )
                     startActivity(browserIntent)
                 }
-            } else if (findAccounts(userUtils.users as List<UserEntity>).size > 0) {
+            } else if (findAccountsForUsers(userManager.users.blockingGet()).isNotEmpty()) {
                 if (!TextUtils.isEmpty(
                         getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
                     )
                 ) {
-                    if (findAccounts(userUtils.users as List<UserEntity>).size > 1) {
+                    if (findAccountsForUsers(userManager.users.blockingGet()).size > 1) {
                         binding.helperTextView.setText(
                             String.format(
                                 resources!!.getString(R.string.nc_server_import_accounts),
@@ -155,7 +154,7 @@ class ServerSelectionController :
                         )
                     }
                 } else {
-                    if (findAccounts(userUtils.users as List<UserEntity>).size > 1) {
+                    if (findAccountsForUsers(userManager.users.blockingGet()).size > 1) {
                         binding.helperTextView.text = resources!!.getString(R.string.nc_server_import_accounts_plain)
                     } else {
                         binding.helperTextView.text = resources!!.getString(R.string.nc_server_import_account_plain)

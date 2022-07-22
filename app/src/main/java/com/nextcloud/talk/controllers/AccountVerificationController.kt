@@ -26,6 +26,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -39,15 +40,16 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerAccountVerificationBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.UriUtils
@@ -57,9 +59,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ORIGINAL_PROTOCOL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
-import io.reactivex.CompletableObserver
+import io.reactivex.MaybeObserver
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -68,7 +69,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.net.CookieManager
-import java.util.ArrayList
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -83,7 +83,7 @@ class AccountVerificationController(args: Bundle? = null) :
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var cookieManager: CookieManager
@@ -248,28 +248,36 @@ class AccountVerificationController(args: Bundle? = null) :
     }
 
     private fun storeProfile(displayName: String?, userId: String) {
-        userUtils.createOrUpdateUser(
-            username, token,
-            baseUrl, displayName, null, java.lang.Boolean.TRUE,
-            userId, null, null,
-            appPreferences!!.temporaryClientCertAlias, null
+        userManager.storeProfile(
+            username,
+            UserManager.UserAttributes(
+                id = null,
+                serverUrl = baseUrl,
+                currentUser = true,
+                userId = userId,
+                token = token,
+                displayName = displayName,
+                pushConfigurationState = null,
+                capabilities = null,
+                certificateAlias = appPreferences!!.temporaryClientCertAlias,
+                externalSignalingServer = null
+            )
         )
             .subscribeOn(Schedulers.io())
-            .subscribe(object : Observer<UserEntity> {
+            .subscribe(object : MaybeObserver<User> {
                 override fun onSubscribe(d: Disposable) {
                     disposables.add(d)
                 }
 
                 @SuppressLint("SetTextI18n")
-                override fun onNext(userEntity: UserEntity) {
-                    internalAccountId = userEntity.id
+                override fun onSuccess(user: User) {
+                    internalAccountId = user.id!!
                     if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
                         registerForPush()
                     } else {
                         activity!!.runOnUiThread {
                             binding.progressText.text =
-                                """
-                                    ${binding.progressText.text}
+                                """ ${binding.progressText.text}
                                     ${resources!!.getString(R.string.nc_push_disabled)}
                                 """.trimIndent()
                         }
@@ -280,10 +288,9 @@ class AccountVerificationController(args: Bundle? = null) :
                 @SuppressLint("SetTextI18n")
                 override fun onError(e: Throwable) {
                     binding.progressText.text =
+                        """ ${binding.progressText.text}
                         """
-                            ${binding.progressText.text}
-                    """.trimIndent() +
-                        resources!!.getString(R.string.nc_display_name_not_stored)
+                        .trimIndent() + resources!!.getString(R.string.nc_display_name_not_stored)
                     abortVerification()
                 }
 
@@ -431,10 +438,11 @@ class AccountVerificationController(args: Bundle? = null) :
 
     private fun proceedWithLogin() {
         cookieManager.cookieStore.removeAll()
-        userUtils.disableAllUsersWithoutId(internalAccountId)
+        val userDisabledCount = userManager.disableAllUsersWithoutId(internalAccountId).blockingGet()
+        Log.d(TAG, "Disabled $userDisabledCount users that had no id")
         if (activity != null) {
             activity!!.runOnUiThread {
-                if (userUtils.users.size == 1) {
+                if (userManager.users.blockingGet().size == 1) {
                     router.setRoot(
                         RouterTransaction.with(ConversationsListController(Bundle()))
                             .pushChangeHandler(HorizontalChangeHandler())
@@ -472,18 +480,10 @@ class AccountVerificationController(args: Bundle? = null) :
     private fun abortVerification() {
         if (!isAccountImport) {
             if (internalAccountId != -1L) {
-                userUtils.deleteUserWithId(internalAccountId).subscribe(object : CompletableObserver {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-                    override fun onComplete() {
-                        activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, DELAY_IN_MILLIS) }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        // unused atm
-                    }
-                })
+                val count = userManager.deleteUser(internalAccountId)
+                if (count > 0) {
+                    activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, DELAY_IN_MILLIS) }
+                }
             } else {
                 activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, DELAY_IN_MILLIS) }
             }
@@ -498,7 +498,7 @@ class AccountVerificationController(args: Bundle? = null) :
                             router.popToRoot()
                         }
                     } else {
-                        if (userUtils.anyUserExists()) {
+                        if (userManager.users.blockingGet().isNotEmpty()) {
                             router.setRoot(
                                 RouterTransaction.with(ConversationsListController(Bundle()))
                                     .pushChangeHandler(HorizontalChangeHandler())
@@ -518,7 +518,7 @@ class AccountVerificationController(args: Bundle? = null) :
     }
 
     companion object {
-        const val TAG = "AccountVerificationController"
+        const val TAG = "AccountVerification"
         const val DELAY_IN_MILLIS: Long = 7500
     }
 
