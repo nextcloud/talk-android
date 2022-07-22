@@ -32,7 +32,7 @@ class PollResultHeaderViewHolder(
     override fun bind(pollResultItem: PollResultItem, clickListener: PollResultItemClickListener) {
         val item = pollResultItem as PollResultHeaderItem
 
-        binding.root.setOnClickListener { clickListener.onClick(pollResultItem) }
+        binding.root.setOnClickListener { clickListener.onClick() }
 
         binding.pollOptionText.text = item.name
         binding.pollOptionPercentText.text = "${item.percent}%"

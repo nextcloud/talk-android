@@ -44,6 +44,8 @@ class PollResultVotersOverviewViewHolder(
     override fun bind(pollResultItem: PollResultItem, clickListener: PollResultItemClickListener) {
         val item = pollResultItem as PollResultVotersOverviewItem
 
+        binding.root.setOnClickListener { clickListener.onClick() }
+
         val lp = LinearLayout.LayoutParams(
             AVATAR_WIDTH,
             AVATAR_HEIGHT

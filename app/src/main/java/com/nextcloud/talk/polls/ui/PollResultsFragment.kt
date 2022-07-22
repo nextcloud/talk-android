@@ -34,7 +34,6 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollResultsBinding
-import com.nextcloud.talk.polls.adapters.PollResultHeaderItem
 import com.nextcloud.talk.polls.adapters.PollResultItemClickListener
 import com.nextcloud.talk.polls.adapters.PollResultsAdapter
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
@@ -127,7 +126,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
         }
     }
 
-    override fun onClick(pollResultHeaderItem: PollResultHeaderItem) {
+    override fun onClick() {
         viewModel.toggleDetails()
     }
 

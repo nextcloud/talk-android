@@ -40,6 +40,9 @@ class PollResultVoterViewHolder(
     @SuppressLint("SetTextI18n")
     override fun bind(pollResultItem: PollResultItem, clickListener: PollResultItemClickListener) {
         val item = pollResultItem as PollResultVoterItem
+
+        binding.root.setOnClickListener { clickListener.onClick() }
+
         binding.pollVoterName.text = item.details.actorDisplayName
         binding.pollVoterAvatar.controller = getAvatarDraweeController(item.details)
     }
