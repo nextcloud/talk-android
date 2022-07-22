@@ -31,11 +31,13 @@ import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+import autodagger.AutoInjector;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 import com.nextcloud.talk.api.NcApi;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.PushUtils;
 
@@ -43,6 +45,7 @@ import java.net.CookieManager;
 
 import javax.inject.Inject;
 
+@AutoInjector(NextcloudTalkApplication.class)
 public class PushRegistrationWorker extends Worker {
     public static final String TAG = "PushRegistrationWorker";
     public static final String ORIGIN = "origin";
@@ -60,6 +63,7 @@ public class PushRegistrationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         if(new ClosedInterfaceImpl().isGooglePlayServicesAvailable()){
             Data data = getInputData();
             String origin = data.getString("origin");
