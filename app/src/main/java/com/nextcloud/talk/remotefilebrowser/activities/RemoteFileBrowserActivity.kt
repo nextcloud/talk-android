@@ -44,6 +44,7 @@ import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.adapters.RemoteFileBrowserItemsAdapter
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileSortOrder
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
@@ -58,6 +59,9 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderNew
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private lateinit var binding: ActivityRemoteFileBrowserBinding
     private lateinit var viewModel: RemoteFileBrowserItemsViewModel
@@ -91,8 +95,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         initViewModel(mimeTypeSelectionFilter)
 
         binding.swipeRefreshList.setOnRefreshListener(this)
-        binding.swipeRefreshList.setColorSchemeResources(R.color.colorPrimary)
-        binding.swipeRefreshList.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
+        viewThemeUtils.themeSwipeRefreshLayout(binding.swipeRefreshList)
 
         binding.pathNavigationBackButton.setOnClickListener { viewModel.navigateUp() }
         binding.sortButton.setOnClickListener { changeSorting() }
@@ -160,6 +163,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
             mimeTypeSelectionFilter = mimeTypeSelectionFilter,
             user = currentUserProvider.currentUser.blockingGet(),
             selectionInterface = this,
+            viewThemeUtils = viewThemeUtils,
             onItemClicked = viewModel::onItemClicked
         )
         adapter.items = remoteFileBrowserItems

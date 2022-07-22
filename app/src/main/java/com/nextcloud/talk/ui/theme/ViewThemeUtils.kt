@@ -25,12 +25,15 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.view.View
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -106,6 +109,7 @@ class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
 
     fun colorMaterialButtonText(button: MaterialButton) {
         colorTextViewElement(button)
+        button.iconTint = ColorStateList.valueOf(getElementColor(button.context))
     }
 
     fun colorMaterialButtonBackground(button: MaterialButton) {
@@ -164,6 +168,25 @@ class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
                 arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf()),
                 intArrayOf(trackColor, trackUncheckedColor)
             )
+        }
+    }
+
+    fun colorDrawable(context: Context, drawable: Drawable) {
+        val color = getElementColor(context)
+        drawable.setTint(color)
+    }
+
+    fun themeCheckbox(checkbox: CheckBox) {
+        withElementColor(checkbox) { color ->
+            checkbox.setTextColor(color)
+            checkbox.buttonTintList = ColorStateList.valueOf(color)
+        }
+    }
+
+    fun themeSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
+        withElementColor(swipeRefreshLayout) { color ->
+            swipeRefreshLayout.setColorSchemeColors(color)
+            swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
         }
     }
 }
