@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Marcel Hibbe
+  ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@color/white">
+
+    <TextView
+        android:id="@+id/poll_option_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Option Number One" />
+
+    <TextView
+        android:id="@+id/poll_option_percent_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/poll_option_text"
+        tools:text="50%" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/poll_option_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:indeterminate="false"
+        app:indicatorColor="@color/poll_bar_color"
+        app:layout_constraintStart_toStartOf="@+id/poll_option_text"
+        app:layout_constraintTop_toBottomOf="@+id/poll_option_text"
+        app:trackColor="@color/dialog_background"
+        app:trackCornerRadius="5dp"
+        app:trackThickness="5dp"
+        android:paddingBottom="@dimen/standard_half_padding"
+        tools:progress="50" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

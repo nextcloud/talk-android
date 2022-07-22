@@ -26,6 +26,7 @@
     <string name="nc_no">No</string>
     <string name="nc_common_skip">Skip</string>
     <string name="nc_common_set">Set</string>
+    <string name="nc_common_dismiss">Dismiss</string>
     <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
 
     <!-- Bottom Navigation -->
@@ -309,6 +310,7 @@
     <string name="nc_sent_an_audio" formatted="true">%1$s sent an audio.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sent a video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sent an image.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s sent a poll.</string>
     <string name="nc_sent_location" formatted="true">%1$s sent a location.</string>
     <string name="nc_sent_voice" formatted="true">%1$s sent a voice message.</string>
     <string name="nc_sent_a_link_you">You sent a link.</string>
@@ -317,6 +319,7 @@
     <string name="nc_sent_an_audio_you">You sent an audio.</string>
     <string name="nc_sent_a_video_you">You sent a video.</string>
     <string name="nc_sent_an_image_you">You sent an image.</string>
+    <string name="nc_sent_poll_you">You sent a poll.</string>
     <string name="nc_sent_location_you">You sent a location.</string>
     <string name="nc_sent_voice_you">You sent a voice message.</string>
     <string name="nc_formatted_message" translatable="false">%1$s: %2$s</string>
@@ -401,6 +404,7 @@
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>
     <string name="nc_upload_picture_from_cam">Take photo</string>
+    <string name="nc_create_poll">Create poll</string>
     <string name="nc_upload_from_cloud">Share from %1$s</string>
     <string name="nc_upload_failed">Sorry, upload failed</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
@@ -527,11 +531,29 @@
     <string name="message_search_begin_typing">Start typing to search …</string>
     <string name="message_search_begin_empty">No search results</string>
 
+    <!-- Polls -->
+    <string name="message_poll_tap_to_open">Tap to open poll</string>
+    <string name="polls_amount_voters">%1$s votes</string>
+    <string name="polls_add_option">Add option</string>
+    <string name="polls_edit_vote">Edit vote</string>
+    <string name="polls_submit_vote">Vote</string>
+    <string name="polls_voted_hidden_success">Successfully voted</string>
+    <string name="polls_end_poll">End poll</string>
+    <string name="polls_end_poll_confirm">Do you really want to end this poll? This can\'t be undone.</string>
+    <string name="polls_max_votes_reached">You can\'t vote with more options for this poll.</string>
+    <string name="polls_results_subtitle">Results</string>
+    <string name="polls_question">Question</string>
+    <string name="polls_options">Options</string>
+    <string name="polls_settings">Settings</string>
+    <string name="polls_private_poll">Private poll</string>
+    <string name="polls_multiple_answers">Multiple answers</string>
+
     <string name="title_attachments">Attachments</string>
 
     <string name="reactions_tab_all">All</string>
     <string name="send_without_notification">Send without notification</string>
     <string name="call_without_notification">Call without notification</string>
     <string name="set_avatar_from_camera">Set avatar from camera</string>
+
 
 </resources>

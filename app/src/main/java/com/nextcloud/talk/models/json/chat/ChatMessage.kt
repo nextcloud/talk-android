@@ -124,6 +124,8 @@ data class ChatMessage(
 
     var voiceMessageDownloadProgress: Int = 0,
 ) : Parcelable, MessageContentType, MessageContentType.Image {
+
+    // messageTypesToIgnore is weird. must be deleted by refactoring!!!
     @JsonIgnore
     var messageTypesToIgnore = Arrays.asList(
         MessageType.REGULAR_TEXT_MESSAGE,
@@ -132,7 +134,8 @@ data class ChatMessage(
         MessageType.SINGLE_LINK_AUDIO_MESSAGE,
         MessageType.SINGLE_LINK_MESSAGE,
         MessageType.SINGLE_NC_GEOLOCATION_MESSAGE,
-        MessageType.VOICE_MESSAGE
+        MessageType.VOICE_MESSAGE,
+        MessageType.POLL_MESSAGE
     )
 
     fun hasFileAttachment(): Boolean {
@@ -156,6 +159,21 @@ data class ChatMessage(
                 if (MessageDigest.isEqual(
                         individualHashMap["type"]!!.toByteArray(),
                         "geo-location".toByteArray()
+                    )
+                ) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun isPoll(): Boolean {
+        if (messageParameters != null && messageParameters!!.size > 0) {
+            for ((_, individualHashMap) in messageParameters!!) {
+                if (MessageDigest.isEqual(
+                        individualHashMap["type"]!!.toByteArray(),
+                        "talk-poll".toByteArray()
                     )
                 ) {
                     return true
@@ -207,6 +225,8 @@ data class ChatMessage(
             MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
         } else if (hasGeoLocation()) {
             MessageType.SINGLE_NC_GEOLOCATION_MESSAGE
+        } else if (isPoll()) {
+            MessageType.POLL_MESSAGE
         } else {
             MessageType.REGULAR_TEXT_MESSAGE
         }
@@ -334,6 +354,15 @@ data class ChatMessage(
                             getNullsafeActorDisplayName()
                         )
                     }
+                } else if (MessageType.POLL_MESSAGE == getCalculateMessageType()) {
+                    return if (actorId == activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_poll_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_an_image),
+                            getNullsafeActorDisplayName()
+                        )
+                    }
                 }
             }
             return ""
@@ -410,6 +439,7 @@ data class ChatMessage(
         SINGLE_LINK_AUDIO_MESSAGE,
         SINGLE_NC_ATTACHMENT_MESSAGE,
         SINGLE_NC_GEOLOCATION_MESSAGE,
+        POLL_MESSAGE,
         VOICE_MESSAGE
     }
 
@@ -460,7 +490,9 @@ data class ChatMessage(
         CLEARED_CHAT,
         REACTION,
         REACTION_DELETED,
-        REACTION_REVOKED
+        REACTION_REVOKED,
+        POLL_VOTED,
+        POLL_CLOSED
     }
 
     companion object {

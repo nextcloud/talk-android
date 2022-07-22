@@ -49,7 +49,6 @@ import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
-import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.FileViewerUtils;
@@ -125,8 +124,9 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
             } else {
                 userAvatar.setVisibility(View.VISIBLE);
                 userAvatar.setOnClickListener(v -> {
-                    if (payload instanceof ProfileBottomSheet) {
-                        ((ProfileBottomSheet) payload).showFor(message.getActorId(), v.getContext());
+                    if (payload instanceof MessagePayload) {
+                        ((MessagePayload) payload).getProfileBottomSheet().showFor(message.getActorId(),
+                                                                                   v.getContext());
                     }
                 });
 

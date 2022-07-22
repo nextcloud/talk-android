@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Marcel Hibbe
+  ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:background="@color/white">
+
+    <EditText
+        android:id="@+id/poll_option_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:inputType="text"
+        tools:ignore="Autofill,LabelFor" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/poll_option_delete"
+        style="@style/Widget.AppTheme.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:contentDescription="@string/nc_action_open_main_menu"
+        app:cornerRadius="@dimen/button_corner_radius"
+        app:icon="@drawable/ic_baseline_close_24"
+        app:iconTint="@color/fontAppbar" />
+
+</LinearLayout>

@@ -1,14 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Mario Danic
  * @author Marcel Hibbe
- * @author Andy Scherzinger
- * @author Tim Krüger
- * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
- * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
- * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,47 +26,45 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
-import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.databinding.ItemCustomIncomingVoiceMessageBinding
+import com.nextcloud.talk.databinding.ItemCustomIncomingPollMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
-import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : MessageHolders
+class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageHolders
 .IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
 
-    private val binding: ItemCustomIncomingVoiceMessageBinding =
-        ItemCustomIncomingVoiceMessageBinding.bind(itemView)
+    private val binding: ItemCustomIncomingPollMessageBinding =
+        ItemCustomIncomingPollMessageBinding.bind(itemView)
 
-    @JvmField
     @Inject
-    var context: Context? = null
+    lateinit var context: Context
 
-    @JvmField
     @Inject
-    var appPreferences: AppPreferences? = null
+    lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var ncApi: NcApi
 
     lateinit var message: ChatMessage
 
-    lateinit var voiceMessageInterface: VoiceMessageInterface
     lateinit var reactionsInterface: ReactionsInterface
 
     @SuppressLint("SetTextI18n")
@@ -91,55 +83,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         // parent message handling
         setParentMessageDataOnMessageItem(message)
 
-        updateDownloadState(message)
-        binding.seekbar.max = message.voiceMessageDuration
-
-        if (message.isPlayingVoiceMessage) {
-            showPlayButton()
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!,
-                R.drawable.ic_baseline_pause_voice_message_24
-            )
-            binding.seekbar.progress = message.voiceMessagePlayedSeconds
-        } else {
-            binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!,
-                R.drawable.ic_baseline_play_arrow_voice_message_24
-            )
-        }
-
-        if (message.isDownloadingVoiceMessage) {
-            showVoiceMessageLoading()
-        } else {
-            binding.progressBar.visibility = View.GONE
-        }
-
-        if (message.resetVoiceMessage) {
-            binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!,
-                R.drawable.ic_baseline_play_arrow_voice_message_24
-            )
-            binding.seekbar.progress = SEEKBAR_START
-            message.resetVoiceMessage = false
-        }
-
-        binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                // unused atm
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-                // unused atm
-            }
-
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                if (fromUser) {
-                    voiceMessageInterface.updateMediaPlayerProgressBySlider(message, progress)
-                }
-            }
-        })
+        setPollPreview(message)
 
         Reaction().showReactions(message, binding.reactions, binding.messageTime.context, false)
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
@@ -151,57 +95,40 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         }
     }
 
-    private fun updateDownloadState(message: ChatMessage) {
-        // check if download worker is already running
-        val fileId = message.selectedIndividualHashMap!!["id"]
-        val workers = WorkManager.getInstance(context!!).getWorkInfosByTag(fileId!!)
+    private fun setPollPreview(message: ChatMessage) {
+        var pollId: String? = null
+        var pollName: String? = null
 
-        try {
-            for (workInfo in workers.get()) {
-                if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
-                    showVoiceMessageLoading()
-                    WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(workInfo.id)
-                        .observeForever { info: WorkInfo? ->
-                            showStatus(info)
-                        }
-                }
-            }
-        } catch (e: ExecutionException) {
-            Log.e(TAG, "Error when checking if worker already exists", e)
-        } catch (e: InterruptedException) {
-            Log.e(TAG, "Error when checking if worker already exists", e)
-        }
-    }
-
-    private fun showStatus(info: WorkInfo?) {
-        if (info != null) {
-            when (info.state) {
-                WorkInfo.State.RUNNING -> {
-                    Log.d(TAG, "WorkInfo.State.RUNNING in ViewHolder")
-                    showVoiceMessageLoading()
-                }
-                WorkInfo.State.SUCCEEDED -> {
-                    Log.d(TAG, "WorkInfo.State.SUCCEEDED in ViewHolder")
-                    showPlayButton()
-                }
-                WorkInfo.State.FAILED -> {
-                    Log.d(TAG, "WorkInfo.State.FAILED in ViewHolder")
-                    showPlayButton()
-                }
-                else -> {
+        if (message.messageParameters != null && message.messageParameters!!.size > 0) {
+            for (key in message.messageParameters!!.keys) {
+                val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
+                if (individualHashMap["type"] == "talk-poll") {
+                    pollId = individualHashMap["id"]
+                    pollName = individualHashMap["name"].toString()
                 }
             }
         }
-    }
 
-    private fun showPlayButton() {
-        binding.playPauseBtn.visibility = View.VISIBLE
-        binding.progressBar.visibility = View.GONE
-    }
+        if (pollId != null && pollName != null) {
+            binding.messagePollTitle.text = pollName
 
-    private fun showVoiceMessageLoading() {
-        binding.playPauseBtn.visibility = View.GONE
-        binding.progressBar.visibility = View.VISIBLE
+            val roomToken = (payload as? MessagePayload)!!.currentConversation.token!!
+            val isOwnerOrModerator = (payload as? MessagePayload)!!.currentConversation.isParticipantOwnerOrModerator
+
+            binding.bubble.setOnClickListener {
+                val pollVoteDialog = PollMainDialogFragment.newInstance(
+                    message.activeUser!!,
+                    roomToken,
+                    isOwnerOrModerator,
+                    pollId,
+                    pollName
+                )
+                pollVoteDialog.show(
+                    (binding.messagePollIcon.context as MainActivity).supportFragmentManager,
+                    TAG
+                )
+            }
+        }
     }
 
     private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
@@ -234,8 +161,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         } else if (message.actorType == "bots" && message.actorId == "changelog") {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
-                layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
+                layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+                layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
                 binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
             } else {
@@ -248,7 +175,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
                 .endConfig()
                 .buildRound(
                     ">",
-                    ResourcesCompat.getColor(context!!.resources, R.color.black, null)
+                    ResourcesCompat.getColor(context.resources, R.color.black, null)
                 )
             binding.messageUserAvatar.visibility = View.VISIBLE
             binding.messageUserAvatar.setImageDrawable(drawable)
@@ -281,7 +208,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
             parentChatMessage!!.activeUser = message.activeUser
-            parentChatMessage!!.imageUrl?.let {
+            parentChatMessage.imageUrl?.let {
                 binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
                 binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
@@ -293,11 +220,11 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
                 binding.messageQuote.quotedMessageImage.visibility = View.GONE
             }
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-                ?: context!!.getText(R.string.nc_nick_guest)
+                ?: context.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
             binding.messageQuote.quotedMessageAuthor
-                .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
+                .setTextColor(ContextCompat.getColor(context, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
@@ -311,16 +238,11 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         }
     }
 
-    fun assignVoiceMessageInterface(voiceMessageInterface: VoiceMessageInterface) {
-        this.voiceMessageInterface = voiceMessageInterface
-    }
-
     fun assignReactionInterface(reactionsInterface: ReactionsInterface) {
         this.reactionsInterface = reactionsInterface
     }
 
     companion object {
-        private const val TAG = "VoiceInMessageView"
-        private const val SEEKBAR_START: Int = 0
+        private val TAG = NextcloudTalkApplication::class.java.simpleName
     }
 }

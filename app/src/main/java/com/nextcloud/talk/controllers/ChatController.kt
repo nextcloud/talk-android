@@ -104,13 +104,16 @@ import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
+import com.nextcloud.talk.adapters.messages.IncomingPollMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder
+import com.nextcloud.talk.adapters.messages.MessagePayload
 import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
+import com.nextcloud.talk.adapters.messages.OutcomingPollMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
@@ -139,6 +142,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
+import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
@@ -483,10 +487,12 @@ class ChatController(args: Bundle) :
             val messageHolders = MessageHolders()
             val profileBottomSheet = ProfileBottomSheet(ncApi!!, conversationUser!!, router)
 
+            val payload = MessagePayload(currentConversation!!, profileBottomSheet)
+
             messageHolders.setIncomingTextConfig(
                 MagicIncomingTextMessageViewHolder::class.java,
                 R.layout.item_custom_incoming_text_message,
-                profileBottomSheet
+                payload
             )
             messageHolders.setOutcomingTextConfig(
                 MagicOutcomingTextMessageViewHolder::class.java,
@@ -496,7 +502,7 @@ class ChatController(args: Bundle) :
             messageHolders.setIncomingImageConfig(
                 IncomingPreviewMessageViewHolder::class.java,
                 R.layout.item_custom_incoming_preview_message,
-                profileBottomSheet
+                payload
             )
 
             messageHolders.setOutcomingImageConfig(
@@ -525,7 +531,7 @@ class ChatController(args: Bundle) :
             messageHolders.registerContentType(
                 CONTENT_TYPE_LOCATION,
                 IncomingLocationMessageViewHolder::class.java,
-                profileBottomSheet,
+                payload,
                 R.layout.item_custom_incoming_location_message,
                 OutcomingLocationMessageViewHolder::class.java,
                 null,
@@ -536,11 +542,22 @@ class ChatController(args: Bundle) :
             messageHolders.registerContentType(
                 CONTENT_TYPE_VOICE_MESSAGE,
                 IncomingVoiceMessageViewHolder::class.java,
-                profileBottomSheet,
+                payload,
                 R.layout.item_custom_incoming_voice_message,
                 OutcomingVoiceMessageViewHolder::class.java,
                 null,
                 R.layout.item_custom_outcoming_voice_message,
+                this
+            )
+
+            messageHolders.registerContentType(
+                CONTENT_TYPE_POLL,
+                IncomingPollMessageViewHolder::class.java,
+                payload,
+                R.layout.item_custom_incoming_poll_message,
+                OutcomingPollMessageViewHolder::class.java,
+                payload,
+                R.layout.item_custom_outcoming_poll_message,
                 this
             )
 
@@ -2576,6 +2593,11 @@ class ChatController(args: Bundle) :
 
                 chatMessageIterator.remove()
             }
+
+            // delete poll system messages
+            else if (isPollVotedMessage(currentMessage)) {
+                chatMessageIterator.remove()
+            }
         }
         return chatMessageMap.values.toList()
     }
@@ -2589,6 +2611,10 @@ class ChatController(args: Bundle) :
         return currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
+    }
+
+    private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
+        return currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
@@ -3012,6 +3038,7 @@ class ChatController(args: Bundle) :
         return when (type) {
             CONTENT_TYPE_LOCATION -> message.hasGeoLocation()
             CONTENT_TYPE_VOICE_MESSAGE -> message.isVoiceMessage
+            CONTENT_TYPE_POLL -> message.isPoll()
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
             else -> false
@@ -3121,12 +3148,23 @@ class ChatController(args: Bundle) :
         }
     }
 
+    fun createPoll() {
+        val pollVoteDialog = PollCreateDialogFragment.newInstance(
+            roomToken!!
+        )
+        pollVoteDialog.show(
+            (activity as MainActivity?)!!.supportFragmentManager,
+            TAG
+        )
+    }
+
     companion object {
         private const val TAG = "ChatController"
         private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
         private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
         private const val CONTENT_TYPE_LOCATION: Byte = 3
         private const val CONTENT_TYPE_VOICE_MESSAGE: Byte = 4
+        private const val CONTENT_TYPE_POLL: Byte = 5
         private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
         private const val POP_CURRENT_CONTROLLER_DELAY: Long = 100
         private const val LOBBY_TIMER_DELAY: Long = 5000

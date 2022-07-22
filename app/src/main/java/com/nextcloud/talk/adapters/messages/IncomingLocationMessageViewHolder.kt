@@ -50,7 +50,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingLocationMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.UriUtils
@@ -117,7 +116,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
         if (!TextUtils.isEmpty(author)) {
             binding.messageAuthor.text = author
             binding.messageUserAvatar.setOnClickListener {
-                (payload as? ProfileBottomSheet)?.showFor(message.actorId!!, itemView.context)
+                (payload as? MessagePayload)?.profileBottomSheet?.showFor(message.actorId!!, itemView.context)
             }
         } else {
             binding.messageAuthor.setText(R.string.nc_nick_guest)
