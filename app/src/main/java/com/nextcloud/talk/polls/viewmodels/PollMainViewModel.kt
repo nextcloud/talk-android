@@ -101,7 +101,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
             ?.subscribe(PollObserver())
     }
 
-    fun closePoll() {
+    fun endPoll() {
         repository.closePoll(roomToken, pollId)
             .doOnSubscribe { disposable = it }
             ?.subscribeOn(Schedulers.io())

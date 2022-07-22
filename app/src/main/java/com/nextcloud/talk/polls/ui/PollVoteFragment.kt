@@ -196,7 +196,7 @@ class PollVoteFragment : Fragment() {
                     .setTitle(R.string.polls_end_poll)
                     .setMessage(R.string.polls_end_poll_confirm)
                     .setPositiveButton(R.string.polls_end_poll) { _, _ ->
-                        parentViewModel.closePoll()
+                        parentViewModel.endPoll()
                     }
                     .setNegativeButton(R.string.nc_cancel, null)
                     .show()
