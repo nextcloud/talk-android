@@ -18,7 +18,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/voters_avatars_overview_wrapper"
     android:layout_width="match_parent"
@@ -28,5 +28,4 @@
     android:paddingBottom="4dp"
     android:orientation="horizontal"
     tools:background="@color/white">
-
-</LinearLayout>
+</RelativeLayout>
