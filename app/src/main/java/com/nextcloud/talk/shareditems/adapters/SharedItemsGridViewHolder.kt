@@ -27,11 +27,13 @@ import android.widget.ProgressBar
 import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.SharedItemGridBinding
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
 class SharedItemsGridViewHolder(
     override val binding: SharedItemGridBinding,
-    user: User
-) : SharedItemsViewHolder(binding, user) {
+    user: User,
+    viewThemeUtils: ViewThemeUtils
+) : SharedItemsViewHolder(binding, user, viewThemeUtils) {
 
     override val image: SimpleDraweeView
         get() = binding.image

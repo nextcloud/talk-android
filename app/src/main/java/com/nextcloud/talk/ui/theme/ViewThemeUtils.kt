@@ -30,6 +30,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
@@ -37,8 +38,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.R
+import com.nextcloud.talk.utils.DrawableUtils
 import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
 import javax.inject.Inject
@@ -196,5 +199,30 @@ class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
             textInputLayout.hintTextColor = ColorStateList.valueOf(color)
             textInputLayout.boxStrokeColor = color
         }
+    }
+
+    fun colorTabLayout(tabLayout: TabLayout) {
+        withElementColor(tabLayout) { color ->
+            tabLayout.setSelectedTabIndicatorColor(color)
+        }
+    }
+
+    fun getPlaceholderImage(context: Context, mimetype: String?): Drawable? {
+        val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimetype)
+        val drawable = AppCompatResources.getDrawable(
+            context,
+            drawableResourceId
+        )
+        if (drawable != null && THEMEABLE_PLACEHOLDER_IDS.contains(drawableResourceId)) {
+            colorDrawable(context, drawable)
+        }
+        return drawable
+    }
+
+    companion object {
+        private val THEMEABLE_PLACEHOLDER_IDS = listOf(
+            R.drawable.ic_mimetype_package_x_generic,
+            R.drawable.ic_mimetype_folder
+        )
     }
 }

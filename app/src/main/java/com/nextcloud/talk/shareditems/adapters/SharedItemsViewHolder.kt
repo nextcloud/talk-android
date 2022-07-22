@@ -28,7 +28,6 @@ import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -43,16 +42,17 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 
 abstract class SharedItemsViewHolder(
     open val binding: ViewBinding,
-    internal val user: User
+    internal val user: User,
+    private val viewThemeUtils: ViewThemeUtils
 ) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
@@ -71,7 +71,7 @@ abstract class SharedItemsViewHolder(
     )
 
     open fun onBind(item: SharedFileItem) {
-        image.hierarchy.setPlaceholderImage(staticImage(item.mimeType, image))
+        image.hierarchy.setPlaceholderImage(viewThemeUtils.getPlaceholderImage(image.context, item.mimeType))
         if (item.previewAvailable) {
             image.controller = configurePreview(item)
         }
@@ -107,7 +107,6 @@ abstract class SharedItemsViewHolder(
     }
 
     private fun configurePreview(item: SharedFileItem): DraweeController {
-
         val imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.previewLink))
             .setProgressiveRenderingEnabled(true)
             .setRotationOptions(RotationOptions.autoRotate())
@@ -136,12 +135,4 @@ abstract class SharedItemsViewHolder(
     open fun onBind(item: SharedOtherItem) {}
 
     open fun onBind(item: SharedDeckCardItem) {}
-
-    private fun staticImage(
-        mimeType: String?,
-        image: SimpleDraweeView
-    ): Drawable {
-        val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimeType)
-        return ContextCompat.getDrawable(image.context, drawableResourceId)!!
-    }
 }
