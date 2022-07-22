@@ -30,7 +30,6 @@
         android:id="@+id/poll_voter_avatar"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginStart="12dp"
         android:layout_marginEnd="8dp"
         android:layout_gravity="center"
         app:roundAsCircle="true" />
