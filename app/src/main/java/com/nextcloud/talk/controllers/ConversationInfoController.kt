@@ -73,6 +73,7 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
@@ -111,6 +112,9 @@ class ConversationInfoController(args: Bundle) :
 
     @Inject
     lateinit var eventBus: EventBus
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private val conversationToken: String?
     private val conversationUser: User?
@@ -181,6 +185,34 @@ class ConversationInfoController(args: Bundle) :
         }
 
         fetchRoomInfo()
+
+        themeCategories()
+        themeSwitchPreferences()
+    }
+
+    private fun themeSwitchPreferences() {
+        binding.run {
+            listOf(
+                binding.webinarInfoView.conversationInfoLobby,
+                binding.notificationSettingsView.callNotifications,
+                binding.notificationSettingsView.conversationInfoPriorityConversation
+            ).forEach(viewThemeUtils::colorSwitchPreference)
+        }
+    }
+
+    private fun themeCategories() {
+        binding.run {
+            listOf(
+                conversationInfoName,
+                conversationDescription,
+                otherRoomOptions,
+                participantsListCategory,
+                ownOptions,
+                categorySharedItems,
+                binding.webinarInfoView.conversationInfoWebinar,
+                binding.notificationSettingsView.notificationSettingsCategory
+            ).forEach(viewThemeUtils::colorPreferenceCategory)
+        }
     }
 
     private fun showSharedItems() {
@@ -299,7 +331,7 @@ class ConversationInfoController(args: Bundle) :
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
-        ncApi?.setLobbyForConversation(
+        ncApi.setLobbyForConversation(
             ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token),
             ApiUtils.getUrlForRoomWebinaryLobby(apiVersion, conversationUser.baseUrl, conversation!!.token),
             state,
@@ -343,7 +375,7 @@ class ConversationInfoController(args: Bundle) :
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-        eventBus?.unregister(this)
+        eventBus.unregister(this)
     }
 
     private fun showDeleteConversationDialog(savedInstanceState: Bundle?) {
@@ -352,11 +384,11 @@ class ConversationInfoController(args: Bundle) :
                 .setTopColorRes(R.color.nc_darkRed)
                 .setIcon(
                     DisplayUtils.getTintedDrawable(
-                        context!!.resources,
+                        context.resources,
                         R.drawable.ic_delete_black_24dp, R.color.bg_default
                     )
                 )
-                .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
+                .setPositiveButtonColor(context.resources.getColor(R.color.nc_darkRed))
                 .setTitle(R.string.nc_delete_call)
                 .setMessage(R.string.nc_delete_conversation_more)
                 .setPositiveButton(R.string.nc_delete) { deleteConversation() }
@@ -409,7 +441,7 @@ class ConversationInfoController(args: Bundle) :
             if (participant.sessionId != null) {
                 userItem.isOnline = !participant.sessionId.equals("0")
             } else {
-                userItem.isOnline = !participant.sessionIds!!.isEmpty()
+                userItem.isOnline = !participant.sessionIds.isEmpty()
             }
 
             if (participant.calculatedActorType == USERS &&
@@ -453,7 +485,7 @@ class ConversationInfoController(args: Bundle) :
         val fieldMap = HashMap<String, Boolean>()
         fieldMap["includeStatus"] = true
 
-        ncApi?.getPeersForCall(
+        ncApi.getPeersForCall(
             credentials,
             ApiUtils.getUrlForParticipants(
                 apiVersion,
@@ -504,7 +536,7 @@ class ConversationInfoController(args: Bundle) :
         bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
         bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
 
-        getRouter().pushController(
+        router.pushController(
             (
                 RouterTransaction.with(
                     ContactsController(bundle)
@@ -537,11 +569,11 @@ class ConversationInfoController(args: Bundle) :
                 .setTopColorRes(R.color.nc_darkRed)
                 .setIcon(
                     DisplayUtils.getTintedDrawable(
-                        context!!.resources,
+                        context.resources,
                         R.drawable.ic_delete_black_24dp, R.color.bg_default
                     )
                 )
-                .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
+                .setPositiveButtonColor(context.resources.getColor(R.color.nc_darkRed))
                 .setTitle(R.string.nc_clear_history)
                 .setMessage(R.string.nc_clear_history_warning)
                 .setPositiveButton(R.string.nc_delete_all) { clearHistory() }
@@ -555,7 +587,7 @@ class ConversationInfoController(args: Bundle) :
     private fun clearHistory() {
         val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
 
-        ncApi?.clearChatHistory(
+        ncApi.clearChatHistory(
             credentials,
             ApiUtils.getUrlForChat(apiVersion, conversationUser!!.baseUrl, conversationToken)
         )
@@ -567,7 +599,7 @@ class ConversationInfoController(args: Bundle) :
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    Toast.makeText(context, context?.getString(R.string.nc_clear_history_success), Toast.LENGTH_LONG)
+                    Toast.makeText(context, context.getString(R.string.nc_clear_history_success), Toast.LENGTH_LONG)
                         .show()
                 }
 
@@ -606,7 +638,7 @@ class ConversationInfoController(args: Bundle) :
             apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
         }
 
-        ncApi?.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser!!.baseUrl, conversationToken))
+        ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser!!.baseUrl, conversationToken))
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<RoomOverall> {
@@ -765,8 +797,8 @@ class ConversationInfoController(args: Bundle) :
             )
             Conversation.ConversationType.ROOM_SYSTEM -> {
                 val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
-                layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
+                layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+                layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
                 binding.avatarImage.hierarchy.setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
             }
@@ -800,7 +832,7 @@ class ConversationInfoController(args: Bundle) :
         if (participant.type == Participant.ParticipantType.MODERATOR ||
             participant.type == Participant.ParticipantType.GUEST_MODERATOR
         ) {
-            ncApi?.demoteAttendeeFromModerator(
+            ncApi.demoteAttendeeFromModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
@@ -815,7 +847,7 @@ class ConversationInfoController(args: Bundle) :
         } else if (participant.type == Participant.ParticipantType.USER ||
             participant.type == Participant.ParticipantType.GUEST
         ) {
-            ncApi?.promoteAttendeeToModerator(
+            ncApi.promoteAttendeeToModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
@@ -851,7 +883,7 @@ class ConversationInfoController(args: Bundle) :
         }
 
         if (participant.type == Participant.ParticipantType.MODERATOR) {
-            ncApi?.demoteModeratorToUser(
+            ncApi.demoteModeratorToUser(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
@@ -864,7 +896,7 @@ class ConversationInfoController(args: Bundle) :
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(subscriber)
         } else if (participant.type == Participant.ParticipantType.USER) {
-            ncApi?.promoteUserToModerator(
+            ncApi.promoteUserToModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
@@ -881,7 +913,7 @@ class ConversationInfoController(args: Bundle) :
 
     fun removeAttendeeFromConversation(apiVersion: Int, participant: Participant) {
         if (apiVersion >= ApiUtils.APIv4) {
-            ncApi?.removeAttendeeFromConversation(
+            ncApi.removeAttendeeFromConversation(
                 credentials,
                 ApiUtils.getUrlForAttendees(
                     apiVersion,
@@ -914,7 +946,7 @@ class ConversationInfoController(args: Bundle) :
             if (participant.type == Participant.ParticipantType.GUEST ||
                 participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
             ) {
-                ncApi?.removeParticipantFromConversation(
+                ncApi.removeParticipantFromConversation(
                     credentials,
                     ApiUtils.getUrlForRemovingParticipantFromConversation(
                         conversationUser!!.baseUrl,
@@ -944,7 +976,7 @@ class ConversationInfoController(args: Bundle) :
                         }
                     })
             } else {
-                ncApi?.removeParticipantFromConversation(
+                ncApi.removeParticipantFromConversation(
                     credentials,
                     ApiUtils.getUrlForRemovingParticipantFromConversation(
                         conversationUser!!.baseUrl,
@@ -987,12 +1019,12 @@ class ConversationInfoController(args: Bundle) :
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
-        if (participant.calculatedActorType == USERS && participant.calculatedActorId == conversationUser!!.userId) {
+        if (participant.calculatedActorType == USERS && participant.calculatedActorId == conversationUser.userId) {
             if (participant.attendeePin?.isNotEmpty() == true) {
                 val items = mutableListOf(
                     BasicListItemWithImage(
                         R.drawable.ic_lock_grey600_24px,
-                        context!!.getString(R.string.nc_attendee_pin, participant.attendeePin)
+                        context.getString(R.string.nc_attendee_pin, participant.attendeePin)
                     )
                 )
                 MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
@@ -1018,7 +1050,7 @@ class ConversationInfoController(args: Bundle) :
             val items = mutableListOf(
                 BasicListItemWithImage(
                     R.drawable.ic_delete_grey600_24dp,
-                    context!!.getString(R.string.nc_remove_group_and_members)
+                    context.getString(R.string.nc_remove_group_and_members)
                 )
             )
             MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
@@ -1038,7 +1070,7 @@ class ConversationInfoController(args: Bundle) :
             val items = mutableListOf(
                 BasicListItemWithImage(
                     R.drawable.ic_delete_grey600_24dp,
-                    context!!.getString(R.string.nc_remove_circle_and_members)
+                    context.getString(R.string.nc_remove_circle_and_members)
                 )
             )
             MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
@@ -1057,19 +1089,19 @@ class ConversationInfoController(args: Bundle) :
         val items = mutableListOf(
             BasicListItemWithImage(
                 R.drawable.ic_lock_grey600_24px,
-                context!!.getString(R.string.nc_attendee_pin, participant.attendeePin)
+                context.getString(R.string.nc_attendee_pin, participant.attendeePin)
             ),
             BasicListItemWithImage(
                 R.drawable.ic_pencil_grey600_24dp,
-                context!!.getString(R.string.nc_promote)
+                context.getString(R.string.nc_promote)
             ),
             BasicListItemWithImage(
                 R.drawable.ic_pencil_grey600_24dp,
-                context!!.getString(R.string.nc_demote)
+                context.getString(R.string.nc_demote)
             ),
             BasicListItemWithImage(
                 R.drawable.ic_delete_grey600_24dp,
-                context!!.getString(R.string.nc_remove_participant)
+                context.getString(R.string.nc_remove_participant)
             )
         )
 
@@ -1167,8 +1199,8 @@ class ConversationInfoController(args: Bundle) :
                 return 1
             }
 
-            return left.model.displayName!!.toLowerCase(Locale.ROOT).compareTo(
-                right.model.displayName!!.toLowerCase(Locale.ROOT)
+            return left.model.displayName!!.lowercase(Locale.ROOT).compareTo(
+                right.model.displayName!!.lowercase(Locale.ROOT)
             )
         }
     }
