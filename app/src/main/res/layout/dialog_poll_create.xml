@@ -43,7 +43,7 @@
             android:id="@+id/poll_create_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             tools:ignore="Autofill,LabelFor"/>
 
         <TextView
