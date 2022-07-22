@@ -25,7 +25,7 @@ package com.nextcloud.talk.controllers.bottomsheet
 
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.PorterDuff
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -34,6 +34,7 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
@@ -45,6 +46,7 @@ import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerEntryMenuBinding
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.UriUtils
@@ -70,6 +72,9 @@ class EntryMenuController(args: Bundle) :
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private val operation: ConversationOperationEnum
     private var conversation: Conversation? = null
@@ -125,17 +130,11 @@ class EntryMenuController(args: Bundle) :
                     rootView = view,
                     editText = binding.textEdit,
                     onEmojiPopupShownListener = {
-                        if (resources != null) {
-                            binding.smileyButton.setColorFilter(
-                                resources!!.getColor(R.color.colorPrimary),
-                                PorterDuff.Mode.SRC_IN
-                            )
-                        }
+                        viewThemeUtils.colorImageView(binding.smileyButton)
                     },
                     onEmojiPopupDismissListener = {
-                        binding.smileyButton.setColorFilter(
-                            resources!!.getColor(R.color.emoji_icons),
-                            PorterDuff.Mode.SRC_IN
+                        binding.smileyButton.imageTintList = ColorStateList.valueOf(
+                            ResourcesCompat.getColor(resources!!, R.color.medium_emphasis_text, context.theme)
                         )
                     },
                     onEmojiClickListener = {
@@ -170,6 +169,10 @@ class EntryMenuController(args: Bundle) :
         } else {
             binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_NONE
         }
+
+        viewThemeUtils.colorTextInputLayout(binding.textInputLayout)
+        binding.textEdit.setTextColor(viewThemeUtils.theme.colorText)
+        viewThemeUtils.colorMaterialButtonText(binding.okButton)
 
         binding.textInputLayout.hint = labelText
         binding.textInputLayout.requestFocus()

@@ -37,6 +37,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.R
 import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
@@ -187,6 +188,13 @@ class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
         withElementColor(swipeRefreshLayout) { color ->
             swipeRefreshLayout.setColorSchemeColors(color)
             swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
+        }
+    }
+
+    fun colorTextInputLayout(textInputLayout: TextInputLayout) {
+        withElementColor(textInputLayout) { color ->
+            textInputLayout.hintTextColor = ColorStateList.valueOf(color)
+            textInputLayout.boxStrokeColor = color
         }
     }
 }
