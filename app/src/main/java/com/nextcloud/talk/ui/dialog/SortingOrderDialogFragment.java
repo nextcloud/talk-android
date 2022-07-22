@@ -33,9 +33,9 @@ import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.databinding.SortingOrderFragmentBinding;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.FileSortOrder;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
@@ -46,7 +46,6 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import autodagger.AutoInjector;
-import kotlin.jvm.JvmField;
 
 /**
  * Dialog to show and choose the sorting order for the file listing.
@@ -60,8 +59,10 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
     private static final String KEY_SORT_ORDER = "SORT_ORDER";
 
     @Inject
-    @JvmField
     AppPreferences appPreferences;
+
+    @Inject
+    ViewThemeUtils viewThemeUtils;
 
     private SortingOrderFragmentBinding binding;
     private View dialogView;
@@ -119,7 +120,7 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
      * find all relevant UI elements and set their values.
      */
     private void setupDialogElements() {
-        binding.cancel.setTextColor(getResources().getColor(R.color.colorPrimary));
+        viewThemeUtils.colorMaterialButtonText(binding.cancel);
 
         taggedViews = new View[12];
         taggedViews[0] = binding.sortByNameAscending;
@@ -154,18 +155,17 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
      * tints the icon reflecting the actual sorting choice in the apps primary color.
      */
     private void setupActiveOrderSelection() {
-        final int color = getResources().getColor(R.color.colorPrimary);
-        Log.i("SortOrder", "currentSortOrderName="+currentSortOrderName);
+        Log.i("SortOrder", "currentSortOrderName=" + currentSortOrderName);
         for (View view : taggedViews) {
             Log.i("SortOrder", ((FileSortOrder) view.getTag()).getName());
             if (!((FileSortOrder) view.getTag()).getName().equals(currentSortOrderName)) {
                 continue;
             }
             if (view instanceof MaterialButton) {
-                ((MaterialButton) view).setIconTintResource(R.color.colorPrimary);
+                viewThemeUtils.colorMaterialButtonText((MaterialButton) view);
             }
             if (view instanceof TextView) {
-                ((TextView) view).setTextColor(color);
+                viewThemeUtils.colorTextViewElement((TextView) view);
                 ((TextView) view).setTypeface(Typeface.DEFAULT_BOLD);
             }
         }
