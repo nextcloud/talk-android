@@ -49,8 +49,8 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         return usersDao.getUserWithUserId(userId).map { UserMapper.toModel(it) }
     }
 
-    override fun getUsersWithoutUserId(userId: Long): Single<List<User>> {
-        return usersDao.getUsersWithoutUserId(userId).map { UserMapper.toModel(it) }
+    override fun getUsersWithoutUserId(id: Long): Single<List<User>> {
+        return usersDao.getUsersWithoutId(id).map { UserMapper.toModel(it) }
     }
 
     override fun getUsersScheduledForDeletion(): Single<List<User>> {

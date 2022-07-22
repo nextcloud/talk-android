@@ -57,8 +57,8 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return userRepository.getUserWithId(id)
     }
 
-    fun disableAllUsersWithoutId(userId: Long): Single<Int> {
-        val results = userRepository.getUsersWithoutUserId(userId)
+    fun disableAllUsersWithoutId(id: Long): Single<Int> {
+        val results = userRepository.getUsersWithoutUserId(id)
 
         return results.map { users ->
             var count = 0
@@ -275,7 +275,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             user.externalSignalingServer = LoganSquare
                 .parse(userAttributes.externalSignalingServer, ExternalSignalingServer::class.java)
         }
-        user.current = true
+        user.current = userAttributes.currentUser == true
         return user
     }
 

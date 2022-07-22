@@ -71,8 +71,8 @@ abstract class UsersDao {
     @Query("SELECT * FROM User where userId = :userId")
     abstract fun getUserWithUserId(userId: String): Maybe<UserEntity>
 
-    @Query("SELECT * FROM User where userId != :userId")
-    abstract fun getUsersWithoutUserId(userId: Long): Single<List<UserEntity>>
+    @Query("SELECT * FROM User where id != :id")
+    abstract fun getUsersWithoutId(id: Long): Single<List<UserEntity>>
 
     @Query("SELECT * FROM User where scheduledForDeletion = 1")
     abstract fun getUsersScheduledForDeletion(): Single<List<UserEntity>>

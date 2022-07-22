@@ -3,7 +3,7 @@
  *
  * @author Andy Scherzinger
  * @author Mario Danic
- * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
