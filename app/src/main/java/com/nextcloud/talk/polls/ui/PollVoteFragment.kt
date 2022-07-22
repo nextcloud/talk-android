@@ -30,6 +30,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -142,8 +143,18 @@ class PollVoteFragment : Fragment() {
             }
         } else {
             binding.voteOptionsCheckboxesWrapper.removeAllViews()
+
+            val layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            layoutParams.marginStart = CHECKBOX_MARGIN_LEFT
+
             poll.options?.map { option ->
-                CheckBox(context).apply { text = option }
+                CheckBox(context).apply {
+                    text = option
+                    setLayoutParams(layoutParams)
+                }
             }?.forEachIndexed { index, checkBox ->
                 checkBox.id = index
                 makeOptionBoldIfSelfVoted(checkBox, poll, index)
@@ -198,6 +209,7 @@ class PollVoteFragment : Fragment() {
     companion object {
         private val TAG = PollVoteFragment::class.java.simpleName
         private const val UNLIMITED_VOTES = 0
+        private const val CHECKBOX_MARGIN_LEFT = -18
 
         @JvmStatic
         fun newInstance(): PollVoteFragment {
