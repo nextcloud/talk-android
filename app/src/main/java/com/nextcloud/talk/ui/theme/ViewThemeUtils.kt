@@ -47,7 +47,7 @@ import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
 import javax.inject.Inject
 
-class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
+class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
 
     private fun isDarkMode(context: Context): Boolean = when (
         context.resources.configuration.uiMode and

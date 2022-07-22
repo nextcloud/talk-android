@@ -46,6 +46,7 @@ import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerEntryMenuBinding
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ShareUtils
@@ -75,6 +76,9 @@ class EntryMenuController(args: Bundle) :
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var serverTheme: ServerTheme
 
     private val operation: ConversationOperationEnum
     private var conversation: Conversation? = null
@@ -171,7 +175,7 @@ class EntryMenuController(args: Bundle) :
         }
 
         viewThemeUtils.colorTextInputLayout(binding.textInputLayout)
-        binding.textEdit.setTextColor(viewThemeUtils.theme.colorText)
+        binding.textEdit.setTextColor(serverTheme.colorText)
         viewThemeUtils.colorMaterialButtonText(binding.okButton)
 
         binding.textInputLayout.hint = labelText
