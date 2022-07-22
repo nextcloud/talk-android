@@ -37,6 +37,7 @@ import androidx.core.view.children
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
@@ -217,6 +218,22 @@ class ViewThemeUtils @Inject constructor(val theme: ServerTheme) {
             colorDrawable(context, drawable)
         }
         return drawable
+    }
+
+    fun colorChipBackground(chip: Chip) {
+        withElementColor(chip) { color ->
+            chip.chipBackgroundColor = ColorStateList.valueOf(color)
+            chip.setTextColor(theme.colorText)
+        }
+    }
+
+    fun colorChipOutlined(chip: Chip, strokeWidth: Float) {
+        withElementColor(chip) { color ->
+            chip.chipBackgroundColor = ColorStateList.valueOf(Color.TRANSPARENT)
+            chip.chipStrokeWidth = strokeWidth
+            chip.chipStrokeColor = ColorStateList.valueOf(color)
+            chip.setTextColor(color)
+        }
     }
 
     companion object {
