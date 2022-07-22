@@ -532,8 +532,7 @@
     <string name="message_search_begin_empty">No search results</string>
 
     <!-- Polls -->
-    <string name="message_poll_tap_to_vote">Tap to vote</string>
-    <string name="message_poll_tap_see_results">Tap to see results</string>
+    <string name="message_poll_tap_to_open">Tap to open poll</string>
     <string name="polls_amount_voters">%1$s votes</string>
     <string name="polls_add_option">Add option</string>
     <string name="polls_edit_vote">Edit vote</string>

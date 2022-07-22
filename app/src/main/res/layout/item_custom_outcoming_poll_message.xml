@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/double_margin_between_elements"
-            android:text="@string/message_poll_tap_to_vote"
+            android:text="@string/message_poll_tap_to_open"
             android:textColor="@color/nc_outcoming_text_default" />
 
         <TextView

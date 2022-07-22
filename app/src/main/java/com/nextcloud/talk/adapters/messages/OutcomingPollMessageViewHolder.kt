@@ -24,7 +24,6 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PorterDuff
-import android.util.Log
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
@@ -38,16 +37,11 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.databinding.ItemCustomOutcomingPollMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
-import com.nextcloud.talk.polls.repositories.model.PollOverall
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -150,40 +144,6 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
                     TAG
                 )
             }
-
-            val credentials = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)
-            ncApi.getPoll(
-                credentials,
-                ApiUtils.getUrlForPoll(
-                    message.activeUser?.baseUrl,
-                    roomToken,
-                    pollId
-                )
-            ).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<PollOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(pollOverall: PollOverall) {
-                        if (pollOverall.ocs!!.data!!.status == 0) {
-                            binding.messagePollSubtitle.text =
-                                context?.resources?.getString(R.string.message_poll_tap_to_vote)
-                        } else {
-                            binding.messagePollSubtitle.text =
-                                context?.resources?.getString(R.string.message_poll_tap_see_results)
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "Error while fetching poll", e)
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
         }
     }
 
