@@ -222,6 +222,7 @@
         android:theme="@style/Button.Primary"
         android:tint="@android:color/white"
         android:visibility="gone"
+        tools:visibility="visible"
         app:backgroundTint="@color/colorPrimary"
         app:cornerRadius="48dp"
         app:elevation="0dp"
