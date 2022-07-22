@@ -159,7 +159,7 @@ ext {
     androidxCameraVersion = "1.1.0"
     butterknifeVersion = "10.2.3"
     coilKtVersion = "2.1.0"
-    daggerVersion = "2.42"
+    daggerVersion = "2.43"
     lifecycleVersion = '2.5.0'
     okhttpVersion = "4.10.0"
     materialDialogsVersion = "3.3.0"
