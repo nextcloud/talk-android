@@ -72,4 +72,5 @@
     <dimen name="standard_eighth_margin">2dp</dimen>
 
     <dimen name="mediatab_file_icon_size">50dp</dimen>
+    <dimen name="polls_rounded_button_height">58dp</dimen>
 </resources>
