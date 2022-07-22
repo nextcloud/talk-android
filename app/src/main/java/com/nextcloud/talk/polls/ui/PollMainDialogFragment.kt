@@ -93,10 +93,26 @@ class PollMainDialogFragment : DialogFragment() {
                     initVotersAmount(state.showVotersAmount, state.poll.numVoters, true)
                     showResultsScreen()
                 }
+                is PollMainViewModel.LoadingState -> {
+                    showLoadingScreen()
+                }
                 is PollMainViewModel.DismissDialogState -> {
                     dismiss()
                 }
                 else -> {}
+            }
+        }
+    }
+
+    private fun showLoadingScreen() {
+        binding.root.post {
+            run() {
+                val fragmentHeight = binding.messagePollContentFragment.measuredHeight
+
+                val contentFragment = PollLoadingFragment.newInstance(fragmentHeight)
+                val transaction = childFragmentManager.beginTransaction()
+                transaction.replace(binding.messagePollContentFragment.id, contentFragment)
+                transaction.commit()
             }
         }
     }

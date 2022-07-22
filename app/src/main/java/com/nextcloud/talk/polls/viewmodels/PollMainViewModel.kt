@@ -50,6 +50,8 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     sealed interface ViewState
     object InitialState : ViewState
     object DismissDialogState : ViewState
+    object LoadingState : ViewState
+
     open class PollVoteState(
         val poll: Poll,
         val showVotersAmount: Boolean,
@@ -94,6 +96,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     }
 
     private fun loadPoll() {
+        _viewState.value = LoadingState
         repository.getPoll(roomToken, pollId)
             .doOnSubscribe { disposable = it }
             ?.subscribeOn(Schedulers.io())
@@ -102,6 +105,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     }
 
     fun endPoll() {
+        _viewState.value = LoadingState
         repository.closePoll(roomToken, pollId)
             .doOnSubscribe { disposable = it }
             ?.subscribeOn(Schedulers.io())
