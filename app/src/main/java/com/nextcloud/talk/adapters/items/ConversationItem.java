@@ -168,29 +168,18 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             int lightBubbleTextColor = ContextCompat.getColor(
                 context,
                 R.color.conversation_unread_bubble_text);
-            ColorStateList lightBubbleStrokeColor = ColorStateList.valueOf(
-                ContextCompat.getColor(context,
-                                       R.color.colorPrimary));
 
             if (conversation.getType() == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-                holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
-                holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
+                viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
             } else if (conversation.getUnreadMention()) {
                 if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "direct-mention-flag")) {
                     if (conversation.getUnreadMentionDirect()) {
-                        holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
-                        holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
+                        viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
                     } else {
-                        holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.bg_default);
-                        holder.binding.dialogUnreadBubble.setTextColor(ContextCompat.getColor(
-                            context,
-                            R.color.colorPrimary));
-                        holder.binding.dialogUnreadBubble.setChipStrokeWidth(6.0f);
-                        holder.binding.dialogUnreadBubble.setChipStrokeColor(lightBubbleStrokeColor);
+                        viewThemeUtils.colorChipOutlined(holder.binding.dialogUnreadBubble, 6.0f);
                     }
                 } else {
-                    holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
-                    holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
+                    viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
                 }
             } else {
                 holder.binding.dialogUnreadBubble.setChipBackgroundColor(lightBubbleFillColor);
