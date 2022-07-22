@@ -1,10 +1,12 @@
 /*
  * Nextcloud Talk application
  *
- * @author Mario Danic
+ * @author Andy Scherzinger
  * @author Marcel Hibbe
- * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * @author Mario Danic
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,13 +31,27 @@ import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
+import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.PushUtils;
+
+import java.net.CookieManager;
+
+import javax.inject.Inject;
 
 public class PushRegistrationWorker extends Worker {
     public static final String TAG = "PushRegistrationWorker";
     public static final String ORIGIN = "origin";
+
+    @Inject
+    Retrofit retrofit;
+
+    @Inject
+    OkHttpClient okHttpClient;
 
     public PushRegistrationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -49,9 +65,18 @@ public class PushRegistrationWorker extends Worker {
             String origin = data.getString("origin");
             Log.d(TAG, "PushRegistrationWorker called via " + origin);
 
+            NcApi ncApi = retrofit
+                .newBuilder()
+                .client(okHttpClient
+                            .newBuilder()
+                            .cookieJar(new JavaNetCookieJar(new CookieManager()))
+                            .build())
+                .build()
+                .create(NcApi.class);
+
             PushUtils pushUtils = new PushUtils();
             pushUtils.generateRsa2048KeyPair();
-            pushUtils.pushRegistrationToServer();
+            pushUtils.pushRegistrationToServer(ncApi);
 
             return Result.success();
         }
