@@ -47,7 +47,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/poll_results_end_poll_button"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/polls_rounded_button_height"
+            android:layout_height="wrap_content"
             android:text="@string/polls_end_poll"
             style="@style/OutlinedButton"
             android:layout_marginEnd="@dimen/standard_margin"
@@ -56,7 +56,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_vote_button"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/polls_rounded_button_height"
+            android:layout_height="wrap_content"
             android:text="@string/polls_edit_vote"
             android:theme="@style/Button.Primary"
             app:cornerRadius="@dimen/button_corner_radius" />
