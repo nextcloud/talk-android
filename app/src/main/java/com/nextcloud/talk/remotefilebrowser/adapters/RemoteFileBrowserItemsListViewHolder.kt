@@ -20,10 +20,8 @@
 
 package com.nextcloud.talk.remotefilebrowser.adapters
 
-import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 import android.view.View
-import androidx.appcompat.content.res.AppCompatResources
 import autodagger.AutoInjector
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
@@ -38,7 +36,6 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils.getLocalDateTimeStringFromTimestamp
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.Mimetype.FOLDER
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -101,7 +98,7 @@ class RemoteFileBrowserItemsListViewHolder(
         binding.fileIcon
             .hierarchy
             .setPlaceholderImage(
-                getPlaceholderImage(item)
+                viewThemeUtils.getPlaceholderImage(binding.root.context, item.mimeType)
             )
 
         if (item.hasPreview) {
@@ -129,19 +126,6 @@ class RemoteFileBrowserItemsListViewHolder(
         binding.selectFileCheckbox.isChecked = selectionInterface.isPathSelected(item.path!!)
     }
 
-    private fun getPlaceholderImage(item: RemoteFileBrowserItem): Drawable? {
-        val drawableResourceId = getDrawableResourceIdForMimeType(item.mimeType)
-        val context = binding.fileIcon.context
-        val drawable = AppCompatResources.getDrawable(
-            context,
-            drawableResourceId
-        )
-        if (drawable != null && THEMEABLE_PLACEHOLDER_IDS.contains(drawableResourceId)) {
-            viewThemeUtils.colorDrawable(context, drawable)
-        }
-        return drawable
-    }
-
     private fun setSelectability() {
         if (selectable) {
             binding.selectFileCheckbox.visibility = View.VISIBLE
@@ -164,9 +148,5 @@ class RemoteFileBrowserItemsListViewHolder(
     companion object {
         private const val DISABLED_ALPHA: Float = 0.38f
         private const val ENABLED_ALPHA: Float = 1.0f
-        private val THEMEABLE_PLACEHOLDER_IDS = listOf(
-            R.drawable.ic_mimetype_package_x_generic,
-            R.drawable.ic_mimetype_folder
-        )
     }
 }

@@ -36,18 +36,19 @@ import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
 class SharedItemsAdapter(
     private val showGrid: Boolean,
     private val user: User,
     private val roomToken: String,
-    private val isUserConversationOwnerOrModerator: Boolean
+    private val isUserConversationOwnerOrModerator: Boolean,
+    private val viewThemeUtils: ViewThemeUtils
 ) : RecyclerView.Adapter<SharedItemsViewHolder>() {
 
     var items: List<SharedItem> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SharedItemsViewHolder {
-
         return if (showGrid) {
             SharedItemsGridViewHolder(
                 SharedItemGridBinding.inflate(
@@ -55,7 +56,8 @@ class SharedItemsAdapter(
                     parent,
                     false
                 ),
-                user
+                user,
+                viewThemeUtils
             )
         } else {
             SharedItemsListViewHolder(
@@ -64,7 +66,8 @@ class SharedItemsAdapter(
                     parent,
                     false
                 ),
-                user
+                user,
+                viewThemeUtils
             )
         }
     }

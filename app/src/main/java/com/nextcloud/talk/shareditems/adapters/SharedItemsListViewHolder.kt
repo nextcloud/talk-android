@@ -37,12 +37,14 @@ import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DateUtils
 
 class SharedItemsListViewHolder(
     override val binding: SharedItemListBinding,
-    user: User
-) : SharedItemsViewHolder(binding, user) {
+    user: User,
+    viewThemeUtils: ViewThemeUtils
+) : SharedItemsViewHolder(binding, user, viewThemeUtils) {
 
     override val image: SimpleDraweeView
         get() = binding.fileImage
@@ -52,7 +54,6 @@ class SharedItemsListViewHolder(
         get() = binding.progressBar
 
     override fun onBind(item: SharedFileItem) {
-
         super.onBind(item)
 
         binding.fileName.text = item.name
