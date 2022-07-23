@@ -42,10 +42,9 @@ import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.SignatureVerification;
-import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatUtils;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
@@ -59,7 +58,6 @@ import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 
@@ -91,6 +89,7 @@ import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
+import io.reactivex.Maybe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okhttp3.JavaNetCookieJar;
@@ -107,7 +106,7 @@ public class NotificationWorker extends Worker {
     AppPreferences appPreferences;
 
     @Inject
-    ArbitraryStorageUtils arbitraryStorageUtils;
+    ArbitraryStorageManager arbitraryStorageManger;
 
     @Inject
     Retrofit retrofit;
@@ -133,14 +132,19 @@ public class NotificationWorker extends Worker {
     private void showNotificationForCallWithNoPing(Intent intent) {
         User user = signatureVerification.getUser();
 
-        ArbitraryStorageEntity arbitraryStorageEntity;
-
-        if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(
+        importantConversation = arbitraryStorageManger.getStorageSetting(
             user.getId(),
             "important_conversation",
-            intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
-            importantConversation = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
-        }
+            intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))
+            .map(arbitraryStorage -> {
+                if (arbitraryStorage != null) {
+                    return Boolean.parseBoolean(arbitraryStorage.getValue());
+                } else {
+                    return importantConversation;
+                }
+            })
+            .switchIfEmpty(Maybe.just(importantConversation))
+            .blockingGet();
 
         int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.APIv4, 1});
 
@@ -149,7 +153,7 @@ public class NotificationWorker extends Worker {
                 .blockingSubscribe(new Observer<RoomOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        //unused atm
                     }
 
                     @Override
@@ -179,11 +183,12 @@ public class NotificationWorker extends Worker {
 
                     @Override
                     public void onError(Throwable e) {
+                        //unused atm
                     }
 
                     @Override
                     public void onComplete() {
-
+                        //unused atm
                     }
                 });
     }
@@ -195,7 +200,7 @@ public class NotificationWorker extends Worker {
                 .blockingSubscribe(new Observer<NotificationOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        //unused atm
                     }
 
                     @Override
@@ -258,11 +263,12 @@ public class NotificationWorker extends Worker {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        //unused atm
                     }
 
                     @Override
                     public void onComplete() {
+                        //unused atm
                     }
                 });
     }

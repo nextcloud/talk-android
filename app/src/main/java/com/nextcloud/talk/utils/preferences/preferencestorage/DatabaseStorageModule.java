@@ -28,11 +28,10 @@ import android.util.Log;
 
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager;
 import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.yarolegovich.mp.io.StorageModule;
 
@@ -43,6 +42,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
+import io.reactivex.Maybe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -51,12 +51,12 @@ import io.reactivex.schedulers.Schedulers;
 @AutoInjector(NextcloudTalkApplication.class)
 public class DatabaseStorageModule implements StorageModule {
     private static final String TAG = "DatabaseStorageModule";
+
     @Inject
-    ArbitraryStorageUtils arbitraryStorageUtils;
+    ArbitraryStorageManager arbitraryStorageManager;
 
     @Inject
     NcApi ncApi;
-
 
     private User conversationUser;
     private String conversationToken;
@@ -89,12 +89,12 @@ public class DatabaseStorageModule implements StorageModule {
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
                     public void onSubscribe(@NotNull Disposable d) {
-
+                        // unused atm
                     }
 
                     @Override
                     public void onNext(@NotNull GenericOverall genericOverall) {
-
+                        // unused atm
                     }
 
                     @Override
@@ -104,14 +104,17 @@ public class DatabaseStorageModule implements StorageModule {
 
                     @Override
                     public void onComplete() {
-
+                        // unused atm
                     }
                 }
             );
         }
 
         if (!key.equals("conversation_lobby")) {
-            arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, Boolean.toString(value), conversationToken);
+            arbitraryStorageManager.storeStorageSetting(accountIdentifier,
+                                                        key,
+                                                        Boolean.toString(value),
+                                                        conversationToken);
         } else {
             lobbyValue = value;
         }
@@ -120,7 +123,7 @@ public class DatabaseStorageModule implements StorageModule {
     @Override
     public void saveString(String key, String value) {
         if (!key.equals("message_notification_level")) {
-            arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, value, conversationToken);
+            arbitraryStorageManager.storeStorageSetting(accountIdentifier, key, value, conversationToken);
         } else {
             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
                 if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(value)) {
@@ -139,17 +142,20 @@ public class DatabaseStorageModule implements StorageModule {
                             intValue = 0;
                     }
 
-                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
+                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser,
+                                                                        new int[] {ApiUtils.APIv4, 1});
 
-                    ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
-                            ApiUtils.getUrlForRoomNotificationLevel(apiVersion, conversationUser.getBaseUrl(),
+                    ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(),
+                                                                       conversationUser.getToken()),
+                            ApiUtils.getUrlForRoomNotificationLevel(apiVersion,
+                                                                    conversationUser.getBaseUrl(),
                                                                     conversationToken),
                             intValue)
                             .subscribeOn(Schedulers.io())
                             .subscribe(new Observer<GenericOverall>() {
                                 @Override
                                 public void onSubscribe(Disposable d) {
-
+                                    // unused atm
                                 }
 
                                 @Override
@@ -159,11 +165,12 @@ public class DatabaseStorageModule implements StorageModule {
 
                                 @Override
                                 public void onError(Throwable e) {
-
+                                    // unused atm
                                 }
 
                                 @Override
                                 public void onComplete() {
+                                    // unused atm
                                 }
                             });
                 } else {
@@ -175,12 +182,15 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public void saveInt(String key, int value) {
-        arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, Integer.toString(value), conversationToken);
+        arbitraryStorageManager.storeStorageSetting(accountIdentifier,
+                                                    key,
+                                                    Integer.toString(value),
+                                                    conversationToken);
     }
 
     @Override
     public void saveStringSet(String key, Set<String> value) {
-
+        // unused atm
     }
 
     @Override
@@ -188,37 +198,52 @@ public class DatabaseStorageModule implements StorageModule {
         if (key.equals("conversation_lobby")) {
             return lobbyValue;
         } else {
-            ArbitraryStorageEntity valueFromDb = arbitraryStorageUtils.getStorageSetting(accountIdentifier, key, conversationToken);
-            if (valueFromDb == null) {
-                return defaultVal;
-            } else {
-                return Boolean.parseBoolean(valueFromDb.getValue());
-            }
+            return arbitraryStorageManager
+                .getStorageSetting(accountIdentifier, key, conversationToken)
+                .map(arbitraryStorage -> {
+                    if (arbitraryStorage != null) {
+                        return Boolean.parseBoolean(arbitraryStorage.getValue());
+                    } else {
+                        return defaultVal;
+                    }
+                })
+                .switchIfEmpty(Maybe.just(defaultVal))
+                .blockingGet();
         }
     }
 
     @Override
     public String getString(String key, String defaultVal) {
-        if (!key.equals("message_notification_level")) {
-            ArbitraryStorageEntity valueFromDb = arbitraryStorageUtils.getStorageSetting(accountIdentifier, key, conversationToken);
-            if (valueFromDb == null) {
-                return defaultVal;
-            } else {
-                return valueFromDb.getValue();
-            }
-        } else {
+        if (key.equals("message_notification_level")) {
             return messageNotificationLevel;
+        } else {
+            return arbitraryStorageManager
+                .getStorageSetting(accountIdentifier, key, conversationToken)
+                .map(arbitraryStorage -> {
+                    if (arbitraryStorage != null) {
+                        return arbitraryStorage.getValue();
+                    } else {
+                        return defaultVal;
+                    }
+                })
+                .switchIfEmpty(Maybe.just(defaultVal))
+                .blockingGet();
         }
     }
 
     @Override
     public int getInt(String key, int defaultVal) {
-        ArbitraryStorageEntity valueFromDb = arbitraryStorageUtils.getStorageSetting(accountIdentifier, key, conversationToken);
-        if (valueFromDb == null) {
-            return defaultVal;
-        } else {
-            return Integer.parseInt(valueFromDb.getValue());
-        }
+        return arbitraryStorageManager
+            .getStorageSetting(accountIdentifier, key, conversationToken)
+            .map(arbitraryStorage -> {
+                if (arbitraryStorage != null && arbitraryStorage.getValue() != null) {
+                    return Integer.parseInt(arbitraryStorage.getValue());
+                } else {
+                    return defaultVal;
+                }
+            })
+            .switchIfEmpty(Maybe.just(defaultVal))
+            .blockingGet();
     }
 
     @Override
@@ -228,11 +253,11 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-
+        // unused atm
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedState) {
-
+        // unused atm
     }
 }
