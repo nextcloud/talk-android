@@ -22,6 +22,12 @@ package com.nextcloud.talk.utils.database.user
 
 import com.nextcloud.talk.models.database.UserEntity
 
+/**
+ * @deprecated use {@link com.nextcloud.talk.utils.database.user.CurrentUserProviderNew} instead.
+ *
+ * TODO: remove this class with a major version, 15.0.0 or 16.0.0.
+ */
+@kotlin.Deprecated("use com.nextcloud.talk.utils.database.user.CurrentUserProviderNew instead")
 interface CurrentUserProvider {
     val currentUser: UserEntity?
 }
