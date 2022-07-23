@@ -82,6 +82,7 @@
     <string name="nc_clear_password">Cancella la password</string>
     <string name="nc_client_cert_change">Cambia certificato client</string>
     <string name="nc_client_cert_setup">Configura certificato client</string>
+    <string name="nc_common_dismiss">Annulla</string>
     <string name="nc_common_error_sorry">Spiacenti, qualcosa non ha funzionato!</string>
     <string name="nc_common_set">Imposta</string>
     <string name="nc_common_skip">Salta</string>
@@ -95,6 +96,7 @@
     <string name="nc_conversations_empty">Unisciti a una conversazione o iniziane una nuova</string>
     <string name="nc_conversations_empty_details">Saluta i tuoi amici e i tuoi colleghi!</string>
     <string name="nc_copy_message">Copia</string>
+    <string name="nc_create_poll">Crea sondaggio</string>
     <string name="nc_date_header_today">Oggi</string>
     <string name="nc_date_header_yesterday">Ieri</string>
     <string name="nc_delete">Elimina</string>
@@ -329,6 +331,11 @@
     <string name="openConversations">Apri conversazioni</string>
     <string name="open_in_files_app">Apri nell\'applicazione File</string>
     <string name="play_pause_voice_message">Riproduci/ferma messaggio vocale</string>
+    <string name="polls_add_option">Aggiungi opzione</string>
+    <string name="polls_options">Opzioni</string>
+    <string name="polls_results_subtitle">Risultati</string>
+    <string name="polls_settings">Impostazioni</string>
+    <string name="polls_submit_vote">Votare</string>
     <string name="reactions_tab_all">Tutti</string>
     <string name="read_storage_no_permission">La condivisione dei file dall\'archiviazione non è possibile senza permessi</string>
     <string name="save">Salva</string>

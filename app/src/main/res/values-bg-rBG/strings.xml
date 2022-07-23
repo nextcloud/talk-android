@@ -84,6 +84,7 @@
     <string name="nc_clear_password">Изчистване на паролата</string>
     <string name="nc_client_cert_change">Промяна на сертификата на клиент</string>
     <string name="nc_client_cert_setup">Задаване/настройки на сертификат на клиент</string>
+    <string name="nc_common_dismiss">Отхвърляне</string>
     <string name="nc_common_error_sorry">Съжалявам нещо се обърка!</string>
     <string name="nc_common_set">Настройка</string>
     <string name="nc_common_skip">Пропусни</string>
@@ -335,6 +336,12 @@
     <string name="openConversations">Отворени разговори</string>
     <string name="open_in_files_app">Отворяне в приложението Файлове</string>
     <string name="play_pause_voice_message">Възпроизвеждане/пауза на гласово съобщение</string>
+    <string name="polls_add_option">Добавяне на опция</string>
+    <string name="polls_options">Опции</string>
+    <string name="polls_private_poll">Частна анкета</string>
+    <string name="polls_results_subtitle">Резултати</string>
+    <string name="polls_settings">Настройки</string>
+    <string name="polls_submit_vote">Глас</string>
     <string name="reactions_tab_all">Всички</string>
     <string name="read_storage_no_permission">Споделянето на файлове от хранилище не е възможно без права</string>
     <string name="save">Записване</string>

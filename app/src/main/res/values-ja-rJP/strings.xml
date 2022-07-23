@@ -334,6 +334,7 @@
     <string name="openConversations">オープンな会話</string>
     <string name="open_in_files_app">アプリでファイルを開く</string>
     <string name="play_pause_voice_message">音声メッセージを再生／一時停止</string>
+    <string name="polls_options">オプション</string>
     <string name="reactions_tab_all">すべて</string>
     <string name="read_storage_no_permission">ストレージからのファイル共有は権限がなければ不可能です</string>
     <string name="save">保存</string>

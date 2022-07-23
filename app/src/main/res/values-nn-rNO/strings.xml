@@ -61,6 +61,7 @@
     <string name="nc_clear_password">Fjern passord</string>
     <string name="nc_client_cert_change">Skift klient sertifikat</string>
     <string name="nc_client_cert_setup">Sett opp klient sertifikat</string>
+    <string name="nc_common_dismiss">Forkast</string>
     <string name="nc_common_error_sorry">Årsak, noko gjekk galt!</string>
     <string name="nc_common_set">Sett</string>
     <string name="nc_common_skip">Hopp over</string>
@@ -230,6 +231,7 @@
     <string name="nc_user">Bruker</string>
     <string name="nc_wrong_password">Wrong password</string>
     <string name="nc_yes">Ja</string>
+    <string name="polls_settings">Innstillingar</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="save">Lagre</string>
     <string name="scope_federated_title">Federated</string>

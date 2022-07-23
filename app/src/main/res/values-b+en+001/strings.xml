@@ -67,6 +67,7 @@
     <string name="nc_clear_password">Clear password</string>
     <string name="nc_client_cert_change">Change client certificate</string>
     <string name="nc_client_cert_setup">Set up client certificate</string>
+    <string name="nc_common_dismiss">Dismiss</string>
     <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
     <string name="nc_common_skip">Skip</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
@@ -77,6 +78,7 @@
     <string name="nc_conversation_menu_voice_call">Voice call</string>
     <string name="nc_conversations_empty">Join a conversation or start a new one</string>
     <string name="nc_copy_message">Copy</string>
+    <string name="nc_create_poll">Create poll</string>
     <string name="nc_date_header_today">Today</string>
     <string name="nc_date_header_yesterday">Yesterday</string>
     <string name="nc_delete">Delete</string>
@@ -205,6 +207,7 @@
     <string name="oneHour">1 hour</string>
     <string name="online">Online</string>
     <string name="online_status">Online status</string>
+    <string name="polls_settings">Settings</string>
     <string name="reactions_tab_all">All</string>
     <string name="save">Save</string>
     <string name="scope_federated_title">Federated</string>

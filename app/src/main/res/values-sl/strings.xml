@@ -82,6 +82,7 @@
     <string name="nc_clear_password">Počisti geslo</string>
     <string name="nc_client_cert_change">Spremeni potrdilo odjemalca</string>
     <string name="nc_client_cert_setup">Nastavi potrdilo odjemalca</string>
+    <string name="nc_common_dismiss">Opusti</string>
     <string name="nc_common_error_sorry">Prišlo je do napake …</string>
     <string name="nc_common_set">Nastavi</string>
     <string name="nc_common_skip">Preskoči</string>
@@ -95,6 +96,7 @@
     <string name="nc_conversations_empty">Pridružite se pogovoru, ali pa začnite novega.</string>
     <string name="nc_conversations_empty_details">Pozdravite prijatelje in znance.</string>
     <string name="nc_copy_message">Kopiraj</string>
+    <string name="nc_create_poll">Ustvari vprašalnik</string>
     <string name="nc_date_header_today">Danes</string>
     <string name="nc_date_header_yesterday">Včeraj</string>
     <string name="nc_delete">Izbriši</string>
@@ -329,6 +331,11 @@
     <string name="openConversations">Odprti pogovori</string>
     <string name="open_in_files_app">Odpri v programu Datoteke</string>
     <string name="play_pause_voice_message">Predvajaj/Ustavi zvočni posnetek</string>
+    <string name="polls_add_option">Dodaj možnost</string>
+    <string name="polls_options">Možnosti</string>
+    <string name="polls_private_poll">Zasebna anketa</string>
+    <string name="polls_results_subtitle">Zadetki</string>
+    <string name="polls_submit_vote">Glas</string>
     <string name="reactions_tab_all">Vse</string>
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>
     <string name="save">Shrani</string>

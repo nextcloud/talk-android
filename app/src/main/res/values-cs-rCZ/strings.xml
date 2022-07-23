@@ -84,6 +84,7 @@
     <string name="nc_clear_password">Vyčistit heslo</string>
     <string name="nc_client_cert_change">Změnit klientský certifikát</string>
     <string name="nc_client_cert_setup">Nastavit klientský certifikát</string>
+    <string name="nc_common_dismiss">Zavřít</string>
     <string name="nc_common_error_sorry">Omlouváme se, něco se pokazilo!</string>
     <string name="nc_common_set">Nastavit</string>
     <string name="nc_common_skip">Přeskočit</string>
@@ -97,6 +98,7 @@
     <string name="nc_conversations_empty">Připojte se ke konverzaci, nebo začněte novou</string>
     <string name="nc_conversations_empty_details">Pozdravte své přátele a kolegy!</string>
     <string name="nc_copy_message">Zkopírovat</string>
+    <string name="nc_create_poll">Vytvořit anketu</string>
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_date_header_yesterday">Včera</string>
     <string name="nc_delete">Smazat</string>
@@ -335,6 +337,12 @@
     <string name="openConversations">Otevřít konverzace</string>
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
+    <string name="polls_add_option">Přidat volbu</string>
+    <string name="polls_options">Možnosti</string>
+    <string name="polls_private_poll">Soukromá anketa</string>
+    <string name="polls_results_subtitle">Výsledky</string>
+    <string name="polls_settings">Nastavení</string>
+    <string name="polls_submit_vote">Hlasovat</string>
     <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
     <string name="save">Uložit</string>

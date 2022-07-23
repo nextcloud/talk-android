@@ -84,6 +84,7 @@
     <string name="nc_clear_password">Jelszó törlése</string>
     <string name="nc_client_cert_change">Klienstanúsítvány módosítása</string>
     <string name="nc_client_cert_setup">Klienstanúsítvány beállítása</string>
+    <string name="nc_common_dismiss">Elutasítás</string>
     <string name="nc_common_error_sorry">Valami hiba történt!</string>
     <string name="nc_common_set">Beállítás</string>
     <string name="nc_common_skip">Kihagyás</string>
@@ -335,6 +336,9 @@
     <string name="openConversations">Beszélgetések megnyitása</string>
     <string name="open_in_files_app">Megnyitás a Fájlok alkalmazásban</string>
     <string name="play_pause_voice_message">Hangüzenet lejátszása/szüneteltetése</string>
+    <string name="polls_add_option">Lehetőség hozzáadása</string>
+    <string name="polls_options">Beállítások</string>
+    <string name="polls_private_poll">Privát szavazás</string>
     <string name="reactions_tab_all">Összes</string>
     <string name="read_storage_no_permission">A fájlok megosztása a tárhelyről engedély nélkül nem lehetséges</string>
     <string name="save">Mentés</string>

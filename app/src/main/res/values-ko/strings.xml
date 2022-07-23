@@ -64,6 +64,7 @@
     <string name="nc_clear_password">암호 삭제</string>
     <string name="nc_client_cert_change">클라이언트 인증서 병경</string>
     <string name="nc_client_cert_setup">클라이언트 인증서 설정</string>
+    <string name="nc_common_dismiss">무시</string>
     <string name="nc_common_error_sorry">죄송합니다, 무언가 잘못되었습니다!</string>
     <string name="nc_common_set">설정</string>
     <string name="nc_common_skip">건너뛰기</string>
@@ -77,6 +78,7 @@
     <string name="nc_conversations_empty">대화에 참여하거나 새 대화 시작</string>
     <string name="nc_conversations_empty_details">여러분의 친구들과 동료들에게 인사하세요!</string>
     <string name="nc_copy_message">복사</string>
+    <string name="nc_create_poll">투표 만들기</string>
     <string name="nc_date_header_today">오늘</string>
     <string name="nc_date_header_yesterday">어제</string>
     <string name="nc_delete">삭제</string>

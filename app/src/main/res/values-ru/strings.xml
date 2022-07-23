@@ -84,6 +84,7 @@
     <string name="nc_clear_password">Очистить пароль</string>
     <string name="nc_client_cert_change">Изменение клиентского сертификата</string>
     <string name="nc_client_cert_setup">Установка клиентского сертификата</string>
+    <string name="nc_common_dismiss">Отклонить</string>
     <string name="nc_common_error_sorry">Что-то пошло не так :(</string>
     <string name="nc_common_set">Установить</string>
     <string name="nc_common_skip">Пропустить</string>
@@ -97,6 +98,7 @@
     <string name="nc_conversations_empty">Присоединитесь к обсуждению или же начните новое</string>
     <string name="nc_conversations_empty_details">Поприветствуйте своих друзей и коллег.</string>
     <string name="nc_copy_message">Копировать</string>
+    <string name="nc_create_poll">Создать опрос</string>
     <string name="nc_date_header_today">Сегодня</string>
     <string name="nc_date_header_yesterday">Вчера</string>
     <string name="nc_delete">Удалить</string>
@@ -335,6 +337,10 @@
     <string name="openConversations">Открыть разговоры</string>
     <string name="open_in_files_app">Открыть в приложении Файлы</string>
     <string name="play_pause_voice_message">Воспроизведение/пауза голосового сообщения</string>
+    <string name="polls_add_option">Добавить вариант</string>
+    <string name="polls_options">Варианты</string>
+    <string name="polls_results_subtitle">Результаты</string>
+    <string name="polls_submit_vote">Голосовать</string>
     <string name="reactions_tab_all">Все</string>
     <string name="read_storage_no_permission">Общий доступ к файлам из хранилища невозможен без разрешений</string>
     <string name="save">Сохранить</string>

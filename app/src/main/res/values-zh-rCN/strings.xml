@@ -74,6 +74,7 @@
     <string name="nc_clear_password">清除密码</string>
     <string name="nc_client_cert_change">修改客户端证书</string>
     <string name="nc_client_cert_setup">设置客户端证书</string>
+    <string name="nc_common_dismiss">不予理会</string>
     <string name="nc_common_error_sorry">抱歉，出问题了！</string>
     <string name="nc_common_set">设置</string>
     <string name="nc_common_skip">跳过</string>
@@ -87,6 +88,7 @@
     <string name="nc_conversations_empty">加入一个对话或开始一个新的对话</string>
     <string name="nc_conversations_empty_details">跟你的朋友和同事打个招呼！</string>
     <string name="nc_copy_message">复制</string>
+    <string name="nc_create_poll">创建投票</string>
     <string name="nc_date_header_today">今天</string>
     <string name="nc_date_header_yesterday">昨天</string>
     <string name="nc_delete">删除</string>
@@ -317,6 +319,11 @@
     <string name="openConversations">开启会话</string>
     <string name="open_in_files_app">在 Files 应用中打开</string>
     <string name="play_pause_voice_message">播放/暂停语音消息</string>
+    <string name="polls_add_option">添加选项</string>
+    <string name="polls_options">选项</string>
+    <string name="polls_results_subtitle">结果</string>
+    <string name="polls_settings">设置</string>
+    <string name="polls_submit_vote">投票</string>
     <string name="reactions_tab_all">所有</string>
     <string name="read_storage_no_permission">如果没有权限，不能共享来自存储的文件</string>
     <string name="save">保存</string>

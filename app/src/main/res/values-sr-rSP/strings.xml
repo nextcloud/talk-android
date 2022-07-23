@@ -34,6 +34,7 @@
     <string name="nc_clear_password">Očisti lozinku</string>
     <string name="nc_client_cert_change">Izmeni klijentski sertifikat</string>
     <string name="nc_client_cert_setup">Podesite klijentski sertifikat</string>
+    <string name="nc_common_dismiss">Odbaci</string>
     <string name="nc_common_error_sorry">Izvinjavamo se, nešto je pošlo naopako!</string>
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_configure_cert_auth">Odaberi sertifikat za prijavu</string>
@@ -195,6 +196,7 @@
     <string name="nc_wrong_password">Pogrešna lozinka</string>
     <string name="nc_yes">Da</string>
     <string name="oneHour">1 sat</string>
+    <string name="polls_settings">Поставке</string>
     <string name="save">Sačuvaj</string>
     <string name="scope_federated_title">Federated</string>
     <string name="secondsAgo">pre nekoliko sekundi</string>

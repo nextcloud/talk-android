@@ -335,6 +335,7 @@
     <string name="openConversations">開放對話</string>
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
     <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>
+    <string name="polls_options">選項</string>
     <string name="reactions_tab_all">全部</string>
     <string name="read_storage_no_permission">沒有權限就無法從存儲分享檔案</string>
     <string name="save">保存</string>

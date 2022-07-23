@@ -52,6 +52,7 @@
     <string name="nc_clear_password">Hreinsa lykilorð</string>
     <string name="nc_client_cert_change">Skipta um skilríki biðlara</string>
     <string name="nc_client_cert_setup">Setja upp skilríki biðlara</string>
+    <string name="nc_common_dismiss">Dismiss</string>
     <string name="nc_common_error_sorry">Því miður, eitthvað fór úrskeiðis!</string>
     <string name="nc_common_set">Setja</string>
     <string name="nc_common_skip">Sleppa</string>
@@ -64,6 +65,7 @@
     <string name="nc_conversations_empty">Taktu þátt í samtali eða byrjaðu nýtt samtal</string>
     <string name="nc_conversations_empty_details">Segðu hæ við vini þína og samstarfsmenn!</string>
     <string name="nc_copy_message">Afrita</string>
+    <string name="nc_create_poll">Búa til könnun</string>
     <string name="nc_date_header_today">Í dag</string>
     <string name="nc_date_header_yesterday">Í gær</string>
     <string name="nc_delete">Eyða</string>
@@ -220,6 +222,9 @@
     <string name="oneHour">1 klukkustund</string>
     <string name="online">Á netinu</string>
     <string name="online_status">Staða á netinu</string>
+    <string name="polls_add_option">Bæta við valkosti</string>
+    <string name="polls_options">Valkostir</string>
+    <string name="polls_settings">Stillingar</string>
     <string name="reactions_tab_all">Allt</string>
     <string name="save">Vista</string>
     <string name="scope_federated_title">Deilt milli þjóna (skýjasambandssameign)</string>
