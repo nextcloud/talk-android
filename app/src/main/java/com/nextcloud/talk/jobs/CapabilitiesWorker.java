@@ -30,6 +30,7 @@ import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.UserIdUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import org.greenrobot.eventbus.EventBus;
@@ -83,29 +84,21 @@ public class CapabilitiesWorker extends Worker {
             try {
                 int rowsCount = userManager.updateOrCreateUser(user).blockingGet();
                 if (rowsCount > 0) {
-                    eventBus.post(new EventStatus(getIdForUser(user),
+                    eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
                                                   EventStatus.EventType.CAPABILITIES_FETCH,
                                                   true));
                 } else {
                     Log.w(TAG, "Error updating user");
-                    eventBus.post(new EventStatus(getIdForUser(user),
+                    eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
                                                   EventStatus.EventType.CAPABILITIES_FETCH,
                                                   false));
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error updating user", e);
-                eventBus.post(new EventStatus(getIdForUser(user),
+                eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
                                               EventStatus.EventType.CAPABILITIES_FETCH,
                                               false));
             }
-        }
-    }
-
-    private long getIdForUser(User user) {
-        if (user != null && user.getId() != null) {
-            return user.getId();
-        } else {
-            return NO_ID;
         }
     }
 

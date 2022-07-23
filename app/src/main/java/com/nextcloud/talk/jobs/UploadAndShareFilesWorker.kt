@@ -35,15 +35,15 @@ import autodagger.AutoInjector
 import com.bluelinelabs.conductor.Controller
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_META_DATA
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -56,7 +56,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.util.ArrayList
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -67,7 +66,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -86,7 +85,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
 
         try {
-            val currentUser = userUtils.currentUser
+            val currentUser = userManager.currentUser.blockingGet()
             val sourcefiles = inputData.getStringArray(DEVICE_SOURCEFILES)
             val ncTargetpath = inputData.getString(NC_TARGETPATH)
             val roomToken = inputData.getString(ROOM_TOKEN)
@@ -137,7 +136,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     }
 
     private fun uploadFile(
-        currentUser: UserEntity,
+        currentUser: User,
         uploadItem: UploadItem,
         ncTargetPath: String?,
         roomToken: String?,
@@ -192,7 +191,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     private fun shareFile(
         roomToken: String?,
-        currentUser: UserEntity,
+        currentUser: User,
         ncTargetpath: String?,
         filename: String?,
         metaData: String?
@@ -202,7 +201,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         paths.add("$ncTargetpath/$filename")
 
         val data = Data.Builder()
-            .putLong(KEY_INTERNAL_USER_ID, currentUser.id)
+            .putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
             .putString(KEY_ROOM_TOKEN, roomToken)
             .putStringArray(KEY_FILE_PATHS, paths.toTypedArray())
             .putString(KEY_META_DATA, metaData)

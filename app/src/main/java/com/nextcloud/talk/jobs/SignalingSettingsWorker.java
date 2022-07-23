@@ -21,22 +21,20 @@
 package com.nextcloud.talk.jobs;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.ExternalSignalingServer;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.UserIdUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,10 +52,9 @@ import io.reactivex.disposables.Disposable;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class SignalingSettingsWorker extends Worker {
-    private static final String TAG = "SignalingSettingsJob";
 
     @Inject
-    UserUtils userUtils;
+    UserManager userManager;
 
     @Inject
     NcApi ncApi;
@@ -78,77 +75,75 @@ public class SignalingSettingsWorker extends Worker {
 
         long internalUserId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1);
 
-        List<UserEntity> userEntityList = new ArrayList<>();
-        UserEntity userEntity;
-        if (internalUserId == -1 || (userEntity = userUtils.getUserWithInternalId(internalUserId)) == null) {
-            userEntityList = userUtils.getUsers();
+        List<User> userEntityObjectList = new ArrayList<>();
+        boolean userExists = userManager.getUserWithInternalId(internalUserId).isEmpty().blockingGet();
+
+        if (internalUserId == -1 || !userExists) {
+            userEntityObjectList = userManager.getUsers().blockingGet();
         } else {
-            userEntityList.add(userEntity);
+            userEntityObjectList.add(userManager.getUserWithInternalId(internalUserId).blockingGet());
         }
 
-        for (int i = 0; i < userEntityList.size(); i++) {
-            userEntity = userEntityList.get(i);
-            UserEntity finalUserEntity = userEntity;
+        for (User user : userEntityObjectList) {
 
-            int apiVersion = ApiUtils.getSignalingApiVersion(finalUserEntity, new int[] {ApiUtils.APIv3, 2, 1});
+            int apiVersion = ApiUtils.getSignalingApiVersion(user, new int[] {ApiUtils.APIv3, 2, 1});
 
-            ncApi.getSignalingSettings(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                    ApiUtils.getUrlForSignalingSettings(apiVersion, userEntity.getBaseUrl()))
-                    .blockingSubscribe(new Observer<SignalingSettingsOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+            ncApi.getSignalingSettings(
+                    ApiUtils.getCredentials(user.getUsername(), user.getToken()),
+                    ApiUtils.getUrlForSignalingSettings(apiVersion, user.getBaseUrl()))
+                .blockingSubscribe(new Observer<SignalingSettingsOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        // unused stm
+                    }
 
+                    @Override
+                    public void onNext(SignalingSettingsOverall signalingSettingsOverall) {
+                        ExternalSignalingServer externalSignalingServer;
+                        externalSignalingServer = new ExternalSignalingServer();
+
+                        if (signalingSettingsOverall.getOcs() != null &&
+                            signalingSettingsOverall.getOcs().getSettings() != null) {
+                            externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall
+                                                                                   .getOcs()
+                                                                                   .getSettings()
+                                                                                   .getExternalSignalingServer());
+                            externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall
+                                                                                   .getOcs()
+                                                                                   .getSettings()
+                                                                                   .getExternalSignalingTicket());
                         }
 
-                        @Override
-                        public void onNext(SignalingSettingsOverall signalingSettingsOverall) {
-                            ExternalSignalingServer externalSignalingServer;
-                            externalSignalingServer = new ExternalSignalingServer();
-                            externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
-                            externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
+                        int rows = userManager.saveUser(user).blockingGet();
 
-                            try {
-                                userUtils.createOrUpdateUser(null, null, null, null, null,
-                                        null, null, finalUserEntity.getId(), null, null, LoganSquare.serialize(externalSignalingServer))
-                                        .subscribe(new Observer<UserEntity>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
-
-                                            }
-
-                                            @Override
-                                            public void onNext(UserEntity userEntity) {
-                                                eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, true));
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, false));
-                                            }
-
-                                            @Override
-                                            public void onComplete() {
-
-                                            }
-                                        });
-                            } catch (IOException e) {
-                                Log.e(TAG, "Failed to serialize external signaling server");
-                            }
+                        if (rows > 0) {
+                            eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                                          EventStatus.EventType.SIGNALING_SETTINGS,
+                                                          true));
+                        } else {
+                            eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                                          EventStatus.EventType.SIGNALING_SETTINGS,
+                                                          false));
                         }
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, false));
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                        eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                                      EventStatus.EventType.SIGNALING_SETTINGS,
+                                                      false));
+                    }
 
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
+                    @Override
+                    public void onComplete() {
+                        // unused atm
+                    }
+                });
         }
 
-        OneTimeWorkRequest websocketConnectionsWorker = new OneTimeWorkRequest.Builder(WebsocketConnectionsWorker.class).build();
+        OneTimeWorkRequest websocketConnectionsWorker = new OneTimeWorkRequest
+            .Builder(WebsocketConnectionsWorker.class)
+            .build();
         WorkManager.getInstance().enqueue(websocketConnectionsWorker);
 
         return Result.success();

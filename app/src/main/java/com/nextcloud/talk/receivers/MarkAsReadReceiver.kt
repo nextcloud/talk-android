@@ -32,14 +32,14 @@ import androidx.annotation.RequiresApi
 import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
-import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -50,13 +50,13 @@ import javax.inject.Inject
 class MarkAsReadReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var ncApi: NcApi
 
     lateinit var context: Context
-    lateinit var currentUser: UserEntity
+    lateinit var currentUser: User
     private var systemNotificationId: Int? = null
     private var roomToken: String? = null
     private var messageId: Int = 0
@@ -74,8 +74,8 @@ class MarkAsReadReceiver : BroadcastReceiver() {
         roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
         messageId = intent.getIntExtra(KEY_MESSAGE_ID, 0)
 
-        val id = intent.getLongExtra(KEY_INTERNAL_USER_ID, userUtils.currentUser!!.id)
-        currentUser = userUtils.getUserWithId(id)
+        val id = intent.getLongExtra(KEY_INTERNAL_USER_ID, userManager.currentUser.blockingGet().id!!)
+        currentUser = userManager.getUserWithId(id).blockingGet()
 
         markAsRead()
     }
