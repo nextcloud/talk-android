@@ -28,9 +28,9 @@ import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.LoggingUtils;
-import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.MagicKeyManager;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
@@ -127,7 +127,7 @@ public class RestModule {
 
     @Singleton
     @Provides
-    MagicKeyManager provideKeyManager(AppPreferences appPreferences, UserUtils userUtils) {
+    MagicKeyManager provideKeyManager(AppPreferences appPreferences, UserManager userManager) {
         KeyStore keyStore = null;
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -135,7 +135,7 @@ public class RestModule {
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(keyStore, null);
             X509KeyManager origKm = (X509KeyManager) kmf.getKeyManagers()[0];
-            return new MagicKeyManager(origKm, userUtils, appPreferences);
+            return new MagicKeyManager(origKm, userManager, appPreferences);
         } catch (KeyStoreException e) {
             Log.e(TAG, "KeyStoreException " + e.getLocalizedMessage());
         } catch (CertificateException e) {

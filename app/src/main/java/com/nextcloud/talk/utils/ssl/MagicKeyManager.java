@@ -25,30 +25,37 @@ import android.security.KeyChain;
 import android.security.KeyChainException;
 import android.text.TextUtils;
 import android.util.Log;
-import androidx.annotation.Nullable;
+
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.data.user.model.User;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
-import javax.net.ssl.X509KeyManager;
 import java.net.Socket;
 import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.net.ssl.X509KeyManager;
+
+import androidx.annotation.Nullable;
 
 public class MagicKeyManager implements X509KeyManager {
     private static final String TAG = "MagicKeyManager";
     private final X509KeyManager keyManager;
 
-    private UserUtils userUtils;
+    private UserManager userManager;
     private AppPreferences appPreferences;
     private Context context;
 
-    public MagicKeyManager(X509KeyManager keyManager, UserUtils userUtils, AppPreferences appPreferences) {
+    public MagicKeyManager(X509KeyManager keyManager, UserManager userManager, AppPreferences appPreferences) {
         this.keyManager = keyManager;
-        this.userUtils = userUtils;
+        this.userManager = userManager;
         this.appPreferences = appPreferences;
 
         context = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
@@ -57,9 +64,10 @@ public class MagicKeyManager implements X509KeyManager {
     @Override
     public String chooseClientAlias(String[] strings, Principal[] principals, Socket socket) {
         String alias;
-        if ((userUtils.getCurrentUser() != null && !TextUtils.isEmpty(alias = userUtils.getCurrentUser().getClientCertificate())) ||
-                !TextUtils.isEmpty(alias = appPreferences.getTemporaryClientCertAlias())
-                        && new ArrayList<>(Arrays.asList(getClientAliases())).contains(alias)) {
+        if ((userManager.getCurrentUser().blockingGet() != null &&
+            !TextUtils.isEmpty(alias = userManager.getCurrentUser().blockingGet().getClientCertificate())) ||
+            !TextUtils.isEmpty(alias = appPreferences.getTemporaryClientCertAlias())
+                && new ArrayList<>(Arrays.asList(getClientAliases())).contains(alias)) {
             return alias;
         }
 
@@ -120,7 +128,7 @@ public class MagicKeyManager implements X509KeyManager {
             aliases.add(alias);
         }
 
-        List<UserEntity> userEntities = userUtils.getUsers();
+        List<User> userEntities = userManager.getUsers().blockingGet();
         for (int i = 0; i < userEntities.size(); i++) {
             if (!TextUtils.isEmpty(alias = userEntities.get(i).getClientCertificate())) {
                 aliases.add(alias);
