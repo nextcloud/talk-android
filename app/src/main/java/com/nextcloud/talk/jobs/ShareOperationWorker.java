@@ -25,10 +25,10 @@ import android.util.Log;
 
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.data.user.model.User;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,13 +47,16 @@ import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ShareOperationWorker extends Worker {
+
     @Inject
-    UserUtils userUtils;
+    UserManager userManager;
+
     @Inject
     NcApi ncApi;
+
     private final String TAG = "ShareOperationWorker";
     private long userId;
-    private UserEntity operationsUser;
+    private User operationsUser;
     private String roomToken;
     private List<String> filesArray = new ArrayList<>();
     private String credentials;
@@ -68,11 +71,10 @@ public class ShareOperationWorker extends Worker {
         roomToken = data.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());
         metaData = data.getString(BundleKeys.INSTANCE.getKEY_META_DATA());
         Collections.addAll(filesArray, data.getStringArray(BundleKeys.INSTANCE.getKEY_FILE_PATHS()));
-        operationsUser = userUtils.getUserWithId(userId);
+        operationsUser = userManager.getUserWithId(userId).blockingGet();
         credentials = ApiUtils.getCredentials(operationsUser.getUsername(), operationsUser.getToken());
         baseUrl = operationsUser.getBaseUrl();
     }
-
 
     @NonNull
     @Override
@@ -89,12 +91,12 @@ public class ShareOperationWorker extends Worker {
                     .blockingSubscribe(new Observer<Void>() {
                         @Override
                         public void onSubscribe(Disposable d) {
-
+                            // unused atm
                         }
 
                         @Override
                         public void onNext(Void aVoid) {
-
+                            // unused atm
                         }
 
                         @Override
@@ -104,7 +106,7 @@ public class ShareOperationWorker extends Worker {
 
                         @Override
                         public void onComplete() {
-
+                            // unused atm
                         }
                     });
         }
