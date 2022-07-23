@@ -33,7 +33,7 @@ class ArbitraryStorageManager(private val arbitraryStoragesRepository: Arbitrary
         return arbitraryStoragesRepository.getStorageSetting(accountIdentifier, key, objectString)
     }
 
-    suspend fun deleteAllEntriesForAccountIdentifier(accountIdentifier: Long) {
+    fun deleteAllEntriesForAccountIdentifier(accountIdentifier: Long): Int {
         return arbitraryStoragesRepository.deleteArbitraryStorage(accountIdentifier)
     }
 }

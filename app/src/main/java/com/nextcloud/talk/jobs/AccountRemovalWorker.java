@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,54 +22,52 @@
 
 package com.nextcloud.talk.jobs;
 
-
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.Log;
-import androidx.annotation.NonNull;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
-import autodagger.AutoInjector;
-import com.bluelinelabs.logansquare.LoganSquare;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.generic.GenericMeta;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
-import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.reactivex.CompletableObserver;
+import java.net.CookieManager;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.zip.CRC32;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
+import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
-import javax.inject.Inject;
-import java.io.IOException;
-import java.net.CookieManager;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.zip.CRC32;
-
 @AutoInjector(NextcloudTalkApplication.class)
 public class AccountRemovalWorker extends Worker {
     public static final String TAG = "AccountRemovalWorker";
 
     @Inject
-    UserUtils userUtils;
+    UserManager userManager;
 
     @Inject
-    ArbitraryStorageUtils arbitraryStorageUtils;
+    ArbitraryStorageManager arbitraryStorageManager;
 
     @Inject
     Retrofit retrofit;
@@ -86,95 +86,95 @@ public class AccountRemovalWorker extends Worker {
     public Result doWork() {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        PushConfigurationState pushConfigurationState;
-        String credentials;
-        for (Object userEntityObject : userUtils.getUsersScheduledForDeletion()) {
-            UserEntity userEntity = (UserEntity) userEntityObject;
-            try {
-                if (!TextUtils.isEmpty(userEntity.getPushConfigurationState())) {
-                    pushConfigurationState = LoganSquare.parse(userEntity.getPushConfigurationState(),
-                            PushConfigurationState.class);
-                    PushConfigurationState finalPushConfigurationState = pushConfigurationState;
+        List<User> users = userManager.getUsersScheduledForDeletion().blockingGet();
+        for (User user : users) {
+            if (user.getPushConfigurationState() != null) {
+                PushConfigurationState finalPushConfigurationState = user.getPushConfigurationState();
 
-                    credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
+                ncApi = retrofit
+                    .newBuilder()
+                    .client(okHttpClient
+                                .newBuilder()
+                                .cookieJar(new JavaNetCookieJar(new CookieManager()))
+                                .build())
+                    .build()
+                    .create(NcApi.class);
 
-                    ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
-                            JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
+                ncApi.unregisterDeviceForNotificationsWithNextcloud(
+                        ApiUtils.getCredentials(user.getUsername(), user.getToken()),
+                        ApiUtils.getUrlNextcloudPush(user.getBaseUrl()))
+                    .blockingSubscribe(new Observer<GenericOverall>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+                            // unused atm
+                        }
 
-                    ncApi.unregisterDeviceForNotificationsWithNextcloud(credentials, ApiUtils.getUrlNextcloudPush(userEntity
-                            .getBaseUrl()))
-                            .blockingSubscribe(new Observer<GenericOverall>() {
-                                @Override
-                                public void onSubscribe(@NotNull Disposable d) {
-                                    // unused atm
-                                }
+                        @Override
+                        public void onNext(@NotNull GenericOverall genericOverall) {
+                            GenericMeta meta = Objects.requireNonNull(genericOverall.getOcs()).getMeta();
+                            int statusCode = Objects.requireNonNull(meta).getStatusCode();
 
-                                @Override
-                                public void onNext(@NotNull GenericOverall genericOverall) {
-                                    GenericMeta meta = Objects.requireNonNull(genericOverall.getOcs()).getMeta();
-                                    int statusCode = Objects.requireNonNull(meta).getStatusCode();
+                            if (statusCode == 200 || statusCode == 202) {
+                                HashMap<String, String> queryMap = new HashMap<>();
+                                queryMap.put("deviceIdentifier",
+                                             finalPushConfigurationState.getDeviceIdentifier());
+                                queryMap.put("userPublicKey", finalPushConfigurationState.getUserPublicKey());
+                                queryMap.put("deviceIdentifierSignature",
+                                             finalPushConfigurationState.getDeviceIdentifierSignature());
+                                unregisterDeviceForNotificationWithProxy(queryMap, user);
+                            }
+                        }
 
-                                    if (statusCode == 200 || statusCode == 202) {
-                                        HashMap<String, String> queryMap = new HashMap<>();
-                                        queryMap.put("deviceIdentifier",
-                                                     finalPushConfigurationState.getDeviceIdentifier());
-                                        queryMap.put("userPublicKey", finalPushConfigurationState.getUserPublicKey());
-                                        queryMap.put("deviceIdentifierSignature",
-                                                     finalPushConfigurationState.getDeviceIdentifierSignature());
-                                        unregisterDeviceForNotificationWithProxy(queryMap, userEntity);
-                                    }
-                                }
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            Log.e(TAG, "error while trying to unregister Device For Notifications", e);
+                        }
 
-                                @Override
-                                public void onError(@NotNull Throwable e) {
-                                    Log.e(TAG, "error while trying to unregister Device For Notifications", e);
-                                }
-
-                                @Override
-                                public void onComplete() {
-                                    // unused atm
-                                }
-                            });
-                } else {
-                    deleteUser(userEntity);
-                }
-            } catch (IOException e) {
-                Log.d(TAG, "Something went wrong while removing job at parsing PushConfigurationState");
-                deleteUser(userEntity);
+                        @Override
+                        public void onComplete() {
+                            // unused atm
+                        }
+                    });
+            } else {
+                deleteUser(user);
             }
         }
 
         return Result.success();
     }
 
-    private void unregisterDeviceForNotificationWithProxy(HashMap<String, String> queryMap, UserEntity userEntity) {
+    private void unregisterDeviceForNotificationWithProxy(HashMap<String, String> queryMap, User user) {
         ncApi.unregisterDeviceForNotificationsWithProxy
                 (ApiUtils.getUrlPushProxy(), queryMap)
                 .subscribe(new Observer<Void>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        // unused atm
                     }
 
                     @Override
                     public void onNext(Void aVoid) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            String groupName = String.format(getApplicationContext().getResources()
-                                    .getString(R.string
-                                            .nc_notification_channel), userEntity.getUserId(), userEntity.getBaseUrl());
+                            String groupName = String.format(
+                                getApplicationContext()
+                                    .getResources()
+                                    .getString(R.string.nc_notification_channel), user.getUserId(), user.getBaseUrl());
                             CRC32 crc32 = new CRC32();
                             crc32.update(groupName.getBytes());
                             NotificationManager notificationManager =
-                                    (NotificationManager) getApplicationContext().getSystemService
-                                            (Context.NOTIFICATION_SERVICE);
+                                    (NotificationManager) getApplicationContext()
+                                        .getSystemService(Context.NOTIFICATION_SERVICE);
 
                             if (notificationManager != null) {
-                                notificationManager.deleteNotificationChannelGroup(Long
-                                        .toString(crc32.getValue()));
+                                notificationManager.deleteNotificationChannelGroup(
+                                    Long.toString(crc32.getValue()));
                             }
                         }
-                        WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(userEntity.getId());
-                        deleteAllEntriesForAccountIdentifier(userEntity);
+
+                        if (user.getId() != null) {
+                            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(user.getId());
+                        }
+                        deleteAllEntriesForAccountIdentifier(user);
                     }
 
                     @Override
@@ -184,53 +184,31 @@ public class AccountRemovalWorker extends Worker {
 
                     @Override
                     public void onComplete() {
-
+                        // unused atm
                     }
                 });
     }
 
-    private void deleteAllEntriesForAccountIdentifier(UserEntity userEntity) {
-        arbitraryStorageUtils.deleteAllEntriesForAccountIdentifier(userEntity.getId()).subscribe(new Observer() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(Object o) {
-                deleteUser(userEntity);
-            }
-
-            @Override
-            public void onError(Throwable e) {
+    private void deleteAllEntriesForAccountIdentifier(User user) {
+        if (user.getId() != null) {
+            try {
+                arbitraryStorageManager.deleteAllEntriesForAccountIdentifier(user.getId());
+                deleteUser(user);
+            } catch (Throwable e) {
                 Log.e(TAG, "error while trying to delete All Entries For Account Identifier", e);
             }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+        }
     }
 
-    private void deleteUser(UserEntity userEntity) {
-        String username = userEntity.getUsername();
-        userUtils.deleteUser(userEntity.getId())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "deleted user: " + username);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "error while trying to delete user", e);
-                    }
-                });
+    private void deleteUser(User user) {
+        if (user.getId() != null) {
+            String username = user.getUsername();
+            try {
+                userManager.deleteUser(user.getId());
+                Log.d(TAG, "deleted user: " + username);
+            } catch (Throwable e) {
+                Log.e(TAG, "error while trying to delete user", e);
+            }
+        }
     }
 }

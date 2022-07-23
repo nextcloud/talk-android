@@ -42,7 +42,7 @@ abstract class ArbitraryStoragesDao {
     ): Maybe<ArbitraryStorageEntity>
 
     @Query("DELETE FROM ArbitraryStorage WHERE accountIdentifier = :accountIdentifier")
-    abstract fun deleteArbitraryStorage(accountIdentifier: Long)
+    abstract fun deleteArbitraryStorage(accountIdentifier: Long): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorageEntity): Long
