@@ -37,6 +37,8 @@ import io.requery.reactivex.ReactiveEntityStore;
 
 /**
  * @deprecated use {@link com.nextcloud.talk.users.UserManager} instead.
+ *
+ * TODO: remove this class with a major version, 15.0.0 or 16.0.0.
  */
 @Deprecated
 public class UserUtils implements CurrentUserProvider {
