@@ -1,7 +1,9 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Andy Scherzinger
  * @author Mario Danic
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -57,6 +59,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
+import com.nextcloud.talk.utils.UserIdUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
@@ -106,7 +109,7 @@ public class NotificationWorker extends Worker {
     AppPreferences appPreferences;
 
     @Inject
-    ArbitraryStorageManager arbitraryStorageManger;
+    ArbitraryStorageManager arbitraryStorageManager;
 
     @Inject
     Retrofit retrofit;
@@ -132,12 +135,12 @@ public class NotificationWorker extends Worker {
     private void showNotificationForCallWithNoPing(Intent intent) {
         User user = signatureVerification.getUser();
 
-        importantConversation = arbitraryStorageManger.getStorageSetting(
-            user.getId(),
-            "important_conversation",
-            intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))
+        importantConversation = arbitraryStorageManager.getStorageSetting(
+                UserIdUtils.INSTANCE.getIdForUser(user),
+                "important_conversation",
+                intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))
             .map(arbitraryStorage -> {
-                if (arbitraryStorage != null) {
+                if (arbitraryStorage != null && arbitraryStorage.getValue() != null) {
                     return Boolean.parseBoolean(arbitraryStorage.getValue());
                 } else {
                     return importantConversation;
@@ -146,6 +149,8 @@ public class NotificationWorker extends Worker {
             .switchIfEmpty(Maybe.just(importantConversation))
             .blockingGet();
 
+        Log.e(TAG, "showNotificationForCallWithNoPing: importantConversation: " + importantConversation);
+
         int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, user.getBaseUrl(),
@@ -153,7 +158,7 @@ public class NotificationWorker extends Worker {
                 .blockingSubscribe(new Observer<RoomOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        //unused atm
+                        // unused atm
                     }
 
                     @Override
@@ -183,12 +188,12 @@ public class NotificationWorker extends Worker {
 
                     @Override
                     public void onError(Throwable e) {
-                        //unused atm
+                        // unused atm
                     }
 
                     @Override
                     public void onComplete() {
-                        //unused atm
+                        // unused atm
                     }
                 });
     }
@@ -200,7 +205,7 @@ public class NotificationWorker extends Worker {
                 .blockingSubscribe(new Observer<NotificationOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        //unused atm
+                        // unused atm
                     }
 
                     @Override
@@ -263,12 +268,12 @@ public class NotificationWorker extends Worker {
 
                     @Override
                     public void onError(Throwable e) {
-                        //unused atm
+                        // unused atm
                     }
 
                     @Override
                     public void onComplete() {
-                        //unused atm
+                        // unused atm
                     }
                 });
     }
@@ -646,6 +651,8 @@ public class NotificationWorker extends Worker {
                                     startACall);
 
                             intent.putExtras(bundle);
+
+                            Log.e(TAG, "Notification: " + decryptedPushMessage.getType());
 
                             switch (decryptedPushMessage.getType()) {
                                 case "call":

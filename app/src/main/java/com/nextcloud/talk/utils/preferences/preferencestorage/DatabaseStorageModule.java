@@ -1,8 +1,10 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Andy Scherzinger
  * @author Mario Danic
  * @author Tim Krüger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
@@ -29,9 +31,11 @@ import android.util.Log;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager;
+import com.nextcloud.talk.data.storage.model.ArbitraryStorage;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.UserIdUtils;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.yarolegovich.mp.io.StorageModule;
 
@@ -42,7 +46,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
-import io.reactivex.Maybe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -51,16 +54,15 @@ import io.reactivex.schedulers.Schedulers;
 @AutoInjector(NextcloudTalkApplication.class)
 public class DatabaseStorageModule implements StorageModule {
     private static final String TAG = "DatabaseStorageModule";
-
     @Inject
     ArbitraryStorageManager arbitraryStorageManager;
 
     @Inject
     NcApi ncApi;
 
-    private User conversationUser;
-    private String conversationToken;
-    private long accountIdentifier;
+    private final User conversationUser;
+    private final String conversationToken;
+    private final long accountIdentifier;
 
     private boolean lobbyValue;
 
@@ -70,7 +72,7 @@ public class DatabaseStorageModule implements StorageModule {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         this.conversationUser = conversationUser;
-        this.accountIdentifier = conversationUser.getId();
+        this.accountIdentifier = UserIdUtils.INSTANCE.getIdForUser(conversationUser);
         this.conversationToken = conversationToken;
     }
 
@@ -94,7 +96,7 @@ public class DatabaseStorageModule implements StorageModule {
 
                     @Override
                     public void onNext(@NotNull GenericOverall genericOverall) {
-                        // unused atm
+                        Log.d(TAG, "Toggled notification calls");
                     }
 
                     @Override
@@ -142,8 +144,7 @@ public class DatabaseStorageModule implements StorageModule {
                             intValue = 0;
                     }
 
-                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser,
-                                                                        new int[] {ApiUtils.APIv4, 1});
+                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 
                     ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(),
                                                                        conversationUser.getToken()),
@@ -182,10 +183,7 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public void saveInt(String key, int value) {
-        arbitraryStorageManager.storeStorageSetting(accountIdentifier,
-                                                    key,
-                                                    Integer.toString(value),
-                                                    conversationToken);
+        arbitraryStorageManager.storeStorageSetting(accountIdentifier, key, Integer.toString(value), conversationToken);
     }
 
     @Override
@@ -200,15 +198,8 @@ public class DatabaseStorageModule implements StorageModule {
         } else {
             return arbitraryStorageManager
                 .getStorageSetting(accountIdentifier, key, conversationToken)
-                .map(arbitraryStorage -> {
-                    if (arbitraryStorage != null) {
-                        return Boolean.parseBoolean(arbitraryStorage.getValue());
-                    } else {
-                        return defaultVal;
-                    }
-                })
-                .switchIfEmpty(Maybe.just(defaultVal))
-                .blockingGet();
+                .map(arbitraryStorage -> Boolean.parseBoolean(arbitraryStorage.getValue()))
+                .blockingGet(defaultVal);
         }
     }
 
@@ -219,15 +210,8 @@ public class DatabaseStorageModule implements StorageModule {
         } else {
             return arbitraryStorageManager
                 .getStorageSetting(accountIdentifier, key, conversationToken)
-                .map(arbitraryStorage -> {
-                    if (arbitraryStorage != null) {
-                        return arbitraryStorage.getValue();
-                    } else {
-                        return defaultVal;
-                    }
-                })
-                .switchIfEmpty(Maybe.just(defaultVal))
-                .blockingGet();
+                .map(ArbitraryStorage::getValue)
+                .blockingGet(defaultVal);
         }
     }
 
@@ -236,14 +220,13 @@ public class DatabaseStorageModule implements StorageModule {
         return arbitraryStorageManager
             .getStorageSetting(accountIdentifier, key, conversationToken)
             .map(arbitraryStorage -> {
-                if (arbitraryStorage != null && arbitraryStorage.getValue() != null) {
+                if (arbitraryStorage.getValue() != null) {
                     return Integer.parseInt(arbitraryStorage.getValue());
                 } else {
                     return defaultVal;
                 }
             })
-            .switchIfEmpty(Maybe.just(defaultVal))
-            .blockingGet();
+            .blockingGet(defaultVal);
     }
 
     @Override
