@@ -32,9 +32,6 @@ import io.requery.reactivex.ReactiveEntityStore
 abstract class UserModule {
 
     @Binds
-    abstract fun bindCurrentUserProvider(userUtils: UserUtils): CurrentUserProvider
-
-    @Binds
     abstract fun bindCurrentUserProviderNew(userManager: UserManager): CurrentUserProviderNew
 
     companion object {

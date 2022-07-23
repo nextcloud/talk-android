@@ -41,31 +41,31 @@ import io.requery.reactivex.ReactiveEntityStore;
  * TODO: remove this class with a major version, 15.0.0 or 16.0.0.
  */
 @Deprecated
-public class UserUtils implements CurrentUserProvider {
+public class UserUtils {
     private ReactiveEntityStore<Persistable> dataStore;
 
     UserUtils(ReactiveEntityStore<Persistable> dataStore) {
         this.dataStore = dataStore;
     }
 
-    public boolean anyUserExists() {
+    private boolean anyUserExists() {
         return (dataStore.count(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE))
             .limit(1).get().value() > 0);
     }
 
-    public boolean hasMultipleUsers() {
+    private boolean hasMultipleUsers() {
         return (dataStore.count(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE))
             .get().value() > 1);
     }
 
-    public List getUsers() {
+    private List getUsers() {
         Result findUsersQueryResult = dataStore.select(User.class).where
             (UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)).get();
 
         return findUsersQueryResult.toList();
     }
 
-    public List getUsersScheduledForDeletion() {
+    private List getUsersScheduledForDeletion() {
         Result findUsersQueryResult = dataStore.select(User.class)
             .where(UserEntity.SCHEDULED_FOR_DELETION.eq(Boolean.TRUE)).get();
 
@@ -73,7 +73,7 @@ public class UserUtils implements CurrentUserProvider {
     }
 
 
-    public UserEntity getAnyUserAndSetAsActive() {
+    private UserEntity getAnyUserAndSetAsActive() {
         Result findUserQueryResult = dataStore.select(User.class)
             .where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE))
             .limit(1).get();
@@ -88,17 +88,7 @@ public class UserUtils implements CurrentUserProvider {
         return null;
     }
 
-    @Override
-    public @Nullable
-    UserEntity getCurrentUser() {
-        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.CURRENT.eq(Boolean.TRUE)
-                                                                            .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)))
-            .limit(1).get();
-
-        return (UserEntity) findUserQueryResult.firstOrNull();
-    }
-
-    public Completable deleteUser(long internalId) {
+    private Completable deleteUser(long internalId) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)).limit(1).get();
 
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
@@ -109,7 +99,7 @@ public class UserUtils implements CurrentUserProvider {
 
     }
 
-    public Completable deleteUserWithId(long id) {
+    private Completable deleteUserWithId(long id) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id)).limit(1).get();
 
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
@@ -119,14 +109,14 @@ public class UserUtils implements CurrentUserProvider {
 
     }
 
-    public UserEntity getUserById(String id) {
+    private UserEntity getUserById(String id) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USER_ID.eq(id))
             .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();
     }
 
-    public UserEntity getUserWithId(long id) {
+    private UserEntity getUserWithId(long id) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id))
             .limit(1).get();
 
@@ -134,7 +124,7 @@ public class UserUtils implements CurrentUserProvider {
     }
 
 
-    public void disableAllUsersWithoutId(long userId) {
+    private void disableAllUsersWithoutId(long userId) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.notEqual(userId)).get();
 
         for (Object object : findUserQueryResult) {
@@ -144,7 +134,7 @@ public class UserUtils implements CurrentUserProvider {
         }
     }
 
-    public boolean checkIfUserIsScheduledForDeletion(String username, String server) {
+    private boolean checkIfUserIsScheduledForDeletion(String username, String server) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username))
             .and(UserEntity.BASE_URL.eq(server))
             .limit(1).get();
@@ -157,7 +147,7 @@ public class UserUtils implements CurrentUserProvider {
         return false;
     }
 
-    public UserEntity getUserWithInternalId(long internalId) {
+    private UserEntity getUserWithInternalId(long internalId) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)
                                                                             .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)))
             .limit(1).get();
@@ -165,7 +155,7 @@ public class UserUtils implements CurrentUserProvider {
         return (UserEntity) findUserQueryResult.firstOrNull();
     }
 
-    public boolean getIfUserWithUsernameAndServer(String username, String server) {
+    private boolean getIfUserWithUsernameAndServer(String username, String server) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username)
                                                                             .and(UserEntity.BASE_URL.eq(server)))
             .limit(1).get();
@@ -173,7 +163,7 @@ public class UserUtils implements CurrentUserProvider {
         return findUserQueryResult.firstOrNull() != null;
     }
 
-    public boolean scheduleUserForDeletionWithId(long id) {
+    private boolean scheduleUserForDeletionWithId(long id) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id))
             .limit(1).get();
 
@@ -187,7 +177,7 @@ public class UserUtils implements CurrentUserProvider {
         return getAnyUserAndSetAsActive() != null;
     }
 
-    public Observable<UserEntity> createOrUpdateUser(@Nullable String username, @Nullable String token,
+    private Observable<UserEntity> createOrUpdateUser(@Nullable String username, @Nullable String token,
                                                      @Nullable String serverUrl,
                                                      @Nullable String displayName,
                                                      @Nullable String pushConfigurationState,
