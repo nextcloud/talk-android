@@ -75,6 +75,7 @@
     <string name="nc_clear_password">清除密碼</string>
     <string name="nc_client_cert_change">變更客戶端憑證</string>
     <string name="nc_client_cert_setup">設定客戶端憑證</string>
+    <string name="nc_common_dismiss">取消</string>
     <string name="nc_common_error_sorry">抱歉，發生了一些問題！</string>
     <string name="nc_common_set">設定</string>
     <string name="nc_common_skip">跳過</string>
@@ -87,6 +88,7 @@
     <string name="nc_conversations_empty">加入一個對話或者開一個新的</string>
     <string name="nc_conversations_empty_details">跟大家打個招呼！</string>
     <string name="nc_copy_message">複製</string>
+    <string name="nc_create_poll">建立調查活動</string>
     <string name="nc_date_header_today">今天</string>
     <string name="nc_date_header_yesterday">昨天</string>
     <string name="nc_delete">刪除</string>
@@ -229,6 +231,12 @@
     <string name="oneHour">1小時</string>
     <string name="online">線上</string>
     <string name="online_status">線上狀態</string>
+    <string name="polls_add_option">新增選項</string>
+    <string name="polls_options">選項</string>
+    <string name="polls_private_poll">私人投票</string>
+    <string name="polls_results_subtitle">結果</string>
+    <string name="polls_settings">設定</string>
+    <string name="polls_submit_vote">投票</string>
     <string name="reactions_tab_all">全部</string>
     <string name="save">儲存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>

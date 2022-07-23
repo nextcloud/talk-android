@@ -81,6 +81,7 @@
     <string name="nc_clear_password">مسح كلمة المرور</string>
     <string name="nc_client_cert_change">تغيير شهادة العميل</string>
     <string name="nc_client_cert_setup">تعيين شهادة العميل</string>
+    <string name="nc_common_dismiss">تجاهل</string>
     <string name="nc_common_error_sorry">حدث خطأ ما!</string>
     <string name="nc_common_set">تعيين</string>
     <string name="nc_common_skip">تخطى</string>
@@ -320,6 +321,10 @@
     <string name="openConversations">فتح محادثة</string>
     <string name="open_in_files_app">فتح في تطبيق الملفات</string>
     <string name="play_pause_voice_message">تشغيل/ايقاف مؤقت للرسالة الصوتية</string>
+    <string name="polls_add_option">إضافة خيار</string>
+    <string name="polls_options">الخيارات</string>
+    <string name="polls_results_subtitle">النتائج </string>
+    <string name="polls_settings">الإعدادات</string>
     <string name="reactions_tab_all">الكل</string>
     <string name="save">Save</string>
     <string name="scope_federated_description">قم فقط بالمزامنة مع الخوادم الموثوقة</string>

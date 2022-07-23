@@ -54,6 +54,7 @@
     <string name="nc_clear_password">Išvalyti slaptažodį</string>
     <string name="nc_client_cert_change">Keisti kliento programėlės liudijimą</string>
     <string name="nc_client_cert_setup">Nustatyti kliento programėlės liudijimą</string>
+    <string name="nc_common_dismiss">Atmesti</string>
     <string name="nc_common_error_sorry">Atleiskite, kažkas nutiko!</string>
     <string name="nc_common_set">Nustatyti</string>
     <string name="nc_common_skip">Praleisti</string>
@@ -67,6 +68,7 @@
     <string name="nc_conversations_empty">Prisijunkite prie pokalbio arba pradėkite naują</string>
     <string name="nc_conversations_empty_details">Pasisveikinkite su savo draugais ir kolegomis!</string>
     <string name="nc_copy_message">Kopijuoti</string>
+    <string name="nc_create_poll">Sukurti apklausą</string>
     <string name="nc_date_header_today">Šiandien</string>
     <string name="nc_date_header_yesterday">Vakar</string>
     <string name="nc_delete">Ištrinti</string>
@@ -226,6 +228,11 @@
     <string name="online">Prisijungęs</string>
     <string name="online_status">Prisijungimo būsena</string>
     <string name="openConversations">Atverti pokalbius</string>
+    <string name="polls_add_option">Pridėti variantą</string>
+    <string name="polls_options">Parinktys</string>
+    <string name="polls_results_subtitle">Rezultatai</string>
+    <string name="polls_settings">Nustatymai</string>
+    <string name="polls_submit_vote">Balsuoti</string>
     <string name="reactions_tab_all">Visos</string>
     <string name="save">Įrašyti</string>
     <string name="scope_federated_description">Sinchronizuoti tik į patikimus serverius</string>

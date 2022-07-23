@@ -84,6 +84,7 @@
     <string name="nc_clear_password">清除密碼</string>
     <string name="nc_client_cert_change">更改客戶端證書</string>
     <string name="nc_client_cert_setup">設置客戶端證書</string>
+    <string name="nc_common_dismiss">撤銷</string>
     <string name="nc_common_error_sorry">發生錯誤了：（</string>
     <string name="nc_common_set">設定</string>
     <string name="nc_common_skip">略過</string>
@@ -335,6 +336,12 @@
     <string name="openConversations">開放對話</string>
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
     <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>
+    <string name="polls_add_option">添加選項</string>
+    <string name="polls_options">選項</string>
+    <string name="polls_private_poll">私人投票</string>
+    <string name="polls_results_subtitle">結果</string>
+    <string name="polls_settings">設定</string>
+    <string name="polls_submit_vote">投票</string>
     <string name="reactions_tab_all">全部</string>
     <string name="read_storage_no_permission">沒有權限就無法從存儲分享檔案</string>
     <string name="save">保存</string>

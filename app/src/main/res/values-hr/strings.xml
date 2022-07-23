@@ -78,6 +78,7 @@
     <string name="nc_clear_password">Izbriši zaporku</string>
     <string name="nc_client_cert_change">Promijeni klijentsku vjerodajnicu</string>
     <string name="nc_client_cert_setup">Postavi klijentsku vjerodajnicu</string>
+    <string name="nc_common_dismiss">Zanemari</string>
     <string name="nc_common_error_sorry">Oprostite, nešto je pošlo po krivu!</string>
     <string name="nc_common_set">Postavi</string>
     <string name="nc_common_skip">Preskoči</string>
@@ -321,6 +322,10 @@
     <string name="openConversations">Otvori razgovore</string>
     <string name="open_in_files_app">Otvori u aplikaciji Files</string>
     <string name="play_pause_voice_message">Reproduciraj/pauziraj glasovnu poruku</string>
+    <string name="polls_add_option">Dodaj mogućnost</string>
+    <string name="polls_options">Mogućnosti</string>
+    <string name="polls_results_subtitle">Rezultati</string>
+    <string name="polls_settings">Postavke</string>
     <string name="reactions_tab_all">Sve</string>
     <string name="read_storage_no_permission">Dijeljenje datoteka iz pohrane nije moguće bez dopuštenja</string>
     <string name="save">Spremi</string>

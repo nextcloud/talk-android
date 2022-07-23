@@ -48,6 +48,7 @@
     <string name="nc_clear_password">Очисти лозинку</string>
     <string name="nc_client_cert_change">Измени клијентски сертификат</string>
     <string name="nc_client_cert_setup">Подесите клијентски сертификат</string>
+    <string name="nc_common_dismiss">Уклони</string>
     <string name="nc_common_error_sorry">Извињавамо се, нешто је пошло наопако!</string>
     <string name="nc_common_set">Постави</string>
     <string name="nc_common_skip">Preskoči</string>
@@ -60,6 +61,7 @@
     <string name="nc_conversations_empty">Придружи се разговору или започни нови</string>
     <string name="nc_conversations_empty_details">Поздравите Ваше пријатеље и колеге!</string>
     <string name="nc_copy_message">Копија</string>
+    <string name="nc_create_poll">Направи гласање</string>
     <string name="nc_date_header_today">Данас</string>
     <string name="nc_date_header_yesterday">Јуче</string>
     <string name="nc_delete">Обриши</string>
@@ -230,6 +232,9 @@
     <string name="nc_wrong_password">Погрешна лозинка</string>
     <string name="nc_yes">Да</string>
     <string name="oneHour">1 сат</string>
+    <string name="polls_add_option">Додај ставку</string>
+    <string name="polls_options">Избори</string>
+    <string name="polls_settings">Поставке</string>
     <string name="reactions_tab_all">Све</string>
     <string name="save">Сачувај</string>
     <string name="scope_federated_description">Само синхронизује са серверима од поверења</string>

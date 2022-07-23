@@ -55,6 +55,7 @@
     <string name="nc_clear_password">Suprimeix la contrasenya</string>
     <string name="nc_client_cert_change">Canvia el certificat del client</string>
     <string name="nc_client_cert_setup">Configureu el certificat del client</string>
+    <string name="nc_common_dismiss">Descarta</string>
     <string name="nc_common_error_sorry">Disculpeu, alguna cosa ha anat malament!</string>
     <string name="nc_common_set">Estableix</string>
     <string name="nc_common_skip">Omet</string>
@@ -67,6 +68,7 @@
     <string name="nc_conversations_empty">Uniu-vos a una conversa o inicieu-ne una de nova</string>
     <string name="nc_conversations_empty_details">Saludeu els vostres amics i col·legues!</string>
     <string name="nc_copy_message">Copia</string>
+    <string name="nc_create_poll">Crea enquesta</string>
     <string name="nc_date_header_today">Avui</string>
     <string name="nc_date_header_yesterday">Ahir</string>
     <string name="nc_delete">Suprimeix</string>
@@ -237,6 +239,11 @@
     <string name="oneHour">1 hora</string>
     <string name="online">En línia</string>
     <string name="online_status">Estat en línia</string>
+    <string name="polls_add_option">Afegeix una opció</string>
+    <string name="polls_options">Opcions</string>
+    <string name="polls_results_subtitle">Resultats</string>
+    <string name="polls_settings">Paràmetres</string>
+    <string name="polls_submit_vote">Votar</string>
     <string name="reactions_tab_all">Totes</string>
     <string name="save">Desa</string>
     <string name="scope_federated_description">Sincronitza només amb servidors de confiança</string>

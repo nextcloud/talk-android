@@ -60,6 +60,7 @@
     <string name="nc_clear_password">Limpar o contrasinal</string>
     <string name="nc_client_cert_change">Cambiar o certificado do cliente</string>
     <string name="nc_client_cert_setup">Estabelecer o certificado do cliente</string>
+    <string name="nc_common_dismiss">Rexeitar</string>
     <string name="nc_common_error_sorry">Sentímolo, algo foi mal!</string>
     <string name="nc_common_set">Estabelecer</string>
     <string name="nc_common_skip">Omitir</string>
@@ -73,6 +74,7 @@
     <string name="nc_conversations_empty">Únase a unha conversa ou inicie unha nova</string>
     <string name="nc_conversations_empty_details">Saúde aos seus amigos e compañeiros!</string>
     <string name="nc_copy_message">Copiar</string>
+    <string name="nc_create_poll">Crear enquisa</string>
     <string name="nc_date_header_today">Hoxe</string>
     <string name="nc_date_header_yesterday">Onte</string>
     <string name="nc_delete">Eliminar</string>
@@ -259,6 +261,10 @@
     <string name="online">En liña</string>
     <string name="online_status">Estado en liña</string>
     <string name="openConversations">Conversas abertas</string>
+    <string name="polls_add_option">Engadir opción</string>
+    <string name="polls_options">Opcións</string>
+    <string name="polls_results_subtitle">Resultados</string>
+    <string name="polls_settings">Axustes</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="save">Gardar</string>
     <string name="scope_federated_description">Sincronizar só con servidores de confianza</string>

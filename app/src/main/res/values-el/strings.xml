@@ -72,6 +72,7 @@
     <string name="nc_clear_password">Εκκαθάριση συνθηματικού</string>
     <string name="nc_client_cert_change">Αλλαγή πιστοποιητικού πελάτη</string>
     <string name="nc_client_cert_setup">Ρύθμιση πιστοποιητικού πελάτη</string>
+    <string name="nc_common_dismiss">Τους ζυγούς λύσατε!</string>
     <string name="nc_common_error_sorry">Συγνώμη, κάτι πήγε στραβά!</string>
     <string name="nc_common_set">Ορισμός</string>
     <string name="nc_common_skip">Παράλειψη</string>
@@ -85,6 +86,7 @@
     <string name="nc_conversations_empty">Συμμετέχετε σε συνομιλία ή ξεκινήστε μια νέα</string>
     <string name="nc_conversations_empty_details">Πείτε γειά σε φίλους και συνεργάτες!</string>
     <string name="nc_copy_message">Αντιγραφή</string>
+    <string name="nc_create_poll">Δημιουργία ψηφοφορίας</string>
     <string name="nc_date_header_today">Σήμερα</string>
     <string name="nc_date_header_yesterday">Χθές</string>
     <string name="nc_delete">Διαγραφή</string>
@@ -307,6 +309,12 @@
     <string name="openConversations">Άνοιγμα συνομιλιών</string>
     <string name="open_in_files_app">Άνοιγμα την εφαρμογή Αρχεία</string>
     <string name="play_pause_voice_message">Αναπαραγωγή/παύση ηχητικού μηνύματος</string>
+    <string name="polls_add_option">Προσθήκη επιλογής</string>
+    <string name="polls_options">Επιλογές</string>
+    <string name="polls_private_poll">Ιδιωτική δημοσκόπηση</string>
+    <string name="polls_results_subtitle">Αποτελέσματα</string>
+    <string name="polls_settings">Ρυθμίσεις</string>
+    <string name="polls_submit_vote">Ψήφος</string>
     <string name="reactions_tab_all">\'Ολα</string>
     <string name="read_storage_no_permission">Η κοινή χρήση αρχείων από τον χώρο αποθήκευσης δεν είναι δυνατή χωρίς δικαιώματα</string>
     <string name="save">Αποθήκευση</string>

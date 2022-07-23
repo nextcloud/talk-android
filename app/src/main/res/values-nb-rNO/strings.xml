@@ -57,6 +57,7 @@
     <string name="nc_clear_password">Tøm passord</string>
     <string name="nc_client_cert_change">Endre klient sertifikat</string>
     <string name="nc_client_cert_setup">Sett opp klient sertifikat</string>
+    <string name="nc_common_dismiss">Forkast</string>
     <string name="nc_common_error_sorry">Noe gikk galt.</string>
     <string name="nc_common_set">Sett</string>
     <string name="nc_common_skip">Hopp over</string>
@@ -68,6 +69,7 @@
     <string name="nc_conversation_menu_voice_call">Samtale</string>
     <string name="nc_conversations_empty">Ta del i en samtale eller start en ny</string>
     <string name="nc_copy_message">Kopier</string>
+    <string name="nc_create_poll">Opprett avstemning</string>
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_date_header_yesterday">I går</string>
     <string name="nc_delete">Slett</string>
@@ -239,6 +241,9 @@
     <string name="oneHour">1 time</string>
     <string name="online">Pålogget</string>
     <string name="online_status">Online-status</string>
+    <string name="polls_options">Valg</string>
+    <string name="polls_results_subtitle">Resultater</string>
+    <string name="polls_settings">Innstillinger</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="save">Lagre</string>
     <string name="scope_federated_description">Synkroniser kun til betrodde servere</string>

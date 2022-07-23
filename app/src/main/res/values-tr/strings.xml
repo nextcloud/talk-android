@@ -84,6 +84,7 @@
     <string name="nc_clear_password">Parolayı temizle</string>
     <string name="nc_client_cert_change">İstemci sertifikasını değiştir</string>
     <string name="nc_client_cert_setup">İstemci sertifikası kurulumu</string>
+    <string name="nc_common_dismiss">Yok say</string>
     <string name="nc_common_error_sorry">Ne yazık ki bir sorun çıktı!</string>
     <string name="nc_common_set">Ayarla</string>
     <string name="nc_common_skip">Atla</string>
@@ -97,6 +98,7 @@
     <string name="nc_conversations_empty">Bir görüşmeye katılın ya da yeni bir görüşme başlatın</string>
     <string name="nc_conversations_empty_details">Tanıdık ve çalışma arkadaşlarınıza selam verin!</string>
     <string name="nc_copy_message">Kopyala</string>
+    <string name="nc_create_poll">Anket ekle</string>
     <string name="nc_date_header_today">Bugün</string>
     <string name="nc_date_header_yesterday">Dün</string>
     <string name="nc_delete">Sil</string>
@@ -335,6 +337,12 @@
     <string name="openConversations">Açık görüşmeler</string>
     <string name="open_in_files_app">Dosyalar uygulamasında aç</string>
     <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
+    <string name="polls_add_option">Seçenek ekle</string>
+    <string name="polls_options">Seçenekler</string>
+    <string name="polls_private_poll">Kapalı anket</string>
+    <string name="polls_results_subtitle">Sonuçlar</string>
+    <string name="polls_settings">Ayarlar</string>
+    <string name="polls_submit_vote">Oy</string>
     <string name="reactions_tab_all">Tümü</string>
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
     <string name="save">Kaydet</string>

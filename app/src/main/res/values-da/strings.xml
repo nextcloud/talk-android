@@ -55,6 +55,7 @@
     <string name="nc_clear_password">Fjern adgangskode</string>
     <string name="nc_client_cert_change">Skift kliencertifikat</string>
     <string name="nc_client_cert_setup">Indstil klientcertifikat</string>
+    <string name="nc_common_dismiss">Afvis</string>
     <string name="nc_common_error_sorry">Noget gik galt, undskyld!</string>
     <string name="nc_common_skip">Spring over</string>
     <string name="nc_configure_cert_auth">Vælg godkendelsescertifikat</string>
@@ -66,6 +67,7 @@
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
     <string name="nc_copy_message">Kopiér</string>
+    <string name="nc_create_poll">Opret afstemning</string>
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_date_header_yesterday">I går</string>
     <string name="nc_delete">Slet</string>
@@ -236,6 +238,9 @@
     <string name="oneHour">1 time</string>
     <string name="online">Online</string>
     <string name="online_status">Online status</string>
+    <string name="polls_add_option">Tilføj valg</string>
+    <string name="polls_options">Valgmuligheder</string>
+    <string name="polls_settings">Indstillinger</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="save">Gem</string>
     <string name="scope_federated_description">Synkroniser kun til betroede servere</string>

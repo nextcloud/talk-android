@@ -60,6 +60,7 @@
     <string name="nc_clear_password">رمز عبور را پاک کنید</string>
     <string name="nc_client_cert_change">تغییر گواهی مشتری</string>
     <string name="nc_client_cert_setup">گواهی مشتری تنظیم کنید</string>
+    <string name="nc_common_dismiss">پنهان کن</string>
     <string name="nc_common_error_sorry">متاسفیم؛ خطایی پیش آمد</string>
     <string name="nc_common_set">تنظیم</string>
     <string name="nc_common_skip">پرش</string>
@@ -243,6 +244,8 @@
     <string name="online">آنلاین</string>
     <string name="online_status">وضعیت آنلاین</string>
     <string name="openConversations">مکالمه جدید</string>
+    <string name="polls_options">گزینه‌ها</string>
+    <string name="polls_settings">تنظیمات</string>
     <string name="reactions_tab_all">همه</string>
     <string name="save">ذخیره</string>
     <string name="scope_federated_description">فقط با سرورهای قابل اعتماد همگام سازی شود</string>

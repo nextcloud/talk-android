@@ -84,6 +84,7 @@
     <string name="nc_clear_password">Wyczyść hasło</string>
     <string name="nc_client_cert_change">Zmień certyfikat klienta</string>
     <string name="nc_client_cert_setup">Skonfiguruj certyfikat klienta</string>
+    <string name="nc_common_dismiss">Odrzuć</string>
     <string name="nc_common_error_sorry">Przepraszamy, coś poszło nie tak!</string>
     <string name="nc_common_set">Ustaw</string>
     <string name="nc_common_skip">Pomiń</string>
@@ -97,6 +98,7 @@
     <string name="nc_conversations_empty">Dołącz do rozmowy lub rozpocznij nową</string>
     <string name="nc_conversations_empty_details">Przywitaj się z przyjaciółmi i współpracownikami!</string>
     <string name="nc_copy_message">Kopiuj</string>
+    <string name="nc_create_poll">Utwórz sondę</string>
     <string name="nc_date_header_today">Dzisiaj</string>
     <string name="nc_date_header_yesterday">Wczoraj</string>
     <string name="nc_delete">Usuń</string>
@@ -335,6 +337,12 @@
     <string name="openConversations">Otwarte rozmowy</string>
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
+    <string name="polls_add_option">Dodaj opcję</string>
+    <string name="polls_options">Opcje</string>
+    <string name="polls_private_poll">Sonda prywatna</string>
+    <string name="polls_results_subtitle">Wyniki</string>
+    <string name="polls_settings">Ustawienia</string>
+    <string name="polls_submit_vote">Wyniki głosowania</string>
     <string name="reactions_tab_all">Wszystkie</string>
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
     <string name="save">Zapisz</string>

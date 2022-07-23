@@ -77,6 +77,7 @@
     <string name="nc_clear_password">Очистити пароль</string>
     <string name="nc_client_cert_change">Змінити сертифікат клієнта</string>
     <string name="nc_client_cert_setup">Встановити сертифікат клієнта</string>
+    <string name="nc_common_dismiss">Припинити</string>
     <string name="nc_common_error_sorry">Вибачте, щось пішло не так!</string>
     <string name="nc_common_set">Встановити</string>
     <string name="nc_common_skip">Пропустити</string>
@@ -279,6 +280,8 @@
     <string name="oneHour">1 година</string>
     <string name="online">Онлайн</string>
     <string name="online_status">Статус онлайну</string>
+    <string name="polls_options">Параметри</string>
+    <string name="polls_settings">Налаштування</string>
     <string name="reactions_tab_all">Всі</string>
     <string name="save">Зберегти</string>
     <string name="scope_federated_description">Синхронізовувати лише з серверами, яким довіряємо</string>
