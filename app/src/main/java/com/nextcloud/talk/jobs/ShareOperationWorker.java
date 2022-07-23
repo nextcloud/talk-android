@@ -56,7 +56,6 @@ public class ShareOperationWorker extends Worker {
 
     private final String TAG = "ShareOperationWorker";
     private long userId;
-    private User operationsUser;
     private String roomToken;
     private List<String> filesArray = new ArrayList<>();
     private String credentials;
@@ -71,7 +70,7 @@ public class ShareOperationWorker extends Worker {
         roomToken = data.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());
         metaData = data.getString(BundleKeys.INSTANCE.getKEY_META_DATA());
         Collections.addAll(filesArray, data.getStringArray(BundleKeys.INSTANCE.getKEY_FILE_PATHS()));
-        operationsUser = userManager.getUserWithId(userId).blockingGet();
+        User operationsUser = userManager.getUserWithId(userId).blockingGet();
         credentials = ApiUtils.getCredentials(operationsUser.getUsername(), operationsUser.getToken());
         baseUrl = operationsUser.getBaseUrl();
     }

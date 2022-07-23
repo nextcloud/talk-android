@@ -42,8 +42,6 @@ import autodagger.AutoInjector;
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebsocketConnectionsWorker extends Worker {
 
-    private static final String TAG = "WebsocketConnectionsWorker";
-
     @Inject
     UserManager userManager;
 
@@ -58,18 +56,16 @@ public class WebsocketConnectionsWorker extends Worker {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         List<User> users = userManager.getUsers().blockingGet();
-        ExternalSignalingServer externalSignalingServer;
         WebSocketConnectionHelper webSocketConnectionHelper = new WebSocketConnectionHelper();
         for (User user : users) {
-            if (user.getExternalSignalingServer() != null) {
-                if (user.getExternalSignalingServer().getExternalSignalingServer() != null &&
-                    !TextUtils.isEmpty(user.getExternalSignalingServer().getExternalSignalingServer()) &&
-                    !TextUtils.isEmpty(user.getExternalSignalingServer().getExternalSignalingTicket())) {
-                    webSocketConnectionHelper.getExternalSignalingInstanceForServer(
-                        user.getExternalSignalingServer().getExternalSignalingServer(),
-                        user, user.getExternalSignalingServer().getExternalSignalingTicket(),
-                        false);
-                }
+            if (user.getExternalSignalingServer() != null &&
+                user.getExternalSignalingServer().getExternalSignalingServer() != null &&
+                !TextUtils.isEmpty(user.getExternalSignalingServer().getExternalSignalingServer()) &&
+                !TextUtils.isEmpty(user.getExternalSignalingServer().getExternalSignalingTicket())) {
+                webSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                    user.getExternalSignalingServer().getExternalSignalingServer(),
+                    user, user.getExternalSignalingServer().getExternalSignalingTicket(),
+                    false);
             }
         }
 
