@@ -24,15 +24,15 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemBrowserFileBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 
 class RemoteFileBrowserItemsAdapter(
     private val showGrid: Boolean = false,
     private val mimeTypeSelectionFilter: String? = null,
-    private val userEntity: UserEntity,
+    private val user: User,
     private val selectionInterface: SelectionInterface,
     private val onItemClicked: (RemoteFileBrowserItem) -> Unit
 ) : RecyclerView.Adapter<RemoteFileBrowserItemsViewHolder>() {
@@ -49,7 +49,7 @@ class RemoteFileBrowserItemsAdapter(
                     false
                 ),
                 mimeTypeSelectionFilter,
-                userEntity,
+                user,
                 selectionInterface
             ) {
                 onItemClicked(items[it])
@@ -62,7 +62,7 @@ class RemoteFileBrowserItemsAdapter(
                     false
                 ),
                 mimeTypeSelectionFilter,
-                userEntity,
+                user,
                 selectionInterface
             ) {
                 onItemClicked(items[it])

@@ -47,7 +47,7 @@ import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileSortOrder
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -57,7 +57,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProvider
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     private lateinit var binding: ActivityRemoteFileBrowserBinding
     private lateinit var viewModel: RemoteFileBrowserItemsViewModel
@@ -158,7 +158,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         val adapter = RemoteFileBrowserItemsAdapter(
             showGrid = showGrid,
             mimeTypeSelectionFilter = mimeTypeSelectionFilter,
-            userEntity = currentUserProvider.currentUser!!,
+            user = currentUserProvider.currentUser.blockingGet(),
             selectionInterface = this,
             onItemClicked = viewModel::onItemClicked
         )
