@@ -1,7 +1,9 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Andy Scherzinger
  * @author Marcel Hibbe
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,9 +30,9 @@ import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.ResponseBody
 import java.io.BufferedInputStream
@@ -50,7 +52,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -63,7 +65,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         }
 
         try {
-            val currentUser = userUtils.currentUser
+            val currentUser = userManager.currentUser.blockingGet()
             val baseUrl = inputData.getString(KEY_BASE_URL)
             val userId = inputData.getString(KEY_USER_ID)
             val attachmentFolder = inputData.getString(KEY_ATTACHMENT_FOLDER)
@@ -87,7 +89,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
-    private fun downloadFile(currentUser: UserEntity, url: String, fileName: String): Result {
+    private fun downloadFile(currentUser: User, url: String, fileName: String): Result {
         val downloadCall = ncApi.downloadFile(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
             url
