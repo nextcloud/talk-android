@@ -48,6 +48,7 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
+import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -114,17 +115,32 @@ public class SignalingSettingsWorker extends Worker {
                                                                                    .getExternalSignalingTicket());
                         }
 
-                        int rows = userManager.saveUser(user).blockingGet();
+                        userManager.saveUser(user).subscribe(new SingleObserver<Integer>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                // unused atm
+                            }
 
-                        if (rows > 0) {
-                            eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
-                                                          EventStatus.EventType.SIGNALING_SETTINGS,
-                                                          true));
-                        } else {
-                            eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
-                                                          EventStatus.EventType.SIGNALING_SETTINGS,
-                                                          false));
-                        }
+                            @Override
+                            public void onSuccess(Integer rows) {
+                                if (rows > 0) {
+                                    eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                                                  EventStatus.EventType.SIGNALING_SETTINGS,
+                                                                  true));
+                                } else {
+                                    eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                                                  EventStatus.EventType.SIGNALING_SETTINGS,
+                                                                  false));
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                                              EventStatus.EventType.SIGNALING_SETTINGS,
+                                                              false));
+                            }
+                        });
                     }
 
                     @Override
