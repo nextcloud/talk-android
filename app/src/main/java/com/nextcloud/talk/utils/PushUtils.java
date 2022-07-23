@@ -29,18 +29,15 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.SignatureVerification;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.users.UserManager;
-import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import org.greenrobot.eventbus.EventBus;
@@ -71,6 +68,7 @@ import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
+import io.reactivex.SingleObserver;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -78,9 +76,6 @@ import io.reactivex.schedulers.Schedulers;
 @AutoInjector(NextcloudTalkApplication.class)
 public class PushUtils {
     private static final String TAG = "PushUtils";
-
-    @Inject
-    UserUtils userUtils;
 
     @Inject
     UserManager userManager;
@@ -238,21 +233,20 @@ public class PushUtils {
                         + devicePublicKeyBase64
                         + "\n-----END PUBLIC KEY-----\n";
 
-                if (userUtils.anyUserExists()) {
-                    for (Object userEntityObject : userUtils.getUsers()) {
-                        UserEntity userEntity = (UserEntity) userEntityObject;
+                List<User> users = userManager.getUsers().blockingGet();
 
-                        if (!userEntity.getScheduledForDeletion()) {
+                    for (User user : users) {
+                        if (!user.getScheduledForDeletion()) {
                             Map<String, String> nextcloudRegisterPushMap = new HashMap<>();
                             nextcloudRegisterPushMap.put("format", "json");
                             nextcloudRegisterPushMap.put("pushTokenHash", pushTokenHash);
                             nextcloudRegisterPushMap.put("devicePublicKey", devicePublicKeyBase64);
                             nextcloudRegisterPushMap.put("proxyServer", proxyServer);
 
-                            registerDeviceWithNextcloud(ncApi, nextcloudRegisterPushMap, token, userEntity);
+                            registerDeviceWithNextcloud(ncApi, nextcloudRegisterPushMap, token, user);
                         }
                     }
-                }
+
             }
         } else {
             Log.e(TAG, "push token was empty when trying to register at nextcloud server");
@@ -262,12 +256,12 @@ public class PushUtils {
     private void registerDeviceWithNextcloud(NcApi ncApi,
                                              Map<String, String> nextcloudRegisterPushMap,
                                              String token,
-                                             UserEntity userEntity) {
-        String credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
+                                             User user) {
+        String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
         ncApi.registerDeviceForNotificationsWithNextcloud(
             credentials,
-            ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()),
+            ApiUtils.getUrlNextcloudPush(user.getBaseUrl()),
             nextcloudRegisterPushMap)
             .subscribe(new Observer<PushRegistrationOverall>() {
                 @Override
@@ -288,12 +282,12 @@ public class PushUtils {
                     proxyMap.put("userPublicKey",
                                  pushRegistrationOverall.getOcs().getData().getPublicKey());
 
-                    registerDeviceWithPushProxy(ncApi, proxyMap, userEntity);
+                    registerDeviceWithPushProxy(ncApi, proxyMap, user);
                 }
 
                 @Override
                 public void onError(@NonNull Throwable e) {
-                    eventBus.post(new EventStatus(userEntity.getId(),
+                    eventBus.post(new EventStatus(user.getId(),
                                                   EventStatus.EventType.PUSH_REGISTRATION, false));
                 }
 
@@ -304,7 +298,7 @@ public class PushUtils {
             });
     }
 
-    private void registerDeviceWithPushProxy(NcApi ncApi, Map<String, String> proxyMap, UserEntity userEntity) {
+    private void registerDeviceWithPushProxy(NcApi ncApi, Map<String, String> proxyMap, User user) {
         ncApi.registerDeviceForNotificationsWithPushProxy(ApiUtils.getUrlPushProxy(), proxyMap)
             .subscribeOn(Schedulers.io())
             .subscribe(new Observer<Void>() {
@@ -317,7 +311,7 @@ public class PushUtils {
                 public void onNext(@NonNull Void aVoid) {
                     try {
                         Log.d(TAG, "pushToken successfully registered at pushproxy.");
-                        createOrUpdateUser(proxyMap, userEntity);
+                        createOrUpdateUser(proxyMap, user);
                     } catch (IOException e) {
                         Log.e(TAG, "IOException while updating user", e);
                     }
@@ -325,7 +319,7 @@ public class PushUtils {
 
                 @Override
                 public void onError(@NonNull Throwable e) {
-                    eventBus.post(new EventStatus(userEntity.getId(),
+                    eventBus.post(new EventStatus(user.getId(),
                                                   EventStatus.EventType.PUSH_REGISTRATION, false));
                 }
 
@@ -336,7 +330,7 @@ public class PushUtils {
             });
     }
 
-    private void createOrUpdateUser(Map<String, String> proxyMap, UserEntity userEntity) throws IOException {
+    private void createOrUpdateUser(Map<String, String> proxyMap, User user) throws IOException {
         PushConfigurationState pushConfigurationState = new PushConfigurationState();
         pushConfigurationState.setPushToken(proxyMap.get("pushToken"));
         pushConfigurationState.setDeviceIdentifier(proxyMap.get("deviceIdentifier"));
@@ -344,38 +338,27 @@ public class PushUtils {
         pushConfigurationState.setUserPublicKey(proxyMap.get("userPublicKey"));
         pushConfigurationState.setUsesRegularPass(Boolean.FALSE);
 
-        userUtils.createOrUpdateUser(null,
-                                     null,
-                                     null,
-                                     userEntity.getDisplayName(),
-                                     LoganSquare.serialize(pushConfigurationState),
-                                     null,
-                                     null,
-                                     userEntity.getId(),
-                                     null,
-                                     null,
-                                     null)
-            .subscribe(new Observer<UserEntity>() {
-                @Override
-                public void onSubscribe(@NonNull Disposable d) {
-                    // unused atm
-                }
+        user.setPushConfigurationState(pushConfigurationState);
+        userManager.saveUser(user).subscribe(new SingleObserver<Integer>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                // unused atm
+            }
 
-                @Override
-                public void onNext(@NonNull UserEntity userEntity) {
-                    eventBus.post(new EventStatus(userEntity.getId(), EventStatus.EventType.PUSH_REGISTRATION, true));
-                }
+            @Override
+            public void onSuccess(Integer integer) {
+                eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                              EventStatus.EventType.PUSH_REGISTRATION,
+                                              true));
+            }
 
-                @Override
-                public void onError(@NonNull Throwable e) {
-                    eventBus.post(new EventStatus(userEntity.getId(), EventStatus.EventType.PUSH_REGISTRATION, false));
-                }
-
-                @Override
-                public void onComplete() {
-                    // unused atm
-                }
-            });
+            @Override
+            public void onError(Throwable e) {
+                eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                              EventStatus.EventType.PUSH_REGISTRATION,
+                                              false));
+            }
+        });
     }
 
     private Key readKeyFromString(boolean readPublicKey, String keyString) {
