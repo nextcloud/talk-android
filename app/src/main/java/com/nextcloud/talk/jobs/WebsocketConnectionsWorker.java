@@ -23,21 +23,21 @@ package com.nextcloud.talk.jobs;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
+
+import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
+import com.nextcloud.talk.models.ExternalSignalingServer;
+import com.nextcloud.talk.users.UserManager;
+import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
-import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.models.ExternalSignalingServer;
-import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebsocketConnectionsWorker extends Worker {
@@ -45,7 +45,7 @@ public class WebsocketConnectionsWorker extends Worker {
     private static final String TAG = "WebsocketConnectionsWorker";
 
     @Inject
-    UserUtils userUtils;
+    UserManager userManager;
 
     public WebsocketConnectionsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -57,24 +57,18 @@ public class WebsocketConnectionsWorker extends Worker {
     public Result doWork() {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        List<UserEntity> userEntityList = userUtils.getUsers();
-        UserEntity userEntity;
+        List<User> users = userManager.getUsers().blockingGet();
         ExternalSignalingServer externalSignalingServer;
         WebSocketConnectionHelper webSocketConnectionHelper = new WebSocketConnectionHelper();
-        for (int i = 0; i < userEntityList.size(); i++) {
-            userEntity = userEntityList.get(i);
-            if (!TextUtils.isEmpty(userEntity.getExternalSignalingServer())) {
-                try {
-                    externalSignalingServer = LoganSquare.parse(userEntity.getExternalSignalingServer(), ExternalSignalingServer.class);
-                    if (!TextUtils.isEmpty(externalSignalingServer.getExternalSignalingServer()) &&
-                            !TextUtils.isEmpty(externalSignalingServer.getExternalSignalingTicket())) {
-                        webSocketConnectionHelper.getExternalSignalingInstanceForServer(
-                                externalSignalingServer.getExternalSignalingServer(),
-                                userEntity, externalSignalingServer.getExternalSignalingTicket(),
-                                false);
-                    }
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to parse external signaling server");
+        for (User user : users) {
+            if (user.getExternalSignalingServer() != null) {
+                if (user.getExternalSignalingServer().getExternalSignalingServer() != null &&
+                    !TextUtils.isEmpty(user.getExternalSignalingServer().getExternalSignalingServer()) &&
+                    !TextUtils.isEmpty(user.getExternalSignalingServer().getExternalSignalingTicket())) {
+                    webSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                        user.getExternalSignalingServer().getExternalSignalingServer(),
+                        user, user.getExternalSignalingServer().getExternalSignalingTicket(),
+                        false);
                 }
             }
         }
