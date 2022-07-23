@@ -4,8 +4,8 @@
  * @author Mario Danic
  * @author Andy Scherzinger
  * @author Marcel Hibbe
- * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
- * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2021-2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,11 +33,11 @@ import android.view.ViewGroup;
 import com.nextcloud.talk.adapters.items.MentionAutocompleteItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.models.json.mention.MentionOverall;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.otaliastudios.autocomplete.RecyclerViewPresenter;
 
 import org.jetbrains.annotations.NotNull;
@@ -62,11 +62,14 @@ import io.reactivex.schedulers.Schedulers;
 @AutoInjector(NextcloudTalkApplication.class)
 public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention> implements FlexibleAdapter.OnItemClickListener {
     private static final String TAG = "MentionAutocompletePresenter";
+
     @Inject
     NcApi ncApi;
+
     @Inject
-    UserUtils userUtils;
-    private UserEntity currentUser;
+    UserManager userManager;
+
+    private User currentUser;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
     private Context context;
 
@@ -78,7 +81,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         super(context);
         this.context = context;
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        currentUser = userUtils.getCurrentUser();
+        currentUser = userManager.getCurrentUser().blockingGet();
     }
 
     public MentionAutocompletePresenter(Context context, String roomToken) {
@@ -86,7 +89,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         this.roomToken = roomToken;
         this.context = context;
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        currentUser = userUtils.getCurrentUser();
+        currentUser = userManager.getCurrentUser().blockingGet();
     }
 
     @Override
