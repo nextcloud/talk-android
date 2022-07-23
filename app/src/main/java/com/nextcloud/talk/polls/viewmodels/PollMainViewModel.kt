@@ -27,7 +27,7 @@ import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.repositories.PollRepository
-import com.nextcloud.talk.utils.database.user.UserUtils
+import com.nextcloud.talk.users.UserManager
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -37,7 +37,7 @@ import javax.inject.Inject
 class PollMainViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var userManager: UserManager
 
     lateinit var user: User
     lateinit var roomToken: String
@@ -175,7 +175,11 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     }
 
     private fun isPollCreatedByCurrentUser(poll: Poll): Boolean {
-        return userUtils.currentUser?.userId == poll.actorId
+        if (userManager.currentUser.isEmpty.blockingGet()) {
+            return false
+        } else {
+            return userManager.currentUser.blockingGet().userId == poll.actorId
+        }
     }
 
     fun dismissDialog() {
