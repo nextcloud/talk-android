@@ -41,7 +41,7 @@ import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite
 import com.nextcloud.talk.components.filebrowser.models.properties.OCId
 import com.nextcloud.talk.components.filebrowser.models.properties.OCSize
 import com.nextcloud.talk.dagger.modules.RestModule.MagicAuthenticator
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.Mimetype.FOLDER
@@ -50,7 +50,7 @@ import okhttp3.OkHttpClient
 import java.io.File
 import java.io.IOException
 
-class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: UserEntity, path: String, depth: Int) {
+class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: User, path: String, depth: Int) {
     private val okHttpClient: OkHttpClient
     private val url: String
     private val depth: Int

@@ -21,20 +21,20 @@
 package com.nextcloud.talk.remotefilebrowser.repositories
 
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFolderListingOperation
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 class RemoteFileBrowserItemsRepositoryImpl @Inject constructor(
     private val okHttpClient: OkHttpClient,
-    private val userProvider: CurrentUserProvider
+    private val userProvider: CurrentUserProviderNew
 ) : RemoteFileBrowserItemsRepository {
 
-    private val userEntity: UserEntity
-        get() = userProvider.currentUser!!
+    private val user: User
+        get() = userProvider.currentUser.blockingGet()
 
     override fun listFolder(path: String):
         Observable<List<RemoteFileBrowserItem>> {
@@ -42,7 +42,7 @@ class RemoteFileBrowserItemsRepositoryImpl @Inject constructor(
             val operation =
                 ReadFolderListingOperation(
                     okHttpClient,
-                    userEntity,
+                    user,
                     path,
                     1
                 )
