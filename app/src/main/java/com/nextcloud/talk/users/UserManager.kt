@@ -143,6 +143,12 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }
     }
 
+    fun saveUser(user: User): Single<Int> {
+        return Single.fromCallable {
+            userRepository.updateUser(user)
+        }
+    }
+
     fun setUserAsActive(user: User): Single<Boolean> {
         return userRepository.setUserAsActiveWithId(user.id!!)
     }
