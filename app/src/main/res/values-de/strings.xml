@@ -36,6 +36,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Größste zuerst</string>
     <string name="menu_item_sort_by_size_smallest_first">Kleinste zuerst</string>
+    <string name="message_poll_tap_to_open">Tippen, um die Umfrage zu öffnen</string>
     <string name="message_search_begin_empty">Keine Suchergebnisse</string>
     <string name="message_search_begin_typing">Beginnen Sie mit der Eingabe, um zu suchen ...</string>
     <string name="message_search_hint">Suche …</string>
@@ -84,6 +85,7 @@
     <string name="nc_clear_password">Passwort leeren</string>
     <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
     <string name="nc_client_cert_setup">Client-Zertifikat einrichten</string>
+    <string name="nc_common_dismiss">Ablehnen</string>
     <string name="nc_common_error_sorry">Leider ist etwas schiefgelaufen!</string>
     <string name="nc_common_set">Setzen</string>
     <string name="nc_common_skip">Überspringen</string>
@@ -97,6 +99,7 @@
     <string name="nc_conversations_empty">Treten Sie einer Unterhaltung bei oder starten Sie eine neue</string>
     <string name="nc_conversations_empty_details">Begrüßen Sie Ihre Freunde und Kollegen!</string>
     <string name="nc_copy_message">Kopieren</string>
+    <string name="nc_create_poll">Umfrage erstellen</string>
     <string name="nc_date_header_today">Heute</string>
     <string name="nc_date_header_yesterday">Gestern</string>
     <string name="nc_delete">Löschen</string>
@@ -232,6 +235,8 @@
     <string name="nc_sent_an_image_you">Sie haben ein Bild gesendet.</string>
     <string name="nc_sent_location" formatted="true">%1$s hat einen Ort gesendet.</string>
     <string name="nc_sent_location_you">Sie haben einen Ort gesendet.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s hat eine Umfrage gesendet.</string>
+    <string name="nc_sent_poll_you">Sie haben eine Umfrage gesendet.</string>
     <string name="nc_sent_voice" formatted="true">%1$s hat eine Sprachnachricht gesendet.</string>
     <string name="nc_sent_voice_you">Sie haben eine Sprachnachricht gesendet.</string>
     <string name="nc_server_connect">Prüfe Verbindung zum Server</string>
@@ -335,6 +340,20 @@
     <string name="openConversations">Offene Unterhaltungen</string>
     <string name="open_in_files_app">In Dateien-App öffnen</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
+    <string name="polls_add_option">Option hinzufügen</string>
+    <string name="polls_amount_voters">%1$s Stimmen</string>
+    <string name="polls_edit_vote">Abstimmung bearbeiten</string>
+    <string name="polls_end_poll">Umfrage beenden</string>
+    <string name="polls_end_poll_confirm">Soll diese Abstimmung wirklich beendet werden? Das kann nicht rückgängig gemacht werden.</string>
+    <string name="polls_max_votes_reached">Sie können nicht mit mehr Optionen für diese Umfrage abstimmen.</string>
+    <string name="polls_multiple_answers">Mehrere Antworten</string>
+    <string name="polls_options">Optionen</string>
+    <string name="polls_private_poll">Private Umfrage</string>
+    <string name="polls_question">Frage</string>
+    <string name="polls_results_subtitle">Ergebnisse</string>
+    <string name="polls_settings">Einstellungen</string>
+    <string name="polls_submit_vote">Abstimmen</string>
+    <string name="polls_voted_hidden_success">Erfolgreich abgestimmt</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Dateien können nicht ohne Berechtigung geteilt werden</string>
     <string name="save">Speichern</string>

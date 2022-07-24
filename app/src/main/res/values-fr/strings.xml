@@ -340,6 +340,8 @@
     <string name="polls_add_option">Ajouter une option</string>
     <string name="polls_options">Options</string>
     <string name="polls_private_poll">Sondage privé</string>
+    <string name="polls_results_subtitle">Résultats</string>
+    <string name="polls_settings">Paramètres</string>
     <string name="polls_submit_vote">Vote</string>
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>

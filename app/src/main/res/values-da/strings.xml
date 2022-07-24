@@ -240,6 +240,7 @@
     <string name="online_status">Online status</string>
     <string name="polls_add_option">Tilføj valg</string>
     <string name="polls_options">Valgmuligheder</string>
+    <string name="polls_settings">Indstillinger</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="save">Gem</string>
     <string name="scope_federated_description">Synkroniser kun til betroede servere</string>

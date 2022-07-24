@@ -335,6 +335,7 @@
     <string name="polls_options">Možnosti</string>
     <string name="polls_private_poll">Zasebna anketa</string>
     <string name="polls_results_subtitle">Zadetki</string>
+    <string name="polls_settings">Nastavitve</string>
     <string name="polls_submit_vote">Glas</string>
     <string name="reactions_tab_all">Vse</string>
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>

@@ -84,6 +84,7 @@
     <string name="nc_clear_password">パスワードを削除</string>
     <string name="nc_client_cert_change">クライアント証明書を変更する</string>
     <string name="nc_client_cert_setup">クライアント証明書を設定する</string>
+    <string name="nc_common_dismiss">閉じる</string>
     <string name="nc_common_error_sorry">不明なエラーが発生しました。</string>
     <string name="nc_common_set">設定</string>
     <string name="nc_common_skip">スキップ</string>
@@ -334,7 +335,11 @@
     <string name="openConversations">オープンな会話</string>
     <string name="open_in_files_app">アプリでファイルを開く</string>
     <string name="play_pause_voice_message">音声メッセージを再生／一時停止</string>
+    <string name="polls_add_option">オプションを追加</string>
     <string name="polls_options">オプション</string>
+    <string name="polls_results_subtitle">結果</string>
+    <string name="polls_settings">設定</string>
+    <string name="polls_submit_vote">投票</string>
     <string name="reactions_tab_all">すべて</string>
     <string name="read_storage_no_permission">ストレージからのファイル共有は権限がなければ不可能です</string>
     <string name="save">保存</string>

@@ -265,6 +265,7 @@
     <string name="online">접속 중</string>
     <string name="online_status">접속 상태</string>
     <string name="openConversations">대화 열기</string>
+    <string name="polls_settings">설정</string>
     <string name="reactions_tab_all">모두</string>
     <string name="save">저장</string>
     <string name="scope_federated_description">신뢰할 수 있는 서버만 동기화할 수 있습니다.</string>

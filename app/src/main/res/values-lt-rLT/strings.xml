@@ -230,6 +230,9 @@
     <string name="openConversations">Atverti pokalbius</string>
     <string name="polls_add_option">Pridėti variantą</string>
     <string name="polls_options">Parinktys</string>
+    <string name="polls_results_subtitle">Rezultatai</string>
+    <string name="polls_settings">Nustatymai</string>
+    <string name="polls_submit_vote">Balsuoti</string>
     <string name="reactions_tab_all">Visos</string>
     <string name="save">Įrašyti</string>
     <string name="scope_federated_description">Sinchronizuoti tik į patikimus serverius</string>

@@ -67,6 +67,7 @@
     <string name="nc_clear_password">Xóa mật khẩu</string>
     <string name="nc_client_cert_change">Thay đổi chứng thực client</string>
     <string name="nc_client_cert_setup">Thiết đặt chứng thực client</string>
+    <string name="nc_common_dismiss">Bỏ qua</string>
     <string name="nc_common_error_sorry">Xin lỗi, có gì đó sai đã xảy ra!</string>
     <string name="nc_common_set">Đặt</string>
     <string name="nc_common_skip">Bỏ qua</string>
@@ -207,6 +208,8 @@
     <string name="online">Trực tuyến</string>
     <string name="online_status">Trạng thái trực tuyến</string>
     <string name="openConversations">Mở cuộc trò chuyện</string>
+    <string name="polls_settings">Cài đặt</string>
+    <string name="polls_submit_vote">Phiếu bầu</string>
     <string name="reactions_tab_all">Tất cả</string>
     <string name="save">Lưu</string>
     <string name="scope_federated_title">Federated</string>
