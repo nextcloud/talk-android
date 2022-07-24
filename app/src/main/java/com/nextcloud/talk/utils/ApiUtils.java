@@ -32,7 +32,6 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.RetrofitBucket;
-import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 
@@ -123,11 +122,6 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/capabilities";
     }
 
-    @Deprecated
-    public static int getCallApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
-        return getCallApiVersion(LegacyUserEntityMapper.toModel(capabilities), versions);
-    }
-
     public static int getCallApiVersion(User capabilities, int[] versions) throws NoSupportedApiException {
         return getConversationApiVersion(capabilities, versions);
     }
@@ -163,16 +157,6 @@ public class ApiUtils {
         throw new NoSupportedApiException();
     }
 
-    @Deprecated
-    public static int getConversationApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
-        return getConversationApiVersion(LegacyUserEntityMapper.toModel(user), versions);
-    }
-
-    @Deprecated
-    public static int getSignalingApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
-        return getSignalingApiVersion(LegacyUserEntityMapper.toModel(user), versions);
-    }
-
     public static int getSignalingApiVersion(User user, int[] versions) throws NoSupportedApiException {
         for (int version : versions) {
             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "signaling-v" + version)) {
@@ -188,25 +172,6 @@ public class ApiUtils {
             if (version == APIv1 &&
                 !CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "signaling-v3")) {
                 // Has no capability, we just assume it is always there when there is no v3 or later
-                return version;
-            }
-        }
-        throw new NoSupportedApiException();
-    }
-
-    /**
-     * migrate to {@link #getChatApiVersion(User, int[])}.
-     *
-     * @param user     User
-     * @param versions API versions
-     * @return to be used verison
-     * @throws NoSupportedApiException if no supported version available
-     */
-    @Deprecated
-    public static int getChatApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
-        for (int version : versions) {
-            if (version == APIv1 && CapabilitiesUtil.hasSpreedFeatureCapability(user, "chat-v2")) {
-                // Do not question that chat-v2 capability shows the availability of api/v1/ endpoint *see no evil*
                 return version;
             }
         }

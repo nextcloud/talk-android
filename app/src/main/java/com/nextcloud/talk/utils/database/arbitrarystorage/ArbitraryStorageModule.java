@@ -41,11 +41,6 @@ public class ArbitraryStorageModule {
     }
 
     @Provides
-    public ArbitraryStorageUtils provideArbitraryStorageUtils(ReactiveEntityStore<Persistable> dataStore) {
-        return new ArbitraryStorageUtils(dataStore);
-    }
-
-    @Provides
     public ArbitraryStorageManager provideArbitraryStorageManager(ArbitraryStoragesRepository repository) {
         return new ArbitraryStorageManager(repository);
     }

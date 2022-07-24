@@ -48,7 +48,6 @@ import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
@@ -376,7 +375,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 startActivity(callNotificationIntent)
             } else {
                 remapChatController(
-                    router!!, intent.getParcelableExtra<UserEntity>(KEY_USER_ENTITY)!!.id,
+                    router!!, intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
                     intent.getStringExtra(KEY_ROOM_TOKEN)!!, intent.extras!!, false, true
                 )
             }

@@ -25,7 +25,6 @@ import android.util.Log;
 
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.websocket.ActorWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.AuthParametersWebSocketMessage;
@@ -40,7 +39,6 @@ import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.SignalingDataWebSocketMessageForOffer;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.LegacyUserEntityMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,16 +68,6 @@ public class WebSocketConnectionHelper {
         }
         Log.d(TAG, "no magicWebSocketInstance found");
         return null;
-    }
-
-    @Deprecated
-    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url,
-                                                                                            UserEntity userEntity,
-                                                                                            String webSocketTicket, boolean isGuest) {
-        return getExternalSignalingInstanceForServer(url,
-                                                     LegacyUserEntityMapper.toModel(userEntity),
-                                                     webSocketTicket,
-                                                     isGuest);
     }
 
     public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url,

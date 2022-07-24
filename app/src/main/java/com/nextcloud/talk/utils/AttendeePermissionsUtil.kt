@@ -21,7 +21,6 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 
 /**
@@ -48,11 +47,6 @@ class AttendeePermissionsUtil(flag: Int) {
         canPublishVideo = (flag and PUBLISH_VIDEO) == PUBLISH_VIDEO
         canPublishScreen = (flag and PUBLISH_SCREEN) == PUBLISH_SCREEN
         hasChatPermission = (flag and CHAT) == CHAT
-    }
-
-    @Deprecated("use hasChatPermission(user: User) instead")
-    fun hasChatPermission(user: UserEntity): Boolean {
-        return hasChatPermission(LegacyUserEntityMapper.toModel(user)!!)
     }
 
     fun hasChatPermission(user: User): Boolean {

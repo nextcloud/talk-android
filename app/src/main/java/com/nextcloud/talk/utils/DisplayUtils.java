@@ -197,10 +197,6 @@ public class DisplayUtils {
         return getImageRequestForUrl(url, (User) null);
     }
 
-    public static ImageRequest getImageRequestForUrl(String url, @Nullable UserEntity userEntity) {
-        return getImageRequestForUrl(url, LegacyUserEntityMapper.toModel(userEntity));
-    }
-
     public static ImageRequest getImageRequestForUrl(String url, @Nullable User user) {
         Map<String, String> headers = new HashMap<>();
         if (user != null &&
@@ -580,11 +576,6 @@ public class DisplayUtils {
         } else {
             return "";
         }
-    }
-
-    @Deprecated
-    public static void loadAvatarImage(UserEntity user, SimpleDraweeView avatarImageView, boolean deleteCache) {
-        loadAvatarImage(Objects.requireNonNull(LegacyUserEntityMapper.toModel(user)), avatarImageView, deleteCache);
     }
 
     public static void loadAvatarImage(User user, SimpleDraweeView avatarImageView, boolean deleteCache) {

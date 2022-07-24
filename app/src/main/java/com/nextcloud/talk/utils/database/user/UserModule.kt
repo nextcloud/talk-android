@@ -36,11 +36,6 @@ abstract class UserModule {
 
     companion object {
         @Provides
-        fun provideUserUtils(dataStore: ReactiveEntityStore<Persistable?>?): UserUtils {
-            return UserUtils(dataStore)
-        }
-
-        @Provides
         fun provideUserManager(userRepository: UsersRepository): UserManager {
             return UserManager(userRepository)
         }
