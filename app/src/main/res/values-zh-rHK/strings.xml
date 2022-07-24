@@ -36,6 +36,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">最大先</string>
     <string name="menu_item_sort_by_size_smallest_first">最小先</string>
+    <string name="message_poll_tap_to_open">點按即可打開民意調查</string>
     <string name="message_search_begin_empty">無搜尋結果</string>
     <string name="message_search_begin_typing">輸入文字以搜尋 …</string>
     <string name="message_search_hint">搜尋 …</string>
@@ -98,6 +99,7 @@
     <string name="nc_conversations_empty">加入或者開一個新的對話</string>
     <string name="nc_conversations_empty_details">跟大家打招呼</string>
     <string name="nc_copy_message">複製</string>
+    <string name="nc_create_poll">創建民意調查</string>
     <string name="nc_date_header_today">今日</string>
     <string name="nc_date_header_yesterday">昨日</string>
     <string name="nc_delete">刪除</string>
@@ -233,6 +235,8 @@
     <string name="nc_sent_an_image_you">你傳送了一張圖片</string>
     <string name="nc_sent_location" formatted="true">%1$s 傳送一個位置。</string>
     <string name="nc_sent_location_you">您傳送了一個位置。</string>
+    <string name="nc_sent_poll" formatted="true">%1$s 已傳送一個民意調查。</string>
+    <string name="nc_sent_poll_you">您傳送了一個民意調查。</string>
     <string name="nc_sent_voice" formatted="true">%1$s 傳送了一個話音短訊。</string>
     <string name="nc_sent_voice_you">你傳送了一個話音短訊。</string>
     <string name="nc_server_connect">測試伺服器連線</string>
@@ -337,11 +341,19 @@
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
     <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>
     <string name="polls_add_option">添加選項</string>
+    <string name="polls_amount_voters">%1$s 選票</string>
+    <string name="polls_edit_vote">編輯選票</string>
+    <string name="polls_end_poll">結束民意調查</string>
+    <string name="polls_end_poll_confirm">你真的要結束這個民意調查嗎？這是無法撤消的。</string>
+    <string name="polls_max_votes_reached">您無法為此民意調查選擇更多選項。</string>
+    <string name="polls_multiple_answers">多個答案</string>
     <string name="polls_options">選項</string>
     <string name="polls_private_poll">私人投票</string>
+    <string name="polls_question">問題</string>
     <string name="polls_results_subtitle">結果</string>
     <string name="polls_settings">設定</string>
     <string name="polls_submit_vote">投票</string>
+    <string name="polls_voted_hidden_success">成功投票</string>
     <string name="reactions_tab_all">全部</string>
     <string name="read_storage_no_permission">沒有權限就無法從存儲分享檔案</string>
     <string name="save">保存</string>
