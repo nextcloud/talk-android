@@ -25,8 +25,6 @@ import com.nextcloud.talk.users.UserManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import io.requery.Persistable
-import io.requery.reactivex.ReactiveEntityStore
 
 @Module(includes = [DatabaseModule::class])
 abstract class UserModule {
