@@ -18,7 +18,7 @@ class MainActivityTest {
     fun login() {
         val sut = activityRule.launchActivity(null)
 
-        val user = sut.userManager.createOrUpdateUser(
+        val user = sut.userManager.storeProfile(
             "test",
             UserManager.UserAttributes(
                 null,

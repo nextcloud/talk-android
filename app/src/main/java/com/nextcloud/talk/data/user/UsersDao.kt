@@ -98,29 +98,6 @@ abstract class UsersDao {
         }
     }
 
-    @Transaction
-    open fun markUserForDeletion(id: Long): Boolean {
-        getUserWithId(id).blockingGet()?.let { user ->
-            user.current = FALSE
-            updateUser(user)
-        }
-
-        return setAnyUserAsActive()
-    }
-
-    @Transaction
-    open fun setAnyUserAsActive(): Boolean {
-        val users = getUsers().blockingGet()
-
-        val result = users.firstOrNull()?.let { user ->
-            user.current = TRUE
-            updateUser(user)
-            TRUE
-        } ?: FALSE
-
-        return result
-    }
-
     companion object {
         const val TAG = "UsersDao"
     }

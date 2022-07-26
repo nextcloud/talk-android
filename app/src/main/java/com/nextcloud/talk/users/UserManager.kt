@@ -49,10 +49,6 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return userRepository.deleteUser(userRepository.getUserWithId(internalId).blockingGet())
     }
 
-    fun getUserById(userId: String): Maybe<User> {
-        return userRepository.getUserWithUserId(userId)
-    }
-
     fun getUserWithId(id: Long): Maybe<User> {
         return userRepository.getUserWithId(id)
     }
@@ -154,9 +150,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     }
 
     fun storeProfile(username: String?, userAttributes: UserAttributes): Maybe<User> {
-        val userMaybe: Maybe<User> = findUser(null, userAttributes)
-
-        return userMaybe
+        return findUser(userAttributes)
             .map { user: User? ->
                 when (user) {
                     null -> createUser(
@@ -190,50 +184,12 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             }
     }
 
-    @Deprecated("Only available for migration, use updateExternalSignalingServer or create new methods")
-    fun createOrUpdateUser(
-        username: String?,
-        userAttributes: UserAttributes
-    ): Maybe<User> {
-        val userMaybe: Maybe<User> = findUser(username, userAttributes)
-
-        return userMaybe
-            .map { user: User? ->
-                when (user) {
-                    null -> createUser(
-                        username,
-                        userAttributes
-                    )
-                    else -> {
-                        updateUserData(
-                            user,
-                            userAttributes
-                        )
-                        user
-                    }
-                }
-            }
-            .switchIfEmpty(Maybe.just(createUser(username, userAttributes)))
-            .map { user ->
-                userRepository.insertUser(user)
-            }
-            .flatMap { id ->
-                userRepository.getUserWithId(id)
-            }
-    }
-
-    private fun findUser(username: String?, userAttributes: UserAttributes): Maybe<User> {
+    private fun findUser(userAttributes: UserAttributes): Maybe<User> {
         return if (userAttributes.id != null) {
             userRepository.getUserWithId(userAttributes.id)
-        } else if (username != null && userAttributes.serverUrl != null) {
-            userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
         } else {
             Maybe.empty()
         }
-    }
-
-    fun getUserWithUsernameAndServer(username: String, server: String): Maybe<User> {
-        return userRepository.getUserWithUsernameAndServer(username, server)
     }
 
     private fun updateUserData(user: User, userAttributes: UserAttributes) {

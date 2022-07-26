@@ -80,12 +80,4 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     override fun deleteUser(user: User): Int {
         return usersDao.deleteUser(UserMapper.toEntity(user))
     }
-
-    override fun setAnyUserAsActive(): Boolean {
-        return usersDao.setAnyUserAsActive()
-    }
-
-    override fun markUserForDeletion(id: Long): Boolean {
-        return usersDao.markUserForDeletion(id)
-    }
 }
