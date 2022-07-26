@@ -35,6 +35,7 @@
         android:paddingTop="@dimen/dialog_padding_top_bottom">
 
         <TextView
+            android:id="@+id/poll_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/dialog_padding"
@@ -73,6 +74,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
+            android:id="@+id/poll_options"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/standard_padding"
@@ -102,6 +104,7 @@
             app:icon="@drawable/ic_add_grey600_24px" />
 
         <TextView
+            android:id="@+id/poll_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/standard_margin"

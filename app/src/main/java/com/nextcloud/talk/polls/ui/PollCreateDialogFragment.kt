@@ -43,6 +43,7 @@ import com.nextcloud.talk.polls.adapters.PollCreateOptionItem
 import com.nextcloud.talk.polls.adapters.PollCreateOptionsAdapter
 import com.nextcloud.talk.polls.adapters.PollCreateOptionsItemListener
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -50,6 +51,9 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private lateinit var binding: DialogPollCreateBinding
     private lateinit var viewModel: PollCreateViewModel
@@ -88,8 +92,24 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
         adapter = PollCreateOptionsAdapter(this)
         binding.pollCreateOptionsList.adapter = adapter
 
+        themeDialog()
+
         setupListeners()
         setupStateObserver()
+    }
+
+    private fun themeDialog() {
+        viewThemeUtils.colorTextViewText(binding.pollQuestion)
+        viewThemeUtils.colorTextViewText(binding.pollOptions)
+        viewThemeUtils.colorTextViewText(binding.pollSettings)
+
+        viewThemeUtils.colorMaterialButtonText(binding.pollAddOptionsItem)
+        // TODO button also needs a disabled state handling for colors
+        viewThemeUtils.colorMaterialButtonText(binding.pollDismiss)
+        viewThemeUtils.colorMaterialButtonBackground(binding.pollCreateButton)
+
+        viewThemeUtils.themeCheckbox(binding.pollPrivatePollCheckbox)
+        viewThemeUtils.themeCheckbox(binding.pollMultipleAnswersCheckbox)
     }
 
     private fun setupListeners() {
