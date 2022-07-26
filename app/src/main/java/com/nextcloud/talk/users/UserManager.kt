@@ -51,7 +51,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             return userRepository.getActiveUserObservable()
         }
 
-    fun deleteUser(internalId: Long) {
+    fun deleteUser(internalId: Long): Int {
         return userRepository.deleteUser(userRepository.getUserWithId(internalId).blockingGet())
     }
 
