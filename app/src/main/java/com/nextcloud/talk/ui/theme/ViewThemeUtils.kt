@@ -25,9 +25,11 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
@@ -208,6 +210,24 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
         withElementColor(swipeRefreshLayout) { color ->
             swipeRefreshLayout.setColorSchemeColors(color)
             swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
+        }
+    }
+
+    fun colorEditText(editText: EditText) {
+        withElementColor(editText) { color ->
+            editText.setTextColor(color)
+            // TODO check API-level compatibility
+            //editText.background.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+            editText.backgroundTintList = ColorStateList(
+                arrayOf(
+                    intArrayOf(-android.R.attr.state_focused),
+                    intArrayOf(android.R.attr.state_focused)
+                ),
+                intArrayOf(
+                    Color.GRAY,
+                    color
+                )
+            )
         }
     }
 

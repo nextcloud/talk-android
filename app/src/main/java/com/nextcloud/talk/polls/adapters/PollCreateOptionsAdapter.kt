@@ -24,9 +24,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.databinding.PollCreateOptionsItemBinding
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
 class PollCreateOptionsAdapter(
-    private val clickListener: PollCreateOptionsItemListener
+    private val clickListener: PollCreateOptionsItemListener,
+    private val viewThemeUtils: ViewThemeUtils
 ) : RecyclerView.Adapter<PollCreateOptionViewHolder>() {
 
     internal var list: ArrayList<PollCreateOptionItem> = ArrayList()
@@ -34,7 +36,7 @@ class PollCreateOptionsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PollCreateOptionViewHolder {
         val itemBinding = PollCreateOptionsItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return PollCreateOptionViewHolder(itemBinding)
+        return PollCreateOptionViewHolder(itemBinding, viewThemeUtils)
     }
 
     override fun onBindViewHolder(holder: PollCreateOptionViewHolder, position: Int) {
