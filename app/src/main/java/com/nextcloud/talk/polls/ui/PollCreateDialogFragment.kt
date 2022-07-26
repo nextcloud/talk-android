@@ -89,7 +89,7 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
 
         binding.pollCreateOptionsList.layoutManager = LinearLayoutManager(context)
 
-        adapter = PollCreateOptionsAdapter(this)
+        adapter = PollCreateOptionsAdapter(this, viewThemeUtils)
         binding.pollCreateOptionsList.adapter = adapter
 
         themeDialog()
@@ -102,6 +102,8 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
         viewThemeUtils.colorTextViewText(binding.pollQuestion)
         viewThemeUtils.colorTextViewText(binding.pollOptions)
         viewThemeUtils.colorTextViewText(binding.pollSettings)
+
+        viewThemeUtils.colorEditText(binding.pollCreateQuestion)
 
         viewThemeUtils.colorMaterialButtonText(binding.pollAddOptionsItem)
         // TODO button also needs a disabled state handling for colors

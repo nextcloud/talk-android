@@ -26,10 +26,12 @@ import android.text.TextWatcher
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.PollCreateOptionsItemBinding
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.EmojiTextInputEditText
 
 class PollCreateOptionViewHolder(
-    private val binding: PollCreateOptionsItemBinding
+    private val binding: PollCreateOptionsItemBinding,
+    private val viewThemeUtils: ViewThemeUtils
 ) : RecyclerView.ViewHolder(binding.root) {
 
     lateinit var optionText: EmojiTextInputEditText
@@ -48,6 +50,7 @@ class PollCreateOptionViewHolder(
         }
 
         binding.pollOptionTextEdit.setText(pollCreateOptionItem.pollOption)
+        viewThemeUtils.colorEditText(binding.pollOptionText)
 
         if (focus) {
             itemsListener.requestFocus(binding.pollOptionTextEdit)
