@@ -523,6 +523,7 @@
     <string name="shared_items_audio">Audio</string>
     <string name="shared_items_voice">Voice</string>
     <string name="shared_items_other">Other</string>
+    <string name="shared_items_poll">Poll</string>
 
     <!-- Message search -->
     <string name="messages">Messages</string>

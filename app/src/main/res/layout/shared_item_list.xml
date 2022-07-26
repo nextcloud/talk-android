@@ -78,6 +78,7 @@
             tools:text="Filename.md" />
 
         <LinearLayout
+            android:id="@+id/file_metadata"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -91,12 +92,13 @@
                 tools:text="11 KB" />
 
             <TextView
+                android:id="@+id/separator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standard_quarter_margin"
+                android:text="|"
                 android:textColor="@color/textColorMaxContrast"
                 android:textSize="14sp"
-                android:text="|"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -106,7 +108,7 @@
                 android:layout_marginStart="@dimen/standard_quarter_margin"
                 android:textColor="@color/textColorMaxContrast"
                 android:textSize="14sp"
-                tools:text="04-05-2022 21:16"/>
+                tools:text="04-05-2022 21:16" />
 
         </LinearLayout>
     </LinearLayout>

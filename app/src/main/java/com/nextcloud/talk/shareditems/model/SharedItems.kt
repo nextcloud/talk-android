@@ -22,20 +22,9 @@
 
 package com.nextcloud.talk.shareditems.model
 
-import java.util.Locale
-
-enum class SharedItemType {
-
-    AUDIO,
-    FILE,
-    MEDIA,
-    VOICE,
-    LOCATION,
-    DECKCARD,
-    OTHER,
-    POLL;
-
-    companion object {
-        fun typeFor(name: String) = valueOf(name.uppercase(Locale.ROOT))
-    }
-}
+class SharedItems(
+    val items: List<SharedItem>,
+    val type: SharedItemType,
+    var lastSeenId: Int?,
+    var moreItemsExisting: Boolean
+)

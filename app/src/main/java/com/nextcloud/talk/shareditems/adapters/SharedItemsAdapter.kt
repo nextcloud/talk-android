@@ -22,17 +22,24 @@
 
 package com.nextcloud.talk.shareditems.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.SharedItemGridBinding
 import com.nextcloud.talk.databinding.SharedItemListBinding
+import com.nextcloud.talk.polls.ui.PollMainDialogFragment
+import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
+import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
+import com.nextcloud.talk.shareditems.model.SharedPollItem
 
 class SharedItemsAdapter(
     private val showGrid: Boolean,
-    private val user: User
+    private val user: User,
+    private val roomToken: String,
+    private val isUserConversationOwnerOrModerator: Boolean
 ) : RecyclerView.Adapter<SharedItemsViewHolder>() {
 
     var items: List<SharedItem> = emptyList()
@@ -61,10 +68,31 @@ class SharedItemsAdapter(
     }
 
     override fun onBindViewHolder(holder: SharedItemsViewHolder, position: Int) {
-        holder.onBind(items[position])
+        when (val item = items[position]) {
+            is SharedPollItem -> holder.onBind(item, ::showPoll)
+            is SharedFileItem -> holder.onBind(item)
+        }
     }
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    private fun showPoll(item: SharedItem, context: Context) {
+        val pollVoteDialog = PollMainDialogFragment.newInstance(
+            user,
+            roomToken,
+            isUserConversationOwnerOrModerator,
+            item.id,
+            item.name
+        )
+        pollVoteDialog.show(
+            (context as SharedItemsActivity).supportFragmentManager,
+            TAG
+        )
+    }
+
+    companion object {
+        private val TAG = SharedItemsAdapter::class.simpleName
     }
 }

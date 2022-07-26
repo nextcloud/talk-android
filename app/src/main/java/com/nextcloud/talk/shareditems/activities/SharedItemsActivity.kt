@@ -63,6 +63,7 @@ class SharedItemsActivity : AppCompatActivity() {
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
         val user = intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!
+        val isUserConversationOwnerOrModerator = intent.getBooleanExtra(KEY_USER_IS_OWNER_OR_MODERATOR, false)
 
         binding = ActivitySharedItemsBinding.inflate(layoutInflater)
         setSupportActionBar(binding.sharedItemsToolbar)
@@ -104,7 +105,12 @@ class SharedItemsActivity : AppCompatActivity() {
                         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
                     }
 
-                    val adapter = SharedItemsAdapter(showGrid, user).apply {
+                    val adapter = SharedItemsAdapter(
+                        showGrid,
+                        user,
+                        roomToken,
+                        isUserConversationOwnerOrModerator
+                    ).apply {
                         items = sharedMediaItems.items
                     }
                     binding.imageRecycler.adapter = adapter
@@ -176,6 +182,13 @@ class SharedItemsActivity : AppCompatActivity() {
             binding.sharedItemsTabs.addTab(tabVoice)
         }
 
+        if (sharedItemTypes.contains(SharedItemType.POLL)) {
+            val tabVoice: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            tabVoice.tag = SharedItemType.POLL
+            tabVoice.setText(R.string.shared_items_poll)
+            binding.sharedItemsTabs.addTab(tabVoice)
+        }
+
         // if(sharedItemTypes.contains(SharedItemType.LOCATION)) {
         // val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         // tabLocation.tag = SharedItemType.LOCATION
@@ -220,5 +233,6 @@ class SharedItemsActivity : AppCompatActivity() {
     companion object {
         private val TAG = SharedItemsActivity::class.simpleName
         const val SPAN_COUNT: Int = 4
+        const val KEY_USER_IS_OWNER_OR_MODERATOR = "userIsOwnerOrModerator"
     }
 }
