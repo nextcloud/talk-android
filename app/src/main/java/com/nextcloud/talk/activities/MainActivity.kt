@@ -63,21 +63,12 @@ import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import io.requery.Persistable
-import io.requery.android.sqlcipher.SqlCipherDatabaseSource
-import io.requery.reactivex.ReactiveEntityStore
 import org.parceler.Parcels
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class MainActivity : BaseActivity(), ActionBarProvider {
     lateinit var binding: ActivityMainBinding
-
-    @Inject
-    lateinit var dataStore: ReactiveEntityStore<Persistable>
-
-    @Inject
-    lateinit var sqlCipherDatabaseSource: SqlCipherDatabaseSource
 
     @Inject
     lateinit var ncApi: NcApi
@@ -103,46 +94,34 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         router = Conductor.attachRouter(this, binding.controllerContainer, savedInstanceState)
 
-        var hasDb = true
-
-        try {
-            sqlCipherDatabaseSource.writableDatabase
-        } catch (exception: Exception) {
-            hasDb = false
-        }
-
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {
-            if (hasDb) {
-                if (!appPreferences.isDbRoomMigrated) {
-                    appPreferences.isDbRoomMigrated = true
+            if (!appPreferences.isDbRoomMigrated) {
+                appPreferences.isDbRoomMigrated = true
+            }
+
+            userManager.users.subscribe(object : SingleObserver<List<User>> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
-                userManager.users.subscribe(object : SingleObserver<List<User>> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onSuccess(users: List<User>) {
-                        if (users.isNotEmpty()) {
-                            runOnUiThread {
-                                setDefaultRootController()
-                            }
-                        } else {
-                            runOnUiThread {
-                                launchLoginScreen()
-                            }
+                override fun onSuccess(users: List<User>) {
+                    if (users.isNotEmpty()) {
+                        runOnUiThread {
+                            setDefaultRootController()
+                        }
+                    } else {
+                        runOnUiThread {
+                            launchLoginScreen()
                         }
                     }
+                }
 
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "Error loading existing users", e)
-                    }
-                })
-            } else {
-                launchLoginScreen()
-            }
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Error loading existing users", e)
+                }
+            })
         }
     }
 

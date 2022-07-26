@@ -81,7 +81,6 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.UserMentionClickEvent;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.text.Spans;
 
 import org.greenrobot.eventbus.EventBus;
@@ -93,7 +92,6 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -67,8 +67,6 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.nextcloud.talk.utils.ssl.MagicTrustManager
 import de.cotech.hw.fido.WebViewFidoBridge
 import io.reactivex.disposables.Disposable
-import io.requery.Persistable
-import io.requery.reactivex.ReactiveEntityStore
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.Field
 import java.net.CookieManager
@@ -88,9 +86,6 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var dataStore: ReactiveEntityStore<Persistable>
 
     @Inject
     lateinit var magicTrustManager: MagicTrustManager

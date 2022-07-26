@@ -50,7 +50,6 @@ import com.facebook.cache.disk.DiskCacheConfig
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.nextcloud.talk.BuildConfig
-import com.nextcloud.talk.R
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
@@ -62,7 +61,6 @@ import com.nextcloud.talk.dagger.modules.ViewModelModule
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
-import com.nextcloud.talk.models.database.Models
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -76,17 +74,14 @@ import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.google.GoogleEmojiProvider
 import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
-import io.requery.android.sqlcipher.SqlCipherDatabaseSource
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteDatabaseHook
-import net.sqlcipher.database.SQLiteOpenHelper
 import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.voiceengine.WebRtcAudioManager
 import org.webrtc.voiceengine.WebRtcAudioUtils
 import java.security.Security
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -171,8 +166,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         DavUtils.registerCustomFactories()
 
         componentApplication.inject(this)
-
-        checkAndUpgradeDbCypher()
 
         Coil.setImageLoader(buildDefaultImageLoader())
         setAppTheme(appPreferences.theme)
@@ -260,47 +253,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
             }
             .okHttpClient(okHttpClient)
             .build()
-    }
-
-    private fun checkAndUpgradeDbCypher() {
-        if (appPreferences.isDbCypherToUpgrade) {
-            val database = object : SqlCipherDatabaseSource(
-                this,
-                Models.DEFAULT,
-                this
-                    .resources
-                    .getString(R.string.nc_app_product_name)
-                    .lowercase(Locale.getDefault())
-                    .replace(" ", "_")
-                    .trim { it <= ' ' } +
-                    ".sqlite",
-                this.getString(R.string.nc_talk_database_encryption_key),
-                DatabaseModule.DB_VERSION
-            ) {
-                override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-                    checkAndUpdateCipherMigrationStatus(newVersion, appPreferences)
-                    super.onUpgrade(db, oldVersion, newVersion)
-                }
-            }
-
-            try {
-                val field = SQLiteOpenHelper::class.java.getDeclaredField("mHook")
-                field.isAccessible = true
-                field.set(database, hook)
-            } catch (e: NoSuchFieldException) {
-                Log.e("SqlCipherDatabaseSource", "Error accessing mHook field")
-            } catch (e: IllegalAccessException) {
-                Log.e("SqlCipherDatabaseSource", "Error setting mHook field")
-            }
-
-            checkAndUpdateCipherMigrationStatus(database.writableDatabase.version, appPreferences)
-        }
-    }
-
-    private fun checkAndUpdateCipherMigrationStatus(version: Int, appPreferences: AppPreferences) {
-        if (version >= CIPHER_V4_MIGRATION && appPreferences.isDbCypherToUpgrade) {
-            appPreferences.isDbCypherToUpgrade = false
-        }
     }
 
     companion object {

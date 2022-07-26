@@ -32,7 +32,6 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.RetrofitBucket;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 
 import org.jetbrains.annotations.NotNull;
