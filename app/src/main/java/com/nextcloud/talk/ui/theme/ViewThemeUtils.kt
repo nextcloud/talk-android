@@ -32,6 +32,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -113,8 +114,17 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
     }
 
     fun colorMaterialButtonText(button: MaterialButton) {
-        colorTextViewElement(button)
-        button.iconTint = ColorStateList.valueOf(getElementColor(button.context))
+        withElementColor(button) { color ->
+            val disabledColor = ContextCompat.getColor(button.context, R.color.disabled_text)
+            val colorStateList = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_enabled),
+                    intArrayOf(-android.R.attr.state_enabled)),
+                intArrayOf(color, disabledColor)
+            )
+            button.setTextColor(colorStateList)
+            button.iconTint = colorStateList
+        }
     }
 
     fun colorMaterialButtonBackground(button: MaterialButton) {
