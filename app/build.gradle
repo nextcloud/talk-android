@@ -344,12 +344,17 @@ task installGitHooks(type: Copy, group: "development") {
     into '../.git/hooks'
 }
 
-detekt {
+tasks.named("detekt").configure {
     reports {
-        xml {
-            enabled = false
-        }
+        html.required.set(true)
+        txt.required.set(true)
+        xml.required.set(false)
+        sarif.required.set(false)
+        md.required.set(false)
     }
+}
+
+detekt {
     config = files("../detekt.yml")
     input = files("src/")
 }
