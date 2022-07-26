@@ -119,7 +119,8 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
             val colorStateList = ColorStateList(
                 arrayOf(
                     intArrayOf(android.R.attr.state_enabled),
-                    intArrayOf(-android.R.attr.state_enabled)),
+                    intArrayOf(-android.R.attr.state_enabled)
+                ),
                 intArrayOf(color, disabledColor)
             )
             button.setTextColor(colorStateList)
@@ -212,8 +213,55 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
 
     fun colorTextInputLayout(textInputLayout: TextInputLayout) {
         withElementColor(textInputLayout) { color ->
-            textInputLayout.hintTextColor = ColorStateList.valueOf(color)
+            // TODO calculate error color based on primary color, dark/light aware
+            val errorColor = Color.GRAY
             textInputLayout.boxStrokeColor = color
+            textInputLayout.setErrorIconTintList(
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(-android.R.attr.state_focused),
+                        intArrayOf(android.R.attr.state_focused)
+                    ),
+                    intArrayOf(
+                        errorColor,
+                        errorColor
+                    )
+                )
+            )
+            textInputLayout.setErrorTextColor(
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(-android.R.attr.state_focused),
+                        intArrayOf(android.R.attr.state_focused)
+                    ),
+                    intArrayOf(
+                        errorColor,
+                        errorColor
+                    )
+                )
+            )
+            textInputLayout.boxStrokeErrorColor =
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(-android.R.attr.state_focused),
+                        intArrayOf(android.R.attr.state_focused)
+                    ),
+                    intArrayOf(
+                        errorColor,
+                        errorColor
+                    )
+                )
+            textInputLayout.defaultHintTextColor =
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(-android.R.attr.state_focused),
+                        intArrayOf(android.R.attr.state_focused)
+                    ),
+                    intArrayOf(
+                        Color.GRAY,
+                        color
+                    )
+                )
         }
     }
 
