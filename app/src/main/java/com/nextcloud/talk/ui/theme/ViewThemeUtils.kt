@@ -183,8 +183,13 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
 
     fun themeCheckbox(checkbox: CheckBox) {
         withElementColor(checkbox) { color ->
-            checkbox.setTextColor(color)
-            checkbox.buttonTintList = ColorStateList.valueOf(color)
+            checkbox.buttonTintList = ColorStateList(
+                arrayOf(
+                    intArrayOf(-android.R.attr.state_checked),
+                    intArrayOf(android.R.attr.state_checked),
+                ),
+                intArrayOf(Color.GRAY, color)
+            )
         }
     }
 
