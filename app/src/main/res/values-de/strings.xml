@@ -344,7 +344,7 @@
     <string name="polls_amount_voters">%1$s Stimmen</string>
     <string name="polls_edit_vote">Abstimmung bearbeiten</string>
     <string name="polls_end_poll">Umfrage beenden</string>
-    <string name="polls_end_poll_confirm">Soll diese Abstimmung wirklich beendet werden? Das kann nicht rückgängig gemacht werden.</string>
+    <string name="polls_end_poll_confirm">Soll diese Umfrage wirklich beendet werden? Das kann nicht rückgängig gemacht werden.</string>
     <string name="polls_max_votes_reached">Sie können nicht mit mehr Optionen für diese Umfrage abstimmen.</string>
     <string name="polls_multiple_answers">Mehrere Antworten</string>
     <string name="polls_options">Optionen</string>
