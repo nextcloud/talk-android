@@ -249,6 +249,7 @@
     <string name="scope_published_title">已發佈</string>
     <string name="secondsAgo">秒前</string>
     <string name="selected_list_item">已選擇</string>
+    <string name="send_to">傳送至</string>
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>
