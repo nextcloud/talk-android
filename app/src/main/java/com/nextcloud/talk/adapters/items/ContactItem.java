@@ -35,6 +35,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.RvItemContactBinding;
 import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
@@ -59,14 +60,17 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
     private final Participant participant;
     private final User user;
     private GenericTextHeaderItem header;
+    private final ViewThemeUtils viewThemeUtils;
     public boolean isOnline = true;
 
     public ContactItem(Participant participant,
                        User user,
-                       GenericTextHeaderItem genericTextHeaderItem) {
+                       GenericTextHeaderItem genericTextHeaderItem,
+                       ViewThemeUtils viewThemeUtils) {
         this.participant = participant;
         this.user = user;
         this.header = genericTextHeaderItem;
+        this.viewThemeUtils = viewThemeUtils;
     }
 
     @Override
@@ -108,6 +112,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
         holder.binding.avatarDraweeView.setController(null);
 
         if (participant.getSelected()) {
+            viewThemeUtils.colorImageView(holder.binding.checkedImageView);
             holder.binding.checkedImageView.setVisibility(View.VISIBLE);
         } else {
             holder.binding.checkedImageView.setVisibility(View.GONE);

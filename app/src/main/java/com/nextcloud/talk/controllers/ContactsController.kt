@@ -502,7 +502,8 @@ class ContactsController(args: Bundle) :
                 val newContactItem = ContactItem(
                     participant,
                     currentUser,
-                    userHeaderItems[headerTitle]
+                    userHeaderItems[headerTitle],
+                    viewThemeUtils
                 )
                 if (!contactItems!!.contains(newContactItem)) {
                     newUserItemList.add(newContactItem)
