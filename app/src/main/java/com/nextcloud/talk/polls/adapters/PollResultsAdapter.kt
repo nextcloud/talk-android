@@ -27,10 +27,12 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.PollResultHeaderItemBinding
 import com.nextcloud.talk.databinding.PollResultVoterItemBinding
 import com.nextcloud.talk.databinding.PollResultVotersOverviewItemBinding
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
 class PollResultsAdapter(
     private val user: User,
     private val clickListener: PollResultItemClickListener,
+    private val viewThemeUtils: ViewThemeUtils
 ) : RecyclerView.Adapter<PollResultViewHolder>() {
     internal var list: MutableList<PollResultItem> = ArrayList()
 
@@ -43,7 +45,7 @@ class PollResultsAdapter(
                     LayoutInflater.from(parent.context), parent,
                     false
                 )
-                viewHolder = PollResultHeaderViewHolder(itemBinding)
+                viewHolder = PollResultHeaderViewHolder(itemBinding, viewThemeUtils)
             }
             PollResultVoterItem.VIEW_TYPE -> {
                 val itemBinding = PollResultVoterItemBinding.inflate(

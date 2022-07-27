@@ -38,6 +38,7 @@ import com.nextcloud.talk.polls.adapters.PollResultItemClickListener
 import com.nextcloud.talk.polls.adapters.PollResultsAdapter
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -45,6 +46,9 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private lateinit var parentViewModel: PollMainViewModel
     lateinit var viewModel: PollResultsViewModel
@@ -82,17 +86,24 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
         }
 
         viewModel.items.observe(viewLifecycleOwner) {
-            val adapter = PollResultsAdapter(parentViewModel.user, this).apply {
+            val adapter = PollResultsAdapter(parentViewModel.user, this, viewThemeUtils).apply {
                 if (it != null) {
                     list = it
                 }
             }
             binding.pollResultsList.adapter = adapter
         }
+
+        themeDialog()
+    }
+
+    private fun themeDialog() {
+        viewThemeUtils.colorMaterialButtonBackground(binding.editVoteButton)
+        viewThemeUtils.colorMaterialButtonText(binding.pollResultsEndPollButton)
     }
 
     private fun initAdapter() {
-        adapter = PollResultsAdapter(parentViewModel.user, this)
+        adapter = PollResultsAdapter(parentViewModel.user, this, viewThemeUtils)
         binding.pollResultsList.adapter = adapter
         binding.pollResultsList.layoutManager = LinearLayoutManager(context)
     }
