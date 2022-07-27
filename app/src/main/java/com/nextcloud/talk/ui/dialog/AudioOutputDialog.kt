@@ -25,16 +25,32 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogAudioOutputBinding
+import com.nextcloud.talk.ui.theme.ServerTheme
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.webrtc.WebRtcAudioManager
+import javax.inject.Inject
 
+@AutoInjector(NextcloudTalkApplication::class)
 class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(callActivity) {
 
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var serverTheme: ServerTheme
+
     private lateinit var dialogAudioOutputBinding: DialogAudioOutputBinding
+
+    init {
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,55 +98,23 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
     private fun highlightActiveOutputChannel() {
         when (callActivity.audioManager?.currentAudioDevice) {
             WebRtcAudioManager.AudioDevice.BLUETOOTH -> {
-                dialogAudioOutputBinding.audioOutputBluetoothIcon.setColorFilter(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.colorPrimary
-                    ),
-                    android.graphics.PorterDuff.Mode.SRC_IN
-                )
-                dialogAudioOutputBinding.audioOutputBluetoothText.setTextColor(
-                    callActivity.resources.getColor(R.color.colorPrimary)
-                )
+                viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputBluetoothIcon)
+                dialogAudioOutputBinding.audioOutputBluetoothText.setTextColor(serverTheme.primaryColor)
             }
 
             WebRtcAudioManager.AudioDevice.SPEAKER_PHONE -> {
-                dialogAudioOutputBinding.audioOutputSpeakerIcon.setColorFilter(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.colorPrimary
-                    ),
-                    android.graphics.PorterDuff.Mode.SRC_IN
-                )
-                dialogAudioOutputBinding.audioOutputSpeakerText.setTextColor(
-                    callActivity.resources.getColor(R.color.colorPrimary)
-                )
+                viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputSpeakerIcon)
+                dialogAudioOutputBinding.audioOutputSpeakerText.setTextColor(serverTheme.primaryColor)
             }
 
             WebRtcAudioManager.AudioDevice.EARPIECE -> {
-                dialogAudioOutputBinding.audioOutputEarspeakerIcon.setColorFilter(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.colorPrimary
-                    ),
-                    android.graphics.PorterDuff.Mode.SRC_IN
-                )
-                dialogAudioOutputBinding.audioOutputEarspeakerText.setTextColor(
-                    callActivity.resources.getColor(R.color.colorPrimary)
-                )
+                viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputEarspeakerIcon)
+                dialogAudioOutputBinding.audioOutputEarspeakerText.setTextColor(serverTheme.primaryColor)
             }
 
             WebRtcAudioManager.AudioDevice.WIRED_HEADSET -> {
-                dialogAudioOutputBinding.audioOutputWiredHeadsetIcon.setColorFilter(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.colorPrimary
-                    ),
-                    android.graphics.PorterDuff.Mode.SRC_IN
-                )
-                dialogAudioOutputBinding.audioOutputWiredHeadsetText.setTextColor(
-                    callActivity.resources.getColor(R.color.colorPrimary)
-                )
+                viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputWiredHeadsetIcon)
+                dialogAudioOutputBinding.audioOutputWiredHeadsetText.setTextColor(serverTheme.primaryColor)
             }
 
             else -> Log.d(TAG, "AudioOutputDialog doesn't know this AudioDevice")
