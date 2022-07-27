@@ -136,7 +136,18 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
     fun colorMaterialButtonBackground(button: MaterialButton) {
         withElementColor(button) { color ->
             button.setBackgroundColor(color)
-            button.setTextColor(theme.colorText)
+
+            val disabledColor = ContextCompat.getColor(button.context, R.color.disabled_text)
+            val colorStateList = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_enabled),
+                    intArrayOf(-android.R.attr.state_enabled)
+                ),
+                intArrayOf(theme.colorText, disabledColor)
+            )
+
+            button.setTextColor(colorStateList)
+            button.iconTint = colorStateList
         }
     }
 
