@@ -36,6 +36,7 @@
     <string name="menu_item_sort_by_name_z_a">Z – A</string>
     <string name="menu_item_sort_by_size_biggest_first">Legnagyobb elöl</string>
     <string name="menu_item_sort_by_size_smallest_first">Legkisebb elöl</string>
+    <string name="message_poll_tap_to_open">Koppintson a szavazás megnyitásához</string>
     <string name="message_search_begin_empty">Nincs találat</string>
     <string name="message_search_begin_typing">Kezdjen el gépelni a kereséshez…</string>
     <string name="message_search_hint">Keresés…</string>
@@ -234,6 +235,8 @@
     <string name="nc_sent_an_image_you">Ön képet küldött.</string>
     <string name="nc_sent_location" formatted="true">%1$s egy helyet küldött.</string>
     <string name="nc_sent_location_you">Ön egy helyet küldött.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s küldött egy szavazást.</string>
+    <string name="nc_sent_poll_you">Küldött egy szavazást</string>
     <string name="nc_sent_voice" formatted="true">%1$s hangüzenetet küldött.</string>
     <string name="nc_sent_voice_you">Ön hangüzenetet küldött.</string>
     <string name="nc_server_connect">Kiszolgálókapcsolat tesztelése</string>
@@ -338,11 +341,19 @@
     <string name="open_in_files_app">Megnyitás a Fájlok alkalmazásban</string>
     <string name="play_pause_voice_message">Hangüzenet lejátszása/szüneteltetése</string>
     <string name="polls_add_option">Lehetőség hozzáadása</string>
+    <string name="polls_amount_voters">%1$s szavazat</string>
+    <string name="polls_edit_vote">Szavazat szerkesztése</string>
+    <string name="polls_end_poll">Szavazás befejezése</string>
+    <string name="polls_end_poll_confirm">Biztos, hogy befejezi ezt a szavazást? Ez nem vonható vissza.</string>
+    <string name="polls_max_votes_reached">Nem szavazhat több lehetőségre ennél a szavazásnál.</string>
+    <string name="polls_multiple_answers">Több válasz</string>
     <string name="polls_options">Beállítások</string>
     <string name="polls_private_poll">Privát szavazás</string>
+    <string name="polls_question">Kérdés</string>
     <string name="polls_results_subtitle">Eredmények</string>
     <string name="polls_settings">Beállítások</string>
-    <string name="polls_submit_vote">Szavazat</string>
+    <string name="polls_submit_vote">Szavazat leadása</string>
+    <string name="polls_voted_hidden_success">Sikeres szavazatleadás</string>
     <string name="reactions_tab_all">Összes</string>
     <string name="read_storage_no_permission">A fájlok megosztása a tárhelyről engedély nélkül nem lehetséges</string>
     <string name="save">Mentés</string>

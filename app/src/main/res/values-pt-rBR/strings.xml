@@ -36,6 +36,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Maior primeiro</string>
     <string name="menu_item_sort_by_size_smallest_first">Menor primeiro</string>
+    <string name="message_poll_tap_to_open">Toque para abrir a enquete</string>
     <string name="message_search_begin_empty">Nenhum resultado encontrado</string>
     <string name="message_search_begin_typing">Comece a digitar para pesquisar …</string>
     <string name="message_search_hint">Pesquisar …</string>
@@ -234,6 +235,8 @@
     <string name="nc_sent_an_image_you">Você enviou uma imagem.</string>
     <string name="nc_sent_location" formatted="true">%1$s enviou uma localização.</string>
     <string name="nc_sent_location_you">Você enviou um local.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s enviou uma enquete.</string>
+    <string name="nc_sent_poll_you">Você enviou uma enquete.</string>
     <string name="nc_sent_voice" formatted="true">%1$s enviou uma mensagem de voz.</string>
     <string name="nc_sent_voice_you">Você enviou uma mensagem de voz.</string>
     <string name="nc_server_connect">Testar configuração do servidor</string>
@@ -338,11 +341,19 @@
     <string name="open_in_files_app">Abrir Arquivos no aplicativo</string>
     <string name="play_pause_voice_message">Tocar/parar mensagem de voz</string>
     <string name="polls_add_option">Adicionar opção</string>
+    <string name="polls_amount_voters">%1$s votos</string>
+    <string name="polls_edit_vote">Editar voto</string>
+    <string name="polls_end_poll">Encerrar enquete</string>
+    <string name="polls_end_poll_confirm">Você realmente quer terminar esta enquete? Isso não pode ser desfeito.</string>
+    <string name="polls_max_votes_reached">Você não pode votar com mais opções para esta enquete.</string>
+    <string name="polls_multiple_answers">Várias respostas</string>
     <string name="polls_options">Opções</string>
     <string name="polls_private_poll">Enquete privada</string>
+    <string name="polls_question">Pergunta</string>
     <string name="polls_results_subtitle">Resultados</string>
     <string name="polls_settings">Configurações</string>
     <string name="polls_submit_vote">Voto</string>
+    <string name="polls_voted_hidden_success">Votado com sucesso</string>
     <string name="reactions_tab_all">Tudos</string>
     <string name="read_storage_no_permission">O compartilhamento de arquivos do armazenamento não é possível sem permissões </string>
     <string name="save">Salvar</string>

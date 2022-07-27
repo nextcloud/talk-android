@@ -36,6 +36,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Handienak lehenengo</string>
     <string name="menu_item_sort_by_size_smallest_first">Txikienak lehenengo</string>
+    <string name="message_poll_tap_to_open">Sakatu galdeketa irekitzeko</string>
     <string name="message_search_begin_empty">Ez dago bilaketaren emaitzarik</string>
     <string name="message_search_begin_typing">Hasi idazten bilatzeko …</string>
     <string name="message_search_hint">Bilatu …</string>
@@ -98,6 +99,7 @@
     <string name="nc_conversations_empty">Batu elkarrizketa batera edo hasi berri bat</string>
     <string name="nc_conversations_empty_details">Esan kaixo zure lagun eta lankideei!</string>
     <string name="nc_copy_message">Kopiatu</string>
+    <string name="nc_create_poll">Sortu galdeketa</string>
     <string name="nc_date_header_today">Gaur</string>
     <string name="nc_date_header_yesterday">Atzo</string>
     <string name="nc_delete">Ezabatu</string>
@@ -233,6 +235,8 @@
     <string name="nc_sent_an_image_you">Irudi bat bidali duzu.</string>
     <string name="nc_sent_location" formatted="true">%1$s-k kokaleku bat bidali du.</string>
     <string name="nc_sent_location_you">Kokaleku bat bidali duzu.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s-(e)k galdeketa bat bidali du.</string>
+    <string name="nc_sent_poll_you">Galdeketa bat bidali duzu.</string>
     <string name="nc_sent_voice" formatted="true">%1$s-k ahots mezui bat bidali du.</string>
     <string name="nc_sent_voice_you">Ahots mezu bat bidali duzu.</string>
     <string name="nc_server_connect">Probatu zerbitzariaren konexioa</string>
@@ -337,11 +341,17 @@
     <string name="open_in_files_app">Ireki Fitxategiak aplikazioan</string>
     <string name="play_pause_voice_message">Erreproduzitu/pausatu ahots mezua</string>
     <string name="polls_add_option">Gehitu aukera</string>
+    <string name="polls_amount_voters">%1$s boto</string>
+    <string name="polls_edit_vote">Editatu botoa</string>
+    <string name="polls_end_poll">Amaitu galdeketa</string>
+    <string name="polls_multiple_answers">Erantzun anitz</string>
     <string name="polls_options">Aukerak</string>
     <string name="polls_private_poll">Galdeketa pribatua</string>
+    <string name="polls_question">Galdera</string>
     <string name="polls_results_subtitle">Emaitzak</string>
     <string name="polls_settings">Ezarpenak</string>
     <string name="polls_submit_vote">Bozkatu</string>
+    <string name="polls_voted_hidden_success">Ondo bozkatu da</string>
     <string name="reactions_tab_all">Denak</string>
     <string name="read_storage_no_permission">Ezin dira fitxategiak biltegitik partekatu baimenik gabe</string>
     <string name="save">Gorde</string>
