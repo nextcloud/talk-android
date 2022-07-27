@@ -25,13 +25,17 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.RadioButton
+import android.widget.SeekBar
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
@@ -79,6 +83,20 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
         withElementColor(fab) { color ->
             fab.backgroundTintList = ColorStateList.valueOf(color)
             fab.imageTintList = ColorStateList.valueOf(theme.colorText)
+        }
+    }
+
+    fun themeHorizontalSeekBar(seekBar: SeekBar) {
+        withElementColor(seekBar) { color ->
+            themeHorizontalProgressBar(seekBar, color)
+            seekBar.thumb.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        }
+    }
+
+    fun themeHorizontalProgressBar(progressBar: ProgressBar?, @ColorInt color: Int) {
+        if (progressBar != null) {
+            progressBar.indeterminateDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            progressBar.progressDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         }
     }
 

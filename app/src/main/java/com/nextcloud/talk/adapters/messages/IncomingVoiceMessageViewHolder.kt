@@ -48,6 +48,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingVoiceMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -65,6 +66,9 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
     @JvmField
     @Inject
     var context: Context? = null
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     @JvmField
     @Inject
@@ -93,6 +97,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
 
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
+        viewThemeUtils.themeHorizontalSeekBar(binding.seekbar)
 
         if (message.isPlayingVoiceMessage) {
             showPlayButton()
