@@ -25,23 +25,25 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.children
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.R
@@ -50,6 +52,7 @@ import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
 import javax.inject.Inject
 
+@Suppress("Detekt.TooManyFunctions")
 class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
 
     private fun isDarkMode(context: Context): Boolean = when (
@@ -176,7 +179,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
                 context.theme
             )
 
-            val trackColor = Color.argb(77, Color.red(color), Color.green(color), Color.blue(color))
+            val trackColor = Color.argb(TRACK_ALPHA, Color.red(color), Color.green(color), Color.blue(color))
             switchCompat.thumbTintList = ColorStateList(
                 arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf()),
                 intArrayOf(color, thumbUncheckedColor)
@@ -206,6 +209,18 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
         }
     }
 
+    fun themeRadioButton(radioButton: RadioButton) {
+        withElementColor(radioButton) { color ->
+            radioButton.buttonTintList = ColorStateList(
+                arrayOf(
+                    intArrayOf(-android.R.attr.state_checked),
+                    intArrayOf(android.R.attr.state_checked),
+                ),
+                intArrayOf(Color.GRAY, color)
+            )
+        }
+    }
+
     fun themeSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
         withElementColor(swipeRefreshLayout) { color ->
             swipeRefreshLayout.setColorSchemeColors(color)
@@ -213,11 +228,17 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
         }
     }
 
+    fun colorProgressBar(progressIndicator: LinearProgressIndicator) {
+        withElementColor(progressIndicator) { color ->
+            progressIndicator.setIndicatorColor(progressColor(progressIndicator.context, color))
+        }
+    }
+
     fun colorEditText(editText: EditText) {
         withElementColor(editText) { color ->
             editText.setTextColor(color)
             // TODO check API-level compatibility
-            //editText.background.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+            // editText.background.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
             editText.backgroundTintList = ColorStateList(
                 arrayOf(
                     intArrayOf(-android.R.attr.state_focused),
@@ -319,10 +340,28 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
         }
     }
 
+    private fun progressColor(context: Context, color: Int): Int {
+        val hsl = FloatArray(HSL_SIZE)
+        ColorUtils.RGBToHSL(Color.red(color), Color.green(color), Color.blue(color), hsl)
+
+        if (isDarkMode(context)) {
+            hsl[INDEX_LUMINATION] = LUMINATION_DARK_THEME
+        } else {
+            hsl[INDEX_LUMINATION] = LUMINATION_LIGHT_THEME
+        }
+
+        return ColorUtils.HSLToColor(hsl)
+    }
+
     companion object {
         private val THEMEABLE_PLACEHOLDER_IDS = listOf(
             R.drawable.ic_mimetype_package_x_generic,
             R.drawable.ic_mimetype_folder
         )
+        private const val TRACK_ALPHA: Int = 77
+        private const val HSL_SIZE: Int = 3
+        private const val INDEX_LUMINATION: Int = 2
+        private const val LUMINATION_LIGHT_THEME: Float = 0.76f
+        private const val LUMINATION_DARK_THEME: Float = 0.28f
     }
 }
