@@ -186,9 +186,7 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
             binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
             binding.messageQuote.quotedMessageAuthor.setTextColor(
-                ColorUtils.setAlphaComponent(serverTheme.colorText,
-                    ALPHA_80_INT
-                )
+                ColorUtils.setAlphaComponent(serverTheme.colorText, ALPHA_80_INT)
             )
 
             binding.messageQuote.quoteColoredView.setBackgroundColor(serverTheme.colorText)
