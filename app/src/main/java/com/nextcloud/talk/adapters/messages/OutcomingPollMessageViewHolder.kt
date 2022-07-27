@@ -24,7 +24,6 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.PorterDuff
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
@@ -185,12 +184,14 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(
-                context.resources.getColor(R.color.nc_outcoming_text_default)
+            binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
+            binding.messageQuote.quotedMessageAuthor.setTextColor(
+                ColorUtils.setAlphaComponent(serverTheme.colorText,
+                    ALPHA_80_INT
+                )
             )
-            binding.messageQuote.quotedMessageAuthor.setTextColor(context.resources.getColor(R.color.nc_grey))
 
-            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
+            binding.messageQuote.quoteColoredView.setBackgroundColor(serverTheme.colorText)
 
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -232,6 +233,7 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
     companion object {
         private val TAG = NextcloudTalkApplication::class.java.simpleName
         private val ALPHA_60_INT: Int = (255 * 0.6).roundToInt()
+        private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
         private const val HALF_ALPHA_INT: Int = 255 / 2
     }
 }
