@@ -91,13 +91,19 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(context!!.resources.getColor(R.color.white60))
+        binding.messageTime.setTextColor(
+            ColorUtils.setAlphaComponent(
+                serverTheme.colorText,
+                ALPHA_60_INT
+            )
+        )
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
 
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
+        viewThemeUtils.themeHorizontalSeekBar(binding.seekbar, serverTheme.colorText)
 
         handleIsPlayingVoiceMessageState(message)
 
@@ -135,8 +141,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
 
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context!!, drawableInt)?.let {
-                it.setColorFilter(context?.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
                 binding.checkMark.setImageDrawable(it)
+                viewThemeUtils.colorImageViewText(binding.checkMark)
             }
         }
 
@@ -159,6 +165,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
                 context!!,
                 R.drawable.ic_baseline_play_arrow_voice_message_24
             )
+            binding.playPauseBtn.icon.setColorFilter(serverTheme.colorText, PorterDuff.Mode.SRC_ATOP)
             binding.seekbar.progress = SEEKBAR_START
             message.resetVoiceMessage = false
         }
@@ -179,6 +186,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
                 context!!,
                 R.drawable.ic_baseline_pause_voice_message_24
             )
+            binding.playPauseBtn.icon.setColorFilter(serverTheme.colorText, PorterDuff.Mode.SRC_ATOP)
             binding.seekbar.progress = message.voiceMessagePlayedSeconds
         } else {
             binding.playPauseBtn.visibility = View.VISIBLE
@@ -186,6 +194,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
                 context!!,
                 R.drawable.ic_baseline_play_arrow_voice_message_24
             )
+            binding.playPauseBtn.icon.setColorFilter(serverTheme.colorText, PorterDuff.Mode.SRC_ATOP)
         }
     }
 
@@ -263,7 +272,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
             binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
             binding.messageQuote.quotedMessageAuthor.setTextColor(
-                ColorUtils.setAlphaComponent(serverTheme.colorText,
+                ColorUtils.setAlphaComponent(
+                    serverTheme.colorText,
                     ALPHA_80_INT
                 )
             )
@@ -316,5 +326,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         private const val SEEKBAR_START: Int = 0
         private const val HALF_ALPHA_INT: Int = 255 / 2
         private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
+        private val ALPHA_60_INT: Int = (255 * 0.6).roundToInt()
     }
 }
