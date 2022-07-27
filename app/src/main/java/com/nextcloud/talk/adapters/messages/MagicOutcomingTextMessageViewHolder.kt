@@ -30,7 +30,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.util.TypedValue
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
@@ -157,9 +156,15 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             ?: context!!.getText(R.string.nc_nick_guest)
         binding.messageQuote.quotedMessage.text = parentChatMessage.text
         binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
-        binding.messageQuote.quotedMessageAuthor.setTextColor(ContextCompat.getColor(context, R.color.nc_grey))
 
-        binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
+        binding.messageQuote.quotedMessageAuthor.setTextColor(
+            ColorUtils.setAlphaComponent(
+                serverTheme.colorText,
+                ALPHA_80_INT
+            )
+        )
+
+        binding.messageQuote.quoteColoredView.setBackgroundColor(serverTheme.colorText)
     }
 
     private fun setBubbleOnChatMessage(message: ChatMessage) {
@@ -230,5 +235,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         const val TEXT_SIZE_MULTIPLIER = 2.5
         private const val HALF_ALPHA_INT: Int = 255 / 2
         private val ALPHA_60_INT: Int = (255 * 0.6).roundToInt()
+        private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
     }
 }
