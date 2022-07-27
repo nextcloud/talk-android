@@ -88,9 +88,13 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
 
     fun themeHorizontalSeekBar(seekBar: SeekBar) {
         withElementColor(seekBar) { color ->
-            themeHorizontalProgressBar(seekBar, color)
-            seekBar.thumb.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            themeHorizontalSeekBar(seekBar, color)
         }
+    }
+
+    fun themeHorizontalSeekBar(seekBar: SeekBar, @ColorInt color: Int) {
+        themeHorizontalProgressBar(seekBar, color)
+        seekBar.thumb.setColorFilter(color, PorterDuff.Mode.SRC_IN)
     }
 
     fun themeHorizontalProgressBar(progressBar: ProgressBar?, @ColorInt color: Int) {
