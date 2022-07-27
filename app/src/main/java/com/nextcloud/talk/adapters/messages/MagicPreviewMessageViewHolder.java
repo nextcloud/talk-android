@@ -29,6 +29,7 @@ package com.nextcloud.talk.adapters.messages;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
@@ -49,6 +50,7 @@ import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.ui.theme.ServerTheme;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.FileViewerUtils;
@@ -90,6 +92,9 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
     @Inject
     Context context;
+
+    @Inject
+    ServerTheme serverTheme;
 
     @Inject
     OkHttpClient okHttpClient;
@@ -175,6 +180,13 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 String mimetype = message.getSelectedIndividualHashMap().get(KEY_MIMETYPE);
                 int drawableResourceId = DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(mimetype);
                 Drawable drawable = ContextCompat.getDrawable(context, drawableResourceId);
+
+                if (drawable != null &&
+                    (drawableResourceId == R.drawable.ic_mimetype_folder ||
+                    drawableResourceId == R.drawable.ic_mimetype_package_x_generic)) {
+                    drawable.setColorFilter(serverTheme.getPrimaryColor(), PorterDuff.Mode.SRC_ATOP);
+                }
+
                 image.getHierarchy().setPlaceholderImage(drawable);
             } else {
                 fetchFileInformation("/" + message.getSelectedIndividualHashMap().get(KEY_PATH),
