@@ -51,6 +51,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
+import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -65,7 +66,8 @@ class ShowReactionsDialog(
     private val chatMessage: ChatMessage,
     private val user: User?,
     private val hasChatPermission: Boolean,
-    private val ncApi: NcApi
+    private val ncApi: NcApi,
+    private val serverTheme: ServerTheme
 ) : BottomSheetDialog(activity), ReactionItemClickListener {
 
     private lateinit var binding: DialogMessageReactionsBinding
@@ -96,6 +98,7 @@ class ShowReactionsDialog(
         adapter?.list?.clear()
         if (chatMessage.reactions != null && chatMessage.reactions!!.isNotEmpty()) {
             var reactionsTotal = 0
+            binding.emojiReactionsTabs.setSelectedTabIndicatorColor(serverTheme.primaryColor)
             for ((emoji, amount) in chatMessage.reactions!!) {
                 reactionsTotal = reactionsTotal.plus(amount as Int)
                 val tab: TabLayout.Tab = binding.emojiReactionsTabs.newTab() // Create a new Tab names "First Tab"

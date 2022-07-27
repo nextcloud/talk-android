@@ -154,6 +154,7 @@ import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
+import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AttendeePermissionsUtil
@@ -238,6 +239,9 @@ class ChatController(args: Bundle) :
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var serverTheme: ServerTheme
 
     val disposables = DisposableSet()
 
@@ -2681,7 +2685,8 @@ class ChatController(args: Bundle) :
                 chatMessage,
                 conversationUser,
                 hasChatPermission,
-                ncApi!!
+                ncApi!!,
+                serverTheme
             ).show()
         }
     }
