@@ -33,8 +33,6 @@ import androidx.room.Update
 import com.nextcloud.talk.data.user.model.UserEntity
 import io.reactivex.Maybe
 import io.reactivex.Single
-import java.lang.Boolean.FALSE
-import java.lang.Boolean.TRUE
 
 @Dao
 @Suppress("TooManyFunctions")
@@ -96,29 +94,6 @@ abstract class UsersDao {
             Log.e(TAG, "Error setting user active", e)
             false
         }
-    }
-
-    @Transaction
-    open fun markUserForDeletion(id: Long): Boolean {
-        getUserWithId(id).blockingGet()?.let { user ->
-            user.current = FALSE
-            updateUser(user)
-        }
-
-        return setAnyUserAsActive()
-    }
-
-    @Transaction
-    open fun setAnyUserAsActive(): Boolean {
-        val users = getUsers().blockingGet()
-
-        val result = users.firstOrNull()?.let { user ->
-            user.current = TRUE
-            updateUser(user)
-            TRUE
-        } ?: FALSE
-
-        return result
     }
 
     companion object {

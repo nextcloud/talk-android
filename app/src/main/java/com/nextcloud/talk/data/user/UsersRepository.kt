@@ -41,6 +41,4 @@ interface UsersRepository {
     fun insertUser(user: User): Long
     fun setUserAsActiveWithId(id: Long): Single<Boolean>
     fun deleteUser(user: User): Int
-    fun setAnyUserAsActive(): Boolean
-    fun markUserForDeletion(id: Long): Boolean
 }

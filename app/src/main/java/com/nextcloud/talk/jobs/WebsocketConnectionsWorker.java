@@ -26,7 +26,6 @@ import android.text.TextUtils;
 
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 

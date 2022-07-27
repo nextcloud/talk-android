@@ -36,8 +36,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.util.Log;
+
 import org.webrtc.ThreadUtils;
 
 /**
