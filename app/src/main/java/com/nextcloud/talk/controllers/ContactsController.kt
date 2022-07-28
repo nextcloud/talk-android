@@ -623,9 +623,9 @@ class ContactsController(args: Bundle) :
         binding.controllerGenericRv.recyclerView.setHasFixedSize(true)
         binding.controllerGenericRv.recyclerView.adapter = adapter
         binding.controllerGenericRv.swipeRefreshLayout.setOnRefreshListener { fetchData() }
-        binding.controllerGenericRv.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
-        binding.controllerGenericRv.swipeRefreshLayout
-            .setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
+
+        viewThemeUtils.themeSwipeRefreshLayout(binding.controllerGenericRv.swipeRefreshLayout)
+
         binding.joinConversationViaLink.joinConversationViaLinkImageView
             .background
             .setColorFilter(

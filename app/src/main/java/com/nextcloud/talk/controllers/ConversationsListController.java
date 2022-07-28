@@ -783,8 +783,7 @@ public class ConversationsListController extends BaseController implements Flexi
         });
 
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData());
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background);
+        viewThemeUtils.themeSwipeRefreshLayout(swipeRefreshLayout);
 
         emptyLayoutView.setOnClickListener(v -> showNewConversationsScreen());
         floatingActionButton.setOnClickListener(v -> {
