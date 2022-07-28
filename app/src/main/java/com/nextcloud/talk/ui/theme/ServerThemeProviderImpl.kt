@@ -55,14 +55,14 @@ internal class ServerThemeProviderImpl @Inject constructor(
         }
 
     override fun getServerThemeForUser(user: User): ServerTheme {
-        return getServerThemeForCapabilities(user.capabilities!!)
+        return getServerThemeForCapabilities(user.capabilities)
     }
 
     override fun getServerThemeForCurrentUser(): ServerTheme {
         return getServerThemeForUser(currentUser)
     }
 
-    override fun getServerThemeForCapabilities(capabilities: Capabilities): ServerTheme {
-        return ServerThemeImpl(context, capabilities.themingCapability!!)
+    override fun getServerThemeForCapabilities(capabilities: Capabilities?): ServerTheme {
+        return ServerThemeImpl(context, capabilities?.themingCapability)
     }
 }

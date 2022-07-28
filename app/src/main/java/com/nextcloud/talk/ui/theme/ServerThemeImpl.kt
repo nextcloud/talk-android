@@ -27,7 +27,7 @@ import android.content.Context
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.capabilities.ThemingCapability
 
-internal class ServerThemeImpl(context: Context, themingCapability: ThemingCapability) :
+internal class ServerThemeImpl(context: Context, themingCapability: ThemingCapability?) :
     ServerTheme {
 
     override val primaryColor: Int
@@ -37,12 +37,12 @@ internal class ServerThemeImpl(context: Context, themingCapability: ThemingCapab
     override val colorText: Int
 
     init {
-        primaryColor = ColorUtil.getPrimaryColor(context, themingCapability.color, R.color.colorPrimary)
+        primaryColor = ColorUtil.getPrimaryColor(context, themingCapability?.color, R.color.colorPrimary)
 
-        colorElement = ColorUtil.getNullsafeColor(themingCapability.colorElement, primaryColor)
-        colorElementBright = ColorUtil.getNullsafeColor(themingCapability.colorElementBright, primaryColor)
-        colorElementDark = ColorUtil.getNullsafeColor(themingCapability.colorElementDark, primaryColor)
+        colorElement = ColorUtil.getNullsafeColor(themingCapability?.colorElement, primaryColor)
+        colorElementBright = ColorUtil.getNullsafeColor(themingCapability?.colorElementBright, primaryColor)
+        colorElementDark = ColorUtil.getNullsafeColor(themingCapability?.colorElementDark, primaryColor)
 
-        colorText = ColorUtil.getTextColor(context, themingCapability.colorText, primaryColor)
+        colorText = ColorUtil.getTextColor(context, themingCapability?.colorText, primaryColor)
     }
 }
