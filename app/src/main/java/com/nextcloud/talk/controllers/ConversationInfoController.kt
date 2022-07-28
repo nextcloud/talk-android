@@ -107,12 +107,10 @@ class ConversationInfoController(args: Bundle) :
     private val binding: ControllerConversationInfoBinding by viewBinding(ControllerConversationInfoBinding::bind)
 
     @Inject
-    @JvmField
-    var ncApi: NcApi? = null
+    lateinit var ncApi: NcApi
 
     @Inject
-    @JvmField
-    var eventBus: EventBus? = null
+    lateinit var eventBus: EventBus
 
     private val conversationToken: String?
     private val conversationUser: User?
@@ -162,7 +160,7 @@ class ConversationInfoController(args: Bundle) :
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        eventBus?.register(this)
+        eventBus.register(this)
 
         if (databaseStorageModule == null) {
             databaseStorageModule = DatabaseStorageModule(conversationUser!!, conversationToken)
