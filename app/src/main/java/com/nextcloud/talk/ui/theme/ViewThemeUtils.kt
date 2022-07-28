@@ -287,9 +287,19 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
 
     fun colorTextInputLayout(textInputLayout: TextInputLayout) {
         withElementColor(textInputLayout) { color ->
-            // TODO calculate error color based on primary color, dark/light aware
             val errorColor = Color.GRAY
-            textInputLayout.boxStrokeColor = color
+            textInputLayout.setBoxStrokeColorStateList(
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(-android.R.attr.state_focused),
+                        intArrayOf(android.R.attr.state_focused)
+                    ),
+                    intArrayOf(
+                        Color.GRAY,
+                        color
+                    )
+                )
+            )
             textInputLayout.setErrorIconTintList(
                 ColorStateList(
                     arrayOf(
