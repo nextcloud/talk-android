@@ -98,6 +98,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
         binding.messageText.text = message.text
         binding.messageText.setTextColor(serverTheme.colorText)
+        binding.messageText.setLinkTextColor(serverTheme.colorText)
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
