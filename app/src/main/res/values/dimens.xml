@@ -59,6 +59,7 @@
     <dimen name="standard_half_padding">8dp</dimen>
     <dimen name="standard_half_margin">8dp</dimen>
     <dimen name="default_login_width">400dp</dimen>
+    <dimen name="dialog_padding">24dp</dimen>
 
     <dimen name="call_grid_item_min_height">180dp</dimen>
     <dimen name="call_controls_height">110dp</dimen>
@@ -71,7 +72,7 @@
     <dimen name="reaction_bottom_sheet_layout_size">40dp</dimen>
     <dimen name="standard_eighth_margin">2dp</dimen>
 
-    <dimen name="default_checkbox_dialog_start_margin">10dp</dimen>
+    <dimen name="default_checkbox_dialog_start_margin">18dp</dimen>
 
     <dimen name="mediatab_file_icon_size">50dp</dimen>
 </resources>
