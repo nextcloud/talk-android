@@ -417,7 +417,6 @@ class SetStatusDialogFragment :
         }
         viewThemeUtils.colorCardViewBackground(views.first)
         viewThemeUtils.colorTextViewText(views.second)
-        viewThemeUtils.colorImageViewText(views.third)
     }
 
     private fun clearTopStatus() {
