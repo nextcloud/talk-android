@@ -288,64 +288,33 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
     fun colorTextInputLayout(textInputLayout: TextInputLayout) {
         withElementColor(textInputLayout) { color ->
             val errorColor = Color.GRAY
-            textInputLayout.setBoxStrokeColorStateList(
-                ColorStateList(
-                    arrayOf(
-                        intArrayOf(-android.R.attr.state_focused),
-                        intArrayOf(android.R.attr.state_focused)
-                    ),
-                    intArrayOf(
-                        Color.GRAY,
-                        color
-                    )
+
+            val errorColorStateList = ColorStateList(
+                arrayOf(
+                    intArrayOf(-android.R.attr.state_focused),
+                    intArrayOf(android.R.attr.state_focused)
+                ),
+                intArrayOf(
+                    errorColor,
+                    errorColor
                 )
             )
-            textInputLayout.setErrorIconTintList(
-                ColorStateList(
-                    arrayOf(
-                        intArrayOf(-android.R.attr.state_focused),
-                        intArrayOf(android.R.attr.state_focused)
-                    ),
-                    intArrayOf(
-                        errorColor,
-                        errorColor
-                    )
+            val coloredColorStateList = ColorStateList(
+                arrayOf(
+                    intArrayOf(-android.R.attr.state_focused),
+                    intArrayOf(android.R.attr.state_focused)
+                ),
+                intArrayOf(
+                    Color.GRAY,
+                    color
                 )
             )
-            textInputLayout.setErrorTextColor(
-                ColorStateList(
-                    arrayOf(
-                        intArrayOf(-android.R.attr.state_focused),
-                        intArrayOf(android.R.attr.state_focused)
-                    ),
-                    intArrayOf(
-                        errorColor,
-                        errorColor
-                    )
-                )
-            )
-            textInputLayout.boxStrokeErrorColor =
-                ColorStateList(
-                    arrayOf(
-                        intArrayOf(-android.R.attr.state_focused),
-                        intArrayOf(android.R.attr.state_focused)
-                    ),
-                    intArrayOf(
-                        errorColor,
-                        errorColor
-                    )
-                )
-            textInputLayout.defaultHintTextColor =
-                ColorStateList(
-                    arrayOf(
-                        intArrayOf(-android.R.attr.state_focused),
-                        intArrayOf(android.R.attr.state_focused)
-                    ),
-                    intArrayOf(
-                        Color.GRAY,
-                        color
-                    )
-                )
+
+            textInputLayout.setBoxStrokeColorStateList(coloredColorStateList)
+            textInputLayout.setErrorIconTintList(errorColorStateList)
+            textInputLayout.setErrorTextColor(errorColorStateList)
+            textInputLayout.boxStrokeErrorColor = errorColorStateList
+            textInputLayout.defaultHintTextColor = coloredColorStateList
         }
     }
 
