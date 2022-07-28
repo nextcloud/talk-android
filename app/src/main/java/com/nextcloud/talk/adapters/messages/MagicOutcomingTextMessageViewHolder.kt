@@ -96,6 +96,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         binding.messageTime.layoutParams = layoutParams
         binding.messageText.text = messageString
         binding.messageText.setTextColor(serverTheme.colorText)
+        binding.messageText.setLinkTextColor(serverTheme.colorText)
 
         // parent message handling
         if (!message.isDeleted && message.parentMessage != null) {
