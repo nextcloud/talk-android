@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Álvaro Brey
+ * @author Andy Scherzinger
  * Copyright (C) 2022 Álvaro Brey
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Nextcloud GmbH
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,15 +28,16 @@ import android.content.Context
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
-// TODO cache theme, keyed by server url
-// TODO reload UI when account changes
 internal class ServerThemeProviderImpl @Inject constructor(
     private val context: Context,
     private val userProvider: CurrentUserProviderNew
-) :
-    ServerThemeProvider {
+) : ServerThemeProvider {
+
+    val themeCache: ConcurrentHashMap<String, ServerTheme> = ConcurrentHashMap()
+
     // TODO move this logic to currentUserProvider or something
     private var _currentUser: User? = null
     private val currentUser: User
@@ -55,7 +58,10 @@ internal class ServerThemeProviderImpl @Inject constructor(
         }
 
     override fun getServerThemeForUser(user: User): ServerTheme {
-        return getServerThemeForCapabilities(user.capabilities)
+        if (user.baseUrl != null && !themeCache.containsKey(user.baseUrl)) {
+            themeCache[user.baseUrl!!] = getServerThemeForCapabilities(user.capabilities)
+        }
+        return themeCache[user.baseUrl]!!
     }
 
     override fun getServerThemeForCurrentUser(): ServerTheme {
