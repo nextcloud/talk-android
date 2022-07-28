@@ -19,11 +19,11 @@
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:background="@color/white">
 
     <LinearLayout
         android:id="@+id/poll_results_list_wrapper"
@@ -46,17 +46,19 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/poll_results_end_poll_button"
+            style="@style/OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/polls_end_poll"
-            style="@style/OutlinedButton"
             android:layout_marginEnd="@dimen/standard_margin"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:text="@string/polls_end_poll"
             app:cornerRadius="@dimen/button_corner_radius" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_vote_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="@dimen/min_size_clickable_area"
             android:text="@string/polls_edit_vote"
             android:theme="@style/Button.Primary"
             app:cornerRadius="@dimen/button_corner_radius" />

@@ -59,28 +59,31 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/poll_vote_end_poll_button"
+            style="@style/OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/polls_end_poll"
-            style="@style/OutlinedButton"
             android:layout_marginEnd="@dimen/standard_margin"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:text="@string/polls_end_poll"
             app:cornerRadius="@dimen/button_corner_radius" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/poll_vote_edit_dismiss"
+            style="@style/OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/nc_common_dismiss"
-            style="@style/OutlinedButton"
             android:layout_marginEnd="@dimen/standard_margin"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:text="@string/nc_common_dismiss"
             android:visibility="gone"
             app:cornerRadius="@dimen/button_corner_radius"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/poll_vote_submit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="@dimen/min_size_clickable_area"
             android:text="@string/polls_submit_vote"
             android:theme="@style/Button.Primary"
             app:cornerRadius="@dimen/button_corner_radius" />
