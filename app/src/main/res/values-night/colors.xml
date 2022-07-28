@@ -75,4 +75,5 @@
     <color name="grey_200">#818181</color>
 
     <color name="dialog_background">#353535</color>
+    <color name="vote_dialog_background">#424242</color>
 </resources>
