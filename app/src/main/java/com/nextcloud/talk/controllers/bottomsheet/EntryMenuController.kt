@@ -175,7 +175,6 @@ class EntryMenuController(args: Bundle) :
         }
 
         viewThemeUtils.colorTextInputLayout(binding.textInputLayout)
-        binding.textEdit.setTextColor(serverTheme.colorText)
         viewThemeUtils.colorMaterialButtonText(binding.okButton)
 
         binding.textInputLayout.hint = labelText
