@@ -77,8 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
-            app:layout_alignSelf="center"
-            android:contentDescription="@null" />
+            android:contentDescription="@null"
+            app:layout_alignSelf="center" />
 
         <include
             android:id="@+id/reactions"
