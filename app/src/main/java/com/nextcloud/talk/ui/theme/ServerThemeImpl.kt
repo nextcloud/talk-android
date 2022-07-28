@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Álvaro Brey
+ * @author Andy Scherzinger
  * Copyright (C) 2022 Álvaro Brey
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Nextcloud GmbH
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +24,7 @@
 package com.nextcloud.talk.ui.theme
 
 import android.content.Context
-import android.graphics.Color
+import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.capabilities.ThemingCapability
 
 internal class ServerThemeImpl(context: Context, themingCapability: ThemingCapability) :
@@ -34,12 +36,13 @@ internal class ServerThemeImpl(context: Context, themingCapability: ThemingCapab
     override val colorElementDark: Int
     override val colorText: Int
 
-    // TODO fallback when some of these are null
     init {
-        primaryColor = Color.parseColor(themingCapability.color!!)
-        colorElement = Color.parseColor(themingCapability.colorElement!!)
-        colorElementBright = Color.parseColor(themingCapability.colorElementBright!!)
-        colorElementDark = Color.parseColor(themingCapability.colorElementDark!!)
-        colorText = Color.parseColor(themingCapability.colorText!!)
+        primaryColor = ColorUtil.getPrimaryColor(context, themingCapability.color, R.color.colorPrimary)
+
+        colorElement = ColorUtil.getNullsafeColor(themingCapability.colorElement, primaryColor)
+        colorElementBright = ColorUtil.getNullsafeColor(themingCapability.colorElementBright, primaryColor)
+        colorElementDark = ColorUtil.getNullsafeColor(themingCapability.colorElementDark, primaryColor)
+
+        colorText = ColorUtil.getTextColor(context, themingCapability.colorText, primaryColor)
     }
 }

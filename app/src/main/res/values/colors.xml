@@ -63,6 +63,7 @@
     <color name="nc_darkGreen">#006400</color>
     <color name="controller_chat_separator">#E8E8E8</color>
     <color name="grey_600">#757575</color>
+    <color name="grey_900">#212121</color>
     <color name="nc_grey">#D5D5D5</color>
     <color name="controller_call_incomingCallTextView">#E9FFFFFF</color>
     <color name="grey950">#111111</color>
