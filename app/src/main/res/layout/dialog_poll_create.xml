@@ -49,7 +49,10 @@
             android:layout_marginStart="@dimen/standard_margin"
             android:layout_marginEnd="@dimen/standard_margin"
             android:inputType="textMultiLine"
-            tools:ignore="Autofill,LabelFor" />
+            tools:ignore="Autofill,LabelFor">
+
+            <requestFocus />
+        </EditText>
 
         <TextView
             android:layout_width="match_parent"
