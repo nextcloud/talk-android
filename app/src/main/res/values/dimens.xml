@@ -60,6 +60,7 @@
     <dimen name="standard_half_margin">8dp</dimen>
     <dimen name="default_login_width">400dp</dimen>
     <dimen name="dialog_padding">24dp</dimen>
+    <dimen name="dialog_padding_top_bottom">18dp</dimen>
 
     <dimen name="call_grid_item_min_height">180dp</dimen>
     <dimen name="call_controls_height">110dp</dimen>

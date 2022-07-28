@@ -28,17 +28,32 @@
     android:minHeight="@dimen/min_size_clickable_area"
     android:orientation="horizontal"
     android:paddingStart="@dimen/dialog_padding"
+    android:paddingBottom="@dimen/standard_half_margin"
     android:paddingEnd="@dimen/zero"
     tools:background="@color/white">
 
-    <EditText
-        android:id="@+id/poll_option_text"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/poll_option_text_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:minHeight="@dimen/min_size_clickable_area"
+        android:layout_marginEnd="@dimen/standard_half_margin"
         android:layout_weight="1"
-        android:inputType="text"
-        android:singleLine="true"
-        tools:ignore="Autofill,LabelFor" />
+        app:boxStrokeColor="@color/colorPrimary"
+        app:errorTextAppearance="@style/ErrorAppearance"
+        app:hintTextColor="@color/colorPrimary">
+
+        <com.nextcloud.talk.utils.EmojiTextInputEditText
+            android:id="@+id/poll_option_text_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textAlignment="viewStart" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/poll_option_delete"
@@ -46,7 +61,7 @@
         android:layout_width="@dimen/min_size_clickable_area"
         android:layout_height="@dimen/min_size_clickable_area"
         android:layout_marginEnd="@dimen/standard_half_margin"
-        android:contentDescription="@string/nc_action_open_main_menu"
+        android:contentDescription="@string/polls_option_delete"
         app:cornerRadius="@dimen/button_corner_radius"
         app:icon="@drawable/ic_baseline_close_24"
         app:iconTint="@color/fontAppbar" />

@@ -32,33 +32,51 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/dialog_padding">
+        android:paddingTop="@dimen/dialog_padding_top_bottom">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/dialog_padding"
             android:paddingEnd="@dimen/dialog_padding"
+            android:paddingBottom="@dimen/standard_half_padding"
             android:text="@string/polls_question"
             android:textColor="@color/colorPrimary"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/poll_create_question"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/poll_create_question_text_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dialog_padding"
             android:layout_marginEnd="@dimen/dialog_padding"
-            android:inputType="textMultiLine"
-            tools:ignore="Autofill,LabelFor">
+            android:hint="@string/polls_question_hint"
+            android:minHeight="@dimen/min_size_clickable_area"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:errorTextAppearance="@style/ErrorAppearance"
+            app:hintTextColor="@color/colorPrimary">
 
-            <requestFocus />
-        </EditText>
+            <com.nextcloud.talk.utils.EmojiTextInputEditText
+                android:id="@+id/poll_create_question_text_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="textMultiLine"
+                android:singleLine="true"
+                android:textAlignment="viewStart">
+
+                <requestFocus />
+
+            </com.nextcloud.talk.utils.EmojiTextInputEditText>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_margin"
+            android:paddingTop="@dimen/standard_padding"
+            android:paddingBottom="@dimen/standard_half_padding"
             android:paddingStart="@dimen/dialog_padding"
             android:paddingEnd="@dimen/dialog_padding"
             android:text="@string/polls_options"
@@ -77,19 +95,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dialog_padding"
-            android:layout_marginTop="@dimen/standard_half_margin"
             android:layout_marginEnd="@dimen/dialog_padding"
             android:minHeight="@dimen/min_size_clickable_area"
             android:text="@string/polls_add_option"
             app:cornerRadius="@dimen/button_corner_radius"
-            app:icon="@drawable/ic_add_grey600_24px"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:icon="@drawable/ic_add_grey600_24px" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/standard_margin"
-            android:layout_marginBottom="@dimen/standard_half_margin"
             android:paddingStart="@dimen/dialog_padding"
             android:paddingEnd="@dimen/dialog_padding"
             android:text="@string/polls_settings"
@@ -119,12 +134,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/standard_half_margin"
             android:gravity="end"
             android:orientation="horizontal"
             android:paddingStart="@dimen/dialog_padding"
             android:paddingEnd="@dimen/dialog_padding"
-            android:paddingBottom="@dimen/standard_padding">
+            android:paddingBottom="@dimen/dialog_padding_top_bottom">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/poll_dismiss"

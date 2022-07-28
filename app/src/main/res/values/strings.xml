@@ -543,7 +543,10 @@
     <string name="polls_max_votes_reached">You can\'t vote with more options for this poll.</string>
     <string name="polls_results_subtitle">Results</string>
     <string name="polls_question">Question</string>
+    <string name="polls_question_hint">Your question</string>
     <string name="polls_options">Options</string>
+    <string name="polls_option_hint">Option %1$s</string>
+    <string name="polls_option_delete">Delete option %1$s</string>
     <string name="polls_settings">Settings</string>
     <string name="polls_private_poll">Private poll</string>
     <string name="polls_multiple_answers">Multiple answers</string>
