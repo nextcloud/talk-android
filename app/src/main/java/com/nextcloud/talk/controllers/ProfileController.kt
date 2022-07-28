@@ -24,10 +24,8 @@ package com.nextcloud.talk.controllers
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -43,7 +41,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -764,22 +761,14 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
             DrawableCompat.setTint(holder.binding.icon.drawable, mTintColor)
             if (!TextUtils.isEmpty(item.text) || controller.edit) {
                 holder.binding.userInfoDetailContainer.visibility = View.VISIBLE
-                if (controller.activity != null) {
-                    holder.binding.userInfoEditText.setTextColor(
-                        ContextCompat.getColor(
-                            controller.activity!!,
-                            R.color.conversation_item_header
-                        )
-                    )
-                }
+                controller.viewThemeUtils.colorTextInputLayout(holder.binding.userInfoInputLayout)
                 if (controller.edit &&
                     controller.editableFields.contains(item.field.toString().lowercase())
                 ) {
-                    holder.binding.userInfoEditText.isEnabled = true
-                    holder.binding.userInfoEditText.isFocusableInTouchMode = true
-                    holder.binding.userInfoEditText.isEnabled = true
-                    holder.binding.userInfoEditText.isCursorVisible = true
-                    holder.binding.userInfoEditText.backgroundTintList = ColorStateList.valueOf(mTintColor)
+                    holder.binding.userInfoEditTextEdit.isEnabled = true
+                    holder.binding.userInfoEditTextEdit.isFocusableInTouchMode = true
+                    holder.binding.userInfoEditTextEdit.isEnabled = true
+                    holder.binding.userInfoEditTextEdit.isCursorVisible = true
                     holder.binding.scope.setOnClickListener {
                         ScopeDialog(
                             controller.activity!!,
@@ -790,11 +779,10 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                     }
                     holder.binding.scope.alpha = HIGH_EMPHASIS_ALPHA
                 } else {
-                    holder.binding.userInfoEditText.isEnabled = false
-                    holder.binding.userInfoEditText.isFocusableInTouchMode = false
-                    holder.binding.userInfoEditText.isEnabled = false
-                    holder.binding.userInfoEditText.isCursorVisible = false
-                    holder.binding.userInfoEditText.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+                    holder.binding.userInfoEditTextEdit.isEnabled = false
+                    holder.binding.userInfoEditTextEdit.isFocusableInTouchMode = false
+                    holder.binding.userInfoEditTextEdit.isEnabled = false
+                    holder.binding.userInfoEditTextEdit.isCursorVisible = false
                     holder.binding.scope.setOnClickListener(null)
                     holder.binding.scope.alpha = MEDIUM_EMPHASIS_ALPHA
                 }
@@ -807,19 +795,19 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
             holder: ViewHolder,
             item: UserInfoDetailsItem
         ) {
-            holder.binding.userInfoEditText.setText(item.text)
-            holder.binding.userInfoEditText.hint = item.hint
-            holder.binding.userInfoEditText.addTextChangedListener(object : TextWatcher {
+            holder.binding.userInfoEditTextEdit.setText(item.text)
+            holder.binding.userInfoInputLayout.hint = item.hint
+            holder.binding.userInfoEditTextEdit.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                     // unused atm
                 }
 
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                     if (controller.edit) {
-                        displayList!![holder.adapterPosition].text = holder.binding.userInfoEditText.text.toString()
+                        displayList!![holder.adapterPosition].text = holder.binding.userInfoEditTextEdit.text.toString()
                     } else {
                         filteredDisplayList[holder.adapterPosition].text =
-                            holder.binding.userInfoEditText.text.toString()
+                            holder.binding.userInfoEditTextEdit.text.toString()
                     }
                 }
 

@@ -72,6 +72,7 @@
     <dimen name="activity_row_layout_height">48dp</dimen>
     <dimen name="reaction_bottom_sheet_layout_size">40dp</dimen>
     <dimen name="standard_eighth_margin">2dp</dimen>
+    <dimen name="scope_padding">12dp</dimen>
 
     <dimen name="default_checkbox_dialog_start_margin">18dp</dimen>
 
