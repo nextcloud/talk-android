@@ -63,7 +63,7 @@
             android:inputType="textUri"
             android:singleLine="true"
             android:textAlignment="viewStart"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/high_emphasis_text" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
