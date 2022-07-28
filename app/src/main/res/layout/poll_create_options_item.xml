@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
+  ~ @author Andy Scherzinger
   ~ @author Marcel Hibbe
+  ~ Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -23,7 +25,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="@dimen/min_size_clickable_area"
     android:orientation="horizontal"
+    android:paddingStart="@dimen/standard_padding"
+    android:paddingEnd="@dimen/zero"
     tools:background="@color/white">
 
     <EditText
@@ -31,15 +36,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:singleLine="true"
         android:inputType="text"
+        android:singleLine="true"
         tools:ignore="Autofill,LabelFor" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/poll_option_delete"
         style="@style/Widget.AppTheme.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/min_size_clickable_area"
+        android:layout_height="@dimen/min_size_clickable_area"
         android:layout_marginStart="5dp"
         android:contentDescription="@string/nc_action_open_main_menu"
         app:cornerRadius="@dimen/button_corner_radius"
