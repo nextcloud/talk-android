@@ -45,6 +45,7 @@
         tools:visibility="visible">
 
         <View
+            android:id="@+id/dividerTop"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="4dp"
@@ -71,7 +72,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/separator_line"
+        android:id="@+id/dividerBottom"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
@@ -90,7 +91,7 @@
         app:layout_constraintBottom_toTopOf="@+id/add_account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator_line"
+        app:layout_constraintTop_toBottomOf="@+id/dividerBottom"
         tools:listitem="@layout/account_item" />
 
     <com.google.android.material.button.MaterialButton

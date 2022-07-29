@@ -53,6 +53,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textview.MaterialTextView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
@@ -111,6 +112,12 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
+    fun themeSearchBarText(searchText: MaterialTextView) {
+        withScheme(searchText) { scheme ->
+            searchText.setHintTextColor(scheme.onSurfaceVariant)
+        }
+    }
+
     fun themeStatusBar(activity: Activity, view: View) {
         withScheme(view) { scheme ->
             DisplayUtils.applyColorToStatusBar(activity, scheme.surface)
@@ -126,6 +133,18 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                 activity.theme
             )
         )
+    }
+
+    fun themeDialog(view: View) {
+        withScheme(view) { scheme ->
+            view.setBackgroundColor(scheme.surface)
+        }
+    }
+
+    fun themeDialogDivider(view: View) {
+        withScheme(view) { scheme ->
+            view.setBackgroundColor(scheme.surfaceVariant)
+        }
     }
 
     fun themeFAB(fab: FloatingActionButton) {
