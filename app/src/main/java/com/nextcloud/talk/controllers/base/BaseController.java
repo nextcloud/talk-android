@@ -186,15 +186,9 @@ public abstract class BaseController extends ButterKnifeController {
 
                 if ((getResources() != null)) {
                     if (showSearchBar) {
-                        DisplayUtils.applyColorToStatusBar(
-                                activity, ResourcesCompat.getColor(getResources(),
-                                        R.color.bg_default, null)
-                        );
+                        viewThemeUtils.resetStatusBar(activity, activity.binding.searchToolbar);
                     } else {
-                        DisplayUtils.applyColorToStatusBar(
-                                activity, ResourcesCompat.getColor(getResources(),
-                                        R.color.appbar, null)
-                        );
+                        viewThemeUtils.themeStatusBar(activity, activity.binding.searchToolbar);
                     }
                 }
             }

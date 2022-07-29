@@ -473,10 +473,7 @@ public class ConversationsListController extends BaseController implements Flexi
                         activity.binding.toolbar.setVisibility(View.GONE);
                         activity.binding.searchToolbar.setVisibility(View.VISIBLE);
                         if (getResources() != null) {
-                            DisplayUtils.applyColorToStatusBar(
-                                activity,
-                                ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
-                                                              );
+                            viewThemeUtils.resetStatusBar(activity, activity.binding.searchToolbar);
                         }
                     }
                     SmoothScrollLinearLayoutManager layoutManager =

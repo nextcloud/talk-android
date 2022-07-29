@@ -73,14 +73,8 @@ class SharedItemsActivity : AppCompatActivity() {
         setSupportActionBar(binding.sharedItemsToolbar)
         setContentView(binding.root)
 
-        DisplayUtils.applyColorToStatusBar(
-            this,
-            ResourcesCompat.getColor(
-                resources,
-                R.color.appbar,
-                null
-            )
-        )
+        viewThemeUtils.themeStatusBar(this, binding.sharedItemsToolbar)
+
         DisplayUtils.applyColorToNavigationBar(
             this.window,
             ResourcesCompat.getColor(resources, R.color.bg_default, null)

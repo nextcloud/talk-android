@@ -155,7 +155,6 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ServerTheme
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AttendeePermissionsUtil
 import com.nextcloud.talk.utils.ConductorRemapping
@@ -236,9 +235,6 @@ class ChatController(args: Bundle) :
 
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
-
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
     lateinit var serverTheme: ServerTheme

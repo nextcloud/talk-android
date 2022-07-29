@@ -66,7 +66,6 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.ui.dialog.ScopeDialog
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -107,9 +106,6 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
-
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
 
     private var currentUser: User? = null
     private var edit = false
