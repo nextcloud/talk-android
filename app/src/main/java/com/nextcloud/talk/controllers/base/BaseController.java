@@ -120,6 +120,7 @@ public abstract class BaseController extends ButterKnifeController {
             activity = (MainActivity) getActivity();
             viewThemeUtils.themeCardView(activity.binding.searchToolbar);
             viewThemeUtils.themeToolbar(activity.binding.toolbar);
+            viewThemeUtils.themeSearchBarText(activity.binding.searchText);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
