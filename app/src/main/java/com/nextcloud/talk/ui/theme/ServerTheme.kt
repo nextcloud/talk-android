@@ -22,6 +22,7 @@
 package com.nextcloud.talk.ui.theme
 
 import androidx.annotation.ColorInt
+import scheme.Scheme
 
 interface ServerTheme {
     @get:ColorInt
@@ -50,4 +51,14 @@ interface ServerTheme {
      */
     @get:ColorInt
     val colorText: Int
+
+    /**
+     * Schema for light theme
+     */
+    val lightScheme: Scheme
+
+    /**
+     * Schema for light theme
+     */
+    val darkScheme: Scheme
 }
