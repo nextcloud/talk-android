@@ -242,7 +242,7 @@ class SetStatusDialogFragment :
         }
 
         viewThemeUtils.colorMaterialButtonText(binding.clearStatus)
-        viewThemeUtils.colorMaterialButtonBackground(binding.setStatus)
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.setStatus)
 
         binding.customStatusInput.highlightColor = resources.getColor(R.color.colorPrimary)
 

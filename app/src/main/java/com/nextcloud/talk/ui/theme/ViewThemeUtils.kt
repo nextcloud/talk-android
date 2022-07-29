@@ -63,6 +63,7 @@ import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
 import scheme.Scheme
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
 class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private val colorUtil: ColorUtil) {
@@ -229,21 +230,42 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
-    fun colorMaterialButtonBackground(button: MaterialButton) {
-        withElementColor(button) { color ->
-            button.setBackgroundColor(color)
+    fun colorMaterialButtonPrimaryFilled(button: MaterialButton) {
+        withScheme(button) { scheme ->
+            button.backgroundTintList =
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_enabled),
+                        intArrayOf(-android.R.attr.state_enabled)
+                    ),
+                    intArrayOf(
+                        scheme.primary,
+                        calculateDisabledColor(scheme.primary, SURFACE_OPACITY_BUTTON_DISABLED)
+                    )
+                )
 
-            val disabledColor = ContextCompat.getColor(button.context, R.color.disabled_text)
-            val colorStateList = ColorStateList(
+            button.setTextColor(
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_enabled),
+                        intArrayOf(-android.R.attr.state_enabled)
+                    ),
+                    intArrayOf(
+                        scheme.onPrimary,
+                        calculateDisabledColor(scheme.onPrimary, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                    )
+                )
+            )
+            button.iconTint = ColorStateList(
                 arrayOf(
                     intArrayOf(android.R.attr.state_enabled),
                     intArrayOf(-android.R.attr.state_enabled)
                 ),
-                intArrayOf(theme.colorText, disabledColor)
+                intArrayOf(
+                    scheme.onPrimary,
+                    calculateDisabledColor(scheme.onPrimary, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                )
             )
-
-            button.setTextColor(colorStateList)
-            button.iconTint = colorStateList
         }
     }
 
@@ -435,6 +457,15 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
+    private fun calculateDisabledColor(color: Int, opacity: Float): Int {
+        return Color.argb(
+            (Color.alpha(color) * opacity).roundToInt(),
+            Color.red(color),
+            Color.green(color),
+            Color.blue(color)
+        )
+    }
+
     companion object {
         private val THEMEABLE_PLACEHOLDER_IDS = listOf(
             R.drawable.ic_mimetype_package_x_generic,
@@ -443,5 +474,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         private const val SWITCHCOMPAT_TRACK_ALPHA: Int = 77
         private const val PROGRESS_LIGHTNESS_LIGHT_THEME: Float = 0.76f
         private const val PROGRESS_LIGHTNESS_DARK_THEME: Float = 0.28f
+        private const val SURFACE_OPACITY_BUTTON_DISABLED: Float = 0.12f
+        private const val ON_SURFACE_OPACITY_BUTTON_DISABLED: Float = 0.38f
     }
 }

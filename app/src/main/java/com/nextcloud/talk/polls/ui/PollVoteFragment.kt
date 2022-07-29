@@ -126,7 +126,7 @@ class PollVoteFragment : Fragment() {
     }
 
     private fun themeDialog() {
-        viewThemeUtils.colorMaterialButtonBackground(binding.pollVoteSubmitButton)
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.pollVoteSubmitButton)
         viewThemeUtils.colorMaterialButtonText(binding.pollVoteEndPollButton)
         viewThemeUtils.colorMaterialButtonText(binding.pollVoteEditDismiss)
     }

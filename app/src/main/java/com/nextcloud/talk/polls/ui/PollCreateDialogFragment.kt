@@ -108,7 +108,7 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
         viewThemeUtils.colorMaterialButtonText(binding.pollAddOptionsItem)
         // TODO button also needs a disabled state handling for colors
         viewThemeUtils.colorMaterialButtonText(binding.pollDismiss)
-        viewThemeUtils.colorMaterialButtonBackground(binding.pollCreateButton)
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.pollCreateButton)
 
         viewThemeUtils.themeCheckbox(binding.pollPrivatePollCheckbox)
         viewThemeUtils.themeCheckbox(binding.pollMultipleAnswersCheckbox)

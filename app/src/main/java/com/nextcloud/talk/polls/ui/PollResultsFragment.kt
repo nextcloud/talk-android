@@ -98,7 +98,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
     }
 
     private fun themeDialog() {
-        viewThemeUtils.colorMaterialButtonBackground(binding.editVoteButton)
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.editVoteButton)
         viewThemeUtils.colorMaterialButtonText(binding.pollResultsEndPollButton)
     }
 
