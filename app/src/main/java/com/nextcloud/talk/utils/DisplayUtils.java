@@ -518,19 +518,6 @@ public class DisplayUtils {
     }
 
     /**
-     * Theme search view
-     *
-     * @param searchView searchView to be changed
-     * @param context    the app's context
-     */
-    public static void themeSearchView(SearchView searchView, Context context) {
-        // hacky as no default way is provided
-        SearchView.SearchAutoComplete editText = searchView.findViewById(R.id.search_src_text);
-        editText.setTextSize(16);
-        editText.setHintTextColor(context.getResources().getColor(R.color.fontSecondaryAppbar));
-    }
-
-    /**
      * beautifies a given URL by removing any http/https protocol prefix.
      *
      * @param url to be beautified url

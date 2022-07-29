@@ -359,7 +359,7 @@ public class ConversationsListController extends BaseController implements Flexi
             SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
             if (searchItem != null) {
                 searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-                DisplayUtils.themeSearchView(searchView, context);
+                viewThemeUtils.themeSearchView(searchView);
                 searchView.setMaxWidth(Integer.MAX_VALUE);
                 searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
                 int imeOptions = EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN;
@@ -421,23 +421,15 @@ public class ConversationsListController extends BaseController implements Flexi
 
                 activity.binding.searchText.setOnClickListener(v -> {
                     showSearchView(activity, searchView, searchItem);
-                    if (getResources() != null) {
-                        DisplayUtils.applyColorToStatusBar(
-                            activity,
-                            ResourcesCompat.getColor(getResources(), R.color.appbar, null)
-                                                          );
-                    }
+                    viewThemeUtils.themeStatusBar(activity, searchView);
                 });
             }
 
             searchView.setOnCloseListener(() -> {
                 if (TextUtils.isEmpty(searchView.getQuery().toString())) {
                     searchView.onActionViewCollapsed();
-                    if (activity != null && getResources() != null) {
-                        DisplayUtils.applyColorToStatusBar(
-                            activity,
-                            ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
-                                                          );
+                    if (activity != null) {
+                        viewThemeUtils.resetStatusBar(activity, searchView);
                     }
                 } else {
                     searchView.post(() -> searchView.setQuery(TAG, true));
