@@ -78,7 +78,6 @@ import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
@@ -118,9 +117,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderNew
-
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
 
     private var saveStateHandler: LovelySaveStateHandler? = null
     private var currentUser: User? = null

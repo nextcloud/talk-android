@@ -73,7 +73,6 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
@@ -112,9 +111,6 @@ class ConversationInfoController(args: Bundle) :
 
     @Inject
     lateinit var eventBus: EventBus
-
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
 
     private val conversationToken: String?
     private val conversationUser: User?
