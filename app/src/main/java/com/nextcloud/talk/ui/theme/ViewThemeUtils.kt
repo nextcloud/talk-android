@@ -350,8 +350,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     }
 
     fun colorEditText(editText: EditText) {
-        withElementColor(editText) { color ->
-            editText.setTextColor(color)
+        withScheme(editText) { scheme ->
             // TODO check API-level compatibility
             // editText.background.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
             editText.backgroundTintList = ColorStateList(
@@ -360,16 +359,18 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     intArrayOf(android.R.attr.state_focused)
                 ),
                 intArrayOf(
-                    Color.GRAY,
-                    color
+                    scheme.outline,
+                    scheme.primary
                 )
             )
+            editText.setHintTextColor(scheme.onSurfaceVariant)
+            editText.setTextColor(scheme.onSurface)
         }
     }
 
     fun colorTextInputLayout(textInputLayout: TextInputLayout) {
-        withElementColor(textInputLayout) { color ->
-            val errorColor = Color.GRAY
+        withScheme(textInputLayout) { scheme ->
+            val errorColor = scheme.onSurfaceVariant
 
             val errorColorStateList = ColorStateList(
                 arrayOf(
@@ -387,8 +388,8 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     intArrayOf(android.R.attr.state_focused)
                 ),
                 intArrayOf(
-                    Color.GRAY,
-                    color
+                    scheme.outline,
+                    scheme.primary
                 )
             )
 
