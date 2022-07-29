@@ -21,6 +21,7 @@
 
 package com.nextcloud.talk.ui.theme
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -30,17 +31,21 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
@@ -49,15 +54,25 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.R
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.ui.ColorUtil
 import com.nextcloud.talk.utils.ui.PlatformThemeUtil.isDarkMode
 import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
+import scheme.Scheme
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private val colorUtil: ColorUtil) {
+
+    /**
+     * Scheme for painting elements
+     */
+    fun getScheme(context: Context): Scheme = when {
+        isDarkMode(context) -> theme.darkScheme
+        else -> theme.lightScheme
+    }
 
     /**
      * Color for painting elements
@@ -71,10 +86,58 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         block(getElementColor(view.context))
     }
 
+    private fun withScheme(view: View, block: (Scheme) -> Unit) {
+        block(getScheme(view.context))
+    }
+
+    fun themeToolbar(toolbar: MaterialToolbar) {
+        withScheme(toolbar) { scheme ->
+            toolbar.setBackgroundColor(scheme.surface)
+            toolbar.setNavigationIconTint(scheme.onSurface)
+            toolbar.setTitleTextColor(scheme.onSurface)
+        }
+    }
+
+    fun themeSearchView(searchView: SearchView) {
+        withScheme(searchView) { scheme ->
+            // hacky as no default way is provided
+            val editText = searchView.findViewById<SearchAutoComplete>(R.id.search_src_text)
+            val searchPlate = searchView.findViewById<LinearLayout>(R.id.search_plate)
+            editText.textSize = 16f
+            editText.setHintTextColor(scheme.onSurfaceVariant)
+            editText.setTextColor(scheme.onSurface)
+            editText.setBackgroundColor(scheme.surface)
+            searchPlate.setBackgroundColor(scheme.surface)
+        }
+    }
+
+    fun themeStatusBar(activity: Activity, view: View) {
+        withScheme(view) { scheme ->
+            DisplayUtils.applyColorToStatusBar(activity, scheme.surface)
+        }
+    }
+
+    fun resetStatusBar(activity: Activity, view: View) {
+        DisplayUtils.applyColorToStatusBar(
+            activity,
+            ResourcesCompat.getColor(
+                activity.resources,
+                R.color.bg_default,
+                activity.theme
+            )
+        )
+    }
+
     fun themeFAB(fab: FloatingActionButton) {
-        withElementColor(fab) { color ->
-            fab.backgroundTintList = ColorStateList.valueOf(color)
-            fab.imageTintList = ColorStateList.valueOf(theme.colorText)
+        withScheme(fab) { scheme ->
+            fab.backgroundTintList = ColorStateList.valueOf(scheme.primaryContainer)
+            fab.imageTintList = ColorStateList.valueOf(scheme.onPrimaryContainer)
+        }
+    }
+
+    fun themeCardView(cardView: MaterialCardView) {
+        withScheme(cardView) { scheme ->
+            cardView.backgroundTintList = ColorStateList.valueOf(scheme.surface)
         }
     }
 
