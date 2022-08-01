@@ -21,12 +21,15 @@
 
 package com.nextcloud.talk.ui.theme
 
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -39,6 +42,7 @@ import android.widget.RadioButton
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
@@ -606,6 +610,34 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
             chip.chipStrokeColor = ColorStateList.valueOf(scheme.primary)
             chip.setTextColor(scheme.primary)
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    fun themePlaceholderAvatar(avatar: View, @DrawableRes foreground: Int): Drawable? {
+        var drawable: LayerDrawable? = null
+        withScheme(avatar) { scheme ->
+            val layers = arrayOfNulls<Drawable>(2)
+            layers[0] = ContextCompat.getDrawable(avatar.context, R.drawable.ic_avatar_background)
+            layers[0]?.setTint(scheme.surfaceVariant)
+            layers[1] = ContextCompat.getDrawable(avatar.context, foreground)
+            layers[1]?.setTint(scheme.onSurfaceVariant)
+            drawable = LayerDrawable(layers)
+        }
+
+        return drawable
+    }
+
+    private fun progressColor(context: Context, color: Int): Int {
+        val hsl = FloatArray(HSL_SIZE)
+        ColorUtils.RGBToHSL(Color.red(color), Color.green(color), Color.blue(color), hsl)
+
+        if (isDarkMode(context)) {
+            hsl[INDEX_LIGHTNESS] = LIGHTNESS_DARK_THEME
+        } else {
+            hsl[INDEX_LIGHTNESS] = LIGHTNESS_LIGHT_THEME
+        }
+
+        return ColorUtils.HSLToColor(hsl)
     }
 
     private fun calculateDisabledColor(color: Int, opacity: Float): Int {
