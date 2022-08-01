@@ -99,7 +99,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
 
     private fun themeDialog() {
         viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.editVoteButton)
-        viewThemeUtils.colorMaterialButtonText(binding.pollResultsEndPollButton)
+        viewThemeUtils.colorMaterialButtonPrimaryBorderless(binding.pollResultsEndPollButton)
     }
 
     private fun initAdapter() {
