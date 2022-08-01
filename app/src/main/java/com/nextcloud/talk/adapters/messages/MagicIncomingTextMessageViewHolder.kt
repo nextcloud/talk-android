@@ -48,6 +48,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
+import com.nextcloud.talk.ui.theme.ServerTheme
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
@@ -63,6 +65,9 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
     @Inject
     lateinit var context: Context
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -181,13 +186,12 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
             context!!.getText(R.string.nc_nick_guest) else parentChatMessage.actorDisplayName
         binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
-        binding.messageQuote.quotedMessageAuthor
-            .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
-
         if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
+            viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
         } else {
-            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
+            binding.messageQuote.quoteColoredView.setBackgroundColor(
+                ContextCompat.getColor(binding.messageQuote.quoteColoredView.context, R.color.high_emphasis_text)
+            )
         }
     }
 

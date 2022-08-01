@@ -195,6 +195,12 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
+    fun colorPrimaryView(view: View) {
+        withScheme(view) { scheme ->
+            view.setBackgroundColor(scheme.primary)
+        }
+    }
+
     /**
      * Colors the background as element color and the foreground as text color.
      */
