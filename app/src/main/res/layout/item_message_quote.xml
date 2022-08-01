@@ -104,9 +104,9 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/ic_cancel_black_24dp"
-        android:backgroundTint="@color/grey_600"
+        android:background="@color/transparent"
         android:contentDescription="@string/nc_message_quote_cancel_reply"
+        android:src="@drawable/ic_cancel_black_24dp"
         android:visibility="gone"
         tools:visibility="visible" />
 

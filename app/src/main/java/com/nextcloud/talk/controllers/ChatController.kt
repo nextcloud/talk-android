@@ -1760,6 +1760,8 @@ class ChatController(args: Bundle) :
             cancelReply()
         }
 
+        viewThemeUtils.themeImageButton(binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton))
+
         cancelNotificationsForCurrentConversation()
 
         Log.d(TAG, "onAttach inConversation: " + inConversation.toString())
