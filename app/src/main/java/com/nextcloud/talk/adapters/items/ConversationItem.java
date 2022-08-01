@@ -306,6 +306,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         holder.binding.dialogAvatar.setVisibility(View.GONE);
                     }
                     break;
+                // TODO created layered drawables to tint the background
                 case ROOM_GROUP_CALL:
                     holder.binding.dialogAvatar.setImageDrawable(
                         ContextCompat.getDrawable(context,
