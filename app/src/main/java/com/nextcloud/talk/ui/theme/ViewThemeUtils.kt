@@ -31,6 +31,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -208,6 +209,25 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         withScheme(imageView) { scheme ->
             imageView.imageTintList = ColorStateList.valueOf(scheme.onPrimaryContainer)
             imageView.backgroundTintList = ColorStateList.valueOf(scheme.primaryContainer)
+        }
+    }
+
+    fun themeImageButton(imageButton: ImageButton) {
+        withScheme(imageButton) { scheme ->
+            imageButton.imageTintList = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_selected),
+                    intArrayOf(-android.R.attr.state_selected),
+                    intArrayOf(android.R.attr.state_enabled),
+                    intArrayOf(-android.R.attr.state_enabled)
+                ),
+                intArrayOf(
+                    scheme.primary,
+                    scheme.onSurfaceVariant,
+                    scheme.onSurfaceVariant,
+                    calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                )
+            )
         }
     }
 
