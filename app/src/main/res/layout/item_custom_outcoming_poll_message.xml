@@ -56,14 +56,13 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_baseline_bar_chart_24"
-                app:tint="@color/nc_outcoming_text_default" />
+                app:tint="@color/high_emphasis_text" />
 
             <androidx.emoji.widget.EmojiTextView
                 android:id="@+id/message_poll_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="viewStart"
-                android:textColor="@color/nc_outcoming_text_default"
                 android:textStyle="bold"
                 tools:text="This is the poll title?" />
 
@@ -75,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/double_margin_between_elements"
             android:text="@string/message_poll_tap_to_open"
-            android:textColor="@color/nc_outcoming_text_default" />
+            android:textColor="@color/high_emphasis_text" />
 
         <TextView
             android:id="@id/messageTime"
@@ -83,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
-            android:textColor="@color/nc_outcoming_text_default"
+            android:textColor="@color/medium_emphasis_text"
             app:layout_alignSelf="center"
             tools:text="10:35" />
 
@@ -94,8 +93,8 @@
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
             android:contentDescription="@null"
-            android:textColor="@color/nc_outcoming_text_default"
-            app:layout_alignSelf="center" />
+            app:layout_alignSelf="center"
+            app:tint="@color/high_emphasis_text" />
 
         <include
             android:id="@+id/reactions"

@@ -37,7 +37,6 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -261,25 +260,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        val resources = itemView.resources
-
-        var bubbleResource = R.drawable.shape_incoming_message
-
-        if (message.isGrouped) {
-            bubbleResource = R.drawable.shape_grouped_incoming_message
-        }
-
-        val bgBubbleColor = if (message.isDeleted) {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble_deleted, null)
-        } else {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble, null)
-        }
-        val bubbleDrawable = DisplayUtils.getMessageSelector(
-            bgBubbleColor,
-            ResourcesCompat.getColor(resources, R.color.transparent, null),
-            bgBubbleColor, bubbleResource
-        )
-        ViewCompat.setBackground(bubble, bubbleDrawable)
+        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {

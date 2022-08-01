@@ -51,17 +51,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:indeterminateTint="@color/nc_outcoming_text_default"
                 android:progressTint="@color/fontAppbar"
-                android:visibility="gone"
-                android:indeterminateTint="@color/nc_outcoming_text_default"/>
+                android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/playPauseBtn"
@@ -70,11 +70,11 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/play_pause_voice_message"
                 android:visibility="visible"
-                app:rippleColor="#1FFFFFFF"
                 app:cornerRadius="@dimen/button_corner_radius"
                 app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
                 app:iconSize="40dp"
-                app:iconTint="@color/nc_outcoming_text_default" />
+                app:iconTint="@color/high_emphasis_text"
+                app:rippleColor="#1FFFFFFF" />
 
             <SeekBar
                 android:id="@+id/seekbar"
@@ -92,6 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
+            android:textColor="@color/medium_emphasis_text"
             app:layout_alignSelf="center"
             tools:text="10:35" />
 
@@ -101,8 +102,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
+            android:contentDescription="@null"
             app:layout_alignSelf="center"
-            android:contentDescription="@null" />
+            app:tint="@color/high_emphasis_text" />
 
         <include
             android:id="@+id/reactions"

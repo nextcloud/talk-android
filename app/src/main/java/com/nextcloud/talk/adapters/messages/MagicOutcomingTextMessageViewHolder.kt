@@ -32,7 +32,6 @@ import android.util.TypedValue
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
@@ -46,7 +45,6 @@ import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils.getMessageSelector
 import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
 import com.nextcloud.talk.utils.TextMatchers
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
@@ -75,7 +73,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         val messageParameters: HashMap<String?, HashMap<String?, String?>>? = message.messageParameters
         var messageString: Spannable = SpannableString(message.text)
         realView.isSelected = false
-        binding.messageTime.setTextColor(ColorUtils.setAlphaComponent(serverTheme.colorText, ALPHA_60_INT))
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
         var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
@@ -95,8 +92,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
         binding.messageText.text = messageString
-        binding.messageText.setTextColor(serverTheme.colorText)
-        binding.messageText.setLinkTextColor(serverTheme.colorText)
 
         // parent message handling
         if (!message.isDeleted && message.parentMessage != null) {
@@ -121,7 +116,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         readStatusDrawableInt?.let { drawableInt ->
             ResourcesCompat.getDrawable(context!!.resources, drawableInt, null)?.let {
                 binding.checkMark.setImageDrawable(it)
-                viewThemeUtils.colorImageViewText(binding.checkMark)
             }
         }
 
@@ -169,30 +163,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     }
 
     private fun setBubbleOnChatMessage(message: ChatMessage) {
-        val resources = sharedApplication!!.resources
-        val elementColor = viewThemeUtils.getElementColor(binding.root.context)
-        val bgBubbleColor = if (message.isDeleted) {
-            ColorUtils.setAlphaComponent(elementColor, HALF_ALPHA_INT)
-        } else {
-            elementColor
-        }
-        if (message.isGrouped) {
-            val bubbleDrawable = getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(resources, R.color.transparent, null),
-                bgBubbleColor,
-                R.drawable.shape_grouped_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        } else {
-            val bubbleDrawable = getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(resources, R.color.transparent, null),
-                bgBubbleColor,
-                R.drawable.shape_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        }
+        viewThemeUtils.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun processMessageParameters(

@@ -41,7 +41,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
@@ -50,6 +49,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingLocationMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.UriUtils
@@ -69,13 +69,14 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
     var locationName: String? = ""
     var locationGeoLink: String? = ""
 
-    @JvmField
     @Inject
-    var context: Context? = null
+    lateinit var context: Context
 
-    @JvmField
     @Inject
-    var appPreferences: AppPreferences? = null
+    lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     lateinit var reactionsInterface: ReactionsInterface
 
@@ -155,25 +156,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        val resources = itemView.resources
-
-        var bubbleResource = R.drawable.shape_incoming_message
-
-        if (message.isGrouped) {
-            bubbleResource = R.drawable.shape_grouped_incoming_message
-        }
-
-        val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
-        } else {
-            resources.getColor(R.color.bg_message_list_incoming_bubble)
-        }
-        val bubbleDrawable = DisplayUtils.getMessageSelector(
-            bgBubbleColor,
-            resources.getColor(R.color.transparent),
-            bgBubbleColor, bubbleResource
-        )
-        ViewCompat.setBackground(bubble, bubbleDrawable)
+        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
