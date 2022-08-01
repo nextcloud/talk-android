@@ -46,6 +46,7 @@
 
     <style name="ThemeOverlay.AppTheme.PopupMenu" parent="ThemeOverlay.Material3.Dark">
         <item name="android:colorBackground">@color/bg_default</item>
+        <item name="colorSurface">@color/bg_default</item>
         <item name="android:textColorPrimary">@color/high_emphasis_text</item>
         <item name="android:textColor">@color/high_emphasis_text</item>
         <item name="android:textColorSecondary">@color/fontAppbar</item>
@@ -114,6 +115,7 @@
         <item name="android:textColorSecondary">@color/fontAppbar</item>
         <item name="android:itemBackground">@color/appbar</item>
         <item name="android:background">@color/appbar</item>
+        <item name="android:backgroundTint">@color/appbar</item>
         <item name="android:textColor">@color/high_emphasis_text</item>
         <item name="iconTint">@color/fontAppbar</item>
     </style>
