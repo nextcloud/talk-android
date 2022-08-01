@@ -165,7 +165,7 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
                 viewThemeUtils.colorMaterialButtonText((MaterialButton) view);
             }
             if (view instanceof TextView) {
-                viewThemeUtils.colorTextViewElement((TextView) view);
+                viewThemeUtils.colorPrimaryTextViewElement((TextView) view);
                 ((TextView) view).setTypeface(Typeface.DEFAULT_BOLD);
             }
         }

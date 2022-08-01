@@ -74,7 +74,7 @@ public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderI
             Log.d(TAG, "We have payloads, so ignoring!");
         } else {
             holder.binding.titleTextView.setText(title);
-            viewThemeUtils.colorTextViewElement(holder.binding.titleTextView);
+            viewThemeUtils.colorPrimaryTextViewElement(holder.binding.titleTextView);
         }
     }
 
