@@ -29,7 +29,7 @@ class PollCreateOptionsAdapter(
     private val clickListener: PollCreateOptionsItemListener
 ) : RecyclerView.Adapter<PollCreateOptionViewHolder>() {
 
-    internal var list: ArrayList<PollCreateOptionItem> = ArrayList<PollCreateOptionItem>()
+    internal var list: ArrayList<PollCreateOptionItem> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PollCreateOptionViewHolder {
         val itemBinding = PollCreateOptionsItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)

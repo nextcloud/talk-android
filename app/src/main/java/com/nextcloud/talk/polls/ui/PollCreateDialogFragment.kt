@@ -102,7 +102,7 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
             dismiss()
         }
 
-        binding.pollCreateQuestion.addTextChangedListener(object : TextWatcher {
+        binding.pollCreateQuestionTextEdit.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 // unused atm
             }
@@ -161,8 +161,8 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
     }
 
     override fun requestFocus(textField: EditText) {
-        if (binding.pollCreateQuestion.text.isBlank()) {
-            binding.pollCreateQuestion.requestFocus()
+        if (binding.pollCreateQuestionTextEdit.text?.isBlank() == true) {
+            binding.pollCreateQuestionTextEdit.requestFocus()
         } else {
             textField.requestFocus()
         }

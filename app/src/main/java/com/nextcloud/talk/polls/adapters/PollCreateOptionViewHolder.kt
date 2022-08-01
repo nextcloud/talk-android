@@ -24,6 +24,7 @@ import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.recyclerview.widget.RecyclerView
+import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.PollCreateOptionsItemBinding
 import com.nextcloud.talk.utils.EmojiTextInputEditText
 
@@ -43,13 +44,13 @@ class PollCreateOptionViewHolder(
     ) {
 
         textListener?.let {
-            binding.pollOptionText.removeTextChangedListener(it)
+            binding.pollOptionTextEdit.removeTextChangedListener(it)
         }
 
-        binding.pollOptionText.setText(pollCreateOptionItem.pollOption)
+        binding.pollOptionTextEdit.setText(pollCreateOptionItem.pollOption)
 
         if (focus) {
-            itemsListener.requestFocus(binding.pollOptionText)
+            itemsListener.requestFocus(binding.pollOptionTextEdit)
         }
 
         binding.pollOptionDelete.setOnClickListener {
@@ -57,7 +58,16 @@ class PollCreateOptionViewHolder(
         }
 
         textListener = getTextWatcher(pollCreateOptionItem, itemsListener)
-        binding.pollOptionText.addTextChangedListener(textListener)
+        binding.pollOptionTextEdit.addTextChangedListener(textListener)
+        binding.pollOptionTextInputLayout.hint = String.format(
+            binding.pollOptionTextInputLayout.resources.getString(R.string.polls_option_hint),
+            position + 1
+        )
+
+        binding.pollOptionDelete.contentDescription = String.format(
+            binding.pollOptionTextInputLayout.resources.getString(R.string.polls_option_delete),
+            position + 1
+        )
     }
 
     private fun getTextWatcher(

@@ -72,10 +72,10 @@ class PollResultVotersOverviewViewHolder(
             roundingParams.roundAsCircle = true
             roundingParams.borderColor = ResourcesCompat.getColor(
                 itemView.context.resources!!,
-                R.color.colorPrimary,
+                R.color.vote_dialog_background,
                 null
             )
-            roundingParams.borderWidth = 2.0f
+            roundingParams.borderWidth = DisplayUtils.convertDpToPixel(2.0f, itemView.context)
 
             avatar.hierarchy.roundingParams = roundingParams
             avatar.controller = getAvatarDraweeController(pollDetails)
@@ -134,7 +134,7 @@ class PollResultVotersOverviewViewHolder(
         const val AVATAR_SIZE = 60
         const val AVATAR_RADIUS = 5f
         const val MAX_AVATARS = 10
-        const val AVATAR_OFFSET = AVATAR_SIZE - 10
+        const val AVATAR_OFFSET = AVATAR_SIZE - 20
         const val DOTS_OFFSET = 70
         const val DOTS_TEXT = "…"
     }

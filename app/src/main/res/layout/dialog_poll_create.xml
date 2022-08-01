@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
+  ~ @author Andy Scherzinger
   ~ @author Marcel Hibbe
+  ~ Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -24,35 +26,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/standard_padding"
     tools:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dialog_padding_top_bottom">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/dialog_padding"
+            android:paddingEnd="@dimen/dialog_padding"
+            android:paddingBottom="@dimen/standard_half_padding"
+            android:text="@string/polls_question"
             android:textColor="@color/colorPrimary"
-            android:textStyle="bold"
-            android:text="@string/polls_question" />
+            android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/poll_create_question"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/poll_create_question_text_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            tools:ignore="Autofill,LabelFor"/>
+            android:layout_marginStart="@dimen/dialog_padding"
+            android:layout_marginEnd="@dimen/dialog_padding"
+            android:hint="@string/polls_question_hint"
+            android:minHeight="@dimen/min_size_clickable_area"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:errorTextAppearance="@style/ErrorAppearance"
+            app:hintTextColor="@color/colorPrimary">
+
+            <com.nextcloud.talk.utils.EmojiTextInputEditText
+                android:id="@+id/poll_create_question_text_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="textMultiLine"
+                android:singleLine="true"
+                android:textAlignment="viewStart">
+
+                <requestFocus />
+
+            </com.nextcloud.talk.utils.EmojiTextInputEditText>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/standard_padding"
+            android:paddingBottom="@dimen/standard_half_padding"
+            android:paddingStart="@dimen/dialog_padding"
+            android:paddingEnd="@dimen/dialog_padding"
+            android:text="@string/polls_options"
             android:textColor="@color/colorPrimary"
-            android:textStyle="bold"
-            android:layout_marginTop="@dimen/standard_margin"
-            android:text="@string/polls_options" />
+            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/poll_create_options_list"
@@ -65,59 +94,72 @@
             style="@style/OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/standard_half_margin"
-            app:icon="@drawable/ic_add_grey600_24px"
+            android:layout_marginStart="@dimen/dialog_padding"
+            android:layout_marginEnd="@dimen/dialog_padding"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:text="@string/polls_add_option"
             app:cornerRadius="@dimen/button_corner_radius"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/polls_add_option" />
+            app:icon="@drawable/ic_add_grey600_24px" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold"
             android:layout_marginTop="@dimen/standard_margin"
-            android:layout_marginBottom="@dimen/standard_half_margin"
-            android:text="@string/polls_settings" />
+            android:paddingStart="@dimen/dialog_padding"
+            android:paddingEnd="@dimen/dialog_padding"
+            android:text="@string/polls_settings"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
 
         <CheckBox
             android:id="@+id/poll_private_poll_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_checkbox_dialog_start_margin"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:paddingStart="@dimen/standard_half_padding"
+            android:paddingEnd="@dimen/standard_padding"
             android:text="@string/polls_private_poll" />
 
         <CheckBox
             android:id="@+id/poll_multiple_answers_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_checkbox_dialog_start_margin"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:paddingStart="@dimen/standard_half_padding"
+            android:paddingEnd="@dimen/standard_padding"
             android:text="@string/polls_multiple_answers" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_half_margin"
+            android:gravity="end"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/standard_margin"
-            android:gravity="end">
+            android:paddingStart="@dimen/dialog_padding"
+            android:paddingEnd="@dimen/dialog_padding"
+            android:paddingBottom="@dimen/dialog_padding_top_bottom">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/poll_dismiss"
                 style="@style/OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_half_margin"
+                android:text="@string/nc_common_dismiss"
                 app:cornerRadius="@dimen/button_corner_radius"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:text="@string/nc_common_dismiss" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/poll_create_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_half_margin"
-                app:cornerRadius="@dimen/button_corner_radius"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginEnd="@dimen/zero"
                 android:text="@string/nc_create_poll"
-                android:theme="@style/Button.Primary" />
+                android:theme="@style/Button.Primary"
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </LinearLayout>
     </LinearLayout>
