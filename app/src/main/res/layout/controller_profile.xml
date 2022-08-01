@@ -77,49 +77,50 @@
             android:visibility="invisible"
             tools:visibility="visible">
 
-            <ImageButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/avatar_upload"
-                android:layout_width="@dimen/min_size_clickable_area"
-                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/standard_half_margin"
                 android:layout_marginRight="@dimen/standard_half_margin"
-                android:background="@drawable/round_corner"
                 android:contentDescription="@string/upload_new_avatar_from_device"
-                android:src="@drawable/upload"
-                app:tint="@color/black" />
+                android:tint="@android:color/white"
+                app:fabCustomSize="@dimen/min_size_clickable_area"
+                app:srcCompat="@drawable/upload" />
 
-            <ImageButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/avatar_choose"
-                android:layout_width="@dimen/min_size_clickable_area"
-                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/standard_half_margin"
                 android:layout_marginRight="@dimen/standard_half_margin"
-                android:background="@drawable/round_corner"
                 android:contentDescription="@string/choose_avatar_from_cloud"
-                android:src="@drawable/ic_mimetype_folder"
-                app:tint="@color/colorPrimary" />
+                android:tint="@android:color/white"
+                app:fabCustomSize="@dimen/min_size_clickable_area"
+                app:srcCompat="@drawable/ic_mimetype_folder" />
 
-            <ImageButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/avatar_camera"
-                android:layout_width="@dimen/min_size_clickable_area"
-                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/standard_half_margin"
                 android:layout_marginRight="@dimen/standard_half_margin"
-                android:background="@drawable/round_corner"
                 android:contentDescription="@string/set_avatar_from_camera"
-                android:src="@drawable/ic_baseline_photo_camera_24"
-                app:tint="@color/colorPrimary" />
+                android:tint="@android:color/white"
+                app:fabCustomSize="@dimen/min_size_clickable_area"
+                app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
 
-            <ImageButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/avatar_delete"
-                android:layout_width="@dimen/min_size_clickable_area"
-                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/standard_half_margin"
                 android:layout_marginRight="@dimen/standard_half_margin"
-                android:background="@drawable/round_corner"
                 android:contentDescription="@string/delete_avatar"
-                android:src="@drawable/trashbin"
-                app:tint="@color/black" />
+                android:tint="@android:color/white"
+                app:fabCustomSize="@dimen/min_size_clickable_area"
+                app:srcCompat="@drawable/trashbin" />
+
         </LinearLayout>
 
     </RelativeLayout>

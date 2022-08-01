@@ -262,8 +262,10 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
     }
 
     private fun colorIcons() {
-        viewThemeUtils.colorImageView(binding.avatarChoose)
-        viewThemeUtils.colorImageView(binding.avatarCamera)
+        viewThemeUtils.themeFAB(binding.avatarChoose)
+        viewThemeUtils.themeFAB(binding.avatarCamera)
+        viewThemeUtils.themeFAB(binding.avatarUpload)
+        viewThemeUtils.themeFAB(binding.avatarDelete)
     }
 
     private fun isAllEmpty(items: Array<String?>): Boolean {
