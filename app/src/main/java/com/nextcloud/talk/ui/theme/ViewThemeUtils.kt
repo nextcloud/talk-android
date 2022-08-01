@@ -73,10 +73,12 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     /**
      * Scheme for painting elements
      */
-    fun getScheme(context: Context): Scheme = when {
+    private fun getScheme(context: Context): Scheme = when {
         isDarkMode(context) -> theme.darkScheme
         else -> theme.lightScheme
     }
+
+    private fun getSchemeDark(): Scheme = theme.darkScheme
 
     /**
      * Color for painting elements
@@ -92,6 +94,10 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
 
     private fun withScheme(view: View, block: (Scheme) -> Unit) {
         block(getScheme(view.context))
+    }
+
+    private fun withSchemeDark(block: (Scheme) -> Unit) {
+        block(getSchemeDark())
     }
 
     fun themeToolbar(toolbar: MaterialToolbar) {
@@ -140,6 +146,12 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
 
     fun themeDialog(view: View) {
         withScheme(view) { scheme ->
+            view.setBackgroundColor(scheme.surface)
+        }
+    }
+
+    fun themeDialogDark(view: View) {
+        withSchemeDark { scheme ->
             view.setBackgroundColor(scheme.surface)
         }
     }
