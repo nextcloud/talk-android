@@ -30,8 +30,8 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.util.TypedValue
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.ColorUtils
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
@@ -150,16 +150,10 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
             ?: context!!.getText(R.string.nc_nick_guest)
         binding.messageQuote.quotedMessage.text = parentChatMessage.text
-        binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
 
-        binding.messageQuote.quotedMessageAuthor.setTextColor(
-            ColorUtils.setAlphaComponent(
-                serverTheme.colorText,
-                ALPHA_80_INT
-            )
+        binding.messageQuote.quoteColoredView.setBackgroundColor(
+            ContextCompat.getColor(binding.messageQuote.quoteColoredView.context, R.color.high_emphasis_text)
         )
-
-        binding.messageQuote.quoteColoredView.setBackgroundColor(serverTheme.colorText)
     }
 
     private fun setBubbleOnChatMessage(message: ChatMessage) {
