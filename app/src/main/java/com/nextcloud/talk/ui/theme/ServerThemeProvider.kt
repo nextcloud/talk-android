@@ -25,7 +25,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 
 interface ServerThemeProvider {
-    fun getServerThemeForUser(user: User): ServerTheme
+    fun getServerThemeForUser(user: User?): ServerTheme
     fun getServerThemeForCapabilities(capabilities: Capabilities?): ServerTheme
     fun getServerThemeForCurrentUser(): ServerTheme
 }
