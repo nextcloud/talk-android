@@ -247,6 +247,19 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         imageView.imageTintList = ColorStateList.valueOf(theme.colorText)
     }
 
+    fun colorMaterialTextButton(button: MaterialButton) {
+        withScheme(button) { scheme ->
+            button.rippleColor = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_pressed)
+                ),
+                intArrayOf(
+                    calculateDisabledColor(scheme.primary, SURFACE_OPACITY_BUTTON_DISABLED)
+                )
+            )
+        }
+    }
+
     fun colorMaterialButtonText(button: MaterialButton) {
         withScheme(button) { scheme ->
             val disabledColor = ContextCompat.getColor(button.context, R.color.disabled_text)

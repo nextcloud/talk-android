@@ -117,6 +117,10 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         viewThemeUtils.themeDialog(binding.getRoot());
         viewThemeUtils.themeDialogDivider(binding.divider);
 
+        viewThemeUtils.colorMaterialTextButton(binding.setStatus);
+        viewThemeUtils.colorMaterialTextButton(binding.addAccount);
+        viewThemeUtils.colorMaterialTextButton(binding.manageSettings);
+
         // Defining user picture
         binding.currentAccount.userIcon.setTag("");
 
