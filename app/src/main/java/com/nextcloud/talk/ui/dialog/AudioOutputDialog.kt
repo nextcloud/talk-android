@@ -57,6 +57,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
         setContentView(dialogAudioOutputBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
+        viewThemeUtils.themeDialogDark(dialogAudioOutputBinding.root)
         updateOutputDeviceList()
         initClickListeners()
     }

@@ -35,12 +35,17 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
 import com.nextcloud.talk.databinding.DialogBottomContactsBinding
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ContactsBottomDialog(
     val activity: Activity,
     val bundle: Bundle
 ) : BottomSheetDialog(activity) {
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private var dialogRouter: Router? = null
 
@@ -56,6 +61,7 @@ class ContactsBottomDialog(
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
+        viewThemeUtils.themeDialog(binding.root)
         executeEntryMenuController(bundle)
     }
 

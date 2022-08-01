@@ -26,16 +26,28 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.databinding.DialogAttachmentBinding
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import javax.inject.Inject
 
+@AutoInjector(NextcloudTalkApplication::class)
 class AttachmentDialog(val activity: Activity, var chatController: ChatController) : BottomSheetDialog(activity) {
 
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
     private lateinit var dialogAttachmentBinding: DialogAttachmentBinding
+
+    init {
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +55,7 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
         setContentView(dialogAttachmentBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
+        viewThemeUtils.themeDialog(dialogAttachmentBinding.root)
         initItemsStrings()
         initItemsVisibility()
         initItemsClickListeners()

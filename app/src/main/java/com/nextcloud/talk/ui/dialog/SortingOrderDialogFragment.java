@@ -120,6 +120,7 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
      * find all relevant UI elements and set their values.
      */
     private void setupDialogElements() {
+        viewThemeUtils.themeDialog(binding.root);
         viewThemeUtils.colorMaterialButtonPrimaryBorderless(binding.cancel);
 
         taggedViews = new View[12];
