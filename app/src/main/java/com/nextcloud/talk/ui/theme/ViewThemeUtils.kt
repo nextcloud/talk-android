@@ -105,7 +105,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
             // hacky as no default way is provided
             val editText = searchView.findViewById<SearchAutoComplete>(R.id.search_src_text)
             val searchPlate = searchView.findViewById<LinearLayout>(R.id.search_plate)
-            editText.textSize = 16f
+            editText.textSize = SEARCH_TEXT_SIZE
             editText.setHintTextColor(scheme.onSurfaceVariant)
             editText.setTextColor(scheme.onSurface)
             editText.setBackgroundColor(scheme.surface)
@@ -476,5 +476,6 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         private const val PROGRESS_LIGHTNESS_DARK_THEME: Float = 0.28f
         private const val SURFACE_OPACITY_BUTTON_DISABLED: Float = 0.12f
         private const val ON_SURFACE_OPACITY_BUTTON_DISABLED: Float = 0.38f
+        private const val SEARCH_TEXT_SIZE: Float = 16f
     }
 }
