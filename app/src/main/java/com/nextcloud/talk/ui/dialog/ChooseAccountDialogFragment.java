@@ -115,8 +115,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         viewThemeUtils.themeDialog(binding.getRoot());
-        viewThemeUtils.themeDialogDivider(binding.dividerTop);
-        viewThemeUtils.themeDialogDivider(binding.dividerBottom);
+        viewThemeUtils.themeDialogDivider(binding.divider);
 
         // Defining user picture
         binding.currentAccount.userIcon.setTag("");
