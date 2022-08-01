@@ -162,8 +162,8 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     }
 
     fun themeHorizontalSeekBar(seekBar: SeekBar) {
-        withElementColor(seekBar) { color ->
-            themeHorizontalSeekBar(seekBar, color)
+        withScheme(seekBar) { scheme ->
+            themeHorizontalSeekBar(seekBar, scheme.primary)
         }
     }
 
@@ -179,23 +179,19 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
-    fun colorTextViewElement(textView: TextView) {
-        withElementColor(textView) { color ->
-            textView.setTextColor(color)
+    fun colorPrimaryTextViewElement(textView: TextView) {
+        withScheme(textView) { scheme ->
+            textView.setTextColor(scheme.primary)
         }
-    }
-
-    fun colorTextViewText(textView: TextView) {
-        textView.setTextColor(theme.colorText)
     }
 
     /**
      * Colors the background as element color and the foreground as text color.
      */
     fun colorImageViewButton(imageView: ImageView) {
-        withElementColor(imageView) { color ->
-            imageView.imageTintList = ColorStateList.valueOf(theme.colorText)
-            imageView.backgroundTintList = ColorStateList.valueOf(color)
+        withScheme(imageView) { scheme ->
+            imageView.imageTintList = ColorStateList.valueOf(scheme.onPrimaryContainer)
+            imageView.backgroundTintList = ColorStateList.valueOf(scheme.primaryContainer)
         }
     }
 
@@ -270,15 +266,15 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     }
 
     fun colorCardViewBackground(card: MaterialCardView) {
-        withElementColor(card) { color ->
-            card.setCardBackgroundColor(color)
+        withScheme(card) { scheme ->
+            card.setCardBackgroundColor(scheme.surfaceVariant)
         }
     }
 
     // TODO split this util into classes depending on framework views vs library views
     fun colorPreferenceCategory(category: MaterialPreferenceCategory) {
-        withElementColor(category) { color ->
-            category.setTitleColor(color)
+        withScheme(category) { scheme ->
+            category.setTitleColor(scheme.primary)
         }
     }
 
@@ -358,8 +354,8 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     }
 
     fun colorProgressBar(progressIndicator: LinearProgressIndicator) {
-        withElementColor(progressIndicator) { color ->
-            progressIndicator.setIndicatorColor(progressColor(progressIndicator.context, color))
+        withScheme(progressIndicator) { scheme ->
+            progressIndicator.setIndicatorColor(scheme.primary)
         }
     }
 
