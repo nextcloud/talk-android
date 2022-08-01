@@ -241,10 +241,12 @@ class SetStatusDialogFragment :
             }
         }
 
+        viewThemeUtils.themeDialog(binding.root)
+
         viewThemeUtils.colorMaterialButtonText(binding.clearStatus)
         viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.setStatus)
 
-        binding.customStatusInput.highlightColor = resources.getColor(R.color.colorPrimary)
+        viewThemeUtils.colorTextInputLayout(binding.customStatusInputContainer)
 
         binding.customStatusInput.doAfterTextChanged { text ->
             binding.setStatus.isEnabled = !text.isNullOrEmpty()
