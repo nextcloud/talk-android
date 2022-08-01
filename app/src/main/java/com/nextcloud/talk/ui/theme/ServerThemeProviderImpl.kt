@@ -40,7 +40,7 @@ internal class ServerThemeProviderImpl @Inject constructor(
 
     // TODO move this logic to currentUserProvider or something
     private var _currentUser: User? = null
-    private val currentUser: User
+    private val currentUser: User?
         @SuppressLint("CheckResult")
         get() {
             return when (_currentUser) {
@@ -49,19 +49,26 @@ internal class ServerThemeProviderImpl @Inject constructor(
                     _currentUser = userProvider.currentUser.blockingGet()
                     // start observable for auto-updates
                     userProvider.currentUserObservable.subscribe { _currentUser = it }
-                    _currentUser!!
+                    _currentUser
                 }
                 else -> {
-                    _currentUser!!
+                    _currentUser
                 }
             }
         }
 
-    override fun getServerThemeForUser(user: User): ServerTheme {
-        if (user.baseUrl != null && !themeCache.containsKey(user.baseUrl)) {
-            themeCache[user.baseUrl!!] = getServerThemeForCapabilities(user.capabilities)
+    override fun getServerThemeForUser(user: User?): ServerTheme {
+        val url: String = if (user?.baseUrl != null) {
+            user.baseUrl!!
+        } else {
+            FALLBACK_URL
         }
-        return themeCache[user.baseUrl]!!
+
+        if (!themeCache.containsKey(url)) {
+            themeCache[url] = getServerThemeForCapabilities(user?.capabilities)
+        }
+
+        return themeCache[url]!!
     }
 
     override fun getServerThemeForCurrentUser(): ServerTheme {
@@ -70,5 +77,9 @@ internal class ServerThemeProviderImpl @Inject constructor(
 
     override fun getServerThemeForCapabilities(capabilities: Capabilities?): ServerTheme {
         return ServerThemeImpl(context, capabilities?.themingCapability)
+    }
+
+    companion object {
+        const val FALLBACK_URL = "NULL"
     }
 }
