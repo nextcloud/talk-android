@@ -25,6 +25,7 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -162,11 +163,25 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
                 participant.getCalculatedActorType() == Participant.ActorType.CIRCLES ||
                 PARTICIPANT_SOURCE_CIRCLES.equals(participant.getSource())) {
 
-            holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
+                    DisplayUtils.getRoundedDrawable(
+                        viewThemeUtils.themePlaceholderAvatar(holder.binding.avatarDraweeView,
+                                                              R.drawable.ic_avatar_group)));
+            } else {
+                holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);
+            }
 
         } else if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
 
-            holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_mail);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
+                    DisplayUtils.getRoundedDrawable(
+                        viewThemeUtils.themePlaceholderAvatar(holder.binding.avatarDraweeView,
+                                                              R.drawable.ic_avatar_mail)));
+            } else {
+                holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_mail);
+            }
 
         } else if (
             participant.getCalculatedActorType() == Participant.ActorType.GUESTS ||
