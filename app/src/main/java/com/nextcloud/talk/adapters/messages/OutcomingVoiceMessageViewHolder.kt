@@ -24,16 +24,13 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.PorterDuff
 import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.ViewCompat
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -47,7 +44,6 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.util.concurrent.ExecutionException
@@ -91,19 +87,13 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(
-            ColorUtils.setAlphaComponent(
-                serverTheme.colorText,
-                ALPHA_60_INT
-            )
-        )
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
 
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
-        viewThemeUtils.themeHorizontalSeekBar(binding.seekbar, serverTheme.colorText)
+        viewThemeUtils.themeHorizontalSeekBar(binding.seekbar)
 
         handleIsPlayingVoiceMessageState(message)
 
@@ -142,7 +132,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context!!, drawableInt)?.let {
                 binding.checkMark.setImageDrawable(it)
-                viewThemeUtils.colorImageViewText(binding.checkMark)
             }
         }
 
@@ -165,7 +154,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
                 context!!,
                 R.drawable.ic_baseline_play_arrow_voice_message_24
             )
-            binding.playPauseBtn.icon.setColorFilter(serverTheme.colorText, PorterDuff.Mode.SRC_ATOP)
             binding.seekbar.progress = SEEKBAR_START
             message.resetVoiceMessage = false
         }
@@ -186,7 +174,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
                 context!!,
                 R.drawable.ic_baseline_pause_voice_message_24
             )
-            binding.playPauseBtn.icon.setColorFilter(serverTheme.colorText, PorterDuff.Mode.SRC_ATOP)
             binding.seekbar.progress = message.voiceMessagePlayedSeconds
         } else {
             binding.playPauseBtn.visibility = View.VISIBLE
@@ -194,7 +181,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
                 context!!,
                 R.drawable.ic_baseline_play_arrow_voice_message_24
             )
-            binding.playPauseBtn.icon.setColorFilter(serverTheme.colorText, PorterDuff.Mode.SRC_ATOP)
         }
     }
 
@@ -287,30 +273,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        val resources = sharedApplication!!.resources
-        val elementColor = viewThemeUtils.getElementColor(binding.root.context)
-        val bgBubbleColor = if (message.isDeleted) {
-            ColorUtils.setAlphaComponent(elementColor, HALF_ALPHA_INT)
-        } else {
-            elementColor
-        }
-        if (message.isGrouped) {
-            val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(resources, R.color.transparent, null),
-                bgBubbleColor,
-                R.drawable.shape_grouped_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        } else {
-            val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(resources, R.color.transparent, null),
-                bgBubbleColor,
-                R.drawable.shape_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        }
+        viewThemeUtils.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     fun assignVoiceMessageInterface(voiceMessageInterface: VoiceMessageInterface) {

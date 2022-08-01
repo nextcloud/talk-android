@@ -28,6 +28,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
@@ -43,6 +44,7 @@ import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.MaterialToolbar
@@ -163,13 +165,9 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
 
     fun themeHorizontalSeekBar(seekBar: SeekBar) {
         withScheme(seekBar) { scheme ->
-            themeHorizontalSeekBar(seekBar, scheme.primary)
+            themeHorizontalProgressBar(seekBar, scheme.primary)
+            seekBar.thumb.setColorFilter(scheme.primary, PorterDuff.Mode.SRC_IN)
         }
-    }
-
-    fun themeHorizontalSeekBar(seekBar: SeekBar, @ColorInt color: Int) {
-        themeHorizontalProgressBar(seekBar, color)
-        seekBar.thumb.setColorFilter(color, PorterDuff.Mode.SRC_IN)
     }
 
     fun themeHorizontalProgressBar(progressBar: ProgressBar?, @ColorInt color: Int) {
@@ -321,6 +319,51 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
+    fun themeIncomingMessageBubble(bubble: ViewGroup, grouped: Boolean, deleted: Boolean) {
+        val resources = bubble.resources
+
+        var bubbleResource = R.drawable.shape_incoming_message
+
+        if (grouped) {
+            bubbleResource = R.drawable.shape_grouped_incoming_message
+        }
+
+        val bgBubbleColor = if (deleted) {
+            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
+        } else {
+            resources.getColor(R.color.bg_message_list_incoming_bubble)
+        }
+        val bubbleDrawable = DisplayUtils.getMessageSelector(
+            bgBubbleColor,
+            resources.getColor(R.color.transparent),
+            bgBubbleColor, bubbleResource
+        )
+        ViewCompat.setBackground(bubble, bubbleDrawable)
+    }
+
+    fun themeOutgoingMessageBubble(bubble: ViewGroup, grouped: Boolean, deleted: Boolean) {
+        withScheme(bubble) { scheme ->
+            val bgBubbleColor = if (deleted) {
+                ColorUtils.setAlphaComponent(scheme.surfaceVariant, HALF_ALPHA_INT)
+            } else {
+                scheme.surfaceVariant
+            }
+
+            val layout = if (grouped) {
+                R.drawable.shape_grouped_outcoming_message
+            } else {
+                R.drawable.shape_outcoming_message
+            }
+            val bubbleDrawable = DisplayUtils.getMessageSelector(
+                bgBubbleColor,
+                ResourcesCompat.getColor(bubble.resources, R.color.transparent, null),
+                bgBubbleColor,
+                layout
+            )
+            ViewCompat.setBackground(bubble, bubbleDrawable)
+        }
+    }
+
     fun colorCardViewBackground(card: MaterialCardView) {
         withScheme(card) { scheme ->
             card.setCardBackgroundColor(scheme.surfaceVariant)
@@ -363,9 +406,9 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                 SWITCHCOMPAT_TRACK_ALPHA,
                 Color.red(scheme.primary),
                 Color.green(scheme.primary),
-                Color.blue
-                (scheme.primary)
+                Color.blue(scheme.primary)
             )
+
             switchCompat.thumbTintList = ColorStateList(
                 arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf()),
                 intArrayOf(scheme.primary, thumbUncheckedColor)
@@ -531,6 +574,12 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         private const val SWITCHCOMPAT_TRACK_ALPHA: Int = 77
         private const val PROGRESS_LIGHTNESS_LIGHT_THEME: Float = 0.76f
         private const val PROGRESS_LIGHTNESS_DARK_THEME: Float = 0.28f
+        private const val TRACK_ALPHA: Int = 77
+        private const val HALF_ALPHA_INT: Int = 255 / 2
+        private const val HSL_SIZE: Int = 3
+        private const val INDEX_LIGHTNESS: Int = 2
+        private const val LIGHTNESS_LIGHT_THEME: Float = 0.76f
+        private const val LIGHTNESS_DARK_THEME: Float = 0.28f
         private const val SURFACE_OPACITY_BUTTON_DISABLED: Float = 0.12f
         private const val ON_SURFACE_OPACITY_BUTTON_DISABLED: Float = 0.38f
         private const val SEARCH_TEXT_SIZE: Float = 16f

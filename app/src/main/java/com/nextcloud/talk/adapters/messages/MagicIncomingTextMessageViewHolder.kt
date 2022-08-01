@@ -61,13 +61,11 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
     private val binding: ItemCustomIncomingTextMessageBinding = ItemCustomIncomingTextMessageBinding.bind(itemView)
 
-    @JvmField
     @Inject
-    var context: Context? = null
+    lateinit var context: Context
 
-    @JvmField
     @Inject
-    var appPreferences: AppPreferences? = null
+    lateinit var appPreferences: AppPreferences
 
     lateinit var reactionsInterface: ReactionsInterface
 
