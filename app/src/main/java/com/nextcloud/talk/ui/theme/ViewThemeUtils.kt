@@ -199,8 +199,8 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
      * Tints the image with element color
      */
     fun colorImageView(imageView: ImageView) {
-        withElementColor(imageView) { color ->
-            imageView.imageTintList = ColorStateList.valueOf(color)
+        withScheme(imageView) { scheme ->
+            imageView.imageTintList = ColorStateList.valueOf(scheme.primary)
         }
     }
 
@@ -212,14 +212,14 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     }
 
     fun colorMaterialButtonText(button: MaterialButton) {
-        withElementColor(button) { color ->
+        withScheme(button) { scheme ->
             val disabledColor = ContextCompat.getColor(button.context, R.color.disabled_text)
             val colorStateList = ColorStateList(
                 arrayOf(
                     intArrayOf(android.R.attr.state_enabled),
                     intArrayOf(-android.R.attr.state_enabled)
                 ),
-                intArrayOf(color, disabledColor)
+                intArrayOf(scheme.primary, disabledColor)
             )
             button.setTextColor(colorStateList)
             button.iconTint = colorStateList
@@ -236,7 +236,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     ),
                     intArrayOf(
                         scheme.primary,
-                        calculateDisabledColor(scheme.primary, SURFACE_OPACITY_BUTTON_DISABLED)
+                        calculateDisabledColor(scheme.onSurface, SURFACE_OPACITY_BUTTON_DISABLED)
                     )
                 )
 
@@ -248,7 +248,36 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     ),
                     intArrayOf(
                         scheme.onPrimary,
-                        calculateDisabledColor(scheme.onPrimary, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                        calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                    )
+                )
+            )
+
+            button.iconTint = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_enabled),
+                    intArrayOf(-android.R.attr.state_enabled)
+                ),
+                intArrayOf(
+                    scheme.onPrimary,
+                    calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                )
+            )
+        }
+    }
+
+    fun colorMaterialButtonPrimaryOutlined(button: MaterialButton) {
+        withScheme(button) { scheme ->
+            button.strokeColor = ColorStateList.valueOf(scheme.outline)
+            button.setTextColor(
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_enabled),
+                        intArrayOf(-android.R.attr.state_enabled)
+                    ),
+                    intArrayOf(
+                        scheme.primary,
+                        calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
                     )
                 )
             )
@@ -258,8 +287,35 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     intArrayOf(-android.R.attr.state_enabled)
                 ),
                 intArrayOf(
-                    scheme.onPrimary,
-                    calculateDisabledColor(scheme.onPrimary, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                    scheme.primary,
+                    calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                )
+            )
+        }
+    }
+
+    fun colorMaterialButtonPrimaryBorderless(button: MaterialButton) {
+        withScheme(button) { scheme ->
+            button.setTextColor(
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_enabled),
+                        intArrayOf(-android.R.attr.state_enabled)
+                    ),
+                    intArrayOf(
+                        scheme.primary,
+                        calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                    )
+                )
+            )
+            button.iconTint = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_enabled),
+                    intArrayOf(-android.R.attr.state_enabled)
+                ),
+                intArrayOf(
+                    scheme.primary,
+                    calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
                 )
             )
         }
@@ -288,7 +344,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     }
 
     fun colorSwitchCompat(switchCompat: SwitchCompat) {
-        withElementColor(switchCompat) { color ->
+        withScheme(switchCompat) { scheme ->
 
             val context = switchCompat.context
 
@@ -303,11 +359,16 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                 context.theme
             )
 
-            val trackColor =
-                Color.argb(SWITCHCOMPAT_TRACK_ALPHA, Color.red(color), Color.green(color), Color.blue(color))
+            val trackColor = Color.argb(
+                SWITCHCOMPAT_TRACK_ALPHA,
+                Color.red(scheme.primary),
+                Color.green(scheme.primary),
+                Color.blue
+                (scheme.primary)
+            )
             switchCompat.thumbTintList = ColorStateList(
                 arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf()),
-                intArrayOf(color, thumbUncheckedColor)
+                intArrayOf(scheme.primary, thumbUncheckedColor)
             )
 
             switchCompat.trackTintList = ColorStateList(
@@ -318,37 +379,37 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     }
 
     fun colorDrawable(context: Context, drawable: Drawable) {
-        val color = getElementColor(context)
-        drawable.setTint(color)
+        val scheme = getScheme(context)
+        drawable.setTint(scheme.primary)
     }
 
     fun themeCheckbox(checkbox: CheckBox) {
-        withElementColor(checkbox) { color ->
+        withScheme(checkbox) { scheme ->
             checkbox.buttonTintList = ColorStateList(
                 arrayOf(
                     intArrayOf(-android.R.attr.state_checked),
                     intArrayOf(android.R.attr.state_checked)
                 ),
-                intArrayOf(Color.GRAY, color)
+                intArrayOf(Color.GRAY, scheme.primary)
             )
         }
     }
 
     fun themeRadioButton(radioButton: RadioButton) {
-        withElementColor(radioButton) { color ->
+        withScheme(radioButton) { scheme ->
             radioButton.buttonTintList = ColorStateList(
                 arrayOf(
                     intArrayOf(-android.R.attr.state_checked),
                     intArrayOf(android.R.attr.state_checked)
                 ),
-                intArrayOf(Color.GRAY, color)
+                intArrayOf(Color.GRAY, scheme.primary)
             )
         }
     }
 
     fun themeSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
-        withElementColor(swipeRefreshLayout) { color ->
-            swipeRefreshLayout.setColorSchemeColors(color)
+        withScheme(swipeRefreshLayout) { scheme ->
+            swipeRefreshLayout.setColorSchemeColors(scheme.primary)
             swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
         }
     }
@@ -420,8 +481,8 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     }
 
     fun colorTabLayout(tabLayout: TabLayout) {
-        withElementColor(tabLayout) { color ->
-            tabLayout.setSelectedTabIndicatorColor(color)
+        withScheme(tabLayout) { scheme ->
+            tabLayout.setSelectedTabIndicatorColor(scheme.primary)
         }
     }
 
@@ -438,18 +499,18 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     }
 
     fun colorChipBackground(chip: Chip) {
-        withElementColor(chip) { color ->
-            chip.chipBackgroundColor = ColorStateList.valueOf(color)
+        withScheme(chip) { scheme ->
+            chip.chipBackgroundColor = ColorStateList.valueOf(scheme.primary)
             chip.setTextColor(theme.colorText)
         }
     }
 
     fun colorChipOutlined(chip: Chip, strokeWidth: Float) {
-        withElementColor(chip) { color ->
+        withScheme(chip) { scheme ->
             chip.chipBackgroundColor = ColorStateList.valueOf(Color.TRANSPARENT)
             chip.chipStrokeWidth = strokeWidth
-            chip.chipStrokeColor = ColorStateList.valueOf(color)
-            chip.setTextColor(color)
+            chip.chipStrokeColor = ColorStateList.valueOf(scheme.primary)
+            chip.setTextColor(scheme.primary)
         }
     }
 
