@@ -341,6 +341,7 @@ public class ConversationsListController extends BaseController implements Flexi
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
             if (getActivity() != null && getActivity() instanceof MainActivity) {
                 loadUserAvatar(((MainActivity) getActivity()).binding.switchAccountButton);
+                viewThemeUtils.colorMaterialTextButton(((MainActivity) getActivity()).binding.switchAccountButton);
             }
             fetchData();
         }
