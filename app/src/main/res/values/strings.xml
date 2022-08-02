@@ -539,8 +539,8 @@
     <string name="polls_submit_vote">Vote</string>
     <string name="polls_voted_hidden_success">Vote submitted</string>
     <string name="polls_end_poll">End poll</string>
-    <string name="polls_end_poll_confirm">Do you really want to end this poll? This can\'t be undone.</string>
-    <string name="polls_max_votes_reached">You can\'t vote with more options for this poll.</string>
+    <string name="polls_end_poll_confirm">Do you really want to end this poll? This cannot be undone.</string>
+    <string name="polls_max_votes_reached">You cannot vote with more options for this poll.</string>
     <string name="polls_results_subtitle">Results</string>
     <string name="polls_question">Question</string>
     <string name="polls_question_hint">Your question</string>
