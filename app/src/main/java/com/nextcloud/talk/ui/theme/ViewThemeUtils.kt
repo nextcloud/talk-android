@@ -56,6 +56,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.tabs.TabLayout
@@ -99,6 +100,10 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
 
     private fun withScheme(view: View, block: (Scheme) -> Unit) {
         block(getScheme(view.context))
+    }
+
+    private fun withScheme(context: Context, block: (Scheme) -> Unit) {
+        block(getScheme(context))
     }
 
     private fun withSchemeDark(block: (Scheme) -> Unit) {
@@ -662,6 +667,13 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
             Color.green(color),
             Color.blue(color)
         )
+    }
+
+    fun themePrimaryMentionChip(context: Context, chip: ChipDrawable) {
+        withScheme(context) { scheme ->
+            chip.chipBackgroundColor = ColorStateList.valueOf(scheme.primary)
+            chip.setTextColor(scheme.onPrimary)
+        }
     }
 
     companion object {

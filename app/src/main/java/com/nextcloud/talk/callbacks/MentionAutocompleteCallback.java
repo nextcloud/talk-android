@@ -31,6 +31,7 @@ import com.facebook.widget.text.span.BetterImageSpan;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.mention.Mention;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.MagicCharPolicy;
 import com.nextcloud.talk.utils.text.Spans;
@@ -39,15 +40,19 @@ import com.vanniktech.emoji.EmojiRange;
 import com.vanniktech.emoji.Emojis;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
+    private final ViewThemeUtils viewThemeUtils;
     private Context context;
     private User conversationUser;
     private EditText editText;
 
-    public MentionAutocompleteCallback(Context context, User conversationUser,
-                                       EditText editText) {
+    public MentionAutocompleteCallback(Context context,
+                                       User conversationUser,
+                                       EditText editText,
+                                       ViewThemeUtils viewThemeUtils) {
         this.context = context;
         this.conversationUser = conversationUser;
         this.editText = editText;
+        this.viewThemeUtils = viewThemeUtils;
     }
 
     @Override
@@ -73,11 +78,14 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
                                                                                  conversationUser,
                                                                                  item.getSource(),
                                                                                  R.xml.chip_you,
-                                                                                 editText),
+                                                                                 editText,
+                                                                                 viewThemeUtils),
                                       BetterImageSpan.ALIGN_CENTER,
                                       item.getId(), item.getLabel());
         editable.setSpan(mentionChipSpan, start, start + replacementStringBuilder.toString().length(),
                          Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+
         return true;
     }
 

@@ -246,7 +246,8 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
                             individualHashMap["name"]!!,
                             individualHashMap["type"]!!,
                             message.activeUser!!,
-                            R.xml.chip_you
+                            R.xml.chip_you,
+                            viewThemeUtils
                         )
                     } else {
                         messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
@@ -256,7 +257,8 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
                             individualHashMap["name"]!!,
                             individualHashMap["type"]!!,
                             message.activeUser!!,
-                            R.xml.chip_others
+                            R.xml.chip_others,
+                            viewThemeUtils
                         )
                     }
                 } else if (individualHashMap["type"] == "file") {

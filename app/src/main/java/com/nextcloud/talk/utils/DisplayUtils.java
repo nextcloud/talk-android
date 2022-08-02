@@ -81,6 +81,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.UserMentionClickEvent;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.text.Spans;
 
 import org.greenrobot.eventbus.EventBus;
@@ -297,10 +298,15 @@ public class DisplayUtils {
                                                          User conversationUser,
                                                          String type,
                                                          @XmlRes int chipResource,
-                                                         @Nullable EditText emojiEditText) {
+                                                         @Nullable EditText emojiEditText,
+                                                         ViewThemeUtils viewThemeUtils) {
         ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
         chip.setText(EmojiCompat.get().process(label));
         chip.setEllipsize(TextUtils.TruncateAt.MIDDLE);
+
+        if (chipResource == R.xml.chip_you) {
+            viewThemeUtils.themePrimaryMentionChip(context, chip);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Configuration config = context.getResources().getConfiguration();
@@ -367,7 +373,8 @@ public class DisplayUtils {
     public static Spannable searchAndReplaceWithMentionSpan(Context context, Spannable text,
                                                             String id, String label, String type,
                                                             User conversationUser,
-                                                            @XmlRes int chipXmlRes) {
+                                                            @XmlRes int chipXmlRes,
+                                                            ViewThemeUtils viewThemeUtils) {
 
         Spannable spannableString = new SpannableString(text);
         String stringText = text.toString();
@@ -395,10 +402,18 @@ public class DisplayUtils {
                                                                                                    conversationUser,
                                                                                                    type,
                                                                                                    chipXmlRes,
-                                                                                                   null),
+                                                                                                   null,
+                                                                                                   viewThemeUtils),
                                                         BetterImageSpan.ALIGN_CENTER, id,
                                                         label);
             spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (chipXmlRes == R.xml.chip_you) {
+                spannableString.setSpan(
+                    new ForegroundColorSpan(viewThemeUtils.getScheme(context).getOnPrimary()),
+                    start,
+                    end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             if ("user".equals(type) && !conversationUser.getUserId().equals(id)) {
                 spannableString.setSpan(clickableSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             }
