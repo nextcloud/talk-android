@@ -581,6 +581,21 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     fun colorTabLayout(tabLayout: TabLayout) {
         withScheme(tabLayout) { scheme ->
             tabLayout.setSelectedTabIndicatorColor(scheme.primary)
+            tabLayout.tabTextColors = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_selected),
+                    intArrayOf(-android.R.attr.state_selected)
+                ),
+                intArrayOf(scheme.primary, ContextCompat.getColor(tabLayout.context, R.color.high_emphasis_text))
+            )
+            tabLayout.tabRippleColor = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_pressed)
+                ),
+                intArrayOf(
+                    calculateDisabledColor(scheme.primary, SURFACE_OPACITY_BUTTON_DISABLED)
+                )
+            )
         }
     }
 
