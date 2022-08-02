@@ -50,7 +50,7 @@ class PollCreateOptionViewHolder(
         }
 
         binding.pollOptionTextEdit.setText(pollCreateOptionItem.pollOption)
-        viewThemeUtils.colorEditText(binding.pollOptionText)
+        viewThemeUtils.colorEditText(binding.pollOptionTextEdit)
 
         if (focus) {
             itemsListener.requestFocus(binding.pollOptionTextEdit)

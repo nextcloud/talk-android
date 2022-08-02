@@ -103,7 +103,7 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
         viewThemeUtils.colorTextViewText(binding.pollOptions)
         viewThemeUtils.colorTextViewText(binding.pollSettings)
 
-        viewThemeUtils.colorEditText(binding.pollCreateQuestion)
+        viewThemeUtils.colorEditText(binding.pollCreateQuestionTextEdit)
 
         viewThemeUtils.colorMaterialButtonText(binding.pollAddOptionsItem)
         // TODO button also needs a disabled state handling for colors
