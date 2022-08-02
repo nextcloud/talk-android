@@ -1679,7 +1679,8 @@ class ChatController(args: Bundle) :
                 val callback = MentionAutocompleteCallback(
                     activity,
                     conversationUser!!,
-                    binding.messageInputView.inputEditText
+                    binding.messageInputView.inputEditText,
+                    viewThemeUtils
                 )
 
                 if (mentionAutocomplete == null && binding.messageInputView.inputEditText != null) {

@@ -180,7 +180,8 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
                         individualHashMap["name"]!!,
                         individualHashMap["type"]!!,
                         message.activeUser,
-                        R.xml.chip_others
+                        R.xml.chip_others,
+                        viewThemeUtils
                     )
                 } else if (individualHashMap["type"] == "file") {
                     realView.setOnClickListener { v: View? ->
