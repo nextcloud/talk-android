@@ -78,7 +78,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     /**
      * Scheme for painting elements
      */
-    private fun getScheme(context: Context): Scheme = when {
+    fun getScheme(context: Context): Scheme = when {
         isDarkMode(context) -> theme.darkScheme
         else -> theme.lightScheme
     }
