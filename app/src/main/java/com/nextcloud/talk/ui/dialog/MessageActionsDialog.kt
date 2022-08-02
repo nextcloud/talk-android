@@ -31,7 +31,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.NonNull
-import androidx.appcompat.content.res.AppCompatResources
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -228,7 +227,7 @@ class MessageActionsDialog(
 
     private fun checkAndSetEmojiSelfReaction(emoji: EmojiTextView) {
         if (emoji.text?.toString() != null && message.reactionsSelf?.contains(emoji.text?.toString()) == true) {
-            emoji.background = AppCompatResources.getDrawable(context, R.drawable.reaction_self_bottom_sheet_background)
+            viewThemeUtils.setCheckedBackground(emoji)
         }
     }
 

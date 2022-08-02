@@ -49,6 +49,7 @@ import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -67,6 +68,7 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.ui.ColorUtil
 import com.nextcloud.talk.utils.ui.PlatformThemeUtil.isDarkMode
+import com.vanniktech.emoji.EmojiTextView
 import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
 import scheme.Scheme
@@ -673,6 +675,18 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         withScheme(context) { scheme ->
             chip.chipBackgroundColor = ColorStateList.valueOf(scheme.primary)
             chip.setTextColor(scheme.onPrimary)
+        }
+    }
+
+    fun setCheckedBackground(emoji: EmojiTextView) {
+        withScheme(emoji) { scheme ->
+            val drawable = AppCompatResources
+                .getDrawable(emoji.context, R.drawable.reaction_self_bottom_sheet_background)!!
+                .mutate()
+            DrawableCompat.setTintList(
+                drawable,
+                ColorStateList.valueOf(scheme.primary))
+            emoji.background = drawable
         }
     }
 
