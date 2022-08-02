@@ -25,6 +25,7 @@ package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
@@ -76,6 +77,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
         var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
+        binding.messageTime.setTextColor(viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant)
         if (messageParameters != null && messageParameters.size > 0) {
             messageString = processMessageParameters(messageParameters, message, messageString)
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
@@ -91,6 +93,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
+        binding.messageText.setTextColor(viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant)
         binding.messageText.text = messageString
 
         // parent message handling
@@ -116,6 +119,8 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         readStatusDrawableInt?.let { drawableInt ->
             ResourcesCompat.getDrawable(context!!.resources, drawableInt, null)?.let {
                 binding.checkMark.setImageDrawable(it)
+                binding.checkMark.setColorFilter(viewThemeUtils.getScheme(binding.messageText.context)
+                    .onSurfaceVariant, PorterDuff.Mode.SRC_ATOP)
             }
         }
 
