@@ -24,6 +24,7 @@ package com.nextcloud.talk.remotefilebrowser.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -74,14 +75,18 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
         binding = ActivityRemoteFileBrowserBinding.inflate(layoutInflater)
         setSupportActionBar(binding.remoteFileBrowserItemsToolbar)
+        viewThemeUtils.themeToolbar(binding.remoteFileBrowserItemsToolbar)
+        val scheme = viewThemeUtils.getScheme(binding.sortListButtonGroup.context)
+        binding.sortListButtonGroup.setBackgroundColor(scheme.surface)
+        binding.sortButton.iconTint = ColorStateList.valueOf(scheme.onSurface)
+        binding.sortButton.setTextColor(scheme.onSurface)
+        viewThemeUtils.colorMaterialTextButton(binding.sortButton)
+        binding.pathNavigationBackButton.iconTint = ColorStateList.valueOf(scheme.onSurface)
+        binding.pathNavigationBackButton.setTextColor(scheme.onSurface)
+        viewThemeUtils.colorMaterialTextButton(binding.pathNavigationBackButton)
+        viewThemeUtils.themeStatusBar(this, binding.remoteFileBrowserItemsToolbar)
         setContentView(binding.root)
 
-        DisplayUtils.applyColorToStatusBar(
-            this,
-            ResourcesCompat.getColor(
-                resources, R.color.appbar, null
-            )
-        )
         DisplayUtils.applyColorToNavigationBar(
             this.window,
             ResourcesCompat.getColor(resources, R.color.bg_default, null)
