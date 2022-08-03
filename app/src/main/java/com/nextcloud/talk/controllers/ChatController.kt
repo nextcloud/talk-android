@@ -2486,6 +2486,16 @@ class ChatController(args: Bundle) :
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_conversation, menu)
 
+        viewThemeUtils.colorToolbarMenuIcon(
+            binding.messageInputView.context,
+            menu.findItem(R.id.conversation_voice_call)
+        )
+
+        viewThemeUtils.colorToolbarMenuIcon(
+            binding.messageInputView.context,
+            menu.findItem(R.id.conversation_video_call)
+        )
+
         if (conversationUser?.userId == "?") {
             menu.removeItem(R.id.conversation_info)
         } else {

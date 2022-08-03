@@ -334,6 +334,7 @@ class ContactsController(args: Bundle) :
             val searchManager: SearchManager? = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
             if (searchItem != null) {
                 searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+                viewThemeUtils.themeSearchView(searchView!!)
                 searchView!!.maxWidth = Int.MAX_VALUE
                 searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
                 var imeOptions: Int = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
@@ -377,6 +378,14 @@ class ContactsController(args: Bundle) :
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
+
+        if (searchItem != null) {
+            viewThemeUtils.colorToolbarMenuIcon(
+                binding.titleTextView.context,
+                searchItem!!
+            )
+        }
+
         checkAndHandleDoneMenuItem()
         if (adapter?.hasFilter() == true) {
             searchItem!!.expandActionView()
