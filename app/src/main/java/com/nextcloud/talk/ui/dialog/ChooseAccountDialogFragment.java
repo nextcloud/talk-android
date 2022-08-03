@@ -39,7 +39,6 @@ import android.view.ViewGroup;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.NcApi;
@@ -118,8 +117,11 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         viewThemeUtils.themeDialogDivider(binding.divider);
 
         viewThemeUtils.colorMaterialTextButton(binding.setStatus);
+        viewThemeUtils.colorDialogMenuText(binding.setStatus);
         viewThemeUtils.colorMaterialTextButton(binding.addAccount);
+        viewThemeUtils.colorDialogMenuText(binding.addAccount);
         viewThemeUtils.colorMaterialTextButton(binding.manageSettings);
+        viewThemeUtils.colorDialogMenuText(binding.manageSettings);
 
         // Defining user picture
         binding.currentAccount.userIcon.setTag("");

@@ -703,6 +703,13 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
+    fun colorDialogMenuText(button: MaterialButton) {
+        withScheme(button) { scheme ->
+            button.setTextColor(scheme.onSurface)
+            button.iconTint = ColorStateList.valueOf(scheme.onSurface)
+        }
+    }
+
     companion object {
         private val THEMEABLE_PLACEHOLDER_IDS = listOf(
             R.drawable.ic_mimetype_package_x_generic,
