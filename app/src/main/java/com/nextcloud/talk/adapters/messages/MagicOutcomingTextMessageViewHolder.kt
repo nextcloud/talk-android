@@ -119,8 +119,9 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         readStatusDrawableInt?.let { drawableInt ->
             ResourcesCompat.getDrawable(context!!.resources, drawableInt, null)?.let {
                 binding.checkMark.setImageDrawable(it)
-                binding.checkMark.setColorFilter(viewThemeUtils.getScheme(binding.messageText.context)
-                    .onSurfaceVariant, PorterDuff.Mode.SRC_ATOP)
+                binding.checkMark.setColorFilter(
+                    viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant, PorterDuff.Mode.SRC_ATOP
+                )
             }
         }
 
