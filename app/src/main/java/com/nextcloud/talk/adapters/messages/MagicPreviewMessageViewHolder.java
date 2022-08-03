@@ -51,6 +51,7 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.ui.theme.ServerTheme;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.FileViewerUtils;
@@ -95,6 +96,9 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
     @Inject
     ServerTheme serverTheme;
+
+    @Inject
+    ViewThemeUtils viewThemeUtils;
 
     @Inject
     OkHttpClient okHttpClient;
@@ -239,7 +243,11 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         itemView.setTag(REPLYABLE_VIEW_TAG, message.getReplyable());
 
         reactionsBinding = getReactionsBinding();
-        new Reaction().showReactions(message, reactionsBinding, getMessageText().getContext(), true);
+        new Reaction().showReactions(message,
+                                     reactionsBinding,
+                                     getMessageText().getContext(),
+                                     true,
+                                     viewThemeUtils);
         reactionsBinding.reactionsEmojiWrapper.setOnClickListener(l -> {
             reactionsInterface.onClickReactions(message);
         });

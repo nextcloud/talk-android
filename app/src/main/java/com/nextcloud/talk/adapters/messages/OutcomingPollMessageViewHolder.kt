@@ -106,7 +106,13 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
         setPollPreview(message)
 
-        Reaction().showReactions(message, binding.reactions, binding.messageTime.context, true)
+        Reaction().showReactions(
+            message,
+            binding.reactions,
+            binding.messageTime.context,
+            true,
+            viewThemeUtils
+        )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }

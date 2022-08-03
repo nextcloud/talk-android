@@ -88,7 +88,13 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
 
         setPollPreview(message)
 
-        Reaction().showReactions(message, binding.reactions, binding.messageTime.context, false)
+        Reaction().showReactions(
+            message,
+            binding.reactions,
+            binding.messageTime.context,
+            false,
+            viewThemeUtils
+        )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }
