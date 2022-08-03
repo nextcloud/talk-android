@@ -690,6 +690,19 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
+    fun setCheckedBackground(linearLayout: LinearLayout, @ColorInt backgroundColor: Int) {
+        withScheme(linearLayout) { scheme ->
+            val drawable = AppCompatResources
+                .getDrawable(linearLayout.context, R.drawable.reaction_self_background)!!
+                .mutate()
+            DrawableCompat.setTintList(
+                drawable,
+                ColorStateList.valueOf(backgroundColor)
+            )
+            linearLayout.background = drawable
+        }
+    }
+
     companion object {
         private val THEMEABLE_PLACEHOLDER_IDS = listOf(
             R.drawable.ic_mimetype_package_x_generic,

@@ -128,7 +128,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
 
-        Reaction().showReactions(message, binding.reactions, context!!, true)
+        Reaction().showReactions(message, binding.reactions, context, true, viewThemeUtils)
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }

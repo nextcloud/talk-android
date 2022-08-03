@@ -137,7 +137,13 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
 
         binding.checkMark.setContentDescription(readStatusContentDescriptionString)
 
-        Reaction().showReactions(message, binding.reactions, binding.messageTime.context, true)
+        Reaction().showReactions(
+            message,
+            binding.reactions,
+            binding.messageTime.context,
+            true,
+            viewThemeUtils
+        )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }

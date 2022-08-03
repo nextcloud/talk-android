@@ -145,7 +145,13 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
             }
         })
 
-        Reaction().showReactions(message, binding.reactions, binding.messageTime.context, false)
+        Reaction().showReactions(
+            message,
+            binding.reactions,
+            binding.messageTime.context,
+            false,
+            viewThemeUtils
+        )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }
