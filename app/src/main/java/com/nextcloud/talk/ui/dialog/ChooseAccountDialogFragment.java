@@ -312,7 +312,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             status.getStatus(),
             status.getIcon(),
             size,
-            getContext().getResources().getColor(R.color.dialog_background),
+            viewThemeUtils.getScheme(binding.currentAccount.ticker.getContext()).getSurface(),
             getContext()));
         binding.currentAccount.ticker.setVisibility(View.VISIBLE);
 
