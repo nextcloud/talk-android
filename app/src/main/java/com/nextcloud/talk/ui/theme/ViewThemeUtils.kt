@@ -621,7 +621,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     fun colorChipBackground(chip: Chip) {
         withScheme(chip) { scheme ->
             chip.chipBackgroundColor = ColorStateList.valueOf(scheme.primary)
-            chip.setTextColor(theme.colorText)
+            chip.setTextColor(scheme.onPrimary)
         }
     }
 
