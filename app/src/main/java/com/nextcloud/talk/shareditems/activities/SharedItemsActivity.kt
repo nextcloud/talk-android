@@ -74,6 +74,8 @@ class SharedItemsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewThemeUtils.themeStatusBar(this, binding.sharedItemsToolbar)
+        viewThemeUtils.themeToolbar(binding.sharedItemsToolbar)
+        viewThemeUtils.themeTabLayoutOnSurface(binding.sharedItemsTabs)
 
         DisplayUtils.applyColorToNavigationBar(
             this.window,

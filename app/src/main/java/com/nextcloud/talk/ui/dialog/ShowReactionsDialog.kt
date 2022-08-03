@@ -148,9 +148,7 @@ class ShowReactionsDialog(
                 }
             })
 
-            viewThemeUtils.colorTabLayout(binding.emojiReactionsTabs)
-            binding.emojiReactionsTabs.setBackgroundColor(
-                viewThemeUtils.getScheme(binding.emojiReactionsTabs .context).surface)
+            viewThemeUtils.themeTabLayoutOnSurface(binding.emojiReactionsTabs)
 
             updateParticipantsForEmoji(chatMessage, tagAll)
         }
