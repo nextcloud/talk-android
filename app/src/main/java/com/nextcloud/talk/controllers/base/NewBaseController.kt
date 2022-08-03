@@ -188,6 +188,7 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         binding.searchToolbar.visibility = View.GONE
         binding.toolbar.visibility = View.VISIBLE
+        viewThemeUtils.colorToolbarOverflowIcon(binding.toolbar)
         layoutParams.scrollFlags = 0
         binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
             binding.appBar.context,

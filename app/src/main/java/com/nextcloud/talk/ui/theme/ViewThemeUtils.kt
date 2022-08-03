@@ -30,6 +30,7 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -117,6 +118,18 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
             toolbar.setBackgroundColor(scheme.surface)
             toolbar.setNavigationIconTint(scheme.onSurface)
             toolbar.setTitleTextColor(scheme.onSurface)
+        }
+    }
+
+    fun colorToolbarMenuIcon(context: Context, item: MenuItem) {
+        withScheme(context) { scheme ->
+            item.icon.setColorFilter(scheme.onSurface, PorterDuff.Mode.SRC_ATOP)
+        }
+    }
+
+    fun colorToolbarOverflowIcon(toolbar: MaterialToolbar) {
+        withScheme(toolbar) { scheme ->
+            toolbar.overflowIcon?.setColorFilter(scheme.onSurface, PorterDuff.Mode.SRC_ATOP)
         }
     }
 
@@ -690,7 +703,8 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                 .mutate()
             DrawableCompat.setTintList(
                 drawable,
-                ColorStateList.valueOf(scheme.primary))
+                ColorStateList.valueOf(scheme.primary)
+            )
             emoji.background = drawable
         }
     }
