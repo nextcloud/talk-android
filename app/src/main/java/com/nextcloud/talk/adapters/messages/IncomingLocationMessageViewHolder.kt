@@ -90,7 +90,6 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
 
         val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
@@ -188,7 +187,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
                 .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
+                viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

@@ -45,9 +45,10 @@
         android:layout_alignParentTop="true"
         android:layout_marginEnd="8dp"
         android:layout_toEndOf="@id/quoteColoredView"
+        android:alpha="0.6"
         android:ellipsize="end"
         android:textAlignment="viewStart"
-        android:textColor="@color/medium_emphasis_text"
+        android:textColor="@color/no_emphasis_text"
         android:textIsSelectable="false"
         android:textSize="12sp"
         tools:text="Jane Doe" />

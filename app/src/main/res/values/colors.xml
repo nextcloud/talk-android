@@ -36,6 +36,7 @@
     <color name="refresh_spinner_background">#ffffff</color>
 
     <!-- general text colors -->
+    <color name="no_emphasis_text">#000000</color>
     <color name="high_emphasis_text">#de000000</color>
     <color name="medium_emphasis_text">#99000000</color>
     <color name="low_emphasis_text">#61000000</color>

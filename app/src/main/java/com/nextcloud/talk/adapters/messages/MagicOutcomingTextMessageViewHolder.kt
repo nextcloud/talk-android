@@ -77,15 +77,13 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
         var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
-        binding.messageTime.setTextColor(viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant)
+        val textColor = viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant
+        binding.messageTime.setTextColor(textColor)
         if (messageParameters != null && messageParameters.size > 0) {
             messageString = processMessageParameters(messageParameters, message, messageString)
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
             textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
             layoutParams.isWrapBefore = true
-            binding.messageTime.setTextColor(
-                ResourcesCompat.getColor(context!!.resources, R.color.warm_grey_four, null)
-            )
             realView.isSelected = true
         }
 
@@ -93,7 +91,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
-        binding.messageText.setTextColor(viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant)
+        binding.messageText.setTextColor(textColor)
         binding.messageText.text = messageString
 
         // parent message handling
@@ -141,6 +139,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
     private fun processParentMessage(message: ChatMessage) {
         val parentChatMessage = message.parentMessage
+        val textColor = viewThemeUtils.getScheme(binding.messageQuote.quotedMessage.context).onSurfaceVariant
         parentChatMessage!!.activeUser = message.activeUser
         parentChatMessage.imageUrl?.let {
             binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
@@ -157,9 +156,9 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             ?: context!!.getText(R.string.nc_nick_guest)
         binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
-        binding.messageQuote.quoteColoredView.setBackgroundColor(
-            ContextCompat.getColor(binding.messageQuote.quoteColoredView.context, R.color.high_emphasis_text)
-        )
+        binding.messageQuote.quotedMessageAuthor.setTextColor(textColor)
+        binding.messageQuote.quotedMessage.setTextColor(textColor)
+        binding.messageQuote.quoteColoredView.setBackgroundColor(textColor)
     }
 
     private fun setBubbleOnChatMessage(message: ChatMessage) {
@@ -206,8 +205,5 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
-        private const val HALF_ALPHA_INT: Int = 255 / 2
-        private val ALPHA_60_INT: Int = (255 * 0.6).roundToInt()
-        private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
     }
 }
