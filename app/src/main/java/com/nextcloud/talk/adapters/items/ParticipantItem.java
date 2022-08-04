@@ -131,15 +131,13 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             holder.binding.avatarDraweeView.setAlpha(1.0f);
         }
 
+        holder.binding.nameText.setText(participant.getDisplayName());
+
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.binding.nameText, participant.getDisplayName(),
                                         String.valueOf(adapter.getFilter(String.class)),
-                                        NextcloudTalkApplication.Companion.getSharedApplication()
-                                            .getResources()
-                                            .getColor(R.color.colorPrimary));
+                                        viewThemeUtils.getScheme(holder.binding.nameText.getContext()).getPrimary());
         }
-
-        holder.binding.nameText.setText(participant.getDisplayName());
 
         if (TextUtils.isEmpty(participant.getDisplayName()) &&
             (participant.getType().equals(Participant.ParticipantType.GUEST) ||

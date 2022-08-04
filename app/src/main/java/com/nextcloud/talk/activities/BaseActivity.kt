@@ -32,6 +32,7 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.CertificateEvent
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.ssl.MagicTrustManager
@@ -52,6 +53,9 @@ open class BaseActivity : AppCompatActivity() {
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
     lateinit var context: Context
@@ -113,7 +117,7 @@ open class BaseActivity : AppCompatActivity() {
             LovelyStandardDialog(this)
                 .setTopColorRes(R.color.nc_darkRed)
                 .setNegativeButtonColorRes(R.color.nc_darkRed)
-                .setPositiveButtonColorRes(R.color.colorPrimary)
+                .setPositiveButtonColor(viewThemeUtils.getScheme(this).primary)
                 .setIcon(R.drawable.ic_security_white_24dp)
                 .setTitle(R.string.nc_certificate_dialog_title)
                 .setMessage(dialogText)
