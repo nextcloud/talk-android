@@ -23,6 +23,7 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.PorterDuff
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.ColorUtils
@@ -76,6 +77,8 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         super.onBind(message)
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
+        val textColor = viewThemeUtils.getScheme(binding.messageTime.context).onSurfaceVariant
+        binding.messageTime.setTextColor(textColor)
 
         colorizeMessageBubble(message)
 
@@ -99,6 +102,9 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context, drawableInt)?.let {
                 binding.checkMark.setImageDrawable(it)
+                binding.checkMark.setColorFilter(
+                    viewThemeUtils.getScheme(binding.checkMark.context).onSurfaceVariant, PorterDuff.Mode.SRC_ATOP
+                )
             }
         }
 

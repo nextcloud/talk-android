@@ -82,7 +82,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
-            android:textColor="@color/medium_emphasis_text"
+            android:alpha="0.6"
+            android:textColor="@color/no_emphasis_text"
             app:layout_alignSelf="center"
             tools:text="10:35" />
 

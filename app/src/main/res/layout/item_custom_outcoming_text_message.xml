@@ -64,7 +64,7 @@
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
             android:alpha="0.6"
-            android:textColor="@color/medium_emphasis_text"
+            android:textColor="@color/no_emphasis_text"
             android:textIsSelectable="false"
             app:layout_alignSelf="center"
             tools:text="10:35" />

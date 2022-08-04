@@ -188,7 +188,8 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 if (drawable != null &&
                     (drawableResourceId == R.drawable.ic_mimetype_folder ||
                     drawableResourceId == R.drawable.ic_mimetype_package_x_generic)) {
-                    drawable.setColorFilter(serverTheme.getPrimaryColor(), PorterDuff.Mode.SRC_ATOP);
+                    drawable.setColorFilter(viewThemeUtils.getScheme(image.getContext()).getPrimary(),
+                                            PorterDuff.Mode.SRC_ATOP);
                 }
 
                 image.getHierarchy().setPlaceholderImage(drawable);

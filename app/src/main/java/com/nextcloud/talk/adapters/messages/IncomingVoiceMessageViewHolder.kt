@@ -89,7 +89,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(ResourcesCompat.getColor(context?.resources!!, R.color.warm_grey_four, null))
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
@@ -292,7 +291,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
                 .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
+                viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

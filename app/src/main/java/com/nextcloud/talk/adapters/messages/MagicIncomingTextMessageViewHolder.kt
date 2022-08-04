@@ -89,12 +89,9 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
             binding.messageAuthor.visibility = View.GONE
         }
 
-        val resources = itemView.resources
-
-        setBubbleOnChatMessage(message, resources)
+        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(ResourcesCompat.getColor(resources, R.color.warm_grey_four, null))
 
         var messageString: Spannable = SpannableString(message.text)
 
@@ -147,30 +144,6 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
         } else {
             binding.messageAuthor.setText(R.string.nc_nick_guest)
         }
-    }
-
-    private fun setBubbleOnChatMessage(
-        message: ChatMessage,
-        resources: Resources
-    ) {
-        val bgBubbleColor = if (message.isDeleted) {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble_deleted, null)
-        } else {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble, null)
-        }
-
-        var bubbleResource = R.drawable.shape_incoming_message
-
-        if (message.isGrouped) {
-            bubbleResource = R.drawable.shape_grouped_incoming_message
-        }
-
-        val bubbleDrawable = DisplayUtils.getMessageSelector(
-            bgBubbleColor,
-            ResourcesCompat.getColor(resources, R.color.transparent, null),
-            bgBubbleColor, bubbleResource
-        )
-        ViewCompat.setBackground(bubble, bubbleDrawable)
     }
 
     private fun processParentMessage(message: ChatMessage) {

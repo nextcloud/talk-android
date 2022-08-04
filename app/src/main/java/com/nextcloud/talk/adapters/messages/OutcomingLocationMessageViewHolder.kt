@@ -25,6 +25,7 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.util.Log
 import android.util.TypedValue
@@ -81,6 +82,8 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
+        val textColor = viewThemeUtils.getScheme(binding.messageTime.context).onSurfaceVariant
+        binding.messageTime.setTextColor(textColor)
 
         realView.isSelected = false
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
@@ -112,6 +115,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context!!, drawableInt)?.let {
                 binding.checkMark.setImageDrawable(it)
+                binding.checkMark.setColorFilter(
+                    viewThemeUtils.getScheme(binding.checkMark.context).onSurfaceVariant, PorterDuff.Mode.SRC_ATOP
+                )
             }
         }
 
