@@ -651,8 +651,7 @@ class ChatController(args: Bundle) :
             }
         }
 
-        binding.popupBubbleView.setTextColor(Color.WHITE)
-        binding.popupBubbleView.setIconTint(ColorStateList.valueOf(Color.WHITE))
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.popupBubbleView)
 
         binding.messageInputView.setPadding(0, 0, 0, 0)
 
