@@ -65,9 +65,6 @@ class MessageSearchActivity : BaseActivity() {
     @Inject
     lateinit var userProvider: CurrentUserProviderNew
 
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
-
     private lateinit var binding: ActivityMessageSearchBinding
     private lateinit var searchView: SearchView
 

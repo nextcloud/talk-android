@@ -203,7 +203,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                     participant.setActorType(Participant.ActorType.USERS);
                     participant.setActorId(userId);
                     participant.setDisplayName(userEntity.getDisplayName());
-                    userItems.add(new AdvancedUserItem(participant, userEntity, null));
+                    userItems.add(new AdvancedUserItem(participant, userEntity, null, viewThemeUtils));
                 }
             }
 

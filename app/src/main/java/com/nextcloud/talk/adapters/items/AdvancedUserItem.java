@@ -34,6 +34,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.AccountItemBinding;
 import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
@@ -54,11 +55,16 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
     private final User user;
     @Nullable
     private final Account account;
+    private final ViewThemeUtils viewThemeUtils;
 
-    public AdvancedUserItem(Participant participant, User user, @Nullable Account account) {
+    public AdvancedUserItem(Participant participant,
+                            User user,
+                            @Nullable Account account,
+                            ViewThemeUtils viewThemeUtils) {
         this.participant = participant;
         this.user = user;
         this.account = account;
+        this.viewThemeUtils = viewThemeUtils;
     }
 
     @Override
@@ -110,9 +116,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
                     holder.binding.userName,
                     participant.getDisplayName(),
                     String.valueOf(adapter.getFilter(String.class)),
-                    NextcloudTalkApplication.Companion.getSharedApplication()
-                            .getResources()
-                            .getColor(R.color.colorPrimary));
+                    viewThemeUtils.getScheme(holder.binding.userName.getContext()).getPrimary());
         } else {
             holder.binding.userName.setText(participant.getDisplayName());
         }
