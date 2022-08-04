@@ -346,6 +346,7 @@ public class NotificationWorker extends Worker {
         if (Build.VERSION.SDK_INT >= 23) {
             // This method should exist since API 21, but some phones don't have it
             // So as a safeguard, we don't use it until 23
+
             notificationBuilder.setColor(context.getResources().getColor(R.color.colorPrimary));
         }
 
