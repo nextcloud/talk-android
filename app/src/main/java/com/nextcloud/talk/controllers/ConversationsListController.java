@@ -806,9 +806,7 @@ public class ConversationsListController extends BaseController implements Flexi
                 recyclerView.smoothScrollToPosition(nextUnreadConversationScrollPosition);
             }
         });
-
-        newMentionPopupBubble.setTextColor(Color.WHITE);
-        newMentionPopupBubble.setIconTint(ColorStateList.valueOf(Color.WHITE));
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(newMentionPopupBubble);
     }
 
     private void checkToShowUnreadBubble() {
