@@ -562,7 +562,9 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         if (ApplicationWideMessageHolder.getInstance().messageType != null) {
             when (ApplicationWideMessageHolder.getInstance().messageType) {
                 ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED -> {
-                    binding.messageText.setTextColor(resources!!.getColor(R.color.colorPrimary))
+                    binding.messageText.setTextColor(
+                        viewThemeUtils.getScheme(binding.messageText.context).primary
+                    )
                     binding.messageText.text = resources!!.getString(R.string.nc_settings_account_updated)
                     binding.messageView.visibility = View.VISIBLE
                 }
@@ -571,13 +573,17 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                     binding.messageText.setTextColor(resources!!.getColor(R.color.nc_darkRed))
                     binding.messageText.text = resources!!.getString(R.string.nc_settings_wrong_account)
                     binding.messageView.visibility = View.VISIBLE
-                    binding.messageText.setTextColor(resources!!.getColor(R.color.colorPrimary))
+                    binding.messageText.setTextColor(
+                        viewThemeUtils.getScheme(binding.messageText.context).primary
+                    )
                     binding.messageText.text = resources!!.getString(R.string.nc_Server_account_imported)
                     binding.messageView.visibility = View.VISIBLE
                 }
 
                 ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED -> {
-                    binding.messageText.setTextColor(resources!!.getColor(R.color.colorPrimary))
+                    binding.messageText.setTextColor(
+                        viewThemeUtils.getScheme(binding.messageText.context).primary
+                    )
                     binding.messageText.text = resources!!.getString(R.string.nc_Server_account_imported)
                     binding.messageView.visibility = View.VISIBLE
                 }
