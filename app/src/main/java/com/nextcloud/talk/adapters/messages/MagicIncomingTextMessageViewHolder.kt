@@ -26,7 +26,6 @@ package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -38,7 +37,6 @@ import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable

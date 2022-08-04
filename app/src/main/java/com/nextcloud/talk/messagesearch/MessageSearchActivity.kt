@@ -41,7 +41,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMessageSearchBinding
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
