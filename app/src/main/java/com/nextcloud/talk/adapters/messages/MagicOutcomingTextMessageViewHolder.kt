@@ -31,7 +31,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.util.TypedValue
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import coil.load
@@ -50,7 +49,6 @@ import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
 import com.nextcloud.talk.utils.TextMatchers
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
 class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
