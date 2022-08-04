@@ -108,7 +108,9 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
     @Override
     public int hashCode() {
-        return conversation.hashCode() * (status == null ? 1 : status.hashCode());
+        int result = conversation.hashCode();
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        return result;
     }
 
     @Override
