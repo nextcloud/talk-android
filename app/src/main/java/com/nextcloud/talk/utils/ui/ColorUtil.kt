@@ -1,23 +1,24 @@
 /*
  * Nextcloud Talk application
  *
- * @author Andy Scherzinger
- * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
+ * @author Álvaro Brey
+ * Copyright (C) 2022 Álvaro Brey
+ * Copyright (C) 2022 Nextcloud GmbH
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.ui.theme
+package com.nextcloud.talk.utils.ui
 
 import android.content.Context
 import android.graphics.Color
@@ -55,6 +56,16 @@ class ColorUtil @Inject constructor(private val context: Context) {
         } else {
             ContextCompat.getColor(context, R.color.grey_900)
         }
+    }
+
+    fun setLightness(@ColorInt color: Int, lightness: Float): Int {
+        require(lightness in 0.0..1.0) { "Lightness must be between 0 and 1" }
+        val hsl = FloatArray(HSL_SIZE)
+        ColorUtils.RGBToHSL(Color.red(color), Color.green(color), Color.blue(color), hsl)
+
+        hsl[INDEX_LIGHTNESS] = lightness
+
+        return ColorUtils.HSLToColor(hsl)
     }
 
     @ColorInt

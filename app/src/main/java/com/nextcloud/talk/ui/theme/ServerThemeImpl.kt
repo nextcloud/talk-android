@@ -25,6 +25,7 @@ package com.nextcloud.talk.ui.theme
 
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.capabilities.ThemingCapability
+import com.nextcloud.talk.utils.ui.ColorUtil
 
 internal class ServerThemeImpl(themingCapability: ThemingCapability?, colorUtil: ColorUtil) :
     ServerTheme {
