@@ -56,7 +56,6 @@ import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
 import javax.inject.Inject
 
-@Suppress("Detekt.TooManyFunctions")
 class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
 
     private fun isDarkMode(context: Context): Boolean = when (
@@ -235,7 +234,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
             checkbox.buttonTintList = ColorStateList(
                 arrayOf(
                     intArrayOf(-android.R.attr.state_checked),
-                    intArrayOf(android.R.attr.state_checked),
+                    intArrayOf(android.R.attr.state_checked)
                 ),
                 intArrayOf(Color.GRAY, color)
             )
@@ -247,7 +246,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
             radioButton.buttonTintList = ColorStateList(
                 arrayOf(
                     intArrayOf(-android.R.attr.state_checked),
-                    intArrayOf(android.R.attr.state_checked),
+                    intArrayOf(android.R.attr.state_checked)
                 ),
                 intArrayOf(Color.GRAY, color)
             )
@@ -357,9 +356,9 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
         ColorUtils.RGBToHSL(Color.red(color), Color.green(color), Color.blue(color), hsl)
 
         if (isDarkMode(context)) {
-            hsl[INDEX_LUMINATION] = LUMINATION_DARK_THEME
+            hsl[INDEX_LIGHTNESS] = LIGHTNESS_DARK_THEME
         } else {
-            hsl[INDEX_LUMINATION] = LUMINATION_LIGHT_THEME
+            hsl[INDEX_LIGHTNESS] = LIGHTNESS_LIGHT_THEME
         }
 
         return ColorUtils.HSLToColor(hsl)
@@ -372,8 +371,8 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
         )
         private const val TRACK_ALPHA: Int = 77
         private const val HSL_SIZE: Int = 3
-        private const val INDEX_LUMINATION: Int = 2
-        private const val LUMINATION_LIGHT_THEME: Float = 0.76f
-        private const val LUMINATION_DARK_THEME: Float = 0.28f
+        private const val INDEX_LIGHTNESS: Int = 2
+        private const val LIGHTNESS_LIGHT_THEME: Float = 0.76f
+        private const val LIGHTNESS_DARK_THEME: Float = 0.28f
     }
 }
