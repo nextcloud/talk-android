@@ -344,12 +344,15 @@
     <string name="polls_amount_voters">%1$s oy</string>
     <string name="polls_edit_vote">Oyu düzenle</string>
     <string name="polls_end_poll">Anleti sonlandır</string>
-    <string name="polls_end_poll_confirm">Bu klasörü gerçekten sonlandırmak istiyor musunuz? Bu işlem geri alınamaz!</string>
+    <string name="polls_end_poll_confirm">Bu anketi sonlandırmak istediğinize emin misiniz? Bu işlem geri alınamaz!</string>
     <string name="polls_max_votes_reached">Bu ankete başka seçenekler ile oy veremezsiniz.</string>
     <string name="polls_multiple_answers">Birden çok yanıt</string>
+    <string name="polls_option_delete">%1$s seçeneğini sil</string>
+    <string name="polls_option_hint">%1$s seçeneği</string>
     <string name="polls_options">Seçenekler</string>
     <string name="polls_private_poll">Kapalı anket</string>
     <string name="polls_question">Soru</string>
+    <string name="polls_question_hint">Sorunuz</string>
     <string name="polls_results_subtitle">Sonuçlar</string>
     <string name="polls_settings">Ayarlar</string>
     <string name="polls_submit_vote">Oy</string>

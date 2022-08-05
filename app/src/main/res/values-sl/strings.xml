@@ -337,7 +337,6 @@
     <string name="polls_add_option">Dodaj možnost</string>
     <string name="polls_edit_vote">Uredi glasovanje</string>
     <string name="polls_end_poll">Končaj anketo</string>
-    <string name="polls_end_poll_confirm">Ali res želite končati anketo? Dejanja ni mogoče povrniti!</string>
     <string name="polls_multiple_answers">Več odgovorov</string>
     <string name="polls_options">Možnosti</string>
     <string name="polls_private_poll">Zasebna anketa</string>
@@ -345,7 +344,6 @@
     <string name="polls_results_subtitle">Zadetki</string>
     <string name="polls_settings">Nastavitve</string>
     <string name="polls_submit_vote">Glas</string>
-    <string name="polls_voted_hidden_success">Glas je uspešno oddan</string>
     <string name="reactions_tab_all">Vse</string>
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>
     <string name="save">Shrani</string>

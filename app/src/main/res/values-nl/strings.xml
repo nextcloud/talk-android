@@ -2,6 +2,8 @@
   <resources>
     <string name="account_icon">Accountpictogram</string>
     <string name="appbar_search_in">Zoeken in %s</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_phone">Telefoon</string>
     <string name="audio_output_speaker">Speaker</string>
     <string name="avatar">Avatar</string>
