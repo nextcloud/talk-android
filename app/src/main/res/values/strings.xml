@@ -533,7 +533,10 @@
 
     <!-- Polls -->
     <string name="message_poll_tap_to_open">Tap to open poll</string>
-    <string name="polls_amount_voters">%1$s votes</string>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d vote</item>
+        <item quantity="other">%d votes</item>
+    </plurals>
     <string name="polls_add_option">Add option</string>
     <string name="polls_edit_vote">Edit vote</string>
     <string name="polls_submit_vote">Vote</string>
