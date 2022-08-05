@@ -31,7 +31,9 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -101,7 +103,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.rx.SearchViewObservable;
-import com.webianks.library.PopupBubble;
+import com.nextcloud.ui.popupbubble.PopupBubble;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
@@ -806,6 +808,9 @@ public class ConversationsListController extends BaseController implements Flexi
                 recyclerView.smoothScrollToPosition(nextUnreadConversationScrollPosition);
             }
         });
+
+        newMentionPopupBubble.setTextColor(Color.WHITE);
+        newMentionPopupBubble.setIconTint(ColorStateList.valueOf(Color.WHITE));
     }
 
     private void checkToShowUnreadBubble() {

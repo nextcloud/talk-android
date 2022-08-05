@@ -90,19 +90,22 @@
             app:outcomingTimeTextSize="12sp"
             app:textAutoLink="all" />
 
-        <com.webianks.library.PopupBubble
+        <com.nextcloud.ui.popupbubble.PopupBubble
             android:id="@+id/popupBubbleView"
+            android:theme="@style/Button.Primary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_margin="16dp"
-            android:paddingStart="0dp"
-            android:paddingEnd="8dp"
-            app:pb_backgroundColor="@color/colorPrimary"
-            app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
-            app:pb_text="@string/nc_new_messages"
-            app:pb_textColor="@color/textColorOnPrimaryBackground" />
+            android:layout_marginStart="@dimen/dialog_padding"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/dialog_padding"
+            android:layout_marginBottom="16dp"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:text="@string/nc_new_messages"
+            app:background="@color/colorPrimary"
+            app:cornerRadius="@dimen/button_corner_radius"
+            app:icon="@drawable/ic_baseline_arrow_downward_24px" />
 
     </RelativeLayout>
 
