@@ -28,25 +28,24 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 
 @Suppress("TooManyFunctions")
-class UserManager internal constructor(private val userRepository: UsersRepository) : CurrentUserProviderNew {
+class UserManager internal constructor(private val userRepository: UsersRepository) {
     val users: Single<List<User>>
         get() = userRepository.getUsers()
 
     val usersScheduledForDeletion: Single<List<User>>
         get() = userRepository.getUsersScheduledForDeletion()
 
-    override val currentUser: Maybe<User>
+    val currentUser: Maybe<User>
         get() {
             return userRepository.getActiveUser()
         }
 
-    override val currentUserObservable: Observable<User>
+    val currentUserObservable: Observable<User>
         get() {
             return userRepository.getActiveUserObservable()
         }
