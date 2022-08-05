@@ -23,7 +23,6 @@
 
 package com.nextcloud.talk.ui.theme
 
-import android.annotation.SuppressLint
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -36,25 +35,6 @@ internal class ServerThemeProviderImpl @Inject constructor(
 ) : ServerThemeProvider {
 
     private val themeCache: ConcurrentHashMap<String, ServerTheme> = ConcurrentHashMap()
-
-    // TODO move this logic to currentUserProvider or something
-    private var _currentUser: User? = null
-    private val currentUser: User?
-        @SuppressLint("CheckResult")
-        get() {
-            return when (_currentUser) {
-                null -> {
-                    // immediately get a result synchronously
-                    _currentUser = userProvider.currentUser.blockingGet()
-                    // start observable for auto-updates
-                    userProvider.currentUserObservable.subscribe { _currentUser = it }
-                    _currentUser
-                }
-                else -> {
-                    _currentUser
-                }
-            }
-        }
 
     override fun getServerThemeForUser(user: User?): ServerTheme {
         val url: String = if (user?.baseUrl != null) {
@@ -71,7 +51,7 @@ internal class ServerThemeProviderImpl @Inject constructor(
     }
 
     override fun getServerThemeForCurrentUser(): ServerTheme {
-        return getServerThemeForUser(currentUser)
+        return getServerThemeForUser(userProvider.currentUser.blockingGet())
     }
 
     override fun getServerThemeForCapabilities(capabilities: Capabilities?): ServerTheme {
