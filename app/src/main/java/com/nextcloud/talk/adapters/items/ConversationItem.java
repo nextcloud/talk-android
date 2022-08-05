@@ -52,6 +52,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import androidx.core.content.ContextCompat;
@@ -98,7 +99,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     public boolean equals(Object o) {
         if (o instanceof ConversationItem) {
             ConversationItem inItem = (ConversationItem) o;
-            return conversation.equals(inItem.getModel()) && status.equals(inItem.status);
+            return conversation.equals(inItem.getModel()) && Objects.equals(status, inItem.status);
         }
         return false;
     }
