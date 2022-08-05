@@ -26,45 +26,45 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import com.nextcloud.talk.R
+import javax.inject.Inject
 
-object ColorUtil {
-    private const val HSL_SIZE: Int = 3
-    private const val INDEX_LUMINATION: Int = 2
-    private const val LUMINATION_DARK_THRESHOLD: Float = 0.6f
+class ColorUtil @Inject constructor(private val context: Context) {
 
-    fun getPrimaryColor(context: Context, primaryColor: String?, @ColorRes fallbackColor: Int): Int {
-        return if (primaryColor != null) {
-            Color.parseColor(primaryColor)
-        } else {
-            ContextCompat.getColor(context, fallbackColor)
-        }
-    }
-
-    fun getNullsafeColor(color: String?, @ColorInt fallbackColor: Int): Int {
-        return if (color != null) {
-            Color.parseColor(color)
-        } else {
-            fallbackColor
-        }
-    }
-
-    fun getTextColor(context: Context, colorText: String?, @ColorInt fallBackPrimaryColor: Int): Int {
-        return if (colorText != null) {
-            Color.parseColor(colorText)
-        } else {
-            getForegroundColorForBackgroundColor(context, fallBackPrimaryColor)
-        }
+    @ColorInt
+    fun getNullSafeColor(color: String?, @ColorInt fallbackColor: Int): Int {
+        return color.parseColorOrFallback { fallbackColor }
     }
 
     @ColorInt
-    public fun getForegroundColorForBackgroundColor(context: Context, @ColorInt color: Int): Int {
+    fun getNullSafeColorWithFallbackRes(color: String?, @ColorRes fallbackColorRes: Int): Int {
+        return color.parseColorOrFallback { ContextCompat.getColor(context, fallbackColorRes) }
+    }
+
+    @ColorInt
+    fun getTextColor(colorText: String?, @ColorInt backgroundColor: Int): Int {
+        return colorText.parseColorOrFallback { getForegroundColorForBackgroundColor(backgroundColor) }
+    }
+
+    @ColorInt
+    fun getForegroundColorForBackgroundColor(@ColorInt color: Int): Int {
         val hsl = FloatArray(HSL_SIZE)
         ColorUtils.RGBToHSL(Color.red(color), Color.green(color), Color.blue(color), hsl)
 
-        return if (hsl[INDEX_LUMINATION] < LUMINATION_DARK_THRESHOLD) {
+        return if (hsl[INDEX_LIGHTNESS] < LIGHTNESS_DARK_THRESHOLD) {
             Color.WHITE
         } else {
             ContextCompat.getColor(context, R.color.grey_900)
         }
+    }
+
+    @ColorInt
+    private fun String?.parseColorOrFallback(fallback: () -> Int): Int {
+        return this?.let { Color.parseColor(this) } ?: fallback()
+    }
+
+    companion object {
+        private const val HSL_SIZE: Int = 3
+        private const val INDEX_LIGHTNESS: Int = 2
+        private const val LIGHTNESS_DARK_THRESHOLD: Float = 0.6f
     }
 }

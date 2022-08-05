@@ -24,7 +24,6 @@
 package com.nextcloud.talk.ui.theme
 
 import android.annotation.SuppressLint
-import android.content.Context
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -32,11 +31,11 @@ import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 internal class ServerThemeProviderImpl @Inject constructor(
-    private val context: Context,
-    private val userProvider: CurrentUserProviderNew
+    private val userProvider: CurrentUserProviderNew,
+    private val colorUtil: ColorUtil
 ) : ServerThemeProvider {
 
-    val themeCache: ConcurrentHashMap<String, ServerTheme> = ConcurrentHashMap()
+    private val themeCache: ConcurrentHashMap<String, ServerTheme> = ConcurrentHashMap()
 
     // TODO move this logic to currentUserProvider or something
     private var _currentUser: User? = null
@@ -76,7 +75,7 @@ internal class ServerThemeProviderImpl @Inject constructor(
     }
 
     override fun getServerThemeForCapabilities(capabilities: Capabilities?): ServerTheme {
-        return ServerThemeImpl(context, capabilities?.themingCapability)
+        return ServerThemeImpl(capabilities?.themingCapability, colorUtil)
     }
 
     companion object {
