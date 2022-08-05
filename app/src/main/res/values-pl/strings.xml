@@ -36,6 +36,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Od największych</string>
     <string name="menu_item_sort_by_size_smallest_first">Od najmniejszych</string>
+    <string name="message_poll_tap_to_open">Dotknij, aby otworzyć sondę</string>
     <string name="message_search_begin_empty">Brak wyników wyszukiwania</string>
     <string name="message_search_begin_typing">Zacznij pisać, aby wyszukać…</string>
     <string name="message_search_hint">Szukaj…</string>
@@ -234,6 +235,8 @@
     <string name="nc_sent_an_image_you">Wysłałeś plik graficzny.</string>
     <string name="nc_sent_location" formatted="true">%1$s wysłał lokalizację.</string>
     <string name="nc_sent_location_you">Wysłałeś lokalizację.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s wysłał sondę.</string>
+    <string name="nc_sent_poll_you">Wysłałeś sondę.</string>
     <string name="nc_sent_voice" formatted="true">%1$s wysłał wiadomość głosową.</string>
     <string name="nc_sent_voice_you">Wysłałeś wiadomość głosową.</string>
     <string name="nc_server_connect">Sprawdź połączenie z serwerem</string>
@@ -338,11 +341,22 @@
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
     <string name="polls_add_option">Dodaj opcję</string>
+    <string name="polls_amount_voters">%1$s głosów</string>
+    <string name="polls_edit_vote">Edytuj głos</string>
+    <string name="polls_end_poll">Zakończ sondę</string>
+    <string name="polls_end_poll_confirm">Czy na pewno chcesz zakończyć sondę? Tego nie można cofnąć.</string>
+    <string name="polls_max_votes_reached">Nie możesz głosować z większą liczbą opcji w tej sondzie.</string>
+    <string name="polls_multiple_answers">Wiele odpowiedzi</string>
+    <string name="polls_option_delete">Usuń opcję %1$s</string>
+    <string name="polls_option_hint">Opcja %1$s</string>
     <string name="polls_options">Opcje</string>
     <string name="polls_private_poll">Sonda prywatna</string>
+    <string name="polls_question">Pytanie</string>
+    <string name="polls_question_hint">Twoje pytanie</string>
     <string name="polls_results_subtitle">Wyniki</string>
     <string name="polls_settings">Ustawienia</string>
     <string name="polls_submit_vote">Wyniki głosowania</string>
+    <string name="polls_voted_hidden_success">Oddano głos</string>
     <string name="reactions_tab_all">Wszystkie</string>
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
     <string name="save">Zapisz</string>

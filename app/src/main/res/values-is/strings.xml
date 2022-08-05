@@ -10,6 +10,7 @@
     <string name="clear_status_message_after">Hreinsa stöðuskilaboð eftir</string>
     <string name="conversations">Samtöl</string>
     <string name="dnd">Ónáðið ekki</string>
+    <string name="dontClear">Ekki hreinsa</string>
     <string name="edit">Breyta</string>
     <string name="emoji_category_recent">Nýlegt</string>
     <string name="encrypted">Dulritað</string>

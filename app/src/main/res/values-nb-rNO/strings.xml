@@ -83,6 +83,7 @@
     <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
     <string name="nc_email">E-post</string>
     <string name="nc_external_server_failed">Feilet ved henting av settinger for signalering</string>
+    <string name="nc_failed_signaling_settings">Målserveren støtter ikke å delta i offentlige samtaler via mobiltelefoner. Du kan prøve å bli med i samtalen via nettleseren.</string>
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
     <string name="nc_file_browser_back">Tilbake</string>
     <string name="nc_following_link">Bruker følger en offentlig lenke</string>
@@ -128,6 +129,7 @@
     <string name="nc_no_proxy">Ingen mellomserver</string>
     <string name="nc_notification_channel">%1$s på %2$s merknadskanal</string>
     <string name="nc_notification_channel_calls">Samtaler</string>
+    <string name="nc_notification_channel_calls_description">Varsle om innkommende anrop</string>
     <string name="nc_notification_channel_messages">Meldinger</string>
     <string name="nc_notification_settings">Innstillinger for notifiseringer</string>
     <string name="nc_notify_me_always">Alltid varsle</string>
@@ -147,6 +149,7 @@
     <string name="nc_profile_personal_info_title">Personlig informasjon</string>
     <string name="nc_promote">Gi moderatorstatus</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
+    <string name="nc_public_call_explanation">Offentlige samtaler lar deg invitere folk utenfra gjennom en spesiallaget lenke.</string>
     <string name="nc_push_disabled">Push notifisering deaktivert</string>
     <string name="nc_push_to_talk">Trykk-for-å-snakke</string>
     <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk &amp; hold for å bruke klikk-for-å-snakke</string>
@@ -208,6 +211,7 @@
     <string name="nc_settings_proxy_host_title">Mellomserver </string>
     <string name="nc_settings_proxy_port_title">Mellomserver port</string>
     <string name="nc_settings_proxy_type_title">Type mellomserver</string>
+    <string name="nc_settings_reauthorize">Autoriser kontoen på nytt</string>
     <string name="nc_settings_remove">Fjern</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
     <string name="nc_settings_remove_confirmation">Bekreft at du vil fjerne den nåværende kontoen.</string>
@@ -222,6 +226,7 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Lys</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_use_credentials_title">Proxy krever legitimasjon</string>
     <string name="nc_settings_warning">Advarsel</string>
     <string name="nc_settings_wrong_account">Bare gjeldende konto kan reautoriseres</string>
     <string name="nc_share_link">Del lenke</string>

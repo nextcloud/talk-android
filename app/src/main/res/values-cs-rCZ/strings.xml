@@ -36,6 +36,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Největší jako první</string>
     <string name="menu_item_sort_by_size_smallest_first">Nejmenší jako první</string>
+    <string name="message_poll_tap_to_open">Klepnutím anketu otevřete</string>
     <string name="message_search_begin_empty">Nic nenalezeno</string>
     <string name="message_search_begin_typing">Hledejte psaním…</string>
     <string name="message_search_hint">Hledat…</string>
@@ -234,6 +235,8 @@
     <string name="nc_sent_an_image_you">Odeslali jste obrázek.</string>
     <string name="nc_sent_location" formatted="true">%1$s poslal(a) umístění</string>
     <string name="nc_sent_location_you">Odeslali jste umístění.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s odeslal(a) anketu.</string>
+    <string name="nc_sent_poll_you">Odeslali jste anketu.</string>
     <string name="nc_sent_voice" formatted="true">%1$s odeslal(a) hlasovou zprávu.</string>
     <string name="nc_sent_voice_you">Odeslali jste hlasovou zprávu.</string>
     <string name="nc_server_connect">Vyzkoušet připojení k serveru</string>
@@ -338,11 +341,22 @@
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="polls_add_option">Přidat volbu</string>
+    <string name="polls_amount_voters">%1$s hlasů</string>
+    <string name="polls_edit_vote">Upravit hlas</string>
+    <string name="polls_end_poll">Ukončit anketu</string>
+    <string name="polls_end_poll_confirm">Opravdu chcete tuto anketu ukončit? Toto nelze vzít zpět.</string>
+    <string name="polls_max_votes_reached">V této anketě není možné hlasovat více volbami.</string>
+    <string name="polls_multiple_answers">Vícero odpovědí</string>
+    <string name="polls_option_delete">Smazat volbu %1$s</string>
+    <string name="polls_option_hint">Volba %1$s</string>
     <string name="polls_options">Možnosti</string>
     <string name="polls_private_poll">Soukromá anketa</string>
+    <string name="polls_question">Otázka</string>
+    <string name="polls_question_hint">Vaše otázka</string>
     <string name="polls_results_subtitle">Výsledky</string>
     <string name="polls_settings">Nastavení</string>
     <string name="polls_submit_vote">Hlasovat</string>
+    <string name="polls_voted_hidden_success">Hlas odeslán</string>
     <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
     <string name="save">Uložit</string>
