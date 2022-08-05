@@ -121,17 +121,20 @@
         app:srcCompat="@drawable/ic_add_white_24px"
         app:tint="@color/white" />
 
-    <com.webianks.library.PopupBubble
+    <com.nextcloud.ui.popupbubble.PopupBubble
         android:id="@+id/newMentionPopupBubble"
+        android:theme="@style/Button.Primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
-        android:layout_margin="16dp"
-        android:paddingStart="0dp"
-        android:paddingEnd="8dp"
-        app:pb_backgroundColor="@color/colorPrimary"
-        app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
-        app:pb_text="@string/nc_new_mention"
-        app:pb_textColor="@color/textColorOnPrimaryBackground" />
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="88dp"
+        android:layout_marginBottom="16dp"
+        android:minHeight="@dimen/min_size_clickable_area"
+        android:text="@string/nc_new_mention"
+        app:background="@color/colorPrimary"
+        app:cornerRadius="@dimen/button_corner_radius"
+        app:icon="@drawable/ic_baseline_arrow_downward_24px" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
