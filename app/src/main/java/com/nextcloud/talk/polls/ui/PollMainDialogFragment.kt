@@ -136,8 +136,9 @@ class PollMainDialogFragment : DialogFragment() {
     private fun initVotersAmount(showVotersAmount: Boolean, numVoters: Int, showResultSubtitle: Boolean) {
         if (showVotersAmount) {
             binding.pollVotesAmount.visibility = View.VISIBLE
-            binding.pollVotesAmount.text = String.format(
-                resources.getString(R.string.polls_amount_voters),
+            binding.pollVotesAmount.text = resources.getQuantityString(
+                R.plurals.polls_amount_voters,
+                numVoters,
                 numVoters
             )
         } else {
