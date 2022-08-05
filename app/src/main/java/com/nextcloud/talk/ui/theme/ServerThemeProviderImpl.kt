@@ -26,6 +26,7 @@ package com.nextcloud.talk.ui.theme
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.ui.ColorUtil
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 

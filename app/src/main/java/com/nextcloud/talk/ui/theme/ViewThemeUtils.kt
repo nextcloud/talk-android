@@ -23,7 +23,6 @@ package com.nextcloud.talk.ui.theme
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
@@ -40,7 +39,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.ColorUtils
 import androidx.core.view.children
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
@@ -52,19 +50,13 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.DrawableUtils
+import com.nextcloud.talk.utils.ui.ColorUtil
+import com.nextcloud.talk.utils.ui.PlatformThemeUtil.isDarkMode
 import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
 import javax.inject.Inject
 
-class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
-
-    private fun isDarkMode(context: Context): Boolean = when (
-        context.resources.configuration.uiMode and
-            Configuration.UI_MODE_NIGHT_MASK
-    ) {
-        Configuration.UI_MODE_NIGHT_YES -> true
-        else -> false
-    }
+class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private val colorUtil: ColorUtil) {
 
     /**
      * Color for painting elements
@@ -266,6 +258,14 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
         }
     }
 
+    private fun progressColor(context: Context, color: Int): Int {
+        val lightness = when (isDarkMode(context)) {
+            true -> PROGRESS_LIGHTNESS_DARK_THEME
+            false -> PROGRESS_LIGHTNESS_LIGHT_THEME
+        }
+        return colorUtil.setLightness(color, lightness)
+    }
+
     fun colorEditText(editText: EditText) {
         withElementColor(editText) { color ->
             editText.setTextColor(color)
@@ -351,28 +351,13 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme) {
         }
     }
 
-    private fun progressColor(context: Context, color: Int): Int {
-        val hsl = FloatArray(HSL_SIZE)
-        ColorUtils.RGBToHSL(Color.red(color), Color.green(color), Color.blue(color), hsl)
-
-        if (isDarkMode(context)) {
-            hsl[INDEX_LIGHTNESS] = LIGHTNESS_DARK_THEME
-        } else {
-            hsl[INDEX_LIGHTNESS] = LIGHTNESS_LIGHT_THEME
-        }
-
-        return ColorUtils.HSLToColor(hsl)
-    }
-
     companion object {
         private val THEMEABLE_PLACEHOLDER_IDS = listOf(
             R.drawable.ic_mimetype_package_x_generic,
             R.drawable.ic_mimetype_folder
         )
         private const val TRACK_ALPHA: Int = 77
-        private const val HSL_SIZE: Int = 3
-        private const val INDEX_LIGHTNESS: Int = 2
-        private const val LIGHTNESS_LIGHT_THEME: Float = 0.76f
-        private const val LIGHTNESS_DARK_THEME: Float = 0.28f
+        private const val PROGRESS_LIGHTNESS_LIGHT_THEME: Float = 0.76f
+        private const val PROGRESS_LIGHTNESS_DARK_THEME: Float = 0.28f
     }
 }
