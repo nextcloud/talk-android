@@ -43,7 +43,6 @@ data class ThemingCapability(
     var colorText: String?,
     @JsonField(name = ["color-element"])
     var colorElement: String?,
-    // TODO check what happens with users with already fetched capabilities
     @JsonField(name = ["color-element-bright"])
     var colorElementBright: String?,
     @JsonField(name = ["color-element-dark"])
