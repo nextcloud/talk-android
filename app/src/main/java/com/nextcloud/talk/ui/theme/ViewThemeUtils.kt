@@ -186,7 +186,6 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
-    // TODO cleanup
     fun colorSwitchCompat(switchCompat: SwitchCompat) {
         withElementColor(switchCompat) { color ->
 
@@ -203,7 +202,8 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                 context.theme
             )
 
-            val trackColor = Color.argb(TRACK_ALPHA, Color.red(color), Color.green(color), Color.blue(color))
+            val trackColor =
+                Color.argb(SWITCHCOMPAT_TRACK_ALPHA, Color.red(color), Color.green(color), Color.blue(color))
             switchCompat.thumbTintList = ColorStateList(
                 arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf()),
                 intArrayOf(color, thumbUncheckedColor)
@@ -356,7 +356,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
             R.drawable.ic_mimetype_package_x_generic,
             R.drawable.ic_mimetype_folder
         )
-        private const val TRACK_ALPHA: Int = 77
+        private const val SWITCHCOMPAT_TRACK_ALPHA: Int = 77
         private const val PROGRESS_LIGHTNESS_LIGHT_THEME: Float = 0.76f
         private const val PROGRESS_LIGHTNESS_DARK_THEME: Float = 0.28f
     }
