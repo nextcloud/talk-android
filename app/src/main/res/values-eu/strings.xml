@@ -341,7 +341,6 @@
     <string name="open_in_files_app">Ireki Fitxategiak aplikazioan</string>
     <string name="play_pause_voice_message">Erreproduzitu/pausatu ahots mezua</string>
     <string name="polls_add_option">Gehitu aukera</string>
-    <string name="polls_amount_voters">%1$s boto</string>
     <string name="polls_edit_vote">Editatu botoa</string>
     <string name="polls_end_poll">Amaitu galdeketa</string>
     <string name="polls_end_poll_confirm">Ziur zaude galdeketa hau bukatu nahi duzula? Ezingo da atzera egin.</string>
@@ -413,4 +412,4 @@
     <string name="userinfo_no_info_headline">Ez da informazio pertsonalik ezarri</string>
     <string name="userinfo_no_info_text">Gehitu izena, irudia eta kontaktuko xehetasunak zure profilaren orrian</string>
     <string name="whats_your_status">Zein da zure egoera?</string>
-</resources>
+    </resources>

@@ -341,7 +341,6 @@
     <string name="open_in_files_app">In Dateien-App öffnen</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
     <string name="polls_add_option">Option hinzufügen</string>
-    <string name="polls_amount_voters">%1$s Stimmen</string>
     <string name="polls_edit_vote">Abstimmung bearbeiten</string>
     <string name="polls_end_poll">Umfrage beenden</string>
     <string name="polls_end_poll_confirm">Soll diese Umfrage wirklich beendet werden? Das kann nicht rückgängig gemacht werden.</string>
@@ -413,4 +412,4 @@
     <string name="userinfo_no_info_headline">Keine persönlichen Informationen eingestellt</string>
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
     <string name="whats_your_status">Wie ist Ihr Status?</string>
-</resources>
+    </resources>

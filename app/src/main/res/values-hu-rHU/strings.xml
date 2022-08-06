@@ -341,7 +341,6 @@
     <string name="open_in_files_app">Megnyitás a Fájlok alkalmazásban</string>
     <string name="play_pause_voice_message">Hangüzenet lejátszása/szüneteltetése</string>
     <string name="polls_add_option">Lehetőség hozzáadása</string>
-    <string name="polls_amount_voters">%1$s szavazat</string>
     <string name="polls_edit_vote">Szavazat szerkesztése</string>
     <string name="polls_end_poll">Szavazás befejezése</string>
     <string name="polls_multiple_answers">Több válasz</string>
@@ -411,4 +410,4 @@
     <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
     <string name="whats_your_status">Mi az állapota?</string>
-</resources>
+    </resources>

@@ -341,7 +341,6 @@
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="polls_add_option">Přidat volbu</string>
-    <string name="polls_amount_voters">%1$s hlasů</string>
     <string name="polls_edit_vote">Upravit hlas</string>
     <string name="polls_end_poll">Ukončit anketu</string>
     <string name="polls_end_poll_confirm">Opravdu chcete tuto anketu ukončit? Toto nelze vzít zpět.</string>
@@ -413,4 +412,4 @@
     <string name="userinfo_no_info_headline">Osobní údaje nejsou nastaveny</string>
     <string name="userinfo_no_info_text">Přidejte jméno, obrázek a kontaktní údaje na svou profilovou stránku.</string>
     <string name="whats_your_status">Jaký je váš stav?</string>
-</resources>
+    </resources>
