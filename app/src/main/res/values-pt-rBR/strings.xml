@@ -341,15 +341,17 @@
     <string name="open_in_files_app">Abrir Arquivos no aplicativo</string>
     <string name="play_pause_voice_message">Tocar/parar mensagem de voz</string>
     <string name="polls_add_option">Adicionar opção</string>
-    <string name="polls_amount_voters">%1$s votos</string>
     <string name="polls_edit_vote">Editar voto</string>
     <string name="polls_end_poll">Encerrar enquete</string>
     <string name="polls_end_poll_confirm">Você realmente quer terminar esta enquete? Isto não pode ser desfeito.</string>
     <string name="polls_max_votes_reached">Você não pode votar com mais opções para esta enquete.</string>
     <string name="polls_multiple_answers">Várias respostas</string>
+    <string name="polls_option_delete">Excluir opção %1$s</string>
+    <string name="polls_option_hint">Opção %1$s</string>
     <string name="polls_options">Opções</string>
     <string name="polls_private_poll">Enquete privada</string>
     <string name="polls_question">Pergunta</string>
+    <string name="polls_question_hint">Sua pergunta</string>
     <string name="polls_results_subtitle">Resultados</string>
     <string name="polls_settings">Configurações</string>
     <string name="polls_submit_vote">Voto</string>
@@ -410,4 +412,4 @@
     <string name="userinfo_no_info_headline">Nenhuma informação pessoal definida</string>
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
     <string name="whats_your_status">Qual é o seu status?</string>
-</resources>
+    </resources>

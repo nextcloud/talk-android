@@ -341,7 +341,6 @@
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
     <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>
     <string name="polls_add_option">添加選項</string>
-    <string name="polls_amount_voters">%1$s 選票</string>
     <string name="polls_edit_vote">編輯選票</string>
     <string name="polls_end_poll">結束民意調查</string>
     <string name="polls_end_poll_confirm">你真的要結束這個民意調查嗎？這是無法撤消的。</string>
@@ -413,4 +412,4 @@
     <string name="userinfo_no_info_headline">未設定個人資訊</string>
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、頭像和聯絡資訊</string>
     <string name="whats_your_status">您目前的狀態是什麼呢？</string>
-</resources>
+    </resources>

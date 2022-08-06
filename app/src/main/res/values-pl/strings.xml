@@ -341,7 +341,6 @@
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
     <string name="polls_add_option">Dodaj opcję</string>
-    <string name="polls_amount_voters">%1$s głosów</string>
     <string name="polls_edit_vote">Edytuj głos</string>
     <string name="polls_end_poll">Zakończ sondę</string>
     <string name="polls_end_poll_confirm">Czy na pewno chcesz zakończyć sondę? Tego nie można cofnąć.</string>
@@ -413,4 +412,4 @@
     <string name="userinfo_no_info_headline">Brak informacji osobistych</string>
     <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
     <string name="whats_your_status">Jaki jest Twój status?</string>
-</resources>
+    </resources>

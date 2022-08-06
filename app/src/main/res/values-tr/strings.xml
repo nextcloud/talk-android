@@ -341,7 +341,6 @@
     <string name="open_in_files_app">Dosyalar uygulamasında aç</string>
     <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
     <string name="polls_add_option">Seçenek ekle</string>
-    <string name="polls_amount_voters">%1$s oy</string>
     <string name="polls_edit_vote">Oyu düzenle</string>
     <string name="polls_end_poll">Anleti sonlandır</string>
     <string name="polls_end_poll_confirm">Bu anketi sonlandırmak istediğinize emin misiniz? Bu işlem geri alınamaz!</string>
@@ -413,4 +412,4 @@
     <string name="userinfo_no_info_headline">Herhangi bir kişisel bilgi ayarlanmamış</string>
     <string name="userinfo_no_info_text">Profil sayfanızdan ad, görsel ve iletişim bilgilerinizi ekleyin.</string>
     <string name="whats_your_status">Durumunuz nedir?</string>
-</resources>
+    </resources>
