@@ -50,6 +50,7 @@ import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
@@ -538,14 +539,6 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
-    private fun progressColor(context: Context, color: Int): Int {
-        val lightness = when (isDarkMode(context)) {
-            true -> PROGRESS_LIGHTNESS_DARK_THEME
-            false -> PROGRESS_LIGHTNESS_LIGHT_THEME
-        }
-        return colorUtil.setLightness(color, lightness)
-    }
-
     fun colorEditText(editText: EditText) {
         withScheme(editText) { scheme ->
             // TODO check API-level compatibility
@@ -665,19 +658,6 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
 
         return drawable
-    }
-
-    private fun progressColor(context: Context, color: Int): Int {
-        val hsl = FloatArray(HSL_SIZE)
-        ColorUtils.RGBToHSL(Color.red(color), Color.green(color), Color.blue(color), hsl)
-
-        if (isDarkMode(context)) {
-            hsl[INDEX_LIGHTNESS] = LIGHTNESS_DARK_THEME
-        } else {
-            hsl[INDEX_LIGHTNESS] = LIGHTNESS_LIGHT_THEME
-        }
-
-        return ColorUtils.HSLToColor(hsl)
     }
 
     private fun calculateDisabledColor(color: Int, opacity: Float): Int {
