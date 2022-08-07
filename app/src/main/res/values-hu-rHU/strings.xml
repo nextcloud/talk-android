@@ -343,6 +343,8 @@
     <string name="polls_add_option">Lehetőség hozzáadása</string>
     <string name="polls_edit_vote">Szavazat szerkesztése</string>
     <string name="polls_end_poll">Szavazás befejezése</string>
+    <string name="polls_end_poll_confirm">Biztos, hogy befejezi ezt a szavazást? Ez nem vonható vissza.</string>
+    <string name="polls_max_votes_reached">Nem szavazhat több lehetőségre ennél a szavazásnál.</string>
     <string name="polls_multiple_answers">Több válasz</string>
     <string name="polls_option_delete">%1$s. lehetőség törlése</string>
     <string name="polls_option_hint">%1$s. lehetőség</string>
@@ -410,4 +412,8 @@
     <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
     <string name="whats_your_status">Mi az állapota?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d szavazat</item>
+        <item quantity="other">%d szavazat</item>
+    </plurals>
+</resources>
