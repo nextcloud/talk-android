@@ -412,4 +412,8 @@
     <string name="userinfo_no_info_headline">Keine persönlichen Informationen eingestellt</string>
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
     <string name="whats_your_status">Wie ist Ihr Status?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d Stimme</item>
+        <item quantity="other">%d Stimmen</item>
+    </plurals>
+</resources>

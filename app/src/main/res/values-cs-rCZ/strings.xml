@@ -412,4 +412,10 @@
     <string name="userinfo_no_info_headline">Osobní údaje nejsou nastaveny</string>
     <string name="userinfo_no_info_text">Přidejte jméno, obrázek a kontaktní údaje na svou profilovou stránku.</string>
     <string name="whats_your_status">Jaký je váš stav?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d hlas</item>
+        <item quantity="few">%d hlasy</item>
+        <item quantity="many">%d hlasů</item>
+        <item quantity="other">%d hlasy</item>
+    </plurals>
+</resources>
