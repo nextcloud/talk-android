@@ -86,40 +86,7 @@ class SharedItemsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
-            clearEmptyLoading()
-            when (state) {
-                is SharedItemsViewModel.LoadingItemsState, SharedItemsViewModel.InitialState -> {
-                    showLoading()
-                }
-                is SharedItemsViewModel.NoSharedItemsState -> {
-                    showEmpty()
-                }
-                is SharedItemsViewModel.LoadedState -> {
-                    val sharedMediaItems = state.items
-                    Log.d(TAG, "Items received: $sharedMediaItems")
-
-                    val showGrid = state.selectedType == SharedItemType.MEDIA
-                    val layoutManager = if (showGrid) {
-                        GridLayoutManager(this, SPAN_COUNT)
-                    } else {
-                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                    }
-
-                    val adapter = SharedItemsAdapter(
-                        showGrid,
-                        user,
-                        roomToken,
-                        isUserConversationOwnerOrModerator
-                    ).apply {
-                        items = sharedMediaItems.items
-                    }
-                    binding.imageRecycler.adapter = adapter
-                    binding.imageRecycler.layoutManager = layoutManager
-                }
-                is SharedItemsViewModel.TypesLoadedState -> {
-                    initTabs(state.types)
-                }
-            }
+            handleModelChange(state, user, roomToken, isUserConversationOwnerOrModerator)
         }
 
         binding.imageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -132,6 +99,49 @@ class SharedItemsActivity : AppCompatActivity() {
         })
 
         viewModel.initialize(user, roomToken)
+    }
+
+    private fun handleModelChange(
+        state: SharedItemsViewModel.ViewState?,
+        user: User,
+        roomToken: String,
+        isUserConversationOwnerOrModerator: Boolean
+    ) {
+        clearEmptyLoading()
+        when (state) {
+            is SharedItemsViewModel.LoadingItemsState, SharedItemsViewModel.InitialState -> {
+                showLoading()
+            }
+            is SharedItemsViewModel.NoSharedItemsState -> {
+                showEmpty()
+            }
+            is SharedItemsViewModel.LoadedState -> {
+                val sharedMediaItems = state.items
+                Log.d(TAG, "Items received: $sharedMediaItems")
+
+                val showGrid = state.selectedType == SharedItemType.MEDIA
+                val layoutManager = if (showGrid) {
+                    GridLayoutManager(this, SPAN_COUNT)
+                } else {
+                    LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                }
+
+                val adapter = SharedItemsAdapter(
+                    showGrid,
+                    user,
+                    roomToken,
+                    isUserConversationOwnerOrModerator
+                ).apply {
+                    items = sharedMediaItems.items
+                }
+                binding.imageRecycler.adapter = adapter
+                binding.imageRecycler.layoutManager = layoutManager
+            }
+            is SharedItemsViewModel.TypesLoadedState -> {
+                initTabs(state.types)
+            }
+            else -> {}
+        }
     }
 
     private fun clearEmptyLoading() {
@@ -189,12 +199,12 @@ class SharedItemsActivity : AppCompatActivity() {
             binding.sharedItemsTabs.addTab(tabVoice)
         }
 
-        // if(sharedItemTypes.contains(SharedItemType.LOCATION)) {
-        // val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        // tabLocation.tag = SharedItemType.LOCATION
-        // tabLocation.text = "location"
-        // binding.sharedItemsTabs.addTab(tabLocation)
-        // }
+        if (sharedItemTypes.contains(SharedItemType.LOCATION)) {
+            val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            tabLocation.tag = SharedItemType.LOCATION
+            tabLocation.setText(R.string.nc_shared_items_location)
+            binding.sharedItemsTabs.addTab(tabLocation)
+        }
 
         // if(sharedItemTypes.contains(SharedItemType.DECKCARD)) {
         // val tabDeckCard: TabLayout.Tab = binding.sharedItemsTabs.newTab()

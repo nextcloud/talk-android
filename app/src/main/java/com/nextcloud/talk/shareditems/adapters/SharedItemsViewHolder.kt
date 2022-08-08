@@ -42,6 +42,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
+import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DrawableUtils
@@ -127,6 +128,8 @@ abstract class SharedItemsViewHolder(
     }
 
     open fun onBind(item: SharedPollItem, showPoll: (item: SharedItem, context: Context) -> Unit) {}
+
+    open fun onBind(item: SharedLocationItem) {}
 
     private fun staticImage(
         mimeType: String?,

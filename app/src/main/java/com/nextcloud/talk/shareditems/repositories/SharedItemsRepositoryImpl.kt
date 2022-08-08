@@ -22,6 +22,7 @@
 
 package com.nextcloud.talk.shareditems.repositories
 
+import android.net.Uri
 import android.util.Log
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
@@ -31,6 +32,7 @@ import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedItems
+import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
@@ -101,16 +103,27 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                     )
                 } else if (it.value.messageParameters?.containsKey("object") == true) {
                     val objectParameters = it.value.messageParameters!!["object"]!!
-                    if ("talk-poll" == objectParameters["type"]) {
-                        items[it.value.id] = SharedPollItem(
-                            objectParameters["id"]!!,
-                            objectParameters["name"]!!,
-                            actorParameters["id"]!!,
-                            actorParameters["name"]!!
-                        )
+                    when (objectParameters["type"]) {
+                        "talk-poll" -> {
+                            items[it.value.id] = SharedPollItem(
+                                objectParameters["id"]!!,
+                                objectParameters["name"]!!,
+                                actorParameters["id"]!!,
+                                actorParameters["name"]!!
+                            )
+                        }
+                        "geo-location" -> {
+                            items[it.value.id] = SharedLocationItem(
+                                objectParameters["id"]!!,
+                                objectParameters["name"]!!,
+                                actorParameters["id"]!!,
+                                actorParameters["name"]!!,
+                                Uri.parse(objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q="))
+                            )
+                        }
                     }
                 } else {
-                    Log.w(TAG, "location and deckcard are not yet supported")
+                    Log.w(TAG, "Item contains neither 'file' or 'object'.")
                 }
             }
         }
