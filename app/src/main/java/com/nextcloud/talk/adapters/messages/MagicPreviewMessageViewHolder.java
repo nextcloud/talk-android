@@ -42,6 +42,7 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.card.MaterialCardView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
@@ -169,6 +170,9 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 progressBar = getPreviewContactProgressBar();
                 getMessageText().setVisibility(View.INVISIBLE);
                 clickView = getPreviewContactContainer();
+                viewThemeUtils.colorContactChatItemBackground(getPreviewContactContainer());
+                viewThemeUtils.colorContactChatItemName(getPreviewContactName());
+                viewThemeUtils.colorCircularProgressBarOnPrimaryContainer(getPreviewContactProgressBar());
             } else {
                 getPreviewContainer().setVisibility(View.VISIBLE);
                 getPreviewContactContainer().setVisibility(View.GONE);
@@ -362,7 +366,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
     public abstract View getPreviewContainer();
 
-    public abstract View getPreviewContactContainer();
+    public abstract MaterialCardView getPreviewContactContainer();
 
     public abstract SimpleDraweeView getPreviewContactPhoto();
 

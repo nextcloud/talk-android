@@ -125,6 +125,12 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
+    fun colorViewBackground(view: View) {
+        withScheme(view) { scheme ->
+            view.setBackgroundColor(scheme.surface)
+        }
+    }
+
     fun colorToolbarMenuIcon(context: Context, item: MenuItem) {
         withScheme(context) { scheme ->
             item.icon.setColorFilter(scheme.onSurface, PorterDuff.Mode.SRC_ATOP)
@@ -465,6 +471,24 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     fun colorCardViewBackground(card: MaterialCardView) {
         withScheme(card) { scheme ->
             card.setCardBackgroundColor(scheme.surfaceVariant)
+        }
+    }
+
+    fun colorContactChatItemName(contactName: androidx.emoji.widget.EmojiTextView) {
+        withScheme(contactName) { scheme ->
+            contactName.setTextColor(scheme.onPrimaryContainer)
+        }
+    }
+
+    fun colorContactChatItemBackground(card: MaterialCardView) {
+        withScheme(card) { scheme ->
+            card.setCardBackgroundColor(scheme.primaryContainer)
+        }
+    }
+
+    fun colorCircularProgressBarOnPrimaryContainer(progressBar: ProgressBar) {
+        withScheme(progressBar) { scheme ->
+            progressBar.indeterminateDrawable.setColorFilter(scheme.onPrimaryContainer, PorterDuff.Mode.SRC_ATOP)
         }
     }
 

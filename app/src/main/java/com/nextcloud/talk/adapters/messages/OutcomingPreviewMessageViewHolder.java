@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.card.MaterialCardView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.ItemCustomOutcomingPreviewMessageBinding;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
@@ -74,7 +75,7 @@ public class OutcomingPreviewMessageViewHolder extends MagicPreviewMessageViewHo
     }
 
     @Override
-    public View getPreviewContactContainer() {
+    public MaterialCardView getPreviewContactContainer() {
         return binding.contactContainer;
     }
 
