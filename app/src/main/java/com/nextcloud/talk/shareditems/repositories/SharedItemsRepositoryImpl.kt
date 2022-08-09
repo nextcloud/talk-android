@@ -33,6 +33,7 @@ import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedItems
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
+import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
@@ -119,6 +120,14 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                                 actorParameters["id"]!!,
                                 actorParameters["name"]!!,
                                 Uri.parse(objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q="))
+                            )
+                        }
+                        else -> {
+                            items[it.value.id] = SharedOtherItem(
+                                objectParameters["id"]!!,
+                                objectParameters["name"]!!,
+                                actorParameters["id"]!!,
+                                actorParameters["name"]!!
                             )
                         }
                     }

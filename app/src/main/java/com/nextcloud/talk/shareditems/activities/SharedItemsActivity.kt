@@ -213,12 +213,12 @@ class SharedItemsActivity : AppCompatActivity() {
         // binding.sharedItemsTabs.addTab(tabDeckCard)
         // }
 
-        // if(sharedItemTypes.contains(SharedItemType.OTHER)) {
-        // val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        // tabOther.tag = SharedItemType.OTHER
-        // tabOther.setText(R.string.shared_items_other)
-        // binding.sharedItemsTabs.addTab(tabOther)
-        // }
+        if (sharedItemTypes.contains(SharedItemType.OTHER)) {
+            val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            tabOther.tag = SharedItemType.OTHER
+            tabOther.setText(R.string.shared_items_other)
+            binding.sharedItemsTabs.addTab(tabOther)
+        }
 
         binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {

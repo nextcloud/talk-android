@@ -43,6 +43,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
+import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DrawableUtils
@@ -130,6 +131,8 @@ abstract class SharedItemsViewHolder(
     open fun onBind(item: SharedPollItem, showPoll: (item: SharedItem, context: Context) -> Unit) {}
 
     open fun onBind(item: SharedLocationItem) {}
+
+    open fun onBind(item: SharedOtherItem) {}
 
     private fun staticImage(
         mimeType: String?,
