@@ -1437,9 +1437,11 @@ class ChatController(args: Bundle) :
 
                     val dialog = materialAlertDialogBuilder.show()
 
-                    val primary = viewThemeUtils.getScheme(binding.messageInputView.context).primary
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(primary)
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(primary)
+                    viewThemeUtils.colorTextButtons(
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                    )
+
                 } catch (e: IllegalStateException) {
                     Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
                         .show()

@@ -303,17 +303,22 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
-    fun colorButtonText(button: Button) {
-        withScheme(button) { scheme ->
-            val disabledColor = ContextCompat.getColor(button.context, R.color.disabled_text)
-            val colorStateList = ColorStateList(
-                arrayOf(
-                    intArrayOf(android.R.attr.state_enabled),
-                    intArrayOf(-android.R.attr.state_enabled)
-                ),
-                intArrayOf(scheme.primary, disabledColor)
-            )
-            button.setTextColor(colorStateList)
+    fun colorTextButtons(vararg buttons: Button) {
+        withScheme(buttons[0]) { scheme ->
+            for (button in buttons) {
+                button.setTextColor(
+                    ColorStateList(
+                        arrayOf(
+                            intArrayOf(android.R.attr.state_enabled),
+                            intArrayOf(-android.R.attr.state_enabled)
+                        ),
+                        intArrayOf(
+                            scheme.primary,
+                            calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                        )
+                    )
+                )
+            }
         }
     }
 
@@ -496,7 +501,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
             )
 
             val trackColor = Color.argb(
-                SWITCHCOMPAT_TRACK_ALPHA,
+                SWITCH_COMPAT_TRACK_ALPHA,
                 Color.red(scheme.primary),
                 Color.green(scheme.primary),
                 Color.blue(scheme.primary)
@@ -752,15 +757,8 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
             R.drawable.ic_mimetype_package_x_generic,
             R.drawable.ic_mimetype_folder
         )
-        private const val SWITCHCOMPAT_TRACK_ALPHA: Int = 77
-        private const val PROGRESS_LIGHTNESS_LIGHT_THEME: Float = 0.76f
-        private const val PROGRESS_LIGHTNESS_DARK_THEME: Float = 0.28f
-        private const val TRACK_ALPHA: Int = 77
+        private const val SWITCH_COMPAT_TRACK_ALPHA: Int = 77
         private const val HALF_ALPHA_INT: Int = 255 / 2
-        private const val HSL_SIZE: Int = 3
-        private const val INDEX_LIGHTNESS: Int = 2
-        private const val LIGHTNESS_LIGHT_THEME: Float = 0.76f
-        private const val LIGHTNESS_DARK_THEME: Float = 0.28f
         private const val SURFACE_OPACITY_BUTTON_DISABLED: Float = 0.12f
         private const val ON_SURFACE_OPACITY_BUTTON_DISABLED: Float = 0.38f
         private const val SEARCH_TEXT_SIZE: Float = 16f
