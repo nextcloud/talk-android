@@ -60,6 +60,7 @@ import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -91,7 +92,6 @@ import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
-import com.yarolegovich.lovelydialog.LovelyStandardDialog
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -118,7 +118,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderNew
 
-    private var saveStateHandler: LovelySaveStateHandler? = null
     private var currentUser: User? = null
     private var credentials: String? = null
     private var proxyTypeChangeListener: OnPreferenceValueChangedListener<String>? = null
@@ -149,10 +148,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         ViewCompat.setTransitionName((binding.avatarImage), "userAvatar.transitionTag")
 
         getCurrentUser()
-
-        if (saveStateHandler == null) {
-            saveStateHandler = LovelySaveStateHandler()
-        }
 
         registerChangeListeners()
 
@@ -381,11 +376,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         }
     }
 
-    override fun onSaveViewState(view: View, outState: Bundle) {
-        saveStateHandler!!.saveInstanceState(outState)
-        super.onSaveViewState(view, outState)
-    }
-
     override fun onRestoreViewState(view: View, savedViewState: Bundle) {
         super.onRestoreViewState(view, savedViewState)
         if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
@@ -397,23 +387,27 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
     private fun showRemoveAccountWarning(savedInstanceState: Bundle?) {
         if (activity != null) {
-            LovelyStandardDialog(activity, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
-                .setTopColorRes(R.color.nc_darkRed)
-                .setIcon(
-                    DisplayUtils.getTintedDrawable(
-                        resources,
-                        R.drawable.ic_delete_black_24dp,
-                        R.color.bg_default
-                    )
-                )
-                .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
+            val materialAlertDialogBuilder = MaterialAlertDialogBuilder(binding.messageText.context)
                 .setTitle(R.string.nc_settings_remove_account)
                 .setMessage(R.string.nc_settings_remove_confirmation)
-                .setPositiveButton(R.string.nc_settings_remove, { removeCurrentAccount() })
-                .setNegativeButton(R.string.nc_cancel, null)
-                .setInstanceStateHandler(ID_REMOVE_ACCOUNT_WARNING_DIALOG, saveStateHandler)
-                .setSavedInstanceState(savedInstanceState)
-                .show()
+                .setPositiveButton(R.string.nc_settings_remove) { _, _ ->
+                    removeCurrentAccount()
+                }
+                .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                    // unused atm
+                }
+
+            viewThemeUtils.colorMaterialAlertDialogBackground(
+                binding.messageText.context,
+                materialAlertDialogBuilder
+            )
+
+            val dialog = materialAlertDialogBuilder.show()
+
+            viewThemeUtils.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         }
     }
 
