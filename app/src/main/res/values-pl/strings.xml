@@ -412,4 +412,10 @@
     <string name="userinfo_no_info_headline">Brak informacji osobistych</string>
     <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
     <string name="whats_your_status">Jaki jest Twój status?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d głos</item>
+        <item quantity="few">%d głosy</item>
+        <item quantity="many">%d głosów</item>
+        <item quantity="other">%d głosów</item>
+    </plurals>
+</resources>
