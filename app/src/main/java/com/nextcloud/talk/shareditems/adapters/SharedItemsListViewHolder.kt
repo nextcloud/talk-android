@@ -128,7 +128,7 @@ class SharedItemsListViewHolder(
         binding.separator1.visibility = View.GONE
         binding.fileDate.text = item.dateTime
         binding.actor.text = item.actorName
-        image.hierarchy.setPlaceholderImage(R.drawable.ic_baseline_location_on_24)
+        image.hierarchy.setPlaceholderImage(R.drawable.ic_baseline_deck_24)
         image.setColorFilter(
             ContextCompat.getColor(image.context, R.color.high_emphasis_menu_icon),
             android.graphics.PorterDuff.Mode.SRC_IN
