@@ -92,7 +92,7 @@
                 tools:text="11 KB" />
 
             <TextView
-                android:id="@+id/separator"
+                android:id="@+id/separator_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standard_quarter_margin"
@@ -109,6 +109,25 @@
                 android:textColor="@color/textColorMaxContrast"
                 android:textSize="14sp"
                 tools:text="04-05-2022 21:16" />
+
+            <TextView
+                android:id="@+id/separator_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_quarter_margin"
+                android:text="|"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="14sp"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/actor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_quarter_margin"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="14sp"
+                tools:text="Actor" />
 
         </LinearLayout>
     </LinearLayout>

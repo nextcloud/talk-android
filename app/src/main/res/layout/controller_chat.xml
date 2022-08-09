@@ -112,7 +112,7 @@
         android:orientation="vertical">
 
         <View
-            android:id="@+id/separator"
+            android:id="@+id/separator_1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/controller_chat_separator" />

@@ -24,4 +24,5 @@ data class SharedOtherItem(
     override val name: String,
     override val actorId: String,
     override val actorName: String,
+    override val dateTime: String
 ) : SharedItem

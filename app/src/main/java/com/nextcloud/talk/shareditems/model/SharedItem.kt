@@ -5,4 +5,5 @@ interface SharedItem {
     val name: String
     val actorId: String
     val actorName: String
+    val dateTime: String
 }
