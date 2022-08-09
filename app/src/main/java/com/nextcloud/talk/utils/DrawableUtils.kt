@@ -148,33 +148,23 @@ object DrawableUtils {
         drawableMap["unknown"] = R.drawable.ic_mimetype_file
         drawableMap["application/pdf"] = R.drawable.ic_mimetype_application_pdf
 
-        if (localMimetype.isNullOrEmpty()) {
-            return drawableMap["unknown"]!!
-        }
-
-        if ("DIR" == localMimetype) {
+        return if (localMimetype.isNullOrEmpty()) {
+            drawableMap["unknown"]!!
+        } else if ("DIR" == localMimetype) {
             localMimetype = FOLDER
-            return drawableMap[localMimetype]!!
-        }
-
-        if (drawableMap.containsKey(localMimetype)) {
-            return drawableMap[localMimetype]!!
-        }
-
-        if (localMimetype.startsWith(IMAGE_PREFIX)) {
-            return R.drawable.ic_mimetype_image
-        }
-
-        if (localMimetype.startsWith(VIDEO_PREFIX)) {
-            return R.drawable.ic_mimetype_video
-        }
-
-        if (localMimetype.startsWith(TEXT_PREFIX)) {
-            return R.drawable.ic_mimetype_text
-        }
-
-        return if (localMimetype.startsWith(AUDIO_PREFIX)) {
+            drawableMap[localMimetype]!!
+        } else if (drawableMap.containsKey(localMimetype)) {
+            drawableMap[localMimetype]!!
+        } else if (localMimetype.startsWith(IMAGE_PREFIX)) {
+            R.drawable.ic_mimetype_image
+        } else if (localMimetype.startsWith(VIDEO_PREFIX)) {
+            R.drawable.ic_mimetype_video
+        } else if (localMimetype.startsWith(TEXT_PREFIX)) {
+            R.drawable.ic_mimetype_text
+        } else if (localMimetype.startsWith(AUDIO_PREFIX)) {
             R.drawable.ic_mimetype_audio
-        } else drawableMap["unknown"]!!
+        } else {
+            drawableMap["unknown"]!!
+        }
     }
 }
