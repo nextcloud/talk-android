@@ -56,6 +56,7 @@ import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private val colorUtil: ColorUtil) {
 
     /**
