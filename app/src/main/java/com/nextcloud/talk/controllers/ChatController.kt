@@ -2562,6 +2562,10 @@ class ChatController(args: Bundle) :
         intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         intent.putExtra(KEY_USER_ENTITY, conversationUser as Parcelable)
+        intent.putExtra(
+            SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
+            currentConversation?.isParticipantOwnerOrModerator
+        )
         activity!!.startActivity(intent)
     }
 

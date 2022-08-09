@@ -28,7 +28,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.shareditems.model.SharedItemType
-import com.nextcloud.talk.shareditems.model.SharedMediaItems
+import com.nextcloud.talk.shareditems.model.SharedItems
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -50,7 +50,7 @@ class SharedItemsViewModel @Inject constructor(
     class LoadingItemsState(types: Set<SharedItemType>, selectedType: SharedItemType) :
         TypesLoadedState(types, selectedType)
 
-    class LoadedState(types: Set<SharedItemType>, selectedType: SharedItemType, val items: SharedMediaItems) :
+    class LoadedState(types: Set<SharedItemType>, selectedType: SharedItemType, val items: SharedItems) :
         TypesLoadedState(types, selectedType)
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
@@ -128,13 +128,13 @@ class SharedItemsViewModel @Inject constructor(
         }
     }
 
-    inner class SharedMediaItemsObserver : Observer<SharedMediaItems> {
+    inner class SharedMediaItemsObserver : Observer<SharedItems> {
 
-        var newSharedItems: SharedMediaItems? = null
+        var newSharedItems: SharedItems? = null
 
         override fun onSubscribe(d: Disposable) = Unit
 
-        override fun onNext(response: SharedMediaItems) {
+        override fun onNext(response: SharedItems) {
             newSharedItems = response
         }
 
@@ -148,8 +148,9 @@ class SharedItemsViewModel @Inject constructor(
             if (state is LoadedState) {
                 val oldItems = state.items.items
                 val newItems =
-                    SharedMediaItems(
+                    SharedItems(
                         oldItems + newSharedItems!!.items,
+                        state.items.type,
                         newSharedItems!!.lastSeenId,
                         newSharedItems!!.moreItemsExisting
                     )
@@ -159,7 +160,7 @@ class SharedItemsViewModel @Inject constructor(
             }
         }
 
-        private fun setCurrentState(items: SharedMediaItems) {
+        private fun setCurrentState(items: SharedItems) {
             when (val state = this@SharedItemsViewModel._viewState.value) {
                 is TypesLoadedState -> {
                     this@SharedItemsViewModel._viewState.value = LoadedState(

@@ -22,6 +22,7 @@
 
 package com.nextcloud.talk.shareditems.adapters
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
@@ -39,14 +40,18 @@ import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
+import com.nextcloud.talk.shareditems.model.SharedLocationItem
+import com.nextcloud.talk.shareditems.model.SharedOtherItem
+import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 
 abstract class SharedItemsViewHolder(
     open val binding: ViewBinding,
-    private val user: User
+    internal val user: User
 ) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
@@ -64,9 +69,9 @@ abstract class SharedItemsViewHolder(
         )
     )
 
-    open fun onBind(item: SharedItem) {
+    open fun onBind(item: SharedFileItem) {
         image.hierarchy.setPlaceholderImage(staticImage(item.mimeType, image))
-        if (item.previewAvailable == true) {
+        if (item.previewAvailable) {
             image.controller = configurePreview(item)
         }
 
@@ -100,7 +105,7 @@ abstract class SharedItemsViewHolder(
         )
     }
 
-    private fun configurePreview(item: SharedItem): DraweeController {
+    private fun configurePreview(item: SharedFileItem): DraweeController {
 
         val imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.previewLink))
             .setProgressiveRenderingEnabled(true)
@@ -122,6 +127,12 @@ abstract class SharedItemsViewHolder(
             .setControllerListener(listener)
             .build()
     }
+
+    open fun onBind(item: SharedPollItem, showPoll: (item: SharedItem, context: Context) -> Unit) {}
+
+    open fun onBind(item: SharedLocationItem) {}
+
+    open fun onBind(item: SharedOtherItem) {}
 
     private fun staticImage(
         mimeType: String?,

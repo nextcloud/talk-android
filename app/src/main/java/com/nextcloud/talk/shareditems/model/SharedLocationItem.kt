@@ -2,8 +2,6 @@
  * Nextcloud Talk application
  *
  * @author Tim Krüger
- * @author Álvaro Brey
- * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,23 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.nextcloud.talk.shareditems.model
 
-import java.util.Locale
+import android.net.Uri
 
-enum class SharedItemType {
-
-    AUDIO,
-    FILE,
-    MEDIA,
-    VOICE,
-    LOCATION,
-    DECKCARD,
-    OTHER,
-    POLL;
-
-    companion object {
-        fun typeFor(name: String) = valueOf(name.uppercase(Locale.ROOT))
-    }
-}
+data class SharedLocationItem(
+    override val id: String,
+    override val name: String,
+    override val actorId: String,
+    override val actorName: String,
+    val geoUri: Uri
+) : SharedItem

@@ -22,14 +22,19 @@
 
 package com.nextcloud.talk.shareditems.repositories
 
+import android.net.Uri
 import android.util.Log
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
+import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
-import com.nextcloud.talk.shareditems.model.SharedMediaItems
+import com.nextcloud.talk.shareditems.model.SharedItems
+import com.nextcloud.talk.shareditems.model.SharedLocationItem
+import com.nextcloud.talk.shareditems.model.SharedOtherItem
+import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 import retrofit2.Response
@@ -41,7 +46,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
     override fun media(
         parameters: SharedItemsRepository.Parameters,
         type: SharedItemType
-    ): Observable<SharedMediaItems>? {
+    ): Observable<SharedItems>? {
         return media(parameters, type, null)
     }
 
@@ -49,7 +54,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
         parameters: SharedItemsRepository.Parameters,
         type: SharedItemType,
         lastKnownMessageId: Int?
-    ): Observable<SharedMediaItems>? {
+    ): Observable<SharedItems>? {
         val credentials = ApiUtils.getCredentials(parameters.userName, parameters.userToken)
 
         return ncApi.getSharedItems(
@@ -58,13 +63,14 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
             type.toString().lowercase(Locale.ROOT),
             lastKnownMessageId,
             BATCH_SIZE
-        ).map { map(it, parameters) }
+        ).map { map(it, parameters, type) }
     }
 
     private fun map(
         response: Response<ChatShareOverall>,
-        parameters: SharedItemsRepository.Parameters
-    ): SharedMediaItems {
+        parameters: SharedItemsRepository.Parameters,
+        type: SharedItemType
+    ): SharedItems {
 
         var chatLastGiven: Int? = null
         val items = mutableMapOf<String, SharedItem>()
@@ -76,15 +82,18 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
         val mediaItems = response.body()!!.ocs!!.data
         if (mediaItems != null) {
             for (it in mediaItems) {
+                val actorParameters = it.value.messageParameters!!["actor"]!!
                 if (it.value.messageParameters?.containsKey("file") == true) {
                     val fileParameters = it.value.messageParameters!!["file"]!!
 
                     val previewAvailable =
                         "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
 
-                    items[it.value.id] = SharedItem(
+                    items[it.value.id] = SharedFileItem(
                         fileParameters["id"]!!,
                         fileParameters["name"]!!,
+                        actorParameters["id"]!!,
+                        actorParameters["name"]!!,
                         fileParameters["size"]!!.toLong(),
                         it.value.timestamp,
                         fileParameters["path"]!!,
@@ -93,8 +102,37 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                         previewAvailable,
                         previewLink(fileParameters["id"], parameters.baseUrl)
                     )
+                } else if (it.value.messageParameters?.containsKey("object") == true) {
+                    val objectParameters = it.value.messageParameters!!["object"]!!
+                    when (objectParameters["type"]) {
+                        "talk-poll" -> {
+                            items[it.value.id] = SharedPollItem(
+                                objectParameters["id"]!!,
+                                objectParameters["name"]!!,
+                                actorParameters["id"]!!,
+                                actorParameters["name"]!!
+                            )
+                        }
+                        "geo-location" -> {
+                            items[it.value.id] = SharedLocationItem(
+                                objectParameters["id"]!!,
+                                objectParameters["name"]!!,
+                                actorParameters["id"]!!,
+                                actorParameters["name"]!!,
+                                Uri.parse(objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q="))
+                            )
+                        }
+                        else -> {
+                            items[it.value.id] = SharedOtherItem(
+                                objectParameters["id"]!!,
+                                objectParameters["name"]!!,
+                                actorParameters["id"]!!,
+                                actorParameters["name"]!!
+                            )
+                        }
+                    }
                 } else {
-                    Log.w(TAG, "location and deckcard are not yet supported")
+                    Log.w(TAG, "Item contains neither 'file' or 'object'.")
                 }
             }
         }
@@ -102,8 +140,9 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
         val sortedMutableItems = items.toSortedMap().values.toList().reversed().toMutableList()
         val moreItemsExisting = items.count() == BATCH_SIZE
 
-        return SharedMediaItems(
+        return SharedItems(
             sortedMutableItems,
+            type,
             chatLastGiven,
             moreItemsExisting
         )
