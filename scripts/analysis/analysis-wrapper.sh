@@ -11,7 +11,8 @@
 
 repository="talk"
 
-if [[ $3 = \stable-* ]] ; then
+stableBranch=$(git branch | grep '*' | cut -d' ' -f2)
+if [[ $stableBranch = \stable-* ]] ; then
   stableBranch=$3
 else
   stableBranch="master"
