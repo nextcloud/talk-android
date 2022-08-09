@@ -74,6 +74,8 @@
     <dimen name="standard_eighth_margin">2dp</dimen>
     <dimen name="scope_padding">12dp</dimen>
 
+    <dimen name="dialogBorderRadius">28dp</dimen>
+
     <dimen name="default_checkbox_dialog_start_margin">18dp</dimen>
 
     <dimen name="mediatab_file_icon_size">50dp</dimen>

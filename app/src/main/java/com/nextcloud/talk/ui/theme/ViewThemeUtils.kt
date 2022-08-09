@@ -33,6 +33,7 @@ import android.os.Build
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
@@ -60,8 +61,10 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
@@ -297,6 +300,20 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
             )
             button.setTextColor(colorStateList)
             button.iconTint = colorStateList
+        }
+    }
+
+    fun colorButtonText(button: Button) {
+        withScheme(button) { scheme ->
+            val disabledColor = ContextCompat.getColor(button.context, R.color.disabled_text)
+            val colorStateList = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_enabled),
+                    intArrayOf(-android.R.attr.state_enabled)
+                ),
+                intArrayOf(scheme.primary, disabledColor)
+            )
+            button.setTextColor(colorStateList)
         }
     }
 
@@ -706,6 +723,27 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         withScheme(button) { scheme ->
             button.setTextColor(scheme.onSurface)
             button.iconTint = ColorStateList.valueOf(scheme.onSurface)
+        }
+    }
+
+    fun colorMaterialAlertDialogBackground(context: Context, dialogBuilder: MaterialAlertDialogBuilder) {
+        withScheme(dialogBuilder.context) { scheme ->
+            val materialShapeDrawable = MaterialShapeDrawable(
+                context,
+                null,
+                com.google.android.material.R.attr.alertDialogStyle,
+                com.google.android.material.R.style.MaterialAlertDialog_MaterialComponents
+            )
+            materialShapeDrawable.initializeElevationOverlay(context)
+            materialShapeDrawable.fillColor = ColorStateList.valueOf(scheme.surface)
+
+            // dialogCornerRadius first appeared in Android Pie
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val radius = context.resources.getDimension(R.dimen.dialogBorderRadius)
+                materialShapeDrawable.setCornerSize(radius)
+            }
+
+            dialogBuilder.background = materialShapeDrawable
         }
     }
 

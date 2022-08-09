@@ -35,11 +35,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
-import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import android.media.MediaRecorder
@@ -74,6 +72,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -100,6 +99,7 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
@@ -189,7 +189,6 @@ import com.stfalcon.chatkit.messages.MessageHolders.ContentChecker
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import com.vanniktech.emoji.EmojiPopup
-import com.yarolegovich.lovelydialog.LovelyStandardDialog
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -1410,28 +1409,37 @@ class ChatController(args: Bundle) :
 
                     val confirmationQuestion = when (filesToUpload.size) {
                         1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
-                            String.format(it, title)
+                            String.format(it, title.trim())
                         }
                         else -> context?.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
-                            String.format(it, title)
+                            String.format(it, title.trim())
                         }
                     }
 
-                    LovelyStandardDialog(activity)
-                        .setPositiveButtonColorRes(R.color.nc_darkGreen)
+                    val materialAlertDialogBuilder = MaterialAlertDialogBuilder(binding.messageInputView.context)
                         .setTitle(confirmationQuestion)
                         .setMessage(filenamesWithLinebreaks.toString())
-                        .setPositiveButton(R.string.nc_yes) { v ->
-                            if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                        .setPositiveButton(R.string.nc_yes) { _, _ ->
+                            if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
                                 uploadFiles(filesToUpload, false)
                             } else {
                                 UploadAndShareFilesWorker.requestStoragePermission(this)
                             }
                         }
-                        .setNegativeButton(R.string.nc_no) {
+                        .setNegativeButton(R.string.nc_no) { _, _ ->
                             // unused atm
                         }
-                        .show()
+
+                    viewThemeUtils.colorMaterialAlertDialogBackground(
+                        binding.messageInputView.context,
+                        materialAlertDialogBuilder
+                    )
+
+                    val dialog = materialAlertDialogBuilder.show()
+
+                    val primary = viewThemeUtils.getScheme(binding.messageInputView.context).primary
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(primary)
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(primary)
                 } catch (e: IllegalStateException) {
                     Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
                         .show()
