@@ -146,7 +146,7 @@ class SharedItemsActivity : AppCompatActivity() {
             else -> {}
         }
 
-        viewThemeUtils.colorTabLayout(binding.sharedItemsTabs)
+        viewThemeUtils.themeTabLayoutOnSurface(binding.sharedItemsTabs)
     }
 
     private fun clearEmptyLoading() {
