@@ -23,7 +23,6 @@
 package com.nextcloud.talk.shareditems.adapters
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import android.view.View
