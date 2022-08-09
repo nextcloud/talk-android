@@ -412,4 +412,8 @@
     <string name="userinfo_no_info_headline">Ez da informazio pertsonalik ezarri</string>
     <string name="userinfo_no_info_text">Gehitu izena, irudia eta kontaktuko xehetasunak zure profilaren orrian</string>
     <string name="whats_your_status">Zein da zure egoera?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">Boto %d</item>
+        <item quantity="other">%d boto</item>
+    </plurals>
+</resources>
