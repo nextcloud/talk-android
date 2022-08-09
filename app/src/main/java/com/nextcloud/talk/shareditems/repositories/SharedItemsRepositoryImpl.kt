@@ -134,9 +134,10 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
         actorParameters: HashMap<String?, String?>,
         dateTime: String
     ): SharedItem {
+        val returnValue: SharedItem
         when (objectParameters["type"]) {
             "talk-poll" -> {
-                return SharedPollItem(
+                returnValue = SharedPollItem(
                     objectParameters["id"]!!,
                     objectParameters["name"]!!,
                     actorParameters["id"]!!,
@@ -145,7 +146,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                 )
             }
             "geo-location" -> {
-                return SharedLocationItem(
+                returnValue = SharedLocationItem(
                     objectParameters["id"]!!,
                     objectParameters["name"]!!,
                     actorParameters["id"]!!,
@@ -155,7 +156,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                 )
             }
             "deck-card" -> {
-                return SharedDeckCardItem(
+                returnValue = SharedDeckCardItem(
                     objectParameters["id"]!!,
                     objectParameters["name"]!!,
                     actorParameters["id"]!!,
@@ -165,7 +166,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                 )
             }
             else -> {
-                return SharedOtherItem(
+                returnValue = SharedOtherItem(
                     objectParameters["id"]!!,
                     objectParameters["name"]!!,
                     actorParameters["id"]!!,
@@ -174,6 +175,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                 )
             }
         }
+        return returnValue
     }
 
     override fun availableTypes(parameters: SharedItemsRepository.Parameters): Observable<Set<SharedItemType>> {
