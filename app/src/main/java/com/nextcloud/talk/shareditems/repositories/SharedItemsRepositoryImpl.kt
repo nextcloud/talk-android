@@ -36,6 +36,7 @@ import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import io.reactivex.Observable
 import retrofit2.Response
 import java.util.Locale
@@ -83,6 +84,10 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
         if (mediaItems != null) {
             for (it in mediaItems) {
                 val actorParameters = it.value.messageParameters!!["actor"]!!
+                val dateTime = DateUtils.getLocalDateTimeStringFromTimestamp(
+                    it.value.timestamp * ONE_SECOND_IN_MILLIS
+                )
+
                 if (it.value.messageParameters?.containsKey("file") == true) {
                     val fileParameters = it.value.messageParameters!!["file"]!!
 
@@ -94,8 +99,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                         fileParameters["name"]!!,
                         actorParameters["id"]!!,
                         actorParameters["name"]!!,
+                        dateTime,
                         fileParameters["size"]!!.toLong(),
-                        it.value.timestamp,
                         fileParameters["path"]!!,
                         fileParameters["link"]!!,
                         fileParameters["mimetype"]!!,
@@ -110,7 +115,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                                 objectParameters["id"]!!,
                                 objectParameters["name"]!!,
                                 actorParameters["id"]!!,
-                                actorParameters["name"]!!
+                                actorParameters["name"]!!,
+                                dateTime
                             )
                         }
                         "geo-location" -> {
@@ -119,6 +125,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                                 objectParameters["name"]!!,
                                 actorParameters["id"]!!,
                                 actorParameters["name"]!!,
+                                dateTime,
                                 Uri.parse(objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q="))
                             )
                         }
@@ -127,7 +134,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                                 objectParameters["id"]!!,
                                 objectParameters["name"]!!,
                                 actorParameters["id"]!!,
-                                actorParameters["name"]!!
+                                actorParameters["name"]!!,
+                                dateTime
                             )
                         }
                     }
@@ -182,6 +190,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
 
     companion object {
         const val BATCH_SIZE: Int = 28
+        private const val ONE_SECOND_IN_MILLIS = 1000
         private val TAG = SharedItemsRepositoryImpl::class.simpleName
     }
 }
