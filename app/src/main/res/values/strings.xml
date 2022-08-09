@@ -431,6 +431,7 @@
     <string name="nc_shared_items_description">Images, files, voice messages …</string>
     <string name="nc_shared_items_empty">No shared items</string>
     <string name="nc_shared_items_location">Location</string>
+    <string name="nc_shared_items_deck_card">Deck card</string>
 
     <!-- voice messages -->
     <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
@@ -562,6 +563,5 @@
     <string name="send_without_notification">Send without notification</string>
     <string name="call_without_notification">Call without notification</string>
     <string name="set_avatar_from_camera">Set avatar from camera</string>
-
 
 </resources>

@@ -40,6 +40,7 @@ import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
@@ -133,6 +134,8 @@ abstract class SharedItemsViewHolder(
     open fun onBind(item: SharedLocationItem) {}
 
     open fun onBind(item: SharedOtherItem) {}
+
+    open fun onBind(item: SharedDeckCardItem) {}
 
     private fun staticImage(
         mimeType: String?,

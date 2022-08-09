@@ -206,12 +206,12 @@ class SharedItemsActivity : AppCompatActivity() {
             binding.sharedItemsTabs.addTab(tabLocation)
         }
 
-        // if(sharedItemTypes.contains(SharedItemType.DECKCARD)) {
-        // val tabDeckCard: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        // tabDeckCard.tag = SharedItemType.DECKCARD
-        // tabDeckCard.text = "deckcard"
-        // binding.sharedItemsTabs.addTab(tabDeckCard)
-        // }
+        if (sharedItemTypes.contains(SharedItemType.DECKCARD)) {
+            val tabDeckCard: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            tabDeckCard.tag = SharedItemType.DECKCARD
+            tabDeckCard.setText(R.string.nc_shared_items_deck_card)
+            binding.sharedItemsTabs.addTab(tabDeckCard)
+        }
 
         if (sharedItemTypes.contains(SharedItemType.OTHER)) {
             val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()

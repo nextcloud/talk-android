@@ -28,6 +28,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
+import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
@@ -39,6 +40,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import io.reactivex.Observable
 import retrofit2.Response
+import java.util.HashMap
 import java.util.Locale
 import javax.inject.Inject
 
@@ -109,36 +111,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                     )
                 } else if (it.value.messageParameters?.containsKey("object") == true) {
                     val objectParameters = it.value.messageParameters!!["object"]!!
-                    when (objectParameters["type"]) {
-                        "talk-poll" -> {
-                            items[it.value.id] = SharedPollItem(
-                                objectParameters["id"]!!,
-                                objectParameters["name"]!!,
-                                actorParameters["id"]!!,
-                                actorParameters["name"]!!,
-                                dateTime
-                            )
-                        }
-                        "geo-location" -> {
-                            items[it.value.id] = SharedLocationItem(
-                                objectParameters["id"]!!,
-                                objectParameters["name"]!!,
-                                actorParameters["id"]!!,
-                                actorParameters["name"]!!,
-                                dateTime,
-                                Uri.parse(objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q="))
-                            )
-                        }
-                        else -> {
-                            items[it.value.id] = SharedOtherItem(
-                                objectParameters["id"]!!,
-                                objectParameters["name"]!!,
-                                actorParameters["id"]!!,
-                                actorParameters["name"]!!,
-                                dateTime
-                            )
-                        }
-                    }
+                    items[it.value.id] = itemFromObject(objectParameters, actorParameters, dateTime)
                 } else {
                     Log.w(TAG, "Item contains neither 'file' or 'object'.")
                 }
@@ -154,6 +127,53 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
             chatLastGiven,
             moreItemsExisting
         )
+    }
+
+    private fun itemFromObject(
+        objectParameters: HashMap<String?, String?>,
+        actorParameters: HashMap<String?, String?>,
+        dateTime: String
+    ): SharedItem {
+        when (objectParameters["type"]) {
+            "talk-poll" -> {
+                return SharedPollItem(
+                    objectParameters["id"]!!,
+                    objectParameters["name"]!!,
+                    actorParameters["id"]!!,
+                    actorParameters["name"]!!,
+                    dateTime
+                )
+            }
+            "geo-location" -> {
+                return SharedLocationItem(
+                    objectParameters["id"]!!,
+                    objectParameters["name"]!!,
+                    actorParameters["id"]!!,
+                    actorParameters["name"]!!,
+                    dateTime,
+                    Uri.parse(objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q="))
+                )
+            }
+            "deck-card" -> {
+                return SharedDeckCardItem(
+                    objectParameters["id"]!!,
+                    objectParameters["name"]!!,
+                    actorParameters["id"]!!,
+                    actorParameters["name"]!!,
+                    dateTime,
+                    Uri.parse(objectParameters["link"]!!)
+                )
+            }
+            else -> {
+                return SharedOtherItem(
+                    objectParameters["id"]!!,
+                    objectParameters["name"]!!,
+                    actorParameters["id"]!!,
+                    actorParameters["name"]!!,
+                    dateTime
+                )
+            }
+        }
     }
 
     override fun availableTypes(parameters: SharedItemsRepository.Parameters): Observable<Set<SharedItemType>> {
