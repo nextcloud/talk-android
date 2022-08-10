@@ -112,22 +112,18 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+        User user = userManager.getCurrentUser().blockingGet();
 
-        viewThemeUtils.themeDialog(binding.getRoot());
-        viewThemeUtils.themeDialogDivider(binding.divider);
+        themeViews();
+        setupCurrentUser(user);
+        setupListeners(user);
+        setupAdapter();
+        prepareViews();
+    }
 
-        viewThemeUtils.colorMaterialTextButton(binding.setStatus);
-        viewThemeUtils.colorDialogMenuText(binding.setStatus);
-        viewThemeUtils.colorMaterialTextButton(binding.addAccount);
-        viewThemeUtils.colorDialogMenuText(binding.addAccount);
-        viewThemeUtils.colorMaterialTextButton(binding.manageSettings);
-        viewThemeUtils.colorDialogMenuText(binding.manageSettings);
-
+    private void setupCurrentUser(User user) {
         // Defining user picture
         binding.currentAccount.userIcon.setTag("");
-
-        // Defining user texts, accounts, etc.
-        User user = userManager.getCurrentUser().blockingGet();
         if (user != null) {
             binding.currentAccount.userName.setText(user.getDisplayName());
             binding.currentAccount.ticker.setVisibility(View.GONE);
@@ -157,32 +153,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
             loadCurrentStatus(user);
         }
+    }
 
-        // Creating listeners for quick-actions
-        binding.currentAccount.getRoot().setOnClickListener(v -> dismiss());
-
-        if (getActivity() instanceof MainActivity) {
-            binding.addAccount.setOnClickListener(v -> {
-                dismiss();
-                ((MainActivity) getActivity()).addAccount();
-            });
-            binding.manageSettings.setOnClickListener(v -> {
-                dismiss();
-                ((MainActivity) getActivity()).openSettings();
-            });
-        }
-
-        binding.setStatus.setOnClickListener(v -> {
-            dismiss();
-
-            if (status != null) {
-                SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(user, status);
-                setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
-            } else {
-                Log.w(TAG, "status was null");
-            }
-        });
-
+    private void setupAdapter() {
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(userItems, getActivity(), false);
 
@@ -210,8 +183,45 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             adapter.addListener(onSwitchItemClickListener);
             adapter.updateDataSet(userItems, false);
         }
+    }
 
-        prepareViews();
+    private void setupListeners(User user) {
+        // Creating listeners for quick-actions
+        binding.currentAccount.getRoot().setOnClickListener(v -> dismiss());
+
+        if (getActivity() instanceof MainActivity) {
+            binding.addAccount.setOnClickListener(v -> {
+                dismiss();
+                ((MainActivity) getActivity()).addAccount();
+            });
+            binding.manageSettings.setOnClickListener(v -> {
+                dismiss();
+                ((MainActivity) getActivity()).openSettings();
+            });
+        }
+
+        binding.setStatus.setOnClickListener(v -> {
+            dismiss();
+
+            if (status != null) {
+                SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(user, status);
+                setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
+            } else {
+                Log.w(TAG, "status was null");
+            }
+        });
+    }
+
+    private void themeViews() {
+        viewThemeUtils.themeDialog(binding.getRoot());
+        viewThemeUtils.themeDialogDivider(binding.divider);
+
+        viewThemeUtils.colorMaterialTextButton(binding.setStatus);
+        viewThemeUtils.colorDialogMenuText(binding.setStatus);
+        viewThemeUtils.colorMaterialTextButton(binding.addAccount);
+        viewThemeUtils.colorDialogMenuText(binding.addAccount);
+        viewThemeUtils.colorMaterialTextButton(binding.manageSettings);
+        viewThemeUtils.colorDialogMenuText(binding.manageSettings);
     }
 
     private void loadCurrentStatus(User user) {
