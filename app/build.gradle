@@ -79,6 +79,7 @@ android {
             disable 'InvalidPackage'
             disable 'MissingTranslation'
             disable 'VectorPath'
+            disable 'UnusedQuantity'
         }
 
         javaCompileOptions {
