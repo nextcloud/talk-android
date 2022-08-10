@@ -39,7 +39,6 @@ import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.DateUtils
 
 class SharedItemsListViewHolder(
     override val binding: SharedItemListBinding,
