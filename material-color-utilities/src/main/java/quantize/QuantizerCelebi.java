@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.material_foundation.material_color_utilities.quantize;
+package quantize;
 
 import java.util.Map;
 import java.util.Set;

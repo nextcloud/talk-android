@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.material_foundation.material_color_utilities.palettes;
+package palettes;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import com.material_foundation.material_color_utilities.hct.Hct;
+import hct.Hct;
 
 /**
- * An intermediate concept between the key color for a UI theme, and a full color com.material_foundation.material_color_utilities.scheme. 5 sets of
+ * An intermediate concept between the key color for a UI theme, and a full color scheme. 5 sets of
  * tones are generated, all except one use the same hue as the key color, and all vary in chroma.
  */
 public final class CorePalette {

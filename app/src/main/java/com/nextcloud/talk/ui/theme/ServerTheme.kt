@@ -22,7 +22,7 @@
 package com.nextcloud.talk.ui.theme
 
 import androidx.annotation.ColorInt
-import com.material_foundation.material_color_utilities.scheme.Scheme
+import scheme.Scheme
 
 interface ServerTheme {
     @get:ColorInt

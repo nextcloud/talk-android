@@ -76,7 +76,7 @@ import com.nextcloud.talk.utils.ui.PlatformThemeUtil.isDarkMode
 import com.vanniktech.emoji.EmojiTextView
 import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
-import com.material_foundation.material_color_utilities.scheme.Scheme
+import scheme.Scheme
 import javax.inject.Inject
 import kotlin.math.roundToInt
 

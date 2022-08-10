@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.material_foundation.material_color_utilities.hct;
+package hct;
 
-import com.material_foundation.material_color_utilities.utils.ColorUtils;
+import utils.ColorUtils;
 
 /**
  * A color system built using CAM16 hue and chroma, and L* from L*a*b*.
