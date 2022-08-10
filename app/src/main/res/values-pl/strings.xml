@@ -313,6 +313,7 @@
     <string name="nc_shared_items">Udostępnione elementy</string>
     <string name="nc_shared_items_description">Obrazy, pliki, wiadomości głosowe…</string>
     <string name="nc_shared_items_empty">Brak udostępnionych elementów</string>
+    <string name="nc_shared_items_location">Lokalizacja</string>
     <string name="nc_shared_location">Udostępniona lokalizacja</string>
     <string name="nc_sort_by">Sortuj według</string>
     <string name="nc_start_time">Czas rozpoczęcia</string>
@@ -383,6 +384,7 @@
     <string name="shared_items_file">Plik</string>
     <string name="shared_items_media">Multimedia</string>
     <string name="shared_items_other">Inne</string>
+    <string name="shared_items_poll">Sonda</string>
     <string name="shared_items_voice">Połączenie głosowe</string>
     <string name="starred">Ulubione</string>
     <string name="startCallForbidden">Nie możesz rozpocząć połączenia</string>

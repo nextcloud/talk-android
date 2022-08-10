@@ -251,6 +251,7 @@
     <string name="nc_share_subject">%1$s 초대</string>
     <string name="nc_share_text">%1$s/index.php/call/%2$s 대화에 참여</string>
     <string name="nc_share_text_pass">\n패스워드: %1$s</string>
+    <string name="nc_shared_items_location">위치</string>
     <string name="nc_shared_location">공유된 위치</string>
     <string name="nc_sort_by">정렬</string>
     <string name="nc_start_time">시작 시간</string>

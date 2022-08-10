@@ -310,6 +310,7 @@
     <string name="nc_shared_items">Общие элементы</string>
     <string name="nc_shared_items_description">Изображения, файлы, голосовые сообщения …</string>
     <string name="nc_shared_items_empty">Нет общих элементов</string>
+    <string name="nc_shared_items_location">Местоположение</string>
     <string name="nc_shared_location">Местоположением поделились</string>
     <string name="nc_sort_by">Сортировать по</string>
     <string name="nc_start_time">Время начала</string>

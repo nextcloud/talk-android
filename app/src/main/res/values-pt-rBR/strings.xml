@@ -313,6 +313,7 @@
     <string name="nc_shared_items">Itens compartilhados</string>
     <string name="nc_shared_items_description">Imagens, arquivos, mensagens de voz …</string>
     <string name="nc_shared_items_empty">Nenhum item compartilhado</string>
+    <string name="nc_shared_items_location">Localização</string>
     <string name="nc_shared_location">Localização compartilhada</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de início</string>
@@ -383,6 +384,7 @@
     <string name="shared_items_file">Arquivo</string>
     <string name="shared_items_media">Meios de comunicação</string>
     <string name="shared_items_other">Outro</string>
+    <string name="shared_items_poll">Enquete</string>
     <string name="shared_items_voice">Voz</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">Você não tem permissão para iniciar uma ligação</string>
@@ -412,4 +414,9 @@
     <string name="userinfo_no_info_headline">Nenhuma informação pessoal definida</string>
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
     <string name="whats_your_status">Qual é o seu status?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d votos</item>
+        <item quantity="many">%d voto</item>
+        <item quantity="other">%d votos</item>
+    </plurals>
+</resources>

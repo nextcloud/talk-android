@@ -245,6 +245,7 @@
     <string name="nc_share_text">Únase á conversa en %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nContrasinal: %1$s</string>
     <string name="nc_share_this_location">Compartir esta localización</string>
+    <string name="nc_shared_items_location">Localización</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de comezo</string>
     <string name="nc_upload_choose_local_files">Escolla os ficheiros</string>

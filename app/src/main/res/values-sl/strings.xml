@@ -307,6 +307,7 @@
     <string name="nc_share_text_pass">\nGeslo: %1$s</string>
     <string name="nc_share_this_location">Objavi trenutno mesto</string>
     <string name="nc_shared_items_description">Slike, datoteke, glasovna sporočila ...</string>
+    <string name="nc_shared_items_location">Trenutno mesto</string>
     <string name="nc_shared_location">Objavljeno trenutno mesto</string>
     <string name="nc_sort_by">Razvrsti po</string>
     <string name="nc_start_time">Čas začetka</string>
