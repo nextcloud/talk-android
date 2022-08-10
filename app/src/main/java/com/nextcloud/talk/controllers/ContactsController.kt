@@ -637,6 +637,7 @@ class ContactsController(args: Bundle) :
                 ResourcesCompat.getColor(resources!!, R.color.colorBackgroundDarker, null),
                 PorterDuff.Mode.SRC_IN
             )
+
         viewThemeUtils.colorImageViewButton(binding.conversationPrivacyToggle.publicCallLink)
         disengageProgressBar()
     }
