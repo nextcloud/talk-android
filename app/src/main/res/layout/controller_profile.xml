@@ -84,6 +84,7 @@
                 android:layout_marginBottom="@dimen/standard_margin"
                 android:contentDescription="@string/upload_new_avatar_from_device"
                 android:tint="@android:color/white"
+                app:elevation="0dp"
                 app:fabSize="mini"
                 app:srcCompat="@drawable/upload" />
 
@@ -96,6 +97,7 @@
                 android:layout_marginBottom="@dimen/standard_margin"
                 android:contentDescription="@string/choose_avatar_from_cloud"
                 android:tint="@android:color/white"
+                app:elevation="0dp"
                 app:fabSize="mini"
                 app:srcCompat="@drawable/ic_mimetype_folder" />
 
@@ -108,6 +110,7 @@
                 android:layout_marginBottom="@dimen/standard_margin"
                 android:contentDescription="@string/set_avatar_from_camera"
                 android:tint="@android:color/white"
+                app:elevation="0dp"
                 app:fabSize="mini"
                 app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
 
@@ -120,6 +123,7 @@
                 android:layout_marginBottom="@dimen/standard_margin"
                 android:contentDescription="@string/delete_avatar"
                 android:tint="@android:color/white"
+                app:elevation="0dp"
                 app:fabSize="mini"
                 app:srcCompat="@drawable/trashbin" />
 
