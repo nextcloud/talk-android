@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package quantize;
+package com.material_foundation.material_color_utilities.quantize;
 
-import utils.ColorUtils;
+import com.material_foundation.material_color_utilities.utils.ColorUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

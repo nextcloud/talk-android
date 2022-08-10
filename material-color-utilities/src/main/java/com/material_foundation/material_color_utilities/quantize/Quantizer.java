@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package quantize;
+package com.material_foundation.material_color_utilities.quantize;
 
-/** An interface to allow use of different color spaces by quantizers. */
-public interface PointProvider {
-  public double[] fromInt(int argb);
-
-  public int toInt(double[] point);
-
-  public double distance(double[] a, double[] b);
+interface Quantizer {
+  public QuantizerResult quantize(int[] pixels, int maxColors);
 }

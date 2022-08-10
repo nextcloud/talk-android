@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package quantize;
+package com.material_foundation.material_color_utilities.quantize;
 
-import java.util.Map;
+/** An interface to allow use of different color spaces by quantizers. */
+public interface PointProvider {
+  public double[] fromInt(int argb);
 
-/** Represents result of a quantizer run */
-public final class QuantizerResult {
-  public final Map<Integer, Integer> colorToCount;
+  public int toInt(double[] point);
 
-  QuantizerResult(Map<Integer, Integer> colorToCount) {
-    this.colorToCount = colorToCount;
-  }
+  public double distance(double[] a, double[] b);
 }

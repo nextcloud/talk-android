@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package quantize;
+package com.material_foundation.material_color_utilities.quantize;
 
-import utils.ColorUtils;
+import com.material_foundation.material_color_utilities.utils.ColorUtils;
 
 /**
  * Provides conversions needed for K-Means quantization. Converting input to points, and converting
