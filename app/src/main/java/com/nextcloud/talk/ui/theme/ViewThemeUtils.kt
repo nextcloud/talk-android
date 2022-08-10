@@ -492,6 +492,12 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
+    fun colorCircularProgressBar(progressBar: ProgressBar) {
+        withScheme(progressBar) { scheme ->
+            progressBar.indeterminateDrawable.setColorFilter(scheme.primary, PorterDuff.Mode.SRC_ATOP)
+        }
+    }
+
     // TODO split this util into classes depending on framework views vs library views
     fun colorPreferenceCategory(category: MaterialPreferenceCategory) {
         withScheme(category) { scheme ->

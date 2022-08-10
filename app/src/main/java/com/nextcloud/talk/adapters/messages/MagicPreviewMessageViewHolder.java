@@ -154,6 +154,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         }
 
         progressBar = getProgressBar();
+        viewThemeUtils.colorCircularProgressBar(getProgressBar());
         image = getImage();
         clickView = getImage();
         getMessageText().setVisibility(View.VISIBLE);
