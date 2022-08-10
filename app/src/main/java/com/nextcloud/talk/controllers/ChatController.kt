@@ -430,11 +430,11 @@ class ChatController(args: Bundle) :
 
     private fun loadAvatarForStatusBar() {
         if (inOneToOneCall() && activity != null) {
-
             val imageRequest = DisplayUtils.getImageRequestForUrl(
                 ApiUtils.getUrlForAvatar(
                     conversationUser?.baseUrl,
-                    currentConversation?.name, true
+                    currentConversation?.name,
+                    true
                 ),
                 conversationUser!!
             )
@@ -446,7 +446,6 @@ class ChatController(args: Bundle) :
                 object : BaseBitmapDataSubscriber() {
                     override fun onNewResultImpl(bitmap: Bitmap?) {
                         if (actionBar != null && bitmap != null && resources != null) {
-
                             val avatarSize = (actionBar?.height!! / TOOLBAR_AVATAR_RATIO).roundToInt()
                             if (avatarSize > 0) {
                                 val bitmapResized = Bitmap.createScaledBitmap(bitmap, avatarSize, avatarSize, false)
@@ -487,9 +486,10 @@ class ChatController(args: Bundle) :
             adapterWasNull = true
 
             val messageHolders = MessageHolders()
-            val profileBottomSheet = ProfileBottomSheet(ncApi!!, conversationUser!!, router)
+            val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!, router)
 
-            val payload = MessagePayload(currentConversation!!, profileBottomSheet)
+            val payload =
+                MessagePayload(roomToken!!, currentConversation?.isParticipantOwnerOrModerator, profileBottomSheet)
 
             messageHolders.setIncomingTextConfig(
                 MagicIncomingTextMessageViewHolder::class.java,
@@ -696,7 +696,8 @@ class ChatController(args: Bundle) :
                     val editable = binding.messageInputView.inputEditText?.editableText
                     if (editable != null && binding.messageInputView.inputEditText != null) {
                         val mentionSpans = editable.getSpans(
-                            0, binding.messageInputView.inputEditText!!.length(),
+                            0,
+                            binding.messageInputView.inputEditText!!.length(),
                             Spans.MentionChipSpan::class.java
                         )
                         var mentionSpan: Spans.MentionChipSpan
@@ -938,7 +939,6 @@ class ChatController(args: Bundle) :
     }
 
     private fun startPlayback(message: ChatMessage) {
-
         if (!this.isAttached) {
             // don't begin to play voice message if screen is not visible anymore.
             // this situation might happen if file is downloading but user already left the chatview.
@@ -1090,7 +1090,8 @@ class ChatController(args: Bundle) :
 
         val fileNameWithoutSuffix = String.format(
             context!!.resources.getString(R.string.nc_voice_message_filename),
-            date, currentConversation!!.displayName
+            date,
+            currentConversation!!.displayName
         )
         val fileName = fileNameWithoutSuffix + VOICE_MESSAGE_FILE_SUFFIX
 
@@ -1305,7 +1306,6 @@ class ChatController(args: Bundle) :
             currentConversation?.isLobbyViewApplicable(conversationUser!!) ?: false &&
             isAlive()
         ) {
-
             if (!checkingLobbyStatus) {
                 getRoomInfo()
             }
@@ -1603,7 +1603,8 @@ class ChatController(args: Bundle) :
 
             if (!isVoiceMessage) {
                 Toast.makeText(
-                    context, context?.getString(R.string.nc_upload_in_progess),
+                    context,
+                    context?.getString(R.string.nc_upload_in_progess),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -2000,7 +2001,8 @@ class ChatController(args: Bundle) :
         if (binding.messageInputView.inputEditText != null) {
             val editable = binding.messageInputView.inputEditText!!.editableText
             val mentionSpans = editable.getSpans(
-                0, editable.length,
+                0,
+                editable.length,
                 Spans.MentionChipSpan::class.java
             )
             var mentionSpan: Spans.MentionChipSpan
@@ -2029,7 +2031,6 @@ class ChatController(args: Bundle) :
     }
 
     private fun sendMessage(message: CharSequence, replyTo: Int?, sendWithoutNotification: Boolean) {
-
         if (conversationUser != null) {
             val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
 
@@ -2167,7 +2168,8 @@ class ChatController(args: Bundle) :
             Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - calling")
             ncApi.pullChatMessages(
                 credentials,
-                ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken), fieldMap
+                ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken),
+                fieldMap
             )
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
@@ -2209,7 +2211,8 @@ class ChatController(args: Bundle) :
             Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - calling")
             ncApi.pullChatMessages(
                 credentials,
-                ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken), fieldMap
+                ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken),
+                fieldMap
             )
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
@@ -2253,7 +2256,6 @@ class ChatController(args: Bundle) :
             Integer.parseInt(it)
         }
         if (response.headers().size > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
-
             val header = Integer.parseInt(xChatLastGivenHeader!!)
             if (header > 0) {
                 if (isFromTheFuture) {
@@ -2268,7 +2270,6 @@ class ChatController(args: Bundle) :
         }
 
         if (response.code() == HTTP_CODE_OK) {
-
             val chatOverall = response.body() as ChatOverall?
             val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data!!)
 
@@ -2331,7 +2332,6 @@ class ChatController(args: Bundle) :
                 }
                 scrollToRequestedMessageIfNeeded()
             } else {
-
                 var chatMessage: ChatMessage
 
                 val shouldAddNewMessagesNotice = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
@@ -2746,7 +2746,8 @@ class ChatController(args: Bundle) :
                     override fun onNext(t: ChatOverallSingleMessage) {
                         if (t.ocs!!.meta!!.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
                             Toast.makeText(
-                                context, R.string.nc_delete_message_leaked_to_matterbridge,
+                                context,
+                                R.string.nc_delete_message_leaked_to_matterbridge,
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -2782,7 +2783,8 @@ class ChatController(args: Bundle) :
         )
         ncApi!!.createRoom(
             credentials,
-            retrofitBucket.url, retrofitBucket.queryMap
+            retrofitBucket.url,
+            retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -2801,7 +2803,8 @@ class ChatController(args: Bundle) :
                     ncApi!!.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
-                            apiVersion, conversationUser?.baseUrl,
+                            apiVersion,
+                            conversationUser?.baseUrl,
                             roomOverall.ocs!!.data!!.token
                         )
                     )
@@ -2818,8 +2821,11 @@ class ChatController(args: Bundle) :
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
                                 remapChatController(
-                                    router, conversationUser!!.id!!,
-                                    roomOverall.ocs!!.data!!.token!!, bundle, true
+                                    router,
+                                    conversationUser!!.id!!,
+                                    roomOverall.ocs!!.data!!.token!!,
+                                    bundle,
+                                    true
                                 )
                             }
 
@@ -3079,7 +3085,6 @@ class ChatController(args: Bundle) :
         if (currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
             currentConversation?.name != userMentionClickEvent.userId
         ) {
-
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
@@ -3097,7 +3102,8 @@ class ChatController(args: Bundle) :
 
             ncApi.createRoom(
                 credentials,
-                retrofitBucket.url, retrofitBucket.queryMap
+                retrofitBucket.url,
+                retrofitBucket.queryMap
             )
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
@@ -3121,8 +3127,11 @@ class ChatController(args: Bundle) :
                             conversationIntent.putExtras(bundle)
 
                             ConductorRemapping.remapChatController(
-                                router, conversationUser.id!!,
-                                roomOverall.ocs!!.data!!.token!!, bundle, false
+                                router,
+                                conversationUser.id!!,
+                                roomOverall.ocs!!.data!!.token!!,
+                                bundle,
+                                false
                             )
                         } else {
                             conversationIntent.putExtras(bundle)

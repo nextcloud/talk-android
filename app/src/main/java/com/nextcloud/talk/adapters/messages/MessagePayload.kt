@@ -20,10 +20,10 @@
 
 package com.nextcloud.talk.adapters.messages
 
-import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 
 data class MessagePayload(
-    var currentConversation: Conversation,
+    var roomToken: String,
+    val isOwnerOrModerator: Boolean?,
     val profileBottomSheet: ProfileBottomSheet
 )
