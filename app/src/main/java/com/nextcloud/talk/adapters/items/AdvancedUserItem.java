@@ -30,7 +30,6 @@ import android.view.View;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.AccountItemBinding;
 import com.nextcloud.talk.models.json.participants.Participant;
