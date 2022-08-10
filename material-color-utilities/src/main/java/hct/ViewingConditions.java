@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.material_foundation.material_color_utilities.hct;
+package hct;
 
-import com.material_foundation.material_color_utilities.utils.ColorUtils;
-import com.material_foundation.material_color_utilities.utils.MathUtils;
+import utils.ColorUtils;
+import utils.MathUtils;
 
 /**
  * In traditional color spaces, a color can be identified solely by the observer's measurement of

@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package com.material_foundation.material_color_utilities.quantize;
+package utils;
 
-import java.util.Map;
+/** Utility methods for string representations of colors. */
+final class StringUtils {
+  private StringUtils() {}
 
-/** Represents result of a quantizer run */
-public final class QuantizerResult {
-  public final Map<Integer, Integer> colorToCount;
-
-  QuantizerResult(Map<Integer, Integer> colorToCount) {
-    this.colorToCount = colorToCount;
+  /**
+   * Hex string representing color, ex. #ff0000 for red.
+   *
+   * @param argb ARGB representation of a color.
+   */
+  public static String hexFromArgb(int argb) {
+    int red = ColorUtils.redFromArgb(argb);
+    int blue = ColorUtils.blueFromArgb(argb);
+    int green = ColorUtils.greenFromArgb(argb);
+    return String.format("#%02x%02x%02x", red, green, blue);
   }
 }

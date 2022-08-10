@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.material_foundation.material_color_utilities.hct;
+package hct;
 
 import static java.lang.Math.max;
 
-import com.material_foundation.material_color_utilities.utils.ColorUtils;
+import utils.ColorUtils;
 
 /**
  * CAM16, a color appearance model. Colors are not just defined by their hex code, but rather, a hex

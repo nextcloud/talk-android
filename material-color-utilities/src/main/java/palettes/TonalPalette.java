@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.material_foundation.material_color_utilities.palettes;
+package palettes;
 
-import com.material_foundation.material_color_utilities.hct.Hct;
+import hct.Hct;
 import java.util.HashMap;
 import java.util.Map;
 
