@@ -29,11 +29,16 @@ import androidx.fragment.app.Fragment
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollLoadingBinding
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class PollLoadingFragment : Fragment() {
 
     private lateinit var binding: DialogPollLoadingBinding
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     var fragmentHeight = 0
 
@@ -50,6 +55,7 @@ class PollLoadingFragment : Fragment() {
     ): View {
         binding = DialogPollLoadingBinding.inflate(inflater, container, false)
         binding.root.layoutParams.height = fragmentHeight
+        viewThemeUtils.colorCircularProgressBar(binding.pollLoadingProgressbar)
         return binding.root
     }
 

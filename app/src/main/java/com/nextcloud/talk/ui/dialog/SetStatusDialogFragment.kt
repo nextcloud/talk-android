@@ -36,13 +36,13 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.PredefinedStatusClickListener
 import com.nextcloud.talk.adapters.PredefinedStatusListAdapter
@@ -166,9 +166,10 @@ class SetStatusDialogFragment :
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogSetStatusBinding.inflate(LayoutInflater.from(context))
 
-        return AlertDialog.Builder(requireContext())
-            .setView(binding.root)
-            .create()
+        val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context).setView(binding.root)
+        viewThemeUtils.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
+
+        return dialogBuilder.create()
     }
 
     @SuppressLint("DefaultLocale")

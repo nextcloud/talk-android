@@ -498,6 +498,12 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
+    fun colorCircularProgressBarOnSurfaceVariant(progressBar: ProgressBar) {
+        withScheme(progressBar) { scheme ->
+            progressBar.indeterminateDrawable.setColorFilter(scheme.onSurfaceVariant, PorterDuff.Mode.SRC_ATOP)
+        }
+    }
+
     // TODO split this util into classes depending on framework views vs library views
     fun colorPreferenceCategory(category: MaterialPreferenceCategory) {
         withScheme(category) { scheme ->
@@ -779,6 +785,24 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
             }
 
             dialogBuilder.background = materialShapeDrawable
+        }
+    }
+
+    fun colorDialogHeadline(textView: TextView) {
+        withScheme(textView) { scheme ->
+            textView.setTextColor(scheme.onSurface)
+        }
+    }
+
+    fun colorDialogSupportingText(textView: TextView) {
+        withScheme(textView) { scheme ->
+            textView.setTextColor(scheme.onSurfaceVariant)
+        }
+    }
+
+    fun colorDialogIcon(icon: ImageView) {
+        withScheme(icon) { scheme ->
+            icon.setColorFilter(scheme.secondary)
         }
     }
 

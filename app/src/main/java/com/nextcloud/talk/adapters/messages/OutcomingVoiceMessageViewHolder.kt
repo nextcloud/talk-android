@@ -97,6 +97,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
         viewThemeUtils.themeHorizontalSeekBar(binding.seekbar)
+        viewThemeUtils.colorCircularProgressBarOnSurfaceVariant(binding.progressBar)
 
         handleIsPlayingVoiceMessageState(message)
 

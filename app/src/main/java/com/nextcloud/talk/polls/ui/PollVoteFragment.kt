@@ -37,6 +37,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollVoteBinding
@@ -206,14 +207,25 @@ class PollVoteFragment : Fragment() {
         if (showEndPollButton) {
             binding.pollVoteEndPollButton.visibility = View.VISIBLE
             binding.pollVoteEndPollButton.setOnClickListener {
-                AlertDialog.Builder(requireContext())
+                val dialogBuilder = MaterialAlertDialogBuilder(binding.pollVoteEndPollButton.context)
                     .setTitle(R.string.polls_end_poll)
                     .setMessage(R.string.polls_end_poll_confirm)
                     .setPositiveButton(R.string.polls_end_poll) { _, _ ->
                         parentViewModel.endPoll()
                     }
                     .setNegativeButton(R.string.nc_cancel, null)
-                    .show()
+
+                viewThemeUtils.colorMaterialAlertDialogBackground(
+                    binding.pollVoteEndPollButton.context,
+                    dialogBuilder
+                )
+
+                val dialog = dialogBuilder.show()
+
+                viewThemeUtils.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                )
             }
         } else {
             binding.pollVoteEndPollButton.visibility = View.GONE

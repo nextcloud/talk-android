@@ -117,6 +117,8 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
         sharedApplication!!.componentApplication.inject(this)
         currentUser = userManager.currentUser.blockingGet()
 
+        viewThemeUtils.colorCircularProgressBar(binding.progressBar)
+
         if (!TextUtils.isEmpty(callUrl) && callUrl.contains("/call")) {
             conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1)
             if (callUrl.contains("/index.php")) {

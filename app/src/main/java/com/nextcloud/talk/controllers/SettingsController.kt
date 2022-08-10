@@ -957,13 +957,16 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         })
         phoneNumberInputLayout.addView(phoneNumberField)
         phoneNumberLayoutWrapper.addView(phoneNumberInputLayout)
-        val dialog = AlertDialog.Builder((activity)!!)
+        val dialogBuilder = MaterialAlertDialogBuilder(phoneNumberInputLayout.context)
             .setTitle(R.string.nc_settings_phone_book_integration_phone_number_dialog_title)
             .setMessage(R.string.nc_settings_phone_book_integration_phone_number_dialog_description)
             .setView(phoneNumberLayoutWrapper)
             .setPositiveButton(context!!.resources.getString(R.string.nc_common_set), null)
             .setNegativeButton(context!!.resources.getString(R.string.nc_common_skip), null)
-            .create()
+
+        viewThemeUtils.colorMaterialAlertDialogBackground(phoneNumberInputLayout.context, dialogBuilder)
+
+        val dialog = dialogBuilder.create()
         dialog.setOnShowListener(object : OnShowListener {
             override fun onShow(dialogInterface: DialogInterface) {
                 val button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -974,7 +977,13 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                 })
             }
         })
+
         dialog.show()
+
+        viewThemeUtils.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun setPhoneNumber(textInputLayout: TextInputLayout, dialog: AlertDialog) {

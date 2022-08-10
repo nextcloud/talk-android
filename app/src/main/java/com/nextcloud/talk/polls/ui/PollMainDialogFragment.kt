@@ -26,16 +26,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogPollMainBinding
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -43,6 +44,9 @@ class PollMainDialogFragment : DialogFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private lateinit var binding: DialogPollMainBinding
     private lateinit var viewModel: PollMainViewModel
@@ -66,11 +70,15 @@ class PollMainDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogPollMainBinding.inflate(LayoutInflater.from(context))
 
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(binding.root)
-            .create()
+        val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context).setView(binding.root)
+
+        viewThemeUtils.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
+
+        val dialog = dialogBuilder.create()
 
         binding.messagePollTitle.text = viewModel.pollTitle
+        viewThemeUtils.colorDialogHeadline(binding.messagePollTitle)
+        viewThemeUtils.colorDialogIcon(binding.messagePollIcon)
 
         return dialog
     }
@@ -135,6 +143,7 @@ class PollMainDialogFragment : DialogFragment() {
 
     private fun initVotersAmount(showVotersAmount: Boolean, numVoters: Int, showResultSubtitle: Boolean) {
         if (showVotersAmount) {
+            viewThemeUtils.colorDialogSupportingText(binding.pollVotesAmount)
             binding.pollVotesAmount.visibility = View.VISIBLE
             binding.pollVotesAmount.text = resources.getQuantityString(
                 R.plurals.polls_amount_voters,
@@ -146,6 +155,7 @@ class PollMainDialogFragment : DialogFragment() {
         }
 
         if (showResultSubtitle) {
+            viewThemeUtils.colorDialogSupportingText(binding.pollResultsSubtitle)
             binding.pollResultsSubtitle.visibility = View.VISIBLE
             binding.pollResultsSubtitleSeperator.visibility = View.VISIBLE
         } else {

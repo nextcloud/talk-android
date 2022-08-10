@@ -231,6 +231,8 @@ class ConversationInfoController(args: Bundle) :
         }
 
         binding.addParticipantsAction.visibility = View.GONE
+
+        viewThemeUtils.colorCircularProgressBar(binding.progressBar)
     }
 
     private fun setupWebinaryView() {

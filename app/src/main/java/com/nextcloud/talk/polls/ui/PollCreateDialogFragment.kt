@@ -31,11 +31,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollCreateBinding
@@ -73,9 +73,11 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogPollCreateBinding.inflate(LayoutInflater.from(context))
 
-        return AlertDialog.Builder(requireContext())
+        val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context)
             .setView(binding.root)
-            .create()
+        viewThemeUtils.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
+
+        return dialogBuilder.create()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -103,10 +105,9 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
         viewThemeUtils.colorPrimaryTextViewElement(binding.pollOptions)
         viewThemeUtils.colorPrimaryTextViewElement(binding.pollSettings)
 
-        viewThemeUtils.colorEditText(binding.pollCreateQuestionTextEdit)
+        viewThemeUtils.colorTextInputLayout(binding.pollCreateQuestionTextInputLayout)
 
         viewThemeUtils.colorMaterialButtonText(binding.pollAddOptionsItem)
-        // TODO button also needs a disabled state handling for colors
         viewThemeUtils.colorMaterialButtonText(binding.pollDismiss)
         viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.pollCreateButton)
 
