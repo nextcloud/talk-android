@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package score;
+package com.material_foundation.material_color_utilities.score;
 
-import hct.Cam16;
-import utils.ColorUtils;
-import utils.MathUtils;
+import com.material_foundation.material_color_utilities.hct.Cam16;
+import com.material_foundation.material_color_utilities.utils.ColorUtils;
+import com.material_foundation.material_color_utilities.utils.MathUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
