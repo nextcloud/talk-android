@@ -212,6 +212,7 @@
     <string name="nc_share_text">Taktu þátt í samtalinu á %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nLykilorð: %1$s</string>
     <string name="nc_share_this_location">Deila þessari staðsetningu</string>
+    <string name="nc_shared_items_location">Staðsetning</string>
     <string name="nc_sort_by">Raða sem</string>
     <string name="nc_start_time">Upphafstími</string>
     <string name="nc_upload_in_progess">Sendi inn</string>
@@ -240,6 +241,7 @@
     <string name="shared_items_file">Skrá</string>
     <string name="shared_items_media">Margmiðlunargögn</string>
     <string name="shared_items_other">Annað</string>
+    <string name="shared_items_poll">Poll</string>
     <string name="shared_items_voice">Raddskilaboð</string>
     <string name="starred">Eftirlæti</string>
     <string name="status_message">Stöðuskilaboð</string>

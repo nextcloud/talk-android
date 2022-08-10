@@ -313,6 +313,7 @@
     <string name="nc_shared_items">Megosztott elemek</string>
     <string name="nc_shared_items_description">Képek, fájlok, hangüzenetek…</string>
     <string name="nc_shared_items_empty">Nincsenek megosztott elemek</string>
+    <string name="nc_shared_items_location">Hely</string>
     <string name="nc_shared_location">Hely megosztva</string>
     <string name="nc_sort_by">Rendezés elve</string>
     <string name="nc_start_time">Kezdési idő</string>
@@ -383,6 +384,7 @@
     <string name="shared_items_file">Fájl</string>
     <string name="shared_items_media">Média</string>
     <string name="shared_items_other">Egyebek</string>
+    <string name="shared_items_poll">Szavazás</string>
     <string name="shared_items_voice">Hang</string>
     <string name="starred">Kedvenc</string>
     <string name="startCallForbidden">Nincs jogosultsága hívást indítani</string>

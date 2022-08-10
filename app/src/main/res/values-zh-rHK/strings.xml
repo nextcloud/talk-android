@@ -313,6 +313,7 @@
     <string name="nc_shared_items">分享項目</string>
     <string name="nc_shared_items_description">圖片、檔案、語音訊息 …</string>
     <string name="nc_shared_items_empty">沒有已分享的項目</string>
+    <string name="nc_shared_items_location">位置</string>
     <string name="nc_shared_location">分享了的位置</string>
     <string name="nc_sort_by">排序方式</string>
     <string name="nc_start_time">開始時間</string>
@@ -383,6 +384,7 @@
     <string name="shared_items_file">檔案</string>
     <string name="shared_items_media">多媒體</string>
     <string name="shared_items_other">其它</string>
+    <string name="shared_items_poll">民意調查Poll</string>
     <string name="shared_items_voice">語音</string>
     <string name="starred">我的最愛</string>
     <string name="startCallForbidden">你無權開始通話</string>

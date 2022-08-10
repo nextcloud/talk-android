@@ -313,6 +313,7 @@
     <string name="nc_shared_items">Geteilte Elemente</string>
     <string name="nc_shared_items_description">Bilder, Dateien, Sprachnachrichten …</string>
     <string name="nc_shared_items_empty">Keine geteilten Elemente</string>
+    <string name="nc_shared_items_location">Ort</string>
     <string name="nc_shared_location">Geteilter Ort</string>
     <string name="nc_sort_by">Sortiere nach</string>
     <string name="nc_start_time">Startzeit</string>
@@ -383,6 +384,7 @@
     <string name="shared_items_file">Datei</string>
     <string name="shared_items_media">Medien</string>
     <string name="shared_items_other">Sonstiges</string>
+    <string name="shared_items_poll">Umfrage</string>
     <string name="shared_items_voice">Anruf</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Sie dürfen keinen Anruf zu tätigen</string>

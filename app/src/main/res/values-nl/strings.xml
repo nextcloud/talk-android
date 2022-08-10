@@ -303,6 +303,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_share_text">Neem deel aan het gesprek %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nWachtwoord: %1$s</string>
     <string name="nc_share_this_location">Deel deze locatie</string>
+    <string name="nc_shared_items_location">Locatie</string>
     <string name="nc_shared_location">Gedeelde locatie</string>
     <string name="nc_sort_by">Sorteren op</string>
     <string name="nc_start_time">Begintijd</string>

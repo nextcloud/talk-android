@@ -313,6 +313,7 @@
     <string name="nc_shared_items">Sdílené položky</string>
     <string name="nc_shared_items_description">Obrázky, soubory, hlasové zprávy…</string>
     <string name="nc_shared_items_empty">Žádné sdílené položky</string>
+    <string name="nc_shared_items_location">Poloha</string>
     <string name="nc_shared_location">Sdílené umístění</string>
     <string name="nc_sort_by">Řadit podle</string>
     <string name="nc_start_time">Čas zahájení</string>
@@ -383,6 +384,7 @@
     <string name="shared_items_file">Soubor</string>
     <string name="shared_items_media">Média</string>
     <string name="shared_items_other">Ostatní</string>
+    <string name="shared_items_poll">Anketa</string>
     <string name="shared_items_voice">Hlas</string>
     <string name="starred">Oblíbené</string>
     <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>

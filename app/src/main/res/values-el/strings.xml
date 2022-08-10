@@ -284,6 +284,7 @@
     <string name="nc_share_text">Συμμετοχή στην συνομιλία από %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nΣυνθηματικό: %1$s</string>
     <string name="nc_share_this_location">Διαμοιρασμός αυτής της τοποθεσίας</string>
+    <string name="nc_shared_items_location">Τοποθεσία</string>
     <string name="nc_shared_location">Διαμοιρασμένες τοποθεσίες</string>
     <string name="nc_sort_by">Ταξινόμηση κατά</string>
     <string name="nc_start_time">Ώρα έναρξης</string>

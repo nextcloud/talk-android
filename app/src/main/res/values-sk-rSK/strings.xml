@@ -310,6 +310,7 @@
     <string name="nc_shared_items">Zdieľané položky</string>
     <string name="nc_shared_items_description">Obrázky, súbory, hlasové správy …</string>
     <string name="nc_shared_items_empty">Žiadne zdieľané položky</string>
+    <string name="nc_shared_items_location">Umiestnenie</string>
     <string name="nc_shared_location">Zdieľaná poloha</string>
     <string name="nc_sort_by">Zoradiť podľa</string>
     <string name="nc_start_time">Čas začiatku</string>

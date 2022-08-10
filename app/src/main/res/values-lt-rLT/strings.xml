@@ -215,6 +215,7 @@
     <string name="nc_share_text">Prisijunkite prie pokalbio, adresu %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nSlaptažodis: %1$s</string>
     <string name="nc_share_this_location">Bendrinti šią vietą</string>
+    <string name="nc_shared_items_location">Vieta</string>
     <string name="nc_sort_by">Rikiuoti pagal</string>
     <string name="nc_start_time">Pradžios laikas</string>
     <string name="nc_upload_in_progess">Įkeliama</string>

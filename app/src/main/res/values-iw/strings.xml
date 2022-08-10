@@ -231,6 +231,7 @@
     <string name="nc_share_text">כדאי להצטרף לדיון תחת %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nססמה: %1$s</string>
     <string name="nc_share_this_location">שיתוף המיקום הזה</string>
+    <string name="nc_shared_items_location">מיקום</string>
     <string name="nc_sort_by">מיון על בסיס</string>
     <string name="nc_start_time">מועד התחלה</string>
     <string name="nc_upload_in_progess">מתבצעת העלאה</string>

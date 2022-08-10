@@ -272,6 +272,7 @@
     <string name="nc_shared_items">Jaetut tietueet</string>
     <string name="nc_shared_items_description">Kuvat, tiedostot, ääniviestit…</string>
     <string name="nc_shared_items_empty">Ei jaettuja kohteita</string>
+    <string name="nc_shared_items_location">Sijainti</string>
     <string name="nc_shared_location">Jaettu sijainti</string>
     <string name="nc_sort_by">Lajittelujärjestys</string>
     <string name="nc_start_time">Aloitusaika</string>

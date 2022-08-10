@@ -309,6 +309,7 @@
     <string name="nc_shared_items">Споделени елементи</string>
     <string name="nc_shared_items_description">Изображения, файлове, гласови съобщения …</string>
     <string name="nc_shared_items_empty">Няма споделени елементи</string>
+    <string name="nc_shared_items_location">Местоположение</string>
     <string name="nc_shared_location">Споделено местоположение</string>
     <string name="nc_sort_by">Сортиране по</string>
     <string name="nc_start_time">Начало</string>

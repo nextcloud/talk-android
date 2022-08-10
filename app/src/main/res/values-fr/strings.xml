@@ -310,6 +310,7 @@
     <string name="nc_shared_items">Éléments partagés</string>
     <string name="nc_shared_items_description">Images, fichiers, messages vocaux…</string>
     <string name="nc_shared_items_empty">Pas d\'éléments partagés</string>
+    <string name="nc_shared_items_location">Position</string>
     <string name="nc_shared_location">Position partagée</string>
     <string name="nc_sort_by">Trier par</string>
     <string name="nc_start_time">Heure de début</string>

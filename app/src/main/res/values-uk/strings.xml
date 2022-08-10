@@ -268,6 +268,7 @@
     <string name="nc_share_link">Поширити посилання</string>
     <string name="nc_share_location">Поділіться місцезнаходженням</string>
     <string name="nc_share_this_location">Поділіться цим розташуванням</string>
+    <string name="nc_shared_items_location">Місце</string>
     <string name="nc_sort_by">Сортувати по</string>
     <string name="nc_upload_choose_local_files">Виберіть файли</string>
     <string name="nc_upload_failed">Вибачте, помилка завантаження</string>

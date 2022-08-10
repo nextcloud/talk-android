@@ -309,6 +309,7 @@
     <string name="nc_shared_items">共有済みアイテム</string>
     <string name="nc_shared_items_description">画像、ファイル、ボイスメッセージ …</string>
     <string name="nc_shared_items_empty">共有アイテムがありません</string>
+    <string name="nc_shared_items_location">位置</string>
     <string name="nc_shared_location">共有された位置情報</string>
     <string name="nc_sort_by">ソート: </string>
     <string name="nc_start_time">開始時刻</string>
