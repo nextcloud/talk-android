@@ -28,6 +28,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
+import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
@@ -36,8 +37,10 @@ import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import io.reactivex.Observable
 import retrofit2.Response
+import java.util.HashMap
 import java.util.Locale
 import javax.inject.Inject
 
@@ -83,6 +86,10 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
         if (mediaItems != null) {
             for (it in mediaItems) {
                 val actorParameters = it.value.messageParameters!!["actor"]!!
+                val dateTime = DateUtils.getLocalDateTimeStringFromTimestamp(
+                    it.value.timestamp * ONE_SECOND_IN_MILLIS
+                )
+
                 if (it.value.messageParameters?.containsKey("file") == true) {
                     val fileParameters = it.value.messageParameters!!["file"]!!
 
@@ -94,8 +101,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                         fileParameters["name"]!!,
                         actorParameters["id"]!!,
                         actorParameters["name"]!!,
+                        dateTime,
                         fileParameters["size"]!!.toLong(),
-                        it.value.timestamp,
                         fileParameters["path"]!!,
                         fileParameters["link"]!!,
                         fileParameters["mimetype"]!!,
@@ -104,33 +111,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                     )
                 } else if (it.value.messageParameters?.containsKey("object") == true) {
                     val objectParameters = it.value.messageParameters!!["object"]!!
-                    when (objectParameters["type"]) {
-                        "talk-poll" -> {
-                            items[it.value.id] = SharedPollItem(
-                                objectParameters["id"]!!,
-                                objectParameters["name"]!!,
-                                actorParameters["id"]!!,
-                                actorParameters["name"]!!
-                            )
-                        }
-                        "geo-location" -> {
-                            items[it.value.id] = SharedLocationItem(
-                                objectParameters["id"]!!,
-                                objectParameters["name"]!!,
-                                actorParameters["id"]!!,
-                                actorParameters["name"]!!,
-                                Uri.parse(objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q="))
-                            )
-                        }
-                        else -> {
-                            items[it.value.id] = SharedOtherItem(
-                                objectParameters["id"]!!,
-                                objectParameters["name"]!!,
-                                actorParameters["id"]!!,
-                                actorParameters["name"]!!
-                            )
-                        }
-                    }
+                    items[it.value.id] = itemFromObject(objectParameters, actorParameters, dateTime)
                 } else {
                     Log.w(TAG, "Item contains neither 'file' or 'object'.")
                 }
@@ -146,6 +127,55 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
             chatLastGiven,
             moreItemsExisting
         )
+    }
+
+    private fun itemFromObject(
+        objectParameters: HashMap<String?, String?>,
+        actorParameters: HashMap<String?, String?>,
+        dateTime: String
+    ): SharedItem {
+        val returnValue: SharedItem
+        when (objectParameters["type"]) {
+            "talk-poll" -> {
+                returnValue = SharedPollItem(
+                    objectParameters["id"]!!,
+                    objectParameters["name"]!!,
+                    actorParameters["id"]!!,
+                    actorParameters["name"]!!,
+                    dateTime
+                )
+            }
+            "geo-location" -> {
+                returnValue = SharedLocationItem(
+                    objectParameters["id"]!!,
+                    objectParameters["name"]!!,
+                    actorParameters["id"]!!,
+                    actorParameters["name"]!!,
+                    dateTime,
+                    Uri.parse(objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q="))
+                )
+            }
+            "deck-card" -> {
+                returnValue = SharedDeckCardItem(
+                    objectParameters["id"]!!,
+                    objectParameters["name"]!!,
+                    actorParameters["id"]!!,
+                    actorParameters["name"]!!,
+                    dateTime,
+                    Uri.parse(objectParameters["link"]!!)
+                )
+            }
+            else -> {
+                returnValue = SharedOtherItem(
+                    objectParameters["id"]!!,
+                    objectParameters["name"]!!,
+                    actorParameters["id"]!!,
+                    actorParameters["name"]!!,
+                    dateTime
+                )
+            }
+        }
+        return returnValue
     }
 
     override fun availableTypes(parameters: SharedItemsRepository.Parameters): Observable<Set<SharedItemType>> {
@@ -182,6 +212,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
 
     companion object {
         const val BATCH_SIZE: Int = 28
+        private const val ONE_SECOND_IN_MILLIS = 1000
         private val TAG = SharedItemsRepositoryImpl::class.simpleName
     }
 }

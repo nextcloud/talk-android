@@ -32,12 +32,12 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.SharedItemListBinding
+import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
-import com.nextcloud.talk.utils.DateUtils
 
 class SharedItemsListViewHolder(
     override val binding: SharedItemListBinding,
@@ -62,16 +62,18 @@ class SharedItemsListViewHolder(
                 it
             )
         }
-        binding.fileDate.text = DateUtils.getLocalDateTimeStringFromTimestamp(
-            item.date * ONE_SECOND_IN_MILLIS
-        )
+        binding.fileDate.text = item.dateTime
+        binding.actor.text = item.actorName
     }
 
     override fun onBind(item: SharedPollItem, showPoll: (item: SharedItem, context: Context) -> Unit) {
         super.onBind(item, showPoll)
 
         binding.fileName.text = item.name
-        binding.fileMetadata.visibility = View.GONE
+        binding.fileSize.visibility = View.GONE
+        binding.separator1.visibility = View.GONE
+        binding.fileDate.text = item.dateTime
+        binding.actor.text = item.actorName
         image.hierarchy.setPlaceholderImage(R.drawable.ic_baseline_bar_chart_24)
         image.setColorFilter(
             ContextCompat.getColor(image.context, R.color.high_emphasis_menu_icon),
@@ -86,7 +88,10 @@ class SharedItemsListViewHolder(
         super.onBind(item)
 
         binding.fileName.text = item.name
-        binding.fileMetadata.visibility = View.GONE
+        binding.fileSize.visibility = View.GONE
+        binding.separator1.visibility = View.GONE
+        binding.fileDate.text = item.dateTime
+        binding.actor.text = item.actorName
         image.hierarchy.setPlaceholderImage(R.drawable.ic_baseline_location_on_24)
         image.setColorFilter(
             ContextCompat.getColor(image.context, R.color.high_emphasis_menu_icon),
@@ -94,7 +99,6 @@ class SharedItemsListViewHolder(
         )
 
         clickTarget.setOnClickListener {
-
             val browserIntent = Intent(Intent.ACTION_VIEW, item.geoUri)
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             it.context.startActivity(browserIntent)
@@ -105,7 +109,10 @@ class SharedItemsListViewHolder(
         super.onBind(item)
 
         binding.fileName.text = item.name
-        binding.fileMetadata.visibility = View.GONE
+        binding.fileSize.visibility = View.GONE
+        binding.separator1.visibility = View.GONE
+        binding.fileDate.text = item.dateTime
+        binding.actor.text = item.actorName
         image.hierarchy.setPlaceholderImage(R.drawable.ic_mimetype_file)
         image.setColorFilter(
             ContextCompat.getColor(image.context, R.color.high_emphasis_menu_icon),
@@ -113,7 +120,24 @@ class SharedItemsListViewHolder(
         )
     }
 
-    companion object {
-        private const val ONE_SECOND_IN_MILLIS = 1000
+    override fun onBind(item: SharedDeckCardItem) {
+        super.onBind(item)
+
+        binding.fileName.text = item.name
+        binding.fileSize.visibility = View.GONE
+        binding.separator1.visibility = View.GONE
+        binding.fileDate.text = item.dateTime
+        binding.actor.text = item.actorName
+        image.hierarchy.setPlaceholderImage(R.drawable.ic_baseline_deck_24)
+        image.setColorFilter(
+            ContextCompat.getColor(image.context, R.color.high_emphasis_menu_icon),
+            android.graphics.PorterDuff.Mode.SRC_IN
+        )
+
+        clickTarget.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, item.link)
+            browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            it.context.startActivity(browserIntent)
+        }
     }
 }

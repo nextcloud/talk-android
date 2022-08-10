@@ -31,6 +31,7 @@ import com.nextcloud.talk.databinding.SharedItemGridBinding
 import com.nextcloud.talk.databinding.SharedItemListBinding
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
+import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
@@ -75,6 +76,7 @@ class SharedItemsAdapter(
             is SharedFileItem -> holder.onBind(item)
             is SharedLocationItem -> holder.onBind(item)
             is SharedOtherItem -> holder.onBind(item)
+            is SharedDeckCardItem -> holder.onBind(item)
         }
     }
 
