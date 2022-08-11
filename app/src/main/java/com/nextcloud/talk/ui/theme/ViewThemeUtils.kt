@@ -801,6 +801,14 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         return spannable
     }
 
+    fun colorMaterialAlertDialogIcon(context: Context, drawableId: Int): Drawable {
+        val drawable = AppCompatResources.getDrawable(context, drawableId)!!
+        withScheme(context) { scheme ->
+            DrawableCompat.setTint(drawable, scheme.secondary)
+        }
+        return drawable
+    }
+
     companion object {
         private val THEMEABLE_PLACEHOLDER_IDS = listOf(
             R.drawable.ic_mimetype_package_x_generic,
