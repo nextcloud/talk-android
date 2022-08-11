@@ -43,6 +43,7 @@ import com.nextcloud.talk.databinding.DialogPollVoteBinding
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -50,6 +51,9 @@ class PollVoteFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private lateinit var parentViewModel: PollMainViewModel
     lateinit var viewModel: PollVoteViewModel
@@ -117,6 +121,14 @@ class PollVoteFragment : Fragment() {
         binding.pollVoteEditDismiss.setOnClickListener {
             parentViewModel.dismissEditVotes()
         }
+
+        themeDialog()
+    }
+
+    private fun themeDialog() {
+        viewThemeUtils.colorMaterialButtonBackground(binding.pollVoteSubmitButton)
+        viewThemeUtils.colorMaterialButtonText(binding.pollVoteEndPollButton)
+        viewThemeUtils.colorMaterialButtonText(binding.pollVoteEditDismiss)
     }
 
     private fun updateDismissEditButton(showDismissEditButton: Boolean) {
@@ -136,6 +148,7 @@ class PollVoteFragment : Fragment() {
                 RadioButton(context).apply { text = option }
             }?.forEachIndexed { index, radioButton ->
                 radioButton.id = index
+                viewThemeUtils.themeRadioButton(radioButton)
                 makeOptionBoldIfSelfVoted(radioButton, poll, index)
                 binding.pollVoteRadioGroup.addView(radioButton)
 
@@ -156,6 +169,7 @@ class PollVoteFragment : Fragment() {
                     setLayoutParams(layoutParams)
                 }
             }?.forEachIndexed { index, checkBox ->
+                viewThemeUtils.themeCheckbox(checkBox)
                 checkBox.id = index
                 makeOptionBoldIfSelfVoted(checkBox, poll, index)
                 binding.voteOptionsCheckboxesWrapper.addView(checkBox)

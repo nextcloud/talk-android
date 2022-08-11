@@ -34,12 +34,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
+import com.google.android.material.card.MaterialCardView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.PredefinedStatusClickListener
 import com.nextcloud.talk.adapters.PredefinedStatusListAdapter
@@ -53,6 +56,7 @@ import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.vanniktech.emoji.EmojiPopup
@@ -104,6 +108,9 @@ class SetStatusDialogFragment :
 
     @Inject
     lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     lateinit var credentials: String
 
@@ -234,8 +241,8 @@ class SetStatusDialogFragment :
             }
         }
 
-        binding.clearStatus.setTextColor(resources.getColor(R.color.colorPrimary))
-        binding.setStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+        viewThemeUtils.colorMaterialButtonText(binding.clearStatus)
+        viewThemeUtils.colorMaterialButtonBackground(binding.setStatus)
 
         binding.customStatusInput.highlightColor = resources.getColor(R.color.colorPrimary)
 
@@ -258,7 +265,6 @@ class SetStatusDialogFragment :
 
     @Suppress("ComplexMethod")
     private fun setClearStatusAfterValue(item: Int) {
-
         val currentTime = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
 
         when (item) {
@@ -310,7 +316,6 @@ class SetStatusDialogFragment :
     }
 
     private fun clearAtToUnixTime(clearAt: ClearAt?): Long {
-
         var returnValue = -1L
 
         if (clearAt != null) {
@@ -400,25 +405,18 @@ class SetStatusDialogFragment :
 
     private fun visualizeStatus(statusType: StatusType) {
         clearTopStatus()
-        when (statusType) {
-            StatusType.ONLINE -> {
-                binding.onlineStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
-                binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
+        val views: Triple<MaterialCardView, TextView, ImageView> = when (statusType) {
+            StatusType.ONLINE -> Triple(binding.onlineStatus, binding.onlineHeadline, binding.onlineIcon)
+            StatusType.AWAY -> Triple(binding.awayStatus, binding.awayHeadline, binding.awayIcon)
+            StatusType.DND -> Triple(binding.dndStatus, binding.dndHeadline, binding.dndIcon)
+            StatusType.INVISIBLE -> Triple(binding.invisibleStatus, binding.invisibleHeadline, binding.invisibleIcon)
+            else -> {
+                Log.d(TAG, "unknown status")
+                return
             }
-            StatusType.AWAY -> {
-                binding.awayStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
-                binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
-            }
-            StatusType.DND -> {
-                binding.dndStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
-                binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
-            }
-            StatusType.INVISIBLE -> {
-                binding.invisibleStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
-                binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
-            }
-            else -> Log.d(TAG, "unknown status")
         }
+        viewThemeUtils.colorCardViewBackground(views.first)
+        viewThemeUtils.colorTextViewText(views.second)
     }
 
     private fun clearTopStatus() {
@@ -433,11 +431,15 @@ class SetStatusDialogFragment :
             binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
             binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
             binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
+
+            binding.onlineIcon.imageTintList = null
+            binding.awayIcon.imageTintList = null
+            binding.dndIcon.imageTintList = null
+            binding.invisibleIcon.imageTintList = null
         }
     }
 
     private fun setStatusMessage() {
-
         val inputText = binding.customStatusInput.text.toString().ifEmpty { "" }
         // The endpoint '/message/custom' expects a valid emoji as string or null
         val statusIcon = binding.emoji.text.toString().ifEmpty { null }
@@ -446,7 +448,6 @@ class SetStatusDialogFragment :
             selectedPredefinedStatus!!.message != inputText ||
             selectedPredefinedStatus!!.icon != binding.emoji.text.toString()
         ) {
-
             ncApi.setCustomStatusMessage(
                 credentials,
                 ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
@@ -476,12 +477,13 @@ class SetStatusDialogFragment :
                     }
                 })
         } else {
-
             val clearAt = clearAtToUnixTime(selectedPredefinedStatus!!.clearAt)
 
             ncApi.setPredefinedStatusMessage(
-                credentials, ApiUtils.getUrlForSetPredefinedStatus(currentUser?.baseUrl),
-                selectedPredefinedStatus!!.id, if (clearAt == -1L) null else clearAt
+                credentials,
+                ApiUtils.getUrlForSetPredefinedStatus(currentUser?.baseUrl),
+                selectedPredefinedStatus!!.id,
+                if (clearAt == -1L) null else clearAt
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())?.subscribe(object : Observer<GenericOverall> {
@@ -506,7 +508,6 @@ class SetStatusDialogFragment :
     }
 
     override fun onClick(predefinedStatus: PredefinedStatus) {
-
         selectedPredefinedStatus = predefinedStatus
 
         clearAt = clearAtToUnixTime(predefinedStatus.clearAt)

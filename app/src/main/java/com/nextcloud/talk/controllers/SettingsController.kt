@@ -78,6 +78,7 @@ import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
@@ -117,6 +118,9 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderNew
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private var saveStateHandler: LovelySaveStateHandler? = null
     private var currentUser: User? = null
@@ -402,7 +406,8 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                 .setIcon(
                     DisplayUtils.getTintedDrawable(
                         resources,
-                        R.drawable.ic_delete_black_24dp, R.color.bg_default
+                        R.drawable.ic_delete_black_24dp,
+                        R.color.bg_default
                     )
                 )
                 .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
@@ -510,6 +515,34 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                         .popChangeHandler(HorizontalChangeHandler())
 
                 )
+        }
+
+        themeCategories()
+        themeSwitchPreferences()
+    }
+
+    private fun themeSwitchPreferences() {
+        binding.run {
+            listOf(
+                settingsScreenLock,
+                settingsScreenSecurity,
+                settingsIncognitoKeyboard,
+                settingsPhoneBookIntegration,
+                settingsReadPrivacy,
+                settingsProxyUseCredentials
+            ).forEach(viewThemeUtils::colorSwitchPreference)
+        }
+    }
+
+    private fun themeCategories() {
+        binding.run {
+            listOf(
+                settingsNotificationsCategory,
+                settingsAboutCategory,
+                settingsAdvancedCategory,
+                settingsAppearanceCategory,
+                settingsPrivacyCategory
+            ).forEach(viewThemeUtils::colorPreferenceCategory)
         }
     }
 
@@ -952,7 +985,9 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         val phoneNumber = textInputLayout.editText!!.text.toString()
         ncApi.setUserData(
             ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-            ApiUtils.getUrlForUserData(currentUser!!.baseUrl, currentUser!!.userId), "phone", phoneNumber
+            ApiUtils.getUrlForUserData(currentUser!!.baseUrl, currentUser!!.userId),
+            "phone",
+            phoneNumber
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {

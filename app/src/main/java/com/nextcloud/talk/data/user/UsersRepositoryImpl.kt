@@ -24,6 +24,7 @@ package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.User
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 
 @Suppress("TooManyFunctions")
@@ -31,6 +32,10 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
     override fun getActiveUser(): Maybe<User> {
         return usersDao.getActiveUser().map { UserMapper.toModel(it) }
+    }
+
+    override fun getActiveUserObservable(): Observable<User> {
+        return usersDao.getActiveUserObservable().map { UserMapper.toModel(it) }
     }
 
     override fun getUsers(): Single<List<User>> {

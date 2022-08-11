@@ -27,7 +27,6 @@ package com.nextcloud.talk.adapters.items;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -46,6 +45,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.ui.StatusDrawable;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
@@ -76,22 +76,22 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     private final Context context;
     private GenericTextHeaderItem header;
     private final Status status;
+    private final ViewThemeUtils viewThemeUtils;
 
 
-    public ConversationItem(Conversation conversation, User user, Context activityContext, Status status) {
+    public ConversationItem(Conversation conversation, User user, Context activityContext, Status status, final ViewThemeUtils viewThemeUtils) {
         this.conversation = conversation;
         this.user = user;
         this.context = activityContext;
         this.status = status;
+        this.viewThemeUtils = viewThemeUtils;
     }
 
     public ConversationItem(Conversation conversation, User user,
-                            Context activityContext, GenericTextHeaderItem genericTextHeaderItem, Status status) {
-        this.conversation = conversation;
-        this.user = user;
-        this.context = activityContext;
+                            Context activityContext, GenericTextHeaderItem genericTextHeaderItem, Status status,
+                            final ViewThemeUtils viewThemeUtils) {
+        this(conversation, user, activityContext, status, viewThemeUtils);
         this.header = genericTextHeaderItem;
-        this.status = status;
     }
 
     @Override
@@ -146,11 +146,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.binding.dialogName, conversation.getDisplayName(),
                                         String.valueOf(adapter.getFilter(String.class)),
-                                        NextcloudTalkApplication
-                                            .Companion
-                                            .getSharedApplication()
-                                            .getResources()
-                                            .getColor(R.color.colorPrimary));
+                                        viewThemeUtils.getElementColor(holder.binding.dialogName.getContext()));
         } else {
             holder.binding.dialogName.setText(conversation.getDisplayName());
         }
@@ -171,29 +167,18 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             int lightBubbleTextColor = ContextCompat.getColor(
                 context,
                 R.color.conversation_unread_bubble_text);
-            ColorStateList lightBubbleStrokeColor = ColorStateList.valueOf(
-                ContextCompat.getColor(context,
-                                       R.color.colorPrimary));
 
             if (conversation.getType() == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-                holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
-                holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
+                viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
             } else if (conversation.getUnreadMention()) {
                 if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "direct-mention-flag")) {
                     if (conversation.getUnreadMentionDirect()) {
-                        holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
-                        holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
+                        viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
                     } else {
-                        holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.bg_default);
-                        holder.binding.dialogUnreadBubble.setTextColor(ContextCompat.getColor(
-                            context,
-                            R.color.colorPrimary));
-                        holder.binding.dialogUnreadBubble.setChipStrokeWidth(6.0f);
-                        holder.binding.dialogUnreadBubble.setChipStrokeColor(lightBubbleStrokeColor);
+                        viewThemeUtils.colorChipOutlined(holder.binding.dialogUnreadBubble, 6.0f);
                     }
                 } else {
-                    holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
-                    holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
+                    viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
                 }
             } else {
                 holder.binding.dialogUnreadBubble.setChipBackgroundColor(lightBubbleFillColor);

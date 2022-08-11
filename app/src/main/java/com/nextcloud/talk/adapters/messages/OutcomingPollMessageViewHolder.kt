@@ -23,9 +23,11 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.PorterDuff
+import android.content.res.ColorStateList
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
@@ -38,11 +40,14 @@ import com.nextcloud.talk.databinding.ItemCustomOutcomingPollMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
+import com.nextcloud.talk.ui.theme.ServerTheme
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : MessageHolders
@@ -53,6 +58,12 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
     @Inject
     lateinit var context: Context
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var serverTheme: ServerTheme
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -73,7 +84,12 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(context.resources.getColor(R.color.white60))
+        binding.messageTime.setTextColor(
+            ColorUtils.setAlphaComponent(
+                serverTheme.colorText,
+                ALPHA_60_INT
+            )
+        )
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
@@ -92,8 +108,8 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context, drawableInt)?.let {
-                it.setColorFilter(context.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
                 binding.checkMark.setImageDrawable(it)
+                viewThemeUtils.colorImageViewText(binding.checkMark)
             }
         }
 
@@ -126,6 +142,9 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         }
 
         if (pollId != null && pollName != null) {
+            binding.messagePollTitle.setTextColor(serverTheme.colorText)
+            binding.messagePollSubtitle.setTextColor(serverTheme.colorText)
+            binding.messagePollIcon.imageTintList = ColorStateList.valueOf(serverTheme.colorText)
             binding.messagePollTitle.text = pollName
 
             val roomToken = (payload as? MessagePayload)!!.roomToken
@@ -165,12 +184,12 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(
-                context.resources.getColor(R.color.nc_outcoming_text_default)
+            binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
+            binding.messageQuote.quotedMessageAuthor.setTextColor(
+                ColorUtils.setAlphaComponent(serverTheme.colorText, ALPHA_80_INT)
             )
-            binding.messageQuote.quotedMessageAuthor.setTextColor(context.resources.getColor(R.color.nc_grey))
 
-            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
+            binding.messageQuote.quoteColoredView.setBackgroundColor(serverTheme.colorText)
 
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -180,15 +199,16 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
     private fun colorizeMessageBubble(message: ChatMessage) {
         val resources = sharedApplication!!.resources
+        val elementColor = viewThemeUtils.getElementColor(binding.root.context)
         val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_outcoming_bubble_deleted)
+            ColorUtils.setAlphaComponent(elementColor, HALF_ALPHA_INT)
         } else {
-            resources.getColor(R.color.bg_message_list_outcoming_bubble)
+            elementColor
         }
         if (message.isGrouped) {
             val bubbleDrawable = DisplayUtils.getMessageSelector(
                 bgBubbleColor,
-                resources.getColor(R.color.transparent),
+                ResourcesCompat.getColor(resources, R.color.transparent, null),
                 bgBubbleColor,
                 R.drawable.shape_grouped_outcoming_message
             )
@@ -196,7 +216,7 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         } else {
             val bubbleDrawable = DisplayUtils.getMessageSelector(
                 bgBubbleColor,
-                resources.getColor(R.color.transparent),
+                ResourcesCompat.getColor(resources, R.color.transparent, null),
                 bgBubbleColor,
                 R.drawable.shape_outcoming_message
             )
@@ -210,5 +230,8 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
     companion object {
         private val TAG = NextcloudTalkApplication::class.java.simpleName
+        private val ALPHA_60_INT: Int = (255 * 0.6).roundToInt()
+        private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
+        private const val HALF_ALPHA_INT: Int = 255 / 2
     }
 }

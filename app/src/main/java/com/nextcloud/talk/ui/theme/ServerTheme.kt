@@ -19,20 +19,35 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.adapters.items
+package com.nextcloud.talk.ui.theme
 
-import android.content.Context
-import com.nextcloud.talk.R
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import androidx.annotation.ColorInt
 
-class MessagesTextHeaderItem(context: Context, viewThemeUtils: ViewThemeUtils) :
-    GenericTextHeaderItem(context.getString(R.string.messages), viewThemeUtils) {
-    companion object {
-        /**
-         * "Random" value, just has to be different than other view types
-         */
-        const val VIEW_TYPE = 1120391230
-    }
+interface ServerTheme {
+    @get:ColorInt
+    val primaryColor: Int
 
-    override fun getItemViewType(): Int = VIEW_TYPE
+    /**
+     * Default element color
+     */
+    @get:ColorInt
+    val colorElement: Int
+
+    /**
+     * Element color for bright backgrounds
+     */
+    @get:ColorInt
+    val colorElementBright: Int
+
+    /**
+     * Element color for dark backgrounds
+     */
+    @get:ColorInt
+    val colorElementDark: Int
+
+    /**
+     * Text color for elements
+     */
+    @get:ColorInt
+    val colorText: Int
 }

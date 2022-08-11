@@ -92,6 +92,7 @@ import com.nextcloud.talk.models.json.statuses.StatusesOverall;
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository;
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.AttendeePermissionsUtil;
@@ -180,6 +181,9 @@ public class ConversationsListController extends BaseController implements Flexi
 
     @Inject
     UnifiedSearchRepository unifiedSearchRepository;
+
+    @Inject
+    ViewThemeUtils viewThemeUtils;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -618,7 +622,7 @@ public class ConversationsListController extends BaseController implements Flexi
 
                     GenericTextHeaderItem genericTextHeaderItem;
                     if (!callHeaderItems.containsKey(headerTitle)) {
-                        genericTextHeaderItem = new GenericTextHeaderItem(headerTitle);
+                        genericTextHeaderItem = new GenericTextHeaderItem(headerTitle, viewThemeUtils);
                         callHeaderItems.put(headerTitle, genericTextHeaderItem);
                     }
 
@@ -627,7 +631,8 @@ public class ConversationsListController extends BaseController implements Flexi
                             conversation,
                             currentUser,
                             getActivity(),
-                            userStatuses.get(conversation.getName()));
+                            userStatuses.get(conversation.getName()),
+                            viewThemeUtils);
                         conversationItems.add(conversationItem);
 
                         ConversationItem conversationItemWithHeader = new ConversationItem(
@@ -635,7 +640,8 @@ public class ConversationsListController extends BaseController implements Flexi
                             currentUser,
                             getActivity(),
                             callHeaderItems.get(headerTitle),
-                            userStatuses.get(conversation.getName()));
+                            userStatuses.get(conversation.getName()),
+                            viewThemeUtils);
                         conversationItemsWithHeader.add(conversationItemWithHeader);
                     }
                 }
@@ -699,7 +705,7 @@ public class ConversationsListController extends BaseController implements Flexi
 
                         GenericTextHeaderItem genericTextHeaderItem;
                         if (!callHeaderItems.containsKey(headerTitle)) {
-                            genericTextHeaderItem = new GenericTextHeaderItem(headerTitle);
+                            genericTextHeaderItem = new GenericTextHeaderItem(headerTitle, viewThemeUtils);
                             callHeaderItems.put(headerTitle, genericTextHeaderItem);
                         }
 
@@ -708,7 +714,8 @@ public class ConversationsListController extends BaseController implements Flexi
                             currentUser,
                             getActivity(),
                             callHeaderItems.get(headerTitle),
-                            userStatuses.get(conversation.getName()));
+                            userStatuses.get(conversation.getName()),
+                            viewThemeUtils);
 
                         openConversationItems.add(conversationItem);
                     }
@@ -776,14 +783,15 @@ public class ConversationsListController extends BaseController implements Flexi
         });
 
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData());
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background);
+        viewThemeUtils.themeSwipeRefreshLayout(swipeRefreshLayout);
 
         emptyLayoutView.setOnClickListener(v -> showNewConversationsScreen());
         floatingActionButton.setOnClickListener(v -> {
             ContactAddressBookWorker.Companion.run(context);
             showNewConversationsScreen();
         });
+
+        viewThemeUtils.themeFAB(floatingActionButton);
 
         if (getActivity() != null && getActivity() instanceof MainActivity) {
             MainActivity activity = (MainActivity) getActivity();
@@ -1409,7 +1417,7 @@ public class ConversationsListController extends BaseController implements Flexi
                 List<AbstractFlexibleItem> adapterItems = new ArrayList<>(entries.size() + 1);
                 for (int i = 0; i < entries.size(); i++) {
                     final boolean showHeader = i == 0;
-                    adapterItems.add(new MessageResultItem(context, currentUser, entries.get(i), showHeader));
+                    adapterItems.add(new MessageResultItem(context, currentUser, entries.get(i), showHeader, viewThemeUtils));
                 }
                 if (results.getHasMore()) {
                     adapterItems.add(LoadMoreResultsItem.INSTANCE);

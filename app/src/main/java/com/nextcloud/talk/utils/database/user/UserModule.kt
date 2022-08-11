@@ -30,7 +30,7 @@ import dagger.Provides
 abstract class UserModule {
 
     @Binds
-    abstract fun bindCurrentUserProviderNew(userManager: UserManager): CurrentUserProviderNew
+    abstract fun bindCurrentUserProviderNew(currentUserProviderImpl: CurrentUserProviderImpl): CurrentUserProviderNew
 
     companion object {
         @Provides

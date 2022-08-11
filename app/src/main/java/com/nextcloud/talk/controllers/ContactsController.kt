@@ -65,6 +65,7 @@ import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.dialog.ContactsBottomDialog
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -102,6 +103,9 @@ class ContactsController(args: Bundle) :
 
     @Inject
     lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private var credentials: String? = null
     private var currentUser: User? = null
@@ -492,13 +496,14 @@ class ContactsController(args: Bundle) :
                 val headerTitle = getHeaderTitle(participant)
                 var genericTextHeaderItem: GenericTextHeaderItem
                 if (!userHeaderItems.containsKey(headerTitle)) {
-                    genericTextHeaderItem = GenericTextHeaderItem(headerTitle)
+                    genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
                     userHeaderItems.put(headerTitle, genericTextHeaderItem)
                 }
                 val newContactItem = ContactItem(
                     participant,
                     currentUser,
-                    userHeaderItems[headerTitle]
+                    userHeaderItems[headerTitle],
+                    viewThemeUtils
                 )
                 if (!contactItems!!.contains(newContactItem)) {
                     newUserItemList.add(newContactItem)
@@ -618,21 +623,16 @@ class ContactsController(args: Bundle) :
         binding.controllerGenericRv.recyclerView.setHasFixedSize(true)
         binding.controllerGenericRv.recyclerView.adapter = adapter
         binding.controllerGenericRv.swipeRefreshLayout.setOnRefreshListener { fetchData() }
-        binding.controllerGenericRv.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
-        binding.controllerGenericRv.swipeRefreshLayout
-            .setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
+
+        viewThemeUtils.themeSwipeRefreshLayout(binding.controllerGenericRv.swipeRefreshLayout)
+
         binding.joinConversationViaLink.joinConversationViaLinkImageView
             .background
             .setColorFilter(
                 ResourcesCompat.getColor(resources!!, R.color.colorBackgroundDarker, null),
                 PorterDuff.Mode.SRC_IN
             )
-        binding.conversationPrivacyToggle.publicCallLink
-            .background
-            .setColorFilter(
-                ResourcesCompat.getColor(resources!!, R.color.colorPrimary, null),
-                PorterDuff.Mode.SRC_IN
-            )
+        viewThemeUtils.colorImageViewButton(binding.conversationPrivacyToggle.publicCallLink)
         disengageProgressBar()
     }
 

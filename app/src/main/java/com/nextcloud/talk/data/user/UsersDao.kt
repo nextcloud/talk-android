@@ -32,6 +32,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.nextcloud.talk.data.user.model.UserEntity
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 
 @Dao
@@ -40,6 +41,10 @@ abstract class UsersDao {
     // get active user
     @Query("SELECT * FROM User where current = 1")
     abstract fun getActiveUser(): Maybe<UserEntity>
+
+    // get active user
+    @Query("SELECT * FROM User where current = 1")
+    abstract fun getActiveUserObservable(): Observable<UserEntity>
 
     @Query("SELECT * FROM User where current = 1")
     abstract fun getActiveUserSynchronously(): UserEntity?

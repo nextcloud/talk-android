@@ -28,19 +28,20 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemBrowserFileBinding
 import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
 class RemoteFileBrowserItemsAdapter(
     private val showGrid: Boolean = false,
     private val mimeTypeSelectionFilter: String? = null,
     private val user: User,
     private val selectionInterface: SelectionInterface,
+    private val viewThemeUtils: ViewThemeUtils,
     private val onItemClicked: (RemoteFileBrowserItem) -> Unit
 ) : RecyclerView.Adapter<RemoteFileBrowserItemsViewHolder>() {
 
     var items: List<RemoteFileBrowserItem> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RemoteFileBrowserItemsViewHolder {
-
         return if (showGrid) {
             RemoteFileBrowserItemsListViewHolder(
                 RvItemBrowserFileBinding.inflate(
@@ -50,7 +51,8 @@ class RemoteFileBrowserItemsAdapter(
                 ),
                 mimeTypeSelectionFilter,
                 user,
-                selectionInterface
+                selectionInterface,
+                viewThemeUtils
             ) {
                 onItemClicked(items[it])
             }
@@ -63,7 +65,8 @@ class RemoteFileBrowserItemsAdapter(
                 ),
                 mimeTypeSelectionFilter,
                 user,
-                selectionInterface
+                selectionInterface,
+                viewThemeUtils
             ) {
                 onItemClicked(items[it])
             }

@@ -154,6 +154,8 @@ import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
+import com.nextcloud.talk.ui.theme.ServerTheme
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AttendeePermissionsUtil
 import com.nextcloud.talk.utils.ConductorRemapping
@@ -234,6 +236,12 @@ class ChatController(args: Bundle) :
 
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var serverTheme: ServerTheme
 
     val disposables = DisposableSet()
 
@@ -871,6 +879,8 @@ class ChatController(args: Bundle) :
             R.string
                 .nc_description_send_message_button
         )
+
+        viewThemeUtils.colorImageView(binding.messageInputView.button)
 
         if (currentConversation != null && currentConversation?.roomId != null) {
             loadAvatarForStatusBar()
@@ -2675,7 +2685,8 @@ class ChatController(args: Bundle) :
                 chatMessage,
                 conversationUser,
                 hasChatPermission,
-                ncApi!!
+                ncApi!!,
+                serverTheme
             ).show()
         }
     }

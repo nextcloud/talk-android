@@ -22,7 +22,6 @@ package com.nextcloud.talk.remotefilebrowser.adapters
 
 import android.text.format.Formatter
 import android.view.View
-import androidx.appcompat.content.res.AppCompatResources
 import autodagger.AutoInjector
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
@@ -33,10 +32,10 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemBrowserFileBinding
 import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils.getLocalDateTimeStringFromTimestamp
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.Mimetype.FOLDER
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -45,6 +44,7 @@ class RemoteFileBrowserItemsListViewHolder(
     mimeTypeSelectionFilter: String?,
     currentUser: User,
     selectionInterface: SelectionInterface,
+    private val viewThemeUtils: ViewThemeUtils,
     onItemClicked: (Int) -> Unit
 ) : RemoteFileBrowserItemsViewHolder(binding, mimeTypeSelectionFilter, currentUser, selectionInterface) {
 
@@ -66,7 +66,6 @@ class RemoteFileBrowserItemsListViewHolder(
     }
 
     override fun onBind(item: RemoteFileBrowserItem) {
-
         super.onBind(item)
 
         binding.fileIcon.controller = null
@@ -99,9 +98,7 @@ class RemoteFileBrowserItemsListViewHolder(
         binding.fileIcon
             .hierarchy
             .setPlaceholderImage(
-                AppCompatResources.getDrawable(
-                    binding.fileIcon.context, getDrawableResourceIdForMimeType(item.mimeType)
-                )
+                viewThemeUtils.getPlaceholderImage(binding.root.context, item.mimeType)
             )
 
         if (item.hasPreview) {
@@ -132,6 +129,7 @@ class RemoteFileBrowserItemsListViewHolder(
     private fun setSelectability() {
         if (selectable) {
             binding.selectFileCheckbox.visibility = View.VISIBLE
+            viewThemeUtils.themeCheckbox(binding.selectFileCheckbox)
         } else {
             binding.selectFileCheckbox.visibility = View.GONE
         }

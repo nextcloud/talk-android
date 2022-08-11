@@ -25,7 +25,6 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.util.Log
 import android.util.TypedValue
@@ -35,6 +34,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
@@ -45,12 +46,15 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.databinding.ItemCustomOutcomingLocationMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
+import com.nextcloud.talk.ui.theme.ServerTheme
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.net.URLEncoder
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
@@ -68,6 +72,12 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     @Inject
     var context: Context? = null
 
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var serverTheme: ServerTheme
+
     lateinit var reactionsInterface: ReactionsInterface
 
     @SuppressLint("SetTextI18n")
@@ -76,7 +86,6 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         sharedApplication!!.componentApplication.inject(this)
 
         realView.isSelected = false
-        binding.messageTime.setTextColor(context!!.resources.getColor(R.color.white60))
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
 
@@ -85,7 +94,11 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         colorizeMessageBubble(message)
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
+        binding.messageTime.setTextColor(ColorUtils.setAlphaComponent(serverTheme.colorText, ALPHA_60_INT))
+
         binding.messageText.text = message.text
+        binding.messageText.setTextColor(serverTheme.colorText)
+        binding.messageText.setLinkTextColor(serverTheme.colorText)
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
@@ -104,8 +117,8 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context!!, drawableInt)?.let {
-                it.setColorFilter(context?.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
                 binding.checkMark.setImageDrawable(it)
+                viewThemeUtils.colorImageViewText(binding.checkMark)
             }
         }
 
@@ -200,12 +213,12 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context!!.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(
-                context!!.resources.getColor(R.color.nc_outcoming_text_default)
+            binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
+            binding.messageQuote.quotedMessageAuthor.setTextColor(
+                ColorUtils.setAlphaComponent(serverTheme.colorText, ALPHA_80_INT)
             )
-            binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey))
 
-            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
+            binding.messageQuote.quoteColoredView.setBackgroundColor(serverTheme.colorText)
 
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -215,15 +228,16 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
     private fun colorizeMessageBubble(message: ChatMessage) {
         val resources = sharedApplication!!.resources
+        val elementColor = viewThemeUtils.getElementColor(binding.root.context)
         val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_outcoming_bubble_deleted)
+            ColorUtils.setAlphaComponent(elementColor, HALF_ALPHA_INT)
         } else {
-            resources.getColor(R.color.bg_message_list_outcoming_bubble)
+            elementColor
         }
         if (message.isGrouped) {
             val bubbleDrawable = DisplayUtils.getMessageSelector(
                 bgBubbleColor,
-                resources.getColor(R.color.transparent),
+                ResourcesCompat.getColor(resources, R.color.transparent, null),
                 bgBubbleColor,
                 R.drawable.shape_grouped_outcoming_message
             )
@@ -231,7 +245,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         } else {
             val bubbleDrawable = DisplayUtils.getMessageSelector(
                 bgBubbleColor,
-                resources.getColor(R.color.transparent),
+                ResourcesCompat.getColor(resources, R.color.transparent, null),
                 bgBubbleColor,
                 R.drawable.shape_outcoming_message
             )
@@ -261,5 +275,8 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
     companion object {
         private const val TAG = "LocOutMessageView"
+        private const val HALF_ALPHA_INT: Int = 255 / 2
+        private val ALPHA_60_INT: Int = (255 * 0.6).roundToInt()
+        private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
     }
 }

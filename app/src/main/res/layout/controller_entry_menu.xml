@@ -63,7 +63,7 @@
             android:inputType="textUri"
             android:singleLine="true"
             android:textAlignment="viewStart"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/high_emphasis_text" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -78,7 +78,7 @@
         android:contentDescription="@string/nc_add_emojis"
         android:src="@drawable/ic_insert_emoticon_black_24dp"
         android:visibility="gone"
-        app:tint="@color/emoji_icons"
+        app:tint="@color/medium_emphasis_text"
         tools:visibility="visible" />
 
 </RelativeLayout>

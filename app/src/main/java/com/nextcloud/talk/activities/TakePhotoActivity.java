@@ -41,8 +41,10 @@ import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.databinding.ActivityTakePictureBinding;
 import com.nextcloud.talk.models.TakePictureViewModel;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.BitmapShrinker;
 import com.nextcloud.talk.utils.FileUtils;
 
@@ -51,6 +53,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -66,9 +70,11 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.lifecycle.ViewModelProvider;
+import autodagger.AutoInjector;
 
 import static com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG;
 
+@AutoInjector(NextcloudTalkApplication.class)
 public class TakePhotoActivity extends AppCompatActivity {
 
     private static final String TAG = TakePhotoActivity.class.getSimpleName();
@@ -86,14 +92,21 @@ public class TakePhotoActivity extends AppCompatActivity {
 
     private Camera camera;
 
+    @Inject
+    ViewThemeUtils viewThemeUtils;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         binding = ActivityTakePictureBinding.inflate(getLayoutInflater());
         viewModel = new ViewModelProvider(this).get(TakePictureViewModel.class);
 
         setContentView(binding.getRoot());
+
+        viewThemeUtils.themeFAB(binding.takePhoto);
+        viewThemeUtils.colorMaterialButtonBackground(binding.send);
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(() -> {

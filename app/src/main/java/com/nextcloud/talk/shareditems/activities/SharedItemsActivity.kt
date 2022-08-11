@@ -41,6 +41,7 @@ import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -52,6 +53,9 @@ class SharedItemsActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private lateinit var binding: ActivitySharedItemsBinding
     private lateinit var viewModel: SharedItemsViewModel
@@ -72,7 +76,9 @@ class SharedItemsActivity : AppCompatActivity() {
         DisplayUtils.applyColorToStatusBar(
             this,
             ResourcesCompat.getColor(
-                resources, R.color.appbar, null
+                resources,
+                R.color.appbar,
+                null
             )
         )
         DisplayUtils.applyColorToNavigationBar(
@@ -130,7 +136,8 @@ class SharedItemsActivity : AppCompatActivity() {
                     showGrid,
                     user,
                     roomToken,
-                    isUserConversationOwnerOrModerator
+                    isUserConversationOwnerOrModerator,
+                    viewThemeUtils
                 ).apply {
                     items = sharedMediaItems.items
                 }
@@ -142,6 +149,8 @@ class SharedItemsActivity : AppCompatActivity() {
             }
             else -> {}
         }
+
+        viewThemeUtils.colorTabLayout(binding.sharedItemsTabs)
     }
 
     private fun clearEmptyLoading() {
@@ -161,7 +170,6 @@ class SharedItemsActivity : AppCompatActivity() {
     }
 
     private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
-
         binding.sharedItemsTabs.removeAllTabs()
 
         if (sharedItemTypes.contains(SharedItemType.MEDIA)) {

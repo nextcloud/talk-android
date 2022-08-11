@@ -27,6 +27,7 @@ import android.view.View;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.RvItemTitleHeaderBinding;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 
 import java.util.List;
 
@@ -39,12 +40,14 @@ public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderI
     private static final String TAG = "GenericTextHeaderItem";
 
     private final String title;
+    private final ViewThemeUtils viewThemeUtils;
 
-    public GenericTextHeaderItem(String title) {
+    public GenericTextHeaderItem(String title, ViewThemeUtils viewThemeUtils) {
         super();
         setHidden(false);
         setSelectable(false);
         this.title = title;
+        this.viewThemeUtils = viewThemeUtils;
     }
 
     public String getModel() {
@@ -71,6 +74,7 @@ public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderI
             Log.d(TAG, "We have payloads, so ignoring!");
         } else {
             holder.binding.titleTextView.setText(title);
+            viewThemeUtils.colorTextViewElement(holder.binding.titleTextView);
         }
     }
 

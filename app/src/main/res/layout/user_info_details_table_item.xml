@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   Nextcloud Android client application
 
-  Copyright (C) 2018-2021 Andy Scherzinger
+  Copyright (C) 2018-2022 Andy Scherzinger
   Copyright (C) 2018 Nextcloud
 
   This program is free software; you can redistribute it and/or
@@ -22,8 +22,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/user_info_detail_container"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/iconized_single_line_item_layout_height"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/min_size_clickable_area"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/standard_padding">
 
     <ImageView
         android:id="@+id/icon"
@@ -36,34 +38,44 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_phone" />
 
-    <EditText
-        android:id="@+id/user_info_edit_text"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/user_info_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="@dimen/standard_double_margin"
-        android:layout_marginEnd="@dimen/standard_margin"
-        android:autofillHints="none"
-        android:ellipsize="end"
-        android:inputType="text"
-        android:maxLines="1"
-        android:textSize="@dimen/two_line_primary_text_size"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:minHeight="@dimen/min_size_clickable_area"
+        app:boxStrokeColor="@color/colorPrimary"
+        app:errorTextAppearance="@style/ErrorAppearance"
+        app:hintTextColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/scope"
         app:layout_constraintStart_toEndOf="@id/icon"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="LabelFor"
-        tools:text="+49 123 456 789 12" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.nextcloud.talk.utils.EmojiTextInputEditText
+            android:id="@+id/user_info_edit_text_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textAlignment="viewStart"
+            tools:text="+49 123 456 789 12" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
         android:id="@+id/scope"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:padding="12dp"
-        android:layout_marginEnd="4dp"
+        android:layout_width="@dimen/min_size_clickable_area"
+        android:layout_height="@dimen/min_size_clickable_area"
+        android:layout_marginStart="@dimen/standard_quarter_margin"
+        android:layout_marginEnd="@dimen/standard_quarter_margin"
         android:contentDescription="@string/scope_toggle"
+        android:padding="@dimen/scope_padding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/user_info_edit_text"
+        app:layout_constraintStart_toEndOf="@id/user_info_input_layout"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_link" />
 
