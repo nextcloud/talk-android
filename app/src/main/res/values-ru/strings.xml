@@ -308,6 +308,7 @@
     <string name="nc_share_text_pass">\nПароль: %1$s</string>
     <string name="nc_share_this_location">Поделиться этим местом</string>
     <string name="nc_shared_items">Общие элементы</string>
+    <string name="nc_shared_items_deck_card">Карточка</string>
     <string name="nc_shared_items_description">Изображения, файлы, голосовые сообщения …</string>
     <string name="nc_shared_items_empty">Нет общих элементов</string>
     <string name="nc_shared_items_location">Местоположение</string>

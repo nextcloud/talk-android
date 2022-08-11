@@ -297,6 +297,7 @@
     <string name="nc_share_text">انضم للمحادثة في %1$s /index.php/call/ %2$s</string>
     <string name="nc_share_text_pass"> /كلمة المرور: %1$s</string>
     <string name="nc_share_this_location">أرسل هذا الموقع</string>
+    <string name="nc_shared_items_deck_card">بطاقة Deck</string>
     <string name="nc_shared_items_location">الموقع</string>
     <string name="nc_shared_location">الموقع المشارك</string>
     <string name="nc_sort_by">رتب حسب</string>

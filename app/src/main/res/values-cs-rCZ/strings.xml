@@ -311,6 +311,7 @@
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Sdílet toto umístění</string>
     <string name="nc_shared_items">Sdílené položky</string>
+    <string name="nc_shared_items_deck_card">Karta aplikace Deck</string>
     <string name="nc_shared_items_description">Obrázky, soubory, hlasové zprávy…</string>
     <string name="nc_shared_items_empty">Žádné sdílené položky</string>
     <string name="nc_shared_items_location">Poloha</string>
