@@ -29,5 +29,5 @@ java {
 }
 
 dependencies {
-    implementation 'com.google.errorprone:error_prone_annotations:2.9.0'
+    implementation 'com.google.errorprone:error_prone_annotations:2.15.0'
 }
