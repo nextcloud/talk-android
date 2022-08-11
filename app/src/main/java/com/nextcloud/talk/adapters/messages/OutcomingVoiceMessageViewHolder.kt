@@ -31,7 +31,6 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.ColorUtils
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -42,14 +41,12 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.databinding.ItemCustomOutcomingVoiceMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
-import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
@@ -64,9 +61,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
-
-    @Inject
-    lateinit var serverTheme: ServerTheme
 
     @JvmField
     @Inject
@@ -269,15 +263,9 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context!!.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
-            binding.messageQuote.quotedMessageAuthor.setTextColor(
-                ColorUtils.setAlphaComponent(
-                    serverTheme.colorText,
-                    ALPHA_80_INT
-                )
-            )
-
-            binding.messageQuote.quoteColoredView.setBackgroundColor(serverTheme.colorText)
+            viewThemeUtils.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
+            viewThemeUtils.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
+            viewThemeUtils.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
 
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -300,8 +288,5 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
     companion object {
         private const val TAG = "VoiceOutMessageView"
         private const val SEEKBAR_START: Int = 0
-        private const val HALF_ALPHA_INT: Int = 255 / 2
-        private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
-        private val ALPHA_60_INT: Int = (255 * 0.6).roundToInt()
     }
 }

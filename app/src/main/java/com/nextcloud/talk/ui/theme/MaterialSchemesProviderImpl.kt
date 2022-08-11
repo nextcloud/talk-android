@@ -30,14 +30,14 @@ import com.nextcloud.talk.utils.ui.ColorUtil
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
-internal class ServerThemeProviderImpl @Inject constructor(
+internal class MaterialSchemesProviderImpl @Inject constructor(
     private val userProvider: CurrentUserProviderNew,
     private val colorUtil: ColorUtil
-) : ServerThemeProvider {
+) : MaterialSchemesProvider {
 
-    private val themeCache: ConcurrentHashMap<String, ServerTheme> = ConcurrentHashMap()
+    private val themeCache: ConcurrentHashMap<String, MaterialSchemes> = ConcurrentHashMap()
 
-    override fun getServerThemeForUser(user: User?): ServerTheme {
+    override fun getMaterialSchemesForUser(user: User?): MaterialSchemes {
         val url: String = if (user?.baseUrl != null) {
             user.baseUrl!!
         } else {
@@ -45,18 +45,18 @@ internal class ServerThemeProviderImpl @Inject constructor(
         }
 
         if (!themeCache.containsKey(url)) {
-            themeCache[url] = getServerThemeForCapabilities(user?.capabilities)
+            themeCache[url] = getMaterialSchemesForCapabilities(user?.capabilities)
         }
 
         return themeCache[url]!!
     }
 
-    override fun getServerThemeForCurrentUser(): ServerTheme {
-        return getServerThemeForUser(userProvider.currentUser.blockingGet())
+    override fun getMaterialSchemesForCurrentUser(): MaterialSchemes {
+        return getMaterialSchemesForUser(userProvider.currentUser.blockingGet())
     }
 
-    override fun getServerThemeForCapabilities(capabilities: Capabilities?): ServerTheme {
-        return ServerThemeImpl(capabilities?.themingCapability, colorUtil)
+    override fun getMaterialSchemesForCapabilities(capabilities: Capabilities?): MaterialSchemes {
+        return MaterialSchemesImpl(ServerThemeImpl(capabilities?.themingCapability, colorUtil))
     }
 
     companion object {

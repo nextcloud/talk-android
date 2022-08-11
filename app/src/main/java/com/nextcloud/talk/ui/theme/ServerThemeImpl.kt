@@ -26,29 +26,20 @@ package com.nextcloud.talk.ui.theme
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.capabilities.ThemingCapability
 import com.nextcloud.talk.utils.ui.ColorUtil
-import scheme.Scheme
 
-internal class ServerThemeImpl(themingCapability: ThemingCapability?, colorUtil: ColorUtil) :
-    ServerTheme {
+internal class ServerThemeImpl(themingCapability: ThemingCapability?, colorUtil: ColorUtil) : ServerTheme {
 
     override val primaryColor: Int
     override val colorElement: Int
     override val colorElementBright: Int
     override val colorElementDark: Int
     override val colorText: Int
-    override val lightScheme: Scheme
-    override val darkScheme: Scheme
 
     init {
         primaryColor = colorUtil.getNullSafeColorWithFallbackRes(themingCapability?.color, R.color.colorPrimary)
-
         colorElement = colorUtil.getNullSafeColor(themingCapability?.colorElement, primaryColor)
         colorElementBright = colorUtil.getNullSafeColor(themingCapability?.colorElementBright, primaryColor)
         colorElementDark = colorUtil.getNullSafeColor(themingCapability?.colorElementDark, primaryColor)
-
         colorText = colorUtil.getTextColor(themingCapability?.colorText, primaryColor)
-
-        lightScheme = Scheme.light(primaryColor)
-        darkScheme = Scheme.dark(primaryColor)
     }
 }

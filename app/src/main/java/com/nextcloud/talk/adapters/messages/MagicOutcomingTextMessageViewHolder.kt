@@ -42,7 +42,6 @@ import com.nextcloud.talk.databinding.ItemCustomOutcomingTextMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
-import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
@@ -60,9 +59,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
-
-    @Inject
-    lateinit var serverTheme: ServerTheme
 
     lateinit var reactionsInterface: ReactionsInterface
 

@@ -46,7 +46,6 @@ import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerEntryMenuBinding
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.UriUtils
@@ -72,9 +71,6 @@ class EntryMenuController(args: Bundle) :
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var serverTheme: ServerTheme
 
     private val operation: ConversationOperationEnum
     private var conversation: Conversation? = null

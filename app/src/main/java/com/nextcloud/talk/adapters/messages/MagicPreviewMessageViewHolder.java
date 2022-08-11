@@ -51,7 +51,6 @@ import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
-import com.nextcloud.talk.ui.theme.ServerTheme;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DrawableUtils;
@@ -94,9 +93,6 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
     @Inject
     Context context;
-
-    @Inject
-    ServerTheme serverTheme;
 
     @Inject
     ViewThemeUtils viewThemeUtils;

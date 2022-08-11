@@ -1,9 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Álvaro Brey
- * Copyright (C) 2022 Álvaro Brey
- * Copyright (C) 2022 Nextcloud GmbH
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,33 +20,14 @@
 
 package com.nextcloud.talk.ui.theme
 
-import androidx.annotation.ColorInt
+import scheme.Scheme
 
-interface ServerTheme {
-    @get:ColorInt
-    val primaryColor: Int
+class MaterialSchemesImpl(serverTheme: ServerTheme) : MaterialSchemes {
+    override val lightScheme: Scheme
+    override val darkScheme: Scheme
 
-    /**
-     * Default element color
-     */
-    @get:ColorInt
-    val colorElement: Int
-
-    /**
-     * Element color for bright backgrounds
-     */
-    @get:ColorInt
-    val colorElementBright: Int
-
-    /**
-     * Element color for dark backgrounds
-     */
-    @get:ColorInt
-    val colorElementDark: Int
-
-    /**
-     * Text color for elements
-     */
-    @get:ColorInt
-    val colorText: Int
+    init {
+        lightScheme = Scheme.light(serverTheme.primaryColor)
+        darkScheme = Scheme.dark(serverTheme.primaryColor)
+    }
 }

@@ -26,7 +26,6 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.ColorUtils
 import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.talk.R
@@ -38,13 +37,11 @@ import com.nextcloud.talk.databinding.ItemCustomOutcomingPollMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
-import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : MessageHolders
@@ -58,9 +55,6 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
-
-    @Inject
-    lateinit var serverTheme: ServerTheme
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -182,12 +176,9 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
-            binding.messageQuote.quotedMessageAuthor.setTextColor(
-                ColorUtils.setAlphaComponent(serverTheme.colorText, ALPHA_80_INT)
-            )
-
-            binding.messageQuote.quoteColoredView.setBackgroundColor(serverTheme.colorText)
+            viewThemeUtils.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
+            viewThemeUtils.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
+            viewThemeUtils.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
 
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -205,6 +196,5 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
     companion object {
         private val TAG = NextcloudTalkApplication::class.java.simpleName
-        private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
     }
 }

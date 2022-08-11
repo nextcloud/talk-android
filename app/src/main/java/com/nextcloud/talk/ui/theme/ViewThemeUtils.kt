@@ -81,19 +81,20 @@ import com.yarolegovich.mp.MaterialSwitchPreference
 import eu.davidea.flexibleadapter.utils.FlexibleUtils
 import scheme.Scheme
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
-class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private val colorUtil: ColorUtil) {
+class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, private val colorUtil: ColorUtil) {
 
     /**
      * Scheme for painting elements
      */
     fun getScheme(context: Context): Scheme = when {
-        isDarkMode(context) -> theme.darkScheme
-        else -> theme.lightScheme
+        isDarkMode(context) -> schemes.darkScheme
+        else -> schemes.lightScheme
     }
 
-    private fun getSchemeDark(): Scheme = theme.darkScheme
+    private fun getSchemeDark(): Scheme = schemes.darkScheme
 
     private fun withScheme(view: View, block: (Scheme) -> Unit) {
         block(getScheme(view.context))
@@ -220,6 +221,12 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
+    fun colorPrimaryTextViewElementDarkMode(textView: TextView) {
+        withSchemeDark { scheme ->
+            textView.setTextColor(scheme.primary)
+        }
+    }
+
     fun colorPrimaryView(view: View) {
         withScheme(view) { scheme ->
             view.setBackgroundColor(scheme.primary)
@@ -264,11 +271,22 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
     }
 
-    /**
-     * Tints the image with text color
-     */
-    fun colorImageViewText(imageView: ImageView) {
-        imageView.imageTintList = ColorStateList.valueOf(theme.colorText)
+    fun colorOutgoingQuoteText(textView: TextView) {
+        withScheme(textView) { scheme ->
+            textView.setTextColor(scheme.onSurfaceVariant)
+        }
+    }
+
+    fun colorOutgoingQuoteAuthorText(textView: TextView) {
+        withScheme(textView) { scheme ->
+            ColorUtils.setAlphaComponent(scheme.onSurfaceVariant, ALPHA_80_INT)
+        }
+    }
+
+    fun colorOutgoingQuoteBackground(view: View) {
+        withScheme(view) { scheme ->
+            view.setBackgroundColor(scheme.onSurfaceVariant)
+        }
     }
 
     fun colorMaterialTextButton(button: MaterialButton) {
@@ -814,6 +832,9 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
             R.drawable.ic_mimetype_package_x_generic,
             R.drawable.ic_mimetype_folder
         )
+
+        private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
+
         private const val SWITCH_COMPAT_TRACK_ALPHA: Int = 77
         private const val HALF_ALPHA_INT: Int = 255 / 2
         private const val SURFACE_OPACITY_BUTTON_DISABLED: Float = 0.12f

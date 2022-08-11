@@ -24,8 +24,8 @@ package com.nextcloud.talk.ui.theme
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 
-interface ServerThemeProvider {
-    fun getServerThemeForUser(user: User?): ServerTheme
-    fun getServerThemeForCapabilities(capabilities: Capabilities?): ServerTheme
-    fun getServerThemeForCurrentUser(): ServerTheme
+interface MaterialSchemesProvider {
+    fun getMaterialSchemesForUser(user: User?): MaterialSchemes
+    fun getMaterialSchemesForCapabilities(capabilities: Capabilities?): MaterialSchemes
+    fun getMaterialSchemesForCurrentUser(): MaterialSchemes
 }
