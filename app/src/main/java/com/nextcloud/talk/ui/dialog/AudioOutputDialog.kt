@@ -31,7 +31,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogAudioOutputBinding
-import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.webrtc.WebRtcAudioManager
 import javax.inject.Inject
@@ -42,21 +41,17 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
-    @Inject
-    lateinit var serverTheme: ServerTheme
-
     private lateinit var dialogAudioOutputBinding: DialogAudioOutputBinding
-
-    init {
-        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+
         dialogAudioOutputBinding = DialogAudioOutputBinding.inflate(layoutInflater)
         setContentView(dialogAudioOutputBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
+        viewThemeUtils.themeDialogDark(dialogAudioOutputBinding.root)
         updateOutputDeviceList()
         initClickListeners()
     }
@@ -98,22 +93,22 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
         when (callActivity.audioManager?.currentAudioDevice) {
             WebRtcAudioManager.AudioDevice.BLUETOOTH -> {
                 viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputBluetoothIcon)
-                dialogAudioOutputBinding.audioOutputBluetoothText.setTextColor(serverTheme.primaryColor)
+                viewThemeUtils.colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputBluetoothText)
             }
 
             WebRtcAudioManager.AudioDevice.SPEAKER_PHONE -> {
                 viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputSpeakerIcon)
-                dialogAudioOutputBinding.audioOutputSpeakerText.setTextColor(serverTheme.primaryColor)
+                viewThemeUtils.colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputSpeakerText)
             }
 
             WebRtcAudioManager.AudioDevice.EARPIECE -> {
                 viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputEarspeakerIcon)
-                dialogAudioOutputBinding.audioOutputEarspeakerText.setTextColor(serverTheme.primaryColor)
+                viewThemeUtils.colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputEarspeakerText)
             }
 
             WebRtcAudioManager.AudioDevice.WIRED_HEADSET -> {
                 viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputWiredHeadsetIcon)
-                dialogAudioOutputBinding.audioOutputWiredHeadsetText.setTextColor(serverTheme.primaryColor)
+                viewThemeUtils.colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputWiredHeadsetText)
             }
 
             else -> Log.d(TAG, "AudioOutputDialog doesn't know this AudioDevice")

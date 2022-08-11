@@ -19,13 +19,15 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.ui.theme
+plugins {
+    id 'java-library'
+}
 
-import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.capabilities.Capabilities
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
 
-interface ServerThemeProvider {
-    fun getServerThemeForUser(user: User?): ServerTheme
-    fun getServerThemeForCapabilities(capabilities: Capabilities?): ServerTheme
-    fun getServerThemeForCurrentUser(): ServerTheme
+dependencies {
+    implementation 'com.google.errorprone:error_prone_annotations:2.9.0'
 }

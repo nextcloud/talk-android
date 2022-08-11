@@ -44,12 +44,6 @@
         app:layout_constraintTop_toBottomOf="@id/current_account"
         tools:visibility="visible">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="4dp"
-            android:background="@color/list_divider_background" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/set_status"
             style="@style/Nextcloud.Material.TextButton"
@@ -62,16 +56,16 @@
             android:text="@string/set_status"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/fontAppbar"
+            android:textColor="@color/high_emphasis_text"
             android:enabled="false"
             app:icon="@drawable/ic_edit"
             app:iconGravity="start"
             app:iconPadding="22dp"
-            app:iconTint="@color/fontAppbar" />
+            app:iconTint="@color/high_emphasis_text" />
     </LinearLayout>
 
     <View
-        android:id="@+id/separator_line"
+        android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
@@ -90,7 +84,7 @@
         app:layout_constraintBottom_toTopOf="@+id/add_account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator_line"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
         tools:listitem="@layout/account_item" />
 
     <com.google.android.material.button.MaterialButton
@@ -105,11 +99,11 @@
         android:text="@string/nc_account_chooser_add_account"
         android:textAlignment="textStart"
         android:textAllCaps="false"
-        android:textColor="@color/fontAppbar"
+        android:textColor="@color/high_emphasis_text"
         app:icon="@drawable/ic_account_plus"
         app:iconGravity="start"
         app:iconPadding="22dp"
-        app:iconTint="@color/fontAppbar"
+        app:iconTint="@color/high_emphasis_text"
         app:layout_constraintBottom_toTopOf="@+id/manage_settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -127,11 +121,11 @@
         android:text="@string/nc_settings"
         android:textAlignment="textStart"
         android:textAllCaps="false"
-        android:textColor="@color/fontAppbar"
+        android:textColor="@color/high_emphasis_text"
         app:icon="@drawable/ic_settings"
         app:iconGravity="start"
         app:iconPadding="22dp"
-        app:iconTint="@color/fontAppbar"
+        app:iconTint="@color/high_emphasis_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

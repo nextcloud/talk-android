@@ -30,6 +30,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.TextUtils
@@ -73,7 +74,6 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
@@ -112,9 +112,6 @@ class ConversationInfoController(args: Bundle) :
 
     @Inject
     lateinit var eventBus: EventBus
-
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
 
     private val conversationToken: String?
     private val conversationUser: User?
@@ -234,6 +231,8 @@ class ConversationInfoController(args: Bundle) :
         }
 
         binding.addParticipantsAction.visibility = View.GONE
+
+        viewThemeUtils.colorCircularProgressBar(binding.progressBar)
     }
 
     private fun setupWebinaryView() {
@@ -437,7 +436,7 @@ class ConversationInfoController(args: Bundle) :
 
         for (i in participants.indices) {
             participant = participants[i]
-            userItem = ParticipantItem(router.activity, participant, conversationUser)
+            userItem = ParticipantItem(router.activity, participant, conversationUser, viewThemeUtils)
             if (participant.sessionId != null) {
                 userItem.isOnline = !participant.sessionId.equals("0")
             } else {
@@ -789,12 +788,32 @@ class ConversationInfoController(args: Bundle) :
                     .build()
                 binding.avatarImage.controller = draweeController
             }
-            Conversation.ConversationType.ROOM_GROUP_CALL -> binding.avatarImage.hierarchy.setPlaceholderImage(
-                R.drawable.ic_circular_group
-            )
-            Conversation.ConversationType.ROOM_PUBLIC_CALL -> binding.avatarImage.hierarchy.setPlaceholderImage(
-                R.drawable.ic_circular_link
-            )
+            Conversation.ConversationType.ROOM_GROUP_CALL -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    binding.avatarImage.hierarchy.setPlaceholderImage(
+                        DisplayUtils.getRoundedDrawable(
+                            viewThemeUtils.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_group)
+                        )
+                    )
+                } else {
+                    binding.avatarImage.hierarchy.setPlaceholderImage(
+                        R.drawable.ic_circular_group
+                    )
+                }
+            }
+            Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    binding.avatarImage.hierarchy.setPlaceholderImage(
+                        DisplayUtils.getRoundedDrawable(
+                            viewThemeUtils.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_link)
+                        )
+                    )
+                } else {
+                    binding.avatarImage.hierarchy.setPlaceholderImage(
+                        R.drawable.ic_circular_link
+                    )
+                }
+            }
             Conversation.ConversationType.ROOM_SYSTEM -> {
                 val layers = arrayOfNulls<Drawable>(2)
                 layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)

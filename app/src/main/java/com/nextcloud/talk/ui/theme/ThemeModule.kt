@@ -33,12 +33,12 @@ internal abstract class ThemeModule {
 
     @Binds
     @Reusable
-    abstract fun bindServerThemeProvider(provider: ServerThemeProviderImpl): ServerThemeProvider
+    abstract fun bindMaterialSchemesProvider(provider: MaterialSchemesProviderImpl): MaterialSchemesProvider
 
     companion object {
         @Provides
-        fun provideCurrentServerTheme(themeProvider: ServerThemeProvider): ServerTheme {
-            return themeProvider.getServerThemeForCurrentUser()
+        fun provideCurrentMaterialSchemes(themeProvider: MaterialSchemesProvider): MaterialSchemes {
+            return themeProvider.getMaterialSchemesForCurrentUser()
         }
     }
 }

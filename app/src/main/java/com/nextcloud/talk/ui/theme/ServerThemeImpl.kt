@@ -27,8 +27,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.capabilities.ThemingCapability
 import com.nextcloud.talk.utils.ui.ColorUtil
 
-internal class ServerThemeImpl(themingCapability: ThemingCapability?, colorUtil: ColorUtil) :
-    ServerTheme {
+internal class ServerThemeImpl(themingCapability: ThemingCapability?, colorUtil: ColorUtil) : ServerTheme {
 
     override val primaryColor: Int
     override val colorElement: Int
@@ -38,11 +37,9 @@ internal class ServerThemeImpl(themingCapability: ThemingCapability?, colorUtil:
 
     init {
         primaryColor = colorUtil.getNullSafeColorWithFallbackRes(themingCapability?.color, R.color.colorPrimary)
-
         colorElement = colorUtil.getNullSafeColor(themingCapability?.colorElement, primaryColor)
         colorElementBright = colorUtil.getNullSafeColor(themingCapability?.colorElementBright, primaryColor)
         colorElementDark = colorUtil.getNullSafeColor(themingCapability?.colorElementDark, primaryColor)
-
         colorText = colorUtil.getTextColor(themingCapability?.colorText, primaryColor)
     }
 }

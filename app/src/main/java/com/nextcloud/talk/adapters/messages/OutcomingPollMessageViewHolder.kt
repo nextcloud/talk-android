@@ -23,12 +23,9 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
+import android.graphics.PorterDuff
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.ColorUtils
-import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.talk.R
@@ -40,14 +37,11 @@ import com.nextcloud.talk.databinding.ItemCustomOutcomingPollMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
-import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : MessageHolders
@@ -61,9 +55,6 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
-
-    @Inject
-    lateinit var serverTheme: ServerTheme
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -80,16 +71,12 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         super.onBind(message)
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
+        val textColor = viewThemeUtils.getScheme(binding.messageTime.context).onSurfaceVariant
+        binding.messageTime.setTextColor(textColor)
 
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(
-            ColorUtils.setAlphaComponent(
-                serverTheme.colorText,
-                ALPHA_60_INT
-            )
-        )
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
@@ -109,7 +96,9 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context, drawableInt)?.let {
                 binding.checkMark.setImageDrawable(it)
-                viewThemeUtils.colorImageViewText(binding.checkMark)
+                binding.checkMark.setColorFilter(
+                    viewThemeUtils.getScheme(binding.checkMark.context).onSurfaceVariant, PorterDuff.Mode.SRC_ATOP
+                )
             }
         }
 
@@ -117,7 +106,13 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
         setPollPreview(message)
 
-        Reaction().showReactions(message, binding.reactions, binding.messageTime.context, true)
+        Reaction().showReactions(
+            message,
+            binding.reactions,
+            binding.messageTime.context,
+            true,
+            viewThemeUtils
+        )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }
@@ -142,9 +137,6 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         }
 
         if (pollId != null && pollName != null) {
-            binding.messagePollTitle.setTextColor(serverTheme.colorText)
-            binding.messagePollSubtitle.setTextColor(serverTheme.colorText)
-            binding.messagePollIcon.imageTintList = ColorStateList.valueOf(serverTheme.colorText)
             binding.messagePollTitle.text = pollName
 
             val roomToken = (payload as? MessagePayload)!!.roomToken
@@ -184,12 +176,9 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
-            binding.messageQuote.quotedMessageAuthor.setTextColor(
-                ColorUtils.setAlphaComponent(serverTheme.colorText, ALPHA_80_INT)
-            )
-
-            binding.messageQuote.quoteColoredView.setBackgroundColor(serverTheme.colorText)
+            viewThemeUtils.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
+            viewThemeUtils.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
+            viewThemeUtils.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
 
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -198,30 +187,7 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        val resources = sharedApplication!!.resources
-        val elementColor = viewThemeUtils.getElementColor(binding.root.context)
-        val bgBubbleColor = if (message.isDeleted) {
-            ColorUtils.setAlphaComponent(elementColor, HALF_ALPHA_INT)
-        } else {
-            elementColor
-        }
-        if (message.isGrouped) {
-            val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(resources, R.color.transparent, null),
-                bgBubbleColor,
-                R.drawable.shape_grouped_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        } else {
-            val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(resources, R.color.transparent, null),
-                bgBubbleColor,
-                R.drawable.shape_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        }
+        viewThemeUtils.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     fun assignReactionInterface(reactionsInterface: ReactionsInterface) {
@@ -230,8 +196,5 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
     companion object {
         private val TAG = NextcloudTalkApplication::class.java.simpleName
-        private val ALPHA_60_INT: Int = (255 * 0.6).roundToInt()
-        private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
-        private const val HALF_ALPHA_INT: Int = 255 / 2
     }
 }

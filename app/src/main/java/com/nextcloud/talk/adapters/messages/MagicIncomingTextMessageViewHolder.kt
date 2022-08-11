@@ -26,7 +26,6 @@ package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -38,7 +37,6 @@ import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
@@ -48,6 +46,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
@@ -61,13 +60,14 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
     private val binding: ItemCustomIncomingTextMessageBinding = ItemCustomIncomingTextMessageBinding.bind(itemView)
 
-    @JvmField
     @Inject
-    var context: Context? = null
+    lateinit var context: Context
 
-    @JvmField
     @Inject
-    var appPreferences: AppPreferences? = null
+    lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     lateinit var reactionsInterface: ReactionsInterface
 
@@ -87,12 +87,9 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
             binding.messageAuthor.visibility = View.GONE
         }
 
-        val resources = itemView.resources
-
-        setBubbleOnChatMessage(message, resources)
+        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(ResourcesCompat.getColor(resources, R.color.warm_grey_four, null))
 
         var messageString: Spannable = SpannableString(message.text)
 
@@ -120,7 +117,13 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
 
-        Reaction().showReactions(message, binding.reactions, binding.messageText.context, false)
+        Reaction().showReactions(
+            message,
+            binding.reactions,
+            binding.messageText.context,
+            false,
+            viewThemeUtils
+        )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }
@@ -141,30 +144,6 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
         }
     }
 
-    private fun setBubbleOnChatMessage(
-        message: ChatMessage,
-        resources: Resources
-    ) {
-        val bgBubbleColor = if (message.isDeleted) {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble_deleted, null)
-        } else {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble, null)
-        }
-
-        var bubbleResource = R.drawable.shape_incoming_message
-
-        if (message.isGrouped) {
-            bubbleResource = R.drawable.shape_grouped_incoming_message
-        }
-
-        val bubbleDrawable = DisplayUtils.getMessageSelector(
-            bgBubbleColor,
-            ResourcesCompat.getColor(resources, R.color.transparent, null),
-            bgBubbleColor, bubbleResource
-        )
-        ViewCompat.setBackground(bubble, bubbleDrawable)
-    }
-
     private fun processParentMessage(message: ChatMessage) {
         val parentChatMessage = message.parentMessage
         parentChatMessage!!.activeUser = message.activeUser
@@ -183,13 +162,12 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
             context!!.getText(R.string.nc_nick_guest) else parentChatMessage.actorDisplayName
         binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
-        binding.messageQuote.quotedMessageAuthor
-            .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
-
         if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
+            viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
         } else {
-            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
+            binding.messageQuote.quoteColoredView.setBackgroundColor(
+                ContextCompat.getColor(binding.messageQuote.quoteColoredView.context, R.color.high_emphasis_text)
+            )
         }
     }
 
@@ -245,7 +223,8 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
                             individualHashMap["name"]!!,
                             individualHashMap["type"]!!,
                             message.activeUser!!,
-                            R.xml.chip_you
+                            R.xml.chip_you,
+                            viewThemeUtils
                         )
                     } else {
                         messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
@@ -255,7 +234,8 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
                             individualHashMap["name"]!!,
                             individualHashMap["type"]!!,
                             message.activeUser!!,
-                            R.xml.chip_others
+                            R.xml.chip_others,
+                            viewThemeUtils
                         )
                     }
                 } else if (individualHashMap["type"] == "file") {

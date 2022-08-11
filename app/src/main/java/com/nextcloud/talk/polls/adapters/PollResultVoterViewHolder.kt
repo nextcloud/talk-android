@@ -29,12 +29,14 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.PollResultVoterItemBinding
 import com.nextcloud.talk.polls.model.PollDetails
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 
 class PollResultVoterViewHolder(
     private val user: User,
-    override val binding: PollResultVoterItemBinding
+    override val binding: PollResultVoterItemBinding,
+    private val viewThemeUtils: ViewThemeUtils
 ) : PollResultViewHolder(binding) {
 
     @SuppressLint("SetTextI18n")
@@ -45,6 +47,7 @@ class PollResultVoterViewHolder(
 
         binding.pollVoterName.text = item.details.actorDisplayName
         binding.pollVoterAvatar.controller = getAvatarDraweeController(item.details)
+        viewThemeUtils.colorDialogSupportingText(binding.pollVoterName)
     }
 
     private fun getAvatarDraweeController(pollDetail: PollDetails): DraweeController? {

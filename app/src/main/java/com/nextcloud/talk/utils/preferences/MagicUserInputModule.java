@@ -28,21 +28,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import androidx.appcompat.app.AlertDialog;
-import autodagger.AutoInjector;
+import android.widget.TextView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.yarolegovich.mp.io.StandardUserInputModule;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicUserInputModule extends StandardUserInputModule {
 
     @Inject
     AppPreferences appPreferences;
+
+    @Inject
+    ViewThemeUtils viewThemeUtils;
 
     private List<String> keysWithIntegerInput = new ArrayList<>();
 
@@ -65,6 +73,11 @@ public class MagicUserInputModule extends StandardUserInputModule {
             final Listener<String> listener) {
         final View view = LayoutInflater.from(context).inflate(R.layout.dialog_edittext, null);
         final EditText inputField = view.findViewById(R.id.mp_text_input);
+        viewThemeUtils.colorEditText(inputField);
+
+        int paddingStartEnd = Math.round(view.getResources().getDimension(R.dimen.standard_padding));
+        int paddingTopBottom = Math.round(view.getResources().getDimension(R.dimen.dialog_padding_top_bottom));
+        view.setPadding(paddingStartEnd, paddingTopBottom, paddingStartEnd, paddingTopBottom);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
             inputField.setImeOptions(inputField.getImeOptions() | EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);
@@ -79,11 +92,17 @@ public class MagicUserInputModule extends StandardUserInputModule {
             inputField.setInputType(InputType.TYPE_CLASS_NUMBER);
         }
 
-        final Dialog dialog = new AlertDialog.Builder(context)
-                .setTitle(title)
-                .setView(view)
-                .show();
-        view.findViewById(R.id.mp_btn_confirm).setOnClickListener(new View.OnClickListener() {
+        final MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(view.getContext())
+            .setTitle(title)
+            .setView(view);
+
+        viewThemeUtils.colorMaterialAlertDialogBackground(view.getContext(), dialogBuilder);
+
+        final Dialog dialog = dialogBuilder.show();
+
+        TextView button = view.findViewById(R.id.mp_btn_confirm);
+        viewThemeUtils.colorPrimaryTextViewElement(button);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onInput(inputField.getText().toString());

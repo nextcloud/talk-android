@@ -27,6 +27,7 @@ package com.nextcloud.talk.adapters.items;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -41,6 +42,7 @@ import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.Participant.InCallFlags;
 import com.nextcloud.talk.models.json.status.StatusType;
 import com.nextcloud.talk.ui.StatusDrawable;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
@@ -64,14 +66,16 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
     private final Context context;
     private final Participant participant;
     private final User user;
+    private final ViewThemeUtils viewThemeUtils;
     public boolean isOnline = true;
 
     public ParticipantItem(Context activityContext,
                            Participant participant,
-                           User user) {
+                           User user, ViewThemeUtils viewThemeUtils) {
         this.context = activityContext;
         this.participant = participant;
         this.user = user;
+        this.viewThemeUtils = viewThemeUtils;
     }
 
     public Participant getModel() {
@@ -127,15 +131,13 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             holder.binding.avatarDraweeView.setAlpha(1.0f);
         }
 
+        holder.binding.nameText.setText(participant.getDisplayName());
+
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.binding.nameText, participant.getDisplayName(),
                                         String.valueOf(adapter.getFilter(String.class)),
-                                        NextcloudTalkApplication.Companion.getSharedApplication()
-                                            .getResources()
-                                            .getColor(R.color.colorPrimary));
+                                        viewThemeUtils.getScheme(holder.binding.nameText.getContext()).getPrimary());
         }
-
-        holder.binding.nameText.setText(participant.getDisplayName());
 
         if (TextUtils.isEmpty(participant.getDisplayName()) &&
             (participant.getType().equals(Participant.ParticipantType.GUEST) ||
@@ -150,9 +152,23 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             "groups".equals(participant.getSource()) ||
             participant.getCalculatedActorType() == Participant.ActorType.CIRCLES ||
             "circles".equals(participant.getSource())) {
-            holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
+                    DisplayUtils.getRoundedDrawable(
+                        viewThemeUtils.themePlaceholderAvatar(holder.binding.avatarDraweeView,
+                                                              R.drawable.ic_avatar_group)));
+            } else {
+                holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);
+            }
         } else if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
-            holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_mail);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
+                    DisplayUtils.getRoundedDrawable(
+                        viewThemeUtils.themePlaceholderAvatar(holder.binding.avatarDraweeView,
+                                                              R.drawable.ic_avatar_mail)));
+            } else {
+                holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_mail);
+            }
         } else if (participant.getCalculatedActorType() == Participant.ActorType.GUESTS ||
             Participant.ParticipantType.GUEST.equals(participant.getType()) ||
             Participant.ParticipantType.GUEST_MODERATOR.equals(participant.getType())) {

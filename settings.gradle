@@ -19,3 +19,4 @@
  */
 
 include ':app'
+include ':material-color-utilities'

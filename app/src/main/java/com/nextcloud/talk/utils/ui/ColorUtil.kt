@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import com.nextcloud.talk.R
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class ColorUtil @Inject constructor(private val context: Context) {
 
@@ -71,6 +72,16 @@ class ColorUtil @Inject constructor(private val context: Context) {
     @ColorInt
     private fun String?.parseColorOrFallback(fallback: () -> Int): Int {
         return this?.let { Color.parseColor(this) } ?: fallback()
+    }
+
+    @ColorInt
+    fun adjustOpacity(color: Int, opacity: Float): Int {
+        return Color.argb(
+            (Color.alpha(color) * opacity).roundToInt(),
+            Color.red(color),
+            Color.green(color),
+            Color.blue(color)
+        )
     }
 
     companion object {

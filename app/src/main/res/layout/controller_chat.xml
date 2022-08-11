@@ -74,6 +74,7 @@
             app:incomingImageTimeTextSize="12sp"
             app:incomingTextColor="@color/nc_incoming_text_default"
             app:incomingTextLinkColor="@color/nc_incoming_text_default"
+            app:incomingTimeTextColor="@color/no_emphasis_text"
             app:incomingTextSize="@dimen/chat_text_size"
             app:incomingTimeTextSize="12sp"
             app:outcomingBubblePaddingBottom="@dimen/message_bubble_corners_padding"
@@ -84,8 +85,8 @@
             app:outcomingDefaultBubblePressedColor="@color/colorPrimary"
             app:outcomingDefaultBubbleSelectedColor="@color/transparent"
             app:outcomingImageTimeTextSize="12sp"
-            app:outcomingTextColor="@color/nc_outcoming_text_default"
-            app:outcomingTextLinkColor="@color/nc_outcoming_text_default"
+            app:outcomingTextColor="@color/high_emphasis_text"
+            app:outcomingTextLinkColor="@color/high_emphasis_text"
             app:outcomingTextSize="@dimen/chat_text_size"
             app:outcomingTimeTextSize="12sp"
             app:textAutoLink="all" />

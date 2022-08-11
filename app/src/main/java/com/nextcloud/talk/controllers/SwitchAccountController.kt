@@ -138,7 +138,7 @@ class SwitchAccountController(args: Bundle? = null) :
                         participant.actorType = Participant.ActorType.USERS
                         participant.actorId = userId
                         participant.displayName = user.displayName
-                        userItems.add(AdvancedUserItem(participant, user, null))
+                        userItems.add(AdvancedUserItem(participant, user, null, viewThemeUtils))
                     }
                 }
                 adapter!!.addListener(onSwitchItemClickListener)
@@ -156,7 +156,7 @@ class SwitchAccountController(args: Bundle? = null) :
                     participant.displayName = importAccount.getUsername()
                     user = User()
                     user.baseUrl = importAccount.getBaseUrl()
-                    userItems.add(AdvancedUserItem(participant, user, account))
+                    userItems.add(AdvancedUserItem(participant, user, account, viewThemeUtils))
                 }
                 adapter!!.addListener(onImportItemClickListener)
                 adapter!!.updateDataSet(userItems, false)

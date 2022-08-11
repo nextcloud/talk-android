@@ -31,9 +31,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -341,6 +339,7 @@ public class ConversationsListController extends BaseController implements Flexi
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
             if (getActivity() != null && getActivity() instanceof MainActivity) {
                 loadUserAvatar(((MainActivity) getActivity()).binding.switchAccountButton);
+                viewThemeUtils.colorMaterialTextButton(((MainActivity) getActivity()).binding.switchAccountButton);
             }
             fetchData();
         }
@@ -359,7 +358,7 @@ public class ConversationsListController extends BaseController implements Flexi
             SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
             if (searchItem != null) {
                 searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-                DisplayUtils.themeSearchView(searchView, context);
+                viewThemeUtils.themeSearchView(searchView);
                 searchView.setMaxWidth(Integer.MAX_VALUE);
                 searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
                 int imeOptions = EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN;
@@ -421,23 +420,15 @@ public class ConversationsListController extends BaseController implements Flexi
 
                 activity.binding.searchText.setOnClickListener(v -> {
                     showSearchView(activity, searchView, searchItem);
-                    if (getResources() != null) {
-                        DisplayUtils.applyColorToStatusBar(
-                            activity,
-                            ResourcesCompat.getColor(getResources(), R.color.appbar, null)
-                                                          );
-                    }
+                    viewThemeUtils.themeStatusBar(activity, searchView);
                 });
             }
 
             searchView.setOnCloseListener(() -> {
                 if (TextUtils.isEmpty(searchView.getQuery().toString())) {
                     searchView.onActionViewCollapsed();
-                    if (activity != null && getResources() != null) {
-                        DisplayUtils.applyColorToStatusBar(
-                            activity,
-                            ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
-                                                          );
+                    if (activity != null) {
+                        viewThemeUtils.resetStatusBar(activity, searchView);
                     }
                 } else {
                     searchView.post(() -> searchView.setQuery(TAG, true));
@@ -481,10 +472,7 @@ public class ConversationsListController extends BaseController implements Flexi
                         activity.binding.toolbar.setVisibility(View.GONE);
                         activity.binding.searchToolbar.setVisibility(View.VISIBLE);
                         if (getResources() != null) {
-                            DisplayUtils.applyColorToStatusBar(
-                                activity,
-                                ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
-                                                              );
+                            viewThemeUtils.resetStatusBar(activity, activity.binding.searchToolbar);
                         }
                     }
                     SmoothScrollLinearLayoutManager layoutManager =
@@ -816,9 +804,7 @@ public class ConversationsListController extends BaseController implements Flexi
                 recyclerView.smoothScrollToPosition(nextUnreadConversationScrollPosition);
             }
         });
-
-        newMentionPopupBubble.setTextColor(Color.WHITE);
-        newMentionPopupBubble.setIconTint(ColorStateList.valueOf(Color.WHITE));
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(newMentionPopupBubble);
     }
 
     private void checkToShowUnreadBubble() {

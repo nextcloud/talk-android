@@ -49,6 +49,7 @@ import com.nextcloud.talk.controllers.ServerSelectionController;
 import com.nextcloud.talk.controllers.SwitchAccountController;
 import com.nextcloud.talk.controllers.WebViewLoginController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
@@ -70,8 +71,12 @@ public abstract class BaseController extends ButterKnifeController {
     private static final String TAG = "BaseController";
     @Inject
     AppPreferences appPreferences;
+
     @Inject
     Context context;
+
+    @Inject
+    ViewThemeUtils viewThemeUtils;
 
     protected BaseController() {
         cleanTempCertPreference();
@@ -109,12 +114,19 @@ public abstract class BaseController extends ButterKnifeController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
+        MainActivity activity = null;
+
+        if (getActivity() != null && getActivity() instanceof MainActivity) {
+            activity = (MainActivity) getActivity();
+            viewThemeUtils.themeCardView(activity.binding.searchToolbar);
+            viewThemeUtils.themeToolbar(activity.binding.toolbar);
+            viewThemeUtils.themeSearchBarText(activity.binding.searchText);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
             disableKeyboardPersonalisedLearning((ViewGroup) view);
 
-            if (getActivity() != null && getActivity() instanceof MainActivity) {
-                MainActivity activity = (MainActivity) getActivity();
+            if (activity != null) {
                 disableKeyboardPersonalisedLearning(activity.binding.appBar);
             }
         }
@@ -174,15 +186,9 @@ public abstract class BaseController extends ButterKnifeController {
 
                 if ((getResources() != null)) {
                     if (showSearchBar) {
-                        DisplayUtils.applyColorToStatusBar(
-                                activity, ResourcesCompat.getColor(getResources(),
-                                        R.color.bg_default, null)
-                        );
+                        viewThemeUtils.resetStatusBar(activity, activity.binding.searchToolbar);
                     } else {
-                        DisplayUtils.applyColorToStatusBar(
-                                activity, ResourcesCompat.getColor(getResources(),
-                                        R.color.appbar, null)
-                        );
+                        viewThemeUtils.themeStatusBar(activity, activity.binding.searchToolbar);
                     }
                 }
             }

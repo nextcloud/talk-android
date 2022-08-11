@@ -81,6 +81,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.UserMentionClickEvent;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.text.Spans;
 
 import org.greenrobot.eventbus.EventBus;
@@ -103,7 +104,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.XmlRes;
 import androidx.appcompat.widget.AppCompatDrawableManager;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
@@ -297,10 +297,15 @@ public class DisplayUtils {
                                                          User conversationUser,
                                                          String type,
                                                          @XmlRes int chipResource,
-                                                         @Nullable EditText emojiEditText) {
+                                                         @Nullable EditText emojiEditText,
+                                                         ViewThemeUtils viewThemeUtils) {
         ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
         chip.setText(EmojiCompat.get().process(label));
         chip.setEllipsize(TextUtils.TruncateAt.MIDDLE);
+
+        if (chipResource == R.xml.chip_you) {
+            viewThemeUtils.themePrimaryMentionChip(context, chip);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Configuration config = context.getResources().getConfiguration();
@@ -367,7 +372,8 @@ public class DisplayUtils {
     public static Spannable searchAndReplaceWithMentionSpan(Context context, Spannable text,
                                                             String id, String label, String type,
                                                             User conversationUser,
-                                                            @XmlRes int chipXmlRes) {
+                                                            @XmlRes int chipXmlRes,
+                                                            ViewThemeUtils viewThemeUtils) {
 
         Spannable spannableString = new SpannableString(text);
         String stringText = text.toString();
@@ -395,10 +401,18 @@ public class DisplayUtils {
                                                                                                    conversationUser,
                                                                                                    type,
                                                                                                    chipXmlRes,
-                                                                                                   null),
+                                                                                                   null,
+                                                                                                   viewThemeUtils),
                                                         BetterImageSpan.ALIGN_CENTER, id,
                                                         label);
             spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (chipXmlRes == R.xml.chip_you) {
+                spannableString.setSpan(
+                    new ForegroundColorSpan(viewThemeUtils.getScheme(context).getOnPrimary()),
+                    start,
+                    end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             if ("user".equals(type) && !conversationUser.getUserId().equals(id)) {
                 spannableString.setSpan(clickableSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             }
@@ -515,19 +529,6 @@ public class DisplayUtils {
 
     public static void applyColorToNavigationBar(Window window, @ColorInt int color) {
         window.setNavigationBarColor(color);
-    }
-
-    /**
-     * Theme search view
-     *
-     * @param searchView searchView to be changed
-     * @param context    the app's context
-     */
-    public static void themeSearchView(SearchView searchView, Context context) {
-        // hacky as no default way is provided
-        SearchView.SearchAutoComplete editText = searchView.findViewById(R.id.search_src_text);
-        editText.setTextSize(16);
-        editText.setHintTextColor(context.getResources().getColor(R.color.fontSecondaryAppbar));
     }
 
     /**

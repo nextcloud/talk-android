@@ -26,21 +26,21 @@ package com.nextcloud.talk.adapters.items;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.models.json.status.StatusType;
 import com.nextcloud.talk.ui.StatusDrawable;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -67,11 +67,12 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
     private final String statusMessage;
     private final User currentUser;
     private final Context context;
+    private final ViewThemeUtils viewThemeUtils;
 
     public MentionAutocompleteItem(
         Mention mention,
         User currentUser,
-        Context activityContext) {
+        Context activityContext, ViewThemeUtils viewThemeUtils) {
         this.objectId = mention.getId();
         this.displayName = mention.getLabel();
         this.source = mention.getSource();
@@ -80,6 +81,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
         this.statusMessage = mention.getStatusMessage();
         this.currentUser = currentUser;
         this.context = activityContext;
+        this.viewThemeUtils = viewThemeUtils;
     }
 
     public String getSource() {
@@ -133,26 +135,27 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
             FlexibleUtils.highlightText(holder.binding.nameText,
                                         displayName,
                                         String.valueOf(adapter.getFilter(String.class)),
-                                        Objects.requireNonNull(NextcloudTalkApplication
-                                                                   .Companion
-                                                                   .getSharedApplication())
-                                            .getResources().getColor(R.color.colorPrimary));
-            if (holder.binding.secondaryText != null) {
-                FlexibleUtils.highlightText(holder.binding.secondaryText,
-                                            "@" + objectId,
-                                            String.valueOf(adapter.getFilter(String.class)),
-                                            NextcloudTalkApplication.Companion.getSharedApplication()
-                                                .getResources().getColor(R.color.colorPrimary));
-            }
+                                        viewThemeUtils
+                                            .getScheme(holder.binding.secondaryText.getContext())
+                                            .getPrimary());
+            FlexibleUtils.highlightText(holder.binding.secondaryText,
+                                        "@" + objectId,
+                                        String.valueOf(adapter.getFilter(String.class)),
+                                        viewThemeUtils
+                                            .getScheme(holder.binding.secondaryText.getContext())
+                                            .getPrimary());
         } else {
             holder.binding.nameText.setText(displayName);
-            if (holder.binding.secondaryText != null) {
-                holder.binding.secondaryText.setText("@" + objectId);
-            }
+            holder.binding.secondaryText.setText("@" + objectId);
         }
 
         if (SOURCE_CALLS.equals(source)) {
-            if (holder.binding.avatarDraweeView != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
+                    DisplayUtils.getRoundedDrawable(
+                        viewThemeUtils.themePlaceholderAvatar(holder.binding.avatarDraweeView,
+                                                              R.drawable.ic_avatar_group)));
+            } else {
                 holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);
             }
         } else {
@@ -168,9 +171,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
                     false);
             }
 
-            if (holder.binding.avatarDraweeView != null) {
-                holder.binding.avatarDraweeView.setController(null);
-            }
+            holder.binding.avatarDraweeView.setController(null);
 
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setOldController(holder.binding.avatarDraweeView.getController())
@@ -184,39 +185,35 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
     }
 
     private void drawStatus(ParticipantItem.ParticipantItemViewHolder holder) {
-        if (holder.binding.conversationInfoStatusMessage != null &&
-            holder.binding.participantStatusEmoji != null &&
-            holder.binding.userStatusImage != null) {
-            float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
-            holder.binding.userStatusImage.setImageDrawable(new StatusDrawable(
-                status,
-                NO_ICON,
-                size,
-                context.getResources().getColor(R.color.bg_default),
-                context));
+        float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
+        holder.binding.userStatusImage.setImageDrawable(new StatusDrawable(
+            status,
+            NO_ICON,
+            size,
+            context.getResources().getColor(R.color.bg_default),
+            context));
 
-            if (statusMessage != null) {
-                holder.binding.conversationInfoStatusMessage.setText(statusMessage);
-                alignUsernameVertical(holder, 0);
-            } else {
-                holder.binding.conversationInfoStatusMessage.setText("");
-                alignUsernameVertical(holder, 10);
+        if (statusMessage != null) {
+            holder.binding.conversationInfoStatusMessage.setText(statusMessage);
+            alignUsernameVertical(holder, 0);
+        } else {
+            holder.binding.conversationInfoStatusMessage.setText("");
+            alignUsernameVertical(holder, 10);
+        }
+
+        if (statusIcon != null && !statusIcon.isEmpty()) {
+            holder.binding.participantStatusEmoji.setText(statusIcon);
+        } else {
+            holder.binding.participantStatusEmoji.setVisibility(View.GONE);
+        }
+
+        if (status != null && status.equals(StatusType.DND.getString())) {
+            if (statusMessage == null || statusMessage.isEmpty()) {
+                holder.binding.conversationInfoStatusMessage.setText(R.string.dnd);
             }
-
-            if (statusIcon != null && !statusIcon.isEmpty()) {
-                holder.binding.participantStatusEmoji.setText(statusIcon);
-            } else {
-                holder.binding.participantStatusEmoji.setVisibility(View.GONE);
-            }
-
-            if (status != null && status.equals(StatusType.DND.getString())) {
-                if (statusMessage == null || statusMessage.isEmpty()) {
-                    holder.binding.conversationInfoStatusMessage.setText(R.string.dnd);
-                }
-            } else if (status != null && status.equals(StatusType.AWAY.getString())) {
-                if (statusMessage == null || statusMessage.isEmpty()) {
-                    holder.binding.conversationInfoStatusMessage.setText(R.string.away);
-                }
+        } else if (status != null && status.equals(StatusType.AWAY.getString())) {
+            if (statusMessage == null || statusMessage.isEmpty()) {
+                holder.binding.conversationInfoStatusMessage.setText(R.string.away);
             }
         }
     }

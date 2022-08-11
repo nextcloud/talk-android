@@ -26,13 +26,18 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ProfileController
 import com.nextcloud.talk.databinding.DialogScopeBinding
 import com.nextcloud.talk.models.json.userprofile.Scope
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import javax.inject.Inject
 
+@AutoInjector(NextcloudTalkApplication::class)
 class ScopeDialog(
     con: Context,
     private val userInfoAdapter: ProfileController.UserInfoAdapter,
@@ -40,14 +45,21 @@ class ScopeDialog(
     private val position: Int
 ) : BottomSheetDialog(con) {
 
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
     private lateinit var dialogScopeBinding: DialogScopeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+
         dialogScopeBinding = DialogScopeBinding.inflate(layoutInflater)
         setContentView(dialogScopeBinding.root)
 
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        viewThemeUtils.themeDialog(dialogScopeBinding.root)
 
         if (field == ProfileController.Field.DISPLAYNAME || field == ProfileController.Field.EMAIL) {
             dialogScopeBinding.scopePrivate.visibility = View.GONE

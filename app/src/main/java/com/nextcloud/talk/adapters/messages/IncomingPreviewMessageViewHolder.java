@@ -26,9 +26,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.card.MaterialCardView;
+import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.ItemCustomIncomingPreviewMessageBinding;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
+import com.nextcloud.talk.models.json.chat.ChatMessage;
 
+import androidx.core.content.ContextCompat;
 import androidx.emoji.widget.EmojiTextView;
 
 public class IncomingPreviewMessageViewHolder extends MagicPreviewMessageViewHolder {
@@ -37,6 +41,16 @@ public class IncomingPreviewMessageViewHolder extends MagicPreviewMessageViewHol
     public IncomingPreviewMessageViewHolder(View itemView, Object payload) {
         super(itemView, payload);
         binding = ItemCustomIncomingPreviewMessageBinding.bind(itemView);
+    }
+
+    @Override
+    public void onBind(ChatMessage message) {
+        super.onBind(message);
+
+        binding.messageText.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
+                                                                R.color.no_emphasis_text));
+        binding.messageTime.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
+                                                                R.color.no_emphasis_text));
     }
 
     @Override
@@ -60,7 +74,7 @@ public class IncomingPreviewMessageViewHolder extends MagicPreviewMessageViewHol
     }
 
     @Override
-    public View getPreviewContactContainer() {
+    public MaterialCardView getPreviewContactContainer() {
         return binding.contactContainer;
     }
 

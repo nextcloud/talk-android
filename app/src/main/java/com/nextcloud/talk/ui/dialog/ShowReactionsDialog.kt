@@ -51,13 +51,14 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
-import com.nextcloud.talk.ui.theme.ServerTheme
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.Collections
+import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ShowReactionsDialog(
@@ -66,9 +67,11 @@ class ShowReactionsDialog(
     private val chatMessage: ChatMessage,
     private val user: User?,
     private val hasChatPermission: Boolean,
-    private val ncApi: NcApi,
-    private val serverTheme: ServerTheme
+    private val ncApi: NcApi
 ) : BottomSheetDialog(activity), ReactionItemClickListener {
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private lateinit var binding: DialogMessageReactionsBinding
 
@@ -78,9 +81,12 @@ class ShowReactionsDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+
         binding = DialogMessageReactionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        viewThemeUtils.themeDialog(binding.root)
         adapter = ReactionsAdapter(this, user)
         binding.reactionsList.adapter = adapter
         binding.reactionsList.layoutManager = LinearLayoutManager(context)
@@ -98,7 +104,6 @@ class ShowReactionsDialog(
         adapter?.list?.clear()
         if (chatMessage.reactions != null && chatMessage.reactions!!.isNotEmpty()) {
             var reactionsTotal = 0
-            binding.emojiReactionsTabs.setSelectedTabIndicatorColor(serverTheme.primaryColor)
             for ((emoji, amount) in chatMessage.reactions!!) {
                 reactionsTotal = reactionsTotal.plus(amount as Int)
                 val tab: TabLayout.Tab = binding.emojiReactionsTabs.newTab() // Create a new Tab names "First Tab"
@@ -138,6 +143,8 @@ class ShowReactionsDialog(
                     // called when a tab is reselected
                 }
             })
+
+            viewThemeUtils.themeTabLayoutOnSurface(binding.emojiReactionsTabs)
 
             updateParticipantsForEmoji(chatMessage, tagAll)
         }

@@ -59,8 +59,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
+            android:alpha="0.6"
             android:textAlignment="viewStart"
-            android:textColor="@color/textColorMaxContrast"
+            android:textColor="@color/no_emphasis_text"
             android:textIsSelectable="false"
             android:textSize="12sp"
             tools:text="Jane Doe" />
@@ -83,6 +84,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
+            android:alpha="0.6"
+            android:textColor="@color/no_emphasis_text"
             android:textIsSelectable="false"
             app:layout_alignSelf="center" />
 

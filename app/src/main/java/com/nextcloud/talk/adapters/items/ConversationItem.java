@@ -61,7 +61,6 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.flexibleadapter.items.ISectionable;
-import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements
@@ -144,9 +143,9 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                                                                         null));
 
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.binding.dialogName, conversation.getDisplayName(),
-                                        String.valueOf(adapter.getFilter(String.class)),
-                                        viewThemeUtils.getElementColor(holder.binding.dialogName.getContext()));
+            viewThemeUtils.highlightText(holder.binding.dialogName,
+                                         conversation.getDisplayName(),
+                                         String.valueOf(adapter.getFilter(String.class)));
         } else {
             holder.binding.dialogName.setText(conversation.getDisplayName());
         }
@@ -264,9 +263,15 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     break;
                 case "file":
                     shouldLoadAvatar = false;
-                    holder.binding.dialogAvatar.setImageDrawable(
-                        ContextCompat.getDrawable(context,
-                                                  R.drawable.ic_circular_document));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        holder.binding.dialogAvatar.setImageDrawable(
+                            DisplayUtils.getRoundedDrawable(
+                                viewThemeUtils.themePlaceholderAvatar(holder.binding.dialogAvatar,
+                                                                      R.drawable.ic_avatar_document)));
+                    } else {
+                        holder.binding.dialogAvatar.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_circular_document));
+                    }
                     break;
                 default:
                     break;
@@ -275,6 +280,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
         if (Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
                 Drawable[] layers = new Drawable[2];
                 layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background);
                 layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground);
@@ -307,14 +313,26 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     }
                     break;
                 case ROOM_GROUP_CALL:
-                    holder.binding.dialogAvatar.setImageDrawable(
-                        ContextCompat.getDrawable(context,
-                                                  R.drawable.ic_circular_group));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        holder.binding.dialogAvatar.setImageDrawable(
+                            DisplayUtils.getRoundedDrawable(
+                                viewThemeUtils.themePlaceholderAvatar(holder.binding.dialogAvatar,
+                                                                      R.drawable.ic_avatar_group)));
+                    } else {
+                        holder.binding.dialogAvatar.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_circular_group));
+                    }
                     break;
                 case ROOM_PUBLIC_CALL:
-                    holder.binding.dialogAvatar.setImageDrawable(
-                        ContextCompat.getDrawable(context,
-                                                  R.drawable.ic_circular_link));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        holder.binding.dialogAvatar.setImageDrawable(
+                            DisplayUtils.getRoundedDrawable(
+                                viewThemeUtils.themePlaceholderAvatar(holder.binding.dialogAvatar,
+                                                                      R.drawable.ic_avatar_link)));
+                    } else {
+                        holder.binding.dialogAvatar.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_circular_link));
+                    }
                     break;
                 default:
                     holder.binding.dialogAvatar.setVisibility(View.GONE);

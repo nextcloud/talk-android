@@ -36,6 +36,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.models.json.mention.MentionOverall;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.otaliastudios.autocomplete.RecyclerViewPresenter;
@@ -68,6 +69,9 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
 
     @Inject
     UserManager userManager;
+
+    @Inject
+    ViewThemeUtils viewThemeUtils;
 
     private User currentUser;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
@@ -150,7 +154,8 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                                         new MentionAutocompleteItem(
                                                 mention,
                                                 currentUser,
-                                                context));
+                                                context,
+                                                viewThemeUtils));
                             }
 
                             if (adapter.getItemCount() != 0) {

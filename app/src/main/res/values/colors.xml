@@ -36,6 +36,7 @@
     <color name="refresh_spinner_background">#ffffff</color>
 
     <!-- general text colors -->
+    <color name="no_emphasis_text">#000000</color>
     <color name="high_emphasis_text">#de000000</color>
     <color name="medium_emphasis_text">#99000000</color>
     <color name="low_emphasis_text">#61000000</color>
@@ -99,7 +100,7 @@
 
     <color name="camera_bg_tint">#99121212</color>
 
-    <color name="list_divider_background">#eeeeee</color>
+    <color name="list_divider_background">#1F121212</color>
     <color name="grey_200">#EEEEEE</color>
 
     <!-- this is just a helper for status icon background because getting the background color of a dialog is not

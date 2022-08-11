@@ -56,6 +56,7 @@ import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.controllers.util.ControllerViewBindingDelegate
 import com.nextcloud.talk.databinding.ActivityMainBinding
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import javax.inject.Inject
@@ -72,6 +73,9 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
 
     @Inject
     lateinit var context: Context
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     protected open val title: String?
         get() = null
@@ -115,11 +119,19 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     }
 
     protected open fun onViewBound(view: View) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
-            disableKeyboardPersonalisedLearning(view as ViewGroup)
-            if (activity != null && activity is MainActivity) {
-                val activity = activity as MainActivity?
-                disableKeyboardPersonalisedLearning(activity!!.binding.appBar)
+        var activity: MainActivity? = null
+
+        if (getActivity() != null && getActivity() is MainActivity) {
+            activity = getActivity() as MainActivity?
+            viewThemeUtils.themeCardView(activity!!.binding.searchToolbar)
+            viewThemeUtils.themeToolbar(activity.binding.toolbar)
+            viewThemeUtils.themeSearchBarText(activity.binding.searchText)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
+            disableKeyboardPersonalisedLearning((view as ViewGroup))
+            if (activity != null) {
+                disableKeyboardPersonalisedLearning(activity.binding.appBar)
             }
         }
     }
@@ -176,6 +188,7 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         binding.searchToolbar.visibility = View.GONE
         binding.toolbar.visibility = View.VISIBLE
+        viewThemeUtils.colorToolbarOverflowIcon(binding.toolbar)
         layoutParams.scrollFlags = 0
         binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
             binding.appBar.context,
@@ -192,19 +205,9 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     private fun colorizeStatusBar(showSearchBar: Boolean, activity: Activity?, resources: Resources?) {
         if (activity != null && resources != null) {
             if (showSearchBar) {
-                DisplayUtils.applyColorToStatusBar(
-                    activity,
-                    ResourcesCompat.getColor(
-                        resources, R.color.bg_default, null
-                    )
-                )
+                view?.let { viewThemeUtils.resetStatusBar(activity, it) }
             } else {
-                DisplayUtils.applyColorToStatusBar(
-                    activity,
-                    ResourcesCompat.getColor(
-                        resources, R.color.appbar, null
-                    )
-                )
+                view?.let { viewThemeUtils.themeStatusBar(activity, it) }
             }
         }
     }

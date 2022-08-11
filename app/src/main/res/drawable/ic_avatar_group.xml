@@ -1,0 +1,31 @@
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:autoMirrored="true"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#ffffff"
+        android:fillType="nonZero"
+        android:pathData="M12.729,5C11.044,5 9.833,6.38 9.833,7.702C9.833,9.054 9.93,10.019 10.605,11.08C10.822,11.36 11.074,11.418 11.281,11.659C11.411,12.142 11.513,12.625 11.378,13.107C10.957,13.255 10.557,13.428 10.152,13.59C9.66,13.326 9.09,13.107 8.598,12.914C8.53,12.644 8.579,12.444 8.646,12.19C8.762,12.07 8.868,12.016 8.994,11.901C9.351,11.466 9.37,10.733 9.37,10.212C9.37,9.44 8.675,8.861 7.922,8.861C7.082,8.861 6.474,9.555 6.474,10.212L6.455,10.212C6.455,10.887 6.503,11.37 6.841,11.901C6.938,12.045 7.075,12.07 7.179,12.19C7.244,12.431 7.296,12.673 7.227,12.914C6.61,13.129 6.027,13.397 5.49,13.686C5.085,13.976 5.265,13.862 5.007,14.796C4.888,15.279 6.262,15.501 7.247,15.578C7.198,15.843 7.131,16.196 6.938,16.871C6.629,18.078 11.139,18.512 12.729,18.512C15.074,18.512 18.822,18.072 18.501,16.871C17.999,14.999 18.3,15.221 17.555,14.651C16.503,14.02 15.188,13.525 14.08,13.107C13.935,12.57 14.041,12.171 14.177,11.659C14.403,11.418 14.659,11.312 14.872,11.08C15.537,10.227 15.624,8.741 15.624,7.702C15.624,6.172 14.244,5 12.729,5Z" />
+</vector>

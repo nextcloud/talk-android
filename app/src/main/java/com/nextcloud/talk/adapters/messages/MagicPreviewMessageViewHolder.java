@@ -42,6 +42,7 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.card.MaterialCardView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
@@ -50,7 +51,7 @@ import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
-import com.nextcloud.talk.ui.theme.ServerTheme;
+import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.FileViewerUtils;
@@ -94,7 +95,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
     Context context;
 
     @Inject
-    ServerTheme serverTheme;
+    ViewThemeUtils viewThemeUtils;
 
     @Inject
     OkHttpClient okHttpClient;
@@ -149,6 +150,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         }
 
         progressBar = getProgressBar();
+        viewThemeUtils.colorCircularProgressBar(getProgressBar());
         image = getImage();
         clickView = getImage();
         getMessageText().setVisibility(View.VISIBLE);
@@ -165,6 +167,9 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 progressBar = getPreviewContactProgressBar();
                 getMessageText().setVisibility(View.INVISIBLE);
                 clickView = getPreviewContactContainer();
+                viewThemeUtils.colorContactChatItemBackground(getPreviewContactContainer());
+                viewThemeUtils.colorContactChatItemName(getPreviewContactName());
+                viewThemeUtils.colorCircularProgressBarOnPrimaryContainer(getPreviewContactProgressBar());
             } else {
                 getPreviewContainer().setVisibility(View.VISIBLE);
                 getPreviewContactContainer().setVisibility(View.GONE);
@@ -184,7 +189,8 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 if (drawable != null &&
                     (drawableResourceId == R.drawable.ic_mimetype_folder ||
                     drawableResourceId == R.drawable.ic_mimetype_package_x_generic)) {
-                    drawable.setColorFilter(serverTheme.getPrimaryColor(), PorterDuff.Mode.SRC_ATOP);
+                    drawable.setColorFilter(viewThemeUtils.getScheme(image.getContext()).getPrimary(),
+                                            PorterDuff.Mode.SRC_ATOP);
                 }
 
                 image.getHierarchy().setPlaceholderImage(drawable);
@@ -239,7 +245,11 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         itemView.setTag(REPLYABLE_VIEW_TAG, message.getReplyable());
 
         reactionsBinding = getReactionsBinding();
-        new Reaction().showReactions(message, reactionsBinding, getMessageText().getContext(), true);
+        new Reaction().showReactions(message,
+                                     reactionsBinding,
+                                     getMessageText().getContext(),
+                                     true,
+                                     viewThemeUtils);
         reactionsBinding.reactionsEmojiWrapper.setOnClickListener(l -> {
             reactionsInterface.onClickReactions(message);
         });
@@ -353,7 +363,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
     public abstract View getPreviewContainer();
 
-    public abstract View getPreviewContactContainer();
+    public abstract MaterialCardView getPreviewContactContainer();
 
     public abstract SimpleDraweeView getPreviewContactPhoto();
 

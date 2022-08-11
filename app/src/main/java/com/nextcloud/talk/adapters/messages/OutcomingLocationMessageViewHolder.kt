@@ -25,6 +25,7 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.util.Log
 import android.util.TypedValue
@@ -34,9 +35,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.ColorUtils
-import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
@@ -46,10 +44,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.databinding.ItemCustomOutcomingLocationMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
-import com.nextcloud.talk.ui.theme.ServerTheme
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.net.URLEncoder
@@ -68,15 +64,11 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     var locationName: String? = ""
     var locationGeoLink: String? = ""
 
-    @JvmField
     @Inject
-    var context: Context? = null
+    lateinit var context: Context
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
-
-    @Inject
-    lateinit var serverTheme: ServerTheme
 
     lateinit var reactionsInterface: ReactionsInterface
 
@@ -84,6 +76,8 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
+        val textColor = viewThemeUtils.getScheme(binding.messageTime.context).onSurfaceVariant
+        binding.messageTime.setTextColor(textColor)
 
         realView.isSelected = false
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
@@ -94,11 +88,8 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         colorizeMessageBubble(message)
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
-        binding.messageTime.setTextColor(ColorUtils.setAlphaComponent(serverTheme.colorText, ALPHA_60_INT))
 
         binding.messageText.text = message.text
-        binding.messageText.setTextColor(serverTheme.colorText)
-        binding.messageText.setLinkTextColor(serverTheme.colorText)
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
@@ -118,7 +109,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context!!, drawableInt)?.let {
                 binding.checkMark.setImageDrawable(it)
-                viewThemeUtils.colorImageViewText(binding.checkMark)
+                binding.checkMark.setColorFilter(
+                    viewThemeUtils.getScheme(binding.checkMark.context).onSurfaceVariant, PorterDuff.Mode.SRC_ATOP
+                )
             }
         }
 
@@ -127,7 +120,13 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         // geo-location
         setLocationDataOnMessageItem(message)
 
-        Reaction().showReactions(message, binding.reactions, binding.messageText.context, true)
+        Reaction().showReactions(
+            message,
+            binding.reactions,
+            binding.messageText.context,
+            true,
+            viewThemeUtils
+        )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }
@@ -213,12 +212,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context!!.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(serverTheme.colorText)
-            binding.messageQuote.quotedMessageAuthor.setTextColor(
-                ColorUtils.setAlphaComponent(serverTheme.colorText, ALPHA_80_INT)
-            )
-
-            binding.messageQuote.quoteColoredView.setBackgroundColor(serverTheme.colorText)
+            viewThemeUtils.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
+            viewThemeUtils.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
+            viewThemeUtils.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
 
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -227,30 +223,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        val resources = sharedApplication!!.resources
-        val elementColor = viewThemeUtils.getElementColor(binding.root.context)
-        val bgBubbleColor = if (message.isDeleted) {
-            ColorUtils.setAlphaComponent(elementColor, HALF_ALPHA_INT)
-        } else {
-            elementColor
-        }
-        if (message.isGrouped) {
-            val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(resources, R.color.transparent, null),
-                bgBubbleColor,
-                R.drawable.shape_grouped_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        } else {
-            val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(resources, R.color.transparent, null),
-                bgBubbleColor,
-                R.drawable.shape_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        }
+        viewThemeUtils.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun openGeoLink() {
@@ -277,6 +250,5 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         private const val TAG = "LocOutMessageView"
         private const val HALF_ALPHA_INT: Int = 255 / 2
         private val ALPHA_60_INT: Int = (255 * 0.6).roundToInt()
-        private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
     }
 }

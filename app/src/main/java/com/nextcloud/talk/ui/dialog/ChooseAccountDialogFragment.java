@@ -39,7 +39,6 @@ import android.view.ViewGroup;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.NcApi;
@@ -113,12 +112,18 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+        User user = userManager.getCurrentUser().blockingGet();
 
+        themeViews();
+        setupCurrentUser(user);
+        setupListeners(user);
+        setupAdapter();
+        prepareViews();
+    }
+
+    private void setupCurrentUser(User user) {
         // Defining user picture
         binding.currentAccount.userIcon.setTag("");
-
-        // Defining user texts, accounts, etc.
-        User user = userManager.getCurrentUser().blockingGet();
         if (user != null) {
             binding.currentAccount.userName.setText(user.getDisplayName());
             binding.currentAccount.ticker.setVisibility(View.GONE);
@@ -148,7 +153,39 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
             loadCurrentStatus(user);
         }
+    }
 
+    private void setupAdapter() {
+        if (adapter == null) {
+            adapter = new FlexibleAdapter<>(userItems, getActivity(), false);
+
+            User userEntity;
+            Participant participant;
+
+            for (Object userItem : userManager.getUsers().blockingGet()) {
+                userEntity = (User) userItem;
+                if (!userEntity.getCurrent()) {
+                    String userId;
+                    if (userEntity.getUserId() != null) {
+                        userId = userEntity.getUserId();
+                    } else {
+                        userId = userEntity.getUsername();
+                    }
+
+                    participant = new Participant();
+                    participant.setActorType(Participant.ActorType.USERS);
+                    participant.setActorId(userId);
+                    participant.setDisplayName(userEntity.getDisplayName());
+                    userItems.add(new AdvancedUserItem(participant, userEntity, null, viewThemeUtils));
+                }
+            }
+
+            adapter.addListener(onSwitchItemClickListener);
+            adapter.updateDataSet(userItems, false);
+        }
+    }
+
+    private void setupListeners(User user) {
         // Creating listeners for quick-actions
         binding.currentAccount.getRoot().setOnClickListener(v -> dismiss());
 
@@ -173,36 +210,18 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 Log.w(TAG, "status was null");
             }
         });
+    }
 
-        if (adapter == null) {
-            adapter = new FlexibleAdapter<>(userItems, getActivity(), false);
+    private void themeViews() {
+        viewThemeUtils.themeDialog(binding.getRoot());
+        viewThemeUtils.themeDialogDivider(binding.divider);
 
-            User userEntity;
-            Participant participant;
-
-            for (Object userItem : userManager.getUsers().blockingGet()) {
-                userEntity = (User) userItem;
-                if (!userEntity.getCurrent()) {
-                    String userId;
-                    if (userEntity.getUserId() != null) {
-                        userId = userEntity.getUserId();
-                    } else {
-                        userId = userEntity.getUsername();
-                    }
-
-                    participant = new Participant();
-                    participant.setActorType(Participant.ActorType.USERS);
-                    participant.setActorId(userId);
-                    participant.setDisplayName(userEntity.getDisplayName());
-                    userItems.add(new AdvancedUserItem(participant, userEntity, null));
-                }
-            }
-
-            adapter.addListener(onSwitchItemClickListener);
-            adapter.updateDataSet(userItems, false);
-        }
-
-        prepareViews();
+        viewThemeUtils.colorMaterialTextButton(binding.setStatus);
+        viewThemeUtils.colorDialogMenuText(binding.setStatus);
+        viewThemeUtils.colorMaterialTextButton(binding.addAccount);
+        viewThemeUtils.colorDialogMenuText(binding.addAccount);
+        viewThemeUtils.colorMaterialTextButton(binding.manageSettings);
+        viewThemeUtils.colorDialogMenuText(binding.manageSettings);
     }
 
     private void loadCurrentStatus(User user) {
@@ -305,7 +324,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             status.getStatus(),
             status.getIcon(),
             size,
-            getContext().getResources().getColor(R.color.dialog_background),
+            viewThemeUtils.getScheme(binding.currentAccount.ticker.getContext()).getSurface(),
             getContext()));
         binding.currentAccount.ticker.setVisibility(View.VISIBLE);
 

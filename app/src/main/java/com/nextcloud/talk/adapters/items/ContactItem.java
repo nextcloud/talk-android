@@ -25,6 +25,7 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -134,18 +135,14 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
             holder.binding.avatarDraweeView.setAlpha(1.0f);
         }
 
+        holder.binding.nameText.setText(participant.getDisplayName());
+
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.binding.nameText,
                                         participant.getDisplayName(),
                                         String.valueOf(adapter.getFilter(String.class)),
-                                        NextcloudTalkApplication
-                                            .Companion
-                                            .getSharedApplication()
-                                            .getResources()
-                                            .getColor(R.color.colorPrimary));
+                                        viewThemeUtils.getScheme(holder.binding.nameText.getContext()).getPrimary());
         }
-
-        holder.binding.nameText.setText(participant.getDisplayName());
 
         if (TextUtils.isEmpty(participant.getDisplayName()) &&
             (participant.getType().equals(Participant.ParticipantType.GUEST) ||
@@ -162,45 +159,57 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
                 participant.getCalculatedActorType() == Participant.ActorType.CIRCLES ||
                 PARTICIPANT_SOURCE_CIRCLES.equals(participant.getSource())) {
 
-            holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);
+            setGenericAvatar(holder, R.drawable.ic_avatar_group, R.drawable.ic_circular_group);
 
         } else if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
 
-            holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_mail);
+            setGenericAvatar(holder, R.drawable.ic_avatar_mail, R.drawable.ic_circular_mail);
 
         } else if (
             participant.getCalculatedActorType() == Participant.ActorType.GUESTS ||
                 Participant.ParticipantType.GUEST.equals(participant.getType()) ||
                 Participant.ParticipantType.GUEST_MODERATOR.equals(participant.getType())) {
 
-            String displayName = NextcloudTalkApplication.Companion.getSharedApplication()
-                .getResources().getString(R.string.nc_guest);
+            String displayName;
 
             if (!TextUtils.isEmpty(participant.getDisplayName())) {
                 displayName = participant.getDisplayName();
+            } else {
+                displayName = NextcloudTalkApplication.Companion.getSharedApplication()
+                    .getResources().getString(R.string.nc_guest);
             }
 
-            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setOldController(holder.binding.avatarDraweeView.getController())
-                .setAutoPlayAnimations(true)
-                .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForGuestAvatar(user.getBaseUrl(),
-                                                  displayName,
-                                                  false)))
-                .build();
-            holder.binding.avatarDraweeView.setController(draweeController);
-
+            setUserStyleAvatar(holder,
+                               ApiUtils.getUrlForGuestAvatar(user.getBaseUrl(), displayName, false));
         } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
             PARTICIPANT_SOURCE_USERS.equals(participant.getSource())) {
-            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setOldController(holder.binding.avatarDraweeView.getController())
-                .setAutoPlayAnimations(true)
-                .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForAvatar(user.getBaseUrl(),
-                                             participant.getCalculatedActorId(),
-                                             false)))
-                .build();
-            holder.binding.avatarDraweeView.setController(draweeController);
+            setUserStyleAvatar(holder,
+                               ApiUtils.getUrlForAvatar(user.getBaseUrl(),
+                                                        participant.getCalculatedActorId(),
+                                                        false));
+        }
+    }
+
+    private void setUserStyleAvatar(ContactItemViewHolder holder, String avatarUrl) {
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+            .setOldController(holder.binding.avatarDraweeView.getController())
+            .setAutoPlayAnimations(true)
+            .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarUrl))
+            .build();
+        holder.binding.avatarDraweeView.setController(draweeController);
+    }
+
+    private void setGenericAvatar(
+        ContactItemViewHolder holder,
+        int roundPlaceholderDrawable,
+        int fallbackImageResource) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
+                DisplayUtils.getRoundedDrawable(
+                    viewThemeUtils.themePlaceholderAvatar(holder.binding.avatarDraweeView,
+                                                          roundPlaceholderDrawable)));
+        } else {
+            holder.binding.avatarDraweeView.setImageResource(fallbackImageResource);
         }
     }
 

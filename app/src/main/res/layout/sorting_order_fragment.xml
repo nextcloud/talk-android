@@ -293,9 +293,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="end">
+        android:gravity="end"
+        android:paddingStart="@dimen/dialog_padding"
+        android:paddingEnd="@dimen/dialog_padding"
+        android:paddingBottom="@dimen/dialog_padding_top_bottom">
 
-        <com.google.android.material.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
             android:id="@+id/cancel"
             style="@style/Button.Borderless"
             android:layout_width="wrap_content"

@@ -37,8 +37,8 @@
     <dimen name="avatar_size_big">96dp</dimen>
 
     <dimen name="chat_text_size">14sp</dimen>
-    <dimen name="message_bubble_corners_radius">6dp</dimen>
-    <dimen name="message_bubble_corners_padding">8dp</dimen>
+    <dimen name="message_bubble_corners_radius">@dimen/dialogBorderRadius</dimen>
+    <dimen name="message_bubble_corners_padding">16dp</dimen>
 
     <dimen name="geocoding_result_text_size">18sp</dimen>
 
@@ -73,6 +73,8 @@
     <dimen name="reaction_bottom_sheet_layout_size">40dp</dimen>
     <dimen name="standard_eighth_margin">2dp</dimen>
     <dimen name="scope_padding">12dp</dimen>
+
+    <dimen name="dialogBorderRadius">28dp</dimen>
 
     <dimen name="default_checkbox_dialog_start_margin">18dp</dimen>
 

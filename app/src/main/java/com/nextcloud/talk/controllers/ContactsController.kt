@@ -65,7 +65,6 @@ import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.dialog.ContactsBottomDialog
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -103,9 +102,6 @@ class ContactsController(args: Bundle) :
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
 
     private var credentials: String? = null
     private var currentUser: User? = null
@@ -338,6 +334,7 @@ class ContactsController(args: Bundle) :
             val searchManager: SearchManager? = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
             if (searchItem != null) {
                 searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+                viewThemeUtils.themeSearchView(searchView!!)
                 searchView!!.maxWidth = Int.MAX_VALUE
                 searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
                 var imeOptions: Int = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
@@ -381,6 +378,14 @@ class ContactsController(args: Bundle) :
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
+
+        if (searchItem != null) {
+            viewThemeUtils.colorToolbarMenuIcon(
+                binding.titleTextView.context,
+                searchItem!!
+            )
+        }
+
         checkAndHandleDoneMenuItem()
         if (adapter?.hasFilter() == true) {
             searchItem!!.expandActionView()
@@ -632,6 +637,7 @@ class ContactsController(args: Bundle) :
                 ResourcesCompat.getColor(resources!!, R.color.colorBackgroundDarker, null),
                 PorterDuff.Mode.SRC_IN
             )
+
         viewThemeUtils.colorImageViewButton(binding.conversationPrivacyToggle.publicCallLink)
         disengageProgressBar()
     }

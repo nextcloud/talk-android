@@ -31,18 +31,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.NonNull
-import androidx.appcompat.content.res.AppCompatResources
+import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.vanniktech.emoji.EmojiPopup
@@ -53,7 +55,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
+@AutoInjector(NextcloudTalkApplication::class)
 class MessageActionsDialog(
     private val chatController: ChatController,
     private val message: ChatMessage,
@@ -64,16 +68,22 @@ class MessageActionsDialog(
     private val ncApi: NcApi
 ) : BottomSheetDialog(chatController.activity!!) {
 
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
 
     private lateinit var popup: EmojiPopup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+
         dialogMessageActionsBinding = DialogMessageActionsBinding.inflate(layoutInflater)
         setContentView(dialogMessageActionsBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
+        viewThemeUtils.themeDialog(dialogMessageActionsBinding.root)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
         initMenuReplyToMessage(message.replyable && hasChatPermission)
@@ -215,7 +225,7 @@ class MessageActionsDialog(
 
     private fun checkAndSetEmojiSelfReaction(emoji: EmojiTextView) {
         if (emoji.text?.toString() != null && message.reactionsSelf?.contains(emoji.text?.toString()) == true) {
-            emoji.background = AppCompatResources.getDrawable(context, R.drawable.reaction_self_bottom_sheet_background)
+            viewThemeUtils.setCheckedBackground(emoji)
         }
     }
 

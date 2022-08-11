@@ -106,7 +106,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         viewThemeUtils.themeFAB(binding.takePhoto);
-        viewThemeUtils.colorMaterialButtonBackground(binding.send);
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.send);
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(() -> {

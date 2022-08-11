@@ -29,7 +29,6 @@ import android.text.TextUtils
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
@@ -41,6 +40,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.databinding.ItemCustomIncomingPollMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -61,6 +61,9 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
     lateinit var appPreferences: AppPreferences
 
     @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
     lateinit var ncApi: NcApi
 
     lateinit var message: ChatMessage
@@ -78,14 +81,19 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(ResourcesCompat.getColor(context?.resources!!, R.color.warm_grey_four, null))
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
 
         setPollPreview(message)
 
-        Reaction().showReactions(message, binding.reactions, binding.messageTime.context, false)
+        Reaction().showReactions(
+            message,
+            binding.reactions,
+            binding.messageTime.context,
+            false,
+            viewThemeUtils
+        )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }
@@ -183,26 +191,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        val resources = itemView.resources
-
-        var bubbleResource = R.drawable.shape_incoming_message
-
-        if (message.isGrouped) {
-            bubbleResource = R.drawable.shape_grouped_incoming_message
-        }
-
-        val bgBubbleColor = if (message.isDeleted) {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble_deleted, null)
-        } else {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble, null)
-        }
-        val bubbleDrawable = DisplayUtils.getMessageSelector(
-            bgBubbleColor,
-            ResourcesCompat.getColor(resources, R.color.transparent, null),
-            bgBubbleColor,
-            bubbleResource
-        )
-        ViewCompat.setBackground(bubble, bubbleDrawable)
+        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
@@ -228,7 +217,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
                 .setTextColor(ContextCompat.getColor(context, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
+                viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

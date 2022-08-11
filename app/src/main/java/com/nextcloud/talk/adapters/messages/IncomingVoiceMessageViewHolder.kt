@@ -37,7 +37,6 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -90,7 +89,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(ResourcesCompat.getColor(context?.resources!!, R.color.warm_grey_four, null))
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
@@ -98,6 +96,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
         viewThemeUtils.themeHorizontalSeekBar(binding.seekbar)
+        viewThemeUtils.colorCircularProgressBarOnSurfaceVariant(binding.progressBar)
 
         if (message.isPlayingVoiceMessage) {
             showPlayButton()
@@ -146,7 +145,13 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
             }
         })
 
-        Reaction().showReactions(message, binding.reactions, binding.messageTime.context, false)
+        Reaction().showReactions(
+            message,
+            binding.reactions,
+            binding.messageTime.context,
+            false,
+            viewThemeUtils
+        )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }
@@ -261,25 +266,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        val resources = itemView.resources
-
-        var bubbleResource = R.drawable.shape_incoming_message
-
-        if (message.isGrouped) {
-            bubbleResource = R.drawable.shape_grouped_incoming_message
-        }
-
-        val bgBubbleColor = if (message.isDeleted) {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble_deleted, null)
-        } else {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble, null)
-        }
-        val bubbleDrawable = DisplayUtils.getMessageSelector(
-            bgBubbleColor,
-            ResourcesCompat.getColor(resources, R.color.transparent, null),
-            bgBubbleColor, bubbleResource
-        )
-        ViewCompat.setBackground(bubble, bubbleDrawable)
+        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
@@ -305,7 +292,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
                 .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
+                viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

@@ -23,4 +23,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:textAppearance="@style/ChipIncomingTextAppearance"
     app:chipBackgroundColor="#deffffff"
+    app:chipCornerRadius="@dimen/standard_padding"
+    app:chipStrokeWidth="@dimen/zero"
     app:closeIconEnabled="false" />

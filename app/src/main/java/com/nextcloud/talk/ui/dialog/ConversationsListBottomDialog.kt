@@ -56,6 +56,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN
 import com.nextcloud.talk.utils.ShareUtils
@@ -83,18 +84,20 @@ class ConversationsListBottomDialog(
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var userManager: UserManager
+    lateinit var viewThemeUtils: ViewThemeUtils
 
-    init {
-        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
-    }
+    @Inject
+    lateinit var userManager: UserManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+
         binding = DialogConversationOperationsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
+        viewThemeUtils.themeDialog(binding.root)
         initHeaderDescription()
         initItemsVisibility()
         initClickListeners()

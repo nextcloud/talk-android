@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -34,8 +35,8 @@
         android:layout_height="match_parent"
         android:layout_alignBottom="@id/flexboxQuoted"
         android:layout_alignParentStart="true"
-        android:layout_marginEnd="4dp"
-        android:background="@color/colorPrimary" />
+        android:layout_marginEnd="8dp"
+        android:background="@color/high_emphasis_text" />
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/quotedMessageAuthor"
@@ -44,9 +45,10 @@
         android:layout_alignParentTop="true"
         android:layout_marginEnd="8dp"
         android:layout_toEndOf="@id/quoteColoredView"
+        android:alpha="0.6"
         android:ellipsize="end"
         android:textAlignment="viewStart"
-        android:textColor="@color/textColorMaxContrast"
+        android:textColor="@color/no_emphasis_text"
         android:textIsSelectable="false"
         android:textSize="12sp"
         tools:text="Jane Doe" />
@@ -85,6 +87,7 @@
             android:layout_alignStart="@id/quotedMessageAuthor"
             android:lineSpacingMultiplier="1.2"
             android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text"
             android:textIsSelectable="false"
             android:textSize="14sp"
             app:layout_alignSelf="flex_start"
@@ -102,9 +105,9 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/ic_cancel_black_24dp"
-        android:backgroundTint="@color/grey_600"
+        android:background="@color/transparent"
         android:contentDescription="@string/nc_message_quote_cancel_reply"
+        android:src="@drawable/ic_cancel_black_24dp"
         android:visibility="gone"
         tools:visibility="visible" />
 

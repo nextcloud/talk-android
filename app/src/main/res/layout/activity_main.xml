@@ -115,17 +115,6 @@
                         app:iconSize="@dimen/avatar_size_app_bar"
                         tools:visibility="gone" />
 
-                    <ProgressBar
-                        android:id="@+id/searchProgressBar"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:padding="4dp"
-                        android:layout_gravity="center"
-                        android:indeterminate="true"
-                        android:indeterminateTint="@color/colorPrimary"
-                        android:scaleType="fitCenter"
-                        android:visibility="gone" />
-
                 </FrameLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -143,16 +132,6 @@
             app:popupTheme="@style/appActionBarPopupMenu"
             app:titleTextColor="@color/fontAppbar"
             tools:title="@string/nc_app_product_name">
-
-            <ProgressBar
-                android:id="@+id/toolbarProgressBar"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center_vertical|end"
-                android:layout_marginEnd="8dp"
-                android:visibility="gone"
-                android:indeterminateTint="@color/white"
-                android:scaleType="fitCenter" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 

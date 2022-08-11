@@ -34,14 +34,19 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityFullScreenTextBinding
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.Mimetype.TEXT_PREFIX_GENERIC
 import io.noties.markwon.Markwon
 import java.io.File
+import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class FullScreenTextViewerActivity : AppCompatActivity() {
     lateinit var binding: ActivityFullScreenTextBinding
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private lateinit var path: String
 
@@ -77,6 +82,7 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivityFullScreenTextBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -98,12 +104,9 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
         supportActionBar?.title = fileName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (resources != null) {
-            DisplayUtils.applyColorToStatusBar(
-                this,
-                ResourcesCompat.getColor(resources, R.color.appbar, null)
-            )
+        viewThemeUtils.themeStatusBar(this, binding.textviewToolbar)
 
+        if (resources != null) {
             DisplayUtils.applyColorToNavigationBar(
                 this.window,
                 ResourcesCompat.getColor(resources, R.color.bg_default, null)

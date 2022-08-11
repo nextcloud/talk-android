@@ -880,12 +880,13 @@ public class CallActivity extends CallBaseActivity {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
 
             if (!appPreferences.getPushToTalkIntroShown()) {
+                int primary = viewThemeUtils.getScheme(binding.audioOutputButton.getContext()).getPrimary();
                 spotlightView = new SpotlightView.Builder(this)
                     .introAnimationDuration(300)
                     .enableRevealAnimation(true)
                     .performClick(false)
                     .fadeinTextDuration(400)
-                    .headingTvColor(getResources().getColor(R.color.colorPrimary))
+                    .headingTvColor(primary)
                     .headingTvSize(20)
                     .headingTvText(getResources().getString(R.string.nc_push_to_talk))
                     .subHeadingTvColor(getResources().getColor(R.color.bg_default))
@@ -894,7 +895,7 @@ public class CallActivity extends CallBaseActivity {
                     .maskColor(Color.parseColor("#dc000000"))
                     .target(binding.microphoneButton)
                     .lineAnimDuration(400)
-                    .lineAndArcColor(getResources().getColor(R.color.colorPrimary))
+                    .lineAndArcColor(primary)
                     .enableDismissAfterShown(true)
                     .dismissOnBackPress(true)
                     .usageId("pushToTalk")

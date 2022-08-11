@@ -40,77 +40,79 @@
             android:layout_marginEnd="8dp"
             app:roundAsCircle="true" />
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@id/bubble"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@id/bubble"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/message_incoming_bubble_margin_right"
+        android:layout_toEndOf="@id/messageUserAvatar"
+        android:orientation="vertical"
+        app:alignContent="stretch"
+        app:alignItems="stretch"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_end">
+
+        <include
+            android:id="@+id/message_quote"
+            layout="@layout/item_message_quote"
+            android:visibility="gone" />
+
+        <androidx.emoji.widget.EmojiTextView
+            android:id="@+id/messageAuthor"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/message_incoming_bubble_margin_right"
-            android:layout_toEndOf="@id/messageUserAvatar"
-            android:orientation="vertical"
-            app:alignContent="stretch"
-            app:alignItems="stretch"
-            app:flexWrap="wrap"
-            app:justifyContent="flex_end">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textAlignment="viewStart"
+            android:textColor="@color/textColorMaxContrast"
+            android:textSize="12sp" />
 
-                <include
-                    android:id="@+id/message_quote"
-                    layout="@layout/item_message_quote"
-                    android:visibility="gone" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-                <androidx.emoji.widget.EmojiTextView
-                    android:id="@+id/messageAuthor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/textColorMaxContrast"
-                    android:textSize="12sp" />
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playPauseBtn"
+                style="@style/Widget.AppTheme.Button.IconButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/play_pause_voice_message"
+                android:visibility="visible"
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
+                app:iconSize="40dp"
+                app:iconTint="@color/nc_incoming_text_default" />
 
-                        <ProgressBar
-                            android:id="@+id/progressBar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:visibility="gone"/>
+            <SeekBar
+                android:id="@+id/seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:progress="50" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/playPauseBtn"
-                            style="@style/Widget.AppTheme.Button.IconButton"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:contentDescription="@string/play_pause_voice_message"
-                            android:visibility="visible"
-                            app:cornerRadius="@dimen/button_corner_radius"
-                            app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
-                            app:iconSize="40dp"
-                            app:iconTint="@color/nc_incoming_text_default" />
+        </LinearLayout>
 
-                        <SeekBar
-                            android:id="@+id/seekbar"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            tools:progress="50" />
+        <TextView
+            android:id="@id/messageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/messageText"
+            android:layout_marginStart="8dp"
+            android:alpha="0.6"
+            android:textColor="@color/no_emphasis_text"
+            app:layout_alignSelf="center"
+            tools:text="12:38" />
 
-                </LinearLayout>
+        <include
+            android:id="@+id/reactions"
+            layout="@layout/reactions_inside_message" />
 
-                <TextView
-                    android:id="@id/messageTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/messageText"
-                    android:layout_marginStart="8dp"
-                    app:layout_alignSelf="center"
-                    tools:text="12:38"/>
-
-            <include
-                android:id="@+id/reactions"
-                layout="@layout/reactions_inside_message" />
-
-        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>

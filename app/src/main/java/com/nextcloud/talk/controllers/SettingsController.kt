@@ -60,6 +60,7 @@ import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -78,7 +79,6 @@ import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
@@ -92,7 +92,6 @@ import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
-import com.yarolegovich.lovelydialog.LovelyStandardDialog
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -119,10 +118,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderNew
 
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
-
-    private var saveStateHandler: LovelySaveStateHandler? = null
     private var currentUser: User? = null
     private var credentials: String? = null
     private var proxyTypeChangeListener: OnPreferenceValueChangedListener<String>? = null
@@ -153,10 +148,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         ViewCompat.setTransitionName((binding.avatarImage), "userAvatar.transitionTag")
 
         getCurrentUser()
-
-        if (saveStateHandler == null) {
-            saveStateHandler = LovelySaveStateHandler()
-        }
 
         registerChangeListeners()
 
@@ -385,11 +376,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         }
     }
 
-    override fun onSaveViewState(view: View, outState: Bundle) {
-        saveStateHandler!!.saveInstanceState(outState)
-        super.onSaveViewState(view, outState)
-    }
-
     override fun onRestoreViewState(view: View, savedViewState: Bundle) {
         super.onRestoreViewState(view, savedViewState)
         if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
@@ -401,23 +387,27 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
     private fun showRemoveAccountWarning(savedInstanceState: Bundle?) {
         if (activity != null) {
-            LovelyStandardDialog(activity, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
-                .setTopColorRes(R.color.nc_darkRed)
-                .setIcon(
-                    DisplayUtils.getTintedDrawable(
-                        resources,
-                        R.drawable.ic_delete_black_24dp,
-                        R.color.bg_default
-                    )
-                )
-                .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
+            val materialAlertDialogBuilder = MaterialAlertDialogBuilder(binding.messageText.context)
                 .setTitle(R.string.nc_settings_remove_account)
                 .setMessage(R.string.nc_settings_remove_confirmation)
-                .setPositiveButton(R.string.nc_settings_remove, { removeCurrentAccount() })
-                .setNegativeButton(R.string.nc_cancel, null)
-                .setInstanceStateHandler(ID_REMOVE_ACCOUNT_WARNING_DIALOG, saveStateHandler)
-                .setSavedInstanceState(savedInstanceState)
-                .show()
+                .setPositiveButton(R.string.nc_settings_remove) { _, _ ->
+                    removeCurrentAccount()
+                }
+                .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                    // unused atm
+                }
+
+            viewThemeUtils.colorMaterialAlertDialogBackground(
+                binding.messageText.context,
+                materialAlertDialogBuilder
+            )
+
+            val dialog = materialAlertDialogBuilder.show()
+
+            viewThemeUtils.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         }
     }
 
@@ -566,7 +556,9 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         if (ApplicationWideMessageHolder.getInstance().messageType != null) {
             when (ApplicationWideMessageHolder.getInstance().messageType) {
                 ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED -> {
-                    binding.messageText.setTextColor(resources!!.getColor(R.color.colorPrimary))
+                    binding.messageText.setTextColor(
+                        viewThemeUtils.getScheme(binding.messageText.context).primary
+                    )
                     binding.messageText.text = resources!!.getString(R.string.nc_settings_account_updated)
                     binding.messageView.visibility = View.VISIBLE
                 }
@@ -575,13 +567,17 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                     binding.messageText.setTextColor(resources!!.getColor(R.color.nc_darkRed))
                     binding.messageText.text = resources!!.getString(R.string.nc_settings_wrong_account)
                     binding.messageView.visibility = View.VISIBLE
-                    binding.messageText.setTextColor(resources!!.getColor(R.color.colorPrimary))
+                    binding.messageText.setTextColor(
+                        viewThemeUtils.getScheme(binding.messageText.context).primary
+                    )
                     binding.messageText.text = resources!!.getString(R.string.nc_Server_account_imported)
                     binding.messageView.visibility = View.VISIBLE
                 }
 
                 ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED -> {
-                    binding.messageText.setTextColor(resources!!.getColor(R.color.colorPrimary))
+                    binding.messageText.setTextColor(
+                        viewThemeUtils.getScheme(binding.messageText.context).primary
+                    )
                     binding.messageText.text = resources!!.getString(R.string.nc_Server_account_imported)
                     binding.messageView.visibility = View.VISIBLE
                 }
@@ -961,13 +957,16 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         })
         phoneNumberInputLayout.addView(phoneNumberField)
         phoneNumberLayoutWrapper.addView(phoneNumberInputLayout)
-        val dialog = AlertDialog.Builder((activity)!!)
+        val dialogBuilder = MaterialAlertDialogBuilder(phoneNumberInputLayout.context)
             .setTitle(R.string.nc_settings_phone_book_integration_phone_number_dialog_title)
             .setMessage(R.string.nc_settings_phone_book_integration_phone_number_dialog_description)
             .setView(phoneNumberLayoutWrapper)
             .setPositiveButton(context!!.resources.getString(R.string.nc_common_set), null)
             .setNegativeButton(context!!.resources.getString(R.string.nc_common_skip), null)
-            .create()
+
+        viewThemeUtils.colorMaterialAlertDialogBackground(phoneNumberInputLayout.context, dialogBuilder)
+
+        val dialog = dialogBuilder.create()
         dialog.setOnShowListener(object : OnShowListener {
             override fun onShow(dialogInterface: DialogInterface) {
                 val button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -978,7 +977,13 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                 })
             }
         })
+
         dialog.show()
+
+        viewThemeUtils.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun setPhoneNumber(textInputLayout: TextInputLayout, dialog: AlertDialog) {

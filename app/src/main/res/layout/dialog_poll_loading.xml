@@ -26,6 +26,7 @@
     tools:background="@color/white">
 
     <ProgressBar
+        android:id="@+id/poll_loading_progressbar"
         android:layout_width="25dp"
         android:layout_height="25dp">
     </ProgressBar>

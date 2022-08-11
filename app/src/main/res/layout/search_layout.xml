@@ -104,17 +104,6 @@
                     app:iconSize="@dimen/avatar_size_app_bar"
                     tools:visibility="visible" />
 
-                <ProgressBar
-                    android:id="@+id/searchProgressBar"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:padding="4dp"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    android:indeterminateTint="@color/colorPrimary"
-                    android:scaleType="fitCenter"
-                    android:visibility="gone" />
-
             </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

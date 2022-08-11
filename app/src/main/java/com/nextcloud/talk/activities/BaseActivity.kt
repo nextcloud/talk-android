@@ -27,15 +27,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.webkit.SslErrorHandler
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import autodagger.AutoInjector
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.CertificateEvent
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.ssl.MagicTrustManager
-import com.yarolegovich.lovelydialog.LovelyStandardDialog
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -52,6 +54,9 @@ open class BaseActivity : AppCompatActivity() {
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
     lateinit var context: Context
@@ -110,21 +115,26 @@ open class BaseActivity : AppCompatActivity() {
                 issuedBy, issuedFor, validFrom, validUntil
             )
 
-            LovelyStandardDialog(this)
-                .setTopColorRes(R.color.nc_darkRed)
-                .setNegativeButtonColorRes(R.color.nc_darkRed)
-                .setPositiveButtonColorRes(R.color.colorPrimary)
-                .setIcon(R.drawable.ic_security_white_24dp)
+            val dialogBuilder = MaterialAlertDialogBuilder(this)
+                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_security_white_24dp))
                 .setTitle(R.string.nc_certificate_dialog_title)
                 .setMessage(dialogText)
-                .setPositiveButton(R.string.nc_yes) { v ->
+                .setPositiveButton(R.string.nc_yes) { _, _ ->
                     magicTrustManager.addCertInTrustStore(cert)
                     sslErrorHandler?.proceed()
                 }
-                .setNegativeButton(R.string.nc_no) { view1 ->
+                .setNegativeButton(R.string.nc_no) { _, _ ->
                     sslErrorHandler?.cancel()
                 }
-                .show()
+
+            viewThemeUtils.colorMaterialAlertDialogBackground(context, dialogBuilder)
+
+            val dialog = dialogBuilder.show()
+
+            viewThemeUtils.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         } catch (e: CertificateParsingException) {
             Log.d(TAG, "Failed to parse the certificate")
         }
