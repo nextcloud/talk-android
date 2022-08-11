@@ -309,6 +309,7 @@
     <string name="nc_share_text_pass">\nContraseña: %1$s</string>
     <string name="nc_share_this_location">Compartir esta ubicación</string>
     <string name="nc_shared_items">Elementos compartidos</string>
+    <string name="nc_shared_items_deck_card">Tarjeta Deck</string>
     <string name="nc_shared_items_description">Imágenes, archivos, mensajes de voz…</string>
     <string name="nc_shared_items_empty">No hay elementos compartidos</string>
     <string name="nc_shared_items_location">Ubicación</string>

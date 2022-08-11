@@ -311,6 +311,7 @@
     <string name="nc_share_text_pass">\nPasswort: %1$s</string>
     <string name="nc_share_this_location">Diesen Ort teilen</string>
     <string name="nc_shared_items">Geteilte Elemente</string>
+    <string name="nc_shared_items_deck_card">Deck-Karte</string>
     <string name="nc_shared_items_description">Bilder, Dateien, Sprachnachrichten …</string>
     <string name="nc_shared_items_empty">Keine geteilten Elemente</string>
     <string name="nc_shared_items_location">Ort</string>

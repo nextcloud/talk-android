@@ -311,6 +311,7 @@
     <string name="nc_share_text_pass">\nParola: %1$s</string>
     <string name="nc_share_this_location">Bu konumu paylaş</string>
     <string name="nc_shared_items">Paylaşılmış ögeler</string>
+    <string name="nc_shared_items_deck_card">Tahta kartı</string>
     <string name="nc_shared_items_description">Görseller, dosyalar, ses iletileri…</string>
     <string name="nc_shared_items_empty">Paylaşılmış bir öge yok</string>
     <string name="nc_shared_items_location">Konum</string>

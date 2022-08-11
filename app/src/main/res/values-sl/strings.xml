@@ -306,6 +306,7 @@
     <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nGeslo: %1$s</string>
     <string name="nc_share_this_location">Objavi trenutno mesto</string>
+    <string name="nc_shared_items_deck_card">Naloga Deck</string>
     <string name="nc_shared_items_description">Slike, datoteke, glasovna sporočila ...</string>
     <string name="nc_shared_items_location">Trenutno mesto</string>
     <string name="nc_shared_location">Objavljeno trenutno mesto</string>

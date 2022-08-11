@@ -311,6 +311,7 @@
     <string name="nc_share_text_pass">\nJelszó: %1$s</string>
     <string name="nc_share_this_location">Ezen hely megosztása</string>
     <string name="nc_shared_items">Megosztott elemek</string>
+    <string name="nc_shared_items_deck_card">Kártya</string>
     <string name="nc_shared_items_description">Képek, fájlok, hangüzenetek…</string>
     <string name="nc_shared_items_empty">Nincsenek megosztott elemek</string>
     <string name="nc_shared_items_location">Hely</string>

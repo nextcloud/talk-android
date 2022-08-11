@@ -270,6 +270,7 @@
     <string name="nc_share_text_pass">\nSalasana: %1$s</string>
     <string name="nc_share_this_location">Jaa tämä sijainti</string>
     <string name="nc_shared_items">Jaetut tietueet</string>
+    <string name="nc_shared_items_deck_card">Deck-kortti</string>
     <string name="nc_shared_items_description">Kuvat, tiedostot, ääniviestit…</string>
     <string name="nc_shared_items_empty">Ei jaettuja kohteita</string>
     <string name="nc_shared_items_location">Sijainti</string>

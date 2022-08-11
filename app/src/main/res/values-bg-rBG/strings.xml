@@ -36,6 +36,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Първо най-големият</string>
     <string name="menu_item_sort_by_size_smallest_first">Първо най-малкият</string>
+    <string name="message_poll_tap_to_open">Докосване, за отворяне на анкета</string>
     <string name="message_search_begin_empty">Няма резултати от търсенето</string>
     <string name="message_search_begin_typing">Започнете да пишете, за търсене …</string>
     <string name="message_search_hint">Търсене …</string>
@@ -98,6 +99,7 @@
     <string name="nc_conversations_empty">Присъединяване към разговор или започване на нов</string>
     <string name="nc_conversations_empty_details">Поздравете приятелите и колегите си!</string>
     <string name="nc_copy_message">Копиране</string>
+    <string name="nc_create_poll">Създаване на анкета</string>
     <string name="nc_date_header_today">Днес</string>
     <string name="nc_date_header_yesterday">Вчера</string>
     <string name="nc_delete">Изтриване</string>
@@ -233,6 +235,8 @@
     <string name="nc_sent_an_image_you">Изпратихте изображение.</string>
     <string name="nc_sent_location" formatted="true">%1$s изпрати местоположение.</string>
     <string name="nc_sent_location_you">Изпратихте местоположение.</string>
+    <string name="nc_sent_poll" formatted="true">%1$sизпрати анкета.</string>
+    <string name="nc_sent_poll_you">Изпратихте анкета.</string>
     <string name="nc_sent_voice" formatted="true">%1$s изпрати гласово съобщение.</string>
     <string name="nc_sent_voice_you">Изпратихте гласово съобщение</string>
     <string name="nc_server_connect">Тестване на връзката със сървъра</string>
@@ -307,6 +311,7 @@
     <string name="nc_share_text_pass">\nПарола: %1$s</string>
     <string name="nc_share_this_location">Споделяне на това местоположение</string>
     <string name="nc_shared_items">Споделени елементи</string>
+    <string name="nc_shared_items_deck_card">Deck карта</string>
     <string name="nc_shared_items_description">Изображения, файлове, гласови съобщения …</string>
     <string name="nc_shared_items_empty">Няма споделени елементи</string>
     <string name="nc_shared_items_location">Местоположение</string>
@@ -338,11 +343,21 @@
     <string name="open_in_files_app">Отворяне в приложението Файлове</string>
     <string name="play_pause_voice_message">Възпроизвеждане/пауза на гласово съобщение</string>
     <string name="polls_add_option">Добавяне на опция</string>
+    <string name="polls_edit_vote">Редактиране на гласуване</string>
+    <string name="polls_end_poll">Край на анкетата</string>
+    <string name="polls_end_poll_confirm">Наистина ли искате да прекратите тази анкета? Това не може да бъде отменено.</string>
+    <string name="polls_max_votes_reached">Не можете да гласувате с повече опции за тази анкета.</string>
+    <string name="polls_multiple_answers">Множество отговори</string>
+    <string name="polls_option_delete">Изтриване на опция %1$s</string>
+    <string name="polls_option_hint">Опция %1$s</string>
     <string name="polls_options">Опции</string>
     <string name="polls_private_poll">Частна анкета</string>
+    <string name="polls_question">Въпрос</string>
+    <string name="polls_question_hint">Вашият въпрос</string>
     <string name="polls_results_subtitle">Резултати</string>
     <string name="polls_settings">Настройки</string>
     <string name="polls_submit_vote">Глас</string>
+    <string name="polls_voted_hidden_success">Гласуването е изпратено</string>
     <string name="reactions_tab_all">Всички</string>
     <string name="read_storage_no_permission">Споделянето на файлове от хранилище не е възможно без права</string>
     <string name="save">Записване</string>
@@ -370,6 +385,7 @@
     <string name="shared_items_file">Файл</string>
     <string name="shared_items_media">Медия</string>
     <string name="shared_items_other">Други</string>
+    <string name="shared_items_poll">Анкета</string>
     <string name="shared_items_voice">Гласов</string>
     <string name="starred">Любими</string>
     <string name="startCallForbidden">Нямате право да започнете разговор</string>
@@ -399,4 +415,8 @@
     <string name="userinfo_no_info_headline">Няма зададена лична информация</string>
     <string name="userinfo_no_info_text">Добавяне на име, снимка и подробности за контакт към страницата на вашия профил.</string>
     <string name="whats_your_status">Какъв е вашият статус?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%dгласувания </item>
+        <item quantity="other">%d гласувания</item>
+    </plurals>
+</resources>
