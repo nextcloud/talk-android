@@ -39,9 +39,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
@@ -66,6 +64,7 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.ui.dialog.ScopeDialog
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -193,7 +192,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        adapter = UserInfoAdapter(null, viewThemeUtils.getElementColor(activity!!), this)
+        adapter = UserInfoAdapter(null, viewThemeUtils, this)
         binding.userinfoList.adapter = adapter
         binding.userinfoList.setItemViewCacheSize(DEFAULT_CACHE_SIZE)
         currentUser = userManager.currentUser.blockingGet()
@@ -708,17 +707,17 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     class UserInfoAdapter(
         displayList: List<UserInfoDetailsItem>?,
-        @ColorInt tintColor: Int,
-        controller: ProfileController
+        private val viewThemeUtils: ViewThemeUtils,
+        private val controller: ProfileController
     ) : RecyclerView.Adapter<UserInfoAdapter.ViewHolder>() {
         var displayList: List<UserInfoDetailsItem>?
         var filteredDisplayList: MutableList<UserInfoDetailsItem> = LinkedList()
 
-        @ColorInt
-        protected var mTintColor: Int
-        private val controller: ProfileController
-
         class ViewHolder(val binding: UserInfoDetailsTableItemBinding) : RecyclerView.ViewHolder(binding.root)
+
+        init {
+            this.displayList = displayList ?: LinkedList()
+        }
 
         fun setData(displayList: List<UserInfoDetailsItem>) {
             this.displayList = displayList
@@ -756,7 +755,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
             initUserInfoEditText(holder, item)
 
             holder.binding.icon.contentDescription = item.hint
-            DrawableCompat.setTint(holder.binding.icon.drawable, mTintColor)
+            viewThemeUtils.colorImageView(holder.binding.icon)
             if (!TextUtils.isEmpty(item.text) || controller.edit) {
                 holder.binding.userInfoDetailContainer.visibility = View.VISIBLE
                 controller.viewThemeUtils.colorTextInputLayout(holder.binding.userInfoInputLayout)
@@ -850,12 +849,6 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         fun updateScope(position: Int, scope: Scope?) {
             displayList!![position].scope = scope
             notifyDataSetChanged()
-        }
-
-        init {
-            this.displayList = displayList ?: LinkedList()
-            mTintColor = tintColor
-            this.controller = controller
         }
     }
 

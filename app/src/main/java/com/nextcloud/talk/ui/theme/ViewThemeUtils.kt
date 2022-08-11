@@ -30,6 +30,8 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
+import android.text.Spannable
+import android.text.SpannableString
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -76,6 +78,7 @@ import com.nextcloud.talk.utils.ui.PlatformThemeUtil.isDarkMode
 import com.vanniktech.emoji.EmojiTextView
 import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
+import eu.davidea.flexibleadapter.utils.FlexibleUtils
 import scheme.Scheme
 import javax.inject.Inject
 
@@ -91,18 +94,6 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
     }
 
     private fun getSchemeDark(): Scheme = theme.darkScheme
-
-    /**
-     * Color for painting elements
-     */
-    fun getElementColor(context: Context): Int = when {
-        isDarkMode(context) -> theme.colorElementDark
-        else -> theme.colorElementBright
-    }
-
-    private fun withElementColor(view: View, block: (Int) -> Unit) {
-        block(getElementColor(view.context))
-    }
 
     private fun withScheme(view: View, block: (Scheme) -> Unit) {
         block(getScheme(view.context))
@@ -794,6 +785,20 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         withScheme(icon) { scheme ->
             icon.setColorFilter(scheme.secondary)
         }
+    }
+
+    fun highlightText(textView: TextView, originalText: String, constraint: String) {
+        withScheme(textView) { scheme ->
+            FlexibleUtils.highlightText(textView, originalText, constraint, scheme.primary)
+        }
+    }
+
+    fun createHighlightedSpan(context: Context, messageSpannable: SpannableString, searchTerm: String): Spannable {
+        var spannable: Spannable = messageSpannable
+        withScheme(context) { scheme ->
+            spannable = DisplayUtils.searchAndColor(messageSpannable, searchTerm, scheme.primary)
+        }
+        return spannable
     }
 
     companion object {

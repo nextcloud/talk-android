@@ -144,9 +144,9 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                                                                         null));
 
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.binding.dialogName, conversation.getDisplayName(),
-                                        String.valueOf(adapter.getFilter(String.class)),
-                                        viewThemeUtils.getElementColor(holder.binding.dialogName.getContext()));
+            viewThemeUtils.highlightText(holder.binding.dialogName,
+                                         conversation.getDisplayName(),
+                                         String.valueOf(adapter.getFilter(String.class)));
         } else {
             holder.binding.dialogName.setText(conversation.getDisplayName());
         }

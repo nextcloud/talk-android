@@ -77,9 +77,11 @@ data class MessageResultItem constructor(
     }
 
     private fun bindMessageExcerpt(holder: ViewHolder) {
-        val messageSpannable = SpannableString(messageEntry.messageExcerpt)
-        val highlightColor = viewThemeUtils.getElementColor(holder.binding.messageExcerpt.context)
-        val highlightedSpan = DisplayUtils.searchAndColor(messageSpannable, messageEntry.searchTerm, highlightColor)
+        val highlightedSpan = viewThemeUtils.createHighlightedSpan(
+            holder.binding.messageExcerpt.context,
+            SpannableString(messageEntry.messageExcerpt),
+            messageEntry.searchTerm
+        )
         holder.binding.messageExcerpt.text = highlightedSpan
     }
 
