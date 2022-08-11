@@ -50,12 +50,10 @@ class ScopeDialog(
 
     private lateinit var dialogScopeBinding: DialogScopeBinding
 
-    init {
-        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+
         dialogScopeBinding = DialogScopeBinding.inflate(layoutInflater)
         setContentView(dialogScopeBinding.root)
 

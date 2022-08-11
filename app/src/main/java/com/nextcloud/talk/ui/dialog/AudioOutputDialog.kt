@@ -47,12 +47,10 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
 
     private lateinit var dialogAudioOutputBinding: DialogAudioOutputBinding
 
-    init {
-        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+
         dialogAudioOutputBinding = DialogAudioOutputBinding.inflate(layoutInflater)
         setContentView(dialogAudioOutputBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)

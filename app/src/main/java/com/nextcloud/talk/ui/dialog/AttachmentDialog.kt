@@ -45,12 +45,10 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
 
     private lateinit var dialogAttachmentBinding: DialogAttachmentBinding
 
-    init {
-        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+
         dialogAttachmentBinding = DialogAttachmentBinding.inflate(layoutInflater)
         setContentView(dialogAttachmentBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
