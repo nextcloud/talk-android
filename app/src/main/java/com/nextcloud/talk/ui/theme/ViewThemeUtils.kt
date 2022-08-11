@@ -78,7 +78,6 @@ import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
 import scheme.Scheme
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
 class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private val colorUtil: ColorUtil) {
@@ -259,7 +258,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     scheme.primary,
                     scheme.onSurfaceVariant,
                     scheme.onSurfaceVariant,
-                    calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                    colorUtil.adjustOpacity(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
                 )
             )
         }
@@ -288,7 +287,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     intArrayOf(android.R.attr.state_pressed)
                 ),
                 intArrayOf(
-                    calculateDisabledColor(scheme.primary, SURFACE_OPACITY_BUTTON_DISABLED)
+                    colorUtil.adjustOpacity(scheme.primary, SURFACE_OPACITY_BUTTON_DISABLED)
                 )
             )
         }
@@ -320,7 +319,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                         ),
                         intArrayOf(
                             scheme.primary,
-                            calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                            colorUtil.adjustOpacity(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
                         )
                     )
                 )
@@ -338,7 +337,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     ),
                     intArrayOf(
                         scheme.primary,
-                        calculateDisabledColor(scheme.onSurface, SURFACE_OPACITY_BUTTON_DISABLED)
+                        colorUtil.adjustOpacity(scheme.onSurface, SURFACE_OPACITY_BUTTON_DISABLED)
                     )
                 )
 
@@ -350,7 +349,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     ),
                     intArrayOf(
                         scheme.onPrimary,
-                        calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                        colorUtil.adjustOpacity(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
                     )
                 )
             )
@@ -362,7 +361,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                 ),
                 intArrayOf(
                     scheme.onPrimary,
-                    calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                    colorUtil.adjustOpacity(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
                 )
             )
         }
@@ -379,7 +378,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     ),
                     intArrayOf(
                         scheme.primary,
-                        calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                        colorUtil.adjustOpacity(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
                     )
                 )
             )
@@ -390,7 +389,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                 ),
                 intArrayOf(
                     scheme.primary,
-                    calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                    colorUtil.adjustOpacity(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
                 )
             )
         }
@@ -406,7 +405,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                     ),
                     intArrayOf(
                         scheme.primary,
-                        calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                        colorUtil.adjustOpacity(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
                     )
                 )
             )
@@ -417,7 +416,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                 ),
                 intArrayOf(
                     scheme.primary,
-                    calculateDisabledColor(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
+                    colorUtil.adjustOpacity(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
                 )
             )
         }
@@ -670,7 +669,7 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
                 intArrayOf(android.R.attr.state_pressed)
             ),
             intArrayOf(
-                calculateDisabledColor(scheme.primary, SURFACE_OPACITY_BUTTON_DISABLED)
+                colorUtil.adjustOpacity(scheme.primary, SURFACE_OPACITY_BUTTON_DISABLED)
             )
         )
     }
@@ -716,15 +715,6 @@ class ViewThemeUtils @Inject constructor(private val theme: ServerTheme, private
         }
 
         return drawable
-    }
-
-    private fun calculateDisabledColor(color: Int, opacity: Float): Int {
-        return Color.argb(
-            (Color.alpha(color) * opacity).roundToInt(),
-            Color.red(color),
-            Color.green(color),
-            Color.blue(color)
-        )
     }
 
     fun themePrimaryMentionChip(context: Context, chip: ChipDrawable) {
