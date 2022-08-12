@@ -1,0 +1,130 @@
+name: Bug report
+description: Create a report to help us improve
+labels: [ "bug", "0. Needs triage" ]
+body:
+    -   type: markdown
+        attributes:
+            value: |
+                Thank you for contributing! Before reporting, please ensure the following:
+                
+                 * You've [searched for similar issues](https://github.com/nextcloud/talk-android/issues) and didn't find a duplicate.
+                 * You've written a clear and descriptive title for this issue, something like "Crash when trying to send a file on group chat"
+                 * You agree to Nextcloud's [Code of Conduct](https://nextcloud.com/contribute/code-of-conduct/)
+    -   type: textarea
+        id: repro-steps
+        attributes:
+            label: Steps to reproduce
+            description: |
+                What are the steps to reproduce this issue? Please be as specific as possible.
+                If you can't reproduce it, please add an explanation.
+            placeholder: |
+                1.
+                2.
+                3.
+        validations:
+            required: true
+    -   type: textarea
+        id: expected-behaviour
+        attributes:
+            label: Expected behaviour
+            description: Tell us what should happen.
+        validations:
+            required: true
+    -   type: textarea
+        id: actual-behaviour
+        attributes:
+            label: Actual behaviour
+            description: Tell us what happens instead, as detailed as possible.
+        validations:
+            required: true
+    -   type: markdown
+        attributes:
+            value: "## Device information"
+    -   type: input
+        id: device-model
+        attributes:
+            label: Device brand and model
+            placeholder: "Fairphone 2"
+        validations:
+            required: true
+    -   type: input
+        id: android-version
+        attributes:
+            label: Android version
+            placeholder: "11"
+        validations:
+            required: true
+    -   type: input
+        id: app-version
+        attributes:
+            label: Nextcloud Talk app version
+            description: Check the Settings screen (tap on user picture) to see version
+            placeholder: "14.1.0"
+        validations:
+            required: true
+    -   type: markdown
+        attributes:
+            value: | 
+                ## Server information
+                
+                If you're unsure about any of these fields, just leave them empty.
+    -   type: input
+        id: server-version
+        attributes:
+            label: Nextcloud server version
+            description: |
+                See `About` in the profile picture menu.
+            placeholder: "23.0.0"
+    -   type: input
+        id: spreed-version
+        attributes:
+            label: Talk version
+            description: |
+                See apps admin page: `/index.php/settings/apps`
+            placeholder: "14.0.0"
+    -   type: dropdown
+        id: signaling-server
+        attributes:
+            label: Custom Signaling server configured
+            description: |
+                See Talk admin settings: `/index.php/index.php/settings/admin/talk#signaling_server`
+            options:
+                - "Yes (specify version in Additional Information)"
+                - "No"
+    -   type: dropdown
+        id: turn-server
+        attributes:
+            label: Custom TURN server configured
+            description: |
+                See Talk admin settings: `/index.php/settings/admin/talk#turn_server`
+            options:
+                - "Yes"
+                - "No"
+    -   type: dropdown
+        id: stun-server
+        attributes:
+            label: Custom STUN server configured
+            description: |
+                See Talk admin settings: `/index.php/settings/admin/talk#stun_server`
+            options:
+                - "Yes"
+                - "No"
+    -   type: markdown
+        attributes:
+            value: "## Logs"
+    -   type: textarea
+        id: android-logs
+        attributes:
+            label: Android logs
+            description: Please **drop a log file** here, if available.
+    -   type: textarea
+        id: server-logs
+        attributes:
+            label: Server log
+            description: Paste your server error logs (`data/nextcloud.log`) here if available. Will be automatically formatted.
+            render: bash
+    -   type: textarea
+        id: additional-info
+        attributes:
+            label: Additional information
+            description: Enter any additional information here
