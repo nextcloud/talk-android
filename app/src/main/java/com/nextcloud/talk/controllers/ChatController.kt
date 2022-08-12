@@ -403,11 +403,9 @@ class ChatController(args: Bundle) :
                 }
             )
 
-            val itemTouchHelper = ItemTouchHelper(messageSwipeController)
-            try {
+            withNullableControllerViewBinding {
+                val itemTouchHelper = ItemTouchHelper(messageSwipeController)
                 itemTouchHelper.attachToRecyclerView(binding.messagesListView)
-            } catch (npe: NullPointerException) {
-                Log.i(TAG, "UI already teared down", npe)
             }
         }
     }

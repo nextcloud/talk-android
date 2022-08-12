@@ -122,16 +122,12 @@ object AccountUtils {
                     PackageManager.GET_SIGNATURES
                 ).signatures
 
-                if (Arrays.equals(ownSignatures, filesAppSignatures)) {
+                return if (Arrays.equals(ownSignatures, filesAppSignatures)) {
                     val accMgr = AccountManager.get(context)
                     val accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type))
-                    for (account in accounts) {
-                        if (account.name == accountName) {
-                            return true
-                        }
-                    }
+                    accounts.any { it.name == accountName }
                 } else {
-                    return true
+                    true
                 }
             }
         } catch (appNotFoundException: PackageManager.NameNotFoundException) {

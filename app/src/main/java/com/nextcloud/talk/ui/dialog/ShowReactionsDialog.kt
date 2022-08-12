@@ -318,7 +318,7 @@ class ShowReactionsDialog(
             val reactionVote1Active = activeUser == actorId1
             val reactionVote2Active = activeUser == actorId2
 
-            if (!reactionVote1Active && !reactionVote2Active || reactionVote1Active && reactionVote2Active) {
+            if (reactionVote1Active == reactionVote2Active) {
                 return 0
             }
 

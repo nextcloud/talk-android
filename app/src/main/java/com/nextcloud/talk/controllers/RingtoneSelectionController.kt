@@ -49,7 +49,6 @@ import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import java.io.IOException
-import java.util.ArrayList
 
 @AutoInjector(NextcloudTalkApplication::class)
 class RingtoneSelectionController(args: Bundle) :
@@ -107,11 +106,11 @@ class RingtoneSelectionController(args: Bundle) :
     private fun findSelectedSound() {
         var foundDefault = false
         var preferencesString: String? = null
-        if (callNotificationSounds &&
-            TextUtils.isEmpty(appPreferences!!.callRingtoneUri.also { preferencesString = it }) ||
-            !callNotificationSounds &&
-            TextUtils.isEmpty(appPreferences!!.messageRingtoneUri.also { preferencesString = it })
-        ) {
+        val callsEnabledButNoRingtone = callNotificationSounds &&
+            TextUtils.isEmpty(appPreferences.callRingtoneUri.also { preferencesString = it })
+        val noCallsAndNoMessageTone = !callNotificationSounds &&
+            TextUtils.isEmpty(appPreferences.messageRingtoneUri.also { preferencesString = it })
+        if (callsEnabledButNoRingtone || noCallsAndNoMessageTone) {
             adapter!!.toggleSelection(1)
             foundDefault = true
         }

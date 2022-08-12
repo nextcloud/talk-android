@@ -84,7 +84,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             )
         }
 
-        try {
+        return try {
             val currentUser = userManager.currentUser.blockingGet()
             val sourcefiles = inputData.getStringArray(DEVICE_SOURCEFILES)
             val ncTargetpath = inputData.getString(NC_TARGETPATH)
@@ -111,14 +111,14 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     metaData
                 )
             }
+            Result.success()
         } catch (e: IllegalStateException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
-            return Result.failure()
+            Result.failure()
         } catch (e: IllegalArgumentException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
-            return Result.failure()
+            Result.failure()
         }
-        return Result.success()
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -196,7 +196,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         filename: String?,
         metaData: String?
     ) {
-
         val paths: MutableList<String> = ArrayList()
         paths.add("$ncTargetpath/$filename")
 
@@ -221,9 +220,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         const val META_DATA = "META_DATA"
 
         fun isStoragePermissionGranted(context: Context): Boolean {
-            when {
+            return when {
                 Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
-                    return if (PermissionChecker.checkSelfPermission(
+                    if (PermissionChecker.checkSelfPermission(
                             context,
                             Manifest.permission.READ_EXTERNAL_STORAGE
                         ) == PermissionChecker.PERMISSION_GRANTED
@@ -236,7 +235,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     }
                 }
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                    return if (PermissionChecker.checkSelfPermission(
+                    if (PermissionChecker.checkSelfPermission(
                             context,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE
                         ) == PermissionChecker.PERMISSION_GRANTED
@@ -250,13 +249,12 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 }
                 else -> { // permission is automatically granted on sdk<23 upon installation
                     Log.d(TAG, "Permission is granted")
-                    return true
+                    true
                 }
             }
         }
 
         fun requestStoragePermission(controller: Controller) {
-
             when {
                 Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
                     controller.requestPermissions(
@@ -283,6 +281,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private data class UploadItem(
         val uri: Uri,
         val fileName: String,
-        val requestBody: RequestBody?,
+        val requestBody: RequestBody?
     )
 }
