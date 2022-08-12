@@ -1,5 +1,5 @@
 build:
-  maxIssues: 77 
+  maxIssues: 77
   weights:
     # complexity: 2
     # LongParameterList: 1
@@ -8,7 +8,7 @@ build:
 
 processors:
   active: true
-  exclude:
+  exclude: []
   # - 'FunctionCountProcessor'
   # - 'PropertyCountProcessor'
   # - 'ClassCountProcessor'
@@ -17,7 +17,7 @@ processors:
 
 console-reports:
   active: true
-  exclude:
+  exclude: []
   #  - 'ProjectStatisticsReport'
   #  - 'ComplexityReport'
   #  - 'NotificationReport'
@@ -59,7 +59,7 @@ complexity:
     excludes: ['**/androidTest/**']
   LabeledExpression:
     active: false
-    ignoredLabels: ""
+    ignoredLabels: []
   LargeClass:
     active: true
     threshold: 600
@@ -132,7 +132,11 @@ exceptions:
   active: true
   ExceptionRaisedInUnexpectedLocation:
     active: false
-    methodNames: 'toString,hashCode,equals,finalize'
+    methodNames:
+        - toString
+        - hashCode
+        - equals
+        - finalize
   InstanceOfCheckForException:
     active: false
   NotImplementedDeclaration:
@@ -145,14 +149,21 @@ exceptions:
     active: false
   SwallowedException:
     active: false
-    ignoredExceptionTypes: 'InterruptedException,NumberFormatException,ParseException,MalformedURLException'
+    ignoredExceptionTypes:
+        - InterruptedException
+        - NumberFormatException
+        - ParseException
+        - MalformedURLException
   ThrowingExceptionFromFinally:
     active: false
   ThrowingExceptionInMain:
     active: false
   ThrowingExceptionsWithoutMessageOrCause:
     active: false
-    exceptions: 'IllegalArgumentException,IllegalStateException,IOException'
+    exceptions:
+        - IllegalArgumentException
+        - IllegalStateException
+        - IOException
   ThrowingNewInstanceOfSameException:
     active: false
   TooGenericExceptionCaught:
@@ -256,7 +267,7 @@ naming:
     enumEntryPattern: '^[A-Z][_a-zA-Z0-9]*'
   ForbiddenClassName:
     active: false
-    forbiddenName: ''
+    forbiddenName: []
   FunctionMaxLength:
     active: false
     maximumFunctionNameLength: 30
@@ -268,7 +279,8 @@ naming:
     functionPattern: '^([a-z$][a-zA-Z$0-9]*)|(`.*`)$'
     excludeClassPattern: '$^'
     ignoreOverridden: true
-    excludes: "**/*Test.kt"
+    excludes:
+        - "**/*Test.kt"
   FunctionParameterNaming:
     active: true
     parameterPattern: '[a-z][A-Za-z0-9]*'
@@ -367,10 +379,13 @@ style:
     includeLineWrapping: false
   ForbiddenComment:
     active: true
-    values: 'TODO:,FIXME:,STOPSHIP:'
+    values:
+        - "TODO:"
+        - "FIXME:"
+        - "STOPSHIP:"
   ForbiddenImport:
     active: false
-    imports: ''
+    imports: []
   ForbiddenVoid:
     active: false
   FunctionOnlyReturningConstant:
@@ -382,7 +397,7 @@ style:
     maxJumpCount: 1
   MagicNumber:
     active: true
-    ignoreNumbers: '-1,0,1,2'
+    ignoreNumbers: [ "-1","0","1","2" ]
     ignoreHashCodeFunction: true
     ignorePropertyDeclaration: false
     ignoreConstantDeclaration: true
@@ -390,7 +405,8 @@ style:
     ignoreAnnotation: false
     ignoreNamedArgument: true
     ignoreEnums: false
-    excludes: "**/*Test.kt"
+    excludes:
+        - "**/*Test.kt"
   MandatoryBracesIfStatements:
     active: false
   MaxLineLength:
@@ -470,4 +486,6 @@ style:
     active: false
   WildcardImport:
     active: true
-    excludeImports: 'java.util.*,kotlinx.android.synthetic.*'
+    excludeImports:
+        - 'java.util.*'
+        - 'kotlinx.android.synthetic.*'
