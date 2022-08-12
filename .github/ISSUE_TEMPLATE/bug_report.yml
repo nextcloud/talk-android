@@ -2,20 +2,14 @@ name: Bug report
 description: Create a report to help us improve
 labels: [ "bug", "0. Needs triage" ]
 body:
-    -   type: checkboxes
-        id: before-posting
+    -   type: markdown
         attributes:
-            label: "⚠️ Before posting ⚠️"
-            description: All conditions are **required**. Your issue can be closed if these are checked incorrectly.
-            options:
-                -   label: This is a **bug**, not a question or an enhancement.
-                    required: true
-                -   label: I've [searched for similar issues](https://github.com/nextcloud/talk-android/issues) and didn't find a duplicate.
-                    required: true
-                -   label: I've written a clear and descriptive title for this issue, not just "Bug" or "Crash".
-                    required: true
-                -   label: I agree to follow Nextcloud's [Code of Conduct](https://nextcloud.com/contribute/code-of-conduct/).
-                    required: true
+            value: |
+                Thank you for contributing! Before reporting, please ensure the following:
+                
+                 * You've [searched for similar issues](https://github.com/nextcloud/talk-android/issues) and didn't find a duplicate.
+                 * You've written a clear and descriptive title for this issue, something like "Crash when trying to send a file on group chat"
+                 * You agree to Nextcloud's [Code of Conduct](https://nextcloud.com/contribute/code-of-conduct/)
     -   type: textarea
         id: repro-steps
         attributes:
@@ -70,16 +64,17 @@ body:
             required: true
     -   type: markdown
         attributes:
-            value: "## Server information"
+            value: | 
+                ## Server information
+                
+                If you're unsure about any of these fields, just leave them empty.
     -   type: input
         id: server-version
         attributes:
             label: Nextcloud server version
             description: |
-                See admin overview page: `/index.php/settings/admin/overview`
+                See `About` in the profile picture menu.
             placeholder: "23.0.0"
-        validations:
-            required: true
     -   type: input
         id: spreed-version
         attributes:
@@ -87,8 +82,6 @@ body:
             description: |
                 See apps admin page: `/index.php/settings/apps`
             placeholder: "14.0.0"
-        validations:
-            required: true
     -   type: dropdown
         id: signaling-server
         attributes:
@@ -96,11 +89,8 @@ body:
             description: |
                 See Talk admin settings: `/index.php/index.php/settings/admin/talk#signaling_server`
             options:
-                - "I don't know"
                 - "Yes (specify version in Additional Information)"
                 - "No"
-        validations:
-            required: true
     -   type: dropdown
         id: turn-server
         attributes:
@@ -108,11 +98,8 @@ body:
             description: |
                 See Talk admin settings: `/index.php/settings/admin/talk#turn_server`
             options:
-                - "I don't know"
                 - "Yes"
                 - "No"
-        validations:
-            required: true
     -   type: dropdown
         id: stun-server
         attributes:
@@ -120,11 +107,8 @@ body:
             description: |
                 See Talk admin settings: `/index.php/settings/admin/talk#stun_server`
             options:
-                - "I don't know"
                 - "Yes"
                 - "No"
-        validations:
-            required: true
     -   type: markdown
         attributes:
             value: "## Logs"
