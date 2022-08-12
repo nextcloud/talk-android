@@ -276,7 +276,7 @@ dependencies {
     implementation 'com.github.nextcloud.fresco:webpsupport:v111'
     implementation 'com.github.nextcloud.fresco:animated-gif:v111'
     implementation 'com.github.nextcloud.fresco:imagepipeline-okhttp3:v111'
-    implementation 'joda-time:joda-time:2.10.14'
+    implementation 'joda-time:joda-time:2.11.0'
     implementation "io.coil-kt:coil:${coilKtVersion}"
     implementation "io.coil-kt:coil-gif:${coilKtVersion}"
     implementation "io.coil-kt:coil-svg:${coilKtVersion}"
