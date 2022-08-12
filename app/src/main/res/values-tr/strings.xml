@@ -385,7 +385,7 @@
     <string name="shared_items_file">Dosya</string>
     <string name="shared_items_media">Ortam</string>
     <string name="shared_items_other">Diğer</string>
-    <string name="shared_items_poll">Ankter</string>
+    <string name="shared_items_poll">Anket</string>
     <string name="shared_items_voice">Ses</string>
     <string name="starred">Sık kullanılanlara ekle</string>
     <string name="startCallForbidden">Bir çağrı başlatma izniniz yok</string>
