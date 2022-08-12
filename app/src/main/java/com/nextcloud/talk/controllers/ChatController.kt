@@ -355,6 +355,8 @@ class ChatController(args: Bundle) :
                                 conversationUser
                             )
 
+                        setupSwipeToReply()
+
                         try {
                             setupMentionAutocomplete()
                             checkShowCallButtons()
@@ -386,6 +388,27 @@ class ChatController(args: Bundle) :
                         }
                     }
                 })
+        }
+    }
+
+    private fun setupSwipeToReply() {
+        if (hasChatPermission && !isReadOnlyConversation()) {
+            val messageSwipeController = MessageSwipeCallback(
+                activity!!,
+                object : MessageSwipeActions {
+                    override fun showReplyUI(position: Int) {
+                        val chatMessage = adapter?.items?.get(position)?.item as ChatMessage?
+                        replyToMessage(chatMessage)
+                    }
+                }
+            )
+
+            val itemTouchHelper = ItemTouchHelper(messageSwipeController)
+            try {
+                itemTouchHelper.attachToRecyclerView(binding.messagesListView)
+            } catch (npe: NullPointerException) {
+                Log.i(TAG, "UI already teared down", npe)
+            }
         }
     }
 
@@ -610,20 +633,7 @@ class ChatController(args: Bundle) :
             }
         }
 
-        if (context != null && hasChatPermission && !isReadOnlyConversation()) {
-            val messageSwipeController = MessageSwipeCallback(
-                activity!!,
-                object : MessageSwipeActions {
-                    override fun showReplyUI(position: Int) {
-                        val chatMessage = adapter?.items?.get(position)?.item as ChatMessage?
-                        replyToMessage(chatMessage)
-                    }
-                }
-            )
-
-            val itemTouchHelper = ItemTouchHelper(messageSwipeController)
-            itemTouchHelper.attachToRecyclerView(binding.messagesListView)
-        }
+        setupSwipeToReply()
 
         layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
 
