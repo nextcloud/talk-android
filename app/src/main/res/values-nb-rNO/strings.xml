@@ -2,8 +2,10 @@
   <resources>
     <string name="account_icon">Kontoikon</string>
     <string name="appbar_search_in">Søk i %s</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Lydutgang</string>
     <string name="audio_output_phone">Telefon</string>
+    <string name="audio_output_speaker">Høytaler</string>
     <string name="avatar">Avatar</string>
     <string name="away">Borte</string>
     <string name="clear_status_message">Fjern statusmelding</string>
@@ -267,6 +269,7 @@
     <string name="shared_items_file">Fil</string>
     <string name="shared_items_media">Media</string>
     <string name="shared_items_other">Annet</string>
+    <string name="shared_items_poll">Avstemning</string>
     <string name="shared_items_voice">Svarer</string>
     <string name="starred">Favoritt</string>
     <string name="status_message">Statusmelding</string>
