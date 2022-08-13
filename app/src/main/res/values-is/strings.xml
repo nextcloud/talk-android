@@ -227,6 +227,7 @@
     <string name="polls_add_option">Bæta við valkosti</string>
     <string name="polls_options">Valkostir</string>
     <string name="polls_settings">Stillingar</string>
+    <string name="polls_submit_vote">Greiðsla atkvæða</string>
     <string name="reactions_tab_all">Allt</string>
     <string name="save">Vista</string>
     <string name="scope_federated_title">Deilt milli þjóna (skýjasambandssameign)</string>

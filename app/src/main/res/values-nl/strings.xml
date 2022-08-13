@@ -303,6 +303,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_share_text">Neem deel aan het gesprek %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nWachtwoord: %1$s</string>
     <string name="nc_share_this_location">Deel deze locatie</string>
+    <string name="nc_shared_items">Gedeelde objecten</string>
     <string name="nc_shared_items_deck_card">Deck kaart</string>
     <string name="nc_shared_items_location">Locatie</string>
     <string name="nc_shared_location">Gedeelde locatie</string>
@@ -353,6 +354,7 @@ Kies er eentje van een provider.</string>
     <string name="selected_list_item">Geselecteerd</string>
     <string name="send_to">Versturen naar</string>
     <string name="send_to_three_dots">Versturen naar …</string>
+    <string name="send_without_notification">Versturen zonder melding</string>
     <string name="set_status">Instellen status</string>
     <string name="set_status_message">Statusbericht instellen</string>
     <string name="share">Delen</string>
