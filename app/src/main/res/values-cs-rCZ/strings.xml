@@ -41,7 +41,7 @@
     <string name="message_search_begin_typing">Hledejte psaním…</string>
     <string name="message_search_hint">Hledat…</string>
     <string name="messages">Zprávy</string>
-    <string name="nc_Server_account_imported">Zvolený účet byl importován a je k dispozici</string>
+    <string name="nc_Server_account_imported">Zvolený účet byl naimportován a je k dispozici</string>
     <string name="nc_about">O aplikaci</string>
     <string name="nc_account_chooser_active_user">Aktivní uživatel</string>
     <string name="nc_account_chooser_add_account">Přidat účet</string>
@@ -304,7 +304,7 @@
     <string name="nc_share_contact">Sdílet kontakt</string>
     <string name="nc_share_contact_permission">Je třeba oprávnění ke čtení kontaktů</string>
     <string name="nc_share_current_location">Sdílet stávající umístění</string>
-    <string name="nc_share_link">Sdílet odkaz</string>
+    <string name="nc_share_link">Nasdílet odkaz</string>
     <string name="nc_share_location">Sdílet umístění</string>
     <string name="nc_share_subject">%1$s pozvání</string>
     <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>
