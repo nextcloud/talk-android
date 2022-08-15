@@ -295,8 +295,10 @@
     <string name="openConversations">Avaa keskustelut</string>
     <string name="play_pause_voice_message">Toista/keskeytä ääniviesti</string>
     <string name="polls_add_option">Lisää valinta</string>
+    <string name="polls_multiple_answers">Useita vastauksia</string>
     <string name="polls_options">Valinnat</string>
     <string name="polls_private_poll">Yksityinen kysely</string>
+    <string name="polls_question">Kysymys</string>
     <string name="polls_results_subtitle">Tulokset</string>
     <string name="polls_settings">Asetukset</string>
     <string name="polls_submit_vote">Äänestä</string>
