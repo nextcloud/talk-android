@@ -285,7 +285,7 @@ public class ConversationsListController extends BaseController implements Flexi
                 ApiUtils.getUrlForAvatar(
                     currentUser.getBaseUrl(),
                     currentUser.getUserId(),
-                    false),
+                    true),
                 currentUser);
 
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
