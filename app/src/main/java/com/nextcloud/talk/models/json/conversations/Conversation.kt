@@ -4,6 +4,8 @@
  * @author Mario Danic
  * @author Tim Krüger
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
@@ -122,7 +124,11 @@ data class Conversation(
     var notificationCalls: Int? = null,
 
     @JsonField(name = ["permissions"])
-    var permissions: Int = 0
+    var permissions: Int = 0,
+
+    @JsonField(name = ["messageExpiration"])
+    var messageExpiration: Int = 0
+
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

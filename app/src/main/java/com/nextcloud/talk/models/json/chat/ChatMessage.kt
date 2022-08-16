@@ -112,6 +112,9 @@ data class ChatMessage(
     @JsonField(name = ["reactionsSelf"])
     var reactionsSelf: ArrayList<String>? = null,
 
+    @JsonField(name = ["expirationTimestamp"])
+    var expirationTimestamp: Int = 0,
+
     var isDownloadingVoiceMessage: Boolean = false,
 
     var resetVoiceMessage: Boolean = false,
@@ -141,11 +144,7 @@ data class ChatMessage(
     fun hasFileAttachment(): Boolean {
         if (messageParameters != null && messageParameters!!.size > 0) {
             for ((_, individualHashMap) in messageParameters!!) {
-                if (MessageDigest.isEqual(
-                        individualHashMap["type"]!!.toByteArray(),
-                        "file".toByteArray()
-                    )
-                ) {
+                if (isHashMapEntryEqualTo(individualHashMap, "type", "file")) {
                     return true
                 }
             }
@@ -156,11 +155,7 @@ data class ChatMessage(
     fun hasGeoLocation(): Boolean {
         if (messageParameters != null && messageParameters!!.size > 0) {
             for ((_, individualHashMap) in messageParameters!!) {
-                if (MessageDigest.isEqual(
-                        individualHashMap["type"]!!.toByteArray(),
-                        "geo-location".toByteArray()
-                    )
-                ) {
+                if (isHashMapEntryEqualTo(individualHashMap, "type", "geo-location")) {
                     return true
                 }
             }
@@ -171,11 +166,7 @@ data class ChatMessage(
     fun isPoll(): Boolean {
         if (messageParameters != null && messageParameters!!.size > 0) {
             for ((_, individualHashMap) in messageParameters!!) {
-                if (MessageDigest.isEqual(
-                        individualHashMap["type"]!!.toByteArray(),
-                        "talk-poll".toByteArray()
-                    )
-                ) {
+                if (isHashMapEntryEqualTo(individualHashMap, "type", "talk-poll")) {
                     return true
                 }
             }
@@ -183,14 +174,11 @@ data class ChatMessage(
         return false
     }
 
+    @Suppress("Detekt.NestedBlockDepth")
     override fun getImageUrl(): String? {
         if (messageParameters != null && messageParameters!!.size > 0) {
             for ((_, individualHashMap) in messageParameters!!) {
-                if (MessageDigest.isEqual(
-                        individualHashMap["type"]!!.toByteArray(),
-                        "file".toByteArray()
-                    )
-                ) {
+                if (isHashMapEntryEqualTo(individualHashMap, "type", "file")) {
                     // FIX-ME: this selectedIndividualHashMap stuff needs to be analyzed and most likely be refactored!
                     //  it just feels wrong to fill this here inside getImageUrl()
                     selectedIndividualHashMap = individualHashMap
@@ -418,6 +406,10 @@ data class ChatMessage(
 
     override fun getSystemMessage(): String {
         return EnumSystemMessageTypeConverter().convertToString(systemMessageType)
+    }
+
+    private fun isHashMapEntryEqualTo(map: HashMap<String?, String?>, key: String, searchTerm: String): Boolean {
+        return map != null && MessageDigest.isEqual(map[key]!!.toByteArray(), searchTerm.toByteArray())
     }
 
     val isVoiceMessage: Boolean

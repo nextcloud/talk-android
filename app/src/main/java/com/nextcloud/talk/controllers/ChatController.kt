@@ -2216,6 +2216,8 @@ class ChatController(args: Bundle) :
                             // since this is called asynchrously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone")
                         }
+
+                        deleteExpiredMessages()
                     }
 
                     override fun onError(e: Throwable) {
@@ -2256,6 +2258,8 @@ class ChatController(args: Bundle) :
                             // since this is called asynchrously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone", e)
                         }
+
+                        deleteExpiredMessages()
                     }
 
                     override fun onError(e: Throwable) {
@@ -2267,6 +2271,24 @@ class ChatController(args: Bundle) :
                         pullChatMessagesPending = false
                     }
                 })
+        }
+    }
+
+    private fun deleteExpiredMessages() {
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")) {
+            val messagesToDelete: ArrayList<ChatMessage> = ArrayList()
+            val systemTime = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
+
+            for (itemWrapper in adapter?.items!!) {
+                if (itemWrapper.item is ChatMessage) {
+                    val chatMessage = itemWrapper.item as ChatMessage
+                    if (chatMessage.expirationTimestamp != 0 && chatMessage.expirationTimestamp < systemTime) {
+                        messagesToDelete.add(chatMessage)
+                    }
+                }
+            }
+            adapter!!.delete(messagesToDelete)
+            adapter!!.notifyDataSetChanged()
         }
     }
 
@@ -3252,5 +3274,6 @@ class ChatController(args: Bundle) :
         private const val RETRIES: Long = 3
         private const val LOOKING_INTO_FUTURE_TIMEOUT = 30
         private const val CHUNK_SIZE: Int = 10
+        private const val ONE_SECOND_IN_MILLIS = 1000
     }
 }
