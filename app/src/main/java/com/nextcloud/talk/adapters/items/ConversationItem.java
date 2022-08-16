@@ -313,7 +313,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                             .setImageRequest(DisplayUtils.getImageRequestForUrl(
                                 ApiUtils.getUrlForAvatar(user.getBaseUrl(),
                                                          conversation.getName(),
-                                                         false),
+                                                         true),
                                 user))
                             .build();
                         holder.binding.dialogAvatar.setController(draweeController);
