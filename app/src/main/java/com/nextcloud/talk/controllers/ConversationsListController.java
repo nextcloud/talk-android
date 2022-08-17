@@ -63,6 +63,7 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
@@ -103,8 +104,6 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.rx.SearchViewObservable;
 import com.nextcloud.ui.popupbubble.PopupBubble;
-import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
-import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.greenrobot.eventbus.EventBus;
@@ -124,6 +123,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -154,7 +154,6 @@ import static com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN;
 public class ConversationsListController extends BaseController implements FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, ConversationMenuInterface {
 
     public static final String TAG = "ConvListController";
-    public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
     public static final int UNREAD_BUBBLE_DELAY = 2500;
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
 
@@ -219,8 +218,6 @@ public class ConversationsListController extends BaseController implements Flexi
 
     private boolean isRefreshing;
 
-    private LovelySaveStateHandler saveStateHandler;
-
     private Bundle conversationMenuBundle = null;
 
     private boolean showShareToScreen = false;
@@ -265,10 +262,6 @@ public class ConversationsListController extends BaseController implements Flexi
 
         if (getActionBar() != null) {
             getActionBar().show();
-        }
-
-        if (saveStateHandler == null) {
-            saveStateHandler = new LovelySaveStateHandler();
         }
 
         if (adapter == null) {
@@ -857,7 +850,6 @@ public class ConversationsListController extends BaseController implements Flexi
 
     @Override
     public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-        saveStateHandler.saveInstanceState(outState);
 
         if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
             outState.putString(KEY_SEARCH_QUERY, searchView.getQuery().toString());
@@ -871,11 +863,6 @@ public class ConversationsListController extends BaseController implements Flexi
         super.onRestoreViewState(view, savedViewState);
         if (savedViewState.containsKey(KEY_SEARCH_QUERY)) {
             searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
-        }
-        if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
-            //Dialog won't be restarted automatically, so we need to call this method.
-            //Each dialog knows how to restore its state
-            showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState);
         }
     }
 
@@ -1051,25 +1038,26 @@ public class ConversationsListController extends BaseController implements Flexi
                                   selectedConversation.getDisplayName());
             }
 
-            new LovelyStandardDialog(getActivity())
-                .setPositiveButtonColorRes(R.color.nc_darkGreen)
+            MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(floatingActionButton.getContext())
+                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.upload))
                 .setTitle(confirmationQuestion)
                 .setMessage(fileNamesWithLineBreaks.toString())
-                .setPositiveButton(R.string.nc_yes, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        upload();
-                        openConversation();
-                    }
+                .setPositiveButton(R.string.nc_yes, (dialog, which) -> {
+                    upload();
+                    openConversation();
                 })
-                .setNegativeButton(R.string.nc_no, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.d(TAG, "sharing files aborted, going back to share-to screen");
-                        showShareToScreen = true;
-                    }
-                })
-                .show();
+                .setNegativeButton(R.string.nc_no, (dialog, which) -> {
+                    Log.d(TAG, "sharing files aborted, going back to share-to screen");
+                    showShareToScreen = true;
+                });
+
+            viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton.getContext(), dialogBuilder);
+
+            AlertDialog dialog = dialogBuilder.show();
+
+            viewThemeUtils.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE));
         } else {
             UploadAndShareFilesWorker.Companion.requestStoragePermission(ConversationsListController.this);
         }
@@ -1232,103 +1220,54 @@ public class ConversationsListController extends BaseController implements Flexi
         }, 2500);
     }
 
-    private void showDeleteConversationDialog(Bundle savedInstanceState) {
-        if (getActivity() != null && conversationMenuBundle != null && currentUser != null && conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()) == currentUser.getId()) {
+    @Override
+    public void showDeleteConversationDialog(@NonNull Bundle bundle) {
+        conversationMenuBundle = bundle;
+        if (getActivity() != null &&
+            conversationMenuBundle != null &&
+            currentUser != null &&
+            conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()) == currentUser.getId()) {
 
             Conversation conversation =
                 Parcels.unwrap(conversationMenuBundle.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
 
             if (conversation != null) {
-                new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
-                    .setTopColorRes(R.color.nc_darkRed)
-                    .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
-                                                            R.drawable.ic_delete_black_24dp, R.color.bg_default))
-                    .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
-                    .setTitle(R.string.nc_delete_call)
-                    .setMessage(R.string.nc_delete_conversation_more)
-                    .setPositiveButton(R.string.nc_delete, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                MaterialAlertDialogBuilder dialogBuilder =
+                    new MaterialAlertDialogBuilder(floatingActionButton.getContext())
+                        .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
+                        .setTitle(R.string.nc_delete_call)
+                        .setMessage(R.string.nc_delete_conversation_more)
+                        .setPositiveButton(R.string.nc_delete, (dialog, which) -> {
                             Data.Builder data = new Data.Builder();
                             data.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
                                          conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()));
                             data.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
                             conversationMenuBundle = null;
                             deleteConversation(data.build());
-                        }
-                    })
-                    .setNegativeButton(R.string.nc_cancel, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                        })
+                        .setNegativeButton(R.string.nc_cancel, (dialog, which) -> {
                             conversationMenuBundle = null;
-                        }
-                    })
-                    .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler)
-                    .setSavedInstanceState(savedInstanceState)
-                    .show();
+                        });
+
+                viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton.getContext(), dialogBuilder);
+
+                AlertDialog dialog = dialogBuilder.show();
+
+                viewThemeUtils.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE));
             }
         }
     }
 
     private void showUnauthorizedDialog() {
         if (getActivity() != null) {
-
-            new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
-                .setTopColorRes(R.color.nc_darkRed)
-                .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
-                                                        R.drawable.ic_delete_black_24dp, R.color.bg_default))
-                .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
-                .setCancelable(false)
+            MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(floatingActionButton.getContext())
+                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_dialog_invalid_password)
                 .setMessage(R.string.nc_dialog_reauth_or_delete)
-                .setPositiveButton(R.string.nc_delete, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        boolean otherUserExists = userManager
-                            .scheduleUserForDeletionWithId(currentUser.getId())
-                            .blockingGet();
-
-                        OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
-                        WorkManager.getInstance().enqueue(accountRemovalWork);
-
-                        if (otherUserExists && getView() != null) {
-                            onViewBound(getView());
-                            onAttach(getView());
-                        } else if (!otherUserExists) {
-                            getRouter().setRoot(RouterTransaction.with(
-                                new ServerSelectionController())
-                                                    .pushChangeHandler(new VerticalChangeHandler())
-                                                    .popChangeHandler(new VerticalChangeHandler()));
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.nc_settings_reauthorize, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getRouter().pushController(RouterTransaction.with(
-                            new WebViewLoginController(currentUser.getBaseUrl(), true))
-                                                       .pushChangeHandler(new VerticalChangeHandler())
-                                                       .popChangeHandler(new VerticalChangeHandler()));
-                    }
-                })
-                .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler)
-                .show();
-        }
-    }
-
-    private void showServerEOLDialog() {
-        new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
-            .setTopColorRes(R.color.nc_darkRed)
-            .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
-                                                    R.drawable.ic_warning_white,
-                                                    R.color.bg_default))
-            .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
-            .setCancelable(false)
-            .setTitle(R.string.nc_settings_server_eol_title)
-            .setMessage(R.string.nc_settings_server_eol)
-            .setPositiveButton(R.string.nc_settings_remove_account, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                .setCancelable(false)
+                .setPositiveButton(R.string.nc_delete, (dialog, which) -> {
                     boolean otherUserExists = userManager
                         .scheduleUserForDeletionWithId(currentUser.getId())
                         .blockingGet();
@@ -1341,53 +1280,74 @@ public class ConversationsListController extends BaseController implements Flexi
                         onAttach(getView());
                     } else if (!otherUserExists) {
                         getRouter().setRoot(RouterTransaction.with(
-                            new ServerSelectionController())
+                                new ServerSelectionController())
                                                 .pushChangeHandler(new VerticalChangeHandler())
                                                 .popChangeHandler(new VerticalChangeHandler()));
                     }
+                })
+                .setNegativeButton(R.string.nc_settings_reauthorize, (dialog, which) -> {
+                    getRouter().pushController(RouterTransaction.with(
+                            new WebViewLoginController(currentUser.getBaseUrl(), true))
+                                                   .pushChangeHandler(new VerticalChangeHandler())
+                                                   .popChangeHandler(new VerticalChangeHandler()));
+                });
+
+            viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton.getContext(), dialogBuilder);
+
+            AlertDialog dialog = dialogBuilder.show();
+
+            viewThemeUtils.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE));
+        }
+    }
+
+    private void showServerEOLDialog() {
+        MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(floatingActionButton.getContext())
+            .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_warning_white))
+            .setTitle(R.string.nc_settings_server_eol_title)
+            .setMessage(R.string.nc_settings_server_eol)
+            .setCancelable(false)
+            .setPositiveButton(R.string.nc_settings_remove_account, (dialog, which) -> {
+                boolean otherUserExists = userManager
+                    .scheduleUserForDeletionWithId(currentUser.getId())
+                    .blockingGet();
+
+                OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
+                WorkManager.getInstance().enqueue(accountRemovalWork);
+
+                if (otherUserExists && getView() != null) {
+                    onViewBound(getView());
+                    onAttach(getView());
+                } else if (!otherUserExists) {
+                    getRouter().setRoot(RouterTransaction.with(
+                            new ServerSelectionController())
+                                            .pushChangeHandler(new VerticalChangeHandler())
+                                            .popChangeHandler(new VerticalChangeHandler()));
                 }
             })
-            .setNegativeButton(R.string.nc_cancel, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (userManager.getUsers().blockingGet().size() > 0) {
-                        getRouter().pushController(RouterTransaction.with(new SwitchAccountController()));
-                    } else {
-                        getActivity().finishAffinity();
-                        getActivity().finish();
-                    }
+            .setNegativeButton(R.string.nc_cancel, (dialog, which) -> {
+                if (userManager.getUsers().blockingGet().size() > 0) {
+                    getRouter().pushController(RouterTransaction.with(new SwitchAccountController()));
+                } else {
+                    getActivity().finishAffinity();
+                    getActivity().finish();
                 }
-            })
-            .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler)
-            .show();
+            });
+
+        viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton.getContext(), dialogBuilder);
+
+        AlertDialog dialog = dialogBuilder.show();
+
+        viewThemeUtils.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE));
     }
 
     private void deleteConversation(Data data) {
         OneTimeWorkRequest deleteConversationWorker =
             new OneTimeWorkRequest.Builder(DeleteConversationWorker.class).setInputData(data).build();
         WorkManager.getInstance().enqueue(deleteConversationWorker);
-    }
-
-    private void showLovelyDialog(int dialogId, Bundle savedInstanceState) {
-        switch (dialogId) {
-            case ID_DELETE_CONVERSATION_DIALOG:
-                showDeleteConversationDialog(savedInstanceState);
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void openLovelyDialogWithIdAndBundle(int dialogId, Bundle bundle) {
-        conversationMenuBundle = bundle;
-        switch (dialogId) {
-            case ID_DELETE_CONVERSATION_DIALOG:
-                showLovelyDialog(dialogId, null);
-                break;
-            default:
-                break;
-        }
     }
 
     @Override

@@ -23,5 +23,5 @@ package com.nextcloud.talk.interfaces
 import android.os.Bundle
 
 interface ConversationMenuInterface {
-    fun openLovelyDialogWithIdAndBundle(dialogId: Int, bundle: Bundle)
+    fun showDeleteConversationDialog(bundle: Bundle)
 }

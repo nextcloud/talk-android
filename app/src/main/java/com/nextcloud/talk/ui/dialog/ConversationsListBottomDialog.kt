@@ -204,10 +204,7 @@ class ConversationsListBottomDialog(
                 bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
                 bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
 
-                controller.openLovelyDialogWithIdAndBundle(
-                    ConversationsListController.ID_DELETE_CONVERSATION_DIALOG,
-                    bundle
-                )
+                controller.showDeleteConversationDialog(bundle)
             }
 
             dismiss()
