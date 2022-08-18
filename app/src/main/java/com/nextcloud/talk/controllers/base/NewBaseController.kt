@@ -251,15 +251,8 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     private fun calculateValidParentController() {
         var parentController = parentController
         while (parentController != null) {
-            if (isValidController(parentController)) {
-                return
-            }
             parentController = parentController.parentController
         }
-    }
-
-    private fun isValidController(parentController: Controller): Boolean {
-        return parentController is BaseController && parentController.title != null
     }
 
     private fun isTitleSetable(): Boolean {
@@ -338,6 +331,6 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         get() = context!!.getString(R.string.appbar_search_in, context!!.getString(R.string.nc_app_product_name))
 
     companion object {
-        private val TAG = BaseController::class.java.simpleName
+        private val TAG = NewBaseController::class.java.simpleName
     }
 }
