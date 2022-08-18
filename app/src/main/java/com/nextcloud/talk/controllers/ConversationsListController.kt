@@ -77,7 +77,7 @@ import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationsRvBinding
@@ -145,7 +145,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationsListController(bundle: Bundle) :
-    NewBaseController(R.layout.controller_conversations_rv, bundle),
+    BaseController(R.layout.controller_conversations_rv, bundle),
     FlexibleAdapter.OnItemClickListener,
     FlexibleAdapter.OnItemLongClickListener,
     ConversationMenuInterface {

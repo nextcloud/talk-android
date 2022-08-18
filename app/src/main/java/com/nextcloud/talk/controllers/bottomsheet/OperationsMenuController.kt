@@ -34,7 +34,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerOperationsMenuBinding
@@ -79,7 +79,7 @@ import java.util.Collections
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class OperationsMenuController(args: Bundle) : NewBaseController(
+class OperationsMenuController(args: Bundle) : BaseController(
     R.layout.controller_operations_menu,
     args
 ) {

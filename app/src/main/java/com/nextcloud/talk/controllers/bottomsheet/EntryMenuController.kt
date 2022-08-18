@@ -42,7 +42,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerEntryMenuBinding
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -60,7 +60,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class EntryMenuController(args: Bundle) :
-    NewBaseController(
+    BaseController(
         R.layout.controller_entry_menu,
         args
     ) {

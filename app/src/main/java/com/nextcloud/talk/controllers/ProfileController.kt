@@ -52,7 +52,7 @@ import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerProfileBinding
@@ -94,7 +94,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("Detekt.TooManyFunctions")
-class ProfileController : NewBaseController(R.layout.controller_profile) {
+class ProfileController : BaseController(R.layout.controller_profile) {
     private val binding: ControllerProfileBinding by viewBinding(ControllerProfileBinding::bind)
 
     @Inject

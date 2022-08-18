@@ -51,7 +51,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerWebViewLoginBinding
 import com.nextcloud.talk.events.CertificateEvent
@@ -78,7 +78,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class WebViewLoginController(args: Bundle? = null) : NewBaseController(
+class WebViewLoginController(args: Bundle? = null) : BaseController(
     R.layout.controller_web_view_login,
     args
 ) {

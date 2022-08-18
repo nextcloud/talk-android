@@ -39,7 +39,7 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerLockedBinding
 import com.nextcloud.talk.utils.DisplayUtils
@@ -48,7 +48,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 @AutoInjector(NextcloudTalkApplication::class)
-class LockedController : NewBaseController(R.layout.controller_locked) {
+class LockedController : BaseController(R.layout.controller_locked) {
     private val binding: ControllerLockedBinding by viewBinding(ControllerLockedBinding::bind)
 
     override val appBarLayoutType: AppBarLayoutType

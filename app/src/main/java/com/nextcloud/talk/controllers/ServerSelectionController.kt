@@ -41,7 +41,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerServerSelectionBinding
 import com.nextcloud.talk.models.json.generic.Status
@@ -61,7 +61,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ServerSelectionController :
-    NewBaseController(R.layout.controller_server_selection) {
+    BaseController(R.layout.controller_server_selection) {
 
     private val binding: ControllerServerSelectionBinding by viewBinding(ControllerServerSelectionBinding::bind)
 
