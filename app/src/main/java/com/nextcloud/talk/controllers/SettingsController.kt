@@ -91,7 +91,6 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
-import com.yarolegovich.lovelydialog.LovelySaveStateHandler
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -364,12 +363,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         )
     }
 
-    private fun showLovelyDialog(dialogId: Int, savedInstanceState: Bundle?) {
-        if (dialogId == ID_REMOVE_ACCOUNT_WARNING_DIALOG) {
-            showRemoveAccountWarning(savedInstanceState)
-        }
-    }
-
     fun sendLogs() {
         if (resources!!.getBoolean(R.bool.nc_is_debug)) {
             sendMailWithAttachment((context)!!)
@@ -378,14 +371,9 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
     override fun onRestoreViewState(view: View, savedViewState: Bundle) {
         super.onRestoreViewState(view, savedViewState)
-        if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
-            // Dialog won't be restarted automatically, so we need to call this method.
-            // Each dialog knows how to restore its state
-            showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState)
-        }
     }
 
-    private fun showRemoveAccountWarning(savedInstanceState: Bundle?) {
+    private fun showRemoveAccountWarning() {
         if (activity != null) {
             val materialAlertDialogBuilder = MaterialAlertDialogBuilder(binding.messageText.context)
                 .setTitle(R.string.nc_settings_remove_account)
@@ -492,7 +480,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
             setupProfileQueryDisposable()
 
             binding.settingsRemoveAccount.addPreferenceClickListener {
-                showLovelyDialog(ID_REMOVE_ACCOUNT_WARNING_DIALOG, null)
+                showRemoveAccountWarning()
             }
         }
         setupMessageView()
@@ -1067,7 +1055,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
     companion object {
         private const val TAG = "SettingsController"
-        private const val ID_REMOVE_ACCOUNT_WARNING_DIALOG = 0
         private const val DURATION: Long = 2500
         private const val START_DELAY: Long = 5000
         private const val DISABLED_ALPHA: Float = 0.38f
