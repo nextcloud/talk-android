@@ -21,1366 +21,1323 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.nextcloud.talk.controllers
 
-package com.nextcloud.talk.controllers;
+import android.animation.AnimatorInflater
+import android.annotation.SuppressLint
+import android.app.SearchManager
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.text.InputType
+import android.text.TextUtils
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.view.MenuItemCompat
+import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import autodagger.AutoInjector
+import butterknife.BindView
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
+import com.facebook.common.executors.UiThreadImmediateExecutorService
+import com.facebook.common.references.CloseableReference
+import com.facebook.datasource.DataSource
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
+import com.facebook.imagepipeline.image.CloseableImage
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.adapters.items.ConversationItem
+import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
+import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
+import com.nextcloud.talk.adapters.items.MessageResultItem
+import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem
+import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.events.ConversationsListFetchDataEvent
+import com.nextcloud.talk.events.EventStatus
+import com.nextcloud.talk.interfaces.ConversationMenuInterface
+import com.nextcloud.talk.jobs.AccountRemovalWorker
+import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
+import com.nextcloud.talk.jobs.DeleteConversationWorker
+import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.jobs.UploadAndShareFilesWorker.Companion.isStoragePermissionGranted
+import com.nextcloud.talk.jobs.UploadAndShareFilesWorker.Companion.requestStoragePermission
+import com.nextcloud.talk.messagesearch.MessageSearchHelper
+import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.RoomsOverall
+import com.nextcloud.talk.models.json.status.Status
+import com.nextcloud.talk.models.json.statuses.StatusesOverall
+import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
+import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
+import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.AttendeePermissionsUtil
+import com.nextcloud.talk.utils.ClosedInterfaceImpl
+import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
+import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.Mimetype
+import com.nextcloud.talk.utils.UriUtils.Companion.getFileName
+import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_FLAG
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXT
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_CONVERSATION
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.getAttachmentFolder
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
+import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
+import com.nextcloud.ui.popupbubble.PopupBubble
+import eu.davidea.flexibleadapter.FlexibleAdapter
+import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import org.apache.commons.lang3.builder.CompareToBuilder
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import org.parceler.Parcels
+import retrofit2.HttpException
+import java.util.Collections
+import java.util.Objects
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-import android.animation.AnimatorInflater;
-import android.annotation.SuppressLint;
-import android.app.SearchManager;
-import android.content.ClipData;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.text.InputType;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
-import com.facebook.common.executors.UiThreadImmediateExecutorService;
-import com.facebook.common.references.CloseableReference;
-import com.facebook.datasource.DataSource;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
-import com.facebook.imagepipeline.image.CloseableImage;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.MainActivity;
-import com.nextcloud.talk.adapters.items.ConversationItem;
-import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
-import com.nextcloud.talk.adapters.items.LoadMoreResultsItem;
-import com.nextcloud.talk.adapters.items.MessageResultItem;
-import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem;
-import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.events.ConversationsListFetchDataEvent;
-import com.nextcloud.talk.events.EventStatus;
-import com.nextcloud.talk.interfaces.ConversationMenuInterface;
-import com.nextcloud.talk.jobs.AccountRemovalWorker;
-import com.nextcloud.talk.jobs.ContactAddressBookWorker;
-import com.nextcloud.talk.jobs.DeleteConversationWorker;
-import com.nextcloud.talk.jobs.UploadAndShareFilesWorker;
-import com.nextcloud.talk.messagesearch.MessageSearchHelper;
-import com.nextcloud.talk.models.domain.SearchMessageEntry;
-import com.nextcloud.talk.models.json.conversations.Conversation;
-import com.nextcloud.talk.models.json.status.Status;
-import com.nextcloud.talk.models.json.statuses.StatusesOverall;
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository;
-import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
-import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog;
-import com.nextcloud.talk.ui.theme.ViewThemeUtils;
-import com.nextcloud.talk.users.UserManager;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.AttendeePermissionsUtil;
-import com.nextcloud.talk.utils.ClosedInterfaceImpl;
-import com.nextcloud.talk.utils.ConductorRemapping;
-import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.UriUtils;
-import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
-import com.nextcloud.talk.utils.preferences.AppPreferences;
-import com.nextcloud.talk.utils.rx.SearchViewObservable;
-import com.nextcloud.ui.popupbubble.PopupBubble;
-
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.jetbrains.annotations.NotNull;
-import org.parceler.Parcels;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.core.view.MenuItemCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
-import eu.davidea.flexibleadapter.items.IHeader;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.HttpException;
-
-import static com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN;
-
-@AutoInjector(NextcloudTalkApplication.class)
-public class ConversationsListController extends BaseController implements FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, ConversationMenuInterface {
-
-    public static final String TAG = "ConvListController";
-    public static final int UNREAD_BUBBLE_DELAY = 2500;
-    private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
-
-    public static final int SEARCH_DEBOUNCE_INTERVAL_MS = 300;
-    public static final int SEARCH_MIN_CHARS = 2;
-
-    private final Bundle bundle;
-    @Inject
-    UserManager userManager;
+@AutoInjector(NextcloudTalkApplication::class)
+class ConversationsListController(bundle: Bundle) :
+    BaseController(),
+    FlexibleAdapter.OnItemClickListener,
+    FlexibleAdapter.OnItemLongClickListener,
+    ConversationMenuInterface {
+    private val bundle: Bundle
 
     @Inject
-    EventBus eventBus;
+    lateinit var userManager: UserManager
 
     @Inject
-    NcApi ncApi;
+    lateinit var eventBus: EventBus
 
     @Inject
-    Context context;
+    lateinit var ncApi: NcApi
 
     @Inject
-    AppPreferences appPreferences;
+    lateinit var context: Context
 
     @Inject
-    UnifiedSearchRepository unifiedSearchRepository;
+    lateinit var appPreferences: AppPreferences
 
     @Inject
-    ViewThemeUtils viewThemeUtils;
+    lateinit var unifiedSearchRepository: UnifiedSearchRepository
 
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
+    @JvmField
     @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
+    var recyclerView: RecyclerView? = null
 
+    @JvmField
     @BindView(R.id.swipeRefreshLayoutView)
-    SwipeRefreshLayout swipeRefreshLayout;
+    var swipeRefreshLayout: SwipeRefreshLayout? = null
 
+    @JvmField
     @BindView(R.id.loading_content)
-    LinearLayout loadingContent;
+    var loadingContent: LinearLayout? = null
 
+    @JvmField
     @BindView(R.id.emptyLayout)
-    RelativeLayout emptyLayoutView;
+    var emptyLayoutView: RelativeLayout? = null
 
+    @JvmField
     @BindView(R.id.floatingActionButton)
-    FloatingActionButton floatingActionButton;
+    var floatingActionButton: FloatingActionButton? = null
 
+    @JvmField
     @BindView(R.id.newMentionPopupBubble)
-    PopupBubble newMentionPopupBubble;
+    var newMentionPopupBubble: PopupBubble? = null
 
-    private User currentUser;
-    private Disposable roomsQueryDisposable;
-    private Disposable openConversationsQueryDisposable;
-    private FlexibleAdapter<AbstractFlexibleItem> adapter;
-    private List<AbstractFlexibleItem> conversationItems = new ArrayList<>();
-    private List<AbstractFlexibleItem> conversationItemsWithHeader = new ArrayList<>();
-    private final List<AbstractFlexibleItem> searchableConversationItems = new ArrayList<>();
+    private var currentUser: User? = null
+    private var roomsQueryDisposable: Disposable? = null
+    private var openConversationsQueryDisposable: Disposable? = null
+    private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
+    private var conversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    private var conversationItemsWithHeader: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    private val searchableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    private var searchItem: MenuItem? = null
+    private var searchView: SearchView? = null
+    private var searchQuery: String? = null
+    private var credentials: String? = null
+    private var adapterWasNull = true
+    private var isRefreshing = false
+    private var conversationMenuBundle: Bundle? = null
+    private var showShareToScreen = false
+    private var filesToShare: ArrayList<String>? = null
+    private var selectedConversation: Conversation? = null
+    private var textToPaste: String? = ""
+    private var selectedMessageId: String? = null
+    private var forwardMessage: Boolean
+    private var nextUnreadConversationScrollPosition = 0
+    private var layoutManager: SmoothScrollLinearLayoutManager? = null
+    private val callHeaderItems = HashMap<String, GenericTextHeaderItem>()
+    private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
+    private val userStatuses = HashMap<String?, Status>()
+    private var searchHelper: MessageSearchHelper? = null
+    private var searchViewDisposable: Disposable? = null
 
-    private MenuItem searchItem;
-    private SearchView searchView;
-    private String searchQuery;
-
-    private String credentials;
-
-    private boolean adapterWasNull = true;
-
-    private boolean isRefreshing;
-
-    private Bundle conversationMenuBundle = null;
-
-    private boolean showShareToScreen = false;
-
-    private ArrayList<String> filesToShare;
-    private Conversation selectedConversation;
-
-    private String textToPaste = "";
-    private String selectedMessageId = null;
-
-    private boolean forwardMessage;
-
-    private int nextUnreadConversationScrollPosition = 0;
-
-    private SmoothScrollLinearLayoutManager layoutManager;
-
-    private HashMap<String, GenericTextHeaderItem> callHeaderItems = new HashMap<>();
-
-    private ConversationsListBottomDialog conversationsListBottomDialog;
-
-    private HashMap<String, Status> userStatuses = new HashMap<>();
-
-    private MessageSearchHelper searchHelper;
-    private Disposable searchViewDisposable;
-
-    public ConversationsListController(Bundle bundle) {
-        super();
-        setHasOptionsMenu(true);
-        forwardMessage = bundle.getBoolean(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_FLAG());
-        this.bundle = bundle;
+    override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View {
+        return inflater.inflate(R.layout.controller_conversations_rv, container, false)
     }
 
-    @Override
-    protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        return inflater.inflate(R.layout.controller_conversations_rv, container, false);
-    }
-
-    @Override
-    protected void onViewBound(@NonNull View view) {
-        super.onViewBound(view);
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-
-        if (getActionBar() != null) {
-            getActionBar().show();
+    override fun onViewBound(view: View) {
+        super.onViewBound(view)
+        sharedApplication!!.componentApplication.inject(this)
+        if (actionBar != null) {
+            actionBar.show()
         }
-
         if (adapter == null) {
-            adapter = new FlexibleAdapter<>(conversationItems, getActivity(), true);
+            adapter = FlexibleAdapter(conversationItems, activity, true)
         } else {
-            loadingContent.setVisibility(View.GONE);
+            loadingContent!!.visibility = View.GONE
         }
-
-        adapter.addListener(this);
-        prepareViews();
+        adapter!!.addListener(this)
+        prepareViews()
     }
 
-    private void loadUserAvatar(MaterialButton button) {
-        if (getActivity() != null) {
-            ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(
+    private fun loadUserAvatar(button: MaterialButton) {
+        if (activity != null) {
+            val imageRequest = DisplayUtils.getImageRequestForUrl(
                 ApiUtils.getUrlForAvatar(
-                    currentUser.getBaseUrl(),
-                    currentUser.getUserId(),
-                    true),
-                currentUser);
-
-            ImagePipeline imagePipeline = Fresco.getImagePipeline();
-            DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
-            dataSource.subscribe(new BaseBitmapDataSubscriber() {
-                @Override
-                protected void onNewResultImpl(Bitmap bitmap) {
-                    if (bitmap != null && getResources() != null) {
-                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-                        roundedBitmapDrawable.setCircular(true);
-                        roundedBitmapDrawable.setAntiAlias(true);
-                        button.setIcon(roundedBitmapDrawable);
-                    }
-                }
-
-                @Override
-                protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                    if (getResources() != null) {
-                        button.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_user, null));
-                    }
-                }
-            }, UiThreadImmediateExecutorService.getInstance());
-        }
-    }
-
-    @Override
-    protected void onAttach(@NonNull View view) {
-        Log.d(TAG, "onAttach: Controller: " + System.identityHashCode(this) +
-            " Activity: " + System.identityHashCode(getActivity()));
-        super.onAttach(view);
-
-        new ClosedInterfaceImpl().setUpPushTokenRegistration();
-
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
-        }
-        currentUser = userManager.getCurrentUser().blockingGet();
-
-        if (currentUser != null) {
-            if (CapabilitiesUtilNew.isServerEOL(currentUser)) {
-                showServerEOLDialog();
-                return;
-            }
-
-            if (CapabilitiesUtilNew.isUnifiedSearchAvailable(currentUser)) {
-                searchHelper = new MessageSearchHelper(unifiedSearchRepository);
-            }
-
-            credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
-            if (getActivity() != null && getActivity() instanceof MainActivity) {
-                loadUserAvatar(((MainActivity) getActivity()).binding.switchAccountButton);
-                viewThemeUtils.colorMaterialTextButton(((MainActivity) getActivity()).binding.switchAccountButton);
-            }
-            fetchData();
-        }
-    }
-
-    @Override
-    protected void onDetach(@NonNull View view) {
-        Log.d(TAG, "onDetach: Controller: " + System.identityHashCode(this) +
-            " Activity: " + System.identityHashCode(getActivity()));
-        super.onDetach(view);
-        eventBus.unregister(this);
-    }
-
-    private void initSearchView() {
-        if (getActivity() != null) {
-            SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-            if (searchItem != null) {
-                searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-                viewThemeUtils.themeSearchView(searchView);
-                searchView.setMaxWidth(Integer.MAX_VALUE);
-                searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
-                int imeOptions = EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
-                    imeOptions |= EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
-                }
-                searchView.setImeOptions(imeOptions);
-                searchView.setQueryHint(getSearchHint());
-                if (searchManager != null) {
-                    searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-                }
-                searchViewDisposable = SearchViewObservable.observeSearchView(searchView)
-                    .debounce(query -> {
-                        if (TextUtils.isEmpty(query)) {
-                            return Observable.empty();
-                        } else {
-                            return Observable.timer(SEARCH_DEBOUNCE_INTERVAL_MS, TimeUnit.MILLISECONDS);
+                    currentUser!!.baseUrl,
+                    currentUser!!.userId,
+                    true
+                ),
+                currentUser
+            )
+            val imagePipeline = Fresco.getImagePipeline()
+            val dataSource = imagePipeline.fetchDecodedImage(imageRequest, null)
+            dataSource.subscribe(
+                object : BaseBitmapDataSubscriber() {
+                    override fun onNewResultImpl(bitmap: Bitmap?) {
+                        if (bitmap != null && resources != null) {
+                            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(
+                                resources!!,
+                                bitmap
+                            )
+                            roundedBitmapDrawable.isCircular = true
+                            roundedBitmapDrawable.setAntiAlias(true)
+                            button.icon = roundedBitmapDrawable
                         }
-                    })
+                    }
+
+                    override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
+                        if (resources != null) {
+                            button.icon = ResourcesCompat.getDrawable(resources!!, R.drawable.ic_user, null)
+                        }
+                    }
+                },
+                UiThreadImmediateExecutorService.getInstance()
+            )
+        }
+    }
+
+    override fun onAttach(view: View) {
+        Log.d(
+            TAG,
+            "onAttach: Controller: " + System.identityHashCode(this) +
+                " Activity: " + System.identityHashCode(activity)
+        )
+        super.onAttach(view)
+        ClosedInterfaceImpl().setUpPushTokenRegistration()
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this)
+        }
+        currentUser = userManager.currentUser.blockingGet()
+        if (currentUser != null) {
+            if (isServerEOL(currentUser!!)) {
+                showServerEOLDialog()
+                return
+            }
+            if (isUnifiedSearchAvailable(currentUser!!)) {
+                searchHelper = MessageSearchHelper(unifiedSearchRepository)
+            }
+            credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+            if (activity != null && activity is MainActivity) {
+                loadUserAvatar((activity as MainActivity?)!!.binding.switchAccountButton)
+                viewThemeUtils.colorMaterialTextButton((activity as MainActivity?)!!.binding.switchAccountButton)
+            }
+            fetchData()
+        }
+    }
+
+    override fun onDetach(view: View) {
+        Log.d(
+            TAG,
+            "onDetach: Controller: " + System.identityHashCode(this) +
+                " Activity: " + System.identityHashCode(activity)
+        )
+        super.onDetach(view)
+        eventBus.unregister(this)
+    }
+
+    private fun initSearchView() {
+        if (activity != null) {
+            val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+            if (searchItem != null) {
+                searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+                viewThemeUtils.themeSearchView(searchView!!)
+                searchView!!.maxWidth = Int.MAX_VALUE
+                searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
+                var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
+                    imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
+                }
+                searchView!!.imeOptions = imeOptions
+                searchView!!.queryHint = searchHint
+                if (searchManager != null) {
+                    searchView!!.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+                }
+                searchViewDisposable = observeSearchView(searchView!!)
+                    .debounce { query: String? ->
+                        if (TextUtils.isEmpty(query)) {
+                            return@debounce Observable.empty<Long>()
+                        } else {
+                            return@debounce Observable.timer(
+                                SEARCH_DEBOUNCE_INTERVAL_MS.toLong(),
+                                TimeUnit.MILLISECONDS
+                            )
+                        }
+                    }
                     .distinctUntilChanged()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::onQueryTextChange);
+                    .subscribe { newText: String? -> onQueryTextChange(newText) }
             }
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
-        searchItem = menu.findItem(R.id.action_search);
-        initSearchView();
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_conversation_plus_filter, menu)
+        searchItem = menu.findItem(R.id.action_search)
+        initSearchView()
     }
 
-    @Override
-    public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-
-        showShareToScreen = !showShareToScreen && hasActivityActionSendIntent();
-
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+        showShareToScreen = !showShareToScreen && hasActivityActionSendIntent()
         if (showShareToScreen) {
-            hideSearchBar();
-            getActionBar().setTitle(R.string.send_to_three_dots);
+            hideSearchBar()
+            actionBar.setTitle(R.string.send_to_three_dots)
         } else if (forwardMessage) {
-            hideSearchBar();
-            getActionBar().setTitle(R.string.nc_forward_to_three_dots);
+            hideSearchBar()
+            actionBar.setTitle(R.string.nc_forward_to_three_dots)
         } else {
-            MainActivity activity = (MainActivity) getActivity();
-
-            searchItem.setVisible(conversationItems.size() > 0);
+            val activity = activity as MainActivity?
+            searchItem!!.isVisible = conversationItems.size > 0
             if (activity != null) {
-                if (adapter.hasFilter()) {
-                    showSearchView(activity, searchView, searchItem);
-                    searchView.setQuery(adapter.getFilter(String.class), false);
+                if (adapter!!.hasFilter()) {
+                    showSearchView(activity, searchView, searchItem)
+                    searchView!!.setQuery(adapter!!.getFilter(String::class.java), false)
                 }
-
-                activity.binding.searchText.setOnClickListener(v -> {
-                    showSearchView(activity, searchView, searchItem);
-                    viewThemeUtils.themeStatusBar(activity, searchView);
-                });
+                activity.binding.searchText.setOnClickListener { v: View? ->
+                    showSearchView(activity, searchView, searchItem)
+                    viewThemeUtils.themeStatusBar(activity, searchView!!)
+                }
             }
-
-            searchView.setOnCloseListener(() -> {
-                if (TextUtils.isEmpty(searchView.getQuery().toString())) {
-                    searchView.onActionViewCollapsed();
+            searchView!!.setOnCloseListener {
+                if (TextUtils.isEmpty(searchView!!.query.toString())) {
+                    searchView!!.onActionViewCollapsed()
                     if (activity != null) {
-                        viewThemeUtils.resetStatusBar(activity, searchView);
+                        viewThemeUtils.resetStatusBar(activity, searchView!!)
                     }
                 } else {
-                    searchView.post(() -> searchView.setQuery(TAG, true));
+                    searchView!!.post { searchView!!.setQuery(TAG, true) }
                 }
-                return true;
-            });
-
-            searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-                @Override
-                public boolean onMenuItemActionExpand(MenuItem item) {
-                    adapter.setHeadersShown(true);
-                    adapter.updateDataSet(searchableConversationItems, false);
-                    adapter.showAllHeaders();
+                true
+            }
+            searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                    adapter!!.setHeadersShown(true)
+                    adapter!!.updateDataSet(searchableConversationItems, false)
+                    adapter!!.showAllHeaders()
                     if (swipeRefreshLayout != null) {
-                        swipeRefreshLayout.setEnabled(false);
+                        swipeRefreshLayout!!.isEnabled = false
                     }
-                    return true;
+                    return true
                 }
 
-                @Override
-                public boolean onMenuItemActionCollapse(MenuItem item) {
-                    adapter.setHeadersShown(false);
-                    adapter.updateDataSet(conversationItems, false);
-                    adapter.hideAllHeaders();
+                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                    adapter!!.setHeadersShown(false)
+                    adapter!!.updateDataSet(conversationItems, false)
+                    adapter!!.hideAllHeaders()
                     if (searchHelper != null) {
                         // cancel any pending searches
-                        searchHelper.cancelSearch();
-                        swipeRefreshLayout.setRefreshing(false);
+                        searchHelper!!.cancelSearch()
+                        swipeRefreshLayout!!.isRefreshing = false
                     }
                     if (swipeRefreshLayout != null) {
-                        swipeRefreshLayout.setEnabled(true);
+                        swipeRefreshLayout!!.isEnabled = true
                     }
-
-                    searchView.onActionViewCollapsed();
-                    MainActivity activity = (MainActivity) getActivity();
+                    searchView!!.onActionViewCollapsed()
+                    val activity = getActivity() as MainActivity?
                     if (activity != null) {
-                        activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
-                                                                         activity.binding.appBar.getContext(),
-                                                                         R.animator.appbar_elevation_off)
-                                                                    );
-                        activity.binding.toolbar.setVisibility(View.GONE);
-                        activity.binding.searchToolbar.setVisibility(View.VISIBLE);
-                        if (getResources() != null) {
-                            viewThemeUtils.resetStatusBar(activity, activity.binding.searchToolbar);
+                        activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+                            activity.binding.appBar.context,
+                            R.animator.appbar_elevation_off
+                        )
+                        activity.binding.toolbar.visibility = View.GONE
+                        activity.binding.searchToolbar.visibility = View.VISIBLE
+                        if (resources != null) {
+                            viewThemeUtils.resetStatusBar(activity, activity.binding.searchToolbar)
                         }
                     }
-                    SmoothScrollLinearLayoutManager layoutManager =
-                        (SmoothScrollLinearLayoutManager) recyclerView.getLayoutManager();
-                    if (layoutManager != null) {
-                        layoutManager.scrollToPositionWithOffset(0, 0);
-                    }
-                    return true;
+                    val layoutManager = recyclerView!!.layoutManager as SmoothScrollLinearLayoutManager?
+                    layoutManager?.scrollToPositionWithOffset(0, 0)
+                    return true
                 }
-            });
+            })
         }
     }
 
-    private boolean hasActivityActionSendIntent() {
-        if (getActivity() != null) {
-            return Intent.ACTION_SEND.equals(getActivity().getIntent().getAction())
-                || Intent.ACTION_SEND_MULTIPLE.equals(getActivity().getIntent().getAction());
-        }
-        return false;
+    private fun hasActivityActionSendIntent(): Boolean {
+        return if (activity != null) {
+            Intent.ACTION_SEND == activity!!.intent.action || Intent.ACTION_SEND_MULTIPLE == activity!!.intent.action
+        } else false
     }
 
-    @Override
-    protected void showSearchOrToolbar() {
+    override fun showSearchOrToolbar() {
         if (TextUtils.isEmpty(searchQuery)) {
-            super.showSearchOrToolbar();
+            super.showSearchOrToolbar()
         }
     }
 
-    public void showSearchView(MainActivity activity, SearchView searchView, MenuItem searchItem) {
-        activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
-            activity.binding.appBar.getContext(),
-            R.animator.appbar_elevation_on));
-        activity.binding.toolbar.setVisibility(View.VISIBLE);
-        activity.binding.searchToolbar.setVisibility(View.GONE);
-        searchItem.expandActionView();
+    fun showSearchView(activity: MainActivity, searchView: SearchView?, searchItem: MenuItem?) {
+        activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+            activity.binding.appBar.context,
+            R.animator.appbar_elevation_on
+        )
+        activity.binding.toolbar.visibility = View.VISIBLE
+        activity.binding.searchToolbar.visibility = View.GONE
+        searchItem!!.expandActionView()
     }
 
     @SuppressLint("LongLogTag")
-    public void fetchData() {
-        if (CapabilitiesUtilNew.isUserStatusAvailable(userManager.getCurrentUser().blockingGet())) {
-            fetchUserStatusesAndRooms();
+    fun fetchData() {
+        if (isUserStatusAvailable(userManager.currentUser.blockingGet())) {
+            fetchUserStatusesAndRooms()
         } else {
-            fetchRooms();
+            fetchRooms()
         }
     }
 
-    private void fetchUserStatusesAndRooms() {
-        ncApi.getUserStatuses(credentials, ApiUtils.getUrlForUserStatuses(currentUser.getBaseUrl()))
-            .subscribe(new Observer<StatusesOverall>() {
-                @Override
-                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                }
-
-                @Override
-                public void onNext(@NonNull StatusesOverall statusesOverall) {
-                    for (Status status : statusesOverall.getOcs().getData()) {
-                        userStatuses.put(status.getUserId(), status);
+    private fun fetchUserStatusesAndRooms() {
+        ncApi.getUserStatuses(credentials, ApiUtils.getUrlForUserStatuses(currentUser!!.baseUrl))
+            .subscribe(object : Observer<StatusesOverall> {
+                override fun onSubscribe(d: Disposable) {}
+                override fun onNext(statusesOverall: StatusesOverall) {
+                    for (status in statusesOverall.ocs!!.data!!) {
+                        userStatuses[status.userId] = status
                     }
-                    fetchRooms();
+                    fetchRooms()
                 }
 
-                @Override
-                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                    Log.e(TAG, "failed to fetch user statuses", e);
-                    fetchRooms();
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "failed to fetch user statuses", e)
+                    fetchRooms()
                 }
 
-                @Override
-                public void onComplete() {
-                }
-            });
+                override fun onComplete() {}
+            })
     }
 
-    private void fetchRooms() {
-        dispose(null);
-
-        isRefreshing = true;
-
-        conversationItems = new ArrayList<>();
-        conversationItemsWithHeader = new ArrayList<>();
-
-        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[]{ApiUtils.APIv4, ApiUtils.APIv3, 1});
-
-        long startNanoTime = System.nanoTime();
-        Log.d(TAG, "fetchData - getRooms - calling: " + startNanoTime);
-        roomsQueryDisposable = ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion,
-                                                                                   currentUser.getBaseUrl()))
+    private fun fetchRooms() {
+        dispose(null)
+        isRefreshing = true
+        conversationItems = ArrayList()
+        conversationItemsWithHeader = ArrayList()
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv3, 1))
+        val startNanoTime = System.nanoTime()
+        Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
+        roomsQueryDisposable = ncApi.getRooms(
+            credentials,
+            ApiUtils.getUrlForRooms(
+                apiVersion,
+                currentUser!!.baseUrl
+            )
+        )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(roomsOverall -> {
-                Log.d(TAG, "fetchData - getRooms - got response: " + startNanoTime);
+            .subscribe({ (ocs): RoomsOverall ->
+                Log.d(TAG, "fetchData - getRooms - got response: $startNanoTime")
 
                 // This is invoked asynchronously, when server returns a response the view might have been
                 // unbound in the meantime. Check if the view is still there.
                 // FIXME - does it make sense to update internal data structures even when view has been unbound?
-                if (getView() == null) {
-                    Log.d(TAG, "fetchData - getRooms - view is not bound: " + startNanoTime);
-                    return;
+                if (view == null) {
+                    Log.d(TAG, "fetchData - getRooms - view is not bound: $startNanoTime")
+                    return@subscribe
                 }
-
                 if (adapterWasNull) {
-                    adapterWasNull = false;
-                    loadingContent.setVisibility(View.GONE);
+                    adapterWasNull = false
+                    loadingContent!!.visibility = View.GONE
                 }
-
-                if (roomsOverall.getOcs().getData().size() > 0) {
-                    if (emptyLayoutView.getVisibility() != View.GONE) {
-                        emptyLayoutView.setVisibility(View.GONE);
+                if (ocs!!.data!!.size > 0) {
+                    if (emptyLayoutView!!.visibility != View.GONE) {
+                        emptyLayoutView!!.visibility = View.GONE
                     }
-
-                    if (swipeRefreshLayout.getVisibility() != View.VISIBLE) {
-                        swipeRefreshLayout.setVisibility(View.VISIBLE);
+                    if (swipeRefreshLayout!!.visibility != View.VISIBLE) {
+                        swipeRefreshLayout!!.visibility = View.VISIBLE
                     }
                 } else {
-                    if (emptyLayoutView.getVisibility() != View.VISIBLE) {
-                        emptyLayoutView.setVisibility(View.VISIBLE);
+                    if (emptyLayoutView!!.visibility != View.VISIBLE) {
+                        emptyLayoutView!!.visibility = View.VISIBLE
                     }
-
-                    if (swipeRefreshLayout.getVisibility() != View.GONE) {
-                        swipeRefreshLayout.setVisibility(View.GONE);
+                    if (swipeRefreshLayout!!.visibility != View.GONE) {
+                        swipeRefreshLayout!!.visibility = View.GONE
                     }
                 }
-
-                for (Conversation conversation : roomsOverall.getOcs().getData()) {
-                    if (bundle.containsKey(BundleKeys.INSTANCE.getKEY_FORWARD_HIDE_SOURCE_ROOM()) &&
-                        conversation.getRoomId().equals(bundle.getString(
-                            BundleKeys.INSTANCE.getKEY_FORWARD_HIDE_SOURCE_ROOM()))
+                for (conversation in ocs.data!!) {
+                    if (bundle.containsKey(KEY_FORWARD_HIDE_SOURCE_ROOM) && conversation.roomId == bundle.getString(
+                            KEY_FORWARD_HIDE_SOURCE_ROOM
+                        )
                     ) {
-                        continue;
+                        continue
                     }
-
-                    String headerTitle;
-
-                    headerTitle = getResources().getString(R.string.conversations);
-
-                    GenericTextHeaderItem genericTextHeaderItem;
+                    var headerTitle: String
+                    headerTitle = resources!!.getString(R.string.conversations)
+                    var genericTextHeaderItem: GenericTextHeaderItem
                     if (!callHeaderItems.containsKey(headerTitle)) {
-                        genericTextHeaderItem = new GenericTextHeaderItem(headerTitle, viewThemeUtils);
-                        callHeaderItems.put(headerTitle, genericTextHeaderItem);
+                        genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
+                        callHeaderItems[headerTitle] = genericTextHeaderItem
                     }
-
-                    if (getActivity() != null) {
-                        ConversationItem conversationItem = new ConversationItem(
+                    if (activity != null) {
+                        val conversationItem = ConversationItem(
                             conversation,
                             currentUser,
-                            getActivity(),
-                            userStatuses.get(conversation.getName()),
-                            viewThemeUtils);
-                        conversationItems.add(conversationItem);
-
-                        ConversationItem conversationItemWithHeader = new ConversationItem(
+                            activity,
+                            userStatuses[conversation.name],
+                            viewThemeUtils
+                        )
+                        conversationItems.add(conversationItem)
+                        val conversationItemWithHeader = ConversationItem(
                             conversation,
                             currentUser,
-                            getActivity(),
-                            callHeaderItems.get(headerTitle),
-                            userStatuses.get(conversation.getName()),
-                            viewThemeUtils);
-                        conversationItemsWithHeader.add(conversationItemWithHeader);
+                            activity,
+                            callHeaderItems[headerTitle],
+                            userStatuses[conversation.name],
+                            viewThemeUtils
+                        )
+                        conversationItemsWithHeader.add(conversationItemWithHeader)
                     }
                 }
-
-                sortConversations(conversationItems);
-                sortConversations(conversationItemsWithHeader);
-
-                adapter.updateDataSet(conversationItems, false);
-
-                new Handler().postDelayed(this::checkToShowUnreadBubble, UNREAD_BUBBLE_DELAY);
-
-                fetchOpenConversations(apiVersion);
-
+                sortConversations(conversationItems)
+                sortConversations(conversationItemsWithHeader)
+                adapter!!.updateDataSet(conversationItems, false)
+                Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
+                fetchOpenConversations(apiVersion)
                 if (swipeRefreshLayout != null) {
-                    swipeRefreshLayout.setRefreshing(false);
+                    swipeRefreshLayout!!.isRefreshing = false
                 }
-
-            }, throwable -> {
-                handleHttpExceptions(throwable);
+            }, { throwable: Throwable ->
+                handleHttpExceptions(throwable)
                 if (swipeRefreshLayout != null) {
-                    swipeRefreshLayout.setRefreshing(false);
+                    swipeRefreshLayout!!.isRefreshing = false
                 }
-                dispose(roomsQueryDisposable);
-            }, () -> {
-                dispose(roomsQueryDisposable);
+                dispose(roomsQueryDisposable)
+            }) {
+                dispose(roomsQueryDisposable)
                 if (swipeRefreshLayout != null) {
-                    swipeRefreshLayout.setRefreshing(false);
+                    swipeRefreshLayout!!.isRefreshing = false
                 }
-
-                isRefreshing = false;
-            });
+                isRefreshing = false
+            }
     }
 
-    private void sortConversations(List<AbstractFlexibleItem> conversationItems) {
-        Collections.sort(conversationItems, (o1, o2) -> {
-            Conversation conversation1 = ((ConversationItem) o1).getModel();
-            Conversation conversation2 = ((ConversationItem) o2).getModel();
-            return new CompareToBuilder()
-                .append(conversation2.getFavorite(), conversation1.getFavorite())
-                .append(conversation2.getLastActivity(), conversation1.getLastActivity())
-                .toComparison();
-        });
-    }
-
-    private void fetchOpenConversations(int apiVersion) {
-        searchableConversationItems.clear();
-        searchableConversationItems.addAll(conversationItemsWithHeader);
-
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "listable-rooms")) {
-            List<AbstractFlexibleItem> openConversationItems = new ArrayList<>();
-
-            openConversationsQueryDisposable = ncApi.getOpenConversations(
-                credentials,
-                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.getBaseUrl()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(roomsOverall -> {
-
-                    for (Conversation conversation : roomsOverall.getOcs().getData()) {
-                        String headerTitle = getResources().getString(R.string.openConversations);
-
-                        GenericTextHeaderItem genericTextHeaderItem;
-                        if (!callHeaderItems.containsKey(headerTitle)) {
-                            genericTextHeaderItem = new GenericTextHeaderItem(headerTitle, viewThemeUtils);
-                            callHeaderItems.put(headerTitle, genericTextHeaderItem);
-                        }
-
-                        ConversationItem conversationItem = new ConversationItem(
-                            conversation,
-                            currentUser,
-                            getActivity(),
-                            callHeaderItems.get(headerTitle),
-                            userStatuses.get(conversation.getName()),
-                            viewThemeUtils);
-
-                        openConversationItems.add(conversationItem);
-                    }
-                    searchableConversationItems.addAll(openConversationItems);
-
-                }, throwable -> {
-                    Log.e(TAG, "fetchData - getRooms - ERROR", throwable);
-                    handleHttpExceptions(throwable);
-                    dispose(openConversationsQueryDisposable);
-                }, () -> {
-                    dispose(openConversationsQueryDisposable);
-                });
-        } else {
-            Log.d(TAG, "no open conversations fetched because of missing capability");
+    private fun sortConversations(conversationItems: List<AbstractFlexibleItem<*>>) {
+        Collections.sort(conversationItems) { o1: AbstractFlexibleItem<*>, o2: AbstractFlexibleItem<*> ->
+            val (_, _, _, _, _, _, _, _, _, _, _, _, _, favorite, lastActivity) = (o1 as ConversationItem).model
+            val (_, _, _, _, _, _, _, _, _, _, _, _, _, favorite1, lastActivity1) = (o2 as ConversationItem).model
+            CompareToBuilder()
+                .append(favorite1, favorite)
+                .append(lastActivity1, lastActivity)
+                .toComparison()
         }
     }
 
-    private void handleHttpExceptions(Throwable throwable) {
-        if (throwable instanceof HttpException) {
-            HttpException exception = (HttpException) throwable;
-            switch (exception.code()) {
-                case 401:
-                    if (getParentController() != null && getParentController().getRouter() != null) {
-                        Log.d(TAG, "Starting reauth webview via getParentController()");
-                        getParentController().getRouter().pushController((RouterTransaction.with
-                            (new WebViewLoginController(currentUser.getBaseUrl(), true))
-                            .pushChangeHandler(new VerticalChangeHandler())
-                            .popChangeHandler(new VerticalChangeHandler())));
-                    } else {
-                        Log.d(TAG, "Starting reauth webview via ConversationsListController");
-                        showUnauthorizedDialog();
+    private fun fetchOpenConversations(apiVersion: Int) {
+        searchableConversationItems.clear()
+        searchableConversationItems.addAll(conversationItemsWithHeader)
+        if (hasSpreedFeatureCapability(currentUser, "listable-rooms")) {
+            val openConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+            openConversationsQueryDisposable = ncApi.getOpenConversations(
+                credentials,
+                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl)
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ (ocs): RoomsOverall ->
+                    for (conversation in ocs!!.data!!) {
+                        val headerTitle = resources!!.getString(R.string.openConversations)
+                        var genericTextHeaderItem: GenericTextHeaderItem
+                        if (!callHeaderItems.containsKey(headerTitle)) {
+                            genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
+                            callHeaderItems[headerTitle] = genericTextHeaderItem
+                        }
+                        val conversationItem = ConversationItem(
+                            conversation,
+                            currentUser,
+                            activity,
+                            callHeaderItems[headerTitle],
+                            userStatuses[conversation.name],
+                            viewThemeUtils
+                        )
+                        openConversationItems.add(conversationItem)
                     }
-                    break;
-                default:
-                    break;
+                    searchableConversationItems.addAll(openConversationItems)
+                }, { throwable: Throwable ->
+                    Log.e(TAG, "fetchData - getRooms - ERROR", throwable)
+                    handleHttpExceptions(throwable)
+                    dispose(openConversationsQueryDisposable)
+                }) { dispose(openConversationsQueryDisposable) }
+        } else {
+            Log.d(TAG, "no open conversations fetched because of missing capability")
+        }
+    }
+
+    private fun handleHttpExceptions(throwable: Throwable) {
+        if (throwable is HttpException) {
+            when (throwable.code()) {
+                401 -> if (parentController != null && parentController!!.router != null) {
+                    Log.d(TAG, "Starting reauth webview via getParentController()")
+                    parentController!!.router.pushController(
+                        RouterTransaction.with(
+                            WebViewLoginController(
+                                currentUser!!.baseUrl,
+                                true
+                            )
+                        )
+                            .pushChangeHandler(VerticalChangeHandler())
+                            .popChangeHandler(VerticalChangeHandler())
+                    )
+                } else {
+                    Log.d(TAG, "Starting reauth webview via ConversationsListController")
+                    showUnauthorizedDialog()
+                }
+                else -> {}
             }
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void prepareViews() {
-        layoutManager = new SmoothScrollLinearLayoutManager(Objects.requireNonNull(getActivity()));
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
+    private fun prepareViews() {
+        layoutManager = SmoothScrollLinearLayoutManager(Objects.requireNonNull(activity))
+        recyclerView!!.layoutManager = layoutManager
+        recyclerView!!.setHasFixedSize(true)
+        recyclerView!!.adapter = adapter
+        recyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    checkToShowUnreadBubble();
+                    checkToShowUnreadBubble()
                 }
             }
-        });
-
-        recyclerView.setOnTouchListener((v, event) -> {
-            if (isAttached() && (!isBeingDestroyed() || !isDestroyed())) {
-                InputMethodManager imm =
-                    (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
+        })
+        recyclerView!!.setOnTouchListener { v: View, event: MotionEvent? ->
+            if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
+                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
             }
-            return false;
-        });
-
-        swipeRefreshLayout.setOnRefreshListener(() -> fetchData());
-        viewThemeUtils.themeSwipeRefreshLayout(swipeRefreshLayout);
-
-        emptyLayoutView.setOnClickListener(v -> showNewConversationsScreen());
-        floatingActionButton.setOnClickListener(v -> {
-            ContactAddressBookWorker.Companion.run(context);
-            showNewConversationsScreen();
-        });
-
-        viewThemeUtils.themeFAB(floatingActionButton);
-
-        if (getActivity() != null && getActivity() instanceof MainActivity) {
-            MainActivity activity = (MainActivity) getActivity();
-
-            activity.binding.switchAccountButton.setOnClickListener(v -> {
-                if (getResources() != null && getResources().getBoolean(R.bool.multiaccount_support)) {
-                    DialogFragment newFragment = ChooseAccountDialogFragment.newInstance();
-                    newFragment.show(((MainActivity) getActivity()).getSupportFragmentManager(),
-                                     "ChooseAccountDialogFragment");
-                } else {
-                    getRouter().pushController((RouterTransaction.with(new SettingsController())
-                        .pushChangeHandler(new HorizontalChangeHandler())
-                        .popChangeHandler(new HorizontalChangeHandler())));
-                }
-            });
+            false
         }
-
-        newMentionPopupBubble.hide();
-        newMentionPopupBubble.setPopupBubbleListener(new PopupBubble.PopupBubbleClickListener() {
-            @Override
-            public void bubbleClicked(Context context) {
-                recyclerView.smoothScrollToPosition(nextUnreadConversationScrollPosition);
+        swipeRefreshLayout!!.setOnRefreshListener { fetchData() }
+        viewThemeUtils.themeSwipeRefreshLayout(swipeRefreshLayout!!)
+        emptyLayoutView!!.setOnClickListener { v: View? -> showNewConversationsScreen() }
+        floatingActionButton!!.setOnClickListener { v: View? ->
+            run(context)
+            showNewConversationsScreen()
+        }
+        viewThemeUtils.themeFAB(floatingActionButton!!)
+        if (activity != null && activity is MainActivity) {
+            val activity = activity as MainActivity?
+            activity!!.binding.switchAccountButton.setOnClickListener { v: View? ->
+                if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
+                    val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
+                    newFragment.show(
+                        (getActivity() as MainActivity?)!!.supportFragmentManager,
+                        "ChooseAccountDialogFragment"
+                    )
+                } else {
+                    router.pushController(
+                        RouterTransaction.with(SettingsController())
+                            .pushChangeHandler(HorizontalChangeHandler())
+                            .popChangeHandler(HorizontalChangeHandler())
+                    )
+                }
             }
-        });
-        viewThemeUtils.colorMaterialButtonPrimaryFilled(newMentionPopupBubble);
+        }
+        newMentionPopupBubble!!.hide()
+        newMentionPopupBubble!!.setPopupBubbleListener {
+            recyclerView!!.smoothScrollToPosition(
+                nextUnreadConversationScrollPosition
+            )
+        }
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(newMentionPopupBubble!!)
     }
 
-    private void checkToShowUnreadBubble() {
+    private fun checkToShowUnreadBubble() {
         try {
-            int lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition();
-            for (AbstractFlexibleItem flexItem : conversationItems) {
-                Conversation conversationItem = ((ConversationItem) flexItem).getModel();
-                int position = adapter.getGlobalPositionOf(flexItem);
-                if ((conversationItem.getUnreadMention() ||
-                    (conversationItem.getUnreadMessages() > 0 &&
-                        conversationItem.getType() == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) &&
-                    position > lastVisibleItem) {
-                    nextUnreadConversationScrollPosition = position;
-                    if (!newMentionPopupBubble.isShown()) {
-                        newMentionPopupBubble.show();
+            val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
+            for (flexItem in conversationItems) {
+                val conversation: Conversation = (flexItem as ConversationItem).model
+                val position = adapter!!.getGlobalPositionOf(flexItem)
+                if ((
+                    conversation.unreadMention ||
+                        conversation.unreadMessages > 0 &&
+                        conversation.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                    ) && position > lastVisibleItem
+                ) {
+                    nextUnreadConversationScrollPosition = position
+                    if (!newMentionPopupBubble!!.isShown) {
+                        newMentionPopupBubble!!.show()
                     }
-                    return;
+                    return
                 }
             }
-            nextUnreadConversationScrollPosition = 0;
-            newMentionPopupBubble.hide();
-        } catch (NullPointerException e) {
-            Log.d(TAG, "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
-                "user already left the conversations-list screen so the popup bubble is not available anymore.", e);
+            nextUnreadConversationScrollPosition = 0
+            newMentionPopupBubble!!.hide()
+        } catch (e: NullPointerException) {
+            Log.d(
+                TAG,
+                "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
+                    "user already left the conversations-list screen so the popup bubble is not available anymore.",
+                e
+            )
         }
     }
 
-    private void showNewConversationsScreen() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(BundleKeys.INSTANCE.getKEY_NEW_CONVERSATION(), true);
-        getRouter().pushController((RouterTransaction.with(new ContactsController(bundle))
-            .pushChangeHandler(new HorizontalChangeHandler())
-            .popChangeHandler(new HorizontalChangeHandler())));
+    private fun showNewConversationsScreen() {
+        val bundle = Bundle()
+        bundle.putBoolean(KEY_NEW_CONVERSATION, true)
+        router.pushController(
+            RouterTransaction.with(ContactsController(bundle))
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())
+        )
     }
 
-    private void dispose(@Nullable Disposable disposable) {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-            disposable = null;
+    private fun dispose(disposable: Disposable?) {
+        var disposable = disposable
+        if (disposable != null && !disposable.isDisposed) {
+            disposable.dispose()
+            disposable = null
+        } else if (disposable == null && roomsQueryDisposable != null && !roomsQueryDisposable!!.isDisposed) {
+            roomsQueryDisposable!!.dispose()
+            roomsQueryDisposable = null
         } else if (disposable == null &&
-            roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed()) {
-            roomsQueryDisposable.dispose();
-            roomsQueryDisposable = null;
-        } else if (disposable == null &&
-            openConversationsQueryDisposable != null && !openConversationsQueryDisposable.isDisposed()) {
-            openConversationsQueryDisposable.dispose();
-            openConversationsQueryDisposable = null;
+            openConversationsQueryDisposable != null &&
+            !openConversationsQueryDisposable!!.isDisposed
+        ) {
+            openConversationsQueryDisposable!!.dispose()
+            openConversationsQueryDisposable = null
         }
     }
 
-    @Override
-    public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-
-        if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
-            outState.putString(KEY_SEARCH_QUERY, searchView.getQuery().toString());
+    public override fun onSaveViewState(view: View, outState: Bundle) {
+        if (searchView != null && !TextUtils.isEmpty(searchView!!.query)) {
+            outState.putString(KEY_SEARCH_QUERY, searchView!!.query.toString())
         }
-
-        super.onSaveViewState(view, outState);
+        super.onSaveViewState(view, outState)
     }
 
-    @Override
-    public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
-        super.onRestoreViewState(view, savedViewState);
+    public override fun onRestoreViewState(view: View, savedViewState: Bundle) {
+        super.onRestoreViewState(view, savedViewState)
         if (savedViewState.containsKey(KEY_SEARCH_QUERY)) {
-            searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
+            searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "")
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        dispose(null);
-        if (searchViewDisposable != null && !searchViewDisposable.isDisposed()) {
-            searchViewDisposable.dispose();
+    public override fun onDestroy() {
+        super.onDestroy()
+        dispose(null)
+        if (searchViewDisposable != null && !searchViewDisposable!!.isDisposed) {
+            searchViewDisposable!!.dispose()
         }
     }
 
-    public void onQueryTextChange(final String newText) {
+    fun onQueryTextChange(newText: String?) {
         if (!TextUtils.isEmpty(searchQuery)) {
-            final String filter = searchQuery;
-            searchQuery = "";
-            performFilterAndSearch(filter);
-        } else if (adapter.hasNewFilter(newText)) {
-            performFilterAndSearch(newText);
+            val filter = searchQuery
+            searchQuery = ""
+            performFilterAndSearch(filter)
+        } else if (adapter!!.hasNewFilter(newText)) {
+            performFilterAndSearch(newText)
         }
     }
 
-    private void performFilterAndSearch(String filter) {
-        if (filter.length() >= SEARCH_MIN_CHARS) {
-            clearMessageSearchResults();
-            adapter.setFilter(filter);
-            adapter.filterItems();
-            if (CapabilitiesUtilNew.isUnifiedSearchAvailable(currentUser)) {
-                startMessageSearch(filter);
+    private fun performFilterAndSearch(filter: String?) {
+        if (filter!!.length >= SEARCH_MIN_CHARS) {
+            clearMessageSearchResults()
+            adapter!!.setFilter(filter)
+            adapter!!.filterItems()
+            if (isUnifiedSearchAvailable(currentUser!!)) {
+                startMessageSearch(filter)
             }
         } else {
-            resetSearchResults();
+            resetSearchResults()
         }
     }
 
-    private void resetSearchResults() {
-        clearMessageSearchResults();
-        adapter.setFilter("");
-        adapter.filterItems();
+    private fun resetSearchResults() {
+        clearMessageSearchResults()
+        adapter!!.setFilter("")
+        adapter!!.filterItems()
     }
 
-    private void clearMessageSearchResults() {
-        final IHeader firstHeader = adapter.getSectionHeader(0);
-        if (firstHeader != null && firstHeader.getItemViewType() == MessagesTextHeaderItem.VIEW_TYPE) {
-            adapter.removeSection(firstHeader);
+    private fun clearMessageSearchResults() {
+        val firstHeader = adapter!!.getSectionHeader(0)
+        if (firstHeader != null && firstHeader.itemViewType == MessagesTextHeaderItem.VIEW_TYPE) {
+            adapter!!.removeSection(firstHeader)
         } else {
-            adapter.removeItemsOfType(MessageResultItem.VIEW_TYPE);
+            adapter!!.removeItemsOfType(MessageResultItem.VIEW_TYPE)
         }
-        adapter.removeItemsOfType(LoadMoreResultsItem.VIEW_TYPE);
+        adapter!!.removeItemsOfType(LoadMoreResultsItem.VIEW_TYPE)
     }
 
     @SuppressLint("CheckResult") // handled by helper
-    private void startMessageSearch(final String search) {
+    private fun startMessageSearch(search: String?) {
         if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setRefreshing(true);
+            swipeRefreshLayout!!.isRefreshing = true
         }
-        searchHelper
-            .startMessageSearch(search)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                this::onMessageSearchResult,
-                this::onMessageSearchError);
+        searchHelper?.startMessageSearch(search!!)
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({ results: MessageSearchResults -> onMessageSearchResult(results) }) { throwable: Throwable ->
+                onMessageSearchError(
+                    throwable
+                )
+            }
     }
 
     @SuppressLint("CheckResult") // handled by helper
-    private void loadMoreMessages() {
-        swipeRefreshLayout.setRefreshing(true);
-        final Observable<MessageSearchHelper.MessageSearchResults> observable = searchHelper.loadMore();
-        if (observable != null) {
-            observable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    this::onMessageSearchResult,
-                    this::onMessageSearchError);
-        }
+    private fun loadMoreMessages() {
+        swipeRefreshLayout!!.isRefreshing = true
+        val observable = searchHelper!!.loadMore()
+        observable?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({ results: MessageSearchResults -> onMessageSearchResult(results) }) { throwable: Throwable ->
+                onMessageSearchError(
+                    throwable
+                )
+            }
     }
 
-
-    @Override
-    protected String getTitle() {
-        return getResources().getString(R.string.nc_app_product_name);
+    override fun getTitle(): String {
+        return resources!!.getString(R.string.nc_app_product_name)
     }
 
-    @Override
-    public boolean onItemClick(View view, int position) {
-        final AbstractFlexibleItem item = adapter.getItem(position);
+    override fun onItemClick(view: View, position: Int): Boolean {
+        val item = adapter!!.getItem(position)
         if (item != null) {
-            final int viewType = item.getItemViewType();
-            if (viewType == MessageResultItem.VIEW_TYPE) {
-                MessageResultItem messageItem = (MessageResultItem) item;
-                String conversationToken = messageItem.getMessageEntry().getConversationToken();
-                selectedMessageId = messageItem.getMessageEntry().getMessageId();
-                showConversationByToken(conversationToken);
-            } else if (viewType == LoadMoreResultsItem.VIEW_TYPE) {
-                loadMoreMessages();
-            } else if (viewType == ConversationItem.VIEW_TYPE) {
-                showConversation(((ConversationItem) Objects.requireNonNull(item)).getModel());
+            when (item.itemViewType) {
+                MessageResultItem.VIEW_TYPE -> {
+                    val messageItem: MessageResultItem = item as MessageResultItem
+                    val conversationToken = messageItem.messageEntry.conversationToken
+                    selectedMessageId = messageItem.messageEntry.messageId
+                    showConversationByToken(conversationToken)
+                }
+                LoadMoreResultsItem.VIEW_TYPE -> {
+                    loadMoreMessages()
+                }
+                ConversationItem.VIEW_TYPE -> {
+                    showConversation((Objects.requireNonNull(item) as ConversationItem).model)
+                }
             }
         }
-        return true;
+        return true
     }
 
-    private void showConversationByToken(String conversationToken) {
-        for (AbstractFlexibleItem absItem : conversationItems) {
-            ConversationItem conversationItem = ((ConversationItem) absItem);
-            if (conversationItem.getModel().getToken().equals(conversationToken)) {
-                final Conversation conversation = conversationItem.getModel();
-                showConversation(conversation);
+    private fun showConversationByToken(conversationToken: String) {
+        for (absItem in conversationItems) {
+            val conversationItem = absItem as ConversationItem
+            if (conversationItem.model.token == conversationToken) {
+                val conversation = conversationItem.model
+                showConversation(conversation)
             }
         }
     }
 
-    private void showConversation(@Nullable final Conversation conversation) {
-        selectedConversation = conversation;
-        if (selectedConversation != null && getActivity() != null) {
-            boolean hasChatPermission =
-                new AttendeePermissionsUtil(selectedConversation.getPermissions()).hasChatPermission(currentUser);
-
+    private fun showConversation(conversation: Conversation?) {
+        selectedConversation = conversation
+        if (selectedConversation != null && activity != null) {
+            val hasChatPermission = AttendeePermissionsUtil(selectedConversation!!.permissions).hasChatPermission(
+                currentUser!!
+            )
             if (showShareToScreen) {
-                if (hasChatPermission && !isReadOnlyConversation(selectedConversation)) {
-                    handleSharedData();
-                    showShareToScreen = false;
+                if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
+                    handleSharedData()
+                    showShareToScreen = false
                 } else {
-                    Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show()
                 }
             } else if (forwardMessage) {
-                if (hasChatPermission && !isReadOnlyConversation(selectedConversation)) {
-                    openConversation(bundle.getString(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_TEXT()));
-                    forwardMessage = false;
+                if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
+                    openConversation(bundle.getString(KEY_FORWARD_MSG_TEXT))
+                    forwardMessage = false
                 } else {
-                    Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show()
                 }
             } else {
-                openConversation();
+                openConversation()
             }
         }
     }
 
-    private Boolean isReadOnlyConversation(Conversation conversation) {
-        return conversation.getConversationReadOnlyState() ==
-            Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY;
+    private fun isReadOnlyConversation(conversation: Conversation): Boolean {
+        return conversation.conversationReadOnlyState ===
+            Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
     }
 
-    private void handleSharedData() {
-        collectDataFromIntent();
-        if (!textToPaste.isEmpty()) {
-            openConversation(textToPaste);
-        } else if (filesToShare != null && !filesToShare.isEmpty()) {
-            showSendFilesConfirmDialog();
+    private fun handleSharedData() {
+        collectDataFromIntent()
+        if (!textToPaste!!.isEmpty()) {
+            openConversation(textToPaste)
+        } else if (filesToShare != null && !filesToShare!!.isEmpty()) {
+            showSendFilesConfirmDialog()
         } else {
-            Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+                .show()
         }
     }
 
-    private void showSendFilesConfirmDialog() {
-        if (UploadAndShareFilesWorker.Companion.isStoragePermissionGranted(context)) {
-            StringBuilder fileNamesWithLineBreaks = new StringBuilder("\n");
-
-            for (String file : filesToShare) {
-                String filename = UriUtils.Companion.getFileName(Uri.parse(file), context);
-                fileNamesWithLineBreaks.append(filename).append("\n");
+    private fun showSendFilesConfirmDialog() {
+        if (isStoragePermissionGranted(context)) {
+            val fileNamesWithLineBreaks = StringBuilder("\n")
+            for (file in filesToShare!!) {
+                val filename = getFileName(Uri.parse(file), context)
+                fileNamesWithLineBreaks.append(filename).append("\n")
             }
-
-            String confirmationQuestion;
-            if (filesToShare.size() == 1) {
-                confirmationQuestion =
-                    String.format(getResources().getString(R.string.nc_upload_confirm_send_single),
-                                  selectedConversation.getDisplayName());
+            val confirmationQuestion: String
+            confirmationQuestion = if (filesToShare!!.size == 1) {
+                String.format(
+                    resources!!.getString(R.string.nc_upload_confirm_send_single),
+                    selectedConversation!!.displayName
+                )
             } else {
-                confirmationQuestion =
-                    String.format(getResources().getString(R.string.nc_upload_confirm_send_multiple),
-                                  selectedConversation.getDisplayName());
+                String.format(
+                    resources!!.getString(R.string.nc_upload_confirm_send_multiple),
+                    selectedConversation!!.displayName
+                )
             }
-
-            MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(floatingActionButton.getContext())
+            val dialogBuilder = MaterialAlertDialogBuilder(floatingActionButton!!.context)
                 .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.upload))
                 .setTitle(confirmationQuestion)
                 .setMessage(fileNamesWithLineBreaks.toString())
-                .setPositiveButton(R.string.nc_yes, (dialog, which) -> {
-                    upload();
-                    openConversation();
-                })
-                .setNegativeButton(R.string.nc_no, (dialog, which) -> {
-                    Log.d(TAG, "sharing files aborted, going back to share-to screen");
-                    showShareToScreen = true;
-                });
-
-            viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton.getContext(), dialogBuilder);
-
-            AlertDialog dialog = dialogBuilder.show();
-
+                .setPositiveButton(R.string.nc_yes) { dialog: DialogInterface?, which: Int ->
+                    upload()
+                    openConversation()
+                }
+                .setNegativeButton(R.string.nc_no) { dialog: DialogInterface?, which: Int ->
+                    Log.d(TAG, "sharing files aborted, going back to share-to screen")
+                    showShareToScreen = true
+                }
+            viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton!!.context, dialogBuilder)
+            val dialog = dialogBuilder.show()
             viewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         } else {
-            UploadAndShareFilesWorker.Companion.requestStoragePermission(ConversationsListController.this);
+            requestStoragePermission(this@ConversationsListController)
         }
     }
 
-    @Override
-    public void onItemLongClick(int position) {
+    override fun onItemLongClick(position: Int) {
         if (showShareToScreen) {
-            Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.");
-
+            Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.")
         } else {
-            Object clickedItem = adapter.getItem(position);
+            val clickedItem: Any? = adapter!!.getItem(position)
             if (clickedItem != null) {
-                Conversation conversation = ((ConversationItem) clickedItem).getModel();
-                conversationsListBottomDialog = new ConversationsListBottomDialog(
-                    getActivity(),
+                val conversation = (clickedItem as ConversationItem).model
+                conversationsListBottomDialog = ConversationsListBottomDialog(
+                    activity!!,
                     this,
-                    userManager.getCurrentUser().blockingGet(),
-                    conversation);
-                conversationsListBottomDialog.show();
+                    userManager.currentUser.blockingGet(),
+                    conversation
+                )
+                conversationsListBottomDialog!!.show()
             }
         }
     }
 
-    private void collectDataFromIntent() {
-        filesToShare = new ArrayList<>();
-        if (getActivity() != null && getActivity().getIntent() != null) {
-            Intent intent = getActivity().getIntent();
-            if (Intent.ACTION_SEND.equals(intent.getAction())
-                || Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())) {
+    private fun collectDataFromIntent() {
+        filesToShare = ArrayList()
+        if (activity != null && activity!!.intent != null) {
+            val intent = activity!!.intent
+            if (Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action) {
                 try {
-                    String mimeType = intent.getType();
-                    if (TEXT_PLAIN.equals(mimeType) && (intent.getStringExtra(Intent.EXTRA_TEXT) != null)) {
+                    val mimeType = intent.type
+                    if (Mimetype.TEXT_PLAIN == mimeType && intent.getStringExtra(Intent.EXTRA_TEXT) != null) {
                         // Share from Google Chrome sets text/plain MIME type, but also provides a content:// URI
                         // with a *screenshot* of the current page in getClipData().
                         // Here we assume that when sharing a web page the user would prefer to send the URL
                         // of the current page rather than a screenshot.
-                        textToPaste = intent.getStringExtra(Intent.EXTRA_TEXT);
+                        textToPaste = intent.getStringExtra(Intent.EXTRA_TEXT)
                     } else {
-                        if (intent.getClipData() != null) {
-                            for (int i = 0; i < intent.getClipData().getItemCount(); i++) {
-                                ClipData.Item item = intent.getClipData().getItemAt(i);
-                                if (item.getUri() != null) {
-                                    filesToShare.add(item.getUri().toString());
-                                } else if (item.getText() != null) {
-                                    textToPaste = item.getText().toString();
-                                    break;
+                        if (intent.clipData != null) {
+                            for (i in 0 until intent.clipData!!.itemCount) {
+                                val item = intent.clipData!!.getItemAt(i)
+                                if (item.uri != null) {
+                                    filesToShare!!.add(item.uri.toString())
+                                } else if (item.text != null) {
+                                    textToPaste = item.text.toString()
+                                    break
                                 } else {
-                                    Log.w(TAG, "datatype not yet implemented for share-to");
+                                    Log.w(TAG, "datatype not yet implemented for share-to")
                                 }
                             }
                         } else {
-                            filesToShare.add(intent.getData().toString());
+                            filesToShare!!.add(intent.data.toString())
                         }
                     }
-                    if (filesToShare.isEmpty() && textToPaste.isEmpty()) {
-                        Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
-                                       Toast.LENGTH_LONG).show();
-                        Log.e(TAG, "failed to get data from intent");
+                    if (filesToShare!!.isEmpty() && textToPaste!!.isEmpty()) {
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.nc_common_error_sorry),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        Log.e(TAG, "failed to get data from intent")
                     }
-                } catch (Exception e) {
-                    Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
-                                   Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "Something went wrong when extracting data from intent");
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.nc_common_error_sorry),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Log.e(TAG, "Something went wrong when extracting data from intent")
                 }
             }
         }
     }
 
-    private void upload() {
+    private fun upload() {
         if (selectedConversation == null) {
-            Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
-                           Toast.LENGTH_LONG).show();
-            Log.e(TAG, "not able to upload any files because conversation was null.");
-            return;
+            Toast.makeText(
+                context,
+                context.resources.getString(R.string.nc_common_error_sorry),
+                Toast.LENGTH_LONG
+            ).show()
+            Log.e(TAG, "not able to upload any files because conversation was null.")
+            return
         }
-
         try {
-            String[] filesToShareArray = new String[filesToShare.size()];
-            filesToShareArray = filesToShare.toArray(filesToShareArray);
-
-            Data data = new Data.Builder()
+            var filesToShareArray: Array<String?>? = arrayOfNulls(filesToShare!!.size)
+            filesToShareArray = filesToShare!!.toArray(filesToShareArray)
+            val data = Data.Builder()
                 .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, filesToShareArray)
                 .putString(
                     UploadAndShareFilesWorker.NC_TARGETPATH,
-                    CapabilitiesUtilNew.getAttachmentFolder(currentUser))
-                .putString(UploadAndShareFilesWorker.ROOM_TOKEN, selectedConversation.getToken())
-                .build();
-            OneTimeWorkRequest uploadWorker = new OneTimeWorkRequest.Builder(UploadAndShareFilesWorker.class)
+                    getAttachmentFolder(currentUser!!)
+                )
+                .putString(UploadAndShareFilesWorker.ROOM_TOKEN, selectedConversation!!.token)
+                .build()
+            val uploadWorker = OneTimeWorkRequest.Builder(UploadAndShareFilesWorker::class.java)
                 .setInputData(data)
-                .build();
-            WorkManager.getInstance().enqueue(uploadWorker);
-
+                .build()
+            WorkManager.getInstance().enqueue(uploadWorker)
             Toast.makeText(
-                context, context.getResources().getString(R.string.nc_upload_in_progess),
+                context,
+                context.resources.getString(R.string.nc_upload_in_progess),
                 Toast.LENGTH_LONG
-                          ).show();
-
-        } catch (IllegalArgumentException e) {
-            Toast.makeText(context, context.getResources().getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show();
-            Log.e(TAG, "Something went wrong when trying to upload file", e);
+            ).show()
+        } catch (e: IllegalArgumentException) {
+            Toast.makeText(context, context.resources.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
+            Log.e(TAG, "Something went wrong when trying to upload file", e)
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION &&
-            grantResults.length > 0 &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "upload starting after permissions were granted");
-            showSendFilesConfirmDialog();
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.d(TAG, "upload starting after permissions were granted")
+            showSendFilesConfirmDialog()
         } else {
-            Toast.makeText(context, context.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, context.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG).show()
         }
     }
 
-    private void openConversation() {
-        openConversation("");
-    }
-
-    private void openConversation(String textToPaste) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
-        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(selectedConversation));
-        bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), selectedConversation.getToken());
-        bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), selectedConversation.getRoomId());
-        bundle.putString(BundleKeys.INSTANCE.getKEY_SHARED_TEXT(), textToPaste);
+    private fun openConversation(textToPaste: String? = "") {
+        val bundle = Bundle()
+        bundle.putParcelable(KEY_USER_ENTITY, currentUser)
+        bundle.putParcelable(KEY_ACTIVE_CONVERSATION, Parcels.wrap(selectedConversation))
+        bundle.putString(KEY_ROOM_TOKEN, selectedConversation!!.token)
+        bundle.putString(KEY_ROOM_ID, selectedConversation!!.roomId)
+        bundle.putString(KEY_SHARED_TEXT, textToPaste)
         if (selectedMessageId != null) {
-            bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId);
-            selectedMessageId = null;
+            bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
+            selectedMessageId = null
         }
-
-        ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                                        selectedConversation.getToken(), bundle, false);
+        remapChatController(
+            router,
+            currentUser!!.id!!,
+            selectedConversation!!.token!!,
+            bundle,
+            false
+        )
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(EventStatus eventStatus) {
-        if (currentUser != null && eventStatus.getUserId() == currentUser.getId()) {
-            switch (eventStatus.getEventType()) {
-                case CONVERSATION_UPDATE:
-                    if (eventStatus.isAllGood() && !isRefreshing) {
-                        fetchData();
-                    }
-                    break;
-                default:
-                    break;
+    fun onMessageEvent(eventStatus: EventStatus) {
+        if (currentUser != null && eventStatus.userId == currentUser!!.id) {
+            when (eventStatus.eventType) {
+                EventStatus.EventType.CONVERSATION_UPDATE -> if (eventStatus.isAllGood && !isRefreshing) {
+                    fetchData()
+                }
+                else -> {}
             }
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(ConversationsListFetchDataEvent conversationsListFetchDataEvent) {
-        fetchData();
-
-        new Handler().postDelayed(() -> {
-            if (conversationsListBottomDialog.isShowing()) {
-                conversationsListBottomDialog.dismiss();
+    fun onMessageEvent(conversationsListFetchDataEvent: ConversationsListFetchDataEvent?) {
+        fetchData()
+        Handler().postDelayed({
+            if (conversationsListBottomDialog!!.isShowing) {
+                conversationsListBottomDialog!!.dismiss()
             }
-        }, 2500);
+        }, 2500)
     }
 
-    @Override
-    public void showDeleteConversationDialog(@NonNull Bundle bundle) {
-        conversationMenuBundle = bundle;
-        if (getActivity() != null &&
+    override fun showDeleteConversationDialog(bundle: Bundle) {
+        conversationMenuBundle = bundle
+        if (activity != null &&
             conversationMenuBundle != null &&
             currentUser != null &&
-            conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()) == currentUser.getId()) {
-
-            Conversation conversation =
-                Parcels.unwrap(conversationMenuBundle.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
-
+            conversationMenuBundle!!.getLong(KEY_INTERNAL_USER_ID) == currentUser!!.id
+        ) {
+            val conversation = Parcels.unwrap<Conversation>(conversationMenuBundle!!.getParcelable(KEY_ROOM))
             if (conversation != null) {
-                MaterialAlertDialogBuilder dialogBuilder =
-                    new MaterialAlertDialogBuilder(floatingActionButton.getContext())
-                        .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
-                        .setTitle(R.string.nc_delete_call)
-                        .setMessage(R.string.nc_delete_conversation_more)
-                        .setPositiveButton(R.string.nc_delete, (dialog, which) -> {
-                            Data.Builder data = new Data.Builder();
-                            data.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
-                                         conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()));
-                            data.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
-                            conversationMenuBundle = null;
-                            deleteConversation(data.build());
-                        })
-                        .setNegativeButton(R.string.nc_cancel, (dialog, which) -> {
-                            conversationMenuBundle = null;
-                        });
-
-                viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton.getContext(), dialogBuilder);
-
-                AlertDialog dialog = dialogBuilder.show();
-
+                val dialogBuilder = MaterialAlertDialogBuilder(floatingActionButton!!.context)
+                    .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
+                    .setTitle(R.string.nc_delete_call)
+                    .setMessage(R.string.nc_delete_conversation_more)
+                    .setPositiveButton(R.string.nc_delete) { dialog: DialogInterface?, which: Int ->
+                        val data = Data.Builder()
+                        data.putLong(
+                            KEY_INTERNAL_USER_ID,
+                            conversationMenuBundle!!.getLong(KEY_INTERNAL_USER_ID)
+                        )
+                        data.putString(KEY_ROOM_TOKEN, conversation.token)
+                        conversationMenuBundle = null
+                        deleteConversation(data.build())
+                    }
+                    .setNegativeButton(R.string.nc_cancel) { dialog: DialogInterface?, which: Int ->
+                        conversationMenuBundle = null
+                    }
+                viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton!!.context, dialogBuilder)
+                val dialog = dialogBuilder.show()
                 viewThemeUtils.colorTextButtons(
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE));
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                )
             }
         }
     }
 
-    private void showUnauthorizedDialog() {
-        if (getActivity() != null) {
-            MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(floatingActionButton.getContext())
+    private fun showUnauthorizedDialog() {
+        if (activity != null) {
+            val dialogBuilder = MaterialAlertDialogBuilder(floatingActionButton!!.context)
                 .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_dialog_invalid_password)
                 .setMessage(R.string.nc_dialog_reauth_or_delete)
                 .setCancelable(false)
-                .setPositiveButton(R.string.nc_delete, (dialog, which) -> {
-                    boolean otherUserExists = userManager
-                        .scheduleUserForDeletionWithId(currentUser.getId())
-                        .blockingGet();
-
-                    OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
-                    WorkManager.getInstance().enqueue(accountRemovalWork);
-
-                    if (otherUserExists && getView() != null) {
-                        onViewBound(getView());
-                        onAttach(getView());
+                .setPositiveButton(R.string.nc_delete) { dialog: DialogInterface?, which: Int ->
+                    val otherUserExists = userManager
+                        .scheduleUserForDeletionWithId(currentUser!!.id!!)
+                        .blockingGet()
+                    val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+                    WorkManager.getInstance().enqueue(accountRemovalWork)
+                    if (otherUserExists && view != null) {
+                        onViewBound(view!!)
+                        onAttach(view!!)
                     } else if (!otherUserExists) {
-                        getRouter().setRoot(RouterTransaction.with(
-                                new ServerSelectionController())
-                                                .pushChangeHandler(new VerticalChangeHandler())
-                                                .popChangeHandler(new VerticalChangeHandler()));
+                        router.setRoot(
+                            RouterTransaction.with(
+                                ServerSelectionController()
+                            )
+                                .pushChangeHandler(VerticalChangeHandler())
+                                .popChangeHandler(VerticalChangeHandler())
+                        )
                     }
-                })
-                .setNegativeButton(R.string.nc_settings_reauthorize, (dialog, which) -> {
-                    getRouter().pushController(RouterTransaction.with(
-                            new WebViewLoginController(currentUser.getBaseUrl(), true))
-                                                   .pushChangeHandler(new VerticalChangeHandler())
-                                                   .popChangeHandler(new VerticalChangeHandler()));
-                });
-
-            viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton.getContext(), dialogBuilder);
-
-            AlertDialog dialog = dialogBuilder.show();
-
+                }
+                .setNegativeButton(R.string.nc_settings_reauthorize) { dialog: DialogInterface?, which: Int ->
+                    router.pushController(
+                        RouterTransaction.with(
+                            WebViewLoginController(currentUser!!.baseUrl, true)
+                        )
+                            .pushChangeHandler(VerticalChangeHandler())
+                            .popChangeHandler(VerticalChangeHandler())
+                    )
+                }
+            viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton!!.context, dialogBuilder)
+            val dialog = dialogBuilder.show()
             viewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         }
     }
 
-    private void showServerEOLDialog() {
-        MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(floatingActionButton.getContext())
+    private fun showServerEOLDialog() {
+        val dialogBuilder = MaterialAlertDialogBuilder(floatingActionButton!!.context)
             .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_warning_white))
             .setTitle(R.string.nc_settings_server_eol_title)
             .setMessage(R.string.nc_settings_server_eol)
             .setCancelable(false)
-            .setPositiveButton(R.string.nc_settings_remove_account, (dialog, which) -> {
-                boolean otherUserExists = userManager
-                    .scheduleUserForDeletionWithId(currentUser.getId())
-                    .blockingGet();
-
-                OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
-                WorkManager.getInstance().enqueue(accountRemovalWork);
-
-                if (otherUserExists && getView() != null) {
-                    onViewBound(getView());
-                    onAttach(getView());
+            .setPositiveButton(R.string.nc_settings_remove_account) { dialog: DialogInterface?, which: Int ->
+                val otherUserExists = userManager
+                    .scheduleUserForDeletionWithId(currentUser!!.id!!)
+                    .blockingGet()
+                val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+                WorkManager.getInstance().enqueue(accountRemovalWork)
+                if (otherUserExists && view != null) {
+                    onViewBound(view!!)
+                    onAttach(view!!)
                 } else if (!otherUserExists) {
-                    getRouter().setRoot(RouterTransaction.with(
-                            new ServerSelectionController())
-                                            .pushChangeHandler(new VerticalChangeHandler())
-                                            .popChangeHandler(new VerticalChangeHandler()));
+                    router.setRoot(
+                        RouterTransaction.with(
+                            ServerSelectionController()
+                        )
+                            .pushChangeHandler(VerticalChangeHandler())
+                            .popChangeHandler(VerticalChangeHandler())
+                    )
                 }
-            })
-            .setNegativeButton(R.string.nc_cancel, (dialog, which) -> {
-                if (userManager.getUsers().blockingGet().size() > 0) {
-                    getRouter().pushController(RouterTransaction.with(new SwitchAccountController()));
+            }
+            .setNegativeButton(R.string.nc_cancel) { dialog: DialogInterface?, which: Int ->
+                if (userManager.users.blockingGet().size > 0) {
+                    router.pushController(RouterTransaction.with(SwitchAccountController()))
                 } else {
-                    getActivity().finishAffinity();
-                    getActivity().finish();
+                    activity!!.finishAffinity()
+                    activity!!.finish()
                 }
-            });
-
-        viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton.getContext(), dialogBuilder);
-
-        AlertDialog dialog = dialogBuilder.show();
-
+            }
+        viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton!!.context, dialogBuilder)
+        val dialog = dialogBuilder.show()
         viewThemeUtils.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE));
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
-    private void deleteConversation(Data data) {
-        OneTimeWorkRequest deleteConversationWorker =
-            new OneTimeWorkRequest.Builder(DeleteConversationWorker.class).setInputData(data).build();
-        WorkManager.getInstance().enqueue(deleteConversationWorker);
+    private fun deleteConversation(data: Data) {
+        val deleteConversationWorker =
+            OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(data).build()
+        WorkManager.getInstance().enqueue(deleteConversationWorker)
     }
 
-    @Override
-    public AppBarLayoutType getAppBarLayoutType() {
-        return AppBarLayoutType.SEARCH_BAR;
+    override fun getAppBarLayoutType(): AppBarLayoutType {
+        return AppBarLayoutType.SEARCH_BAR
     }
 
-    public void onMessageSearchResult(@NonNull MessageSearchHelper.MessageSearchResults results) {
-        if (searchView.getQuery().length() > 0) {
-            clearMessageSearchResults();
-            final List<SearchMessageEntry> entries = results.getMessages();
-            if (entries.size() > 0) {
-                List<AbstractFlexibleItem> adapterItems = new ArrayList<>(entries.size() + 1);
-                for (int i = 0; i < entries.size(); i++) {
-                    final boolean showHeader = i == 0;
-                    adapterItems.add(new MessageResultItem(context, currentUser, entries.get(i), showHeader, viewThemeUtils));
+    fun onMessageSearchResult(results: MessageSearchResults) {
+        if (searchView!!.query.length > 0) {
+            clearMessageSearchResults()
+            val entries = results.messages
+            if (entries.size > 0) {
+                val adapterItems: MutableList<AbstractFlexibleItem<*>> = ArrayList(entries.size + 1)
+                for (i in entries.indices) {
+                    val showHeader = i == 0
+                    adapterItems.add(
+                        MessageResultItem(
+                            context,
+                            currentUser!!,
+                            entries[i],
+                            showHeader,
+                            viewThemeUtils
+                        )
+                    )
                 }
-                if (results.getHasMore()) {
-                    adapterItems.add(LoadMoreResultsItem.INSTANCE);
+                if (results.hasMore) {
+                    adapterItems.add(LoadMoreResultsItem)
                 }
-                adapter.addItems(0, adapterItems);
-                recyclerView.scrollToPosition(0);
+                adapter!!.addItems(0, adapterItems)
+                recyclerView!!.scrollToPosition(0)
             }
         }
         if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout!!.isRefreshing = false
         }
     }
 
-    public void onMessageSearchError(@NonNull Throwable throwable) {
-        handleHttpExceptions(throwable);
+    fun onMessageSearchError(throwable: Throwable) {
+        handleHttpExceptions(throwable)
         if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout!!.isRefreshing = false
         }
+    }
+
+    companion object {
+        const val TAG = "ConvListController"
+        const val UNREAD_BUBBLE_DELAY = 2500
+        private const val KEY_SEARCH_QUERY = "ContactsController.searchQuery"
+        const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
+        const val SEARCH_MIN_CHARS = 2
+    }
+
+    init {
+        setHasOptionsMenu(true)
+        forwardMessage = bundle.getBoolean(KEY_FORWARD_MSG_FLAG)
+        this.bundle = bundle
     }
 }
