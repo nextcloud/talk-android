@@ -484,7 +484,9 @@ data class ChatMessage(
         REACTION_DELETED,
         REACTION_REVOKED,
         POLL_VOTED,
-        POLL_CLOSED
+        POLL_CLOSED,
+        MESSAGE_EXPIRATION_ENABLED,
+        MESSAGE_EXPIRATION_DISABLED,
     }
 
     companion object {

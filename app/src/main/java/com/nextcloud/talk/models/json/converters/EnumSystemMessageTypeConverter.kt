@@ -60,6 +60,8 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MATTERB
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MATTERBRIDGE_CONFIG_ENABLED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MATTERBRIDGE_CONFIG_REMOVED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MESSAGE_DELETED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MESSAGE_EXPIRATION_DISABLED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MESSAGE_EXPIRATION_ENABLED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MODERATOR_DEMOTED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MODERATOR_PROMOTED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.OBJECT_SHARED
@@ -171,6 +173,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "reaction_revoked" -> REACTION_REVOKED
             "poll_voted" -> POLL_VOTED
             "poll_closed" -> POLL_CLOSED
+            "message_expiration_enabled" -> MESSAGE_EXPIRATION_ENABLED
+            "message_expiration_disabled" -> MESSAGE_EXPIRATION_DISABLED
             else -> DUMMY
         }
     }
@@ -226,6 +230,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             REACTION_REVOKED -> "reaction_revoked"
             POLL_VOTED -> "poll_voted"
             POLL_CLOSED -> "poll_closed"
+            MESSAGE_EXPIRATION_ENABLED -> "message_expiration_enabled"
+            MESSAGE_EXPIRATION_DISABLED -> "message_expiration_disabled"
             else -> ""
         }
     }
