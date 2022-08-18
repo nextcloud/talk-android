@@ -27,7 +27,6 @@ import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -140,7 +139,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.parceler.Parcels
 import retrofit2.HttpException
-import java.util.Collections
 import java.util.Objects
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -292,7 +290,7 @@ class ConversationsListController(bundle: Bundle) :
 
     private fun initSearchView() {
         if (activity != null) {
-            val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+            val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
             if (searchItem != null) {
                 searchView = MenuItemCompat.getActionView(searchItem) as SearchView
                 viewThemeUtils.themeSearchView(searchView!!)
@@ -351,7 +349,7 @@ class ConversationsListController(bundle: Bundle) :
                     showSearchView(activity, searchView, searchItem)
                     searchView!!.setQuery(adapter!!.getFilter(String::class.java), false)
                 }
-                activity.binding.searchText.setOnClickListener { v: View? ->
+                activity.binding.searchText.setOnClickListener {
                     showSearchView(activity, searchView, searchItem)
                     viewThemeUtils.themeStatusBar(activity, searchView!!)
                 }
@@ -372,8 +370,8 @@ class ConversationsListController(bundle: Bundle) :
                     adapter!!.setHeadersShown(true)
                     adapter!!.updateDataSet(searchableConversationItems, false)
                     adapter!!.showAllHeaders()
-                    if (binding.swipeRefreshLayoutView != null) {
-                        binding.swipeRefreshLayoutView!!.isEnabled = false
+                    withNullableControllerViewBinding {
+                        binding.swipeRefreshLayoutView.isEnabled = false
                     }
                     return true
                 }
@@ -385,10 +383,10 @@ class ConversationsListController(bundle: Bundle) :
                     if (searchHelper != null) {
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
-                        binding.swipeRefreshLayoutView!!.isRefreshing = false
+                        binding.swipeRefreshLayoutView.isRefreshing = false
                     }
-                    if (binding.swipeRefreshLayoutView != null) {
-                        binding.swipeRefreshLayoutView!!.isEnabled = true
+                    withNullableControllerViewBinding {
+                        binding.swipeRefreshLayoutView.isEnabled = true
                     }
                     searchView!!.onActionViewCollapsed()
                     val activity = getActivity() as MainActivity?
@@ -403,7 +401,7 @@ class ConversationsListController(bundle: Bundle) :
                             viewThemeUtils.resetStatusBar(activity, activity.binding.searchToolbar)
                         }
                     }
-                    val layoutManager = binding.recyclerView!!.layoutManager as SmoothScrollLinearLayoutManager?
+                    val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
                     layoutManager?.scrollToPositionWithOffset(0, 0)
                     return true
                 }
@@ -491,21 +489,21 @@ class ConversationsListController(bundle: Bundle) :
                 }
                 if (adapterWasNull) {
                     adapterWasNull = false
-                    binding.loadingContent!!.visibility = View.GONE
+                    binding.loadingContent.visibility = View.GONE
                 }
-                if (ocs!!.data!!.size > 0) {
-                    if (binding.emptyLayout!!.visibility != View.GONE) {
-                        binding.emptyLayout!!.visibility = View.GONE
+                if (ocs!!.data!!.isNotEmpty()) {
+                    if (binding.emptyLayout.visibility != View.GONE) {
+                        binding.emptyLayout.visibility = View.GONE
                     }
-                    if (binding.swipeRefreshLayoutView!!.visibility != View.VISIBLE) {
-                        binding.swipeRefreshLayoutView!!.visibility = View.VISIBLE
+                    if (binding.swipeRefreshLayoutView.visibility != View.VISIBLE) {
+                        binding.swipeRefreshLayoutView.visibility = View.VISIBLE
                     }
                 } else {
-                    if (binding.emptyLayout!!.visibility != View.VISIBLE) {
-                        binding.emptyLayout!!.visibility = View.VISIBLE
+                    if (binding.emptyLayout.visibility != View.VISIBLE) {
+                        binding.emptyLayout.visibility = View.VISIBLE
                     }
-                    if (binding.swipeRefreshLayoutView!!.visibility != View.GONE) {
-                        binding.swipeRefreshLayoutView!!.visibility = View.GONE
+                    if (binding.swipeRefreshLayoutView.visibility != View.GONE) {
+                        binding.swipeRefreshLayoutView.visibility = View.GONE
                     }
                 }
                 for (conversation in ocs.data!!) {
@@ -515,8 +513,7 @@ class ConversationsListController(bundle: Bundle) :
                     ) {
                         continue
                     }
-                    var headerTitle: String
-                    headerTitle = resources!!.getString(R.string.conversations)
+                    val headerTitle: String = resources!!.getString(R.string.conversations)
                     var genericTextHeaderItem: GenericTextHeaderItem
                     if (!callHeaderItems.containsKey(headerTitle)) {
                         genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
@@ -547,31 +544,31 @@ class ConversationsListController(bundle: Bundle) :
                 adapter!!.updateDataSet(conversationItems, false)
                 Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
                 fetchOpenConversations(apiVersion)
-                if (binding.swipeRefreshLayoutView != null) {
-                    binding.swipeRefreshLayoutView!!.isRefreshing = false
+                withNullableControllerViewBinding {
+                    binding.swipeRefreshLayoutView.isRefreshing = false
                 }
             }, { throwable: Throwable ->
                 handleHttpExceptions(throwable)
-                if (binding.swipeRefreshLayoutView != null) {
-                    binding.swipeRefreshLayoutView!!.isRefreshing = false
+                withNullableControllerViewBinding {
+                    binding.swipeRefreshLayoutView.isRefreshing = false
                 }
                 dispose(roomsQueryDisposable)
             }) {
                 dispose(roomsQueryDisposable)
-                if (binding.swipeRefreshLayoutView != null) {
-                    binding.swipeRefreshLayoutView!!.isRefreshing = false
+                withNullableControllerViewBinding {
+                    binding.swipeRefreshLayoutView.isRefreshing = false
                 }
                 isRefreshing = false
             }
     }
 
-    private fun sortConversations(conversationItems: List<AbstractFlexibleItem<*>>) {
-        Collections.sort(conversationItems) { o1: AbstractFlexibleItem<*>, o2: AbstractFlexibleItem<*> ->
-            val (_, _, _, _, _, _, _, _, _, _, _, _, _, favorite, lastActivity) = (o1 as ConversationItem).model
-            val (_, _, _, _, _, _, _, _, _, _, _, _, _, favorite1, lastActivity1) = (o2 as ConversationItem).model
+    private fun sortConversations(conversationItems: MutableList<AbstractFlexibleItem<*>>) {
+        conversationItems.sortWith { o1: AbstractFlexibleItem<*>, o2: AbstractFlexibleItem<*> ->
+            val conversation1 = (o1 as ConversationItem).model
+            val conversation2 = (o2 as ConversationItem).model
             CompareToBuilder()
-                .append(favorite1, favorite)
-                .append(lastActivity1, lastActivity)
+                .append(conversation2.favorite, conversation1.favorite)
+                .append(conversation2.lastActivity, conversation1.lastActivity)
                 .toComparison()
         }
     }
@@ -643,10 +640,10 @@ class ConversationsListController(bundle: Bundle) :
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareViews() {
         layoutManager = SmoothScrollLinearLayoutManager(Objects.requireNonNull(activity))
-        binding.recyclerView!!.layoutManager = layoutManager
-        binding.recyclerView!!.setHasFixedSize(true)
-        binding.recyclerView!!.adapter = adapter
-        binding.recyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -654,24 +651,24 @@ class ConversationsListController(bundle: Bundle) :
                 }
             }
         })
-        binding.recyclerView!!.setOnTouchListener { v: View, event: MotionEvent? ->
+        binding.recyclerView.setOnTouchListener { v: View, _: MotionEvent? ->
             if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
                 val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
             }
             false
         }
-        binding.swipeRefreshLayoutView!!.setOnRefreshListener { fetchData() }
-        viewThemeUtils.themeSwipeRefreshLayout(binding.swipeRefreshLayoutView!!)
-        binding.emptyLayout!!.setOnClickListener { v: View? -> showNewConversationsScreen() }
-        binding.floatingActionButton!!.setOnClickListener { v: View? ->
+        binding.swipeRefreshLayoutView.setOnRefreshListener { fetchData() }
+        viewThemeUtils.themeSwipeRefreshLayout(binding.swipeRefreshLayoutView)
+        binding.emptyLayout.setOnClickListener { showNewConversationsScreen() }
+        binding.floatingActionButton.setOnClickListener {
             run(context)
             showNewConversationsScreen()
         }
-        viewThemeUtils.themeFAB(binding.floatingActionButton!!)
+        viewThemeUtils.themeFAB(binding.floatingActionButton)
         if (activity != null && activity is MainActivity) {
             val activity = activity as MainActivity?
-            activity!!.binding.switchAccountButton.setOnClickListener { v: View? ->
+            activity!!.binding.switchAccountButton.setOnClickListener {
                 if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
                     val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
                     newFragment.show(
@@ -687,13 +684,13 @@ class ConversationsListController(bundle: Bundle) :
                 }
             }
         }
-        binding.newMentionPopupBubble!!.hide()
-        binding.newMentionPopupBubble!!.setPopupBubbleListener {
-            binding.recyclerView!!.smoothScrollToPosition(
+        binding.newMentionPopupBubble.hide()
+        binding.newMentionPopupBubble.setPopupBubbleListener {
+            binding.recyclerView.smoothScrollToPosition(
                 nextUnreadConversationScrollPosition
             )
         }
-        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.newMentionPopupBubble!!)
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.newMentionPopupBubble)
     }
 
     private fun checkToShowUnreadBubble() {
@@ -709,14 +706,14 @@ class ConversationsListController(bundle: Bundle) :
                     ) && position > lastVisibleItem
                 ) {
                     nextUnreadConversationScrollPosition = position
-                    if (!binding.newMentionPopupBubble!!.isShown) {
-                        binding.newMentionPopupBubble!!.show()
+                    if (!binding.newMentionPopupBubble.isShown) {
+                        binding.newMentionPopupBubble.show()
                     }
                     return
                 }
             }
             nextUnreadConversationScrollPosition = 0
-            binding.newMentionPopupBubble!!.hide()
+            binding.newMentionPopupBubble.hide()
         } catch (e: NullPointerException) {
             Log.d(
                 TAG,
@@ -738,10 +735,8 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     private fun dispose(disposable: Disposable?) {
-        var disposable = disposable
         if (disposable != null && !disposable.isDisposed) {
             disposable.dispose()
-            disposable = null
         } else if (disposable == null && roomsQueryDisposable != null && !roomsQueryDisposable!!.isDisposed) {
             roomsQueryDisposable!!.dispose()
             roomsQueryDisposable = null
@@ -776,7 +771,7 @@ class ConversationsListController(bundle: Bundle) :
         }
     }
 
-    fun onQueryTextChange(newText: String?) {
+    private fun onQueryTextChange(newText: String?) {
         if (!TextUtils.isEmpty(searchQuery)) {
             val filter = searchQuery
             searchQuery = ""
@@ -817,8 +812,8 @@ class ConversationsListController(bundle: Bundle) :
 
     @SuppressLint("CheckResult") // handled by helper
     private fun startMessageSearch(search: String?) {
-        if (binding.swipeRefreshLayoutView != null) {
-            binding.swipeRefreshLayoutView!!.isRefreshing = true
+        withNullableControllerViewBinding {
+            binding.swipeRefreshLayoutView.isRefreshing = true
         }
         searchHelper?.startMessageSearch(search!!)
             ?.subscribeOn(Schedulers.io())
@@ -832,7 +827,7 @@ class ConversationsListController(bundle: Bundle) :
 
     @SuppressLint("CheckResult") // handled by helper
     private fun loadMoreMessages() {
-        binding.swipeRefreshLayoutView!!.isRefreshing = true
+        binding.swipeRefreshLayoutView.isRefreshing = true
         val observable = searchHelper!!.loadMore()
         observable?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe({ results: MessageSearchResults -> onMessageSearchResult(results) }) { throwable: Throwable ->
@@ -906,9 +901,9 @@ class ConversationsListController(bundle: Bundle) :
 
     private fun handleSharedData() {
         collectDataFromIntent()
-        if (!textToPaste!!.isEmpty()) {
+        if (textToPaste!!.isNotEmpty()) {
             openConversation(textToPaste)
-        } else if (filesToShare != null && !filesToShare!!.isEmpty()) {
+        } else if (filesToShare != null && filesToShare!!.isNotEmpty()) {
             showSendFilesConfirmDialog()
         } else {
             Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
@@ -923,8 +918,7 @@ class ConversationsListController(bundle: Bundle) :
                 val filename = getFileName(Uri.parse(file), context)
                 fileNamesWithLineBreaks.append(filename).append("\n")
             }
-            val confirmationQuestion: String
-            confirmationQuestion = if (filesToShare!!.size == 1) {
+            val confirmationQuestion: String = if (filesToShare!!.size == 1) {
                 String.format(
                     resources!!.getString(R.string.nc_upload_confirm_send_single),
                     selectedConversation!!.displayName
@@ -935,19 +929,19 @@ class ConversationsListController(bundle: Bundle) :
                     selectedConversation!!.displayName
                 )
             }
-            val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton!!.context)
+            val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton.context)
                 .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.upload))
                 .setTitle(confirmationQuestion)
                 .setMessage(fileNamesWithLineBreaks.toString())
-                .setPositiveButton(R.string.nc_yes) { dialog: DialogInterface?, which: Int ->
+                .setPositiveButton(R.string.nc_yes) { _, _ ->
                     upload()
                     openConversation()
                 }
-                .setNegativeButton(R.string.nc_no) { dialog: DialogInterface?, which: Int ->
+                .setNegativeButton(R.string.nc_no) { _, _ ->
                     Log.d(TAG, "sharing files aborted, going back to share-to screen")
                     showShareToScreen = true
                 }
-            viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton!!.context, dialogBuilder)
+            viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
             val dialog = dialogBuilder.show()
             viewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
@@ -1037,7 +1031,7 @@ class ConversationsListController(bundle: Bundle) :
             return
         }
         try {
-            var filesToShareArray: Array<String?>? = arrayOfNulls(filesToShare!!.size)
+            var filesToShareArray: Array<String?> = arrayOfNulls(filesToShare!!.size)
             filesToShareArray = filesToShare!!.toArray(filesToShareArray)
             val data = Data.Builder()
                 .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, filesToShareArray)
@@ -1125,11 +1119,11 @@ class ConversationsListController(bundle: Bundle) :
         ) {
             val conversation = Parcels.unwrap<Conversation>(conversationMenuBundle!!.getParcelable(KEY_ROOM))
             if (conversation != null) {
-                val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton!!.context)
+                val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton.context)
                     .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                     .setTitle(R.string.nc_delete_call)
                     .setMessage(R.string.nc_delete_conversation_more)
-                    .setPositiveButton(R.string.nc_delete) { dialog: DialogInterface?, which: Int ->
+                    .setPositiveButton(R.string.nc_delete) { _, _ ->
                         val data = Data.Builder()
                         data.putLong(
                             KEY_INTERNAL_USER_ID,
@@ -1139,10 +1133,10 @@ class ConversationsListController(bundle: Bundle) :
                         conversationMenuBundle = null
                         deleteConversation(data.build())
                     }
-                    .setNegativeButton(R.string.nc_cancel) { dialog: DialogInterface?, which: Int ->
+                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
                         conversationMenuBundle = null
                     }
-                viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton!!.context, dialogBuilder)
+                viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
                 val dialog = dialogBuilder.show()
                 viewThemeUtils.colorTextButtons(
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE),
@@ -1154,12 +1148,12 @@ class ConversationsListController(bundle: Bundle) :
 
     private fun showUnauthorizedDialog() {
         if (activity != null) {
-            val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton!!.context)
+            val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton.context)
                 .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_dialog_invalid_password)
                 .setMessage(R.string.nc_dialog_reauth_or_delete)
                 .setCancelable(false)
-                .setPositiveButton(R.string.nc_delete) { dialog: DialogInterface?, which: Int ->
+                .setPositiveButton(R.string.nc_delete) { _, _ ->
                     val otherUserExists = userManager
                         .scheduleUserForDeletionWithId(currentUser!!.id!!)
                         .blockingGet()
@@ -1178,7 +1172,7 @@ class ConversationsListController(bundle: Bundle) :
                         )
                     }
                 }
-                .setNegativeButton(R.string.nc_settings_reauthorize) { dialog: DialogInterface?, which: Int ->
+                .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
                     router.pushController(
                         RouterTransaction.with(
                             WebViewLoginController(currentUser!!.baseUrl, true)
@@ -1187,7 +1181,7 @@ class ConversationsListController(bundle: Bundle) :
                             .popChangeHandler(VerticalChangeHandler())
                     )
                 }
-            viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton!!.context, dialogBuilder)
+            viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
             val dialog = dialogBuilder.show()
             viewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
@@ -1197,12 +1191,12 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     private fun showServerEOLDialog() {
-        val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton!!.context)
+        val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton.context)
             .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_warning_white))
             .setTitle(R.string.nc_settings_server_eol_title)
             .setMessage(R.string.nc_settings_server_eol)
             .setCancelable(false)
-            .setPositiveButton(R.string.nc_settings_remove_account) { dialog: DialogInterface?, which: Int ->
+            .setPositiveButton(R.string.nc_settings_remove_account) { _, _ ->
                 val otherUserExists = userManager
                     .scheduleUserForDeletionWithId(currentUser!!.id!!)
                     .blockingGet()
@@ -1221,15 +1215,15 @@ class ConversationsListController(bundle: Bundle) :
                     )
                 }
             }
-            .setNegativeButton(R.string.nc_cancel) { dialog: DialogInterface?, which: Int ->
-                if (userManager.users.blockingGet().size > 0) {
+            .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                if (userManager.users.blockingGet().isNotEmpty()) {
                     router.pushController(RouterTransaction.with(SwitchAccountController()))
                 } else {
                     activity!!.finishAffinity()
                     activity!!.finish()
                 }
             }
-        viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton!!.context, dialogBuilder)
+        viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
         val dialog = dialogBuilder.show()
         viewThemeUtils.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
@@ -1243,11 +1237,11 @@ class ConversationsListController(bundle: Bundle) :
         WorkManager.getInstance().enqueue(deleteConversationWorker)
     }
 
-    fun onMessageSearchResult(results: MessageSearchResults) {
-        if (searchView!!.query.length > 0) {
+    private fun onMessageSearchResult(results: MessageSearchResults) {
+        if (searchView!!.query.isNotEmpty()) {
             clearMessageSearchResults()
             val entries = results.messages
-            if (entries.size > 0) {
+            if (entries.isNotEmpty()) {
                 val adapterItems: MutableList<AbstractFlexibleItem<*>> = ArrayList(entries.size + 1)
                 for (i in entries.indices) {
                     val showHeader = i == 0
@@ -1265,18 +1259,18 @@ class ConversationsListController(bundle: Bundle) :
                     adapterItems.add(LoadMoreResultsItem)
                 }
                 adapter!!.addItems(0, adapterItems)
-                binding.recyclerView!!.scrollToPosition(0)
+                binding.recyclerView.scrollToPosition(0)
             }
         }
-        if (binding.swipeRefreshLayoutView != null) {
-            binding.swipeRefreshLayoutView!!.isRefreshing = false
+        withNullableControllerViewBinding {
+            binding.swipeRefreshLayoutView.isRefreshing = false
         }
     }
 
-    fun onMessageSearchError(throwable: Throwable) {
+    private fun onMessageSearchError(throwable: Throwable) {
         handleHttpExceptions(throwable)
-        if (binding.swipeRefreshLayoutView != null) {
-            binding.swipeRefreshLayoutView!!.isRefreshing = false
+        withNullableControllerViewBinding {
+            binding.swipeRefreshLayoutView.isRefreshing = false
         }
     }
 
