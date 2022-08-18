@@ -158,7 +158,6 @@ android {
 
 ext {
     androidxCameraVersion = "1.1.0"
-    butterknifeVersion = "10.2.3"
     coilKtVersion = "2.1.0"
     daggerVersion = "2.43.2"
     lifecycleVersion = '2.5.1'
@@ -256,8 +255,6 @@ dependencies {
 
     implementation "org.parceler:parceler-api:$parcelerVersion"
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
-    implementation "com.jakewharton:butterknife:${butterknifeVersion}"
-    kapt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
     implementation fileTree(downloadWebRtc.libFile.path)

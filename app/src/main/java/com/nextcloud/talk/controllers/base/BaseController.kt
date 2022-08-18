@@ -63,7 +63,7 @@ import javax.inject.Inject
 import kotlin.jvm.internal.Intrinsics
 
 @AutoInjector(NextcloudTalkApplication::class)
-abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = null) : Controller(args) {
+abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = null) : Controller(args) {
     enum class AppBarLayoutType {
         TOOLBAR, SEARCH_BAR, EMPTY
     }
@@ -145,7 +145,7 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         super.onAttach(view)
     }
 
-    protected fun showSearchOrToolbar() {
+    open fun showSearchOrToolbar() {
         if (isValidActivity(activity)) {
             val showSearchBar = appBarLayoutType == AppBarLayoutType.SEARCH_BAR
             val activity = activity as MainActivity
@@ -202,6 +202,18 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         binding.searchToolbar.visibility = View.GONE
     }
 
+    fun hideSearchBar() {
+        val activity = activity as MainActivity?
+        val layoutParams = activity!!.binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+        activity.binding.searchToolbar.visibility = View.GONE
+        activity.binding.toolbar.visibility = View.VISIBLE
+        layoutParams.scrollFlags = 0
+        activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+            activity.binding.appBar.context,
+            R.animator.appbar_elevation_on
+        )
+    }
+
     private fun colorizeStatusBar(showSearchBar: Boolean, activity: Activity?, resources: Resources?) {
         if (activity != null && resources != null) {
             if (showSearchBar) {
@@ -223,7 +235,7 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-        val imm = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
@@ -239,15 +251,8 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     private fun calculateValidParentController() {
         var parentController = parentController
         while (parentController != null) {
-            if (isValidController(parentController)) {
-                return
-            }
             parentController = parentController.parentController
         }
-    }
-
-    private fun isValidController(parentController: Controller): Boolean {
-        return parentController is BaseController && parentController.title != null
     }
 
     private fun isTitleSetable(): Boolean {
@@ -280,7 +285,7 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         temporaryClassNames.add(WebViewLoginController::class.java.name)
         temporaryClassNames.add(SwitchAccountController::class.java.name)
         if (!temporaryClassNames.contains(javaClass.name)) {
-            appPreferences!!.removeTemporaryClientCertAlias()
+            appPreferences.removeTemporaryClientCertAlias()
         }
     }
 
@@ -323,7 +328,7 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
     val searchHint: String
-        get() = context!!.getString(R.string.appbar_search_in, context!!.getString(R.string.nc_app_product_name))
+        get() = context.getString(R.string.appbar_search_in, context.getString(R.string.nc_app_product_name))
 
     companion object {
         private val TAG = BaseController::class.java.simpleName

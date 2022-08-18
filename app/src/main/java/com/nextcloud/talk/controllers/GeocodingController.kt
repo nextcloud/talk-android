@@ -41,7 +41,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.GeocodingAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerGeocodingBinding
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -58,7 +58,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class GeocodingController(args: Bundle) :
-    NewBaseController(
+    BaseController(
         R.layout.controller_geocoding,
         args
     ),

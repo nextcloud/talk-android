@@ -49,7 +49,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerLocationBinding
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -83,7 +83,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class LocationPickerController(args: Bundle) :
-    NewBaseController(
+    BaseController(
         R.layout.controller_location,
         args
     ),

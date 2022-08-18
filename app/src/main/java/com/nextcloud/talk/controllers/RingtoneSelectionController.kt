@@ -38,7 +38,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.NotificationSoundItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerGenericRvBinding
 import com.nextcloud.talk.models.RingtoneSettings
@@ -52,7 +52,7 @@ import java.io.IOException
 
 @AutoInjector(NextcloudTalkApplication::class)
 class RingtoneSelectionController(args: Bundle) :
-    NewBaseController(
+    BaseController(
         R.layout.controller_generic_rv,
         args
     ),

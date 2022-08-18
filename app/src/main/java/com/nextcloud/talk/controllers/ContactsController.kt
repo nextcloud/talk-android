@@ -49,7 +49,7 @@ import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
@@ -89,7 +89,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ContactsController(args: Bundle) :
-    NewBaseController(R.layout.controller_contacts_rv),
+    BaseController(R.layout.controller_contacts_rv),
     SearchView.OnQueryTextListener,
     FlexibleAdapter.OnItemClickListener {
     private val binding: ControllerContactsRvBinding by viewBinding(ControllerContactsRvBinding::bind)

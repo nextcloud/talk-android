@@ -37,7 +37,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.AdvancedUserItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerGenericRvBinding
@@ -59,7 +59,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class SwitchAccountController(args: Bundle? = null) :
-    NewBaseController(
+    BaseController(
         R.layout.controller_generic_rv,
         args
     ) {

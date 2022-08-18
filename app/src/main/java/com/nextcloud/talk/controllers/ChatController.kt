@@ -125,7 +125,7 @@ import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
-import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerChatBinding
@@ -211,7 +211,7 @@ import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatController(args: Bundle) :
-    NewBaseController(
+    BaseController(
         R.layout.controller_chat,
         args
     ),
