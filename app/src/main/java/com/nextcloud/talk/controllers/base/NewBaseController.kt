@@ -145,7 +145,7 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         super.onAttach(view)
     }
 
-    protected fun showSearchOrToolbar() {
+    open fun showSearchOrToolbar() {
         if (isValidActivity(activity)) {
             val showSearchBar = appBarLayoutType == AppBarLayoutType.SEARCH_BAR
             val activity = activity as MainActivity
@@ -200,6 +200,18 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     private fun hideBars(binding: ActivityMainBinding) {
         binding.toolbar.visibility = View.GONE
         binding.searchToolbar.visibility = View.GONE
+    }
+
+    fun hideSearchBar() {
+        val activity = activity as MainActivity?
+        val layoutParams = activity!!.binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+        activity.binding.searchToolbar.visibility = View.GONE
+        activity.binding.toolbar.visibility = View.VISIBLE
+        layoutParams.scrollFlags = 0
+        activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+            activity.binding.appBar.context,
+            R.animator.appbar_elevation_on
+        )
     }
 
     private fun colorizeStatusBar(showSearchBar: Boolean, activity: Activity?, resources: Resources?) {

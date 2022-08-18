@@ -38,17 +38,13 @@ import android.os.Handler
 import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
@@ -57,12 +53,10 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import butterknife.BindView
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
@@ -74,7 +68,6 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.items.ConversationItem
@@ -85,8 +78,10 @@ import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.databinding.ControllerConversationsRvBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.interfaces.ConversationMenuInterface
@@ -105,7 +100,6 @@ import com.nextcloud.talk.models.json.statuses.StatusesOverall
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AttendeePermissionsUtil
@@ -131,9 +125,7 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatu
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
-import com.nextcloud.ui.popupbubble.PopupBubble
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -155,7 +147,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationsListController(bundle: Bundle) :
-    BaseController(),
+    NewBaseController(R.layout.controller_conversations_rv, bundle),
     FlexibleAdapter.OnItemClickListener,
     FlexibleAdapter.OnItemLongClickListener,
     ConversationMenuInterface {
@@ -171,40 +163,15 @@ class ConversationsListController(bundle: Bundle) :
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var context: Context
-
-    @Inject
-    lateinit var appPreferences: AppPreferences
-
-    @Inject
     lateinit var unifiedSearchRepository: UnifiedSearchRepository
 
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
+    private val binding: ControllerConversationsRvBinding by viewBinding(ControllerConversationsRvBinding::bind)
 
-    @JvmField
-    @BindView(R.id.recycler_view)
-    var recyclerView: RecyclerView? = null
+    override val title: String
+        get() = resources!!.getString(R.string.nc_app_product_name)
 
-    @JvmField
-    @BindView(R.id.swipeRefreshLayoutView)
-    var swipeRefreshLayout: SwipeRefreshLayout? = null
-
-    @JvmField
-    @BindView(R.id.loading_content)
-    var loadingContent: LinearLayout? = null
-
-    @JvmField
-    @BindView(R.id.emptyLayout)
-    var emptyLayoutView: RelativeLayout? = null
-
-    @JvmField
-    @BindView(R.id.floatingActionButton)
-    var floatingActionButton: FloatingActionButton? = null
-
-    @JvmField
-    @BindView(R.id.newMentionPopupBubble)
-    var newMentionPopupBubble: PopupBubble? = null
+    override val appBarLayoutType: AppBarLayoutType
+        get() = AppBarLayoutType.SEARCH_BAR
 
     private var currentUser: User? = null
     private var roomsQueryDisposable: Disposable? = null
@@ -234,20 +201,14 @@ class ConversationsListController(bundle: Bundle) :
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
 
-    override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View {
-        return inflater.inflate(R.layout.controller_conversations_rv, container, false)
-    }
-
     override fun onViewBound(view: View) {
         super.onViewBound(view)
         sharedApplication!!.componentApplication.inject(this)
-        if (actionBar != null) {
-            actionBar.show()
-        }
+        actionBar?.show()
         if (adapter == null) {
             adapter = FlexibleAdapter(conversationItems, activity, true)
         } else {
-            loadingContent!!.visibility = View.GONE
+            binding.loadingContent.visibility = View.GONE
         }
         adapter!!.addListener(this)
         prepareViews()
@@ -378,10 +339,10 @@ class ConversationsListController(bundle: Bundle) :
         showShareToScreen = !showShareToScreen && hasActivityActionSendIntent()
         if (showShareToScreen) {
             hideSearchBar()
-            actionBar.setTitle(R.string.send_to_three_dots)
+            actionBar?.setTitle(R.string.send_to_three_dots)
         } else if (forwardMessage) {
             hideSearchBar()
-            actionBar.setTitle(R.string.nc_forward_to_three_dots)
+            actionBar?.setTitle(R.string.nc_forward_to_three_dots)
         } else {
             val activity = activity as MainActivity?
             searchItem!!.isVisible = conversationItems.size > 0
@@ -411,8 +372,8 @@ class ConversationsListController(bundle: Bundle) :
                     adapter!!.setHeadersShown(true)
                     adapter!!.updateDataSet(searchableConversationItems, false)
                     adapter!!.showAllHeaders()
-                    if (swipeRefreshLayout != null) {
-                        swipeRefreshLayout!!.isEnabled = false
+                    if (binding.swipeRefreshLayoutView != null) {
+                        binding.swipeRefreshLayoutView!!.isEnabled = false
                     }
                     return true
                 }
@@ -424,10 +385,10 @@ class ConversationsListController(bundle: Bundle) :
                     if (searchHelper != null) {
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
-                        swipeRefreshLayout!!.isRefreshing = false
+                        binding.swipeRefreshLayoutView!!.isRefreshing = false
                     }
-                    if (swipeRefreshLayout != null) {
-                        swipeRefreshLayout!!.isEnabled = true
+                    if (binding.swipeRefreshLayoutView != null) {
+                        binding.swipeRefreshLayoutView!!.isEnabled = true
                     }
                     searchView!!.onActionViewCollapsed()
                     val activity = getActivity() as MainActivity?
@@ -442,7 +403,7 @@ class ConversationsListController(bundle: Bundle) :
                             viewThemeUtils.resetStatusBar(activity, activity.binding.searchToolbar)
                         }
                     }
-                    val layoutManager = recyclerView!!.layoutManager as SmoothScrollLinearLayoutManager?
+                    val layoutManager = binding.recyclerView!!.layoutManager as SmoothScrollLinearLayoutManager?
                     layoutManager?.scrollToPositionWithOffset(0, 0)
                     return true
                 }
@@ -462,7 +423,7 @@ class ConversationsListController(bundle: Bundle) :
         }
     }
 
-    fun showSearchView(activity: MainActivity, searchView: SearchView?, searchItem: MenuItem?) {
+    private fun showSearchView(activity: MainActivity, searchView: SearchView?, searchItem: MenuItem?) {
         activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
             activity.binding.appBar.context,
             R.animator.appbar_elevation_on
@@ -530,21 +491,21 @@ class ConversationsListController(bundle: Bundle) :
                 }
                 if (adapterWasNull) {
                     adapterWasNull = false
-                    loadingContent!!.visibility = View.GONE
+                    binding.loadingContent!!.visibility = View.GONE
                 }
                 if (ocs!!.data!!.size > 0) {
-                    if (emptyLayoutView!!.visibility != View.GONE) {
-                        emptyLayoutView!!.visibility = View.GONE
+                    if (binding.emptyLayout!!.visibility != View.GONE) {
+                        binding.emptyLayout!!.visibility = View.GONE
                     }
-                    if (swipeRefreshLayout!!.visibility != View.VISIBLE) {
-                        swipeRefreshLayout!!.visibility = View.VISIBLE
+                    if (binding.swipeRefreshLayoutView!!.visibility != View.VISIBLE) {
+                        binding.swipeRefreshLayoutView!!.visibility = View.VISIBLE
                     }
                 } else {
-                    if (emptyLayoutView!!.visibility != View.VISIBLE) {
-                        emptyLayoutView!!.visibility = View.VISIBLE
+                    if (binding.emptyLayout!!.visibility != View.VISIBLE) {
+                        binding.emptyLayout!!.visibility = View.VISIBLE
                     }
-                    if (swipeRefreshLayout!!.visibility != View.GONE) {
-                        swipeRefreshLayout!!.visibility = View.GONE
+                    if (binding.swipeRefreshLayoutView!!.visibility != View.GONE) {
+                        binding.swipeRefreshLayoutView!!.visibility = View.GONE
                     }
                 }
                 for (conversation in ocs.data!!) {
@@ -586,19 +547,19 @@ class ConversationsListController(bundle: Bundle) :
                 adapter!!.updateDataSet(conversationItems, false)
                 Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
                 fetchOpenConversations(apiVersion)
-                if (swipeRefreshLayout != null) {
-                    swipeRefreshLayout!!.isRefreshing = false
+                if (binding.swipeRefreshLayoutView != null) {
+                    binding.swipeRefreshLayoutView!!.isRefreshing = false
                 }
             }, { throwable: Throwable ->
                 handleHttpExceptions(throwable)
-                if (swipeRefreshLayout != null) {
-                    swipeRefreshLayout!!.isRefreshing = false
+                if (binding.swipeRefreshLayoutView != null) {
+                    binding.swipeRefreshLayoutView!!.isRefreshing = false
                 }
                 dispose(roomsQueryDisposable)
             }) {
                 dispose(roomsQueryDisposable)
-                if (swipeRefreshLayout != null) {
-                    swipeRefreshLayout!!.isRefreshing = false
+                if (binding.swipeRefreshLayoutView != null) {
+                    binding.swipeRefreshLayoutView!!.isRefreshing = false
                 }
                 isRefreshing = false
             }
@@ -682,10 +643,10 @@ class ConversationsListController(bundle: Bundle) :
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareViews() {
         layoutManager = SmoothScrollLinearLayoutManager(Objects.requireNonNull(activity))
-        recyclerView!!.layoutManager = layoutManager
-        recyclerView!!.setHasFixedSize(true)
-        recyclerView!!.adapter = adapter
-        recyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerView!!.layoutManager = layoutManager
+        binding.recyclerView!!.setHasFixedSize(true)
+        binding.recyclerView!!.adapter = adapter
+        binding.recyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -693,21 +654,21 @@ class ConversationsListController(bundle: Bundle) :
                 }
             }
         })
-        recyclerView!!.setOnTouchListener { v: View, event: MotionEvent? ->
+        binding.recyclerView!!.setOnTouchListener { v: View, event: MotionEvent? ->
             if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
                 val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
             }
             false
         }
-        swipeRefreshLayout!!.setOnRefreshListener { fetchData() }
-        viewThemeUtils.themeSwipeRefreshLayout(swipeRefreshLayout!!)
-        emptyLayoutView!!.setOnClickListener { v: View? -> showNewConversationsScreen() }
-        floatingActionButton!!.setOnClickListener { v: View? ->
+        binding.swipeRefreshLayoutView!!.setOnRefreshListener { fetchData() }
+        viewThemeUtils.themeSwipeRefreshLayout(binding.swipeRefreshLayoutView!!)
+        binding.emptyLayout!!.setOnClickListener { v: View? -> showNewConversationsScreen() }
+        binding.floatingActionButton!!.setOnClickListener { v: View? ->
             run(context)
             showNewConversationsScreen()
         }
-        viewThemeUtils.themeFAB(floatingActionButton!!)
+        viewThemeUtils.themeFAB(binding.floatingActionButton!!)
         if (activity != null && activity is MainActivity) {
             val activity = activity as MainActivity?
             activity!!.binding.switchAccountButton.setOnClickListener { v: View? ->
@@ -726,13 +687,13 @@ class ConversationsListController(bundle: Bundle) :
                 }
             }
         }
-        newMentionPopupBubble!!.hide()
-        newMentionPopupBubble!!.setPopupBubbleListener {
-            recyclerView!!.smoothScrollToPosition(
+        binding.newMentionPopupBubble!!.hide()
+        binding.newMentionPopupBubble!!.setPopupBubbleListener {
+            binding.recyclerView!!.smoothScrollToPosition(
                 nextUnreadConversationScrollPosition
             )
         }
-        viewThemeUtils.colorMaterialButtonPrimaryFilled(newMentionPopupBubble!!)
+        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.newMentionPopupBubble!!)
     }
 
     private fun checkToShowUnreadBubble() {
@@ -748,14 +709,14 @@ class ConversationsListController(bundle: Bundle) :
                     ) && position > lastVisibleItem
                 ) {
                     nextUnreadConversationScrollPosition = position
-                    if (!newMentionPopupBubble!!.isShown) {
-                        newMentionPopupBubble!!.show()
+                    if (!binding.newMentionPopupBubble!!.isShown) {
+                        binding.newMentionPopupBubble!!.show()
                     }
                     return
                 }
             }
             nextUnreadConversationScrollPosition = 0
-            newMentionPopupBubble!!.hide()
+            binding.newMentionPopupBubble!!.hide()
         } catch (e: NullPointerException) {
             Log.d(
                 TAG,
@@ -856,8 +817,8 @@ class ConversationsListController(bundle: Bundle) :
 
     @SuppressLint("CheckResult") // handled by helper
     private fun startMessageSearch(search: String?) {
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout!!.isRefreshing = true
+        if (binding.swipeRefreshLayoutView != null) {
+            binding.swipeRefreshLayoutView!!.isRefreshing = true
         }
         searchHelper?.startMessageSearch(search!!)
             ?.subscribeOn(Schedulers.io())
@@ -871,7 +832,7 @@ class ConversationsListController(bundle: Bundle) :
 
     @SuppressLint("CheckResult") // handled by helper
     private fun loadMoreMessages() {
-        swipeRefreshLayout!!.isRefreshing = true
+        binding.swipeRefreshLayoutView!!.isRefreshing = true
         val observable = searchHelper!!.loadMore()
         observable?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe({ results: MessageSearchResults -> onMessageSearchResult(results) }) { throwable: Throwable ->
@@ -879,10 +840,6 @@ class ConversationsListController(bundle: Bundle) :
                     throwable
                 )
             }
-    }
-
-    override fun getTitle(): String {
-        return resources!!.getString(R.string.nc_app_product_name)
     }
 
     override fun onItemClick(view: View, position: Int): Boolean {
@@ -978,7 +935,7 @@ class ConversationsListController(bundle: Bundle) :
                     selectedConversation!!.displayName
                 )
             }
-            val dialogBuilder = MaterialAlertDialogBuilder(floatingActionButton!!.context)
+            val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton!!.context)
                 .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.upload))
                 .setTitle(confirmationQuestion)
                 .setMessage(fileNamesWithLineBreaks.toString())
@@ -990,7 +947,7 @@ class ConversationsListController(bundle: Bundle) :
                     Log.d(TAG, "sharing files aborted, going back to share-to screen")
                     showShareToScreen = true
                 }
-            viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton!!.context, dialogBuilder)
+            viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton!!.context, dialogBuilder)
             val dialog = dialogBuilder.show()
             viewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
@@ -1168,7 +1125,7 @@ class ConversationsListController(bundle: Bundle) :
         ) {
             val conversation = Parcels.unwrap<Conversation>(conversationMenuBundle!!.getParcelable(KEY_ROOM))
             if (conversation != null) {
-                val dialogBuilder = MaterialAlertDialogBuilder(floatingActionButton!!.context)
+                val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton!!.context)
                     .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                     .setTitle(R.string.nc_delete_call)
                     .setMessage(R.string.nc_delete_conversation_more)
@@ -1185,7 +1142,7 @@ class ConversationsListController(bundle: Bundle) :
                     .setNegativeButton(R.string.nc_cancel) { dialog: DialogInterface?, which: Int ->
                         conversationMenuBundle = null
                     }
-                viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton!!.context, dialogBuilder)
+                viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton!!.context, dialogBuilder)
                 val dialog = dialogBuilder.show()
                 viewThemeUtils.colorTextButtons(
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE),
@@ -1197,7 +1154,7 @@ class ConversationsListController(bundle: Bundle) :
 
     private fun showUnauthorizedDialog() {
         if (activity != null) {
-            val dialogBuilder = MaterialAlertDialogBuilder(floatingActionButton!!.context)
+            val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton!!.context)
                 .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_dialog_invalid_password)
                 .setMessage(R.string.nc_dialog_reauth_or_delete)
@@ -1230,7 +1187,7 @@ class ConversationsListController(bundle: Bundle) :
                             .popChangeHandler(VerticalChangeHandler())
                     )
                 }
-            viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton!!.context, dialogBuilder)
+            viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton!!.context, dialogBuilder)
             val dialog = dialogBuilder.show()
             viewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
@@ -1240,7 +1197,7 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     private fun showServerEOLDialog() {
-        val dialogBuilder = MaterialAlertDialogBuilder(floatingActionButton!!.context)
+        val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton!!.context)
             .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_warning_white))
             .setTitle(R.string.nc_settings_server_eol_title)
             .setMessage(R.string.nc_settings_server_eol)
@@ -1272,7 +1229,7 @@ class ConversationsListController(bundle: Bundle) :
                     activity!!.finish()
                 }
             }
-        viewThemeUtils.colorMaterialAlertDialogBackground(floatingActionButton!!.context, dialogBuilder)
+        viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton!!.context, dialogBuilder)
         val dialog = dialogBuilder.show()
         viewThemeUtils.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
@@ -1284,10 +1241,6 @@ class ConversationsListController(bundle: Bundle) :
         val deleteConversationWorker =
             OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(data).build()
         WorkManager.getInstance().enqueue(deleteConversationWorker)
-    }
-
-    override fun getAppBarLayoutType(): AppBarLayoutType {
-        return AppBarLayoutType.SEARCH_BAR
     }
 
     fun onMessageSearchResult(results: MessageSearchResults) {
@@ -1312,18 +1265,18 @@ class ConversationsListController(bundle: Bundle) :
                     adapterItems.add(LoadMoreResultsItem)
                 }
                 adapter!!.addItems(0, adapterItems)
-                recyclerView!!.scrollToPosition(0)
+                binding.recyclerView!!.scrollToPosition(0)
             }
         }
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout!!.isRefreshing = false
+        if (binding.swipeRefreshLayoutView != null) {
+            binding.swipeRefreshLayoutView!!.isRefreshing = false
         }
     }
 
     fun onMessageSearchError(throwable: Throwable) {
         handleHttpExceptions(throwable)
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout!!.isRefreshing = false
+        if (binding.swipeRefreshLayoutView != null) {
+            binding.swipeRefreshLayoutView!!.isRefreshing = false
         }
     }
 
