@@ -310,8 +310,4 @@ class ConversationsListBottomDialog(
         val behavior = BottomSheetBehavior.from(bottomSheet as View)
         behavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
-
-    companion object {
-        private const val TAG = "ConversationOperationDialog"
-    }
 }

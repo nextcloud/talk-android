@@ -389,16 +389,16 @@ class ConversationsListController(bundle: Bundle) :
                         binding.swipeRefreshLayoutView.isEnabled = true
                     }
                     searchView!!.onActionViewCollapsed()
-                    val activity = getActivity() as MainActivity?
-                    if (activity != null) {
-                        activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-                            activity.binding.appBar.context,
+                    val mainActivity = getActivity() as MainActivity?
+                    if (mainActivity != null) {
+                        mainActivity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+                            mainActivity.binding.appBar.context,
                             R.animator.appbar_elevation_off
                         )
-                        activity.binding.toolbar.visibility = View.GONE
-                        activity.binding.searchToolbar.visibility = View.VISIBLE
+                        mainActivity.binding.toolbar.visibility = View.GONE
+                        mainActivity.binding.searchToolbar.visibility = View.VISIBLE
                         if (resources != null) {
-                            viewThemeUtils.resetStatusBar(activity, activity.binding.searchToolbar)
+                            viewThemeUtils.resetStatusBar(mainActivity, mainActivity.binding.searchToolbar)
                         }
                     }
                     val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
@@ -431,7 +431,6 @@ class ConversationsListController(bundle: Bundle) :
         searchItem!!.expandActionView()
     }
 
-    @SuppressLint("LongLogTag")
     fun fetchData() {
         if (isUserStatusAvailable(userManager.currentUser.blockingGet())) {
             fetchUserStatusesAndRooms()
@@ -443,7 +442,9 @@ class ConversationsListController(bundle: Bundle) :
     private fun fetchUserStatusesAndRooms() {
         ncApi.getUserStatuses(credentials, ApiUtils.getUrlForUserStatuses(currentUser!!.baseUrl))
             .subscribe(object : Observer<StatusesOverall> {
-                override fun onSubscribe(d: Disposable) {}
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
                 override fun onNext(statusesOverall: StatusesOverall) {
                     for (status in statusesOverall.ocs!!.data!!) {
                         userStatuses[status.userId] = status
@@ -456,7 +457,9 @@ class ConversationsListController(bundle: Bundle) :
                     fetchRooms()
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -616,7 +619,7 @@ class ConversationsListController(bundle: Bundle) :
     private fun handleHttpExceptions(throwable: Throwable) {
         if (throwable is HttpException) {
             when (throwable.code()) {
-                401 -> if (parentController != null && parentController!!.router != null) {
+                HTTP_UNAUTHORIZED -> if (parentController != null && parentController!!.router != null) {
                     Log.d(TAG, "Starting reauth webview via getParentController()")
                     parentController!!.router.pushController(
                         RouterTransaction.with(
@@ -693,6 +696,7 @@ class ConversationsListController(bundle: Bundle) :
         viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.newMentionPopupBubble)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkToShowUnreadBubble() {
         try {
             val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
@@ -906,7 +910,8 @@ class ConversationsListController(bundle: Bundle) :
         } else if (filesToShare != null && filesToShare!!.isNotEmpty()) {
             showSendFilesConfirmDialog()
         } else {
-            Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+            Toast
+                .makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
                 .show()
         }
     }
@@ -970,6 +975,7 @@ class ConversationsListController(bundle: Bundle) :
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun collectDataFromIntent() {
         filesToShare = ArrayList()
         if (activity != null && activity!!.intent != null) {
@@ -1107,7 +1113,7 @@ class ConversationsListController(bundle: Bundle) :
             if (conversationsListBottomDialog!!.isShowing) {
                 conversationsListBottomDialog!!.dismiss()
             }
-        }, 2500)
+        }, BOTTOM_SHEET_DELAY)
     }
 
     override fun showDeleteConversationDialog(bundle: Bundle) {
@@ -1164,9 +1170,7 @@ class ConversationsListController(bundle: Bundle) :
                         onAttach(view!!)
                     } else if (!otherUserExists) {
                         router.setRoot(
-                            RouterTransaction.with(
-                                ServerSelectionController()
-                            )
+                            RouterTransaction.with(ServerSelectionController())
                                 .pushChangeHandler(VerticalChangeHandler())
                                 .popChangeHandler(VerticalChangeHandler())
                         )
@@ -1277,9 +1281,11 @@ class ConversationsListController(bundle: Bundle) :
     companion object {
         const val TAG = "ConvListController"
         const val UNREAD_BUBBLE_DELAY = 2500
+        const val BOTTOM_SHEET_DELAY: Long = 2500
         private const val KEY_SEARCH_QUERY = "ContactsController.searchQuery"
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
         const val SEARCH_MIN_CHARS = 2
+        const val HTTP_UNAUTHORIZED = 401
     }
 
     init {
