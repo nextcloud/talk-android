@@ -295,7 +295,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.24'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 
     implementation "io.noties.markwon:core:$markwonVersion"
 
