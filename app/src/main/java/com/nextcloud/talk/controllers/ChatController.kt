@@ -2217,7 +2217,7 @@ class ChatController(args: Bundle) :
                             Log.i(TAG, "UI destroyed - view binding already gone")
                         }
 
-                        deleteExpiredMessages()
+                        processExpiredMessages()
                     }
 
                     override fun onError(e: Throwable) {
@@ -2259,7 +2259,7 @@ class ChatController(args: Bundle) :
                             Log.i(TAG, "UI destroyed - view binding already gone", e)
                         }
 
-                        deleteExpiredMessages()
+                        processExpiredMessages()
                     }
 
                     override fun onError(e: Throwable) {
@@ -2274,8 +2274,8 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun deleteExpiredMessages() {
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")) {
+    private fun processExpiredMessages() {
+        fun deleteExpiredMessages() {
             val messagesToDelete: ArrayList<ChatMessage> = ArrayList()
             val systemTime = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
 
@@ -2289,6 +2289,10 @@ class ChatController(args: Bundle) :
             }
             adapter!!.delete(messagesToDelete)
             adapter!!.notifyDataSetChanged()
+        }
+
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")) {
+            deleteExpiredMessages()
         }
     }
 

@@ -3,6 +3,8 @@
   ~
   ~ @author Mario Danic
   ~ @author Andy Scherzinger
+  ~ @author Marcel Hibbe
+  ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
@@ -563,5 +565,17 @@
     <string name="send_without_notification">Send without notification</string>
     <string name="call_without_notification">Call without notification</string>
     <string name="set_avatar_from_camera">Set avatar from camera</string>
+
+    <string name="nc_conversation_settings">Conversation settings</string>
+
+    <!-- Expiring messages -->
+    <string name="nc_expire_messages">Expire chat messages</string>
+    <string name="nc_expire_message_off">Off</string>
+    <string name="nc_expire_message_four_weeks">4 weeks</string>
+    <string name="nc_expire_message_one_week">1 week</string>
+    <string name="nc_expire_message_one_day">1 day</string>
+    <string name="nc_expire_message_eight_hours">8 hours</string>
+    <string name="nc_expire_message_one_hour">1 hour</string>
+
 
 </resources>
