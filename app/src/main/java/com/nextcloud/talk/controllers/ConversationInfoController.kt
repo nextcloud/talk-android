@@ -38,6 +38,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.work.Data
@@ -51,6 +52,7 @@ import com.afollestad.materialdialogs.datetime.dateTimePicker
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ParticipantItem
 import com.nextcloud.talk.api.NcApi
@@ -81,8 +83,6 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
-import com.yarolegovich.lovelydialog.LovelySaveStateHandler
-import com.yarolegovich.lovelydialog.LovelyStandardDialog
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import io.reactivex.Observer
@@ -126,8 +126,6 @@ class ConversationInfoController(args: Bundle) :
     private var adapter: FlexibleAdapter<ParticipantItem>? = null
     private var userItems: MutableList<ParticipantItem> = ArrayList()
 
-    private var saveStateHandler: LovelySaveStateHandler? = null
-
     private val workerData: Data?
         get() {
             if (!TextUtils.isEmpty(conversationToken) && conversationUser != null) {
@@ -170,9 +168,9 @@ class ConversationInfoController(args: Bundle) :
         binding.notificationSettingsView.notificationSettings.setStorageModule(databaseStorageModule)
         binding.webinarInfoView.webinarSettings.setStorageModule(databaseStorageModule)
 
-        binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog(null) }
+        binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
-        binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog(null) }
+        binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
 
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
@@ -225,10 +223,6 @@ class ConversationInfoController(args: Bundle) :
 
     override fun onViewBound(view: View) {
         super.onViewBound(view)
-
-        if (saveStateHandler == null) {
-            saveStateHandler = LovelySaveStateHandler()
-        }
 
         binding.addParticipantsAction.visibility = View.GONE
 
@@ -357,16 +351,6 @@ class ConversationInfoController(args: Bundle) :
             })
     }
 
-    private fun showLovelyDialog(dialogId: Int, savedInstanceState: Bundle) {
-        when (dialogId) {
-            ID_DELETE_CONVERSATION_DIALOG -> showDeleteConversationDialog(savedInstanceState)
-            ID_CLEAR_CHAT_DIALOG -> showClearHistoryDialog(savedInstanceState)
-            else -> {
-                // unused atm
-            }
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(eventStatus: EventStatus) {
         getListOfParticipants()
@@ -377,38 +361,24 @@ class ConversationInfoController(args: Bundle) :
         eventBus.unregister(this)
     }
 
-    private fun showDeleteConversationDialog(savedInstanceState: Bundle?) {
+    private fun showDeleteConversationDialog() {
         if (activity != null) {
-            LovelyStandardDialog(activity, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
-                .setTopColorRes(R.color.nc_darkRed)
-                .setIcon(
-                    DisplayUtils.getTintedDrawable(
-                        context.resources,
-                        R.drawable.ic_delete_black_24dp, R.color.bg_default
-                    )
-                )
-                .setPositiveButtonColor(context.resources.getColor(R.color.nc_darkRed))
+            val dialogBuilder = MaterialAlertDialogBuilder(binding.conversationInfoName.context)
+                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_delete_call)
                 .setMessage(R.string.nc_delete_conversation_more)
-                .setPositiveButton(R.string.nc_delete) { deleteConversation() }
-                .setNegativeButton(R.string.nc_cancel, null)
-                .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler!!)
-                .setSavedInstanceState(savedInstanceState)
-                .show()
-        }
-    }
-
-    override fun onSaveViewState(view: View, outState: Bundle) {
-        saveStateHandler!!.saveInstanceState(outState)
-        super.onSaveViewState(view, outState)
-    }
-
-    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
-        super.onRestoreViewState(view, savedViewState)
-        if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
-            // Dialog won't be restarted automatically, so we need to call this method.
-            // Each dialog knows how to restore its state
-            showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState)
+                .setPositiveButton(R.string.nc_delete) { _, _ ->
+                    deleteConversation()
+                }
+                .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                    // unused atm
+                }
+            viewThemeUtils.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         }
     }
 
@@ -562,24 +532,24 @@ class ConversationInfoController(args: Bundle) :
         }
     }
 
-    private fun showClearHistoryDialog(savedInstanceState: Bundle?) {
+    private fun showClearHistoryDialog() {
         if (activity != null) {
-            LovelyStandardDialog(activity, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
-                .setTopColorRes(R.color.nc_darkRed)
-                .setIcon(
-                    DisplayUtils.getTintedDrawable(
-                        context.resources,
-                        R.drawable.ic_delete_black_24dp, R.color.bg_default
-                    )
-                )
-                .setPositiveButtonColor(context.resources.getColor(R.color.nc_darkRed))
+            val dialogBuilder = MaterialAlertDialogBuilder(binding.conversationInfoName.context)
+                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_clear_history)
                 .setMessage(R.string.nc_clear_history_warning)
-                .setPositiveButton(R.string.nc_delete_all) { clearHistory() }
-                .setNegativeButton(R.string.nc_cancel, null)
-                .setInstanceStateHandler(ID_CLEAR_CHAT_DIALOG, saveStateHandler!!)
-                .setSavedInstanceState(savedInstanceState)
-                .show()
+                .setPositiveButton(R.string.nc_delete_all) { _, _ ->
+                    clearHistory()
+                }
+                .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                    // unused atm
+                }
+            viewThemeUtils.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         }
     }
 
