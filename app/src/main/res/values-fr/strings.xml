@@ -340,8 +340,10 @@
     <string name="open_in_files_app">Ouvrir dans l\'app Fichiers</string>
     <string name="play_pause_voice_message">Jouer/mettre en pause le message vocal</string>
     <string name="polls_add_option">Ajouter une option</string>
+    <string name="polls_multiple_answers">Réponses multiples</string>
     <string name="polls_options">Options</string>
     <string name="polls_private_poll">Sondage privé</string>
+    <string name="polls_question">Question</string>
     <string name="polls_results_subtitle">Résultats</string>
     <string name="polls_settings">Paramètres</string>
     <string name="polls_submit_vote">Vote</string>
