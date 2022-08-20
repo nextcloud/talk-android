@@ -36,6 +36,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Grandes primero</string>
     <string name="menu_item_sort_by_size_smallest_first">Pequeñas primero</string>
+    <string name="message_poll_tap_to_open">Pulse para abrir la encuesta</string>
     <string name="message_search_begin_empty">No hay resultados de búsqueda</string>
     <string name="message_search_begin_typing">Empieza a escribir para buscar…</string>
     <string name="message_search_hint">Buscar…</string>
@@ -234,6 +235,8 @@
     <string name="nc_sent_an_image_you">Has enviado una imagen.</string>
     <string name="nc_sent_location" formatted="true">%1$s envió una ubicación.</string>
     <string name="nc_sent_location_you">Usted envió una ubicación.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s ha enviaod una encuesta.</string>
+    <string name="nc_sent_poll_you">Ha enviado una encuesta.</string>
     <string name="nc_sent_voice" formatted="true">%1$s envió un mensaje de voz.</string>
     <string name="nc_sent_voice_you">Usted envió un mensaje de voz.</string>
     <string name="nc_server_connect">Probar conexión al servidor</string>
@@ -341,11 +344,21 @@
     <string name="open_in_files_app">Abrir en app Archivos</string>
     <string name="play_pause_voice_message">Reproducir/pausar mensaje de voz</string>
     <string name="polls_add_option">Añadir opción</string>
+    <string name="polls_edit_vote">Editar voto</string>
+    <string name="polls_end_poll">Cerrar la encuesta</string>
+    <string name="polls_end_poll_confirm">¿Está seguro de que quiere cerrar esta encuesta? No se puede deshacer.</string>
+    <string name="polls_max_votes_reached">No puede votar más de una opción en esta encuesta.</string>
+    <string name="polls_multiple_answers">Múltiples respuestas</string>
+    <string name="polls_option_delete">Eliminar opción %1$s</string>
+    <string name="polls_option_hint">Opción %1$s</string>
     <string name="polls_options">Opciones</string>
     <string name="polls_private_poll">Votacion privada</string>
+    <string name="polls_question">Pregunta</string>
+    <string name="polls_question_hint">Su pregunta</string>
     <string name="polls_results_subtitle">Resultados</string>
     <string name="polls_settings">Ajustes</string>
     <string name="polls_submit_vote">Votar</string>
+    <string name="polls_voted_hidden_success">Voto enviado</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="read_storage_no_permission">Compartir archivos desde el almacenamiento no es posible sin permisos</string>
     <string name="save">Guardar</string>
@@ -373,6 +386,7 @@
     <string name="shared_items_file">Archivo</string>
     <string name="shared_items_media">Multimedia</string>
     <string name="shared_items_other">Otro</string>
+    <string name="shared_items_poll">Encuesta</string>
     <string name="shared_items_voice">Voz</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">No estas autorizado a iniciar una llamada</string>
@@ -402,4 +416,9 @@
     <string name="userinfo_no_info_headline">No se ha configurado la información personal</string>
     <string name="userinfo_no_info_text">Añade tu nombre, imagen y detalles de contacto en tu página de perfil.</string>
     <string name="whats_your_status">¿Cuál es su estado?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d voto</item>
+        <item quantity="many">%d votos</item>
+        <item quantity="other">%d votos</item>
+    </plurals>
+</resources>
