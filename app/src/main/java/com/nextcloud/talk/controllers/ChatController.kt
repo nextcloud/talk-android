@@ -352,9 +352,8 @@ class ChatController(args: Bundle) :
                                 conversationUser
                             )
 
-                        setupSwipeToReply()
-
                         try {
+                            setupSwipeToReply()
                             setupMentionAutocomplete()
                             checkShowCallButtons()
                             checkShowMessageInputView()
