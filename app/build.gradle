@@ -302,7 +302,7 @@ dependencies {
     implementation 'com.github.tobiaskaminsky:ImagePicker:1.8.0.2'
     implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
 
-    implementation 'org.osmdroid:osmdroid-android:6.1.13'
+    implementation 'org.osmdroid:osmdroid-android:6.1.14'
     implementation ('fr.dudie:nominatim-api:3.4', {
         //noinspection DuplicatePlatformClasses
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
