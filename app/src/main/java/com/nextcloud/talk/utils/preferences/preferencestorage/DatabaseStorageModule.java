@@ -60,6 +60,7 @@ public class DatabaseStorageModule implements StorageModule {
     @Inject
     NcApi ncApi;
 
+    private int messageExpiration;
     private final User conversationUser;
     private final String conversationToken;
     private final long accountIdentifier;
@@ -78,7 +79,7 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public void saveBoolean(String key, boolean value) {
-        if(key.equals("call_notifications")) {
+        if (key.equals("call_notifications")) {
             int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{4});
             ncApi.notificationCalls(ApiUtils.getCredentials(conversationUser.getUsername(),
                                                             conversationUser.getToken()),
@@ -89,27 +90,27 @@ public class DatabaseStorageModule implements StorageModule {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(@NotNull Disposable d) {
-                        // unused atm
-                    }
+                               @Override
+                               public void onSubscribe(@NotNull Disposable d) {
+                                   // unused atm
+                               }
 
-                    @Override
-                    public void onNext(@NotNull GenericOverall genericOverall) {
-                        Log.d(TAG, "Toggled notification calls");
-                    }
+                               @Override
+                               public void onNext(@NotNull GenericOverall genericOverall) {
+                                   Log.d(TAG, "Toggled notification calls");
+                               }
 
-                    @Override
-                    public void onError(@NotNull Throwable e) {
-                        Log.e(TAG, "Error when trying to toggle notification calls", e);
-                    }
+                               @Override
+                               public void onError(@NotNull Throwable e) {
+                                   Log.e(TAG, "Error when trying to toggle notification calls", e);
+                               }
 
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                }
-            );
+                               @Override
+                               public void onComplete() {
+                                   // unused atm
+                               }
+                           }
+                          );
         }
 
         if (!key.equals("conversation_lobby")) {
@@ -124,9 +125,46 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public void saveString(String key, String value) {
-        if (!key.equals("message_notification_level")) {
-            arbitraryStorageManager.storeStorageSetting(accountIdentifier, key, value, conversationToken);
-        } else {
+        if (key.equals("message_expire_key")) {
+            int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{4});
+
+            String trimmedValue = value.replace("expire_", "");
+            int valueInt = Integer.parseInt(trimmedValue);
+
+            ncApi.setMessageExpiration(
+                    ApiUtils.getCredentials(
+                        conversationUser.getUsername(),
+                        conversationUser.getToken()),
+                    ApiUtils.getUrlForMessageExpiration(
+                        apiVersion,
+                        conversationUser.getBaseUrl(),
+                        conversationToken),
+                    valueInt)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+                        // unused atm
+                    }
+
+                    @Override
+                    public void onNext(@NotNull GenericOverall genericOverall) {
+                        messageExpiration = valueInt;
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        Log.e(TAG, "Error when trying to set message expiration", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        // unused atm
+                    }
+                });
+
+        } else if (key.equals("message_notification_level")) {
             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
                 if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(value)) {
                     int intValue;
@@ -144,40 +182,42 @@ public class DatabaseStorageModule implements StorageModule {
                             intValue = 0;
                     }
 
-                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
+                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
                     ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(),
                                                                        conversationUser.getToken()),
-                            ApiUtils.getUrlForRoomNotificationLevel(apiVersion,
-                                                                    conversationUser.getBaseUrl(),
-                                                                    conversationToken),
-                            intValue)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe(new Observer<GenericOverall>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-                                    // unused atm
-                                }
+                                               ApiUtils.getUrlForRoomNotificationLevel(apiVersion,
+                                                                                       conversationUser.getBaseUrl(),
+                                                                                       conversationToken),
+                                               intValue)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new Observer<GenericOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                // unused atm
+                            }
 
-                                @Override
-                                public void onNext(GenericOverall genericOverall) {
-                                    messageNotificationLevel = value;
-                                }
+                            @Override
+                            public void onNext(GenericOverall genericOverall) {
+                                messageNotificationLevel = value;
+                            }
 
-                                @Override
-                                public void onError(Throwable e) {
-                                    // unused atm
-                                }
+                            @Override
+                            public void onError(Throwable e) {
+                                // unused atm
+                            }
 
-                                @Override
-                                public void onComplete() {
-                                    // unused atm
-                                }
-                            });
+                            @Override
+                            public void onComplete() {
+                                // unused atm
+                            }
+                        });
                 } else {
                     messageNotificationLevel = value;
                 }
             }
+        } else {
+            arbitraryStorageManager.storeStorageSetting(accountIdentifier, key, value, conversationToken);
         }
     }
 
@@ -205,7 +245,22 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public String getString(String key, String defaultVal) {
-        if (key.equals("message_notification_level")) {
+        if (key.equals("message_expire_key")) {
+            switch (messageExpiration) {
+                case 2419200:
+                    return "expire_2419200";
+                case 604800:
+                    return "expire_604800";
+                case 86400:
+                    return "expire_86400";
+                case 28800:
+                    return "expire_28800";
+                case 3600:
+                    return "expire_3600";
+                default:
+                    return "expire_0";
+            }
+        } else if (key.equals("message_notification_level")) {
             return messageNotificationLevel;
         } else {
             return arbitraryStorageManager
@@ -242,5 +297,9 @@ public class DatabaseStorageModule implements StorageModule {
     @Override
     public void onRestoreInstanceState(Bundle savedState) {
         // unused atm
+    }
+
+    public void setMessageExpiration(int messageExpiration) {
+        this.messageExpiration = messageExpiration;
     }
 }

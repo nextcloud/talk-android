@@ -34,6 +34,7 @@ class ChatUtils {
             return message
         }
 
+        @Suppress("Detekt.ComplexMethod")
         private fun parse(
             messageParameters: HashMap<String?, HashMap<String?, String?>>,
             message: String?
@@ -41,19 +42,22 @@ class ChatUtils {
             var resultMessage = message
             for (key in messageParameters.keys) {
                 val individualHashMap = messageParameters[key]
-                val type = individualHashMap?.get("type")
-                if (type == "user" || type == "guest" || type == "call") {
-                    resultMessage = resultMessage?.replace("{$key}", "@" + individualHashMap["name"])
-                } else if (type == "geo-location") {
-                    resultMessage = individualHashMap.get("name")
-                } else if (individualHashMap?.containsKey("link") == true) {
-                    resultMessage = if (type == "file") {
-                        resultMessage?.replace("{$key}", individualHashMap["name"].toString())
+
+                if (individualHashMap != null) {
+                    val type = individualHashMap["type"]
+                    resultMessage = if (type == "user" || type == "guest" || type == "call") {
+                        resultMessage?.replace("{$key}", "@" + individualHashMap["name"])
+                    } else if (type == "geo-location") {
+                        individualHashMap["name"]
+                    } else if (individualHashMap?.containsKey("link") == true) {
+                        if (type == "file") {
+                            resultMessage?.replace("{$key}", individualHashMap["name"].toString())
+                        } else {
+                            individualHashMap["link"].toString()
+                        }
                     } else {
-                        individualHashMap["link"].toString()
+                        individualHashMap["name"]?.let { resultMessage?.replace("{$key}", it) }
                     }
-                } else {
-                    resultMessage = individualHashMap?.get("name")?.let { resultMessage?.replace("{$key}", it) }
                 }
             }
             return resultMessage

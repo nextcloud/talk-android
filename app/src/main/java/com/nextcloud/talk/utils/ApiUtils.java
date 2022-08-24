@@ -147,7 +147,7 @@ public class ApiUtils {
                     return version;
                 }
                 if (version == APIv1 &&
-                    user.hasSpreedFeatureCapability( "mention-flag") &&
+                    user.hasSpreedFeatureCapability("mention-flag") &&
                     !user.hasSpreedFeatureCapability("conversation-v4")) {
                     return version;
                 }
@@ -477,6 +477,10 @@ public class ApiUtils {
     public static String getUrlForPoll(String baseUrl,
                                        String roomToken) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/poll/" + roomToken;
+    }
+
+    public static String getUrlForMessageExpiration(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/message-expiration";
     }
 
 }

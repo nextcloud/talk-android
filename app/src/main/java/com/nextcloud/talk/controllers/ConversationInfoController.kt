@@ -204,6 +204,7 @@ class ConversationInfoController(args: Bundle) :
                 participantsListCategory,
                 ownOptions,
                 categorySharedItems,
+                categoryConversationSettings,
                 binding.webinarInfoView.conversationInfoWebinar,
                 binding.notificationSettingsView.notificationSettingsCategory
             ).forEach(viewThemeUtils::colorPreferenceCategory)
@@ -677,6 +678,7 @@ class ConversationInfoController(args: Bundle) :
 
                             loadConversationAvatar()
                             adjustNotificationLevelUI()
+                            initExpiringMessageOption()
 
                             binding.notificationSettingsView.notificationSettings.visibility = View.VISIBLE
                         }
@@ -695,6 +697,19 @@ class ConversationInfoController(args: Bundle) :
                     roomDisposable!!.dispose()
                 }
             })
+    }
+
+    private fun initExpiringMessageOption() {
+        if (conversation!!.isParticipantOwnerOrModerator &&
+            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")
+        ) {
+            databaseStorageModule?.setMessageExpiration(conversation!!.messageExpiration)
+            binding.conversationInfoExpireMessages.setStorageModule(databaseStorageModule)
+            binding.conversationInfoExpireMessages.visibility = View.VISIBLE
+            binding.conversationInfoExpireMessagesExplanation.visibility = View.VISIBLE
+        } else {
+            binding.categoryConversationSettings.visibility = View.GONE
+        }
     }
 
     private fun adjustNotificationLevelUI() {

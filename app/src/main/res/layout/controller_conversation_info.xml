@@ -3,6 +3,8 @@
   ~
   ~ @author Mario Danic
   ~ @author Andy Scherzinger
+  ~ @author Marcel Hibbe
+  ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
@@ -45,9 +47,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <com.yarolegovich.mp.MaterialPreferenceCategory
                 android:id="@+id/conversation_info_name"
@@ -87,7 +90,6 @@
                 android:id="@+id/conversation_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/conversation_info_name"
                 android:animateLayoutChanges="true"
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
@@ -109,7 +111,6 @@
                 android:id="@+id/otherRoomOptions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/conversation_description"
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
                 apc:cardElevation="0dp"
@@ -127,11 +128,87 @@
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
+            <LinearLayout
+                android:id="@+id/settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/notification_settings_view"
+                    layout="@layout/notification_settings_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <include
+                    android:id="@+id/webinar_info_view"
+                    layout="@layout/webinar_info_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
+
+            <com.yarolegovich.mp.MaterialPreferenceCategory
+                android:id="@+id/category_shared_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp"
+                apc:mpc_title="@string/nc_shared_items">
+
+                <com.yarolegovich.mp.MaterialStandardPreference
+                    android:id="@+id/show_shared_items_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    apc:mp_icon="@drawable/ic_folder_multiple_image"
+                    apc:mp_icon_tint="@color/grey_600"
+                    apc:mp_title="@string/nc_shared_items_description" />
+
+            </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+            <com.yarolegovich.mp.MaterialPreferenceCategory
+                android:id="@+id/category_conversation_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp"
+                apc:mpc_title="@string/nc_conversation_settings">
+
+                <com.yarolegovich.mp.MaterialChoicePreference
+                    android:id="@+id/conversation_info_expire_messages"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    apc:mp_entry_descriptions="@array/message_expiring_descriptions"
+                    apc:mp_entry_values="@array/message_expiring_values"
+                    apc:mp_key="message_expire_key"
+                    apc:mp_show_value="onBottom"
+                    apc:mp_title="@string/nc_expire_messages">
+                </com.yarolegovich.mp.MaterialChoicePreference>
+
+                <TextView
+                    android:id="@+id/conversation_info_expire_messages_explanation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/standard_margin"
+                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:textColor="@color/disabled_text"
+                    android:text="@string/nc_expire_messages_explanation">
+                </TextView>
+
+            </com.yarolegovich.mp.MaterialPreferenceCategory>
+
             <com.yarolegovich.mp.MaterialPreferenceCategory
                 android:id="@+id/participants_list_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/category_shared_items"
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
                 apc:cardElevation="0dp"
@@ -159,7 +236,6 @@
                 android:id="@+id/ownOptions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/participants_list_category"
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
                 apc:cardElevation="0dp"
@@ -191,52 +267,6 @@
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
-            <LinearLayout
-                android:id="@+id/settings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/otherRoomOptions"
-                android:orientation="vertical">
-
-                <include
-                    android:id="@+id/notification_settings_view"
-                    layout="@layout/notification_settings_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-
-                <include
-                    android:id="@+id/webinar_info_view"
-                    layout="@layout/webinar_info_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
-
-            </LinearLayout>
-
-
-            <com.yarolegovich.mp.MaterialPreferenceCategory
-                android:id="@+id/category_shared_items"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/settings"
-                android:animateLayoutChanges="true"
-                apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp"
-                apc:mpc_title="@string/nc_shared_items">
-
-                <com.yarolegovich.mp.MaterialStandardPreference
-                    android:id="@+id/show_shared_items_action"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    apc:mp_icon="@drawable/ic_folder_multiple_image"
-                    apc:mp_icon_tint="@color/grey_600"
-                    apc:mp_title="@string/nc_shared_items_description" />
-
-            </com.yarolegovich.mp.MaterialPreferenceCategory>
-
-        </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
 </RelativeLayout>
