@@ -172,6 +172,39 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/menu_attach_video_from_cam"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/menu_icon_attach_video_from_cam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_baseline_videocam_24"
+            app:tint="@color/high_emphasis_menu_icon" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_attach_video_from_cam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_upload_video_from_cam"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/menu_attach_file_from_local"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_sheet_item_height"
