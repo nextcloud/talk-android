@@ -192,6 +192,17 @@
                     apc:mp_title="@string/nc_expire_messages">
                 </com.yarolegovich.mp.MaterialChoicePreference>
 
+                <TextView
+                    android:id="@+id/conversation_info_expire_messages_explanation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/standard_margin"
+                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:textColor="@color/disabled_text"
+                    android:text="@string/nc_expire_messages_explanation">
+                </TextView>
+
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
             <com.yarolegovich.mp.MaterialPreferenceCategory

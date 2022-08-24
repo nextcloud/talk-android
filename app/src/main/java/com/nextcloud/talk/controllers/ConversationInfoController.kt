@@ -705,6 +705,7 @@ class ConversationInfoController(args: Bundle) :
             databaseStorageModule?.setMessageExpiration(conversation!!.messageExpiration)
             binding.conversationInfoExpireMessages.setStorageModule(databaseStorageModule)
             binding.conversationInfoExpireMessages.visibility = View.VISIBLE
+            binding.conversationInfoExpireMessagesExplanation.visibility = View.VISIBLE
         } else {
             binding.categoryConversationSettings.visibility = View.GONE
         }
