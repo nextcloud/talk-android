@@ -204,6 +204,7 @@ class ConversationInfoController(args: Bundle) :
                 participantsListCategory,
                 ownOptions,
                 categorySharedItems,
+                categoryConversationSettings,
                 binding.webinarInfoView.conversationInfoWebinar,
                 binding.notificationSettingsView.notificationSettingsCategory
             ).forEach(viewThemeUtils::colorPreferenceCategory)
