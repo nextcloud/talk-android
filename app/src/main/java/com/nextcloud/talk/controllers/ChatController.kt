@@ -51,6 +51,7 @@ import android.os.SystemClock
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.ContactsContract
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
@@ -204,6 +205,7 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import java.util.Objects
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
@@ -1091,18 +1093,17 @@ class ChatController(args: Bundle) :
 
     @SuppressLint("SimpleDateFormat")
     private fun setVoiceRecordFileName() {
-        val pattern = "yyyy-MM-dd HH-mm-ss"
-        val simpleDateFormat = SimpleDateFormat(pattern)
+        val simpleDateFormat = SimpleDateFormat(FILE_DATE_PATTERN)
         val date: String = simpleDateFormat.format(Date())
 
         val fileNameWithoutSuffix = String.format(
-            context!!.resources.getString(R.string.nc_voice_message_filename),
+            context.resources.getString(R.string.nc_voice_message_filename),
             date,
             currentConversation!!.displayName
         )
         val fileName = fileNameWithoutSuffix + VOICE_MESSAGE_FILE_SUFFIX
 
-        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/$fileName"
+        currentVoiceRecordFile = "${context.cacheDir.absolutePath}/$fileName"
     }
 
     private fun showRecordAudioUi(show: Boolean) {
@@ -1486,7 +1487,7 @@ class ChatController(args: Bundle) :
                         }
                         require(filesToUpload.isNotEmpty())
 
-                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
                             uploadFiles(filesToUpload, false)
                         } else {
                             UploadAndShareFilesWorker.requestStoragePermission(this)
@@ -3218,7 +3219,29 @@ class ChatController(args: Bundle) :
         if (!permissionUtil.isCameraPermissionGranted()) {
             requestCameraPermissions()
         } else {
-            startActivityForResult(TakePhotoActivity.createIntent(context!!), REQUEST_CODE_PICK_CAMERA)
+            startActivityForResult(TakePhotoActivity.createIntent(context), REQUEST_CODE_PICK_CAMERA)
+        }
+    }
+
+    fun sendVideoFromCamIntent() {
+        Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
+            takeVideoIntent.resolveActivity(activity!!.packageManager)?.also {
+                val videoFile: File? = try {
+                    val outputDir = context.cacheDir
+                    val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
+                    val date = dateFormat.format(Date())
+                    File("$outputDir/$VIDEO_PREFIX_PART$date$VIDEO_SUFFIX")
+                } catch (e: IOException) {
+                    Log.e(TAG, "error while creating video file", e)
+                    null
+                }
+
+                videoFile?.also {
+                    val videoURI: Uri = FileProvider.getUriForFile(context, context.packageName, it)
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI)
+                    startActivityForResult(takeVideoIntent, REQUEST_CODE_PICK_CAMERA)
+                }
+            }
         }
     }
 
@@ -3258,6 +3281,9 @@ class ChatController(args: Bundle) :
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
+        private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
+        private const val VIDEO_PREFIX_PART = "Talk Video "
+        private const val VIDEO_SUFFIX = ".mp4"
         private const val SHORT_VIBRATE: Long = 20
         private const val FULLY_OPAQUE_INT: Int = 255
         private const val SEMI_TRANSPARENT_INT: Int = 99
