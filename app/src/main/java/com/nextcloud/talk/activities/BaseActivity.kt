@@ -68,6 +68,7 @@ open class BaseActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
+
         if (appPreferences.isScreenSecured) {
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         } else {

@@ -21,6 +21,7 @@
 
 package com.nextcloud.talk.ui.theme
 
+import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.talk.dagger.modules.ContextModule
 import com.nextcloud.talk.utils.database.user.UserModule
 import dagger.Binds
@@ -37,8 +38,8 @@ internal abstract class ThemeModule {
 
     companion object {
         @Provides
-        fun provideCurrentMaterialSchemes(themeProvider: MaterialSchemesProvider): MaterialSchemes {
-            return themeProvider.getMaterialSchemesForCurrentUser()
+        fun provideCurrentMaterialSchemes(schemesProvider: MaterialSchemesProvider): MaterialSchemes {
+            return schemesProvider.getMaterialSchemesForCurrentUser()
         }
     }
 }

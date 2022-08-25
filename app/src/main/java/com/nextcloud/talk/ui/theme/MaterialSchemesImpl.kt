@@ -20,9 +20,12 @@
 
 package com.nextcloud.talk.ui.theme
 
+import com.nextcloud.android.common.ui.theme.MaterialSchemes
+import com.nextcloud.android.common.ui.theme.ServerTheme
 import scheme.Scheme
 
-class MaterialSchemesImpl(serverTheme: ServerTheme) : MaterialSchemes {
+class MaterialSchemesImpl(serverTheme: ServerTheme) :
+    MaterialSchemes {
     override val lightScheme: Scheme
     override val darkScheme: Scheme
 
