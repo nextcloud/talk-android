@@ -96,6 +96,7 @@
     <string name="nc_conversation_menu_conversation_info">Информация за разговор</string>
     <string name="nc_conversation_menu_video_call">Видео разговор</string>
     <string name="nc_conversation_menu_voice_call">Гласово обаждане</string>
+    <string name="nc_conversation_settings">Настройки за разговор</string>
     <string name="nc_conversations_empty">Присъединяване към разговор или започване на нов</string>
     <string name="nc_conversations_empty_details">Поздравете приятелите и колегите си!</string>
     <string name="nc_copy_message">Копиране</string>
@@ -116,6 +117,11 @@
     <string name="nc_display_name_not_fetched">Показваното име  не може да бъде извлечено, прекъсване</string>
     <string name="nc_display_name_not_stored">Името за визуализация не може да бъде записано, прекратяване</string>
     <string name="nc_email">Имейл</string>
+    <string name="nc_expire_message_eight_hours">8 часа</string>
+    <string name="nc_expire_message_off">Изключен</string>
+    <string name="nc_expire_message_one_day">1 ден</string>
+    <string name="nc_expire_message_one_hour">1 час</string>
+    <string name="nc_expire_message_one_week">1 седмица</string>
     <string name="nc_external_server_failed">Извличането на настройките за сигнализиране не беше успешно</string>
     <string name="nc_failed_signaling_settings">Целевият сървър не поддържа присъединяване към обществени разговори чрез мобилни телефони. Може да опитате присъединяване към разговора чрез уеб браузър.</string>
     <string name="nc_failed_to_perform_operation">Съжалявам нещо се обърка!</string>

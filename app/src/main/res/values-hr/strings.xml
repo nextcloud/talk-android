@@ -89,6 +89,7 @@
     <string name="nc_conversation_menu_conversation_info">Informacije o razgovoru</string>
     <string name="nc_conversation_menu_video_call">Videopoziv</string>
     <string name="nc_conversation_menu_voice_call">Glasovni poziv</string>
+    <string name="nc_conversation_settings">Postavke razgovora</string>
     <string name="nc_conversations_empty">Pridružite se razgovoru ili započnite novi</string>
     <string name="nc_conversations_empty_details">Pozdravi svoje prijatelje i kolege!</string>
     <string name="nc_copy_message">Kopiraj</string>
@@ -108,6 +109,10 @@
     <string name="nc_display_name_not_fetched">Neuspješno dohvaćanje imena za prikaz, prekid</string>
     <string name="nc_display_name_not_stored">Nije moguće pohraniti ime za prikaz, prekid</string>
     <string name="nc_email">E-pošta</string>
+    <string name="nc_expire_message_off">Isključeno</string>
+    <string name="nc_expire_message_one_day">1 dan</string>
+    <string name="nc_expire_message_one_hour">1 sat</string>
+    <string name="nc_expire_message_one_week">1 tjedan</string>
     <string name="nc_external_server_failed">Neuspješno dohvaćanje postavki signaliziranja</string>
     <string name="nc_failed_signaling_settings">Ciljni poslužitelj ne podržava pridruživanje javnim razgovorima putem mobilnih telefona. Možete se pokušati pridružiti razgovoru putem web-preglednika.</string>
     <string name="nc_failed_to_perform_operation">Oprostite, nešto je pošlo po krivu!</string>

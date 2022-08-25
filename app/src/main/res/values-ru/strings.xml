@@ -95,6 +95,7 @@
     <string name="nc_conversation_menu_conversation_info">Информация о беседе</string>
     <string name="nc_conversation_menu_video_call">Видеозвонок</string>
     <string name="nc_conversation_menu_voice_call">Голосовой вызов</string>
+    <string name="nc_conversation_settings">Параметры обсуждения</string>
     <string name="nc_conversations_empty">Присоединитесь к обсуждению или же начните новое</string>
     <string name="nc_conversations_empty_details">Поприветствуйте своих друзей и коллег.</string>
     <string name="nc_copy_message">Копировать</string>
@@ -115,6 +116,11 @@
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
     <string name="nc_display_name_not_stored">Не удалось сохранить отображаемое имя, продолжение невозможно</string>
     <string name="nc_email">Эл. почта</string>
+    <string name="nc_expire_message_eight_hours">8 часов</string>
+    <string name="nc_expire_message_off">Отключить</string>
+    <string name="nc_expire_message_one_day">1 день</string>
+    <string name="nc_expire_message_one_hour">1 час</string>
+    <string name="nc_expire_message_one_week">1 неделя</string>
     <string name="nc_external_server_failed">Не удалось получить параметры сигнализации</string>
     <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте присоединиться к беседе используя веб-браузер.</string>
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>

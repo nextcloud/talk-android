@@ -96,6 +96,7 @@
     <string name="nc_conversation_menu_conversation_info">Informação da conversa</string>
     <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>
     <string name="nc_conversation_menu_voice_call">Chamada de voz</string>
+    <string name="nc_conversation_settings">Configurações da conversa</string>
     <string name="nc_conversations_empty">Junte-se a uma conversa ou inicie uma nova</string>
     <string name="nc_conversations_empty_details">Diga olá para seus amigos e colegas!</string>
     <string name="nc_copy_message">Copiar</string>
@@ -116,6 +117,11 @@
     <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
     <string name="nc_display_name_not_stored">Não foi possível armazenar o nome de exibição, cancelando</string>
     <string name="nc_email">E-mail</string>
+    <string name="nc_expire_message_eight_hours">8 horas</string>
+    <string name="nc_expire_message_off">Desligar</string>
+    <string name="nc_expire_message_one_day">1 dia</string>
+    <string name="nc_expire_message_one_hour">1 hora</string>
+    <string name="nc_expire_message_one_week">1 semana</string>
     <string name="nc_external_server_failed">Falha ao buscar configurações de sinalização</string>
     <string name="nc_failed_signaling_settings">O servidor de destino não oferece suporte para ingressar em conversas públicas por meio de telefones celulares. Você pode tentar entrar na conversa por meio do navegador da web.</string>
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>

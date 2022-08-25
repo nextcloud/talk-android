@@ -96,6 +96,7 @@
     <string name="nc_conversation_menu_conversation_info">Elkarrizketen informazioa</string>
     <string name="nc_conversation_menu_video_call">Bideo-deia</string>
     <string name="nc_conversation_menu_voice_call">Ahots-deia</string>
+    <string name="nc_conversation_settings">Elkarrizketaren ezarpenak</string>
     <string name="nc_conversations_empty">Batu elkarrizketa batera edo hasi berri bat</string>
     <string name="nc_conversations_empty_details">Esan kaixo zure lagun eta lankideei!</string>
     <string name="nc_copy_message">Kopiatu</string>
@@ -116,6 +117,11 @@
     <string name="nc_display_name_not_fetched">Ezin izan da erakusteko izena lortu, bertan behera uzten</string>
     <string name="nc_display_name_not_stored">Ezin izan da erakusteko izena biltegiratu, bertan behera uzten</string>
     <string name="nc_email">E-posta</string>
+    <string name="nc_expire_message_eight_hours">8 ordu</string>
+    <string name="nc_expire_message_off">Desaktibatu</string>
+    <string name="nc_expire_message_one_day">Egun 1</string>
+    <string name="nc_expire_message_one_hour">Ordu 1</string>
+    <string name="nc_expire_message_one_week">Aste 1</string>
     <string name="nc_external_server_failed">Akatsa seinaleen konfigurazioa berreskuratzean</string>
     <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du telefono mugikorraren bidez elkarrizketa publikoetara sartzerik onartzen. Elkarrizketara web nabigatzaile baten bidez sartzen saiatu.</string>
     <string name="nc_failed_to_perform_operation">Barkatu, zerbait txarto joan da!</string>

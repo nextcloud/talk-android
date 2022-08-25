@@ -64,6 +64,7 @@
     <string name="nc_conversation_menu_conversation_info">Samtaleinfo</string>
     <string name="nc_conversation_menu_video_call">Videoopkald</string>
     <string name="nc_conversation_menu_voice_call">Stemmeopkald</string>
+    <string name="nc_conversation_settings">Samtale indstillinger</string>
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
     <string name="nc_copy_message">Kopiér</string>
@@ -80,6 +81,10 @@
     <string name="nc_display_name_not_fetched">Display navn kunne ikke hentes, afbrydes</string>
     <string name="nc_display_name_not_stored">Kunne ikke opbevare skærmnavn, afbryder</string>
     <string name="nc_email">E-mail</string>
+    <string name="nc_expire_message_off">Slået fra</string>
+    <string name="nc_expire_message_one_day">1 dag</string>
+    <string name="nc_expire_message_one_hour">1 time</string>
+    <string name="nc_expire_message_one_week">1 uge</string>
     <string name="nc_external_server_failed">Anskaffelse af signaleringsindstillinger fejlede</string>
     <string name="nc_failed_signaling_settings">Serveren understøtter ikke deltagelse i offentlige samtaler over mobil telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_failed_to_perform_operation">Noget gik galt, undskyld!</string>

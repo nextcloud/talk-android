@@ -96,6 +96,7 @@
     <string name="nc_conversation_menu_conversation_info">Información de la conversación</string>
     <string name="nc_conversation_menu_video_call">Llamada de vídeo</string>
     <string name="nc_conversation_menu_voice_call">Llamada de voz</string>
+    <string name="nc_conversation_settings">Ajustes de la conversación</string>
     <string name="nc_conversations_empty">Únete a una conversación o empieza una nueva</string>
     <string name="nc_conversations_empty_details">¡Saluda a tus amigos y colegas!</string>
     <string name="nc_copy_message">Copiar</string>
@@ -116,6 +117,11 @@
     <string name="nc_display_name_not_fetched">Nombre para mostrar no pudo ser obtenido, abortando</string>
     <string name="nc_display_name_not_stored">No se ha podido almacenar el nombre para mostrar. Abortando</string>
     <string name="nc_email">Email</string>
+    <string name="nc_expire_message_eight_hours">8 horas</string>
+    <string name="nc_expire_message_off">Off</string>
+    <string name="nc_expire_message_one_day">1 día</string>
+    <string name="nc_expire_message_one_hour">1 hora</string>
+    <string name="nc_expire_message_one_week">1 semana</string>
     <string name="nc_external_server_failed">Fallo al recuperar la configuración de señalización</string>
     <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas a través de teléfonos móviles. Puedes intentar unirte a la llamada a través del navegador web.</string>
     <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>

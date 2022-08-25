@@ -98,6 +98,7 @@
     <string name="nc_dialog_invalid_password">Virheellinen salasana</string>
     <string name="nc_dialog_reauth_or_delete">Haluatko valtuuttaa tämän tilin uudelleen vai poistaa tilin?</string>
     <string name="nc_email">Sähköposti</string>
+    <string name="nc_expire_message_eight_hours">8 tuntia</string>
     <string name="nc_failed_to_perform_operation">Pahoittelut, jokin meni vikaan!</string>
     <string name="nc_file_browser_back">Takaisin</string>
     <string name="nc_formatted_message_you">Sinä: %1$s</string>

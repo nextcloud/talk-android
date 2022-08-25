@@ -96,6 +96,7 @@
     <string name="nc_conversation_menu_conversation_info">Unterhaltungs-Information</string>
     <string name="nc_conversation_menu_video_call">Videoanruf</string>
     <string name="nc_conversation_menu_voice_call">Sprachanruf</string>
+    <string name="nc_conversation_settings">Unterhaltungseinstellungen</string>
     <string name="nc_conversations_empty">Treten Sie einer Unterhaltung bei oder starten Sie eine neue</string>
     <string name="nc_conversations_empty_details">Begrüßen Sie Ihre Freunde und Kollegen!</string>
     <string name="nc_copy_message">Kopieren</string>
@@ -116,6 +117,11 @@
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden. Breche ab.</string>
     <string name="nc_display_name_not_stored">Der Anzeigename konnte nicht gespeichert werden. Breche ab.</string>
     <string name="nc_email">E-Mail</string>
+    <string name="nc_expire_message_eight_hours">8 Stunden</string>
+    <string name="nc_expire_message_off">Aus</string>
+    <string name="nc_expire_message_one_day">1 Tag</string>
+    <string name="nc_expire_message_one_hour">1 Stunde</string>
+    <string name="nc_expire_message_one_week">1 Woche</string>
     <string name="nc_external_server_failed">Konnte die Benachrichtigungseinstellungen nicht abrufen</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht, öffentlichen Unterhaltungen via Mobiltelefon beizutreten. Sie können versuchen, der Unterhaltung mit einem Internetbrowser beizutreten.</string>
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>

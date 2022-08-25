@@ -65,6 +65,7 @@
     <string name="nc_conversation_menu_conversation_info">Pokalbio informacija</string>
     <string name="nc_conversation_menu_video_call">Vaizdo skambutis</string>
     <string name="nc_conversation_menu_voice_call">Balso skambutis</string>
+    <string name="nc_conversation_settings">Pokalbio nustatymai</string>
     <string name="nc_conversations_empty">Prisijunkite prie pokalbio arba pradėkite naują</string>
     <string name="nc_conversations_empty_details">Pasisveikinkite su savo draugais ir kolegomis!</string>
     <string name="nc_copy_message">Kopijuoti</string>
@@ -79,6 +80,11 @@
     <string name="nc_description_send_message_button">Siųsti žinutę</string>
     <string name="nc_dialog_invalid_password">Neteisingas slaptažodis</string>
     <string name="nc_email">El. paštas</string>
+    <string name="nc_expire_message_eight_hours">8 valandos</string>
+    <string name="nc_expire_message_off">Išjungta</string>
+    <string name="nc_expire_message_one_day">1 diena</string>
+    <string name="nc_expire_message_one_hour">1 valanda</string>
+    <string name="nc_expire_message_one_week">1 savaitė</string>
     <string name="nc_external_server_failed">Nepavyko gauti signalizavimo nustatymų</string>
     <string name="nc_failed_signaling_settings">Paskirties serveris nepalaiko prisijungimą prie viešų pokalbių per mobiliuosius telefonus. Galite bandyti prisijungti prie pokalbio per saityno naršyklę.</string>
     <string name="nc_failed_to_perform_operation">Atleiskite, kažkas nutiko!</string>

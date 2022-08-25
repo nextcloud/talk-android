@@ -96,6 +96,7 @@
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
     <string name="nc_conversation_menu_video_call">視訊通話</string>
     <string name="nc_conversation_menu_voice_call">語音通話</string>
+    <string name="nc_conversation_settings">對話設定</string>
     <string name="nc_conversations_empty">加入或者開一個新的對話</string>
     <string name="nc_conversations_empty_details">跟大家打招呼</string>
     <string name="nc_copy_message">複製</string>
@@ -116,6 +117,11 @@
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止操作。</string>
     <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
     <string name="nc_email">電郵地址</string>
+    <string name="nc_expire_message_eight_hours">8 小时</string>
+    <string name="nc_expire_message_off">關閉</string>
+    <string name="nc_expire_message_one_day">1 日</string>
+    <string name="nc_expire_message_one_hour">1 小時</string>
+    <string name="nc_expire_message_one_week">1 星期</string>
     <string name="nc_external_server_failed">擷取網絡設定失敗</string>
     <string name="nc_failed_signaling_settings">目標伺服器不支持通過流動電話加入公共對話。您可以嘗試通過網絡瀏覽器加入對話。</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了：（</string>

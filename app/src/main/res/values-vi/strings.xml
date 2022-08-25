@@ -91,6 +91,7 @@
     <string name="nc_display_name_not_fetched">Không thể lấy dữ liệu Tên hiển thị, hủy bỏ</string>
     <string name="nc_display_name_not_stored">Không thể lưu Tên hiển thị, hủy bỏ</string>
     <string name="nc_email">Thư điện tử</string>
+    <string name="nc_expire_message_off">Tắt</string>
     <string name="nc_failed_to_perform_operation">Thật xin lỗi, một số thứ đang bị sai sót!</string>
     <string name="nc_file_browser_back">Quay lại</string>
     <string name="nc_forward_message">Chuyển tiếp</string>

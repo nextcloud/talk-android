@@ -96,6 +96,7 @@
     <string name="nc_conversation_menu_conversation_info">Informacje o rozmowie</string>
     <string name="nc_conversation_menu_video_call">Rozmowa wideo</string>
     <string name="nc_conversation_menu_voice_call">Rozmowa głosowa</string>
+    <string name="nc_conversation_settings">Ustawienia rozmowy</string>
     <string name="nc_conversations_empty">Dołącz do rozmowy lub rozpocznij nową</string>
     <string name="nc_conversations_empty_details">Przywitaj się z przyjaciółmi i współpracownikami!</string>
     <string name="nc_copy_message">Kopiuj</string>
@@ -116,6 +117,11 @@
     <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerwano żądanie</string>
     <string name="nc_display_name_not_stored">Nie można zapisać wyświetlanej nazwy, przerwano żądanie</string>
     <string name="nc_email">E-mail</string>
+    <string name="nc_expire_message_eight_hours">8 godzin</string>
+    <string name="nc_expire_message_off">Wyłączona</string>
+    <string name="nc_expire_message_one_day">1 dzień</string>
+    <string name="nc_expire_message_one_hour">1 godzina</string>
+    <string name="nc_expire_message_one_week">1 tydzień</string>
     <string name="nc_external_server_failed">Nie udało się pobrać ustawień sygnałowych</string>
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe. Możesz spróbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
     <string name="nc_failed_to_perform_operation">Przepraszamy, coś poszło nie tak!</string>

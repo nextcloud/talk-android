@@ -115,6 +115,9 @@
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
     <string name="nc_email">E-mail</string>
+    <string name="nc_expire_message_eight_hours">8 heures</string>
+    <string name="nc_expire_message_off">Éteint</string>
+    <string name="nc_expire_message_one_week">1 semaine</string>
     <string name="nc_external_server_failed">Échec de l\'extraction des paramètres de signalisation</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile. Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>

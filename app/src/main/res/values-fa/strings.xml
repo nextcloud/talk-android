@@ -87,6 +87,8 @@
     <string name="nc_display_name_not_fetched">امکان دریافت نام وجود ندارد. درحال لغو</string>
     <string name="nc_display_name_not_stored">"امکان ذخیره نام وجود ندارد، درحال لغو "</string>
     <string name="nc_email">رایانامه</string>
+    <string name="nc_expire_message_off">خاموش</string>
+    <string name="nc_expire_message_one_hour">۱ ساعت</string>
     <string name="nc_external_server_failed">" دریافت  تنظیمات سیگنال نا‌موفق بود"</string>
     <string name="nc_failed_to_perform_operation">با عرض پوزش، مشکلی پیش آمده</string>
     <string name="nc_file_browser_back">بازگشت</string>
