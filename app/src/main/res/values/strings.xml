@@ -576,7 +576,7 @@
     <string name="nc_expire_message_one_day">1 day</string>
     <string name="nc_expire_message_eight_hours">8 hours</string>
     <string name="nc_expire_message_one_hour">1 hour</string>
-    <string name="nc_expire_messages_explanation">Chat messages expire after a while. Note: Files shared in chat will not be deleted for the owner, but will no longer be shared in the conversation.</string>
+    <string name="nc_expire_messages_explanation">Chat messages expire after a certain time. Note: Files shared in chat will not be deleted for the owner, but will no longer be shared in the conversation.</string>
 
 
 </resources>
