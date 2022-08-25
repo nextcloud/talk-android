@@ -332,6 +332,9 @@ dependencies {
 
     // implementation 'androidx.activity:activity-ktx:1.4.0'
     implementation project(':material-color-utilities')
+
+    //
+    implementation 'com.github.nextcloud:android-common:d11641e7b1992aab3b571127388012057755e439'
 }
 
 task installGitHooks(type: Copy, group: "development") {
