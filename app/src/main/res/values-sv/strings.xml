@@ -68,6 +68,7 @@
     <string name="nc_conversation_menu_conversation_info">Konversationsinfo</string>
     <string name="nc_conversation_menu_video_call">Videosamtal</string>
     <string name="nc_conversation_menu_voice_call">Röstsamtal</string>
+    <string name="nc_conversation_settings">Konversationsinställningar</string>
     <string name="nc_conversations_empty">Anslut till en konversation eller starta en ny</string>
     <string name="nc_conversations_empty_details">Säg hej till dina vänner och kollegor!</string>
     <string name="nc_copy_message">Kopia</string>
@@ -85,6 +86,10 @@
     <string name="nc_display_name_not_fetched">Visningsnamn kunde inte hämtas, avbryter</string>
     <string name="nc_display_name_not_stored">Kunde inte lagra visningsnamnet, avbryter</string>
     <string name="nc_email">E-post</string>
+    <string name="nc_expire_message_off">Av</string>
+    <string name="nc_expire_message_one_day">1 dag</string>
+    <string name="nc_expire_message_one_hour">1 timme</string>
+    <string name="nc_expire_message_one_week">1 vecka</string>
     <string name="nc_external_server_failed">Misslyckades med att hämta signaleringsinställningar</string>
     <string name="nc_failed_signaling_settings">Målservern stöder inte att gå med i offentliga konversationer via mobil-telefoner. Du kan försöka gå med i konversationen via webbläsaren.</string>
     <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>

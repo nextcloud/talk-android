@@ -77,6 +77,7 @@
     <string name="nc_conversation_link">Liên kết đàm thoại</string>
     <string name="nc_conversation_menu_video_call">Gọi Video</string>
     <string name="nc_conversation_menu_voice_call">Cuộc gọi</string>
+    <string name="nc_conversation_settings">Cài đặt cuộc trò chuyện</string>
     <string name="nc_conversations_empty">Tham gia cuộc trò chuyện hoặc bắt đầu một cuộc trò chuyện mới</string>
     <string name="nc_conversations_empty_details">Gửi lòi chào đến bạn bè và đồng nghiệp</string>
     <string name="nc_copy_message">Sao chép</string>
@@ -91,6 +92,8 @@
     <string name="nc_display_name_not_fetched">Không thể lấy dữ liệu Tên hiển thị, hủy bỏ</string>
     <string name="nc_display_name_not_stored">Không thể lưu Tên hiển thị, hủy bỏ</string>
     <string name="nc_email">Thư điện tử</string>
+    <string name="nc_expire_message_off">Tắt</string>
+    <string name="nc_expire_message_one_hour">1 tiếng</string>
     <string name="nc_failed_to_perform_operation">Thật xin lỗi, một số thứ đang bị sai sót!</string>
     <string name="nc_file_browser_back">Quay lại</string>
     <string name="nc_forward_message">Chuyển tiếp</string>

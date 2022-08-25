@@ -55,6 +55,8 @@
     <string name="nc_display_name_not_fetched">Ime za prikaz se ne može dobaviti. Prekidam</string>
     <string name="nc_display_name_not_stored">Ne mogu da sačuvam ime za prikaz. Prekidam</string>
     <string name="nc_email">email</string>
+    <string name="nc_expire_message_off">Isključena</string>
+    <string name="nc_expire_message_one_hour">1 sat</string>
     <string name="nc_external_server_failed">Greška prilikom dohvatanja podešavanja signaliziranja</string>
     <string name="nc_failed_to_perform_operation">Izvinjavamo se, nešto je pošlo naopako!</string>
     <string name="nc_file_browser_back">Nazad</string>

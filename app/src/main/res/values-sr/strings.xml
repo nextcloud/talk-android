@@ -75,6 +75,8 @@
     <string name="nc_display_name_not_fetched">Име за приказ се не може добавити. Прекидам</string>
     <string name="nc_display_name_not_stored">Не могу да сачувам име за приказ. Прекидам</string>
     <string name="nc_email">Е-пошта</string>
+    <string name="nc_expire_message_off">Искључена</string>
+    <string name="nc_expire_message_one_hour">1 сат</string>
     <string name="nc_external_server_failed">Грешка приликом дохватања подешавања сигнализирања</string>
     <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним разговорима путем мобилног телефона. Можете пробати да се придружите разговору преко веб прегледача.</string>
     <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>

@@ -83,6 +83,7 @@
     <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>
     <string name="nc_conversation_menu_video_call">Κλήση βίντεο</string>
     <string name="nc_conversation_menu_voice_call">Κλήση ήχου</string>
+    <string name="nc_conversation_settings">Ρυθμίσεις συνομιλίας</string>
     <string name="nc_conversations_empty">Συμμετέχετε σε συνομιλία ή ξεκινήστε μια νέα</string>
     <string name="nc_conversations_empty_details">Πείτε γειά σε φίλους και συνεργάτες!</string>
     <string name="nc_copy_message">Αντιγραφή</string>
@@ -103,6 +104,11 @@
     <string name="nc_display_name_not_fetched">Το εμφανιζόμενο όνομα δεν ήταν δυνατό να ληφθεί, ματαίωση</string>
     <string name="nc_display_name_not_stored">Το εμφανιζόμενο όνομα δεν μπορεί να αποθηκευτεί, ματαίωση</string>
     <string name="nc_email">Ηλ. ταχυδρομείο</string>
+    <string name="nc_expire_message_eight_hours">8 ώρες</string>
+    <string name="nc_expire_message_off">Απενεργοποίηση </string>
+    <string name="nc_expire_message_one_day">1 μέρα</string>
+    <string name="nc_expire_message_one_hour">1 ώρα</string>
+    <string name="nc_expire_message_one_week">1 εβδομάδα</string>
     <string name="nc_external_server_failed">Αποτυχία λήψης ρυθμίσεων σήματος</string>
     <string name="nc_failed_signaling_settings">Ο υπόψη διακομιστής δεν υποστηρίζει την σύνδεση στις δημόσιες συζητήσεις από κινητά τηλέφωνα. Προσπαθήστε να συνδεθείτε μέσω φυλλομετρητή.</string>
     <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>

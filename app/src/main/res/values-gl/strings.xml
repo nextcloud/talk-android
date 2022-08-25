@@ -71,6 +71,7 @@
     <string name="nc_conversation_menu_conversation_info">Información da conversa</string>
     <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>
     <string name="nc_conversation_menu_voice_call">Chamada de voz</string>
+    <string name="nc_conversation_settings">Axustes da conversa</string>
     <string name="nc_conversations_empty">Únase a unha conversa ou inicie unha nova</string>
     <string name="nc_conversations_empty_details">Saúde aos seus amigos e compañeiros!</string>
     <string name="nc_copy_message">Copiar</string>
@@ -89,6 +90,9 @@
     <string name="nc_display_name_not_fetched">Non foi posíbel obter o nome para amosar, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
     <string name="nc_email">Correo-e</string>
+    <string name="nc_expire_message_off">Apagado</string>
+    <string name="nc_expire_message_one_day">1 día</string>
+    <string name="nc_expire_message_one_hour">1 hora</string>
     <string name="nc_external_server_failed">Produciuse un fallo ao obter os axustes da sinalización</string>
     <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_failed_to_perform_operation">Sentímolo, algo foi mal!</string>

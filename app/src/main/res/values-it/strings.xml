@@ -93,6 +93,7 @@
     <string name="nc_conversation_menu_conversation_info">Informazioni di conversazione</string>
     <string name="nc_conversation_menu_video_call">Chiamata video</string>
     <string name="nc_conversation_menu_voice_call">Chiamata vocale</string>
+    <string name="nc_conversation_settings">Impostazioni conversazione</string>
     <string name="nc_conversations_empty">Unisciti a una conversazione o iniziane una nuova</string>
     <string name="nc_conversations_empty_details">Saluta i tuoi amici e i tuoi colleghi!</string>
     <string name="nc_copy_message">Copia</string>
@@ -113,6 +114,11 @@
     <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
     <string name="nc_display_name_not_stored">Nome visualizzato non memorizzato, interruzione in corso</string>
     <string name="nc_email">Email</string>
+    <string name="nc_expire_message_eight_hours">8 ore</string>
+    <string name="nc_expire_message_off">Spenta</string>
+    <string name="nc_expire_message_one_day">1 giorno</string>
+    <string name="nc_expire_message_one_hour">1 ora</string>
+    <string name="nc_expire_message_one_week">1 settimana</string>
     <string name="nc_external_server_failed">Recupero delle impostazioni di segnalazione non riuscito</string>
     <string name="nc_failed_signaling_settings">Il server di destinazione non supporta la partecipazione a stanze pubbliche tramite cellulare. Puoi provare a unirti alla conversazioni tramite un browser web.</string>
     <string name="nc_failed_to_perform_operation">Spiacenti, qualcosa non ha funzionato!</string>

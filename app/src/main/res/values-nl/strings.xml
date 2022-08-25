@@ -90,6 +90,7 @@
     <string name="nc_conversation_menu_conversation_info">Gespreksinformatie</string>
     <string name="nc_conversation_menu_video_call">Videogesprek</string>
     <string name="nc_conversation_menu_voice_call">Gesprek</string>
+    <string name="nc_conversation_settings">Gespreksinstellingen</string>
     <string name="nc_conversations_empty">Doe mee met een gesprek, of start een nieuw</string>
     <string name="nc_conversations_empty_details">Zeg hallo tegen je vrienden en collega\'s!</string>
     <string name="nc_copy_message">Kopie</string>
@@ -110,6 +111,11 @@
     <string name="nc_display_name_not_fetched">Weergave kon niet worden opgehaald, afgebroken</string>
     <string name="nc_display_name_not_stored">Kon weergavenaam niet opslaan, afbreken</string>
     <string name="nc_email">E-mailadres</string>
+    <string name="nc_expire_message_eight_hours">8 uur</string>
+    <string name="nc_expire_message_off">Uit</string>
+    <string name="nc_expire_message_one_day">1 dag</string>
+    <string name="nc_expire_message_one_hour">1 uur</string>
+    <string name="nc_expire_message_one_week">1 week</string>
     <string name="nc_external_server_failed">Kon signaleringsinstellingen niet ophalen</string>
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons. Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>

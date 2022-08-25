@@ -94,6 +94,7 @@
     <string name="nc_conversation_menu_conversation_info">Podrobnosti pogovora</string>
     <string name="nc_conversation_menu_video_call">Video klic</string>
     <string name="nc_conversation_menu_voice_call">Glasovni klic</string>
+    <string name="nc_conversation_settings">Nastavitve pogovora</string>
     <string name="nc_conversations_empty">Pridružite se pogovoru, ali pa začnite novega.</string>
     <string name="nc_conversations_empty_details">Pozdravite prijatelje in znance.</string>
     <string name="nc_copy_message">Kopiraj</string>
@@ -114,6 +115,11 @@
     <string name="nc_display_name_not_fetched">Prikaznega imena ni mogoče pridobiti; opravilo je prekinjeno.</string>
     <string name="nc_display_name_not_stored">Prikaznega imena ni mogoče shraniti; opravilo je prekinjeno.</string>
     <string name="nc_email">Elektronski naslov</string>
+    <string name="nc_expire_message_eight_hours">8 ur</string>
+    <string name="nc_expire_message_off">Onemogočeno</string>
+    <string name="nc_expire_message_one_day">1 dneva</string>
+    <string name="nc_expire_message_one_hour">1 uri</string>
+    <string name="nc_expire_message_one_week">1 tedna</string>
     <string name="nc_external_server_failed">Pridobivanje signalnih nastavitev je spodletelo</string>
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom po mobilnih telefonih. Poskusite se povezati v spletnem brskalniku.</string>
     <string name="nc_failed_to_perform_operation">Prišlo je do napake!</string>

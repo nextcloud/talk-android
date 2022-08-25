@@ -105,6 +105,8 @@
     <string name="nc_display_name_not_fetched">Ім\'я для відображення не вдалося розпізнати, скасування</string>
     <string name="nc_display_name_not_stored">Неможливо отримати ім\'я для відображення, скасування</string>
     <string name="nc_email">Електронна пошта</string>
+    <string name="nc_expire_message_off">Вимкнути</string>
+    <string name="nc_expire_message_one_hour">1 година</string>
     <string name="nc_external_server_failed">Помилка отримання налаштувань сповіщення</string>
     <string name="nc_failed_signaling_settings">Цільовий сервер не підтримує приєднання до публічних чатів із використанням телефону. Ви можете спробувати приєднатися до розмови з веб-баузера.</string>
     <string name="nc_failed_to_perform_operation">Вибачте, щось пішло не так!</string>

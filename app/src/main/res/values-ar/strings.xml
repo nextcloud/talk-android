@@ -92,6 +92,7 @@
     <string name="nc_conversation_menu_conversation_info">بيانات المحادثة</string>
     <string name="nc_conversation_menu_video_call">اتصال فيديو</string>
     <string name="nc_conversation_menu_voice_call">اتصال فيديو</string>
+    <string name="nc_conversation_settings">اعدادات المحادثة</string>
     <string name="nc_conversations_empty">انضم لمحادثة او ابدء محادثة جديدة</string>
     <string name="nc_conversations_empty_details">قل مرحبا ً لزملاء العمل!</string>
     <string name="nc_copy_message">أنسخ</string>
@@ -111,6 +112,9 @@
     <string name="nc_display_name_not_fetched">لايمكن عرض الاسم، جارِ إلالغاء</string>
     <string name="nc_display_name_not_stored">تعذر تخزين اسم العرض ، جارِ إلالغاء</string>
     <string name="nc_email">البريد الإلكتروني</string>
+    <string name="nc_expire_message_off">إيقاف</string>
+    <string name="nc_expire_message_one_day">1 يوم</string>
+    <string name="nc_expire_message_one_hour">ساعة واحدة</string>
     <string name="nc_external_server_failed">فشل جلب إعدادات الإشارات</string>
     <string name="nc_failed_signaling_settings">لا يدعم الخادم الانضمام إلى المحادثات العامة عبر الهواتف المحمولة. يمكنك محاولة الانضمام إلى المحادثة عبر متصفح الويب.</string>
     <string name="nc_failed_to_perform_operation">حدث خطأ ما!</string>

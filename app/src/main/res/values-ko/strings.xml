@@ -75,6 +75,7 @@
     <string name="nc_conversation_menu_conversation_info">대화 정보</string>
     <string name="nc_conversation_menu_video_call">영상 통화</string>
     <string name="nc_conversation_menu_voice_call">음성 통화</string>
+    <string name="nc_conversation_settings">대화 환경설정</string>
     <string name="nc_conversations_empty">대화에 참여하거나 새 대화 시작</string>
     <string name="nc_conversations_empty_details">여러분의 친구들과 동료들에게 인사하세요!</string>
     <string name="nc_copy_message">복사</string>
@@ -94,6 +95,10 @@
     <string name="nc_display_name_not_fetched">표시 이름을 가져올 수 없음, 중단함</string>
     <string name="nc_display_name_not_stored">표시 이름을 저장할 수 없음, 중단함</string>
     <string name="nc_email">이메일</string>
+    <string name="nc_expire_message_off">꺼짐</string>
+    <string name="nc_expire_message_one_day">1일</string>
+    <string name="nc_expire_message_one_hour">1시간</string>
+    <string name="nc_expire_message_one_week">1주</string>
     <string name="nc_external_server_failed">신호 설정을 가져오지 못함</string>
     <string name="nc_failed_signaling_settings">대상 서버는 휴대폰을 통한 공개 대화 참여를 지원하지 않습니다. 하지만 웹 브라우저를 통해 대화에 참여하려고 할 수 있습니다.</string>
     <string name="nc_failed_to_perform_operation">죄송합니다, 무언가 잘못되었습니다!</string>

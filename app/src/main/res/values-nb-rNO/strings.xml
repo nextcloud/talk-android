@@ -69,6 +69,7 @@
     <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
     <string name="nc_conversation_menu_video_call">Videosamtale</string>
     <string name="nc_conversation_menu_voice_call">Samtale</string>
+    <string name="nc_conversation_settings">Samtale innstillinger</string>
     <string name="nc_conversations_empty">Ta del i en samtale eller start en ny</string>
     <string name="nc_copy_message">Kopier</string>
     <string name="nc_create_poll">Opprett avstemning</string>
@@ -84,6 +85,10 @@
     <string name="nc_display_name_not_fetched">Kunne ikke hente visningsnavn, avbryter</string>
     <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
     <string name="nc_email">E-post</string>
+    <string name="nc_expire_message_off">ett kvarter</string>
+    <string name="nc_expire_message_one_day">1 dag</string>
+    <string name="nc_expire_message_one_hour">1 time</string>
+    <string name="nc_expire_message_one_week">1 uke</string>
     <string name="nc_external_server_failed">Feilet ved henting av settinger for signalering</string>
     <string name="nc_failed_signaling_settings">Målserveren støtter ikke å delta i offentlige samtaler via mobiltelefoner. Du kan prøve å bli med i samtalen via nettleseren.</string>
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>

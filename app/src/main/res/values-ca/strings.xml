@@ -65,6 +65,7 @@
     <string name="nc_conversation_menu_conversation_info">Informació de la conversa</string>
     <string name="nc_conversation_menu_video_call">Trucada de vídeo </string>
     <string name="nc_conversation_menu_voice_call">Trucada de veu</string>
+    <string name="nc_conversation_settings">Configuració de la conversa</string>
     <string name="nc_conversations_empty">Uniu-vos a una conversa o inicieu-ne una de nova</string>
     <string name="nc_conversations_empty_details">Saludeu els vostres amics i col·legues!</string>
     <string name="nc_copy_message">Copia</string>
@@ -82,6 +83,10 @@
     <string name="nc_display_name_not_fetched">No s’ha pogut obtenir el nom de visualització, s\'està avortant</string>
     <string name="nc_display_name_not_stored">No s\'ha pogut emmagatzemar el nom de visualització, s\'està avortant</string>
     <string name="nc_email">Correu</string>
+    <string name="nc_expire_message_off">Desactivada</string>
+    <string name="nc_expire_message_one_day">1 dia</string>
+    <string name="nc_expire_message_one_hour">1 hora</string>
+    <string name="nc_expire_message_one_week">1 setmana</string>
     <string name="nc_external_server_failed">No s\'ha pogut obtenir la configuració de senyalització</string>
     <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través de telèfons mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</string>
     <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>

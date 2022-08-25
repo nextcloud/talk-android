@@ -95,6 +95,7 @@
     <string name="nc_conversation_menu_conversation_info">Informácia o rozhovore</string>
     <string name="nc_conversation_menu_video_call">Video hovor</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
+    <string name="nc_conversation_settings">Nastavenia konverzácie</string>
     <string name="nc_conversations_empty">Pripojte sa k rozhovoru, alebo začnite nový</string>
     <string name="nc_conversations_empty_details">Pozdravte svojich priateľov a kolegov!</string>
     <string name="nc_copy_message">Kopírovať</string>
@@ -115,6 +116,11 @@
     <string name="nc_display_name_not_fetched">Zobrazované meno sa nedalo načítať, ruším</string>
     <string name="nc_display_name_not_stored">Nedá sa uložiť zobrazované meno, ruším</string>
     <string name="nc_email">Email</string>
+    <string name="nc_expire_message_eight_hours">8 hodín</string>
+    <string name="nc_expire_message_off">Vypnúť</string>
+    <string name="nc_expire_message_one_day">1 deň</string>
+    <string name="nc_expire_message_one_hour">1 hodina</string>
+    <string name="nc_expire_message_one_week">1 týždeň</string>
     <string name="nc_external_server_failed">Nepodarilo sa načítať nastavenia signalizácie</string>
     <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil Môžete sa pokúsiť pripojiť na rozhovor cez webový prehliadač.</string>
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa nepodarilo!</string>

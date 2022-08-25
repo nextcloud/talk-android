@@ -95,6 +95,7 @@
     <string name="nc_conversation_menu_conversation_info">Infos sur la conversation</string>
     <string name="nc_conversation_menu_video_call">Appel vidéo</string>
     <string name="nc_conversation_menu_voice_call">Appel vocal</string>
+    <string name="nc_conversation_settings">Paramètres de la conversation</string>
     <string name="nc_conversations_empty">Rejoignez une conversation ou démarrez-en une nouvelle</string>
     <string name="nc_conversations_empty_details">Dites bonjour à vos amis et collègues !</string>
     <string name="nc_copy_message">Copier</string>
@@ -115,6 +116,11 @@
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
     <string name="nc_email">E-mail</string>
+    <string name="nc_expire_message_eight_hours">8 heures</string>
+    <string name="nc_expire_message_off">Éteint</string>
+    <string name="nc_expire_message_one_day">1 jour</string>
+    <string name="nc_expire_message_one_hour">1 heure</string>
+    <string name="nc_expire_message_one_week">1 semaine</string>
     <string name="nc_external_server_failed">Échec de l\'extraction des paramètres de signalisation</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile. Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>

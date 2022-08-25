@@ -95,6 +95,7 @@
     <string name="nc_conversation_menu_conversation_info">会話情報</string>
     <string name="nc_conversation_menu_video_call">ビデオ通話</string>
     <string name="nc_conversation_menu_voice_call">音声通話</string>
+    <string name="nc_conversation_settings">会話設定</string>
     <string name="nc_conversations_empty">会話に参加するか、新しいのを開始</string>
     <string name="nc_conversations_empty_details">友達や同僚に挨拶しましょう！</string>
     <string name="nc_copy_message">コピー</string>
@@ -114,6 +115,11 @@
     <string name="nc_display_name_not_fetched">表示名を取得できませんでした。</string>
     <string name="nc_display_name_not_stored">表示名を保存できませんでした。</string>
     <string name="nc_email">メール</string>
+    <string name="nc_expire_message_eight_hours">8時間</string>
+    <string name="nc_expire_message_off">オフ</string>
+    <string name="nc_expire_message_one_day">1日</string>
+    <string name="nc_expire_message_one_hour">1時間</string>
+    <string name="nc_expire_message_one_week">1週間</string>
     <string name="nc_external_server_failed">シグナリング設定を取得できませんでした</string>
     <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。Webブラウザー経由で会話への参加を試みてください。</string>
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>

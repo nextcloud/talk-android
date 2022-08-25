@@ -63,6 +63,7 @@
     <string name="nc_conversation_menu_conversation_info">Upplýsingar um samtal</string>
     <string name="nc_conversation_menu_video_call">Myndsímtal</string>
     <string name="nc_conversation_menu_voice_call">Raddsímtal</string>
+    <string name="nc_conversation_settings">Conversation settings</string>
     <string name="nc_conversations_empty">Taktu þátt í samtali eða byrjaðu nýtt samtal</string>
     <string name="nc_conversations_empty_details">Segðu hæ við vini þína og samstarfsmenn!</string>
     <string name="nc_copy_message">Afrita</string>
@@ -80,6 +81,10 @@
     <string name="nc_display_name_not_fetched">Gat ekki náð í birtingarnafn, hætti</string>
     <string name="nc_display_name_not_stored">Gat ekki geymt birtingarnafn, hætti</string>
     <string name="nc_email">Tölvupóstur</string>
+    <string name="nc_expire_message_off">Slökkt</string>
+    <string name="nc_expire_message_one_day">1 day</string>
+    <string name="nc_expire_message_one_hour">1 klukkustund</string>
+    <string name="nc_expire_message_one_week">1 week</string>
     <string name="nc_external_server_failed">Mistókst að sækja stillingar merkjasendinga</string>
     <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
     <string name="nc_file_browser_back">Til baka</string>

@@ -90,6 +90,7 @@
     <string name="nc_display_name_not_fetched">Synt namn kunne ikkje bli henta, avbryter</string>
     <string name="nc_display_name_not_stored">Kunne ikkje lagra synt namn, avbryter</string>
     <string name="nc_email">Epost</string>
+    <string name="nc_expire_message_one_hour">1 time</string>
     <string name="nc_external_server_failed">Kunne ikkje hente signal innstillingane</string>
     <string name="nc_failed_signaling_settings">Målserver støtte ikkje deltaking i offentlege samtalar via mobiltelefonar. Du kan prøve å delta i samtalen via nettlesaren.</string>
     <string name="nc_failed_to_perform_operation">Orsak, noko gjekk galt!</string>

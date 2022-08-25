@@ -105,6 +105,11 @@
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止動作。</string>
     <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
     <string name="nc_email">電子郵件</string>
+    <string name="nc_expire_message_eight_hours">8小時</string>
+    <string name="nc_expire_message_off">關閉</string>
+    <string name="nc_expire_message_one_day">1天</string>
+    <string name="nc_expire_message_one_hour">1小時</string>
+    <string name="nc_expire_message_one_week">1週</string>
     <string name="nc_external_server_failed">汲取訊號設定失敗</string>
     <string name="nc_failed_signaling_settings">目的伺服器不支援經由行動電話加入公開交談</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>

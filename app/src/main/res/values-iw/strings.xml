@@ -64,6 +64,7 @@
     <string name="nc_conversation_menu_conversation_info">פרטי דיון</string>
     <string name="nc_conversation_menu_video_call">שיחת וידאו</string>
     <string name="nc_conversation_menu_voice_call">שיחה קולית</string>
+    <string name="nc_conversation_settings">הגדרות דיון</string>
     <string name="nc_conversations_empty">ניתן להצטרף לדיון או להתחיל באחד חדש.</string>
     <string name="nc_conversations_empty_details">על הדרך לראות מה עם חבריך לעבודה!</string>
     <string name="nc_copy_message">העתק</string>
@@ -81,6 +82,9 @@
     <string name="nc_display_name_not_fetched">לא ניתן לאחזר את שם התצוגה, התהליך נפסק</string>
     <string name="nc_display_name_not_stored">לא ניתן לאחסן את שם התצוגה, התהליך נפסק</string>
     <string name="nc_email">דוא״ל</string>
+    <string name="nc_expire_message_off">כבוי</string>
+    <string name="nc_expire_message_one_day">יום</string>
+    <string name="nc_expire_message_one_hour">שעה</string>
     <string name="nc_external_server_failed">משיכת הגדרות האיתות נכשלה</string>
     <string name="nc_failed_signaling_settings">שרת היעד אינו תומך בהצטרפות לדיונים ציבוריים דרך טלפונים ניידים. יש לך אפשרות להצטרף לדיון דרך דפדפן במחשב.</string>
     <string name="nc_failed_to_perform_operation">משהו השתבש, עמך הסליחה!</string>
