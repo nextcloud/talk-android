@@ -84,6 +84,7 @@
     <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
     <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
     <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>
+    <string name="nc_conversation_settings">Impostatziones de sa resonada</string>
     <string name="nc_conversations_empty">Intra in una resonada o cumintza•nde una noa</string>
     <string name="nc_conversations_empty_details">Saluda a sa gente!</string>
     <string name="nc_copy_message">Còpia</string>
@@ -103,6 +104,10 @@
     <string name="nc_display_name_not_fetched">Errore in su recùperu de su nùmene ammustradu, annullende</string>
     <string name="nc_display_name_not_stored">No at fatu a sarvare su nùmene ammustradu, annullende</string>
     <string name="nc_email">Posta eletrònica</string>
+    <string name="nc_expire_message_off">Istudadu</string>
+    <string name="nc_expire_message_one_day">1 die</string>
+    <string name="nc_expire_message_one_hour">1 ora</string>
+    <string name="nc_expire_message_one_week">1 chida</string>
     <string name="nc_external_server_failed">Errore in su recùperu de sa cunfiguratzione</string>
     <string name="nc_failed_signaling_settings">Su serbidore de destinatzione non permitit de intrare in una resonada pùblica cun telèfonos mòbiles. Podes proare a intrare tràmite navigadore in sa rete.</string>
     <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>

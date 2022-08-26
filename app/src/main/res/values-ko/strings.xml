@@ -96,6 +96,7 @@
     <string name="nc_display_name_not_stored">표시 이름을 저장할 수 없음, 중단함</string>
     <string name="nc_email">이메일</string>
     <string name="nc_expire_message_off">꺼짐</string>
+    <string name="nc_expire_message_one_day">1일</string>
     <string name="nc_expire_message_one_hour">1시간</string>
     <string name="nc_expire_message_one_week">1주</string>
     <string name="nc_external_server_failed">신호 설정을 가져오지 못함</string>
