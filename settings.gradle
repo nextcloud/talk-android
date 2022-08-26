@@ -19,9 +19,9 @@
  */
 
 include ':app'
-include ':material-color-utilities'
+
 includeBuild('../android-common') {
     dependencySubstitution {
-        substitute module('com.github.nextcloud:android-common') using project(':core')
+        substitute module('com.github.nextcloud.android-common:ui') using project(':ui')
     }
 }

@@ -70,6 +70,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
+import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils

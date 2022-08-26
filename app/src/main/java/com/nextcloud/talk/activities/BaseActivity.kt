@@ -31,7 +31,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.nextcloud.android.common.SampleLibraryClass
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.CertificateEvent
@@ -69,8 +68,6 @@ open class BaseActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
-        // TODO remove this, testing only
-        SampleLibraryClass()
 
         if (appPreferences.isScreenSecured) {
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
