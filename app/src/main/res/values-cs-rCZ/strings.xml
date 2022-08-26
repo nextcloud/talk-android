@@ -118,10 +118,12 @@
     <string name="nc_display_name_not_stored">Nepodařilo se uložit zobrazované jméno, přerušuje se</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 hodin</string>
+    <string name="nc_expire_message_four_weeks">4 týdny</string>
     <string name="nc_expire_message_off">Vypnuto</string>
     <string name="nc_expire_message_one_day">1 den</string>
     <string name="nc_expire_message_one_hour">1 hodina</string>
     <string name="nc_expire_message_one_week">1 týden</string>
+    <string name="nc_expire_messages">Ukončit platnost zpráv v chatu</string>
     <string name="nc_external_server_failed">Nepodařilo se získat nastavení signalizace</string>
     <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování se k veřejným konverzacím prostřednictvím mobilních telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
