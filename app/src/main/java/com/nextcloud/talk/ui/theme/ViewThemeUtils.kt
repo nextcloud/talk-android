@@ -74,7 +74,7 @@ import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
-import com.nextcloud.talk.utils.ui.ColorUtil
+import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.talk.utils.ui.PlatformThemeUtil.isDarkMode
 import com.vanniktech.emoji.EmojiTextView
 import com.yarolegovich.mp.MaterialPreferenceCategory
