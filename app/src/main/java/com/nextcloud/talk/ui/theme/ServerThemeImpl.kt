@@ -26,7 +26,7 @@ package com.nextcloud.talk.ui.theme
 import com.nextcloud.android.common.ui.theme.ServerTheme
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.capabilities.ThemingCapability
-import com.nextcloud.talk.utils.ui.ColorUtil
+import com.nextcloud.android.common.ui.color.ColorUtil
 
 internal class ServerThemeImpl(themingCapability: ThemingCapability?, colorUtil: ColorUtil) :
     ServerTheme {
