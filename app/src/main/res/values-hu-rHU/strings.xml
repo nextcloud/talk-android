@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name="account_icon">Fiók ikon</string>
+    <string name="account_icon">Fiókikon</string>
     <string name="appbar_search_in">Keresés itt: %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Hangkimenet</string>
-    <string name="audio_output_phone">Telefo</string>
+    <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Hangszóró</string>
     <string name="audio_output_wired_headset">Vezetékes fejhallgató</string>
     <string name="avatar">Profilkép</string>
-    <string name="away">Távo</string>
+    <string name="away">Távol</string>
     <string name="call_without_notification">Hívás értesítés nélkül</string>
     <string name="choose_avatar_from_cloud">Profilkép választása a felhőből</string>
     <string name="clear_status_message">Állapotüzenet törlése</string>
@@ -118,10 +118,13 @@
     <string name="nc_display_name_not_stored">A megjelenítendő név nem tárolható, megszakítás</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 óra</string>
+    <string name="nc_expire_message_four_weeks">4 hét</string>
     <string name="nc_expire_message_off">Ki</string>
     <string name="nc_expire_message_one_day">1 nap</string>
     <string name="nc_expire_message_one_hour">1 óra</string>
     <string name="nc_expire_message_one_week">1 hét</string>
+    <string name="nc_expire_messages">Csevegési üzenetek elévülése</string>
+    <string name="nc_expire_messages_explanation">A csevegési üzenetek bizonyos idő után elévülhetnek. Megjegyzés: A csevegésben megosztott fájlok nem törlődnek a tulajdonosuk számára, csak többé nem lesznek megosztva a beszélgetéssel.</string>
     <string name="nc_external_server_failed">A jelzésbeállítások lekérése sikertelen</string>
     <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>

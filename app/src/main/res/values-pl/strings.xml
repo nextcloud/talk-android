@@ -124,6 +124,7 @@
     <string name="nc_expire_message_one_hour">1 godzina</string>
     <string name="nc_expire_message_one_week">1 tydzień</string>
     <string name="nc_expire_messages">Wygasa wiadomości na czacie</string>
+    <string name="nc_expire_messages_explanation">Wiadomości na czacie mogą wygasnąć po pewnym czasie. Uwaga: pliki udostępnione na czacie nie zostaną usunięte dla właściciela, ale nie będą już udostępniane w rozmowie.</string>
     <string name="nc_external_server_failed">Nie udało się pobrać ustawień sygnałowych</string>
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe. Możesz spróbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
     <string name="nc_failed_to_perform_operation">Przepraszamy, coś poszło nie tak!</string>

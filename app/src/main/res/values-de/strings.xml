@@ -124,6 +124,7 @@
     <string name="nc_expire_message_one_hour">1 Stunde</string>
     <string name="nc_expire_message_one_week">1 Woche</string>
     <string name="nc_expire_messages">Chatnachrichten ablaufen lassen</string>
+    <string name="nc_expire_messages_explanation">Chatnachrichten können nach einer bestimmten Zeit gelöscht werden. Hinweis: Im Chat freigegebene Dateien werden für den Besitzer nicht gelöscht, aber sie werden nicht mehr in der Unterhaltung freigegeben.</string>
     <string name="nc_external_server_failed">Konnte die Benachrichtigungseinstellungen nicht abrufen</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht, öffentlichen Unterhaltungen via Mobiltelefon beizutreten. Sie können versuchen, der Unterhaltung mit einem Internetbrowser beizutreten.</string>
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
