@@ -124,6 +124,7 @@
     <string name="nc_expire_message_one_hour">1 saat</string>
     <string name="nc_expire_message_one_week">1 hafta</string>
     <string name="nc_expire_messages">Süreli sohbet iletileri</string>
+    <string name="nc_expire_messages_explanation">Sohbet iletileri süresi belirli bir süre sonra dolacak şekilde ayarlanabilir. Not: Süresi dolan iletlerdeki dosyalar sahibi için silinmez, ancak artık sohbette paylaşılmaz.</string>
     <string name="nc_external_server_failed">İşaretleşme ayarları alınamadı</string>
     <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı desteklemiyor. Görüşmeye web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_failed_to_perform_operation">Ne yazık ki bir şeyler ters gitti!</string>
