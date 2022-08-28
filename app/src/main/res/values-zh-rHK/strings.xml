@@ -118,10 +118,13 @@
     <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
     <string name="nc_email">電郵地址</string>
     <string name="nc_expire_message_eight_hours">8 小时</string>
+    <string name="nc_expire_message_four_weeks">4 個星期</string>
     <string name="nc_expire_message_off">關閉</string>
     <string name="nc_expire_message_one_day">1 日</string>
     <string name="nc_expire_message_one_hour">1 小時</string>
     <string name="nc_expire_message_one_week">1 星期</string>
+    <string name="nc_expire_messages">刪除聊天訊息</string>
+    <string name="nc_expire_messages_explanation">聊天訊息可能會在一定時間後過期。注意：在聊天中共享的檔案不會為所有者刪除，但將不再在對話中共享。</string>
     <string name="nc_external_server_failed">擷取網絡設定失敗</string>
     <string name="nc_failed_signaling_settings">目標伺服器不支持通過流動電話加入公共對話。您可以嘗試通過網絡瀏覽器加入對話。</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了：（</string>
