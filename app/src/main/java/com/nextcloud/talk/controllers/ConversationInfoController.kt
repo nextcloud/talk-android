@@ -201,7 +201,7 @@ class ConversationInfoController(args: Bundle) :
                 binding.notificationSettingsView.conversationInfoPriorityConversation,
                 binding.guestAccessView.guestAccessAllowSwitch,
                 binding.guestAccessView.guestAccessPasswordSwitch
-            ).forEach(viewThemeUtils::colorSwitchPreference)
+            ).forEach(viewThemeUtils.talk::colorSwitchPreference)
         }
     }
 
@@ -218,7 +218,7 @@ class ConversationInfoController(args: Bundle) :
                 binding.guestAccessView.guestAccessCategory,
                 binding.webinarInfoView.conversationInfoWebinar,
                 binding.notificationSettingsView.notificationSettingsCategory
-            ).forEach(viewThemeUtils::colorPreferenceCategory)
+            ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
         }
     }
 
@@ -238,7 +238,7 @@ class ConversationInfoController(args: Bundle) :
 
         binding.addParticipantsAction.visibility = GONE
 
-        viewThemeUtils.colorCircularProgressBar(binding.progressBar)
+        viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar)
     }
 
     private fun setupWebinaryView() {
@@ -376,7 +376,7 @@ class ConversationInfoController(args: Bundle) :
     private fun showDeleteConversationDialog() {
         if (activity != null) {
             val dialogBuilder = MaterialAlertDialogBuilder(binding.conversationInfoName.context)
-                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
+                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_delete_call)
                 .setMessage(R.string.nc_delete_conversation_more)
                 .setPositiveButton(R.string.nc_delete) { _, _ ->
@@ -385,9 +385,10 @@ class ConversationInfoController(args: Bundle) :
                 .setNegativeButton(R.string.nc_cancel) { _, _ ->
                     // unused atm
                 }
-            viewThemeUtils.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
+            viewThemeUtils.dialog
+                .colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
             val dialog = dialogBuilder.show()
-            viewThemeUtils.colorTextButtons(
+            viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -547,7 +548,7 @@ class ConversationInfoController(args: Bundle) :
     private fun showClearHistoryDialog() {
         if (activity != null) {
             val dialogBuilder = MaterialAlertDialogBuilder(binding.conversationInfoName.context)
-                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
+                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_clear_history)
                 .setMessage(R.string.nc_clear_history_warning)
                 .setPositiveButton(R.string.nc_delete_all) { _, _ ->
@@ -556,9 +557,10 @@ class ConversationInfoController(args: Bundle) :
                 .setNegativeButton(R.string.nc_cancel) { _, _ ->
                     // unused atm
                 }
-            viewThemeUtils.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
+            viewThemeUtils.dialog
+                .colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
             val dialog = dialogBuilder.show()
-            viewThemeUtils.colorTextButtons(
+            viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -783,7 +785,8 @@ class ConversationInfoController(args: Bundle) :
                         DisplayUtils.getImageRequestForUrl(
                             ApiUtils.getUrlForAvatar(
                                 conversationUser!!.baseUrl,
-                                conversation!!.name, true
+                                conversation!!.name,
+                                true
                             ),
                             conversationUser
                         )
@@ -795,7 +798,7 @@ class ConversationInfoController(args: Bundle) :
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     binding.avatarImage.hierarchy.setPlaceholderImage(
                         DisplayUtils.getRoundedDrawable(
-                            viewThemeUtils.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_group)
+                            viewThemeUtils.talk.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_group)
                         )
                     )
                 } else {
@@ -808,7 +811,7 @@ class ConversationInfoController(args: Bundle) :
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     binding.avatarImage.hierarchy.setPlaceholderImage(
                         DisplayUtils.getRoundedDrawable(
-                            viewThemeUtils.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_link)
+                            viewThemeUtils.talk.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_link)
                         )
                     )
                 } else {

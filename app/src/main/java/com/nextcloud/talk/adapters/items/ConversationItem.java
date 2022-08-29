@@ -143,7 +143,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                                                                         null));
 
         if (adapter.hasFilter()) {
-            viewThemeUtils.highlightText(holder.binding.dialogName,
+            viewThemeUtils.platform.highlightText(holder.binding.dialogName,
                                          conversation.getDisplayName(),
                                          String.valueOf(adapter.getFilter(String.class)));
         } else {
@@ -168,16 +168,16 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 R.color.conversation_unread_bubble_text);
 
             if (conversation.getType() == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-                viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
+                viewThemeUtils.material.colorChipBackground(holder.binding.dialogUnreadBubble);
             } else if (conversation.getUnreadMention()) {
                 if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "direct-mention-flag")) {
                     if (conversation.getUnreadMentionDirect()) {
-                        viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
+                        viewThemeUtils.material.colorChipBackground(holder.binding.dialogUnreadBubble);
                     } else {
-                        viewThemeUtils.colorChipOutlined(holder.binding.dialogUnreadBubble, 6.0f);
+                        viewThemeUtils.material.colorChipOutlined(holder.binding.dialogUnreadBubble, 6.0f);
                     }
                 } else {
-                    viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
+                    viewThemeUtils.material.colorChipBackground(holder.binding.dialogUnreadBubble);
                 }
             } else {
                 holder.binding.dialogUnreadBubble.setChipBackgroundColor(lightBubbleFillColor);
@@ -266,7 +266,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         holder.binding.dialogAvatar.setImageDrawable(
                             DisplayUtils.getRoundedDrawable(
-                                viewThemeUtils.themePlaceholderAvatar(holder.binding.dialogAvatar,
+                                viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.dialogAvatar,
                                                                       R.drawable.ic_avatar_document)));
                     } else {
                         holder.binding.dialogAvatar.setImageDrawable(
@@ -316,7 +316,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         holder.binding.dialogAvatar.setImageDrawable(
                             DisplayUtils.getRoundedDrawable(
-                                viewThemeUtils.themePlaceholderAvatar(holder.binding.dialogAvatar,
+                                viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.dialogAvatar,
                                                                       R.drawable.ic_avatar_group)));
                     } else {
                         holder.binding.dialogAvatar.setImageDrawable(
@@ -327,7 +327,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         holder.binding.dialogAvatar.setImageDrawable(
                             DisplayUtils.getRoundedDrawable(
-                                viewThemeUtils.themePlaceholderAvatar(holder.binding.dialogAvatar,
+                                viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.dialogAvatar,
                                                                       R.drawable.ic_avatar_link)));
                     } else {
                         holder.binding.dialogAvatar.setImageDrawable(

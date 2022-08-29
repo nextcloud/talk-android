@@ -70,7 +70,7 @@ abstract class SharedItemsViewHolder(
     )
 
     open fun onBind(item: SharedFileItem) {
-        image.hierarchy.setPlaceholderImage(viewThemeUtils.getPlaceholderImage(image.context, item.mimeType))
+        image.hierarchy.setPlaceholderImage(viewThemeUtils.talk.getPlaceholderImage(image.context, item.mimeType))
         if (item.previewAvailable) {
             image.controller = configurePreview(item)
         }

@@ -53,7 +53,7 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
         setContentView(dialogAttachmentBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.themeDialog(dialogAttachmentBinding.root)
+        viewThemeUtils.platform.themeDialog(dialogAttachmentBinding.root)
         initItemsStrings()
         initItemsVisibility()
         initItemsClickListeners()

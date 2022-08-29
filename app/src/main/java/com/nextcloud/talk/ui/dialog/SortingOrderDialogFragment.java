@@ -120,8 +120,8 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
      * find all relevant UI elements and set their values.
      */
     private void setupDialogElements() {
-        viewThemeUtils.themeDialog(binding.root);
-        viewThemeUtils.colorMaterialButtonPrimaryBorderless(binding.cancel);
+        viewThemeUtils.platform.themeDialog(binding.root);
+        viewThemeUtils.material.colorMaterialButtonPrimaryBorderless(binding.cancel);
 
         taggedViews = new View[12];
         taggedViews[0] = binding.sortByNameAscending;
@@ -163,10 +163,10 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
                 continue;
             }
             if (view instanceof MaterialButton) {
-                viewThemeUtils.colorMaterialButtonText((MaterialButton) view);
+                viewThemeUtils.material.colorMaterialButtonText((MaterialButton) view);
             }
             if (view instanceof TextView) {
-                viewThemeUtils.colorPrimaryTextViewElement((TextView) view);
+                viewThemeUtils.platform.colorPrimaryTextViewElement((TextView) view);
                 ((TextView) view).setTypeface(Typeface.DEFAULT_BOLD);
             }
         }

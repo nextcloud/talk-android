@@ -34,15 +34,15 @@ class PollResultHeaderViewHolder(
     override fun bind(pollResultItem: PollResultItem, clickListener: PollResultItemClickListener) {
         val item = pollResultItem as PollResultHeaderItem
 
-        viewThemeUtils.colorProgressBar(binding.pollOptionBar)
+        viewThemeUtils.material.colorProgressBar(binding.pollOptionBar)
 
         binding.root.setOnClickListener { clickListener.onClick() }
 
         binding.pollOptionText.text = item.name
         binding.pollOptionPercentText.text = "${item.percent}%"
 
-        viewThemeUtils.colorDialogSupportingText(binding.pollOptionText)
-        viewThemeUtils.colorDialogSupportingText(binding.pollOptionPercentText)
+        viewThemeUtils.dialog.colorDialogSupportingText(binding.pollOptionText)
+        viewThemeUtils.dialog.colorDialogSupportingText(binding.pollOptionPercentText)
 
         if (item.selfVoted) {
             binding.pollOptionText.setTypeface(null, Typeface.BOLD)

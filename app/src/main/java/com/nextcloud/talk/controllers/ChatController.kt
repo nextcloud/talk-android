@@ -653,7 +653,7 @@ class ChatController(args: Bundle) :
             }
         }
 
-        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.popupBubbleView)
+        viewThemeUtils.material.colorMaterialButtonPrimaryFilled(binding.popupBubbleView)
 
         binding.messageInputView.setPadding(0, 0, 0, 0)
 
@@ -877,7 +877,7 @@ class ChatController(args: Bundle) :
                 .nc_description_send_message_button
         )
 
-        viewThemeUtils.colorImageView(binding.messageInputView.button)
+        viewThemeUtils.platform.colorImageView(binding.messageInputView.button)
 
         if (currentConversation != null && currentConversation?.roomId != null) {
             loadAvatarForStatusBar()
@@ -1433,14 +1433,14 @@ class ChatController(args: Bundle) :
                             // unused atm
                         }
 
-                    viewThemeUtils.colorMaterialAlertDialogBackground(
+                    viewThemeUtils.dialog.colorMaterialAlertDialogBackground(
                         binding.messageInputView.context,
                         materialAlertDialogBuilder
                     )
 
                     val dialog = materialAlertDialogBuilder.show()
 
-                    viewThemeUtils.colorTextButtons(
+                    viewThemeUtils.platform.colorTextButtons(
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                     )
@@ -1772,7 +1772,8 @@ class ChatController(args: Bundle) :
             cancelReply()
         }
 
-        viewThemeUtils.themeImageButton(binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton))
+        viewThemeUtils.platform
+            .themeImageButton(binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton))
 
         cancelNotificationsForCurrentConversation()
 
@@ -2523,12 +2524,12 @@ class ChatController(args: Bundle) :
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_conversation, menu)
 
-        viewThemeUtils.colorToolbarMenuIcon(
+        viewThemeUtils.platform.colorToolbarMenuIcon(
             binding.messageInputView.context,
             menu.findItem(R.id.conversation_voice_call)
         )
 
-        viewThemeUtils.colorToolbarMenuIcon(
+        viewThemeUtils.platform.colorToolbarMenuIcon(
             binding.messageInputView.context,
             menu.findItem(R.id.conversation_video_call)
         )

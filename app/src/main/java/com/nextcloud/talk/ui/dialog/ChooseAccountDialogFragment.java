@@ -129,7 +129,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             binding.currentAccount.ticker.setVisibility(View.GONE);
             binding.currentAccount.account.setText((Uri.parse(user.getBaseUrl()).getHost()));
 
-            viewThemeUtils.colorImageView(binding.currentAccount.accountMenu);
+            viewThemeUtils.platform.colorImageView(binding.currentAccount.accountMenu);
 
 
             if (user.getBaseUrl() != null &&
@@ -213,15 +213,15 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     }
 
     private void themeViews() {
-        viewThemeUtils.themeDialog(binding.getRoot());
-        viewThemeUtils.themeDialogDivider(binding.divider);
+        viewThemeUtils.platform.themeDialog(binding.getRoot());
+        viewThemeUtils.platform.themeDialogDivider(binding.divider);
 
-        viewThemeUtils.colorMaterialTextButton(binding.setStatus);
-        viewThemeUtils.colorDialogMenuText(binding.setStatus);
-        viewThemeUtils.colorMaterialTextButton(binding.addAccount);
-        viewThemeUtils.colorDialogMenuText(binding.addAccount);
-        viewThemeUtils.colorMaterialTextButton(binding.manageSettings);
-        viewThemeUtils.colorDialogMenuText(binding.manageSettings);
+        viewThemeUtils.material.colorMaterialTextButton(binding.setStatus);
+        viewThemeUtils.dialog.colorDialogMenuText(binding.setStatus);
+        viewThemeUtils.material.colorMaterialTextButton(binding.addAccount);
+        viewThemeUtils.dialog.colorDialogMenuText(binding.addAccount);
+        viewThemeUtils.material.colorMaterialTextButton(binding.manageSettings);
+        viewThemeUtils.dialog.colorDialogMenuText(binding.manageSettings);
     }
 
     private void loadCurrentStatus(User user) {

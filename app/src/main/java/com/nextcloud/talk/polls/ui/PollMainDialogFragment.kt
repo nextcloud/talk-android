@@ -72,13 +72,13 @@ class PollMainDialogFragment : DialogFragment() {
 
         val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context).setView(binding.root)
 
-        viewThemeUtils.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
 
         val dialog = dialogBuilder.create()
 
         binding.messagePollTitle.text = viewModel.pollTitle
-        viewThemeUtils.colorDialogHeadline(binding.messagePollTitle)
-        viewThemeUtils.colorDialogIcon(binding.messagePollIcon)
+        viewThemeUtils.dialog.colorDialogHeadline(binding.messagePollTitle)
+        viewThemeUtils.dialog.colorDialogIcon(binding.messagePollIcon)
 
         return dialog
     }
@@ -143,7 +143,7 @@ class PollMainDialogFragment : DialogFragment() {
 
     private fun initVotersAmount(showVotersAmount: Boolean, numVoters: Int, showResultSubtitle: Boolean) {
         if (showVotersAmount) {
-            viewThemeUtils.colorDialogSupportingText(binding.pollVotesAmount)
+            viewThemeUtils.dialog.colorDialogSupportingText(binding.pollVotesAmount)
             binding.pollVotesAmount.visibility = View.VISIBLE
             binding.pollVotesAmount.text = resources.getQuantityString(
                 R.plurals.polls_amount_voters,
@@ -155,7 +155,7 @@ class PollMainDialogFragment : DialogFragment() {
         }
 
         if (showResultSubtitle) {
-            viewThemeUtils.colorDialogSupportingText(binding.pollResultsSubtitle)
+            viewThemeUtils.dialog.colorDialogSupportingText(binding.pollResultsSubtitle)
             binding.pollResultsSubtitle.visibility = View.VISIBLE
             binding.pollResultsSubtitleSeperator.visibility = View.VISIBLE
         } else {

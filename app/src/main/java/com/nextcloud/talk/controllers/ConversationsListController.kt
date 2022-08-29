@@ -274,7 +274,8 @@ class ConversationsListController(bundle: Bundle) :
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
             if (activity != null && activity is MainActivity) {
                 loadUserAvatar((activity as MainActivity?)!!.binding.switchAccountButton)
-                viewThemeUtils.colorMaterialTextButton((activity as MainActivity?)!!.binding.switchAccountButton)
+                viewThemeUtils.material
+                    .colorMaterialTextButton((activity as MainActivity?)!!.binding.switchAccountButton)
             }
             fetchData()
         }
@@ -295,7 +296,7 @@ class ConversationsListController(bundle: Bundle) :
             val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
             if (searchItem != null) {
                 searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-                viewThemeUtils.themeSearchView(searchView!!)
+                viewThemeUtils.talk.themeSearchView(searchView!!)
                 searchView!!.maxWidth = Int.MAX_VALUE
                 searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
                 var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
@@ -353,14 +354,14 @@ class ConversationsListController(bundle: Bundle) :
                 }
                 activity.binding.searchText.setOnClickListener {
                     showSearchView(activity, searchView, searchItem)
-                    viewThemeUtils.themeStatusBar(activity, searchView!!)
+                    viewThemeUtils.platform.themeStatusBar(activity, searchView!!)
                 }
             }
             searchView!!.setOnCloseListener {
                 if (TextUtils.isEmpty(searchView!!.query.toString())) {
                     searchView!!.onActionViewCollapsed()
                     if (activity != null) {
-                        viewThemeUtils.resetStatusBar(activity, searchView!!)
+                        viewThemeUtils.platform.resetStatusBar(activity)
                     }
                 } else {
                     searchView!!.post { searchView!!.setQuery(TAG, true) }
@@ -400,7 +401,8 @@ class ConversationsListController(bundle: Bundle) :
                         mainActivity.binding.toolbar.visibility = View.GONE
                         mainActivity.binding.searchToolbar.visibility = View.VISIBLE
                         if (resources != null) {
-                            viewThemeUtils.resetStatusBar(mainActivity, mainActivity.binding.searchToolbar)
+                            viewThemeUtils.platform
+                                .resetStatusBar(mainActivity)
                         }
                     }
                     val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
@@ -664,13 +666,13 @@ class ConversationsListController(bundle: Bundle) :
             false
         }
         binding.swipeRefreshLayoutView.setOnRefreshListener { fetchData() }
-        viewThemeUtils.themeSwipeRefreshLayout(binding.swipeRefreshLayoutView)
+        viewThemeUtils.androidx.themeSwipeRefreshLayout(binding.swipeRefreshLayoutView)
         binding.emptyLayout.setOnClickListener { showNewConversationsScreen() }
         binding.floatingActionButton.setOnClickListener {
             run(context)
             showNewConversationsScreen()
         }
-        viewThemeUtils.themeFAB(binding.floatingActionButton)
+        viewThemeUtils.material.themeFAB(binding.floatingActionButton)
         if (activity != null && activity is MainActivity) {
             val activity = activity as MainActivity?
             activity!!.binding.switchAccountButton.setOnClickListener {
@@ -695,7 +697,7 @@ class ConversationsListController(bundle: Bundle) :
                 nextUnreadConversationScrollPosition
             )
         }
-        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.newMentionPopupBubble)
+        viewThemeUtils.material.colorMaterialButtonPrimaryFilled(binding.newMentionPopupBubble)
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -937,7 +939,7 @@ class ConversationsListController(bundle: Bundle) :
                 )
             }
             val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton.context)
-                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.upload))
+                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.upload))
                 .setTitle(confirmationQuestion)
                 .setMessage(fileNamesWithLineBreaks.toString())
                 .setPositiveButton(R.string.nc_yes) { _, _ ->
@@ -948,9 +950,10 @@ class ConversationsListController(bundle: Bundle) :
                     Log.d(TAG, "sharing files aborted, going back to share-to screen")
                     showShareToScreen = true
                 }
-            viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
+            viewThemeUtils.dialog
+                .colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
             val dialog = dialogBuilder.show()
-            viewThemeUtils.colorTextButtons(
+            viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -1128,7 +1131,10 @@ class ConversationsListController(bundle: Bundle) :
             val conversation = Parcels.unwrap<Conversation>(conversationMenuBundle!!.getParcelable(KEY_ROOM))
             if (conversation != null) {
                 val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton.context)
-                    .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
+                    .setIcon(
+                        viewThemeUtils.dialog
+                            .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
+                    )
                     .setTitle(R.string.nc_delete_call)
                     .setMessage(R.string.nc_delete_conversation_more)
                     .setPositiveButton(R.string.nc_delete) { _, _ ->
@@ -1144,9 +1150,10 @@ class ConversationsListController(bundle: Bundle) :
                     .setNegativeButton(R.string.nc_cancel) { _, _ ->
                         conversationMenuBundle = null
                     }
-                viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
+                viewThemeUtils.dialog
+                    .colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
                 val dialog = dialogBuilder.show()
-                viewThemeUtils.colorTextButtons(
+                viewThemeUtils.platform.colorTextButtons(
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 )
@@ -1157,7 +1164,7 @@ class ConversationsListController(bundle: Bundle) :
     private fun showUnauthorizedDialog() {
         if (activity != null) {
             val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton.context)
-                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
+                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_dialog_invalid_password)
                 .setMessage(R.string.nc_dialog_reauth_or_delete)
                 .setCancelable(false)
@@ -1187,9 +1194,10 @@ class ConversationsListController(bundle: Bundle) :
                             .popChangeHandler(VerticalChangeHandler())
                     )
                 }
-            viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
+            viewThemeUtils.dialog
+                .colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
             val dialog = dialogBuilder.show()
-            viewThemeUtils.colorTextButtons(
+            viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -1198,7 +1206,7 @@ class ConversationsListController(bundle: Bundle) :
 
     private fun showServerEOLDialog() {
         val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton.context)
-            .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_warning_white))
+            .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_warning_white))
             .setTitle(R.string.nc_settings_server_eol_title)
             .setMessage(R.string.nc_settings_server_eol)
             .setCancelable(false)
@@ -1229,9 +1237,9 @@ class ConversationsListController(bundle: Bundle) :
                     activity!!.finish()
                 }
             }
-        viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
         val dialog = dialogBuilder.show()
-        viewThemeUtils.colorTextButtons(
+        viewThemeUtils.platform.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         )

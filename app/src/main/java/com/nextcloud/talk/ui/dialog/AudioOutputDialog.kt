@@ -51,7 +51,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
         setContentView(dialogAudioOutputBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.themeDialogDark(dialogAudioOutputBinding.root)
+        viewThemeUtils.platform.themeDialogDark(dialogAudioOutputBinding.root)
         updateOutputDeviceList()
         initClickListeners()
     }
@@ -92,23 +92,28 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
     private fun highlightActiveOutputChannel() {
         when (callActivity.audioManager?.currentAudioDevice) {
             WebRtcAudioManager.AudioDevice.BLUETOOTH -> {
-                viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputBluetoothIcon)
-                viewThemeUtils.colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputBluetoothText)
+                viewThemeUtils.platform.colorImageView(dialogAudioOutputBinding.audioOutputBluetoothIcon)
+                viewThemeUtils.platform
+                    .colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputBluetoothText)
             }
 
             WebRtcAudioManager.AudioDevice.SPEAKER_PHONE -> {
-                viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputSpeakerIcon)
-                viewThemeUtils.colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputSpeakerText)
+                viewThemeUtils.platform.colorImageView(dialogAudioOutputBinding.audioOutputSpeakerIcon)
+                viewThemeUtils.platform
+                    .colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputSpeakerText)
             }
 
             WebRtcAudioManager.AudioDevice.EARPIECE -> {
-                viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputEarspeakerIcon)
-                viewThemeUtils.colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputEarspeakerText)
+                viewThemeUtils.platform.colorImageView(dialogAudioOutputBinding.audioOutputEarspeakerIcon)
+                viewThemeUtils.platform
+                    .colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputEarspeakerText)
             }
 
             WebRtcAudioManager.AudioDevice.WIRED_HEADSET -> {
-                viewThemeUtils.colorImageView(dialogAudioOutputBinding.audioOutputWiredHeadsetIcon)
-                viewThemeUtils.colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputWiredHeadsetText)
+                viewThemeUtils.platform
+                    .colorImageView(dialogAudioOutputBinding.audioOutputWiredHeadsetIcon)
+                viewThemeUtils.platform
+                    .colorPrimaryTextViewElementDarkMode(dialogAudioOutputBinding.audioOutputWiredHeadsetText)
             }
 
             else -> Log.d(TAG, "AudioOutputDialog doesn't know this AudioDevice")

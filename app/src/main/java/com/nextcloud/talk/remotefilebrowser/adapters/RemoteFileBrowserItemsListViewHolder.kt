@@ -98,7 +98,7 @@ class RemoteFileBrowserItemsListViewHolder(
         binding.fileIcon
             .hierarchy
             .setPlaceholderImage(
-                viewThemeUtils.getPlaceholderImage(binding.root.context, item.mimeType)
+                viewThemeUtils.talk.getPlaceholderImage(binding.root.context, item.mimeType)
             )
 
         if (item.hasPreview) {
@@ -129,7 +129,7 @@ class RemoteFileBrowserItemsListViewHolder(
     private fun setSelectability() {
         if (selectable) {
             binding.selectFileCheckbox.visibility = View.VISIBLE
-            viewThemeUtils.themeCheckbox(binding.selectFileCheckbox)
+            viewThemeUtils.platform.themeCheckbox(binding.selectFileCheckbox)
         } else {
             binding.selectFileCheckbox.visibility = View.GONE
         }

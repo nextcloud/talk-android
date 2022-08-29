@@ -161,7 +161,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
@@ -187,7 +187,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
                 .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.platform.colorPrimaryView(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

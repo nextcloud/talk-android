@@ -75,7 +75,7 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
 
         val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context)
             .setView(binding.root)
-        viewThemeUtils.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
 
         return dialogBuilder.create()
     }
@@ -101,18 +101,18 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
     }
 
     private fun themeDialog() {
-        viewThemeUtils.colorPrimaryTextViewElement(binding.pollQuestion)
-        viewThemeUtils.colorPrimaryTextViewElement(binding.pollOptions)
-        viewThemeUtils.colorPrimaryTextViewElement(binding.pollSettings)
+        viewThemeUtils.platform.colorPrimaryTextViewElement(binding.pollQuestion)
+        viewThemeUtils.platform.colorPrimaryTextViewElement(binding.pollOptions)
+        viewThemeUtils.platform.colorPrimaryTextViewElement(binding.pollSettings)
 
-        viewThemeUtils.colorTextInputLayout(binding.pollCreateQuestionTextInputLayout)
+        viewThemeUtils.material.colorTextInputLayout(binding.pollCreateQuestionTextInputLayout)
 
-        viewThemeUtils.colorMaterialButtonText(binding.pollAddOptionsItem)
-        viewThemeUtils.colorMaterialButtonText(binding.pollDismiss)
-        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.pollCreateButton)
+        viewThemeUtils.material.colorMaterialButtonText(binding.pollAddOptionsItem)
+        viewThemeUtils.material.colorMaterialButtonText(binding.pollDismiss)
+        viewThemeUtils.material.colorMaterialButtonPrimaryFilled(binding.pollCreateButton)
 
-        viewThemeUtils.themeCheckbox(binding.pollPrivatePollCheckbox)
-        viewThemeUtils.themeCheckbox(binding.pollMultipleAnswersCheckbox)
+        viewThemeUtils.platform.themeCheckbox(binding.pollPrivatePollCheckbox)
+        viewThemeUtils.platform.themeCheckbox(binding.pollMultipleAnswersCheckbox)
     }
 
     private fun setupListeners() {
