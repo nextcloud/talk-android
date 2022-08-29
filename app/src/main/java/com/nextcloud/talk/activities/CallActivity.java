@@ -1707,8 +1707,8 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
-        for (int i = 0; i < peerConnectionWrapperList.size(); i++) {
-            endPeerConnection(peerConnectionWrapperList.get(i).getSessionId(), false);
+        for (PeerConnectionWrapper wrapper : peerConnectionWrapperList) {
+            endPeerConnection(wrapper.getSessionId(), false);
         }
 
         if (localStream != null) {
@@ -1887,10 +1887,10 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private PeerConnectionWrapper getPeerConnectionWrapperForSessionIdAndType(String sessionId, String type) {
-        for (int i = 0; i < peerConnectionWrapperList.size(); i++) {
-            if (peerConnectionWrapperList.get(i).getSessionId().equals(sessionId)
-                && peerConnectionWrapperList.get(i).getVideoStreamType().equals(type)) {
-                return peerConnectionWrapperList.get(i);
+        for (PeerConnectionWrapper wrapper : peerConnectionWrapperList) {
+            if (wrapper.getSessionId().equals(sessionId)
+                && wrapper.getVideoStreamType().equals(type)) {
+                return wrapper;
             }
         }
 
@@ -1980,10 +1980,8 @@ public class CallActivity extends CallBaseActivity {
 
     private void endPeerConnection(String sessionId, boolean justScreen) {
         List<PeerConnectionWrapper> peerConnectionWrappers;
-        PeerConnectionWrapper peerConnectionWrapper;
         if (!(peerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()) {
-            for (int i = 0; i < peerConnectionWrappers.size(); i++) {
-                peerConnectionWrapper = peerConnectionWrappers.get(i);
+            for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrappers) {
                 if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
                     if (VIDEO_STREAM_TYPE_SCREEN.equals(peerConnectionWrapper.getVideoStreamType()) || !justScreen) {
                         runOnUiThread(() -> removeMediaStream(sessionId));
@@ -2104,10 +2102,8 @@ public class CallActivity extends CallBaseActivity {
         nickChangedPayload.put("userid", conversationUser.getUserId());
         nickChangedPayload.put("name", conversationUser.getDisplayName());
         dataChannelMessage.setPayload(nickChangedPayload);
-        final PeerConnectionWrapper peerConnectionWrapper;
-        for (int i = 0; i < peerConnectionWrapperList.size(); i++) {
-            if (peerConnectionWrapperList.get(i).isMCUPublisher()) {
-                peerConnectionWrapper = peerConnectionWrapperList.get(i);
+        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+            if (peerConnectionWrapper.isMCUPublisher()) {
                 Observable
                     .interval(1, TimeUnit.SECONDS)
                     .repeatUntil(() -> (!isConnectionEstablished() || isDestroyed()))

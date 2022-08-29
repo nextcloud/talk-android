@@ -168,12 +168,6 @@
     <string name="nc_clear_history_warning">Do you really want to delete all messages in this conversation?</string>
     <string name="nc_clear_history_success">All messages were deleted</string>
     <string name="nc_rename">Rename conversation</string>
-    <string name="nc_set_password">Set a password</string>
-    <string name="nc_change_password">Change password</string>
-    <string name="nc_clear_password">Clear password</string>
-    <string name="nc_share_link">Share link</string>
-    <string name="nc_make_call_public">Make conversation public</string>
-    <string name="nc_make_call_private">Make conversation private</string>
     <string name="nc_delete_call">Delete conversation</string>
     <string name="nc_delete">Delete</string>
     <string name="nc_delete_all">Delete all</string>
@@ -336,6 +330,22 @@
     <string name="emoji_category_recent">Recent</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_search">Search emoji</string>
+
+    <!-- Conversation info guest access -->
+    <string name="nc_guest_access">Guest access</string>
+    <string name="nc_guest_access_allow_title">Allow guests</string>
+    <string name="nc_guest_access_allow_summary">Allow guests to share a public link to join this conversation.</string>
+    <string name="nc_guest_access_allow_failed">Can\'t en-/disable guest access.</string>
+    <string name="nc_guest_access_password_title">Password protection</string>
+    <string name="nc_guest_access_password_summary">Set a password to restrict who can use the public link.</string>
+    <string name="nc_guest_access_password_dialog_title">Guest access password</string>
+    <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
+    <string name="nc_guest_access_password_failed">Error during setting/disabling the password.</string>
+    <string name="nc_guest_access_password_weak_alert_title">Weak password</string>
+    <string name="nc_guest_access_share_link">Share conversation link</string>
+    <string name="nc_guest_access_resend_invitations">Resend invitations</string>
+    <string name="nc_guest_access_resend_invitations_successful">Invitations were sent out again.</string>
+    <string name="nc_guest_access_resend_invitations_failed">Invitations were not send due to an error.</string>
 
     <!-- Content descriptions -->
     <string name="nc_description_send_message_button">Send message</string>

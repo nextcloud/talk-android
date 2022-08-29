@@ -218,6 +218,10 @@ public class ApiUtils {
         return getUrlForParticipants(version, baseUrl, token) + "/self";
     }
 
+    public static String getUrlForParticipantsResendInvitations(int version, String baseUrl, String token) {
+        return getUrlForParticipants(version, baseUrl, token) + "/resend-invitations";
+    }
+
     public static String getUrlForRoomFavorite(int version, String baseUrl, String token) {
         return getUrlForRoom(version, baseUrl, token) + "/favorite";
     }

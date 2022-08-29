@@ -4,6 +4,8 @@
   ~ @author Mario Danic
   ~ @author Andy Scherzinger
   ~ @author Marcel Hibbe
+  ~ @author Tim Krüger
+  ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
   ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -25,10 +27,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:apc="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:background="@color/white">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -80,8 +82,8 @@
                         android:layout_width="@dimen/avatar_size_big"
                         android:layout_height="@dimen/avatar_size_big"
                         android:layout_centerHorizontal="true"
-                        tools:background="@color/hwSecurityRed"
-                        apc:roundAsCircle="true" />
+                        apc:roundAsCircle="true"
+                        tools:background="@color/hwSecurityRed" />
 
                 </RelativeLayout>
             </com.yarolegovich.mp.MaterialPreferenceCategory>
@@ -145,6 +147,14 @@
                 <include
                     android:id="@+id/webinar_info_view"
                     layout="@layout/webinar_info_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <include
+                    android:id="@+id/guest_access_view"
+                    layout="@layout/guest_access_settings_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"

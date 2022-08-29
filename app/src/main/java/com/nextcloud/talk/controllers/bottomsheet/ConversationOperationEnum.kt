@@ -22,12 +22,6 @@ package com.nextcloud.talk.controllers.bottomsheet
 
 enum class ConversationOperationEnum {
     OPS_CODE_RENAME_ROOM,
-    OPS_CODE_MAKE_PUBLIC,
-    OPS_CODE_CHANGE_PASSWORD,
-    OPS_CODE_CLEAR_PASSWORD,
-    OPS_CODE_SET_PASSWORD,
-    OPS_CODE_SHARE_LINK,
-    OPS_CODE_MAKE_PRIVATE,
     OPS_CODE_GET_AND_JOIN_ROOM,
     OPS_CODE_INVITE_USERS,
     OPS_CODE_MARK_AS_READ,

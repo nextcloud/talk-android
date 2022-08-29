@@ -33,6 +33,8 @@ import com.nextcloud.talk.polls.repositories.PollRepository
 import com.nextcloud.talk.polls.repositories.PollRepositoryImpl
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepositoryImpl
+import com.nextcloud.talk.repositories.conversations.ConversationsRepository
+import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
@@ -44,6 +46,12 @@ import okhttp3.OkHttpClient
 
 @Module
 class RepositoryModule {
+
+    @Provides
+    fun provideConversationsRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ConversationsRepository {
+        return ConversationsRepositoryImpl(ncApi, userProvider)
+    }
+
     @Provides
     fun provideSharedItemsRepository(ncApi: NcApi): SharedItemsRepository {
         return SharedItemsRepositoryImpl(ncApi)

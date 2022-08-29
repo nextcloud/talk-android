@@ -211,11 +211,6 @@ class OperationsMenuController(args: Bundle) : BaseController(
         credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
         when (operation) {
             ConversationOperationEnum.OPS_CODE_RENAME_ROOM -> operationRenameRoom()
-            ConversationOperationEnum.OPS_CODE_MAKE_PUBLIC -> operationMakePublic()
-            ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD,
-            ConversationOperationEnum.OPS_CODE_CLEAR_PASSWORD,
-            ConversationOperationEnum.OPS_CODE_SET_PASSWORD -> operationChangePassword()
-            ConversationOperationEnum.OPS_CODE_MAKE_PRIVATE -> operationMakePrivate()
             ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM -> operationGetAndJoinRoom()
             ConversationOperationEnum.OPS_CODE_INVITE_USERS -> operationInviteUsers()
             ConversationOperationEnum.OPS_CODE_MARK_AS_READ -> operationMarkAsRead()
@@ -260,56 +255,6 @@ class OperationsMenuController(args: Bundle) : BaseController(
                 conversation!!.token
             ),
             conversation!!.lastMessage!!.jsonMessageId
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry(1)
-            .subscribe(GenericOperationsObserver())
-    }
-
-    private fun operationMakePrivate() {
-        ncApi.makeRoomPrivate(
-            credentials,
-            ApiUtils.getUrlForRoomPublic(
-                apiVersion(),
-                currentUser!!.baseUrl,
-                conversation!!.token
-            )
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry(1)
-            .subscribe(GenericOperationsObserver())
-    }
-
-    private fun operationChangePassword() {
-        var pass: String? = ""
-        if (conversation!!.password != null) {
-            pass = conversation!!.password
-        }
-        ncApi.setPassword(
-            credentials,
-            ApiUtils.getUrlForRoomPassword(
-                apiVersion(),
-                currentUser!!.baseUrl,
-                conversation!!.token
-            ),
-            pass
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry(1)
-            .subscribe(GenericOperationsObserver())
-    }
-
-    private fun operationMakePublic() {
-        ncApi.makeRoomPublic(
-            credentials,
-            ApiUtils.getUrlForRoomPublic(
-                apiVersion(),
-                currentUser!!.baseUrl,
-                conversation!!.token
-            )
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

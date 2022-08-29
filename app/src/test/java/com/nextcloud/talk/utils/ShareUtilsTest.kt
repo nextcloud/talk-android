@@ -72,20 +72,8 @@ class ShareUtilsTest {
         )
         Assert.assertEquals(
             "Intent string was not as expected",
-            expectedResult, ShareUtils.getStringForIntent(context, "", userManager!!, conversation)
-        )
-    }
-
-    @Test
-    fun stringForIntent_passwordGiven_correctStringWithPasswordReturned() {
-        val password = "superSecret"
-        val expectedResult = String.format(
-            "Join the conversation at %s/index.php/call/%s\nPassword: %s",
-            baseUrl, token, password
-        )
-        Assert.assertEquals(
-            "Intent string was not as expected",
-            expectedResult, ShareUtils.getStringForIntent(context, password, userManager!!, conversation)
+            expectedResult,
+            ShareUtils.getStringForIntent(context!!, userManager!!.currentUser.blockingGet(), conversation)
         )
     }
 }
