@@ -227,7 +227,7 @@ class ConversationInfoController(args: Bundle) :
 
         binding.addParticipantsAction.visibility = View.GONE
 
-        viewThemeUtils.androidViewThemeUtils.colorCircularProgressBar(binding.progressBar)
+        viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar)
     }
 
     private fun setupWebinaryView() {
@@ -374,9 +374,10 @@ class ConversationInfoController(args: Bundle) :
                 .setNegativeButton(R.string.nc_cancel) { _, _ ->
                     // unused atm
                 }
-            viewThemeUtils.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
+            viewThemeUtils.material
+                .colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
             val dialog = dialogBuilder.show()
-            viewThemeUtils.androidViewThemeUtils.colorTextButtons(
+            viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -545,9 +546,10 @@ class ConversationInfoController(args: Bundle) :
                 .setNegativeButton(R.string.nc_cancel) { _, _ ->
                     // unused atm
                 }
-            viewThemeUtils.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
+            viewThemeUtils.material
+                .colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
             val dialog = dialogBuilder.show()
-            viewThemeUtils.androidViewThemeUtils.colorTextButtons(
+            viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -765,7 +767,8 @@ class ConversationInfoController(args: Bundle) :
                         DisplayUtils.getImageRequestForUrl(
                             ApiUtils.getUrlForAvatar(
                                 conversationUser!!.baseUrl,
-                                conversation!!.name, true
+                                conversation!!.name,
+                                true
                             ),
                             conversationUser
                         )

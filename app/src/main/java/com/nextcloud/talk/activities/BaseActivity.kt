@@ -128,11 +128,11 @@ open class BaseActivity : AppCompatActivity() {
                     sslErrorHandler?.cancel()
                 }
 
-            viewThemeUtils.colorMaterialAlertDialogBackground(context, dialogBuilder)
+            viewThemeUtils.material.colorMaterialAlertDialogBackground(context, dialogBuilder)
 
             val dialog = dialogBuilder.show()
 
-            viewThemeUtils.androidViewThemeUtils.colorTextButtons(
+            viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )

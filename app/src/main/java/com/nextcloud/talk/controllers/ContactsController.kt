@@ -380,7 +380,7 @@ class ContactsController(args: Bundle) :
         super.onPrepareOptionsMenu(menu)
 
         if (searchItem != null) {
-            viewThemeUtils.androidViewThemeUtils.colorToolbarMenuIcon(
+            viewThemeUtils.platform.colorToolbarMenuIcon(
                 binding.titleTextView.context,
                 searchItem!!
             )
@@ -638,7 +638,7 @@ class ContactsController(args: Bundle) :
                 PorterDuff.Mode.SRC_IN
             )
 
-        viewThemeUtils.androidViewThemeUtils.colorImageViewButton(binding.conversationPrivacyToggle.publicCallLink)
+        viewThemeUtils.platform.colorImageViewButton(binding.conversationPrivacyToggle.publicCallLink)
         disengageProgressBar()
     }
 

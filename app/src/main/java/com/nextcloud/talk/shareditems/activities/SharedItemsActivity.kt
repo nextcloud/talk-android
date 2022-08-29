@@ -73,9 +73,9 @@ class SharedItemsActivity : AppCompatActivity() {
         setSupportActionBar(binding.sharedItemsToolbar)
         setContentView(binding.root)
 
-        viewThemeUtils.androidViewThemeUtils.themeStatusBar(this, binding.sharedItemsToolbar)
-        viewThemeUtils.themeToolbar(binding.sharedItemsToolbar)
-        viewThemeUtils.themeTabLayoutOnSurface(binding.sharedItemsTabs)
+        viewThemeUtils.platform.themeStatusBar(this, binding.sharedItemsToolbar)
+        viewThemeUtils.material.themeToolbar(binding.sharedItemsToolbar)
+        viewThemeUtils.material.themeTabLayoutOnSurface(binding.sharedItemsTabs)
 
         DisplayUtils.applyColorToNavigationBar(
             this.window,
@@ -146,7 +146,7 @@ class SharedItemsActivity : AppCompatActivity() {
             else -> {}
         }
 
-        viewThemeUtils.themeTabLayoutOnSurface(binding.sharedItemsTabs)
+        viewThemeUtils.material.themeTabLayoutOnSurface(binding.sharedItemsTabs)
     }
 
     private fun clearEmptyLoading() {

@@ -117,7 +117,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
         sharedApplication!!.componentApplication.inject(this)
         currentUser = userManager.currentUser.blockingGet()
 
-        viewThemeUtils.androidViewThemeUtils.colorCircularProgressBar(binding.progressBar)
+        viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar)
 
         if (!TextUtils.isEmpty(callUrl) && callUrl.contains("/call")) {
             conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1)

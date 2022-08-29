@@ -385,14 +385,14 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                     // unused atm
                 }
 
-            viewThemeUtils.colorMaterialAlertDialogBackground(
+            viewThemeUtils.material.colorMaterialAlertDialogBackground(
                 binding.messageText.context,
                 materialAlertDialogBuilder
             )
 
             val dialog = materialAlertDialogBuilder.show()
 
-            viewThemeUtils.androidViewThemeUtils.colorTextButtons(
+            viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -952,7 +952,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
             .setPositiveButton(context!!.resources.getString(R.string.nc_common_set), null)
             .setNegativeButton(context!!.resources.getString(R.string.nc_common_skip), null)
 
-        viewThemeUtils.colorMaterialAlertDialogBackground(phoneNumberInputLayout.context, dialogBuilder)
+        viewThemeUtils.material.colorMaterialAlertDialogBackground(phoneNumberInputLayout.context, dialogBuilder)
 
         val dialog = dialogBuilder.create()
         dialog.setOnShowListener(object : OnShowListener {
@@ -968,7 +968,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
         dialog.show()
 
-        viewThemeUtils.androidViewThemeUtils.colorTextButtons(
+        viewThemeUtils.platform.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         )

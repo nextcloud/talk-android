@@ -72,7 +72,7 @@ class PollMainDialogFragment : DialogFragment() {
 
         val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context).setView(binding.root)
 
-        viewThemeUtils.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
+        viewThemeUtils.material.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
 
         val dialog = dialogBuilder.create()
 

@@ -129,7 +129,7 @@ class RemoteFileBrowserItemsListViewHolder(
     private fun setSelectability() {
         if (selectable) {
             binding.selectFileCheckbox.visibility = View.VISIBLE
-            viewThemeUtils.androidViewThemeUtils.themeCheckbox(binding.selectFileCheckbox)
+            viewThemeUtils.platform.themeCheckbox(binding.selectFileCheckbox)
         } else {
             binding.selectFileCheckbox.visibility = View.GONE
         }

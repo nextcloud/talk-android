@@ -104,7 +104,7 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
         supportActionBar?.title = fileName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewThemeUtils.androidViewThemeUtils.themeStatusBar(this, binding.textviewToolbar)
+        viewThemeUtils.platform.themeStatusBar(this, binding.textviewToolbar)
 
         if (resources != null) {
             DisplayUtils.applyColorToNavigationBar(

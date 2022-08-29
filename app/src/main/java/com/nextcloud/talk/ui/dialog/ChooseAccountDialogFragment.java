@@ -129,7 +129,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             binding.currentAccount.ticker.setVisibility(View.GONE);
             binding.currentAccount.account.setText((Uri.parse(user.getBaseUrl()).getHost()));
 
-            viewThemeUtils.androidViewThemeUtils.colorImageView(binding.currentAccount.accountMenu);
+            viewThemeUtils.platform.colorImageView(binding.currentAccount.accountMenu);
 
 
             if (user.getBaseUrl() != null &&
@@ -213,14 +213,14 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     }
 
     private void themeViews() {
-        viewThemeUtils.androidViewThemeUtils.themeDialog(binding.getRoot());
-        viewThemeUtils.androidViewThemeUtils.themeDialogDivider(binding.divider);
+        viewThemeUtils.platform.themeDialog(binding.getRoot());
+        viewThemeUtils.platform.themeDialogDivider(binding.divider);
 
-        viewThemeUtils.colorMaterialTextButton(binding.setStatus);
+        viewThemeUtils.material.colorMaterialTextButton(binding.setStatus);
         viewThemeUtils.colorDialogMenuText(binding.setStatus);
-        viewThemeUtils.colorMaterialTextButton(binding.addAccount);
+        viewThemeUtils.material.colorMaterialTextButton(binding.addAccount);
         viewThemeUtils.colorDialogMenuText(binding.addAccount);
-        viewThemeUtils.colorMaterialTextButton(binding.manageSettings);
+        viewThemeUtils.material.colorMaterialTextButton(binding.manageSettings);
         viewThemeUtils.colorDialogMenuText(binding.manageSettings);
     }
 

@@ -168,16 +168,16 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 R.color.conversation_unread_bubble_text);
 
             if (conversation.getType() == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-                viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
+                viewThemeUtils.material.colorChipBackground(holder.binding.dialogUnreadBubble);
             } else if (conversation.getUnreadMention()) {
                 if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "direct-mention-flag")) {
                     if (conversation.getUnreadMentionDirect()) {
-                        viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
+                        viewThemeUtils.material.colorChipBackground(holder.binding.dialogUnreadBubble);
                     } else {
-                        viewThemeUtils.colorChipOutlined(holder.binding.dialogUnreadBubble, 6.0f);
+                        viewThemeUtils.material.colorChipOutlined(holder.binding.dialogUnreadBubble, 6.0f);
                     }
                 } else {
-                    viewThemeUtils.colorChipBackground(holder.binding.dialogUnreadBubble);
+                    viewThemeUtils.material.colorChipBackground(holder.binding.dialogUnreadBubble);
                 }
             } else {
                 holder.binding.dialogUnreadBubble.setChipBackgroundColor(lightBubbleFillColor);

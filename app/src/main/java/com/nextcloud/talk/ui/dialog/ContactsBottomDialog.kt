@@ -59,7 +59,7 @@ class ContactsBottomDialog(
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.androidViewThemeUtils.themeDialog(binding.root)
+        viewThemeUtils.platform.themeDialog(binding.root)
         executeEntryMenuController(bundle)
     }
 

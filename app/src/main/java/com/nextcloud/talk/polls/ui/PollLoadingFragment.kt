@@ -55,7 +55,7 @@ class PollLoadingFragment : Fragment() {
     ): View {
         binding = DialogPollLoadingBinding.inflate(inflater, container, false)
         binding.root.layoutParams.height = fragmentHeight
-        viewThemeUtils.androidViewThemeUtils.colorCircularProgressBar(binding.pollLoadingProgressbar)
+        viewThemeUtils.platform.colorCircularProgressBar(binding.pollLoadingProgressbar)
         return binding.root
     }
 

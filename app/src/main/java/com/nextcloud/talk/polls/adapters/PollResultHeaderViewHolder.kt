@@ -34,7 +34,7 @@ class PollResultHeaderViewHolder(
     override fun bind(pollResultItem: PollResultItem, clickListener: PollResultItemClickListener) {
         val item = pollResultItem as PollResultHeaderItem
 
-        viewThemeUtils.colorProgressBar(binding.pollOptionBar)
+        viewThemeUtils.material.colorProgressBar(binding.pollOptionBar)
 
         binding.root.setOnClickListener { clickListener.onClick() }
 

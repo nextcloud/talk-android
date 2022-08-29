@@ -95,8 +95,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
 
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
-        viewThemeUtils.androidViewThemeUtils.themeHorizontalSeekBar(binding.seekbar)
-        viewThemeUtils.androidViewThemeUtils.colorCircularProgressBarOnSurfaceVariant(binding.progressBar)
+        viewThemeUtils.platform.themeHorizontalSeekBar(binding.seekbar)
+        viewThemeUtils.platform.colorCircularProgressBarOnSurfaceVariant(binding.progressBar)
 
         if (message.isPlayingVoiceMessage) {
             showPlayButton()
@@ -292,7 +292,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
                 .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.androidViewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.platform.colorPrimaryView(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

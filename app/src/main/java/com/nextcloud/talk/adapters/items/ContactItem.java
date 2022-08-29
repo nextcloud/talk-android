@@ -113,7 +113,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
         holder.binding.avatarDraweeView.setController(null);
 
         if (participant.getSelected()) {
-            viewThemeUtils.androidViewThemeUtils.colorImageView(holder.binding.checkedImageView);
+            viewThemeUtils.platform.colorImageView(holder.binding.checkedImageView);
             holder.binding.checkedImageView.setVisibility(View.VISIBLE);
         } else {
             holder.binding.checkedImageView.setVisibility(View.GONE);

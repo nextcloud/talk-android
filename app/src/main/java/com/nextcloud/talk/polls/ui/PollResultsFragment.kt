@@ -99,8 +99,8 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
     }
 
     private fun themeDialog() {
-        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.editVoteButton)
-        viewThemeUtils.colorMaterialButtonPrimaryBorderless(binding.pollResultsEndPollButton)
+        viewThemeUtils.material.colorMaterialButtonPrimaryFilled(binding.editVoteButton)
+        viewThemeUtils.material.colorMaterialButtonPrimaryBorderless(binding.pollResultsEndPollButton)
     }
 
     private fun initAdapter() {
@@ -132,14 +132,14 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
                     }
                     .setNegativeButton(R.string.nc_cancel, null)
 
-                viewThemeUtils.colorMaterialAlertDialogBackground(
+                viewThemeUtils.material.colorMaterialAlertDialogBackground(
                     binding.pollResultsEndPollButton.context,
                     dialogBuilder
                 )
 
                 val dialog = dialogBuilder.show()
 
-                viewThemeUtils.androidViewThemeUtils.colorTextButtons(
+                viewThemeUtils.platform.colorTextButtons(
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 )

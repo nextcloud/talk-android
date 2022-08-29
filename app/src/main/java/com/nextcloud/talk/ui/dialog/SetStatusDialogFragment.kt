@@ -167,7 +167,7 @@ class SetStatusDialogFragment :
         binding = DialogSetStatusBinding.inflate(LayoutInflater.from(context))
 
         val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context).setView(binding.root)
-        viewThemeUtils.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
+        viewThemeUtils.material.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
 
         return dialogBuilder.create()
     }
@@ -242,12 +242,12 @@ class SetStatusDialogFragment :
             }
         }
 
-        viewThemeUtils.androidViewThemeUtils.themeDialog(binding.root)
+        viewThemeUtils.platform.themeDialog(binding.root)
 
-        viewThemeUtils.colorMaterialButtonText(binding.clearStatus)
-        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.setStatus)
+        viewThemeUtils.material.colorMaterialButtonText(binding.clearStatus)
+        viewThemeUtils.material.colorMaterialButtonPrimaryFilled(binding.setStatus)
 
-        viewThemeUtils.colorTextInputLayout(binding.customStatusInputContainer)
+        viewThemeUtils.material.colorTextInputLayout(binding.customStatusInputContainer)
 
         binding.customStatusInput.doAfterTextChanged { text ->
             binding.setStatus.isEnabled = !text.isNullOrEmpty()
@@ -418,8 +418,8 @@ class SetStatusDialogFragment :
                 return
             }
         }
-        viewThemeUtils.colorCardViewBackground(views.first)
-        viewThemeUtils.androidViewThemeUtils.colorPrimaryTextViewElement(views.second)
+        viewThemeUtils.material.colorCardViewBackground(views.first)
+        viewThemeUtils.platform.colorPrimaryTextViewElement(views.second)
     }
 
     private fun clearTopStatus() {
