@@ -338,7 +338,8 @@
     <string name="nc_guest_access_allow_failed">Can\'t en-/disable guest access.</string>
     <string name="nc_guest_access_password_title">Password protection</string>
     <string name="nc_guest_access_password_summary">Set a password to restrict who can use the public link.</string>
-    <string name="nc_guest_access_password_hint">Enter a password</string>
+    <string name="nc_guest_access_password_dialog_title">Guest access password</string>
+    <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
     <string name="nc_guest_access_password_failed">Error during setting/disabling the password.</string>
     <string name="nc_guest_access_password_weak_alert_title">Weak password</string>
     <string name="nc_guest_access_share_link">Share conversation link</string>

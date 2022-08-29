@@ -5,7 +5,6 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
@@ -14,6 +13,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.ConversationInfoController
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
+import com.nextcloud.talk.databinding.DialogPasswordBinding
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.Mimetype
@@ -92,21 +92,18 @@ class GuestAccessHelper(
     private fun showPasswordDialog(guestAccessPasswordSwitch: SwitchCompat) {
         val builder = MaterialAlertDialogBuilder(activity)
         builder.apply {
-            val dialogPassword = LayoutInflater.from(context).inflate(R.layout.dialog_password, null)
-            setView(dialogPassword)
-            setTitle("Guest access password")
-            setPositiveButton(
-                "OK"
-            ) { _, _ ->
-                val password = dialogPassword.findViewById<EditText>(R.id.password).text.toString()
+            val dialogPassword = DialogPasswordBinding.inflate(LayoutInflater.from(context))
+            viewThemeUtils.colorEditText(dialogPassword.password)
+            setView(dialogPassword.root)
+            setTitle(R.string.nc_guest_access_password_dialog_title)
+            setPositiveButton(R.string.nc_ok) { _, _ ->
+                val password = dialogPassword.password.text.toString()
                 conversationsRepository.password(password, conversation.token!!)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(PasswordResultObserver(true))
             }
-            setNegativeButton(
-                "Cancel"
-            ) { _, _ ->
+            setNegativeButton(R.string.nc_cancel) { _, _ ->
                 guestAccessPasswordSwitch.isChecked = false
             }
         }
