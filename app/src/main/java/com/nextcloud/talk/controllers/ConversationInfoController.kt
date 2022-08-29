@@ -534,7 +534,7 @@ class ConversationInfoController(args: Bundle) :
 
     private fun leaveConversation() {
         workerData?.let {
-            WorkManager.getInstance().enqueue(
+            WorkManager.getInstance(context).enqueue(
                 OneTimeWorkRequest.Builder(
                     LeaveConversationWorker::class
                         .java
@@ -597,7 +597,7 @@ class ConversationInfoController(args: Bundle) :
 
     private fun deleteConversation() {
         workerData?.let {
-            WorkManager.getInstance().enqueue(
+            WorkManager.getInstance(context).enqueue(
                 OneTimeWorkRequest.Builder(
                     DeleteConversationWorker::class.java
                 ).setInputData(it).build()
