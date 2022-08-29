@@ -392,7 +392,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
             val dialog = materialAlertDialogBuilder.show()
 
-            viewThemeUtils.colorTextButtons(
+            viewThemeUtils.androidViewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -968,7 +968,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
         dialog.show()
 
-        viewThemeUtils.colorTextButtons(
+        viewThemeUtils.androidViewThemeUtils.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         )

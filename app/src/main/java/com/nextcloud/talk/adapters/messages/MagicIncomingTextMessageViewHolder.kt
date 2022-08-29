@@ -163,7 +163,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
         binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
         if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-            viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
+            viewThemeUtils.androidViewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
         } else {
             binding.messageQuote.quoteColoredView.setBackgroundColor(
                 ContextCompat.getColor(binding.messageQuote.quoteColoredView.context, R.color.high_emphasis_text)

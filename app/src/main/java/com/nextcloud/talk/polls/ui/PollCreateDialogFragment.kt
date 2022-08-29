@@ -101,9 +101,9 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
     }
 
     private fun themeDialog() {
-        viewThemeUtils.colorPrimaryTextViewElement(binding.pollQuestion)
-        viewThemeUtils.colorPrimaryTextViewElement(binding.pollOptions)
-        viewThemeUtils.colorPrimaryTextViewElement(binding.pollSettings)
+        viewThemeUtils.androidViewThemeUtils.colorPrimaryTextViewElement(binding.pollQuestion)
+        viewThemeUtils.androidViewThemeUtils.colorPrimaryTextViewElement(binding.pollOptions)
+        viewThemeUtils.androidViewThemeUtils.colorPrimaryTextViewElement(binding.pollSettings)
 
         viewThemeUtils.colorTextInputLayout(binding.pollCreateQuestionTextInputLayout)
 
@@ -111,8 +111,8 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
         viewThemeUtils.colorMaterialButtonText(binding.pollDismiss)
         viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.pollCreateButton)
 
-        viewThemeUtils.themeCheckbox(binding.pollPrivatePollCheckbox)
-        viewThemeUtils.themeCheckbox(binding.pollMultipleAnswersCheckbox)
+        viewThemeUtils.androidViewThemeUtils.themeCheckbox(binding.pollPrivatePollCheckbox)
+        viewThemeUtils.androidViewThemeUtils.themeCheckbox(binding.pollMultipleAnswersCheckbox)
     }
 
     private fun setupListeners() {

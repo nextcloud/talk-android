@@ -22,7 +22,6 @@
 package com.nextcloud.talk.ui.theme
 
 import android.annotation.TargetApi
-import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -32,24 +31,15 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RadioButton
-import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -70,12 +60,13 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
+import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
+import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.talk.R
+import com.nextcloud.talk.ui.theme.viewthemeutils.AndroidViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
-import com.nextcloud.android.common.ui.color.ColorUtil
-import com.nextcloud.talk.utils.ui.PlatformThemeUtil.isDarkMode
 import com.vanniktech.emoji.EmojiTextView
 import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialSwitchPreference
@@ -85,49 +76,13 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
-class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, private val colorUtil: ColorUtil) {
-
-    /**
-     * Scheme for painting elements
-     */
-    fun getScheme(context: Context): Scheme = when {
-        isDarkMode(context) -> schemes.darkScheme
-        else -> schemes.lightScheme
-    }
-
-    private fun getSchemeDark(): Scheme = schemes.darkScheme
-
-    private fun withScheme(view: View, block: (Scheme) -> Unit) {
-        block(getScheme(view.context))
-    }
-
-    private fun withScheme(context: Context, block: (Scheme) -> Unit) {
-        block(getScheme(context))
-    }
-
-    private fun withSchemeDark(block: (Scheme) -> Unit) {
-        block(getSchemeDark())
-    }
-
-    fun themeToolbar(toolbar: MaterialToolbar) {
-        withScheme(toolbar) { scheme ->
-            toolbar.setBackgroundColor(scheme.surface)
-            toolbar.setNavigationIconTint(scheme.onSurface)
-            toolbar.setTitleTextColor(scheme.onSurface)
-        }
-    }
-
-    fun colorViewBackground(view: View) {
-        withScheme(view) { scheme ->
-            view.setBackgroundColor(scheme.surface)
-        }
-    }
-
-    fun colorToolbarMenuIcon(context: Context, item: MenuItem) {
-        withScheme(context) { scheme ->
-            item.icon.setColorFilter(scheme.onSurface, PorterDuff.Mode.SRC_ATOP)
-        }
-    }
+class ViewThemeUtils @Inject constructor(
+    schemes: MaterialSchemes,
+    private val colorUtil: ColorUtil,
+    @JvmField
+    val androidViewThemeUtils: AndroidViewThemeUtils
+) :
+    ViewThemeUtilsBase(schemes) {
 
     fun colorToolbarOverflowIcon(toolbar: MaterialToolbar) {
         withScheme(toolbar) { scheme ->
@@ -138,7 +93,7 @@ class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, p
     fun themeSearchView(searchView: SearchView) {
         withScheme(searchView) { scheme ->
             // hacky as no default way is provided
-            val editText = searchView.findViewById<SearchAutoComplete>(R.id.search_src_text)
+            val editText = searchView.findViewById<SearchView.SearchAutoComplete>(R.id.search_src_text)
             val searchPlate = searchView.findViewById<LinearLayout>(R.id.search_plate)
             editText.textSize = SEARCH_TEXT_SIZE
             editText.setHintTextColor(scheme.onSurfaceVariant)
@@ -154,41 +109,6 @@ class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, p
         }
     }
 
-    fun themeStatusBar(activity: Activity, view: View) {
-        withScheme(view) { scheme ->
-            DisplayUtils.applyColorToStatusBar(activity, scheme.surface)
-        }
-    }
-
-    fun resetStatusBar(activity: Activity, view: View) {
-        DisplayUtils.applyColorToStatusBar(
-            activity,
-            ResourcesCompat.getColor(
-                activity.resources,
-                R.color.bg_default,
-                activity.theme
-            )
-        )
-    }
-
-    fun themeDialog(view: View) {
-        withScheme(view) { scheme ->
-            view.setBackgroundColor(scheme.surface)
-        }
-    }
-
-    fun themeDialogDark(view: View) {
-        withSchemeDark { scheme ->
-            view.setBackgroundColor(scheme.surface)
-        }
-    }
-
-    fun themeDialogDivider(view: View) {
-        withScheme(view) { scheme ->
-            view.setBackgroundColor(scheme.surfaceVariant)
-        }
-    }
-
     fun themeFAB(fab: FloatingActionButton) {
         withScheme(fab) { scheme ->
             fab.backgroundTintList = ColorStateList.valueOf(scheme.primaryContainer)
@@ -199,94 +119,6 @@ class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, p
     fun themeCardView(cardView: MaterialCardView) {
         withScheme(cardView) { scheme ->
             cardView.backgroundTintList = ColorStateList.valueOf(scheme.surface)
-        }
-    }
-
-    fun themeHorizontalSeekBar(seekBar: SeekBar) {
-        withScheme(seekBar) { scheme ->
-            themeHorizontalProgressBar(seekBar, scheme.primary)
-            seekBar.thumb.setColorFilter(scheme.primary, PorterDuff.Mode.SRC_IN)
-        }
-    }
-
-    fun themeHorizontalProgressBar(progressBar: ProgressBar?, @ColorInt color: Int) {
-        if (progressBar != null) {
-            progressBar.indeterminateDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-            progressBar.progressDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-        }
-    }
-
-    fun colorPrimaryTextViewElement(textView: TextView) {
-        withScheme(textView) { scheme ->
-            textView.setTextColor(scheme.primary)
-        }
-    }
-
-    fun colorPrimaryTextViewElementDarkMode(textView: TextView) {
-        withSchemeDark { scheme ->
-            textView.setTextColor(scheme.primary)
-        }
-    }
-
-    fun colorPrimaryView(view: View) {
-        withScheme(view) { scheme ->
-            view.setBackgroundColor(scheme.primary)
-        }
-    }
-
-    /**
-     * Colors the background as element color and the foreground as text color.
-     */
-    fun colorImageViewButton(imageView: ImageView) {
-        withScheme(imageView) { scheme ->
-            imageView.imageTintList = ColorStateList.valueOf(scheme.onPrimaryContainer)
-            imageView.backgroundTintList = ColorStateList.valueOf(scheme.primaryContainer)
-        }
-    }
-
-    fun themeImageButton(imageButton: ImageButton) {
-        withScheme(imageButton) { scheme ->
-            imageButton.imageTintList = ColorStateList(
-                arrayOf(
-                    intArrayOf(android.R.attr.state_selected),
-                    intArrayOf(-android.R.attr.state_selected),
-                    intArrayOf(android.R.attr.state_enabled),
-                    intArrayOf(-android.R.attr.state_enabled)
-                ),
-                intArrayOf(
-                    scheme.primary,
-                    scheme.onSurfaceVariant,
-                    scheme.onSurfaceVariant,
-                    colorUtil.adjustOpacity(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
-                )
-            )
-        }
-    }
-
-    /**
-     * Tints the image with element color
-     */
-    fun colorImageView(imageView: ImageView) {
-        withScheme(imageView) { scheme ->
-            imageView.imageTintList = ColorStateList.valueOf(scheme.primary)
-        }
-    }
-
-    fun colorOutgoingQuoteText(textView: TextView) {
-        withScheme(textView) { scheme ->
-            textView.setTextColor(scheme.onSurfaceVariant)
-        }
-    }
-
-    fun colorOutgoingQuoteAuthorText(textView: TextView) {
-        withScheme(textView) { scheme ->
-            ColorUtils.setAlphaComponent(scheme.onSurfaceVariant, ALPHA_80_INT)
-        }
-    }
-
-    fun colorOutgoingQuoteBackground(view: View) {
-        withScheme(view) { scheme ->
-            view.setBackgroundColor(scheme.onSurfaceVariant)
         }
     }
 
@@ -315,25 +147,6 @@ class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, p
             )
             button.setTextColor(colorStateList)
             button.iconTint = colorStateList
-        }
-    }
-
-    fun colorTextButtons(vararg buttons: Button) {
-        withScheme(buttons[0]) { scheme ->
-            for (button in buttons) {
-                button.setTextColor(
-                    ColorStateList(
-                        arrayOf(
-                            intArrayOf(android.R.attr.state_enabled),
-                            intArrayOf(-android.R.attr.state_enabled)
-                        ),
-                        intArrayOf(
-                            scheme.primary,
-                            colorUtil.adjustOpacity(scheme.onSurface, ON_SURFACE_OPACITY_BUTTON_DISABLED)
-                        )
-                    )
-                )
-            }
         }
     }
 
@@ -449,9 +262,18 @@ class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, p
         val bubbleDrawable = DisplayUtils.getMessageSelector(
             bgBubbleColor,
             resources.getColor(R.color.transparent),
-            bgBubbleColor, bubbleResource
+            bgBubbleColor,
+            bubbleResource
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
+    }
+
+    fun themeToolbar(toolbar: MaterialToolbar) {
+        withScheme(toolbar) { scheme ->
+            toolbar.setBackgroundColor(scheme.surface)
+            toolbar.setNavigationIconTint(scheme.onSurface)
+            toolbar.setTitleTextColor(scheme.onSurface)
+        }
     }
 
     fun themeOutgoingMessageBubble(bubble: ViewGroup, grouped: Boolean, deleted: Boolean) {
@@ -477,6 +299,24 @@ class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, p
         }
     }
 
+    fun colorOutgoingQuoteText(textView: TextView) {
+        withScheme(textView) { scheme ->
+            textView.setTextColor(scheme.onSurfaceVariant)
+        }
+    }
+
+    fun colorOutgoingQuoteAuthorText(textView: TextView) {
+        withScheme(textView) { scheme ->
+            ColorUtils.setAlphaComponent(scheme.onSurfaceVariant, ALPHA_80_INT)
+        }
+    }
+
+    fun colorOutgoingQuoteBackground(view: View) {
+        withScheme(view) { scheme ->
+            view.setBackgroundColor(scheme.onSurfaceVariant)
+        }
+    }
+
     fun colorCardViewBackground(card: MaterialCardView) {
         withScheme(card) { scheme ->
             card.setCardBackgroundColor(scheme.surfaceVariant)
@@ -492,24 +332,6 @@ class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, p
     fun colorContactChatItemBackground(card: MaterialCardView) {
         withScheme(card) { scheme ->
             card.setCardBackgroundColor(scheme.primaryContainer)
-        }
-    }
-
-    fun colorCircularProgressBarOnPrimaryContainer(progressBar: ProgressBar) {
-        withScheme(progressBar) { scheme ->
-            progressBar.indeterminateDrawable.setColorFilter(scheme.onPrimaryContainer, PorterDuff.Mode.SRC_ATOP)
-        }
-    }
-
-    fun colorCircularProgressBar(progressBar: ProgressBar) {
-        withScheme(progressBar) { scheme ->
-            progressBar.indeterminateDrawable.setColorFilter(scheme.primary, PorterDuff.Mode.SRC_ATOP)
-        }
-    }
-
-    fun colorCircularProgressBarOnSurfaceVariant(progressBar: ProgressBar) {
-        withScheme(progressBar) { scheme ->
-            progressBar.indeterminateDrawable.setColorFilter(scheme.onSurfaceVariant, PorterDuff.Mode.SRC_ATOP)
         }
     }
 
@@ -564,35 +386,6 @@ class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, p
         }
     }
 
-    fun colorDrawable(context: Context, drawable: Drawable) {
-        val scheme = getScheme(context)
-        drawable.setTint(scheme.primary)
-    }
-
-    fun themeCheckbox(checkbox: CheckBox) {
-        withScheme(checkbox) { scheme ->
-            checkbox.buttonTintList = ColorStateList(
-                arrayOf(
-                    intArrayOf(-android.R.attr.state_checked),
-                    intArrayOf(android.R.attr.state_checked)
-                ),
-                intArrayOf(Color.GRAY, scheme.primary)
-            )
-        }
-    }
-
-    fun themeRadioButton(radioButton: RadioButton) {
-        withScheme(radioButton) { scheme ->
-            radioButton.buttonTintList = ColorStateList(
-                arrayOf(
-                    intArrayOf(-android.R.attr.state_checked),
-                    intArrayOf(android.R.attr.state_checked)
-                ),
-                intArrayOf(Color.GRAY, scheme.primary)
-            )
-        }
-    }
-
     fun themeSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
         withScheme(swipeRefreshLayout) { scheme ->
             swipeRefreshLayout.setColorSchemeColors(scheme.primary)
@@ -603,25 +396,6 @@ class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, p
     fun colorProgressBar(progressIndicator: LinearProgressIndicator) {
         withScheme(progressIndicator) { scheme ->
             progressIndicator.setIndicatorColor(scheme.primary)
-        }
-    }
-
-    fun colorEditText(editText: EditText) {
-        withScheme(editText) { scheme ->
-            // TODO check API-level compatibility
-            // editText.background.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
-            editText.backgroundTintList = ColorStateList(
-                arrayOf(
-                    intArrayOf(-android.R.attr.state_focused),
-                    intArrayOf(android.R.attr.state_focused)
-                ),
-                intArrayOf(
-                    scheme.outline,
-                    scheme.primary
-                )
-            )
-            editText.setHintTextColor(scheme.onSurfaceVariant)
-            editText.setTextColor(scheme.onSurface)
         }
     }
 
@@ -694,6 +468,11 @@ class ViewThemeUtils @Inject constructor(private val schemes: MaterialSchemes, p
             colorDrawable(context, drawable)
         }
         return drawable
+    }
+
+    private fun colorDrawable(context: Context, drawable: Drawable) {
+        val scheme = getScheme(context)
+        drawable.setTint(scheme.primary)
     }
 
     fun colorChipBackground(chip: Chip) {

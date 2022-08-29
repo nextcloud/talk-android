@@ -877,7 +877,7 @@ class ChatController(args: Bundle) :
                 .nc_description_send_message_button
         )
 
-        viewThemeUtils.colorImageView(binding.messageInputView.button)
+        viewThemeUtils.androidViewThemeUtils.colorImageView(binding.messageInputView.button)
 
         if (currentConversation != null && currentConversation?.roomId != null) {
             loadAvatarForStatusBar()
@@ -1440,7 +1440,7 @@ class ChatController(args: Bundle) :
 
                     val dialog = materialAlertDialogBuilder.show()
 
-                    viewThemeUtils.colorTextButtons(
+                    viewThemeUtils.androidViewThemeUtils.colorTextButtons(
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                     )
@@ -1772,7 +1772,8 @@ class ChatController(args: Bundle) :
             cancelReply()
         }
 
-        viewThemeUtils.themeImageButton(binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton))
+        viewThemeUtils.androidViewThemeUtils
+            .themeImageButton(binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton))
 
         cancelNotificationsForCurrentConversation()
 
@@ -2523,12 +2524,12 @@ class ChatController(args: Bundle) :
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_conversation, menu)
 
-        viewThemeUtils.colorToolbarMenuIcon(
+        viewThemeUtils.androidViewThemeUtils.colorToolbarMenuIcon(
             binding.messageInputView.context,
             menu.findItem(R.id.conversation_voice_call)
         )
 
-        viewThemeUtils.colorToolbarMenuIcon(
+        viewThemeUtils.androidViewThemeUtils.colorToolbarMenuIcon(
             binding.messageInputView.context,
             menu.findItem(R.id.conversation_video_call)
         )

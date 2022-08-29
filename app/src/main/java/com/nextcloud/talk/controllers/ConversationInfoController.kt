@@ -227,7 +227,7 @@ class ConversationInfoController(args: Bundle) :
 
         binding.addParticipantsAction.visibility = View.GONE
 
-        viewThemeUtils.colorCircularProgressBar(binding.progressBar)
+        viewThemeUtils.androidViewThemeUtils.colorCircularProgressBar(binding.progressBar)
     }
 
     private fun setupWebinaryView() {
@@ -376,7 +376,7 @@ class ConversationInfoController(args: Bundle) :
                 }
             viewThemeUtils.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
             val dialog = dialogBuilder.show()
-            viewThemeUtils.colorTextButtons(
+            viewThemeUtils.androidViewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -547,7 +547,7 @@ class ConversationInfoController(args: Bundle) :
                 }
             viewThemeUtils.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
             val dialog = dialogBuilder.show()
-            viewThemeUtils.colorTextButtons(
+            viewThemeUtils.androidViewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )

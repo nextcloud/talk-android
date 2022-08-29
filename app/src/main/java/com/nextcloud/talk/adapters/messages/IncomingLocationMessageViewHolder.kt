@@ -187,7 +187,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
                 .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.androidViewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

@@ -755,7 +755,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
             initUserInfoEditText(holder, item)
 
             holder.binding.icon.contentDescription = item.hint
-            viewThemeUtils.colorImageView(holder.binding.icon)
+            viewThemeUtils.androidViewThemeUtils.colorImageView(holder.binding.icon)
             if (!TextUtils.isEmpty(item.text) || controller.edit) {
                 holder.binding.userInfoDetailContainer.visibility = View.VISIBLE
                 controller.viewThemeUtils.colorTextInputLayout(holder.binding.userInfoInputLayout)

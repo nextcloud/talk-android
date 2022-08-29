@@ -83,7 +83,7 @@ class MessageActionsDialog(
         setContentView(dialogMessageActionsBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.themeDialog(dialogMessageActionsBinding.root)
+        viewThemeUtils.androidViewThemeUtils.themeDialog(dialogMessageActionsBinding.root)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
         initMenuReplyToMessage(message.replyable && hasChatPermission)

@@ -217,7 +217,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
                 .setTextColor(ContextCompat.getColor(context, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.androidViewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

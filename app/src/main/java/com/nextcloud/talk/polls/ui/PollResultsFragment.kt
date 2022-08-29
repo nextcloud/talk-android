@@ -139,7 +139,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
 
                 val dialog = dialogBuilder.show()
 
-                viewThemeUtils.colorTextButtons(
+                viewThemeUtils.androidViewThemeUtils.colorTextButtons(
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 )

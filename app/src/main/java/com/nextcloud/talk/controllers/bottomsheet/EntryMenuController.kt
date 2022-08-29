@@ -126,7 +126,7 @@ class EntryMenuController(args: Bundle) :
                     rootView = view,
                     editText = binding.textEdit,
                     onEmojiPopupShownListener = {
-                        viewThemeUtils.colorImageView(binding.smileyButton)
+                        viewThemeUtils.androidViewThemeUtils.colorImageView(binding.smileyButton)
                     },
                     onEmojiPopupDismissListener = {
                         binding.smileyButton.imageTintList = ColorStateList.valueOf(

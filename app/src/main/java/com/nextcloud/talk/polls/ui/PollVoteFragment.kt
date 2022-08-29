@@ -149,7 +149,7 @@ class PollVoteFragment : Fragment() {
                 RadioButton(context).apply { text = option }
             }?.forEachIndexed { index, radioButton ->
                 radioButton.id = index
-                viewThemeUtils.themeRadioButton(radioButton)
+                viewThemeUtils.androidViewThemeUtils.themeRadioButton(radioButton)
                 makeOptionBoldIfSelfVoted(radioButton, poll, index)
                 binding.pollVoteRadioGroup.addView(radioButton)
 
@@ -170,7 +170,7 @@ class PollVoteFragment : Fragment() {
                     setLayoutParams(layoutParams)
                 }
             }?.forEachIndexed { index, checkBox ->
-                viewThemeUtils.themeCheckbox(checkBox)
+                viewThemeUtils.androidViewThemeUtils.themeCheckbox(checkBox)
                 checkBox.id = index
                 makeOptionBoldIfSelfVoted(checkBox, poll, index)
                 binding.voteOptionsCheckboxesWrapper.addView(checkBox)
@@ -222,7 +222,7 @@ class PollVoteFragment : Fragment() {
 
                 val dialog = dialogBuilder.show()
 
-                viewThemeUtils.colorTextButtons(
+                viewThemeUtils.androidViewThemeUtils.colorTextButtons(
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 )

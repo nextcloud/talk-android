@@ -84,7 +84,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         binding.pathNavigationBackButton.iconTint = ColorStateList.valueOf(scheme.onSurface)
         binding.pathNavigationBackButton.setTextColor(scheme.onSurface)
         viewThemeUtils.colorMaterialTextButton(binding.pathNavigationBackButton)
-        viewThemeUtils.themeStatusBar(this, binding.remoteFileBrowserItemsToolbar)
+        viewThemeUtils.androidViewThemeUtils.themeStatusBar(this, binding.remoteFileBrowserItemsToolbar)
         setContentView(binding.root)
 
         DisplayUtils.applyColorToNavigationBar(

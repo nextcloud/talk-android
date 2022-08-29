@@ -97,7 +97,7 @@ class ConversationsListBottomDialog(
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.themeDialog(binding.root)
+        viewThemeUtils.androidViewThemeUtils.themeDialog(binding.root)
         initHeaderDescription()
         initItemsVisibility()
         initClickListeners()

@@ -353,14 +353,14 @@ class ConversationsListController(bundle: Bundle) :
                 }
                 activity.binding.searchText.setOnClickListener {
                     showSearchView(activity, searchView, searchItem)
-                    viewThemeUtils.themeStatusBar(activity, searchView!!)
+                    viewThemeUtils.androidViewThemeUtils.themeStatusBar(activity, searchView!!)
                 }
             }
             searchView!!.setOnCloseListener {
                 if (TextUtils.isEmpty(searchView!!.query.toString())) {
                     searchView!!.onActionViewCollapsed()
                     if (activity != null) {
-                        viewThemeUtils.resetStatusBar(activity, searchView!!)
+                        viewThemeUtils.androidViewThemeUtils.resetStatusBar(activity, searchView!!)
                     }
                 } else {
                     searchView!!.post { searchView!!.setQuery(TAG, true) }
@@ -400,7 +400,8 @@ class ConversationsListController(bundle: Bundle) :
                         mainActivity.binding.toolbar.visibility = View.GONE
                         mainActivity.binding.searchToolbar.visibility = View.VISIBLE
                         if (resources != null) {
-                            viewThemeUtils.resetStatusBar(mainActivity, mainActivity.binding.searchToolbar)
+                            viewThemeUtils.androidViewThemeUtils
+                                .resetStatusBar(mainActivity, mainActivity.binding.searchToolbar)
                         }
                     }
                     val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
@@ -950,7 +951,7 @@ class ConversationsListController(bundle: Bundle) :
                 }
             viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
             val dialog = dialogBuilder.show()
-            viewThemeUtils.colorTextButtons(
+            viewThemeUtils.androidViewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -1146,7 +1147,7 @@ class ConversationsListController(bundle: Bundle) :
                     }
                 viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
                 val dialog = dialogBuilder.show()
-                viewThemeUtils.colorTextButtons(
+                viewThemeUtils.androidViewThemeUtils.colorTextButtons(
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 )
@@ -1189,7 +1190,7 @@ class ConversationsListController(bundle: Bundle) :
                 }
             viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
             val dialog = dialogBuilder.show()
-            viewThemeUtils.colorTextButtons(
+            viewThemeUtils.androidViewThemeUtils.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
@@ -1231,7 +1232,7 @@ class ConversationsListController(bundle: Bundle) :
             }
         viewThemeUtils.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
         val dialog = dialogBuilder.show()
-        viewThemeUtils.colorTextButtons(
+        viewThemeUtils.androidViewThemeUtils.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         )

@@ -242,7 +242,7 @@ class SetStatusDialogFragment :
             }
         }
 
-        viewThemeUtils.themeDialog(binding.root)
+        viewThemeUtils.androidViewThemeUtils.themeDialog(binding.root)
 
         viewThemeUtils.colorMaterialButtonText(binding.clearStatus)
         viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.setStatus)
@@ -419,7 +419,7 @@ class SetStatusDialogFragment :
             }
         }
         viewThemeUtils.colorCardViewBackground(views.first)
-        viewThemeUtils.colorPrimaryTextViewElement(views.second)
+        viewThemeUtils.androidViewThemeUtils.colorPrimaryTextViewElement(views.second)
     }
 
     private fun clearTopStatus() {

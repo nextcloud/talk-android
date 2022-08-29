@@ -59,7 +59,7 @@ class ScopeDialog(
 
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.themeDialog(dialogScopeBinding.root)
+        viewThemeUtils.androidViewThemeUtils.themeDialog(dialogScopeBinding.root)
 
         if (field == ProfileController.Field.DISPLAYNAME || field == ProfileController.Field.EMAIL) {
             dialogScopeBinding.scopePrivate.visibility = View.GONE

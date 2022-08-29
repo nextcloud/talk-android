@@ -150,7 +150,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         }
 
         progressBar = getProgressBar();
-        viewThemeUtils.colorCircularProgressBar(getProgressBar());
+        viewThemeUtils.androidViewThemeUtils.colorCircularProgressBar(getProgressBar());
         image = getImage();
         clickView = getImage();
         getMessageText().setVisibility(View.VISIBLE);
@@ -169,7 +169,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 clickView = getPreviewContactContainer();
                 viewThemeUtils.colorContactChatItemBackground(getPreviewContactContainer());
                 viewThemeUtils.colorContactChatItemName(getPreviewContactName());
-                viewThemeUtils.colorCircularProgressBarOnPrimaryContainer(getPreviewContactProgressBar());
+                viewThemeUtils.androidViewThemeUtils.colorCircularProgressBarOnPrimaryContainer(getPreviewContactProgressBar());
             } else {
                 getPreviewContainer().setVisibility(View.VISIBLE);
                 getPreviewContactContainer().setVisibility(View.GONE);
