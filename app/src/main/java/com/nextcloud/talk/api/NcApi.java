@@ -142,6 +142,9 @@ public interface NcApi {
     Observable<AddParticipantOverall> addParticipant(@Header("Authorization") String authorization, @Url String url,
                                                      @QueryMap Map<String, String> options);
 
+    @POST
+    Observable<GenericOverall> resendParticipantInvitations(@Header("Authorization") String authorization,
+                                                            @Url String url);
 
     // also used for removing a guest from a conversation
     @Deprecated
@@ -312,6 +315,12 @@ public interface NcApi {
     @PUT
     Observable<GenericOverall> setPassword(@Header("Authorization") String authorization, @Url String url,
                                            @Field("password") String password);
+
+    @FormUrlEncoded
+    @PUT
+    Observable<Response<GenericOverall>> setPassword2(@Header("Authorization") String authorization,
+                                                     @Url String url,
+                                                     @Field("password") String password);
 
     @GET
     Observable<CapabilitiesOverall> getCapabilities(@Header("Authorization") String authorization, @Url String url);

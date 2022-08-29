@@ -6,7 +6,7 @@
  * @author Tim Krüger
  * @author Marcel Hibbe
  * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
- * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
@@ -37,6 +37,8 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
@@ -61,6 +63,7 @@ import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.conversation.info.GuestAccessHelper
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
@@ -75,6 +78,7 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
+import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -109,6 +113,9 @@ class ConversationInfoController(args: Bundle) :
 
     @Inject
     lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var conversationsRepository: ConversationsRepository
 
     @Inject
     lateinit var eventBus: EventBus
@@ -167,6 +174,7 @@ class ConversationInfoController(args: Bundle) :
 
         binding.notificationSettingsView.notificationSettings.setStorageModule(databaseStorageModule)
         binding.webinarInfoView.webinarSettings.setStorageModule(databaseStorageModule)
+        binding.guestAccessView.guestAccessSettings.setStorageModule(databaseStorageModule)
 
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
@@ -176,7 +184,7 @@ class ConversationInfoController(args: Bundle) :
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
             binding.showSharedItemsAction.setOnClickListener { showSharedItems() }
         } else {
-            binding.categorySharedItems.visibility = View.GONE
+            binding.categorySharedItems.visibility = GONE
         }
 
         fetchRoomInfo()
@@ -190,7 +198,9 @@ class ConversationInfoController(args: Bundle) :
             listOf(
                 binding.webinarInfoView.conversationInfoLobby,
                 binding.notificationSettingsView.callNotifications,
-                binding.notificationSettingsView.conversationInfoPriorityConversation
+                binding.notificationSettingsView.conversationInfoPriorityConversation,
+                binding.guestAccessView.guestAccessAllowSwitch,
+                binding.guestAccessView.guestAccessPasswordSwitch
             ).forEach(viewThemeUtils::colorSwitchPreference)
         }
     }
@@ -205,6 +215,7 @@ class ConversationInfoController(args: Bundle) :
                 ownOptions,
                 categorySharedItems,
                 categoryConversationSettings,
+                binding.guestAccessView.guestAccessCategory,
                 binding.webinarInfoView.conversationInfoWebinar,
                 binding.notificationSettingsView.notificationSettingsCategory
             ).forEach(viewThemeUtils::colorPreferenceCategory)
@@ -225,7 +236,7 @@ class ConversationInfoController(args: Bundle) :
     override fun onViewBound(view: View) {
         super.onViewBound(view)
 
-        binding.addParticipantsAction.visibility = View.GONE
+        binding.addParticipantsAction.visibility = GONE
 
         viewThemeUtils.colorCircularProgressBar(binding.progressBar)
     }
@@ -235,7 +246,7 @@ class ConversationInfoController(args: Bundle) :
             webinaryRoomType(conversation!!) &&
             conversation!!.canModerate(conversationUser!!)
         ) {
-            binding.webinarInfoView.webinarSettings.visibility = View.VISIBLE
+            binding.webinarInfoView.webinarSettings.visibility = VISIBLE
 
             val isLobbyOpenToModeratorsOnly =
                 conversation!!.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY
@@ -271,7 +282,7 @@ class ConversationInfoController(args: Bundle) :
                     submitLobbyChanges()
                 }
         } else {
-            binding.webinarInfoView.webinarSettings.visibility = View.GONE
+            binding.webinarInfoView.webinarSettings.visibility = GONE
         }
     }
 
@@ -311,9 +322,9 @@ class ConversationInfoController(args: Bundle) :
         }
 
         if (isChecked) {
-            binding.webinarInfoView.startTimePreferences.visibility = View.VISIBLE
+            binding.webinarInfoView.startTimePreferences.visibility = VISIBLE
         } else {
-            binding.webinarInfoView.startTimePreferences.visibility = View.GONE
+            binding.webinarInfoView.startTimePreferences.visibility = GONE
         }
     }
 
@@ -433,7 +444,7 @@ class ConversationInfoController(args: Bundle) :
 
         setupAdapter()
 
-        binding.participantsListCategory.visibility = View.VISIBLE
+        binding.participantsListCategory.visibility = VISIBLE
         adapter!!.updateDataSet(userItems)
     }
 
@@ -624,40 +635,40 @@ class ConversationInfoController(args: Bundle) :
                         val conversationCopy = conversation
 
                         if (conversationCopy!!.canModerate(conversationUser)) {
-                            binding.addParticipantsAction.visibility = View.VISIBLE
+                            binding.addParticipantsAction.visibility = VISIBLE
                             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "clear-history")) {
-                                binding.clearConversationHistory.visibility = View.VISIBLE
+                                binding.clearConversationHistory.visibility = VISIBLE
                             } else {
-                                binding.clearConversationHistory.visibility = View.GONE
+                                binding.clearConversationHistory.visibility = GONE
                             }
                         } else {
-                            binding.addParticipantsAction.visibility = View.GONE
-                            binding.clearConversationHistory.visibility = View.GONE
+                            binding.addParticipantsAction.visibility = GONE
+                            binding.clearConversationHistory.visibility = GONE
                         }
 
                         if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
-                            binding.ownOptions.visibility = View.VISIBLE
+                            binding.ownOptions.visibility = VISIBLE
 
                             setupWebinaryView()
 
                             if (!conversation!!.canLeave()) {
-                                binding.leaveConversationAction.visibility = View.GONE
+                                binding.leaveConversationAction.visibility = GONE
                             } else {
-                                binding.leaveConversationAction.visibility = View.VISIBLE
+                                binding.leaveConversationAction.visibility = VISIBLE
                             }
 
                             if (!conversation!!.canDelete(conversationUser)) {
-                                binding.deleteConversationAction.visibility = View.GONE
+                                binding.deleteConversationAction.visibility = GONE
                             } else {
-                                binding.deleteConversationAction.visibility = View.VISIBLE
+                                binding.deleteConversationAction.visibility = VISIBLE
                             }
 
                             if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
-                                binding.notificationSettingsView.callNotifications.visibility = View.GONE
+                                binding.notificationSettingsView.callNotifications.visibility = GONE
                             }
 
                             if (conversation!!.notificationCalls === null) {
-                                binding.notificationSettingsView.callNotifications.visibility = View.GONE
+                                binding.notificationSettingsView.callNotifications.visibility = GONE
                             } else {
                                 binding.notificationSettingsView.callNotifications.value =
                                     conversationCopy.notificationCalls == 1
@@ -665,22 +676,29 @@ class ConversationInfoController(args: Bundle) :
 
                             getListOfParticipants()
 
-                            binding.progressBar.visibility = View.GONE
+                            binding.progressBar.visibility = GONE
 
-                            binding.conversationInfoName.visibility = View.VISIBLE
+                            binding.conversationInfoName.visibility = VISIBLE
 
                             binding.displayNameText.text = conversation!!.displayName
 
                             if (conversation!!.description != null && !conversation!!.description!!.isEmpty()) {
                                 binding.descriptionText.text = conversation!!.description
-                                binding.conversationDescription.visibility = View.VISIBLE
+                                binding.conversationDescription.visibility = VISIBLE
                             }
 
                             loadConversationAvatar()
                             adjustNotificationLevelUI()
                             initExpiringMessageOption()
 
-                            binding.notificationSettingsView.notificationSettings.visibility = View.VISIBLE
+                            GuestAccessHelper(
+                                this@ConversationInfoController,
+                                binding,
+                                conversation!!,
+                                conversationUser
+                            ).setupGuestAccess()
+
+                            binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
                         }
                     } catch (npe: NullPointerException) {
                         // view binding can be null

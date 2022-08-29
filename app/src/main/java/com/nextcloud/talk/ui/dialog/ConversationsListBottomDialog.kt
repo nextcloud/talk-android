@@ -21,7 +21,6 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -42,14 +41,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_ADD_FAVORITE
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_CLEAR_PASSWORD
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MAKE_PRIVATE
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MAKE_PUBLIC
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MARK_AS_READ
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_RENAME_ROOM
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_SET_PASSWORD
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController
 import com.nextcloud.talk.data.user.model.User
@@ -58,8 +52,6 @@ import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN
-import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPERATION_CODE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
@@ -130,32 +122,8 @@ class ConversationsListBottomDialog(
             conversation.isNameEditable(currentUser)
         )
 
-        binding.conversationOperationMakePublic.visibility = setVisibleIf(
-            canModerate && !conversation.isPublic
-        )
-
-        binding.conversationOperationChangePassword.visibility = setVisibleIf(
-            canModerate && conversation.hasPassword && conversation.isPublic
-        )
-
-        binding.conversationOperationClearPassword.visibility = setVisibleIf(
-            canModerate && conversation.hasPassword && conversation.isPublic
-        )
-
-        binding.conversationOperationSetPassword.visibility = setVisibleIf(
-            canModerate && !conversation.hasPassword && conversation.isPublic
-        )
-
         binding.conversationOperationDelete.visibility = setVisibleIf(
             canModerate
-        )
-
-        binding.conversationOperationShareLink.visibility = setVisibleIf(
-            conversation.isPublic
-        )
-
-        binding.conversationOperationMakePrivate.visibility = setVisibleIf(
-            conversation.isPublic && canModerate
         )
 
         binding.conversationOperationLeave.visibility = setVisibleIf(
@@ -210,56 +178,12 @@ class ConversationsListBottomDialog(
             dismiss()
         }
 
-        binding.conversationOperationMakePublic.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_MAKE_PUBLIC)
-        }
-
-        binding.conversationOperationMakePrivate.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_MAKE_PRIVATE)
-        }
-
-        binding.conversationOperationChangePassword.setOnClickListener {
-            executeEntryMenuController(OPS_CODE_CHANGE_PASSWORD)
-        }
-
-        binding.conversationOperationClearPassword.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_CLEAR_PASSWORD)
-        }
-
-        binding.conversationOperationSetPassword.setOnClickListener {
-            executeEntryMenuController(OPS_CODE_SET_PASSWORD)
-        }
-
         binding.conversationOperationRename.setOnClickListener {
             executeEntryMenuController(OPS_CODE_RENAME_ROOM)
         }
 
         binding.conversationOperationMarkAsRead.setOnClickListener {
             executeOperationsMenuController(OPS_CODE_MARK_AS_READ)
-        }
-
-        binding.conversationOperationShareLink.setOnClickListener {
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = TEXT_PLAIN
-                putExtra(
-                    Intent.EXTRA_SUBJECT,
-                    String.format(
-                        activity.resources.getString(R.string.nc_share_subject),
-                        activity.resources.getString(R.string.nc_app_product_name)
-                    )
-                )
-                // password should not be shared!!
-                putExtra(
-                    Intent.EXTRA_TEXT,
-                    ShareUtils.getStringForIntent(activity, null, userManager, conversation)
-                )
-            }
-
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            activity.startActivity(shareIntent)
-
-            dismiss()
         }
     }
 

@@ -23,7 +23,6 @@
  */
 package com.nextcloud.talk.controllers.bottomsheet
 
-import android.content.ComponentName
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -47,7 +46,6 @@ import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerEntryMenuBinding
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
@@ -139,13 +137,6 @@ class EntryMenuController(args: Bundle) :
                 )
             }
 
-            ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD -> {
-                labelText = resources!!.getString(R.string.nc_new_password)
-                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            }
-
-            ConversationOperationEnum.OPS_CODE_SET_PASSWORD,
-            ConversationOperationEnum.OPS_CODE_SHARE_LINK,
             ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> {
                 // 99 is joining a conversation via password
                 labelText = resources!!.getString(R.string.nc_password)
@@ -242,18 +233,12 @@ class EntryMenuController(args: Bundle) :
     private fun onOkButtonClick() {
         if (operation === ConversationOperationEnum.OPS_CODE_JOIN_ROOM) {
             joinRoom()
-        } else if (operation !== ConversationOperationEnum.OPS_CODE_SHARE_LINK &&
+        } else if (
             operation !== ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM &&
             operation !== ConversationOperationEnum.OPS_CODE_INVITE_USERS
         ) {
             val bundle = Bundle()
-            if (operation === ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD ||
-                operation === ConversationOperationEnum.OPS_CODE_SET_PASSWORD
-            ) {
-                conversation!!.password = binding.textEdit.text.toString()
-            } else {
-                conversation!!.name = binding.textEdit.text.toString()
-            }
+            conversation!!.name = binding.textEdit.text.toString()
             bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap<Any>(conversation))
             bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)
             router.pushController(
@@ -261,20 +246,6 @@ class EntryMenuController(args: Bundle) :
                     .pushChangeHandler(HorizontalChangeHandler())
                     .popChangeHandler(HorizontalChangeHandler())
             )
-        } else if (operation === ConversationOperationEnum.OPS_CODE_SHARE_LINK && activity != null) {
-            shareIntent?.putExtra(
-                Intent.EXTRA_TEXT,
-                ShareUtils.getStringForIntent(
-                    activity,
-                    binding.textEdit.text.toString(),
-                    userManager,
-                    conversation
-                )
-            )
-            val intent = Intent(shareIntent)
-            intent.component = ComponentName(packageName, name)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            activity?.startActivity(intent)
         } else if (operation !== ConversationOperationEnum.OPS_CODE_INVITE_USERS) {
             val bundle = Bundle()
             bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)
@@ -336,10 +307,7 @@ class EntryMenuController(args: Bundle) :
     companion object {
         private val PASSWORD_ENTRY_OPERATIONS: List<ConversationOperationEnum> =
             immutableListOf(
-                ConversationOperationEnum.OPS_CODE_JOIN_ROOM,
-                ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD,
-                ConversationOperationEnum.OPS_CODE_SET_PASSWORD,
-                ConversationOperationEnum.OPS_CODE_SHARE_LINK
+                ConversationOperationEnum.OPS_CODE_JOIN_ROOM
             )
         const val OPACITY_DISABLED = 0.38f
         const val OPACITY_BUTTON_DISABLED = 0.7f
