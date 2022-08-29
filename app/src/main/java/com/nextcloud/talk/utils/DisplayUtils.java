@@ -304,7 +304,7 @@ public class DisplayUtils {
         chip.setEllipsize(TextUtils.TruncateAt.MIDDLE);
 
         if (chipResource == R.xml.chip_you) {
-            viewThemeUtils.themePrimaryMentionChip(context, chip);
+            viewThemeUtils.talk.themePrimaryMentionChip(context, chip);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

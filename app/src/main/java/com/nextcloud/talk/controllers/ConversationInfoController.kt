@@ -780,7 +780,7 @@ class ConversationInfoController(args: Bundle) :
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     binding.avatarImage.hierarchy.setPlaceholderImage(
                         DisplayUtils.getRoundedDrawable(
-                            viewThemeUtils.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_group)
+                            viewThemeUtils.talk.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_group)
                         )
                     )
                 } else {
@@ -793,7 +793,7 @@ class ConversationInfoController(args: Bundle) :
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     binding.avatarImage.hierarchy.setPlaceholderImage(
                         DisplayUtils.getRoundedDrawable(
-                            viewThemeUtils.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_link)
+                            viewThemeUtils.talk.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_link)
                         )
                     )
                 } else {

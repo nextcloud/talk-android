@@ -191,7 +191,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {

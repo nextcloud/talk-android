@@ -87,7 +87,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
             binding.messageAuthor.visibility = View.GONE
         }
 
-        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
 
         itemView.isSelected = false
 

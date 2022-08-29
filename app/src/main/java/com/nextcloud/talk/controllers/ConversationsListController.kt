@@ -296,7 +296,7 @@ class ConversationsListController(bundle: Bundle) :
             val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
             if (searchItem != null) {
                 searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-                viewThemeUtils.themeSearchView(searchView!!)
+                viewThemeUtils.appcompat.themeSearchView(searchView!!)
                 searchView!!.maxWidth = Int.MAX_VALUE
                 searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
                 var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN

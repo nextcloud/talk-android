@@ -98,7 +98,7 @@ class RemoteFileBrowserItemsListViewHolder(
         binding.fileIcon
             .hierarchy
             .setPlaceholderImage(
-                viewThemeUtils.getPlaceholderImage(binding.root.context, item.mimeType)
+                viewThemeUtils.talk.getPlaceholderImage(binding.root.context, item.mimeType)
             )
 
         if (item.hasPreview) {

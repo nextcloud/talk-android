@@ -266,7 +266,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         holder.binding.dialogAvatar.setImageDrawable(
                             DisplayUtils.getRoundedDrawable(
-                                viewThemeUtils.themePlaceholderAvatar(holder.binding.dialogAvatar,
+                                viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.dialogAvatar,
                                                                       R.drawable.ic_avatar_document)));
                     } else {
                         holder.binding.dialogAvatar.setImageDrawable(
@@ -316,7 +316,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         holder.binding.dialogAvatar.setImageDrawable(
                             DisplayUtils.getRoundedDrawable(
-                                viewThemeUtils.themePlaceholderAvatar(holder.binding.dialogAvatar,
+                                viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.dialogAvatar,
                                                                       R.drawable.ic_avatar_group)));
                     } else {
                         holder.binding.dialogAvatar.setImageDrawable(
@@ -327,7 +327,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         holder.binding.dialogAvatar.setImageDrawable(
                             DisplayUtils.getRoundedDrawable(
-                                viewThemeUtils.themePlaceholderAvatar(holder.binding.dialogAvatar,
+                                viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.dialogAvatar,
                                                                       R.drawable.ic_avatar_link)));
                     } else {
                         holder.binding.dialogAvatar.setImageDrawable(

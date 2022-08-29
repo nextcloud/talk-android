@@ -266,7 +266,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {

@@ -225,7 +225,7 @@ class MessageActionsDialog(
 
     private fun checkAndSetEmojiSelfReaction(emoji: EmojiTextView) {
         if (emoji.text?.toString() != null && message.reactionsSelf?.contains(emoji.text?.toString()) == true) {
-            viewThemeUtils.setCheckedBackground(emoji)
+            viewThemeUtils.talk.setCheckedBackground(emoji)
         }
     }
 

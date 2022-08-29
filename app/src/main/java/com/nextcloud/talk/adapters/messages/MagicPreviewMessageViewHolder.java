@@ -167,8 +167,8 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 progressBar = getPreviewContactProgressBar();
                 getMessageText().setVisibility(View.INVISIBLE);
                 clickView = getPreviewContactContainer();
-                viewThemeUtils.colorContactChatItemBackground(getPreviewContactContainer());
-                viewThemeUtils.colorContactChatItemName(getPreviewContactName());
+                viewThemeUtils.talk.colorContactChatItemBackground(getPreviewContactContainer());
+                viewThemeUtils.talk.colorContactChatItemName(getPreviewContactName());
                 viewThemeUtils.platform.colorCircularProgressBarOnPrimaryContainer(getPreviewContactProgressBar());
             } else {
                 getPreviewContainer().setVisibility(View.VISIBLE);

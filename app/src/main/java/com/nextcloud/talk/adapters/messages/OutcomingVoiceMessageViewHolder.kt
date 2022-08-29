@@ -263,9 +263,9 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context!!.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            viewThemeUtils.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
-            viewThemeUtils.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
-            viewThemeUtils.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
+            viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
+            viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
+            viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
 
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -274,7 +274,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     fun assignVoiceMessageInterface(voiceMessageInterface: VoiceMessageInterface) {

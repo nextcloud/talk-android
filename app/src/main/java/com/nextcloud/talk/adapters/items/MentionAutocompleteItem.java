@@ -153,7 +153,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
                     DisplayUtils.getRoundedDrawable(
-                        viewThemeUtils.themePlaceholderAvatar(holder.binding.avatarDraweeView,
+                        viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarDraweeView,
                                                               R.drawable.ic_avatar_group)));
             } else {
                 holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);

@@ -206,7 +206,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
                 DisplayUtils.getRoundedDrawable(
-                    viewThemeUtils.themePlaceholderAvatar(holder.binding.avatarDraweeView,
+                    viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarDraweeView,
                                                           roundPlaceholderDrawable)));
         } else {
             holder.binding.avatarDraweeView.setImageResource(fallbackImageResource);
