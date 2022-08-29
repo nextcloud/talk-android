@@ -1053,7 +1053,7 @@ class ConversationInfoController(args: Bundle) :
                     cornerRadius(res = R.dimen.corner_radius)
 
                     title(text = participant.displayName)
-                    listItemsWithImage(items = items) { dialog, index, _ ->
+                    listItemsWithImage(items = items) { _, index, _ ->
                         if (index == 0) {
                             removeAttendeeFromConversation(apiVersion, participant)
                         }
@@ -1079,7 +1079,7 @@ class ConversationInfoController(args: Bundle) :
                 cornerRadius(res = R.dimen.corner_radius)
 
                 title(text = participant.displayName)
-                listItemsWithImage(items = items) { dialog, index, _ ->
+                listItemsWithImage(items = items) { _, index, _ ->
                     if (index == 0) {
                         removeAttendeeFromConversation(apiVersion, participant)
                     }
@@ -1099,7 +1099,7 @@ class ConversationInfoController(args: Bundle) :
                 cornerRadius(res = R.dimen.corner_radius)
 
                 title(text = participant.displayName)
-                listItemsWithImage(items = items) { dialog, index, _ ->
+                listItemsWithImage(items = items) { _, index, _ ->
                     if (index == 0) {
                         removeAttendeeFromConversation(apiVersion, participant)
                     }
@@ -1150,7 +1150,7 @@ class ConversationInfoController(args: Bundle) :
                 cornerRadius(res = R.dimen.corner_radius)
 
                 title(text = participant.displayName)
-                listItemsWithImage(items = items) { dialog, index, _ ->
+                listItemsWithImage(items = items) { _, index, _ ->
                     var actionToTrigger = index
                     if (participant.attendeePin == null || participant.attendeePin!!.isEmpty()) {
                         actionToTrigger++
