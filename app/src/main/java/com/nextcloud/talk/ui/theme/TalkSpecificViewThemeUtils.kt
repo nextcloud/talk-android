@@ -19,7 +19,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.ui.theme.viewthemeutils
+package com.nextcloud.talk.ui.theme
 
 import android.annotation.TargetApi
 import android.content.Context
@@ -46,6 +46,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.ChipDrawable
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
+import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
 import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils

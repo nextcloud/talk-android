@@ -23,11 +23,10 @@ package com.nextcloud.talk.ui.theme
 
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
-import com.nextcloud.talk.ui.theme.viewthemeutils.AndroidViewThemeUtils
-import com.nextcloud.talk.ui.theme.viewthemeutils.AndroidXViewThemeUtils
-import com.nextcloud.talk.ui.theme.viewthemeutils.DialogViewThemeUtils
-import com.nextcloud.talk.ui.theme.viewthemeutils.MaterialViewThemeUtils
-import com.nextcloud.talk.ui.theme.viewthemeutils.TalkSpecificViewThemeUtils
+import com.nextcloud.android.common.ui.theme.utils.AndroidViewThemeUtils
+import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
+import com.nextcloud.android.common.ui.theme.utils.DialogViewThemeUtils
+import com.nextcloud.android.common.ui.theme.utils.MaterialViewThemeUtils
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
