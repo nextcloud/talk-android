@@ -122,7 +122,12 @@
     <string name="nc_group">Ομάδα</string>
     <string name="nc_groups">Ομάδες</string>
     <string name="nc_guest">Επισκέπτης</string>
+    <string name="nc_guest_access_allow_title">Επιτρέψτε τους επισκέπτες</string>
+    <string name="nc_guest_access_password_dialog_hint">Εισάγετε συνθηματικό</string>
     <string name="nc_guest_access_password_summary">Ορίστε έναν κωδικό πρόσβασης για να περιορίσετε ποιος μπορεί να χρησιμοποιήσει τον δημόσιο σύνδεσμο.</string>
+    <string name="nc_guest_access_password_title">Προστασία συνθηματικού</string>
+    <string name="nc_guest_access_password_weak_alert_title">Ασθενές συνηματικό</string>
+    <string name="nc_guest_access_resend_invitations">Επαναποστολή προσκλήσεων</string>
     <string name="nc_guest_access_share_link">Κοινή χρήση συνδέσμου συνομιλίας</string>
     <string name="nc_important_conversation">Σημαντική συνομιλία</string>
     <string name="nc_important_conversation_desc">Οι Ειδοποιήσεις σε αυτή την συνομιλία θα παρακάμψουν τις ρυθμίσεις Μην ενοχλείτε</string>

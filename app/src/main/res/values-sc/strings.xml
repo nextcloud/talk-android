@@ -122,7 +122,9 @@
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Persone invitada</string>
     <string name="nc_guest_access_allow_title">Autoriza persones invitadas</string>
+    <string name="nc_guest_access_password_dialog_hint">Dìgita una crae noa</string>
     <string name="nc_guest_access_password_summary">Imposta una crae pro limitare is chi podent impreare su ligòngiu pùblicu.</string>
+    <string name="nc_guest_access_password_title">Bardiadura de sa crae</string>
     <string name="nc_guest_access_password_weak_alert_title">Crae dèbile</string>
     <string name="nc_guest_access_resend_invitations">Torra a imbiare is invitos</string>
     <string name="nc_guest_access_share_link">Cumpartzi su ligòngiu de sa resonada</string>

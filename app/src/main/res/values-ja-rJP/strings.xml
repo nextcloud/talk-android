@@ -136,6 +136,7 @@
     <string name="nc_guest_access_allow_title">ゲストを許可</string>
     <string name="nc_guest_access_password_dialog_hint">パスワードを入力</string>
     <string name="nc_guest_access_password_summary">パスワードを設定して、パブリックリンクを使用できるユーザーを制限します。</string>
+    <string name="nc_guest_access_password_title">パスワード保護</string>
     <string name="nc_guest_access_password_weak_alert_title">脆弱なパスワード</string>
     <string name="nc_guest_access_resend_invitations">招待を再送</string>
     <string name="nc_guest_access_share_link">会話のリンクを共有</string>
