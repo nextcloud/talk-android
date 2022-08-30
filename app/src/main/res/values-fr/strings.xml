@@ -134,6 +134,13 @@
     <string name="nc_group">Groupe</string>
     <string name="nc_groups">Groupes</string>
     <string name="nc_guest">Invité</string>
+    <string name="nc_guest_access_allow_title">Autoriser les invités</string>
+    <string name="nc_guest_access_password_dialog_hint">Entrez un mot de passe</string>
+    <string name="nc_guest_access_password_summary">Définissez un mot de passe pour le lien public</string>
+    <string name="nc_guest_access_password_title">Protection par mot de passe</string>
+    <string name="nc_guest_access_password_weak_alert_title">Mot de passe faible</string>
+    <string name="nc_guest_access_resend_invitations">Renvoyer les invitations</string>
+    <string name="nc_guest_access_share_link">Partager le lien de conversation</string>
     <string name="nc_hint_enter_a_message">Saisir un message …</string>
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent sur les paramètres Ne Pas Déranger</string>

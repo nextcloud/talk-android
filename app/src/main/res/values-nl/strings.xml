@@ -130,6 +130,13 @@ Kies er eentje van een provider.</string>
     <string name="nc_group">Groep</string>
     <string name="nc_groups">Groepen</string>
     <string name="nc_guest">Gast</string>
+    <string name="nc_guest_access_allow_title">Sta gasten toe</string>
+    <string name="nc_guest_access_password_dialog_hint">Voer een wachtwoord in</string>
+    <string name="nc_guest_access_password_summary">Stel een wachtwoord in om te beperken wie de openbare link kan gebruiken.</string>
+    <string name="nc_guest_access_password_title">Wachtwoordbeveiliging</string>
+    <string name="nc_guest_access_password_weak_alert_title">Zwak wachtwoord</string>
+    <string name="nc_guest_access_resend_invitations">Opnieuw verzenden uitnodigingen</string>
+    <string name="nc_guest_access_share_link">Deel gesprekslink</string>
     <string name="nc_hint_enter_a_message">Voer een bericht in…</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
     <string name="nc_important_conversation_desc">Meldingen in dit gesprek negeren de Niet-Storen instellingen</string>

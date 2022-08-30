@@ -133,6 +133,12 @@
     <string name="nc_group">グループ</string>
     <string name="nc_groups">グループ</string>
     <string name="nc_guest">ゲスト</string>
+    <string name="nc_guest_access_allow_title">ゲストを許可</string>
+    <string name="nc_guest_access_password_dialog_hint">パスワードを入力</string>
+    <string name="nc_guest_access_password_summary">パスワードを設定して、パブリックリンクを使用できるユーザーを制限します。</string>
+    <string name="nc_guest_access_password_weak_alert_title">脆弱なパスワード</string>
+    <string name="nc_guest_access_resend_invitations">招待を再送</string>
+    <string name="nc_guest_access_share_link">会話のリンクを共有</string>
     <string name="nc_hint_enter_a_message">メッセージを入力…</string>
     <string name="nc_important_conversation">重要な会議</string>
     <string name="nc_important_conversation_desc">この会話の通知設定は、取り込み中設定を上書きします</string>

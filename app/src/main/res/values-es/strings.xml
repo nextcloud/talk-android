@@ -135,6 +135,13 @@
     <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Invitado</string>
+    <string name="nc_guest_access_allow_title">Permitir invitados</string>
+    <string name="nc_guest_access_password_dialog_hint">Introduzca una contraseña</string>
+    <string name="nc_guest_access_password_summary">Establece una contraseña para controlar quién puede usar el enlace público.</string>
+    <string name="nc_guest_access_password_title">Protección con contraseña</string>
+    <string name="nc_guest_access_password_weak_alert_title">Contraseña débil</string>
+    <string name="nc_guest_access_resend_invitations">Reenviar invitaciones</string>
+    <string name="nc_guest_access_share_link">Compartir enlace de la conversación</string>
     <string name="nc_hint_enter_a_message">Escribe un mensaje…</string>
     <string name="nc_important_conversation">Conversación importante</string>
     <string name="nc_important_conversation_desc">Las notificaciones de esta conversación no tendrán en cuenta el ajuste de No Molestar</string>

@@ -138,6 +138,13 @@
     <string name="nc_group">Gruppe</string>
     <string name="nc_groups">Gruppen</string>
     <string name="nc_guest">Gast</string>
+    <string name="nc_guest_access_allow_title">Gäste zulassen</string>
+    <string name="nc_guest_access_password_dialog_hint">Passwort eingeben</string>
+    <string name="nc_guest_access_password_summary">Passwort setzen, um den öffentlichen Zugriff einzuschränken.</string>
+    <string name="nc_guest_access_password_title">Passwortschutz</string>
+    <string name="nc_guest_access_password_weak_alert_title">Schwaches Passwort</string>
+    <string name="nc_guest_access_resend_invitations">Einladungen erneut versenden</string>
+    <string name="nc_guest_access_share_link">Unterhaltungs-Link teilen</string>
     <string name="nc_hint_enter_a_message">Eine Nachricht eingeben …</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>

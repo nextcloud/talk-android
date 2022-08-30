@@ -124,6 +124,13 @@
     <string name="nc_group">群组</string>
     <string name="nc_groups">群组</string>
     <string name="nc_guest">访客</string>
+    <string name="nc_guest_access_allow_title">允许来宾</string>
+    <string name="nc_guest_access_password_dialog_hint">输入密码</string>
+    <string name="nc_guest_access_password_summary">设置密码来限制谁可以使用公共链接。</string>
+    <string name="nc_guest_access_password_title">密码保护</string>
+    <string name="nc_guest_access_password_weak_alert_title">弱密码</string>
+    <string name="nc_guest_access_resend_invitations">重发邀请</string>
+    <string name="nc_guest_access_share_link">共享会话链接</string>
     <string name="nc_important_conversation">重要会话</string>
     <string name="nc_important_conversation_desc">此会话中的通知将覆盖免打扰设置</string>
     <string name="nc_join_via_link">使用链接加入</string>

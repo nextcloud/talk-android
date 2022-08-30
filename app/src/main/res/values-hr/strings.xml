@@ -126,6 +126,13 @@
     <string name="nc_group">Grupa</string>
     <string name="nc_groups">Grupe</string>
     <string name="nc_guest">Gost</string>
+    <string name="nc_guest_access_allow_title">Dopusti pristup gostima</string>
+    <string name="nc_guest_access_password_dialog_hint">Unesite zaporku</string>
+    <string name="nc_guest_access_password_summary">Postavite zaporku za ograničavanje uporabe javne poveznice.</string>
+    <string name="nc_guest_access_password_title">Zaštita zaporkom</string>
+    <string name="nc_guest_access_password_weak_alert_title">Zaporka slaba</string>
+    <string name="nc_guest_access_resend_invitations">Ponovno pošalji pozivnice</string>
+    <string name="nc_guest_access_share_link">Dijeli poveznicu za razgovor</string>
     <string name="nc_hint_enter_a_message">Unesi poruku …</string>
     <string name="nc_important_conversation">Važan razgovor</string>
     <string name="nc_important_conversation_desc">Obavijesti u okviru ovog razgovora prikazuju se neovisno o postavkama Ne uznemiravaj</string>

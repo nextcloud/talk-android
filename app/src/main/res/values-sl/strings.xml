@@ -133,6 +133,13 @@
     <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupine</string>
     <string name="nc_guest">Gost</string>
+    <string name="nc_guest_access_allow_title">Dovoli udeležbo gostov</string>
+    <string name="nc_guest_access_password_dialog_hint">Vpis gesla</string>
+    <string name="nc_guest_access_password_summary">Nastavi geslo za omejitev uporabe javne povezave.</string>
+    <string name="nc_guest_access_password_title">Zaščita z geslom</string>
+    <string name="nc_guest_access_password_weak_alert_title">Šibko geslo</string>
+    <string name="nc_guest_access_resend_invitations">Ponovno pošlji vabila</string>
+    <string name="nc_guest_access_share_link">Omogoči souporabo povezave pogovora</string>
     <string name="nc_hint_enter_a_message">Vpis sporočila …</string>
     <string name="nc_important_conversation">Pomemben pogovor</string>
     <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru onemogočil nastavitev Ne moti.</string>

@@ -68,6 +68,9 @@
     <string name="nc_group">Group</string>
     <string name="nc_groups">Grupe</string>
     <string name="nc_guest">Gost</string>
+    <string name="nc_guest_access_allow_title">Dozvoli goste</string>
+    <string name="nc_guest_access_password_dialog_hint">Unesite lozinku</string>
+    <string name="nc_guest_access_password_title">Password protection</string>
     <string name="nc_important_conversation">Bitan razgovor</string>
     <string name="nc_join_via_link">Pridruži se preko veze</string>
     <string name="nc_join_via_web">Pridruži se preko veba</string>

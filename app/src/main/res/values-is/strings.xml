@@ -97,6 +97,10 @@
     <string name="nc_group">Hópur</string>
     <string name="nc_groups">Hópar</string>
     <string name="nc_guest">Gestur</string>
+    <string name="nc_guest_access_allow_title">Leyfa gesti</string>
+    <string name="nc_guest_access_password_weak_alert_title">Veikt lykilorð</string>
+    <string name="nc_guest_access_resend_invitations">Resend invitations</string>
+    <string name="nc_guest_access_share_link">Share conversation link</string>
     <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
     <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>
     <string name="nc_last_moderator_title">Gat ekki hætt í samtali</string>

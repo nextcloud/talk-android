@@ -101,6 +101,10 @@
     <string name="nc_group">گروه</string>
     <string name="nc_groups">گروه ها</string>
     <string name="nc_guest">مهمان</string>
+    <string name="nc_guest_access_allow_title">اجازه میهمانان</string>
+    <string name="nc_guest_access_password_dialog_hint">یک گذرواژه وارد کنید</string>
+    <string name="nc_guest_access_password_title">محافظت از رمز عبور</string>
+    <string name="nc_guest_access_password_weak_alert_title">رمز عبور ضعیف</string>
     <string name="nc_important_conversation">گفتگوی مهم</string>
     <string name="nc_join_via_link">با یک پیوند ملحق شوید</string>
     <string name="nc_join_via_web">از طریق وب ملحق شوید</string>

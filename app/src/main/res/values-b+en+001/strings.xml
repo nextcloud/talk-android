@@ -103,6 +103,9 @@
     <string name="nc_group">Group</string>
     <string name="nc_groups">Groups</string>
     <string name="nc_guest">Guest</string>
+    <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
+    <string name="nc_guest_access_password_title">Password protection</string>
+    <string name="nc_guest_access_password_weak_alert_title">Weak password</string>
     <string name="nc_join_via_web">Join via web</string>
     <string name="nc_leave">Leave conversation</string>
     <string name="nc_license_summary">GNU General Public Licence, Version 3</string>

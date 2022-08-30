@@ -102,6 +102,10 @@
     <string name="nc_group">Gruppe</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gjest</string>
+    <string name="nc_guest_access_allow_title">Tillat gjester</string>
+    <string name="nc_guest_access_password_dialog_hint">Skriv inn eit passord</string>
+    <string name="nc_guest_access_password_title">Password protection</string>
+    <string name="nc_guest_access_password_weak_alert_title">Svakt passord</string>
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_important_conversation_desc">Varsel i denne samtalen overstyrer Ikkje Forstyrr Innstillingane</string>
     <string name="nc_join_via_link">Delta med ei lenkje</string>

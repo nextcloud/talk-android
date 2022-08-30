@@ -102,6 +102,12 @@
     <string name="nc_group">Nhóm</string>
     <string name="nc_groups">Nhóm</string>
     <string name="nc_guest">Khách</string>
+    <string name="nc_guest_access_allow_title">Cho phép khách</string>
+    <string name="nc_guest_access_password_dialog_hint">Nhập mật khẩu</string>
+    <string name="nc_guest_access_password_summary">Đặt mật khẩu để hạn chế ai có thể sử dụng liên kết công khai.</string>
+    <string name="nc_guest_access_password_title">Password protection</string>
+    <string name="nc_guest_access_password_weak_alert_title">Mật khẩu yếu</string>
+    <string name="nc_guest_access_resend_invitations">Gửi lại lời mời</string>
     <string name="nc_join_via_link">Tham gia bằng một liên kết</string>
     <string name="nc_join_via_web">Tham gia từ website</string>
     <string name="nc_leave">Rời khỏi cuộc đàm thoại</string>

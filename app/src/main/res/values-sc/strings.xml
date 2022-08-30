@@ -121,6 +121,11 @@
     <string name="nc_group">Grupu</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Persone invitada</string>
+    <string name="nc_guest_access_allow_title">Autoriza persones invitadas</string>
+    <string name="nc_guest_access_password_summary">Imposta una crae pro limitare is chi podent impreare su ligòngiu pùblicu.</string>
+    <string name="nc_guest_access_password_weak_alert_title">Crae dèbile</string>
+    <string name="nc_guest_access_resend_invitations">Torra a imbiare is invitos</string>
+    <string name="nc_guest_access_share_link">Cumpartzi su ligòngiu de sa resonada</string>
     <string name="nc_important_conversation">Tzarrada importante</string>
     <string name="nc_important_conversation_desc">Is notìficas in custa resonada ant a ignorare is impostatziones No istorbare</string>
     <string name="nc_join_via_link">Intra cun unu ligòngiu</string>

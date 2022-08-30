@@ -138,6 +138,13 @@
     <string name="nc_group">Grupa</string>
     <string name="nc_groups">Grupy</string>
     <string name="nc_guest">Gość</string>
+    <string name="nc_guest_access_allow_title">Zezwól gościom</string>
+    <string name="nc_guest_access_password_dialog_hint">Wprowadź hasło</string>
+    <string name="nc_guest_access_password_summary">Ustaw hasło, aby ograniczyć dostęp do linku publicznego.</string>
+    <string name="nc_guest_access_password_title">Ochrona hasłem</string>
+    <string name="nc_guest_access_password_weak_alert_title">Słabe hasło</string>
+    <string name="nc_guest_access_resend_invitations">Wyślij ponownie zaproszenia</string>
+    <string name="nc_guest_access_share_link">Udostępnij link do rozmowy</string>
     <string name="nc_hint_enter_a_message">Wpisz wiadomość…</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
     <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują ustawienia \"Nie przeszkadzać\"</string>

@@ -134,6 +134,13 @@
     <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_guest">Hosť</string>
+    <string name="nc_guest_access_allow_title">Povoliť hostí</string>
+    <string name="nc_guest_access_password_dialog_hint">Zadajte heslo</string>
+    <string name="nc_guest_access_password_summary">Nastaviť heslo pre obmedzenie kto sa môže pripojiť cez verejný odkaz.</string>
+    <string name="nc_guest_access_password_title">Ochrana heslom</string>
+    <string name="nc_guest_access_password_weak_alert_title">Slabé heslo</string>
+    <string name="nc_guest_access_resend_invitations">Znovy odslať pozvánky</string>
+    <string name="nc_guest_access_share_link">Zdieľať odkaz na konverzáciu</string>
     <string name="nc_hint_enter_a_message">Vložte správu …</string>
     <string name="nc_important_conversation">Dôležitý rozhovor</string>
     <string name="nc_important_conversation_desc">Oznámenia v tomto rozhovore sa prepíšu nastavením Nerušiť</string>

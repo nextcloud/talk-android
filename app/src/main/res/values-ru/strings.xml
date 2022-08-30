@@ -134,6 +134,13 @@
     <string name="nc_group">Группа</string>
     <string name="nc_groups">Группы</string>
     <string name="nc_guest">Гость</string>
+    <string name="nc_guest_access_allow_title">Разрешить гостей</string>
+    <string name="nc_guest_access_password_dialog_hint">Введите пароль</string>
+    <string name="nc_guest_access_password_summary">Задать пароль для входа по открытой ссылке.</string>
+    <string name="nc_guest_access_password_title">Защита паролем</string>
+    <string name="nc_guest_access_password_weak_alert_title">Слабый пароль</string>
+    <string name="nc_guest_access_resend_invitations">Повторная отправка приглашений</string>
+    <string name="nc_guest_access_share_link">Поделиться ссылкой на беседу</string>
     <string name="nc_hint_enter_a_message">Напишите сообщение …</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
     <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над настройками режима \"Не беспокоить\" </string>

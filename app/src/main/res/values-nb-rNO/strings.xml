@@ -102,6 +102,10 @@
     <string name="nc_group">Gruppe</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gjest</string>
+    <string name="nc_guest_access_allow_title">Tillat gjester</string>
+    <string name="nc_guest_access_password_dialog_hint">Skriv inn et passord</string>
+    <string name="nc_guest_access_password_title">Passordbeskyttelse</string>
+    <string name="nc_guest_access_password_weak_alert_title">Svakt passord</string>
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_join_via_link">Bli med via en lenke</string>
     <string name="nc_join_via_web">Bli med via nett</string>

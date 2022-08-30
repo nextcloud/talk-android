@@ -111,6 +111,13 @@
     <string name="nc_group">그룹</string>
     <string name="nc_groups">그룹</string>
     <string name="nc_guest">손님</string>
+    <string name="nc_guest_access_allow_title">손님 허용</string>
+    <string name="nc_guest_access_password_dialog_hint">암호 입력</string>
+    <string name="nc_guest_access_password_summary">공용 링크를 사용할 수 있는 사용자를 제한하려면 암호를 설정하십시오.</string>
+    <string name="nc_guest_access_password_title">암호 보호</string>
+    <string name="nc_guest_access_password_weak_alert_title">약한 암호</string>
+    <string name="nc_guest_access_resend_invitations">초대 재전송</string>
+    <string name="nc_guest_access_share_link">대화 링크 공유</string>
     <string name="nc_important_conversation">중요한 대화</string>
     <string name="nc_join_via_link">링크로 참여</string>
     <string name="nc_join_via_web">웹에서 참여</string>

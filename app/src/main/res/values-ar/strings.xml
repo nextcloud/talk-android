@@ -128,6 +128,10 @@
     <string name="nc_group">الفريق</string>
     <string name="nc_groups">الفِرَق</string>
     <string name="nc_guest">ضيف</string>
+    <string name="nc_guest_access_allow_title">السماح للضيوف</string>
+    <string name="nc_guest_access_password_summary">تعيين كلمة مرور لتقييد من يمكنه استخدام الرابط العام.</string>
+    <string name="nc_guest_access_resend_invitations">إعادة إرسال الدعوات </string>
+    <string name="nc_guest_access_share_link">مشاركة رابط المحادثة</string>
     <string name="nc_hint_enter_a_message">ادخل رسالة …</string>
     <string name="nc_important_conversation">محادثة مهمة</string>
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة سيتم تجاوزها. إعدادات الرجاء عدم الإزعاج</string>

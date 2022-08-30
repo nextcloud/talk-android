@@ -132,6 +132,13 @@
     <string name="nc_group">Gruppo</string>
     <string name="nc_groups">Gruppi</string>
     <string name="nc_guest">Ospite</string>
+    <string name="nc_guest_access_allow_title">Consenti ospiti</string>
+    <string name="nc_guest_access_password_dialog_hint">Digita una password</string>
+    <string name="nc_guest_access_password_summary">Imposta una password per limitare chi può utilizzare il collegamento pubblico.</string>
+    <string name="nc_guest_access_password_title">Protezione password</string>
+    <string name="nc_guest_access_password_weak_alert_title">Password debole</string>
+    <string name="nc_guest_access_resend_invitations">Rispedisci inviti</string>
+    <string name="nc_guest_access_share_link">Condividi collegamento della conversazione</string>
     <string name="nc_hint_enter_a_message">Digita un messaggio …</string>
     <string name="nc_important_conversation">Conversazione importante</string>
     <string name="nc_important_conversation_desc">Le notifiche in questa conversazione ignoreranno l\'impostazione Non disturbare</string>
