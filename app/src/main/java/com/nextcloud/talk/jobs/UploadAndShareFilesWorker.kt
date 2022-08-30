@@ -50,7 +50,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import java.io.File
 import java.io.FileNotFoundException
@@ -99,12 +100,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
             for (index in sourcefiles.indices) {
                 val sourceFileUri = Uri.parse(sourcefiles[index])
+                val fileName = UriUtils.getFileName(sourceFileUri, context)
                 uploadFile(
-                    currentUser!!,
+                    currentUser,
                     UploadItem(
                         sourceFileUri,
-                        UriUtils.getFileName(sourceFileUri, context),
-                        createRequestBody(sourceFileUri)
+                        fileName,
+                        createRequestBody(sourceFileUri, fileName)
                     ),
                     ncTargetpath,
                     roomToken,
@@ -121,18 +123,17 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun createRequestBody(sourcefileUri: Uri): RequestBody? {
-        var requestBody: RequestBody? = null
-        try {
-            val input: InputStream = context.contentResolver.openInputStream(sourcefileUri)!!
-            val buf = ByteArray(input.available())
-            while (input.read(buf) != -1)
-                requestBody = RequestBody.create("application/octet-stream".toMediaTypeOrNull(), buf)
-        } catch (e: Exception) {
-            Log.e(javaClass.simpleName, "failed to create RequestBody for $sourcefileUri", e)
+    private fun createRequestBody(sourceFileUri: Uri, fileName: String): MultipartBody.Part {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(sourceFileUri)
+        return if (inputStream != null) {
+            MultipartBody.Part.createFormData(
+                "file",
+                fileName,
+                inputStream.readBytes().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            )
+        } else {
+            throw IllegalArgumentException("inputStream was null when trying to create request body for file upload")
         }
-        return requestBody
     }
 
     private fun uploadFile(
@@ -145,7 +146,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         ncApi.uploadFile(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
             ApiUtils.getUrlForFileUpload(currentUser.baseUrl, currentUser.userId, ncTargetPath, uploadItem.fileName),
-            uploadItem.requestBody
+            uploadItem.multiBodyPart
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -155,11 +156,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 }
 
                 override fun onNext(t: Response<GenericOverall>) {
-                    // unused atm
+                    Log.d(TAG, "onNext")
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "failed to upload file ${uploadItem.fileName}")
+                    Log.e(TAG, "failed to upload file ${uploadItem.fileName}", e)
                 }
 
                 override fun onComplete() {
@@ -281,6 +282,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private data class UploadItem(
         val uri: Uri,
         val fileName: String,
-        val requestBody: RequestBody?
+        val multiBodyPart: MultipartBody.Part?
     )
 }

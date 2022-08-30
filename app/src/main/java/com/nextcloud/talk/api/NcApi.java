@@ -415,10 +415,11 @@ public interface NcApi {
                                                                     @Url String url,
                                                                     @Body RequestBody search);
 
+    @Multipart
     @PUT
     Observable<Response<GenericOverall>> uploadFile(@Header("Authorization") String authorization,
                                                     @Url String url,
-                                                    @Body RequestBody body);
+                                                    @Part MultipartBody.Part part);
 
     @GET
     Call<ResponseBody> downloadFile(@Header("Authorization") String authorization,
