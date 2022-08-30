@@ -62,7 +62,7 @@ import kotlin.math.roundToInt
 @Suppress("TooManyFunctions")
 class TalkSpecificViewThemeUtils @Inject constructor(
     schemes: MaterialSchemes,
-    private val appcompat: AppCompatViewThemeUtils
+    private val appcompat: AndroidXViewThemeUtils
 ) :
     ViewThemeUtilsBase(schemes) {
     fun themeIncomingMessageBubble(bubble: ViewGroup, grouped: Boolean, deleted: Boolean) {

@@ -47,7 +47,7 @@ class PollResultVoterViewHolder(
 
         binding.pollVoterName.text = item.details.actorDisplayName
         binding.pollVoterAvatar.controller = getAvatarDraweeController(item.details)
-        viewThemeUtils.colorDialogSupportingText(binding.pollVoterName)
+        viewThemeUtils.dialog.colorDialogSupportingText(binding.pollVoterName)
     }
 
     private fun getAvatarDraweeController(pollDetail: PollDetails): DraweeController? {

@@ -44,6 +44,7 @@ import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.DisplayUtils
+import eu.davidea.flexibleadapter.utils.FlexibleUtils
 import javax.inject.Inject
 
 /**
@@ -67,15 +68,18 @@ class AndroidViewThemeUtils @Inject constructor(schemes: MaterialSchemes, privat
 
     fun themeStatusBar(activity: Activity, view: View) {
         withScheme(view) { scheme ->
+            // TODO extract from displayutils to common
             DisplayUtils.applyColorToStatusBar(activity, scheme.surface)
         }
     }
 
     fun resetStatusBar(activity: Activity, view: View) {
+        // TODO extract from displayutils to common
         DisplayUtils.applyColorToStatusBar(
             activity,
             ResourcesCompat.getColor(
                 activity.resources,
+                // TODO do not use talk.R
                 R.color.bg_default,
                 activity.theme
             )
@@ -247,6 +251,13 @@ class AndroidViewThemeUtils @Inject constructor(schemes: MaterialSchemes, privat
             )
             editText.setHintTextColor(scheme.onSurfaceVariant)
             editText.setTextColor(scheme.onSurface)
+        }
+    }
+
+    fun highlightText(textView: TextView, originalText: String, constraint: String) {
+        withScheme(textView) { scheme ->
+            // TODO do not use FlexibleUtils for this
+            FlexibleUtils.highlightText(textView, originalText, constraint, scheme.primary)
         }
     }
 

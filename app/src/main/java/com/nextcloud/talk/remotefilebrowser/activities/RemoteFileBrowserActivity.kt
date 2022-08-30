@@ -100,7 +100,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         initViewModel(mimeTypeSelectionFilter)
 
         binding.swipeRefreshList.setOnRefreshListener(this)
-        viewThemeUtils.themeSwipeRefreshLayout(binding.swipeRefreshList)
+        viewThemeUtils.androidx.themeSwipeRefreshLayout(binding.swipeRefreshList)
 
         binding.pathNavigationBackButton.setOnClickListener { viewModel.navigateUp() }
         binding.sortButton.setOnClickListener { changeSorting() }

@@ -132,7 +132,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
                     }
                     .setNegativeButton(R.string.nc_cancel, null)
 
-                viewThemeUtils.material.colorMaterialAlertDialogBackground(
+                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(
                     binding.pollResultsEndPollButton.context,
                     dialogBuilder
                 )

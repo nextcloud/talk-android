@@ -217,11 +217,11 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         viewThemeUtils.platform.themeDialogDivider(binding.divider);
 
         viewThemeUtils.material.colorMaterialTextButton(binding.setStatus);
-        viewThemeUtils.colorDialogMenuText(binding.setStatus);
+        viewThemeUtils.dialog.colorDialogMenuText(binding.setStatus);
         viewThemeUtils.material.colorMaterialTextButton(binding.addAccount);
-        viewThemeUtils.colorDialogMenuText(binding.addAccount);
+        viewThemeUtils.dialog.colorDialogMenuText(binding.addAccount);
         viewThemeUtils.material.colorMaterialTextButton(binding.manageSettings);
-        viewThemeUtils.colorDialogMenuText(binding.manageSettings);
+        viewThemeUtils.dialog.colorDialogMenuText(binding.manageSettings);
     }
 
     private void loadCurrentStatus(User user) {

@@ -96,7 +96,7 @@ public class MagicUserInputModule extends StandardUserInputModule {
             .setTitle(title)
             .setView(view);
 
-        viewThemeUtils.material.colorMaterialAlertDialogBackground(view.getContext(), dialogBuilder);
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(view.getContext(), dialogBuilder);
 
         final Dialog dialog = dialogBuilder.show();
 

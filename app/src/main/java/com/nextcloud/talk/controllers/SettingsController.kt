@@ -385,7 +385,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                     // unused atm
                 }
 
-            viewThemeUtils.material.colorMaterialAlertDialogBackground(
+            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(
                 binding.messageText.context,
                 materialAlertDialogBuilder
             )
@@ -508,7 +508,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 settingsPhoneBookIntegration,
                 settingsReadPrivacy,
                 settingsProxyUseCredentials
-            ).forEach(viewThemeUtils::colorSwitchPreference)
+            ).forEach(viewThemeUtils.talk::colorSwitchPreference)
         }
     }
 
@@ -520,7 +520,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 settingsAdvancedCategory,
                 settingsAppearanceCategory,
                 settingsPrivacyCategory
-            ).forEach(viewThemeUtils::colorPreferenceCategory)
+            ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
         }
     }
 
@@ -952,7 +952,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
             .setPositiveButton(context!!.resources.getString(R.string.nc_common_set), null)
             .setNegativeButton(context!!.resources.getString(R.string.nc_common_skip), null)
 
-        viewThemeUtils.material.colorMaterialAlertDialogBackground(phoneNumberInputLayout.context, dialogBuilder)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(phoneNumberInputLayout.context, dialogBuilder)
 
         val dialog = dialogBuilder.create()
         dialog.setOnShowListener(object : OnShowListener {

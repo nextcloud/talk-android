@@ -22,7 +22,6 @@
 package com.nextcloud.talk.adapters.items
 
 import android.content.Context
-import android.text.SpannableString
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
@@ -77,12 +76,11 @@ data class MessageResultItem constructor(
     }
 
     private fun bindMessageExcerpt(holder: ViewHolder) {
-        val highlightedSpan = viewThemeUtils.createHighlightedSpan(
-            holder.binding.messageExcerpt.context,
-            SpannableString(messageEntry.messageExcerpt),
+        viewThemeUtils.platform.highlightText(
+            holder.binding.messageExcerpt,
+            messageEntry.messageExcerpt,
             messageEntry.searchTerm
         )
-        holder.binding.messageExcerpt.text = highlightedSpan
     }
 
     private fun loadImage(holder: ViewHolder) {

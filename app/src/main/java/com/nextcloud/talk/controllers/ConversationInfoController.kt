@@ -191,7 +191,7 @@ class ConversationInfoController(args: Bundle) :
                 binding.webinarInfoView.conversationInfoLobby,
                 binding.notificationSettingsView.callNotifications,
                 binding.notificationSettingsView.conversationInfoPriorityConversation
-            ).forEach(viewThemeUtils::colorSwitchPreference)
+            ).forEach(viewThemeUtils.talk::colorSwitchPreference)
         }
     }
 
@@ -207,7 +207,7 @@ class ConversationInfoController(args: Bundle) :
                 categoryConversationSettings,
                 binding.webinarInfoView.conversationInfoWebinar,
                 binding.notificationSettingsView.notificationSettingsCategory
-            ).forEach(viewThemeUtils::colorPreferenceCategory)
+            ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
         }
     }
 
@@ -365,7 +365,7 @@ class ConversationInfoController(args: Bundle) :
     private fun showDeleteConversationDialog() {
         if (activity != null) {
             val dialogBuilder = MaterialAlertDialogBuilder(binding.conversationInfoName.context)
-                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
+                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_delete_call)
                 .setMessage(R.string.nc_delete_conversation_more)
                 .setPositiveButton(R.string.nc_delete) { _, _ ->
@@ -374,7 +374,7 @@ class ConversationInfoController(args: Bundle) :
                 .setNegativeButton(R.string.nc_cancel) { _, _ ->
                     // unused atm
                 }
-            viewThemeUtils.material
+            viewThemeUtils.dialog
                 .colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
             val dialog = dialogBuilder.show()
             viewThemeUtils.platform.colorTextButtons(
@@ -537,7 +537,7 @@ class ConversationInfoController(args: Bundle) :
     private fun showClearHistoryDialog() {
         if (activity != null) {
             val dialogBuilder = MaterialAlertDialogBuilder(binding.conversationInfoName.context)
-                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
+                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
                 .setTitle(R.string.nc_clear_history)
                 .setMessage(R.string.nc_clear_history_warning)
                 .setPositiveButton(R.string.nc_delete_all) { _, _ ->
@@ -546,7 +546,7 @@ class ConversationInfoController(args: Bundle) :
                 .setNegativeButton(R.string.nc_cancel) { _, _ ->
                     // unused atm
                 }
-            viewThemeUtils.material
+            viewThemeUtils.dialog
                 .colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
             val dialog = dialogBuilder.show()
             viewThemeUtils.platform.colorTextButtons(

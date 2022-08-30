@@ -27,16 +27,16 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
-import com.nextcloud.android.common.ui.color.ColorUtil
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.talk.R
 import javax.inject.Inject
 
 /**
- * View theme utils for AppCompat views (androidx.appcompat.*)
+ * View theme utils for Android extension views (androidx.*)
  */
-class AppCompatViewThemeUtils @Inject constructor(schemes: MaterialSchemes, private val colorUtil: ColorUtil) :
+class AndroidXViewThemeUtils @Inject constructor(schemes: MaterialSchemes) :
     ViewThemeUtilsBase(schemes) {
     fun themeSearchView(searchView: SearchView) {
         withScheme(searchView) { scheme ->
@@ -58,11 +58,13 @@ class AppCompatViewThemeUtils @Inject constructor(schemes: MaterialSchemes, priv
 
             val thumbUncheckedColor = ResourcesCompat.getColor(
                 context.resources,
+                // TODO extract to common
                 R.color.switch_thumb_color_unchecked,
                 context.theme
             )
             val trackUncheckedColor = ResourcesCompat.getColor(
                 context.resources,
+                // TODO extract to common
                 R.color.switch_track_color_unchecked,
                 context.theme
             )
@@ -83,6 +85,13 @@ class AppCompatViewThemeUtils @Inject constructor(schemes: MaterialSchemes, priv
                 arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf()),
                 intArrayOf(trackColor, trackUncheckedColor)
             )
+        }
+    }
+
+    fun themeSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
+        withScheme(swipeRefreshLayout) { scheme ->
+            swipeRefreshLayout.setColorSchemeColors(scheme.primary)
+            swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
         }
     }
 

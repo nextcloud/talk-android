@@ -1433,7 +1433,7 @@ class ChatController(args: Bundle) :
                             // unused atm
                         }
 
-                    viewThemeUtils.material.colorMaterialAlertDialogBackground(
+                    viewThemeUtils.dialog.colorMaterialAlertDialogBackground(
                         binding.messageInputView.context,
                         materialAlertDialogBuilder
                     )

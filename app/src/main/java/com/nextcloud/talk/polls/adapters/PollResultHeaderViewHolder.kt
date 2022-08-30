@@ -41,8 +41,8 @@ class PollResultHeaderViewHolder(
         binding.pollOptionText.text = item.name
         binding.pollOptionPercentText.text = "${item.percent}%"
 
-        viewThemeUtils.colorDialogSupportingText(binding.pollOptionText)
-        viewThemeUtils.colorDialogSupportingText(binding.pollOptionPercentText)
+        viewThemeUtils.dialog.colorDialogSupportingText(binding.pollOptionText)
+        viewThemeUtils.dialog.colorDialogSupportingText(binding.pollOptionPercentText)
 
         if (item.selfVoted) {
             binding.pollOptionText.setTypeface(null, Typeface.BOLD)

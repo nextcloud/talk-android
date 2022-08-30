@@ -143,7 +143,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                                                                         null));
 
         if (adapter.hasFilter()) {
-            viewThemeUtils.highlightText(holder.binding.dialogName,
+            viewThemeUtils.platform.highlightText(holder.binding.dialogName,
                                          conversation.getDisplayName(),
                                          String.valueOf(adapter.getFilter(String.class)));
         } else {

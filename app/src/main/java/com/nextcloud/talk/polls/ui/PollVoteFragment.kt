@@ -215,7 +215,7 @@ class PollVoteFragment : Fragment() {
                     }
                     .setNegativeButton(R.string.nc_cancel, null)
 
-                viewThemeUtils.material.colorMaterialAlertDialogBackground(
+                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(
                     binding.pollVoteEndPollButton.context,
                     dialogBuilder
                 )

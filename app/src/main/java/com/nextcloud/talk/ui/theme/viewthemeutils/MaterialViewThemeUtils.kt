@@ -21,20 +21,16 @@
 
 package com.nextcloud.talk.ui.theme.viewthemeutils
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.os.Build
 import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
@@ -293,27 +289,6 @@ class MaterialViewThemeUtils @Inject constructor(schemes: MaterialSchemes, priva
             chip.chipStrokeWidth = strokeWidth
             chip.chipStrokeColor = ColorStateList.valueOf(scheme.primary)
             chip.setTextColor(scheme.primary)
-        }
-    }
-
-    fun colorMaterialAlertDialogBackground(context: Context, dialogBuilder: MaterialAlertDialogBuilder) {
-        withScheme(dialogBuilder.context) { scheme ->
-            val materialShapeDrawable = MaterialShapeDrawable(
-                context,
-                null,
-                com.google.android.material.R.attr.alertDialogStyle,
-                com.google.android.material.R.style.MaterialAlertDialog_MaterialComponents
-            )
-            materialShapeDrawable.initializeElevationOverlay(context)
-            materialShapeDrawable.fillColor = ColorStateList.valueOf(scheme.surface)
-
-            // dialogCornerRadius first appeared in Android Pie
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                val radius = context.resources.getDimension(com.nextcloud.talk.R.dimen.dialogBorderRadius)
-                materialShapeDrawable.setCornerSize(radius)
-            }
-
-            dialogBuilder.background = materialShapeDrawable
         }
     }
 
