@@ -114,6 +114,12 @@
     <string name="nc_group">Ryhmä</string>
     <string name="nc_groups">Ryhmät</string>
     <string name="nc_guest">Vieras</string>
+    <string name="nc_guest_access_allow_title">Salli vieraat</string>
+    <string name="nc_guest_access_password_dialog_hint">Syötä salasana</string>
+    <string name="nc_guest_access_password_summary">Aseta salasana rajoittaaksesi, ketkä voivat käyttää julkista linkkiä.</string>
+    <string name="nc_guest_access_password_title">Salasanasuojaus</string>
+    <string name="nc_guest_access_password_weak_alert_title">Heikko salasana</string>
+    <string name="nc_guest_access_resend_invitations">Lähetä kutsut uudelleen</string>
     <string name="nc_hint_enter_a_message">Kirjoita viesti…</string>
     <string name="nc_important_conversation">Tärkeä keskustelu</string>
     <string name="nc_important_conversation_desc">Tämän keskustelun ilmoitukset eivät noudata Älä häiritse -asetuksia</string>

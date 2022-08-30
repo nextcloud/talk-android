@@ -97,6 +97,10 @@
     <string name="nc_group">Grupė</string>
     <string name="nc_groups">Grupės</string>
     <string name="nc_guest">Svečias</string>
+    <string name="nc_guest_access_allow_title">Leisti svečius</string>
+    <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
+    <string name="nc_guest_access_password_title">Apsauga slaptažodžiu</string>
+    <string name="nc_guest_access_password_weak_alert_title">Silpnas slaptažodis</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
     <string name="nc_join_via_link">Prisijungti per nuorodą</string>
     <string name="nc_last_moderator">Prieš išeidami iš %1$s, turite paaukštinti naują moderatorių.</string>

@@ -105,6 +105,13 @@
     <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Convidado</string>
+    <string name="nc_guest_access_allow_title">Permitir convidados</string>
+    <string name="nc_guest_access_password_dialog_hint">Introduza un contrasinal</string>
+    <string name="nc_guest_access_password_summary">Establecer un contrasinal para restrinxir quen pode usar a ligazón pública.</string>
+    <string name="nc_guest_access_password_title">Protección por contrasinal</string>
+    <string name="nc_guest_access_password_weak_alert_title">Contrasinal feble</string>
+    <string name="nc_guest_access_resend_invitations">Volver enviar os convites</string>
+    <string name="nc_guest_access_share_link">Compartir a ligazón da conversa</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">As notificacións nesta conversa serán anuladas Axustes de Non molestar</string>
     <string name="nc_join_via_link">Unirse a través dunha ligazón</string>

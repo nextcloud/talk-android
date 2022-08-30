@@ -97,6 +97,10 @@
     <string name="nc_group">Gruppe</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gæst</string>
+    <string name="nc_guest_access_allow_title">Tillad gæster</string>
+    <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
+    <string name="nc_guest_access_password_title">Adgangskodebeskyttelse</string>
+    <string name="nc_guest_access_password_weak_alert_title">Svagt password</string>
     <string name="nc_important_conversation">Vigtig samtale</string>
     <string name="nc_important_conversation_desc">notifikationer under denne samtale vil ignorere Forstyr ikke indstillinger</string>
     <string name="nc_join_via_link">Deltag via link</string>

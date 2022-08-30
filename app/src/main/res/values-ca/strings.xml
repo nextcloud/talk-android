@@ -99,6 +99,10 @@
     <string name="nc_group">Grup</string>
     <string name="nc_groups">Grups</string>
     <string name="nc_guest">Convidat</string>
+    <string name="nc_guest_access_allow_title">Permet visitants</string>
+    <string name="nc_guest_access_password_dialog_hint">Introduïu una contrasenya</string>
+    <string name="nc_guest_access_password_title">Protecció amb contrasenya</string>
+    <string name="nc_guest_access_password_weak_alert_title">Contrasenya feble</string>
     <string name="nc_important_conversation">Conversa important</string>
     <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
     <string name="nc_join_via_link">Uniu-vos amb un enllaç</string>

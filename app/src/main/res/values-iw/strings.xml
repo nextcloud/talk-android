@@ -97,6 +97,10 @@
     <string name="nc_group">קבוצה</string>
     <string name="nc_groups">קבוצות</string>
     <string name="nc_guest">אורח</string>
+    <string name="nc_guest_access_allow_title">לאפשר אורחים</string>
+    <string name="nc_guest_access_password_dialog_hint">נא להקליד ססמה</string>
+    <string name="nc_guest_access_password_title">הגנה בססמה</string>
+    <string name="nc_guest_access_password_weak_alert_title">ססמה חלשה</string>
     <string name="nc_important_conversation">דיון חשוב</string>
     <string name="nc_join_via_link">הצטרפות עם קישור</string>
     <string name="nc_join_via_web">הצטרפות דרך דפדפן</string>

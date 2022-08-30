@@ -138,6 +138,13 @@
     <string name="nc_group">群組</string>
     <string name="nc_groups">群組</string>
     <string name="nc_guest">訪客</string>
+    <string name="nc_guest_access_allow_title">允許訪客</string>
+    <string name="nc_guest_access_password_dialog_hint">輸入密碼</string>
+    <string name="nc_guest_access_password_summary">設置密碼以限制誰可以使用公共連結。</string>
+    <string name="nc_guest_access_password_title">密碼保護</string>
+    <string name="nc_guest_access_password_weak_alert_title">密碼強度弱</string>
+    <string name="nc_guest_access_resend_invitations">重新傳送邀請</string>
+    <string name="nc_guest_access_share_link">分享對話連結</string>
     <string name="nc_hint_enter_a_message">輸入訊息 …</string>
     <string name="nc_important_conversation">重要對話</string>
     <string name="nc_important_conversation_desc">此對話中的通告將覆蓋\"請勿打擾\"設置</string>

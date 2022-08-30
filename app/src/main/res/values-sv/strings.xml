@@ -103,6 +103,10 @@
     <string name="nc_group">Grupp</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gäst</string>
+    <string name="nc_guest_access_allow_title">Tillåt gäster</string>
+    <string name="nc_guest_access_password_dialog_hint">Ange ett lösenord</string>
+    <string name="nc_guest_access_password_title">Lösenordsskydd</string>
+    <string name="nc_guest_access_password_weak_alert_title">Svagt lösenord</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
     <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta Stör inte-inställningar</string>
     <string name="nc_join_via_link">Gå med via länk</string>

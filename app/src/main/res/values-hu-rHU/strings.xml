@@ -138,6 +138,13 @@
     <string name="nc_group">Csoport</string>
     <string name="nc_groups">Csoportok</string>
     <string name="nc_guest">Vendég</string>
+    <string name="nc_guest_access_allow_title">Vendégek engedélyezése</string>
+    <string name="nc_guest_access_password_dialog_hint">Adja meg a jelszót</string>
+    <string name="nc_guest_access_password_summary">Jelszó beállítása annak korlátozásához, hogy kik használhassák a nyilvános hivatkozást.</string>
+    <string name="nc_guest_access_password_title">Jelszavas védelem</string>
+    <string name="nc_guest_access_password_weak_alert_title">Gyenge jelszó</string>
+    <string name="nc_guest_access_resend_invitations">Meghívások újraküldése</string>
+    <string name="nc_guest_access_share_link">Beszélgetés hivatkozásának megosztása</string>
     <string name="nc_hint_enter_a_message">Írjon üzenetet…</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
     <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a Ne zavarjanak beállításokat</string>

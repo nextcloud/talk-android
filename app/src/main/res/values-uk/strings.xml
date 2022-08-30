@@ -90,6 +90,7 @@
     <string name="nc_conversations_empty">Приєднайтеся до розмови або почніть нову</string>
     <string name="nc_conversations_empty_details">Привітайтеся з вашими друзями та колегами!</string>
     <string name="nc_copy_message">Копіювати</string>
+    <string name="nc_create_poll">Створити опитування</string>
     <string name="nc_date_header_today">Сьогодні</string>
     <string name="nc_date_header_yesterday">Вчора</string>
     <string name="nc_delete">Вилучити</string>
@@ -105,6 +106,8 @@
     <string name="nc_display_name_not_fetched">Ім\'я для відображення не вдалося розпізнати, скасування</string>
     <string name="nc_display_name_not_stored">Неможливо отримати ім\'я для відображення, скасування</string>
     <string name="nc_email">Електронна пошта</string>
+    <string name="nc_expire_message_eight_hours">8 годин</string>
+    <string name="nc_expire_message_four_weeks">4 тижні</string>
     <string name="nc_expire_message_off">Вимкнути</string>
     <string name="nc_expire_message_one_hour">1 година</string>
     <string name="nc_external_server_failed">Помилка отримання налаштувань сповіщення</string>
@@ -119,6 +122,10 @@
     <string name="nc_group">Група</string>
     <string name="nc_groups">Групи</string>
     <string name="nc_guest">Гість</string>
+    <string name="nc_guest_access_allow_title">Дозволити гостей</string>
+    <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
+    <string name="nc_guest_access_password_title">Захист паролем</string>
+    <string name="nc_guest_access_password_weak_alert_title">Слабкий пароль</string>
     <string name="nc_important_conversation">Важлива розмова</string>
     <string name="nc_important_conversation_desc">Сповіщення в цій розмові ігнорують опцію \"Не турбувати\"</string>
     <string name="nc_join_via_link">Приєднатися за посиланням</string>
@@ -144,6 +151,7 @@
     <string name="nc_manual">Не встановлено</string>
     <string name="nc_mark_as_read">Позначити прочитаним</string>
     <string name="nc_mark_as_unread">Позначити не прочитаним</string>
+    <string name="nc_message_failed_to_send">Не вдалося надіслати повідомлення:</string>
     <string name="nc_message_quote_cancel_reply">Скасувати відповідь</string>
     <string name="nc_message_read">Повідомлення прочитано</string>
     <string name="nc_message_sent">Повідомлення відправлено</string>
@@ -220,6 +228,8 @@
     <string name="nc_sent_an_image_you">Ви надіслали зображення.</string>
     <string name="nc_sent_location" formatted="true">%1$s надсилає геолокацію.</string>
     <string name="nc_sent_location_you">Ви надіслали геолокацію.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s надіслав опитування.</string>
+    <string name="nc_sent_poll_you">Ви надіслали опитування.</string>
     <string name="nc_sent_voice" formatted="true">%1$s надсилає голосове повідомлення.</string>
     <string name="nc_sent_voice_you">Ви надіслали голосове повідомлення.</string>
     <string name="nc_server_connect">Перевірка з\'єднання з сервером</string>
@@ -269,6 +279,7 @@
     <string name="nc_share_current_location">Поділіться поточним місцезнаходженням</string>
     <string name="nc_share_link">Поширити посилання</string>
     <string name="nc_share_location">Поділіться місцезнаходженням</string>
+    <string name="nc_share_text_pass">\nПароль: %1$s</string>
     <string name="nc_share_this_location">Поділіться цим розташуванням</string>
     <string name="nc_shared_items_location">Місце</string>
     <string name="nc_sort_by">Сортувати по</string>

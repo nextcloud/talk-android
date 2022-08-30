@@ -135,6 +135,13 @@
     <string name="nc_group">Група</string>
     <string name="nc_groups">Групи</string>
     <string name="nc_guest">Гост</string>
+    <string name="nc_guest_access_allow_title">Позволяване на гости</string>
+    <string name="nc_guest_access_password_dialog_hint">Въвеждане на парола</string>
+    <string name="nc_guest_access_password_summary">Задайте парола, за да ограничите кой може да използва публичната връзка.</string>
+    <string name="nc_guest_access_password_title">Защита с парола</string>
+    <string name="nc_guest_access_password_weak_alert_title">Проста парола</string>
+    <string name="nc_guest_access_resend_invitations">Повторно изпращане на покани</string>
+    <string name="nc_guest_access_share_link">Споделяне на връзка за разговор</string>
     <string name="nc_hint_enter_a_message">Въвеждане на съобщение …</string>
     <string name="nc_important_conversation">Важен разговор</string>
     <string name="nc_important_conversation_desc">Известията в този разговор ще отменят настройките „Не безпокойте“</string>

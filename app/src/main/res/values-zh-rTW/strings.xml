@@ -123,6 +123,10 @@
     <string name="nc_group">群組</string>
     <string name="nc_groups">群組</string>
     <string name="nc_guest">訪客</string>
+    <string name="nc_guest_access_allow_title">允許訪客</string>
+    <string name="nc_guest_access_password_dialog_hint">輸入密碼</string>
+    <string name="nc_guest_access_password_title">密碼保護</string>
+    <string name="nc_guest_access_password_weak_alert_title">密碼安全性弱</string>
     <string name="nc_important_conversation">重要交談</string>
     <string name="nc_important_conversation_desc">在這個交談的通知將會覆蓋不要打擾的設定</string>
     <string name="nc_join_via_link">已一個連結加入</string>

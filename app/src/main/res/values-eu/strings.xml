@@ -135,6 +135,13 @@
     <string name="nc_group">Taldea</string>
     <string name="nc_groups">Taldeak</string>
     <string name="nc_guest">Gonbidatua</string>
+    <string name="nc_guest_access_allow_title">Baimendu gonbidatuak</string>
+    <string name="nc_guest_access_password_dialog_hint">Sartu pasahitza</string>
+    <string name="nc_guest_access_password_summary">Ezarri pasahitz bat, esteka publikoa nork erabili mugatzeko.</string>
+    <string name="nc_guest_access_password_title">Pasahitz bidezko babesa</string>
+    <string name="nc_guest_access_password_weak_alert_title">Pasahitz ahula</string>
+    <string name="nc_guest_access_resend_invitations">Birbidali gonbidapenak</string>
+    <string name="nc_guest_access_share_link">Partekatu elkarrizketa esteka</string>
     <string name="nc_hint_enter_a_message">Idatzi mezu bat …</string>
     <string name="nc_important_conversation">Elkarrizketa garrantzitsua</string>
     <string name="nc_important_conversation_desc">Ez Molestatu ezarpenek sahiestuko dituzte elkarrizketa honen jakinarazpenak </string>
