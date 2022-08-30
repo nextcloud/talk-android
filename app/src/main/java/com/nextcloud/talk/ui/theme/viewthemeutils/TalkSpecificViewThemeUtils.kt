@@ -34,6 +34,7 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -221,6 +222,18 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
+    fun themeSearchView(searchView: SearchView) {
+        withScheme(searchView) { scheme ->
+            // hacky as no default way is provided
+            val editText = searchView.findViewById<SearchView.SearchAutoComplete>(R.id.search_src_text)
+            val searchPlate = searchView.findViewById<LinearLayout>(R.id.search_plate)
+            editText.setHintTextColor(scheme.onSurfaceVariant)
+            editText.setTextColor(scheme.onSurface)
+            editText.setBackgroundColor(scheme.surface)
+            searchPlate.setBackgroundColor(scheme.surface)
+        }
+    }
+
     companion object {
         private val THEMEABLE_PLACEHOLDER_IDS = listOf(
             R.drawable.ic_mimetype_package_x_generic,
@@ -230,5 +243,6 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
 
         private const val HALF_ALPHA_INT: Int = 255 / 2
+        private const val SEARCH_TEXT_SIZE: Float = 16f
     }
 }

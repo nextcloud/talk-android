@@ -296,7 +296,7 @@ class ConversationsListController(bundle: Bundle) :
             val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
             if (searchItem != null) {
                 searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-                viewThemeUtils.androidx.themeSearchView(searchView!!)
+                viewThemeUtils.talk.themeSearchView(searchView!!)
                 searchView!!.maxWidth = Int.MAX_VALUE
                 searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
                 var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
@@ -361,7 +361,7 @@ class ConversationsListController(bundle: Bundle) :
                 if (TextUtils.isEmpty(searchView!!.query.toString())) {
                     searchView!!.onActionViewCollapsed()
                     if (activity != null) {
-                        viewThemeUtils.platform.resetStatusBar(activity, searchView!!)
+                        viewThemeUtils.platform.resetStatusBar(activity)
                     }
                 } else {
                     searchView!!.post { searchView!!.setQuery(TAG, true) }
@@ -402,7 +402,7 @@ class ConversationsListController(bundle: Bundle) :
                         mainActivity.binding.searchToolbar.visibility = View.VISIBLE
                         if (resources != null) {
                             viewThemeUtils.platform
-                                .resetStatusBar(mainActivity, mainActivity.binding.searchToolbar)
+                                .resetStatusBar(mainActivity)
                         }
                     }
                     val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?

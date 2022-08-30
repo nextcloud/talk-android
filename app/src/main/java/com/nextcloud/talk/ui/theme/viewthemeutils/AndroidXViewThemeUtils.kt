@@ -23,8 +23,6 @@ package com.nextcloud.talk.ui.theme.viewthemeutils
 
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.widget.LinearLayout
-import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -38,18 +36,6 @@ import javax.inject.Inject
  */
 class AndroidXViewThemeUtils @Inject constructor(schemes: MaterialSchemes) :
     ViewThemeUtilsBase(schemes) {
-    fun themeSearchView(searchView: SearchView) {
-        withScheme(searchView) { scheme ->
-            // hacky as no default way is provided
-            val editText = searchView.findViewById<SearchView.SearchAutoComplete>(R.id.search_src_text)
-            val searchPlate = searchView.findViewById<LinearLayout>(R.id.search_plate)
-            editText.textSize = SEARCH_TEXT_SIZE
-            editText.setHintTextColor(scheme.onSurfaceVariant)
-            editText.setTextColor(scheme.onSurface)
-            editText.setBackgroundColor(scheme.surface)
-            searchPlate.setBackgroundColor(scheme.surface)
-        }
-    }
 
     fun colorSwitchCompat(switchCompat: SwitchCompat) {
         withScheme(switchCompat) { scheme ->
@@ -97,6 +83,5 @@ class AndroidXViewThemeUtils @Inject constructor(schemes: MaterialSchemes) :
 
     companion object {
         private const val SWITCH_COMPAT_TRACK_ALPHA: Int = 77
-        private const val SEARCH_TEXT_SIZE: Float = 16f
     }
 }

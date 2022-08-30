@@ -217,7 +217,7 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
     private fun colorizeStatusBar(showSearchBar: Boolean, activity: Activity?, resources: Resources?) {
         if (activity != null && resources != null) {
             if (showSearchBar) {
-                view?.let { viewThemeUtils.platform.resetStatusBar(activity, it) }
+                view?.let { viewThemeUtils.platform.resetStatusBar(activity) }
             } else {
                 view?.let { viewThemeUtils.platform.themeStatusBar(activity, it) }
             }
