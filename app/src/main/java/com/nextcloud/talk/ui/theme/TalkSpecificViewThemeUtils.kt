@@ -195,8 +195,9 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     }
 
     private fun colorDrawable(context: Context, drawable: Drawable) {
-        val scheme = getScheme(context)
-        drawable.setTint(scheme.primary)
+        withScheme(context) { scheme ->
+            drawable.setTint(scheme.primary)
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.O)

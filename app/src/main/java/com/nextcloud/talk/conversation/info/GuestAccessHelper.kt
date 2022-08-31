@@ -93,7 +93,7 @@ class GuestAccessHelper(
         val builder = MaterialAlertDialogBuilder(activity)
         builder.apply {
             val dialogPassword = DialogPasswordBinding.inflate(LayoutInflater.from(context))
-            viewThemeUtils.colorEditText(dialogPassword.password)
+            viewThemeUtils.platform.colorEditText(dialogPassword.password)
             setView(dialogPassword.root)
             setTitle(R.string.nc_guest_access_password_dialog_title)
             setPositiveButton(R.string.nc_ok) { _, _ ->
@@ -112,9 +112,9 @@ class GuestAccessHelper(
 
     private fun createDialog(builder: MaterialAlertDialogBuilder) {
         builder.create()
-        viewThemeUtils.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, builder)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, builder)
         val dialog = builder.show()
-        viewThemeUtils.colorTextButtons(
+        viewThemeUtils.platform.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         )
