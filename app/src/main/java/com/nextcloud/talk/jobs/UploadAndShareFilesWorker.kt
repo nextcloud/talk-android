@@ -25,6 +25,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.webkit.MimeTypeMap
+import android.widget.Toast
 import androidx.core.content.PermissionChecker
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -45,18 +47,19 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_META_DATA
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.rx.ProgressRequestBody
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -123,24 +126,84 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
-    private fun createRequestBody(sourceFileUri: Uri, fileName: String): MultipartBody.Part {
-        val inputStream: InputStream? = context.contentResolver.openInputStream(sourceFileUri)
-        return if (inputStream != null) {
+    private fun createRequestBody(sourceFileUri: Uri, fileName: String): MultipartBody {
+        // val inputStream: InputStream? = context.contentResolver.openInputStream(sourceFileUri)
+        // return if (inputStream != null) {
+        //
+        //     val file = File(sourceFileUri.toString())
+        //     val fileSize = (file.length() / 1024).toString().toInt()
+        //
+        //     // val mediaType = "multipart/form-data".toMediaTypeOrNull()
+        //     val mediaType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
+        //
+        //     MultipartBody.Part.createFormData(
+        //         "file",
+        //         fileName,
+        //         inputStream.readBytes().toRequestBody(mediaType)
+        //         // inputStream.readBytes().toRequestBody(mediaType, 0, fileSize)
+        //     )
+        // } else {
+        //     throw IllegalArgumentException("inputStream was null when trying to create request body for file upload")
+        // }
 
-            val file = File(sourceFileUri.toString())
-            val fileSize = (file.length() / 1024).toString().toInt()
 
-            // val mediaType = "multipart/form-data".toMediaTypeOrNull()
-            val mediaType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
+        // val file = File(sourceFileUri.toString())
 
-            MultipartBody.Part.createFormData(
-                "file",
-                fileName,
-                inputStream.readBytes().toRequestBody(mediaType)
-                // inputStream.readBytes().toRequestBody(mediaType, 0, fileSize)
-            )
-        } else {
-            throw IllegalArgumentException("inputStream was null when trying to create request body for file upload")
+        // val inputStream: InputStream? = context.contentResolver.openInputStream(sourceFileUri)
+
+        val file = fileFromContentUri(context, sourceFileUri)
+        val mimeType = context.contentResolver.getType(sourceFileUri)!!
+
+        val filePart = ProgressRequestBody(file, mimeType)
+        val requestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            // .addFormDataPart("example[name]", "test")
+            .addFormDataPart("testvideo",file.name, filePart)
+            .build()
+
+        filePart.getProgress()
+            .subscribeOn(Schedulers.io())
+            .subscribe { percentage ->
+                Log.i("progress: ", "${percentage}%")
+            }
+
+        return requestBody
+    }
+
+    private fun fileFromContentUri(context: Context, contentUri: Uri): File {
+        val fileExtension = getFileExtension(context, contentUri)
+        val fileName = "temp_file" + if (fileExtension != null) ".$fileExtension" else ""
+
+        val tempFile = File(context.cacheDir, fileName)
+        tempFile.createNewFile()
+
+        try {
+            val oStream = FileOutputStream(tempFile)
+            val inputStream = context.contentResolver.openInputStream(contentUri)
+
+            inputStream?.let {
+                copy(inputStream, oStream)
+            }
+
+            oStream.flush()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error while copy stream", e)
+        }
+
+        return tempFile
+    }
+
+    private fun getFileExtension(context: Context, uri: Uri): String? {
+        val fileType: String? = context.contentResolver.getType(uri)
+        return MimeTypeMap.getSingleton().getExtensionFromMimeType(fileType)
+    }
+
+    @Throws(IOException::class)
+    private fun copy(source: InputStream, target: OutputStream) {
+        val buf = ByteArray(8192)
+        var length: Int
+        while (source.read(buf).also { length = it } > 0) {
+            target.write(buf, 0, length)
         }
     }
 
@@ -154,7 +217,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         ncApi.uploadFile(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
             ApiUtils.getUrlForFileUpload(currentUser.baseUrl, currentUser.userId, ncTargetPath, uploadItem.fileName),
-            uploadItem.multiBodyPart
+            uploadItem.multiBody
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -172,6 +235,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 }
 
                 override fun onComplete() {
+                    Toast.makeText(context,"Upload SUCCESS!!",Toast.LENGTH_LONG).show()
                     shareFile(roomToken, currentUser, ncTargetPath, uploadItem.fileName, metaData)
                     copyFileToCache(uploadItem.uri, uploadItem.fileName)
                 }
@@ -290,6 +354,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private data class UploadItem(
         val uri: Uri,
         val fileName: String,
-        val multiBodyPart: MultipartBody.Part?
+        val multiBody: MultipartBody
     )
 }

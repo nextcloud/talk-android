@@ -3281,8 +3281,8 @@ class ChatController(args: Bundle) :
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
-        private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
-        private const val VIDEO_PREFIX_PART = "Talk Video "
+        private const val FILE_DATE_PATTERN = "yyyy-MM-dd-HH-mm-ss"
+        private const val VIDEO_PREFIX_PART = "TalkVideo"
         private const val VIDEO_SUFFIX = ".mp4"
         private const val SHORT_VIBRATE: Long = 20
         private const val FULLY_OPAQUE_INT: Int = 255
