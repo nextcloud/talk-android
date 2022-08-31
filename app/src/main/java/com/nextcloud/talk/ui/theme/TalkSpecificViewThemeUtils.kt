@@ -43,7 +43,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.chip.ChipDrawable
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
@@ -59,7 +58,6 @@ import kotlin.math.roundToInt
 /**
  * View theme utils specific for the Talk app.
  *
- * TODO some of these can be renamed and made generic
  */
 @Suppress("TooManyFunctions")
 class TalkSpecificViewThemeUtils @Inject constructor(
@@ -214,13 +212,6 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
 
         return drawable
-    }
-
-    fun themePrimaryMentionChip(context: Context, chip: ChipDrawable) {
-        withScheme(context) { scheme ->
-            chip.chipBackgroundColor = ColorStateList.valueOf(scheme.primary)
-            chip.setTextColor(scheme.onPrimary)
-        }
     }
 
     fun themeSearchView(searchView: SearchView) {

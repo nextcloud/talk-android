@@ -20,3 +20,9 @@
 
 include ':app'
 
+//// uncomment to use local build of common-ui
+//includeBuild('../android-common') {
+//    dependencySubstitution {
+//        substitute module('com.github.nextcloud.android-common:ui') using project(':ui')
+//    }
+//}
