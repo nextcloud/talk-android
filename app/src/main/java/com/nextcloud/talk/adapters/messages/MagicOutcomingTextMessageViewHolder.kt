@@ -156,7 +156,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     }
 
     private fun setBubbleOnChatMessage(message: ChatMessage) {
-        viewThemeUtils.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun processMessageParameters(

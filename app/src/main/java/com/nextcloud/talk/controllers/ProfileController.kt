@@ -261,10 +261,10 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     }
 
     private fun colorIcons() {
-        viewThemeUtils.themeFAB(binding.avatarChoose)
-        viewThemeUtils.themeFAB(binding.avatarCamera)
-        viewThemeUtils.themeFAB(binding.avatarUpload)
-        viewThemeUtils.themeFAB(binding.avatarDelete)
+        viewThemeUtils.material.themeFAB(binding.avatarChoose)
+        viewThemeUtils.material.themeFAB(binding.avatarCamera)
+        viewThemeUtils.material.themeFAB(binding.avatarUpload)
+        viewThemeUtils.material.themeFAB(binding.avatarDelete)
     }
 
     private fun isAllEmpty(items: Array<String?>): Boolean {
@@ -755,10 +755,10 @@ class ProfileController : BaseController(R.layout.controller_profile) {
             initUserInfoEditText(holder, item)
 
             holder.binding.icon.contentDescription = item.hint
-            viewThemeUtils.colorImageView(holder.binding.icon)
+            viewThemeUtils.platform.colorImageView(holder.binding.icon)
             if (!TextUtils.isEmpty(item.text) || controller.edit) {
                 holder.binding.userInfoDetailContainer.visibility = View.VISIBLE
-                controller.viewThemeUtils.colorTextInputLayout(holder.binding.userInfoInputLayout)
+                controller.viewThemeUtils.material.colorTextInputLayout(holder.binding.userInfoInputLayout)
                 if (controller.edit &&
                     controller.editableFields.contains(item.field.toString().lowercase())
                 ) {

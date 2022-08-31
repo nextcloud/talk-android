@@ -83,7 +83,7 @@ class MessageActionsDialog(
         setContentView(dialogMessageActionsBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.themeDialog(dialogMessageActionsBinding.root)
+        viewThemeUtils.platform.themeDialog(dialogMessageActionsBinding.root)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
         initMenuReplyToMessage(message.replyable && hasChatPermission)
@@ -225,7 +225,7 @@ class MessageActionsDialog(
 
     private fun checkAndSetEmojiSelfReaction(emoji: EmojiTextView) {
         if (emoji.text?.toString() != null && message.reactionsSelf?.contains(emoji.text?.toString()) == true) {
-            viewThemeUtils.setCheckedBackground(emoji)
+            viewThemeUtils.talk.setCheckedBackground(emoji)
         }
     }
 

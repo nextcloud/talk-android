@@ -191,7 +191,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
@@ -217,7 +217,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
                 .setTextColor(ContextCompat.getColor(context, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.platform.colorPrimaryView(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

@@ -123,9 +123,9 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
 
         if (getActivity() != null && getActivity() is MainActivity) {
             activity = getActivity() as MainActivity?
-            viewThemeUtils.themeCardView(activity!!.binding.searchToolbar)
-            viewThemeUtils.themeToolbar(activity.binding.toolbar)
-            viewThemeUtils.themeSearchBarText(activity.binding.searchText)
+            viewThemeUtils.material.themeCardView(activity!!.binding.searchToolbar)
+            viewThemeUtils.material.themeToolbar(activity.binding.toolbar)
+            viewThemeUtils.material.themeSearchBarText(activity.binding.searchText)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
@@ -188,7 +188,7 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
         val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         binding.searchToolbar.visibility = View.GONE
         binding.toolbar.visibility = View.VISIBLE
-        viewThemeUtils.colorToolbarOverflowIcon(binding.toolbar)
+        viewThemeUtils.material.colorToolbarOverflowIcon(binding.toolbar)
         layoutParams.scrollFlags = 0
         binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
             binding.appBar.context,
@@ -217,9 +217,9 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
     private fun colorizeStatusBar(showSearchBar: Boolean, activity: Activity?, resources: Resources?) {
         if (activity != null && resources != null) {
             if (showSearchBar) {
-                view?.let { viewThemeUtils.resetStatusBar(activity, it) }
+                view?.let { viewThemeUtils.platform.resetStatusBar(activity) }
             } else {
-                view?.let { viewThemeUtils.themeStatusBar(activity, it) }
+                view?.let { viewThemeUtils.platform.themeStatusBar(activity, it) }
             }
         }
     }

@@ -95,8 +95,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
 
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
-        viewThemeUtils.themeHorizontalSeekBar(binding.seekbar)
-        viewThemeUtils.colorCircularProgressBarOnSurfaceVariant(binding.progressBar)
+        viewThemeUtils.platform.themeHorizontalSeekBar(binding.seekbar)
+        viewThemeUtils.platform.colorCircularProgressBarOnSurfaceVariant(binding.progressBar)
 
         if (message.isPlayingVoiceMessage) {
             showPlayButton()
@@ -266,7 +266,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
@@ -292,7 +292,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
                 .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.colorPrimaryView(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.platform.colorPrimaryView(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

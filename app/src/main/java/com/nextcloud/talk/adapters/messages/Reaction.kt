@@ -112,7 +112,7 @@ class Reaction {
             } else {
                 layoutInfo.viewThemeUtils.getScheme(emojiWithAmountWrapper.context).primaryContainer
             }
-            layoutInfo.viewThemeUtils.setCheckedBackground(emojiWithAmountWrapper, color)
+            layoutInfo.viewThemeUtils.talk.setCheckedBackground(emojiWithAmountWrapper, color)
 
             emojiWithAmountWrapper.setPaddingRelative(
                 layoutInfo.paddingSide,

@@ -86,7 +86,7 @@ class ShowReactionsDialog(
         binding = DialogMessageReactionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        viewThemeUtils.themeDialog(binding.root)
+        viewThemeUtils.platform.themeDialog(binding.root)
         adapter = ReactionsAdapter(this, user)
         binding.reactionsList.adapter = adapter
         binding.reactionsList.layoutManager = LinearLayoutManager(context)
@@ -144,7 +144,7 @@ class ShowReactionsDialog(
                 }
             })
 
-            viewThemeUtils.themeTabLayoutOnSurface(binding.emojiReactionsTabs)
+            viewThemeUtils.material.themeTabLayoutOnSurface(binding.emojiReactionsTabs)
 
             updateParticipantsForEmoji(chatMessage, tagAll)
         }

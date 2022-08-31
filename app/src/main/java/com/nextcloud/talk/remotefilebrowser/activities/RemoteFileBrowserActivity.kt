@@ -75,16 +75,16 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
         binding = ActivityRemoteFileBrowserBinding.inflate(layoutInflater)
         setSupportActionBar(binding.remoteFileBrowserItemsToolbar)
-        viewThemeUtils.themeToolbar(binding.remoteFileBrowserItemsToolbar)
+        viewThemeUtils.material.themeToolbar(binding.remoteFileBrowserItemsToolbar)
         val scheme = viewThemeUtils.getScheme(binding.sortListButtonGroup.context)
         binding.sortListButtonGroup.setBackgroundColor(scheme.surface)
         binding.sortButton.iconTint = ColorStateList.valueOf(scheme.onSurface)
         binding.sortButton.setTextColor(scheme.onSurface)
-        viewThemeUtils.colorMaterialTextButton(binding.sortButton)
+        viewThemeUtils.material.colorMaterialTextButton(binding.sortButton)
         binding.pathNavigationBackButton.iconTint = ColorStateList.valueOf(scheme.onSurface)
         binding.pathNavigationBackButton.setTextColor(scheme.onSurface)
-        viewThemeUtils.colorMaterialTextButton(binding.pathNavigationBackButton)
-        viewThemeUtils.themeStatusBar(this, binding.remoteFileBrowserItemsToolbar)
+        viewThemeUtils.material.colorMaterialTextButton(binding.pathNavigationBackButton)
+        viewThemeUtils.platform.themeStatusBar(this, binding.remoteFileBrowserItemsToolbar)
         setContentView(binding.root)
 
         DisplayUtils.applyColorToNavigationBar(
@@ -100,7 +100,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         initViewModel(mimeTypeSelectionFilter)
 
         binding.swipeRefreshList.setOnRefreshListener(this)
-        viewThemeUtils.themeSwipeRefreshLayout(binding.swipeRefreshList)
+        viewThemeUtils.androidx.themeSwipeRefreshLayout(binding.swipeRefreshList)
 
         binding.pathNavigationBackButton.setOnClickListener { viewModel.navigateUp() }
         binding.sortButton.setOnClickListener { changeSorting() }

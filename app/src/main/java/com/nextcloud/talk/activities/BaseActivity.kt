@@ -68,6 +68,7 @@ open class BaseActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
+
         if (appPreferences.isScreenSecured) {
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         } else {
@@ -116,7 +117,7 @@ open class BaseActivity : AppCompatActivity() {
             )
 
             val dialogBuilder = MaterialAlertDialogBuilder(this)
-                .setIcon(viewThemeUtils.colorMaterialAlertDialogIcon(context, R.drawable.ic_security_white_24dp))
+                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_security_white_24dp))
                 .setTitle(R.string.nc_certificate_dialog_title)
                 .setMessage(dialogText)
                 .setPositiveButton(R.string.nc_yes) { _, _ ->
@@ -127,11 +128,11 @@ open class BaseActivity : AppCompatActivity() {
                     sslErrorHandler?.cancel()
                 }
 
-            viewThemeUtils.colorMaterialAlertDialogBackground(context, dialogBuilder)
+            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(context, dialogBuilder)
 
             val dialog = dialogBuilder.show()
 
-            viewThemeUtils.colorTextButtons(
+            viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )

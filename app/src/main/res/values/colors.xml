@@ -33,7 +33,6 @@
     <color name="appbar">@android:color/white</color>
     <color name="fontAppbar">#666666</color>
     <color name="fontSecondaryAppbar">#A5A5A5</color>
-    <color name="refresh_spinner_background">#ffffff</color>
 
     <!-- general text colors -->
     <color name="no_emphasis_text">#000000</color>
@@ -108,7 +107,6 @@
     <color name="dialog_background">#FFFFFF</color>
     <color name="vote_dialog_background">#FFFFFF</color>
 
-    <color name="switch_thumb_color_unchecked">#ececec</color>
-    <color name="switch_track_color_unchecked">#b2b2b2</color>
+
 
 </resources>

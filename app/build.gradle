@@ -331,7 +331,8 @@ dependencies {
     gplayImplementation "com.google.firebase:firebase-messaging:23.0.7"
 
     // implementation 'androidx.activity:activity-ktx:1.4.0'
-    implementation project(':material-color-utilities')
+
+    implementation 'com.github.nextcloud.android-common:ui:0.1.0'
 }
 
 task installGitHooks(type: Copy, group: "development") {

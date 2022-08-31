@@ -127,9 +127,9 @@ class PollVoteFragment : Fragment() {
     }
 
     private fun themeDialog() {
-        viewThemeUtils.colorMaterialButtonPrimaryFilled(binding.pollVoteSubmitButton)
-        viewThemeUtils.colorMaterialButtonText(binding.pollVoteEndPollButton)
-        viewThemeUtils.colorMaterialButtonPrimaryOutlined(binding.pollVoteEditDismiss)
+        viewThemeUtils.material.colorMaterialButtonPrimaryFilled(binding.pollVoteSubmitButton)
+        viewThemeUtils.material.colorMaterialButtonText(binding.pollVoteEndPollButton)
+        viewThemeUtils.material.colorMaterialButtonPrimaryOutlined(binding.pollVoteEditDismiss)
     }
 
     private fun updateDismissEditButton(showDismissEditButton: Boolean) {
@@ -149,7 +149,7 @@ class PollVoteFragment : Fragment() {
                 RadioButton(context).apply { text = option }
             }?.forEachIndexed { index, radioButton ->
                 radioButton.id = index
-                viewThemeUtils.themeRadioButton(radioButton)
+                viewThemeUtils.platform.themeRadioButton(radioButton)
                 makeOptionBoldIfSelfVoted(radioButton, poll, index)
                 binding.pollVoteRadioGroup.addView(radioButton)
 
@@ -170,7 +170,7 @@ class PollVoteFragment : Fragment() {
                     setLayoutParams(layoutParams)
                 }
             }?.forEachIndexed { index, checkBox ->
-                viewThemeUtils.themeCheckbox(checkBox)
+                viewThemeUtils.platform.themeCheckbox(checkBox)
                 checkBox.id = index
                 makeOptionBoldIfSelfVoted(checkBox, poll, index)
                 binding.voteOptionsCheckboxesWrapper.addView(checkBox)
@@ -215,14 +215,14 @@ class PollVoteFragment : Fragment() {
                     }
                     .setNegativeButton(R.string.nc_cancel, null)
 
-                viewThemeUtils.colorMaterialAlertDialogBackground(
+                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(
                     binding.pollVoteEndPollButton.context,
                     dialogBuilder
                 )
 
                 val dialog = dialogBuilder.show()
 
-                viewThemeUtils.colorTextButtons(
+                viewThemeUtils.platform.colorTextButtons(
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 )

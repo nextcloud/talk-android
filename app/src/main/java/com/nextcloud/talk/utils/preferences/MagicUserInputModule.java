@@ -73,7 +73,7 @@ public class MagicUserInputModule extends StandardUserInputModule {
             final Listener<String> listener) {
         final View view = LayoutInflater.from(context).inflate(R.layout.dialog_edittext, null);
         final EditText inputField = view.findViewById(R.id.mp_text_input);
-        viewThemeUtils.colorEditText(inputField);
+        viewThemeUtils.platform.colorEditText(inputField);
 
         int paddingStartEnd = Math.round(view.getResources().getDimension(R.dimen.standard_padding));
         int paddingTopBottom = Math.round(view.getResources().getDimension(R.dimen.dialog_padding_top_bottom));
@@ -96,12 +96,12 @@ public class MagicUserInputModule extends StandardUserInputModule {
             .setTitle(title)
             .setView(view);
 
-        viewThemeUtils.colorMaterialAlertDialogBackground(view.getContext(), dialogBuilder);
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(view.getContext(), dialogBuilder);
 
         final Dialog dialog = dialogBuilder.show();
 
         TextView button = view.findViewById(R.id.mp_btn_confirm);
-        viewThemeUtils.colorPrimaryTextViewElement(button);
+        viewThemeUtils.platform.colorPrimaryTextViewElement(button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

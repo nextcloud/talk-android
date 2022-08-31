@@ -334,7 +334,7 @@ class ContactsController(args: Bundle) :
             val searchManager: SearchManager? = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
             if (searchItem != null) {
                 searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-                viewThemeUtils.themeSearchView(searchView!!)
+                viewThemeUtils.talk.themeSearchView(searchView!!)
                 searchView!!.maxWidth = Int.MAX_VALUE
                 searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
                 var imeOptions: Int = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
@@ -380,7 +380,7 @@ class ContactsController(args: Bundle) :
         super.onPrepareOptionsMenu(menu)
 
         if (searchItem != null) {
-            viewThemeUtils.colorToolbarMenuIcon(
+            viewThemeUtils.platform.colorToolbarMenuIcon(
                 binding.titleTextView.context,
                 searchItem!!
             )
@@ -629,7 +629,7 @@ class ContactsController(args: Bundle) :
         binding.controllerGenericRv.recyclerView.adapter = adapter
         binding.controllerGenericRv.swipeRefreshLayout.setOnRefreshListener { fetchData() }
 
-        viewThemeUtils.themeSwipeRefreshLayout(binding.controllerGenericRv.swipeRefreshLayout)
+        viewThemeUtils.androidx.themeSwipeRefreshLayout(binding.controllerGenericRv.swipeRefreshLayout)
 
         binding.joinConversationViaLink.joinConversationViaLinkImageView
             .background
@@ -638,7 +638,7 @@ class ContactsController(args: Bundle) :
                 PorterDuff.Mode.SRC_IN
             )
 
-        viewThemeUtils.colorImageViewButton(binding.conversationPrivacyToggle.publicCallLink)
+        viewThemeUtils.platform.colorImageViewButton(binding.conversationPrivacyToggle.publicCallLink)
         disengageProgressBar()
     }
 
