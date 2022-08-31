@@ -332,8 +332,7 @@ dependencies {
 
     // implementation 'androidx.activity:activity-ktx:1.4.0'
 
-    // TODO substitute for tag after first common release
-    implementation 'com.github.nextcloud.android-common:ui:999ac56111a93bfbedf98b4d01de286d0ed03c5b'
+    implementation 'com.github.nextcloud.android-common:ui:0.1.0'
 }
 
 task installGitHooks(type: Copy, group: "development") {
