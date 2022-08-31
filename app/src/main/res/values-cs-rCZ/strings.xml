@@ -139,6 +139,7 @@
     <string name="nc_groups">Skupiny</string>
     <string name="nc_guest">Host</string>
     <string name="nc_guest_access">Přístup pro hosty</string>
+    <string name="nc_guest_access_allow_failed">Nedaří se zapnout/vypnout přístup hostům.</string>
     <string name="nc_guest_access_allow_summary">Umožnit hostům sdílet veřejný odkaz pro připojení do konverzace</string>
     <string name="nc_guest_access_allow_title">Umožnit hosty</string>
     <string name="nc_guest_access_password_dialog_hint">Zadejte heslo</string>

@@ -44,6 +44,7 @@
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
     <string name="nc_call_name">Samtalsnamn</string>
     <string name="nc_call_name_is_same">Namnet du angav är detsamma som det befintliga</string>
+    <string name="nc_call_reconnecting">Återansluter …</string>
     <string name="nc_call_timeout">Inget svar på 45 sekunder, tryck för att försöka igen</string>
     <string name="nc_camera_permission_permanently_denied">För att aktivera videokommunikation vänligen bevilja \"Kamera\"-tillstånd i systeminställningar.</string>
     <string name="nc_cancel">Avbryt</string>
@@ -63,6 +64,7 @@
     <string name="nc_common_set">Sätt</string>
     <string name="nc_common_skip">Hoppa över</string>
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
+    <string name="nc_connecting_call">Ansluter…</string>
     <string name="nc_contacts_done">Färdig</string>
     <string name="nc_conversation_link">Konversationslänk</string>
     <string name="nc_conversation_menu_conversation_info">Konversationsinfo</string>
@@ -107,6 +109,7 @@
     <string name="nc_guest_access_password_dialog_hint">Ange ett lösenord</string>
     <string name="nc_guest_access_password_title">Lösenordsskydd</string>
     <string name="nc_guest_access_password_weak_alert_title">Svagt lösenord</string>
+    <string name="nc_hint_enter_a_message">Skriv meddelande ...</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
     <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta Stör inte-inställningar</string>
     <string name="nc_join_via_link">Gå med via länk</string>
@@ -115,6 +118,7 @@
     <string name="nc_last_moderator_title">Kunde inte lämna konversationen</string>
     <string name="nc_last_modified">%1$s | Senast ändrad: %2$s</string>
     <string name="nc_leave">Lämna konversationen</string>
+    <string name="nc_leaving_call">Lägger på …</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Licens</string>
     <string name="nc_limit_hit">%s teckengränsen har uppnåtts</string>
@@ -142,6 +146,7 @@
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_notification_channel">%1$s på %2$s aviseringskanal</string>
     <string name="nc_notification_channel_calls">Samtal</string>
+    <string name="nc_notification_channel_calls_description">Avisera vid inkommande samtal</string>
     <string name="nc_notification_channel_messages">Meddelanden</string>
     <string name="nc_notification_settings">Meddelandeinställningar</string>
     <string name="nc_notify_me_always">Meddela alltid</string>
@@ -226,6 +231,7 @@
     <string name="nc_settings_proxy_port_title">Proxy-port</string>
     <string name="nc_settings_proxy_type_title">Proxy-typ</string>
     <string name="nc_settings_proxy_username_title">Proxyanvändare</string>
+    <string name="nc_settings_reauthorize">Godkänn konto på nytt</string>
     <string name="nc_settings_remove">Ta bort</string>
     <string name="nc_settings_remove_account">Ta bort konto</string>
     <string name="nc_settings_remove_confirmation">Bekräfta att du vill radera aktuellt konto.</string>
@@ -240,6 +246,7 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Ljus</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_use_credentials_title">Proxy kräver behörigheter</string>
     <string name="nc_settings_warning">Varning</string>
     <string name="nc_settings_wrong_account">Bara nuvarande konto kan återautentiseras</string>
     <string name="nc_share_link">Dela länk</string>

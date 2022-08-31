@@ -21,8 +21,8 @@
     <string name="load_more_results">Įkelti daugiau rezultatų</string>
     <string name="menu_item_sort_by_date_newest_first">Naujausi pirma</string>
     <string name="menu_item_sort_by_date_oldest_first">Seniausi pirma</string>
-    <string name="menu_item_sort_by_name_a_z">A - Ž</string>
-    <string name="menu_item_sort_by_name_z_a">Ž - A</string>
+    <string name="menu_item_sort_by_name_a_z">A – Ž</string>
+    <string name="menu_item_sort_by_name_z_a">Ž – A</string>
     <string name="menu_item_sort_by_size_biggest_first">Didžiausi pirma</string>
     <string name="menu_item_sort_by_size_smallest_first">Mažiausi pirma</string>
     <string name="message_search_begin_empty">Nėra paieškos rezultatų</string>
@@ -141,6 +141,8 @@
     <string name="nc_password">Slaptažodis</string>
     <string name="nc_permissions_settings">Atverti nustatymus</string>
     <string name="nc_phone_book_integration_account_not_found">Paskyra nerasta</string>
+    <string name="nc_pip_microphone_mute">Išjungti mikrofoną</string>
+    <string name="nc_pip_microphone_unmute">Įjungti mikrofoną</string>
     <string name="nc_plain_old_messages">Žinutės</string>
     <string name="nc_privacy">Privatumas</string>
     <string name="nc_proceed">Tęsti</string>
@@ -179,6 +181,7 @@
     <string name="nc_server_connect">Prisijunkite prie serverio</string>
     <string name="nc_server_db_upgrade_needed">Atnaujinkite savo %1$s duomenų bazę</string>
     <string name="nc_server_failed_to_import_account">Nepavyko importuoti pasirinktą paskyrą</string>
+    <string name="nc_server_helper_text">Nuoroda į jūsų %1$s saityno sąsają, kuomet atveriate ją naršyklėje.</string>
     <string name="nc_server_import_account">Importuoti paskyrą iš programėlės %1$s</string>
     <string name="nc_server_import_account_plain">Importuoti paskyrą</string>
     <string name="nc_server_import_accounts">Importuoti paskyras iš programėlės %1$s</string>
@@ -201,6 +204,7 @@
     <string name="nc_settings_notification_sounds">Pranešimų garsai</string>
     <string name="nc_settings_notification_sounds_post_oreo">Pranešimai</string>
     <string name="nc_settings_other_notifications_ringtone">Žinutės</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefono numeris sėkmingai nustatytas</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefono numeris</string>
     <string name="nc_settings_privacy">Privatumas</string>
     <string name="nc_settings_proxy_port_title">Įgaliotojo serverio prievadas</string>
@@ -225,12 +229,15 @@
     <string name="nc_share_text">Prisijunkite prie pokalbio, adresu %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nSlaptažodis: %1$s</string>
     <string name="nc_share_this_location">Bendrinti šią vietą</string>
+    <string name="nc_shared_items_description">Paveikslai, failai, balso žinutės…</string>
     <string name="nc_shared_items_location">Vieta</string>
     <string name="nc_sort_by">Rikiuoti pagal</string>
     <string name="nc_start_time">Pradžios laikas</string>
     <string name="nc_upload_in_progess">Įkeliama</string>
     <string name="nc_upload_picture_from_cam">Fotografuoti</string>
     <string name="nc_user">Naudotojas</string>
+    <string name="nc_voice_message_hold_to_record_info">Laikykite, kad įrašinėtumėte, atleiskite, kad išsiųstumėte.</string>
+    <string name="nc_voice_message_slide_to_cancel">« Perbraukite norėdami atsisakyti</string>
     <string name="nc_webinar">Internetinis seminaras</string>
     <string name="nc_wrong_link">Pokalbio nuoroda negalioja</string>
     <string name="nc_wrong_password">Neteisingas slaptažodis</string>
@@ -239,8 +246,12 @@
     <string name="online">Prisijungęs</string>
     <string name="online_status">Prisijungimo būsena</string>
     <string name="openConversations">Atverti pokalbius</string>
+    <string name="play_pause_voice_message">Atkurti/pristabdyti balso žinutę</string>
     <string name="polls_add_option">Pridėti variantą</string>
     <string name="polls_options">Parinktys</string>
+    <string name="polls_private_poll">Privati apklausa</string>
+    <string name="polls_question">Klausimas</string>
+    <string name="polls_question_hint">Jūsų klausimas</string>
     <string name="polls_results_subtitle">Rezultatai</string>
     <string name="polls_settings">Nustatymai</string>
     <string name="polls_submit_vote">Balsuoti</string>
@@ -259,12 +270,16 @@
     <string name="shared_items_file">Failas</string>
     <string name="shared_items_media">Medija</string>
     <string name="shared_items_other">Kita</string>
+    <string name="shared_items_poll">Apklausa</string>
     <string name="shared_items_voice">Balso pašto</string>
     <string name="starred">Mėgstamas</string>
     <string name="status_message">Būsenos žinutė</string>
     <string name="take_photo">Fotografuoti</string>
+    <string name="take_photo_error_deleting_picture">Klaida fotografuojant</string>
+    <string name="take_photo_retake_photo">Fotografuoti iš naujo</string>
     <string name="take_photo_send">Siųsti</string>
     <string name="take_photo_switch_camera">Perjungti kamerą</string>
+    <string name="take_photo_toggle_crop">Apkirpti nuotrauką</string>
     <string name="thirtyMinutes">30 minučių</string>
     <string name="thisWeek">Šią savaitę</string>
     <string name="title_attachments">Priedai</string>
@@ -279,4 +294,10 @@
     <string name="userinfo_no_info_headline">Asmeninės informacijos nėra</string>
     <string name="userinfo_no_info_text">Pridėkite vardą, nuotrauką ir kontaktinę informaciją savo profilio puslapyje.</string>
     <string name="whats_your_status">Kokia jūsų būsena?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d balsas</item>
+        <item quantity="few">%d balsai</item>
+        <item quantity="many">%d balsų</item>
+        <item quantity="other">%d balsas</item>
+    </plurals>
+</resources>
