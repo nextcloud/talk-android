@@ -120,10 +120,10 @@ The copyright belongs to all the individual contributors.
 Therefore we recommend that every contributor adds following line to the header of a file, if they changed it substantially:
 
 ```
-@copyright Copyright (c) <year>, <your name> (<your email address>)
+Copyright (c) <year> <your name> <your email address>
 ```
 
-For further information on how to add or update the license header correctly please have a look at [our licensing HowTo][applyalicense].
+See section [Adding new files](#adding-new-files) for templates which can be used in new files.
 
 ### Sign your work
 
