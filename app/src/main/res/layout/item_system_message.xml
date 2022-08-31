@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
+  ~ @author Andy Scherzinger
   ~ @author Mario Danic
+  ~ Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -19,21 +21,22 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginBottom="8dp">
+    android:layout_marginStart="@dimen/standard_margin"
+    android:layout_marginTop="@dimen/standard_eighth_margin"
+    android:layout_marginEnd="@dimen/standard_margin"
+    android:layout_marginBottom="@dimen/standard_eighth_margin">
 
     <com.google.android.flexbox.FlexboxLayout
-        android:id="@id/bubble"
+        android:id="@id/container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:padding="@dimen/standard_half_padding"
         app:alignContent="stretch"
         app:alignItems="stretch"
         app:flexWrap="wrap"
@@ -46,23 +49,27 @@
             android:layout_centerHorizontal="true"
             android:gravity="center_horizontal"
             android:textAlignment="center"
-            tools:text="System message"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_marginStart="@dimen/standard_margin"
             android:textColor="@color/textColorMaxContrast"
             android:textSize="14sp"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
-            app:layout_wrapBefore="true"/>
+            app:layout_wrapBefore="true"
+            tools:text="System message" />
 
         <TextView
             android:id="@id/messageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_half_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:gravity="end"
             android:textColor="@color/warm_grey_four"
             android:textSize="12sp"
-            tools:text="17:30"
-            android:layout_marginStart="8dp"
             app:layout_alignSelf="center"
             app:layout_flexGrow="1"
-            app:layout_wrapBefore="false"/>
+            app:layout_wrapBefore="false"
+            tools:text="17:30" />
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>

@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -52,9 +53,12 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
     @Inject
     Context context;
 
+    protected ViewGroup background;
+
     public MagicSystemMessageViewHolder(View itemView) {
         super(itemView);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+        background = itemView.findViewById(R.id.container);
     }
 
     @Override
@@ -62,17 +66,17 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         super.onBind(message);
 
         Resources resources = itemView.getResources();
-        int normalColor = resources.getColor(R.color.bg_message_list_incoming_bubble);
         int pressedColor;
         int mentionColor;
 
-        pressedColor = normalColor;
+        pressedColor = resources.getColor(R.color.bg_message_list_incoming_bubble);
         mentionColor = resources.getColor(R.color.textColorMaxContrast);
 
-        Drawable bubbleDrawable = DisplayUtils.getMessageSelector(normalColor,
-                                                                  resources.getColor(R.color.transparent), pressedColor,
+        Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.transparent),
+                                                                  resources.getColor(R.color.transparent),
+                                                                  pressedColor,
                                                                   R.drawable.shape_grouped_incoming_message);
-        ViewCompat.setBackground(bubble, bubbleDrawable);
+        ViewCompat.setBackground(background, bubbleDrawable);
 
         Spannable messageString = new SpannableString(message.getText());
 
