@@ -126,10 +126,18 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private fun createRequestBody(sourceFileUri: Uri, fileName: String): MultipartBody.Part {
         val inputStream: InputStream? = context.contentResolver.openInputStream(sourceFileUri)
         return if (inputStream != null) {
+
+            val file = File(sourceFileUri.toString())
+            val fileSize = (file.length() / 1024).toString().toInt()
+
+            // val mediaType = "multipart/form-data".toMediaTypeOrNull()
+            val mediaType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
+
             MultipartBody.Part.createFormData(
                 "file",
                 fileName,
-                inputStream.readBytes().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                inputStream.readBytes().toRequestBody(mediaType)
+                // inputStream.readBytes().toRequestBody(mediaType, 0, fileSize)
             )
         } else {
             throw IllegalArgumentException("inputStream was null when trying to create request body for file upload")
