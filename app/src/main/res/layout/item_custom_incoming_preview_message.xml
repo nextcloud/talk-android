@@ -172,6 +172,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="2dp"
             android:alpha="0.6"
+            android:gravity="end"
             android:textColor="@color/no_emphasis_text"
             app:layout_alignSelf="center"
             tools:text="12:38" />
