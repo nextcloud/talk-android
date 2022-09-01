@@ -38,7 +38,6 @@
 
     <dimen name="chat_text_size">14sp</dimen>
     <dimen name="message_bubble_corners_radius">@dimen/dialogBorderRadius</dimen>
-    <dimen name="message_bubble_corners_radius_half">14dp</dimen>
     <dimen name="message_bubble_corners_padding">16dp</dimen>
 
     <dimen name="geocoding_result_text_size">18sp</dimen>
