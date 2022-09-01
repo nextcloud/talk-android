@@ -139,6 +139,7 @@
     <string name="nc_groups">Grupy</string>
     <string name="nc_guest">Gość</string>
     <string name="nc_guest_access">Dostęp dla gościa</string>
+    <string name="nc_guest_access_allow_failed">Nie można włączyć/wyłączyć dostępu dla gościa.</string>
     <string name="nc_guest_access_allow_summary">Zezwól gościom na udostępnianie linku publicznego, aby dołączyć do tej rozmowy.</string>
     <string name="nc_guest_access_allow_title">Zezwól gościom</string>
     <string name="nc_guest_access_password_dialog_hint">Wprowadź hasło</string>

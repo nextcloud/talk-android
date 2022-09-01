@@ -139,6 +139,7 @@
     <string name="nc_groups">群組</string>
     <string name="nc_guest">訪客</string>
     <string name="nc_guest_access">訪客存取</string>
+    <string name="nc_guest_access_allow_failed">無法啟用/禁用訪客存取。</string>
     <string name="nc_guest_access_allow_summary">允許客人分享公共連結以加入此對話。</string>
     <string name="nc_guest_access_allow_title">允許訪客</string>
     <string name="nc_guest_access_password_dialog_hint">輸入密碼</string>
