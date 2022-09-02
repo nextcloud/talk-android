@@ -26,6 +26,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 години</string>
     <string name="invisible">Невидимка</string>
+    <string name="load_more_results">Завантажити більше результатів</string>
     <string name="menu_item_sort_by_date_newest_first">Новіші попереду</string>
     <string name="menu_item_sort_by_date_oldest_first">Старіші попереду</string>
     <string name="menu_item_sort_by_name_a_z">А--Я</string>

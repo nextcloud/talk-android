@@ -139,6 +139,7 @@
     <string name="nc_groups">Gruplar</string>
     <string name="nc_guest">Konuk</string>
     <string name="nc_guest_access">Konuk erişimi</string>
+    <string name="nc_guest_access_allow_failed">Konuk erişimi etkinleştirilemez ya da devre dışı bırakılamaz.</string>
     <string name="nc_guest_access_allow_summary">Bu seçenek etkinleştirildiğinde, konuklar bu görüşmeyi herkese açık bir bağlantı ile paylaşabilir.</string>
     <string name="nc_guest_access_allow_title">Konuklar katılabilsin</string>
     <string name="nc_guest_access_password_dialog_hint">Bir parola yazın</string>
