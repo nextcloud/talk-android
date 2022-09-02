@@ -400,8 +400,12 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/users/search/by-phone";
     }
 
-    public static String getUrlForFileUpload(String baseUrl, String user, String attachmentFolder, String filename) {
-        return baseUrl + "/remote.php/dav/files/" + user + attachmentFolder + "/" + filename;
+    public static String getUrlForFileUpload(String baseUrl, String user, String remotePath) {
+        return baseUrl + "/remote.php/dav/files/" + user + remotePath;
+    }
+
+    public static String getUrlForChunkedUpload(String baseUrl, String user) {
+        return baseUrl + "/remote.php/dav/uploads/" + user;
     }
 
     public static String getUrlForFileDownload(String baseUrl, String user, String remotePath) {

@@ -572,7 +572,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
         return null
     }
 
-    private fun createTempFileForAvatar(): File? {
+    private fun createTempFileForAvatar(): File {
         FileUtils.removeTempCacheFile(
             this.context,
             AVATAR_PATH

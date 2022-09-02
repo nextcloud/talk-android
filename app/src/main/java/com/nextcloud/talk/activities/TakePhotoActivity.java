@@ -321,6 +321,7 @@ public class TakePhotoActivity extends AppCompatActivity {
                         }
                     });
             } catch (Exception e) {
+                Log.e(TAG, "error while taking picture", e);
                 Toast.makeText(this, R.string.take_photo_error_deleting_picture, Toast.LENGTH_SHORT).show();
             }
         });

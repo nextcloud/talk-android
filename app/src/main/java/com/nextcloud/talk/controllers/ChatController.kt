@@ -162,10 +162,10 @@ import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.NotificationUtils
-import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
@@ -285,6 +285,8 @@ class ChatController(args: Bundle) :
     private var currentlyPlayedVoiceMessage: ChatMessage? = null
 
     var hasChatPermission: Boolean = false
+
+    private var videoURI: Uri? = null
 
     init {
         Log.d(TAG, "init ChatController: " + System.identityHashCode(this).toString())
@@ -736,7 +738,7 @@ class ChatController(args: Bundle) :
         // Image keyboard support
         // See: https://developer.android.com/guide/topics/text/image-keyboard
         (binding.messageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
-            uploadFiles(mutableListOf(it.toString()), false)
+            uploadFile(it.toString(), false)
         }
 
         showMicrophoneButton(true)
@@ -1175,7 +1177,7 @@ class ChatController(args: Bundle) :
     private fun stopAndSendAudioRecording() {
         stopAudioRecording()
         val uri = Uri.fromFile(File(currentVoiceRecordFile))
-        uploadFiles(mutableListOf(uri.toString()), true)
+        uploadFile(uri.toString(), true)
     }
 
     private fun stopAndDiscardAudioRecording() {
@@ -1361,6 +1363,7 @@ class ChatController(args: Bundle) :
         }
     }
 
+    @Throws(IllegalStateException::class)
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (resultCode != RESULT_OK && (requestCode != REQUEST_CODE_MESSAGE_SEARCH)) {
             Log.e(TAG, "resultCode for received intent was != ok")
@@ -1405,7 +1408,7 @@ class ChatController(args: Bundle) :
                     val filenamesWithLineBreaks = StringBuilder("\n")
 
                     for (file in filesToUpload) {
-                        val filename = UriUtils.getFileName(Uri.parse(file), context)
+                        val filename = FileUtils.getFileName(Uri.parse(file), context)
                         filenamesWithLineBreaks.append(filename).append("\n")
                     }
 
@@ -1423,7 +1426,7 @@ class ChatController(args: Bundle) :
                         .setMessage(filenamesWithLineBreaks.toString())
                         .setPositiveButton(R.string.nc_yes) { _, _ ->
                             if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
-                                uploadFiles(filesToUpload, false)
+                                uploadFiles(filesToUpload)
                             } else {
                                 UploadAndShareFilesWorker.requestStoragePermission(this)
                             }
@@ -1468,25 +1471,31 @@ class ChatController(args: Bundle) :
                         BuildConfig.APPLICATION_ID,
                         File(file.absolutePath)
                     )
-                    uploadFiles(mutableListOf(shareUri.toString()), false)
+                    uploadFile(shareUri.toString(), false)
                 }
                 cursor?.close()
             }
             REQUEST_CODE_PICK_CAMERA -> {
                 if (resultCode == RESULT_OK) {
                     try {
-                        checkNotNull(intent)
                         filesToUpload.clear()
-                        run {
-                            checkNotNull(intent.data)
-                            intent.data.let {
-                                filesToUpload.add(intent.data.toString())
+
+                        if (intent != null && intent.data != null) {
+                            run {
+                                intent.data.let {
+                                    filesToUpload.add(intent.data.toString())
+                                }
                             }
+                            require(filesToUpload.isNotEmpty())
+                        } else if (videoURI != null) {
+                            filesToUpload.add(videoURI.toString())
+                            videoURI = null
+                        } else {
+                            throw IllegalStateException("Failed to get data from intent and uri")
                         }
-                        require(filesToUpload.isNotEmpty())
 
                         if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
-                            uploadFiles(filesToUpload, false)
+                            uploadFiles(filesToUpload)
                         } else {
                             UploadAndShareFilesWorker.requestStoragePermission(this)
                         }
@@ -1549,7 +1558,7 @@ class ChatController(args: Bundle) :
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
                 if (filesToUpload.isNotEmpty()) {
-                    uploadFiles(filesToUpload, false)
+                    uploadFiles(filesToUpload)
                 }
             } else {
                 Toast
@@ -1579,8 +1588,9 @@ class ChatController(args: Bundle) :
             }
         } else if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "launch cam activity since permission for cam has been granted")
-                startActivityForResult(TakePhotoActivity.createIntent(context), REQUEST_CODE_PICK_CAMERA)
+                Toast
+                    .makeText(context, context.getString(R.string.camera_permission_granted), Toast.LENGTH_LONG)
+                    .show()
             } else {
                 Toast
                     .makeText(context, context.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
@@ -1589,11 +1599,17 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun uploadFiles(files: MutableList<String>, isVoiceMessage: Boolean) {
+    private fun uploadFiles(files: MutableList<String>) {
+        for (file in files) {
+            uploadFile(file, false)
+        }
+    }
+
+    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean) {
         var metaData = ""
 
         if (!hasChatPermission) {
-            Log.w(TAG, "uploading file(s) is forbidden because of missing attendee permissions")
+            Log.w(TAG, "uploading file is forbidden because of missing attendee permissions")
             return
         }
 
@@ -1602,28 +1618,13 @@ class ChatController(args: Bundle) :
         }
 
         try {
-            require(files.isNotEmpty())
-            val data: Data = Data.Builder()
-                .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, files.toTypedArray())
-                .putString(
-                    UploadAndShareFilesWorker.NC_TARGETPATH,
-                    CapabilitiesUtilNew.getAttachmentFolder(conversationUser!!)
-                )
-                .putString(UploadAndShareFilesWorker.ROOM_TOKEN, roomToken)
-                .putString(UploadAndShareFilesWorker.META_DATA, metaData)
-                .build()
-            val uploadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(UploadAndShareFilesWorker::class.java)
-                .setInputData(data)
-                .build()
-            WorkManager.getInstance().enqueue(uploadWorker)
-
-            if (!isVoiceMessage) {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.nc_upload_in_progess),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+            require(fileUri.isNotEmpty())
+            UploadAndShareFilesWorker.upload(
+                fileUri,
+                roomToken!!,
+                currentConversation?.displayName!!,
+                metaData
+            )
         } catch (e: IllegalArgumentException) {
             Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
@@ -2277,16 +2278,18 @@ class ChatController(args: Bundle) :
             val messagesToDelete: ArrayList<ChatMessage> = ArrayList()
             val systemTime = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
 
-            for (itemWrapper in adapter?.items!!) {
-                if (itemWrapper.item is ChatMessage) {
-                    val chatMessage = itemWrapper.item as ChatMessage
-                    if (chatMessage.expirationTimestamp != 0 && chatMessage.expirationTimestamp < systemTime) {
-                        messagesToDelete.add(chatMessage)
+            if (adapter?.items != null) {
+                for (itemWrapper in adapter?.items!!) {
+                    if (itemWrapper.item is ChatMessage) {
+                        val chatMessage = itemWrapper.item as ChatMessage
+                        if (chatMessage.expirationTimestamp != 0 && chatMessage.expirationTimestamp < systemTime) {
+                            messagesToDelete.add(chatMessage)
+                        }
                     }
                 }
+                adapter!!.delete(messagesToDelete)
+                adapter!!.notifyDataSetChanged()
             }
-            adapter!!.delete(messagesToDelete)
-            adapter!!.notifyDataSetChanged()
         }
 
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")) {
@@ -3255,22 +3258,30 @@ class ChatController(args: Bundle) :
     }
 
     fun sendVideoFromCamIntent() {
-        Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
-            takeVideoIntent.resolveActivity(activity!!.packageManager)?.also {
-                val videoFile: File? = try {
-                    val outputDir = context.cacheDir
-                    val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
-                    val date = dateFormat.format(Date())
-                    File("$outputDir/$VIDEO_PREFIX_PART$date$VIDEO_SUFFIX")
-                } catch (e: IOException) {
-                    Log.e(TAG, "error while creating video file", e)
-                    null
-                }
+        if (!permissionUtil.isCameraPermissionGranted()) {
+            requestCameraPermissions()
+        } else {
+            Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
+                takeVideoIntent.resolveActivity(activity!!.packageManager)?.also {
+                    val videoFile: File? = try {
+                        val outputDir = context.cacheDir
+                        val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
+                        val date = dateFormat.format(Date())
+                        val videoName = String.format(
+                            context.resources.getString(R.string.nc_video_filename),
+                            date
+                        )
+                        File("$outputDir/$videoName$VIDEO_SUFFIX")
+                    } catch (e: IOException) {
+                        Log.e(TAG, "error while creating video file", e)
+                        null
+                    }
 
-                videoFile?.also {
-                    val videoURI: Uri = FileProvider.getUriForFile(context, context.packageName, it)
-                    takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI)
-                    startActivityForResult(takeVideoIntent, REQUEST_CODE_PICK_CAMERA)
+                    videoFile?.also {
+                        videoURI = FileProvider.getUriForFile(context, context.packageName, it)
+                        takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI)
+                        startActivityForResult(takeVideoIntent, REQUEST_CODE_PICK_CAMERA)
+                    }
                 }
             }
         }
@@ -3312,7 +3323,6 @@ class ChatController(args: Bundle) :
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
-        private const val VIDEO_PREFIX_PART = "Talk Video "
         private const val VIDEO_SUFFIX = ".mp4"
         private const val SHORT_VIBRATE: Long = 20
         private const val FULLY_OPAQUE_INT: Int = 255
