@@ -12,6 +12,7 @@
     <string name="dontClear">Neišvalyti</string>
     <string name="edit">Taisyti</string>
     <string name="emoji_category_recent">Paskiausi</string>
+    <string name="emoji_search">Ieškoti šypsenėlių</string>
     <string name="failed_to_save">Nepavyko įrašyti %1$s</string>
     <string name="file_list_folder">aplankas</string>
     <string name="file_list_loading">Įkeliama…</string>
@@ -42,6 +43,7 @@
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
     <string name="nc_call_name">Pokalbio pavadinimas</string>
     <string name="nc_call_name_is_same">Jūsų įvestas vardas yra toks pats kaip ir esamas</string>
+    <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
     <string name="nc_call_timeout">Per 45 sekundes jokio atsakymo, bakstelėkite norėdami bandyti dar kartą</string>
     <string name="nc_camera_permission_permanently_denied">Norėdami įjungti bendravimą vaizdu, sistemos nustatymuose suteikite prieigą prie \"Kameros\".</string>
     <string name="nc_cancel">Atsisakyti</string>

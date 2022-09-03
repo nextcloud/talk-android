@@ -307,6 +307,7 @@
     <string name="openConversations">Avaa keskustelut</string>
     <string name="play_pause_voice_message">Toista/keskeytä ääniviesti</string>
     <string name="polls_add_option">Lisää valinta</string>
+    <string name="polls_end_poll">Lopeta kysely</string>
     <string name="polls_multiple_answers">Useita vastauksia</string>
     <string name="polls_options">Valinnat</string>
     <string name="polls_private_poll">Yksityinen kysely</string>
@@ -334,6 +335,7 @@
     <string name="shared_items_file">Tiedosto</string>
     <string name="shared_items_media">Media</string>
     <string name="shared_items_other">Muu</string>
+    <string name="shared_items_poll">Kysely</string>
     <string name="shared_items_voice">Ääni</string>
     <string name="starred">Suosikki</string>
     <string name="startCallForbidden">Sinulla ei ole oikeutta aloittaa puhelua</string>
