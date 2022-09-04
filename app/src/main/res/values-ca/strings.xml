@@ -261,6 +261,7 @@
     <string name="scope_federated_title">Federat</string>
     <string name="scope_local_description">Només visible per a les persones d\'aquesta instància i convidats</string>
     <string name="scope_local_title">Local</string>
+    <string name="scope_private_description">Només visible per a les persones que coincideixen mitjançant la integració del número de telèfon a través de Talk al mòbil</string>
     <string name="scope_private_title">Privat</string>
     <string name="scope_published_description">Sincronitza amb servidors de confiança i amb la llibreta d\'adreces global i pública</string>
     <string name="scope_published_title">Publicat</string>
