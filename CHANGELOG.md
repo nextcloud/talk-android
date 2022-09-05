@@ -5,6 +5,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [14.2.0] - 2022-08-31
+## Added
+
+- Tabs for deck cards, locations and other objects in shared items view
+- "Mark as read" via notification
+- Create new profile avatar image with camera
+
+## Changed
+
+- Load higher resolution avatars in conversation list
+
+## Fixed
+
+- Fail to open newly created conversation
+- Starting a call from chat screen crashes
+- Rare crashes during swipe left for reply to a message
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/57?closed=1
+
+## [14.1.1] - 2022-08-15
+### Fixed
+- Swipe left for reply to a message
+- Multiple minor issues
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/58?closed=1
+
 ## [14.1.0] - 2022-07-18
 ### Added
 - Search within messages
