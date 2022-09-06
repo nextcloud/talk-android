@@ -12,6 +12,7 @@
     <string name="dontClear">Ryd ikke</string>
     <string name="edit">Rediger</string>
     <string name="emoji_category_recent">Nylige</string>
+    <string name="encrypted">Krypteret</string>
     <string name="failed_to_save">Kunne ikke gemme %1$s</string>
     <string name="file_list_folder">mappe</string>
     <string name="file_list_loading">Loading …</string>
