@@ -676,7 +676,7 @@ class ChatController(args: Bundle) :
         })
 
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser) ?: MESSAGE_MAX_LENGTH
+        val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
         binding.messageInputView.inputEditText?.filters = filters
@@ -1724,7 +1724,7 @@ class ChatController(args: Bundle) :
         eventBus.register(this)
 
         if (conversationUser?.userId != "?" &&
-            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag") ?: false &&
+            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag") &&
             activity != null
         ) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
@@ -3244,7 +3244,6 @@ class ChatController(args: Bundle) :
         private const val POP_CURRENT_CONTROLLER_DELAY: Long = 100
         private const val LOBBY_TIMER_DELAY: Long = 5000
         private const val HTTP_CODE_OK: Int = 200
-        private const val MESSAGE_MAX_LENGTH: Int = 1000
         private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
