@@ -2073,7 +2073,7 @@ class ChatController(args: Bundle) :
                         myFirstMessage = message
 
                         try {
-                            if (binding.popupBubbleView.isShown == true) {
+                            if (binding.popupBubbleView.isShown) {
                                 binding.popupBubbleView.hide()
                             }
 
@@ -2091,7 +2091,7 @@ class ChatController(args: Bundle) :
                             if (Integer.toString(code).startsWith("2")) {
                                 myFirstMessage = message
 
-                                if (binding.popupBubbleView.isShown == true) {
+                                if (binding.popupBubbleView.isShown) {
                                     binding.popupBubbleView.hide()
                                 }
 
@@ -2425,7 +2425,7 @@ class ChatController(args: Bundle) :
                         if (!binding.popupBubbleView.isShown) {
                             newMessagesCount = 1
                             binding.popupBubbleView.show()
-                        } else if (binding.popupBubbleView.isShown == true) {
+                        } else if (binding.popupBubbleView.isShown) {
                             newMessagesCount++
                         }
                     } else {
@@ -3088,7 +3088,7 @@ class ChatController(args: Bundle) :
 
         val isOlderThanSixHours = message
             .createdAt
-            .before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
+            .before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE))
 
         return when {
             !isUserAllowedByPrivileges -> false
