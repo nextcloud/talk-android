@@ -367,7 +367,7 @@ class ChatController(args: Bundle) :
                             }
                         } catch (npe: NullPointerException) {
                             // view binding can be null
-                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            // since this is called asynchronously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone")
                         }
                     }
@@ -1401,11 +1401,11 @@ class ChatController(args: Bundle) :
                     }
                     require(filesToUpload.isNotEmpty())
 
-                    val filenamesWithLinebreaks = StringBuilder("\n")
+                    val filenamesWithLineBreaks = StringBuilder("\n")
 
                     for (file in filesToUpload) {
                         val filename = UriUtils.getFileName(Uri.parse(file), context)
-                        filenamesWithLinebreaks.append(filename).append("\n")
+                        filenamesWithLineBreaks.append(filename).append("\n")
                     }
 
                     val confirmationQuestion = when (filesToUpload.size) {
@@ -1419,7 +1419,7 @@ class ChatController(args: Bundle) :
 
                     val materialAlertDialogBuilder = MaterialAlertDialogBuilder(binding.messageInputView.context)
                         .setTitle(confirmationQuestion)
-                        .setMessage(filenamesWithLinebreaks.toString())
+                        .setMessage(filenamesWithLineBreaks.toString())
                         .setPositiveButton(R.string.nc_yes) { _, _ ->
                             if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
                                 uploadFiles(filesToUpload, false)
@@ -1913,7 +1913,7 @@ class ChatController(args: Bundle) :
                             checkLobbyState()
                         } catch (npe: NullPointerException) {
                             // view binding can be null
-                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            // since this is called asynchronously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone")
                         }
 
@@ -2080,7 +2080,7 @@ class ChatController(args: Bundle) :
                             binding.messagesListView.smoothScrollToPosition(0)
                         } catch (npe: NullPointerException) {
                             // view binding can be null
-                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            // since this is called asynchronously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone")
                         }
                     }
@@ -2211,7 +2211,7 @@ class ChatController(args: Bundle) :
                             }
                         } catch (npe: NullPointerException) {
                             // view binding can be null
-                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            // since this is called asynchronously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone")
                         }
 
@@ -2253,7 +2253,7 @@ class ChatController(args: Bundle) :
                             }
                         } catch (e: NullPointerException) {
                             // view binding can be null
-                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            // since this is called asynchronously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone", e)
                         }
 
@@ -3088,7 +3088,7 @@ class ChatController(args: Bundle) :
 
         val isOlderThanSixHours = message
             .createdAt
-            .before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE))
+            .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_DELETE_MESSAGE))
 
         return when {
             !isUserAllowedByPrivileges -> false
@@ -3241,7 +3241,7 @@ class ChatController(args: Bundle) :
         private const val POP_CURRENT_CONTROLLER_DELAY: Long = 100
         private const val LOBBY_TIMER_DELAY: Long = 5000
         private const val HTTP_CODE_OK: Int = 200
-        private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
+        private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
         private const val REQUEST_CODE_MESSAGE_SEARCH: Int = 777
