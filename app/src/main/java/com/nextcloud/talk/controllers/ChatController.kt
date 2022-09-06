@@ -690,7 +690,7 @@ class ChatController(args: Bundle) :
                     if (s.length >= lengthFilter) {
                         binding.messageInputView.inputEditText?.error = String.format(
                             Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
-                            Integer.toString(lengthFilter)
+                            lengthFilter.toString()
                         )
                     } else {
                         binding.messageInputView.inputEditText?.error = null
@@ -2088,7 +2088,7 @@ class ChatController(args: Bundle) :
                     override fun onError(e: Throwable) {
                         if (e is HttpException) {
                             val code = e.code()
-                            if (Integer.toString(code).startsWith("2")) {
+                            if (code.toString().startsWith("2")) {
                                 myFirstMessage = message
 
                                 if (binding.popupBubbleView.isShown) {
