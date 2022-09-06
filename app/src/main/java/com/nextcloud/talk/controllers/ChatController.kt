@@ -306,10 +306,10 @@ class ChatController(args: Bundle) :
 
         this.roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
 
-        if (conversationUser?.userId == "?") {
-            credentials = null
+        credentials = if (conversationUser?.userId == "?") {
+            null
         } else {
-            credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token)
+            ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token)
         }
 
         if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
@@ -582,11 +582,10 @@ class ChatController(args: Bundle) :
                 this
             )
 
-            var senderId = ""
-            if (!conversationUser.userId.equals("?")) {
-                senderId = "users/" + conversationUser.userId
+            val senderId = if (!conversationUser.userId.equals("?")) {
+                "users/" + conversationUser.userId
             } else {
-                senderId = currentConversation?.actorType + "/" + currentConversation?.actorId
+                currentConversation?.actorType + "/" + currentConversation?.actorId
             }
 
             Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: " + senderId)
@@ -638,11 +637,10 @@ class ChatController(args: Bundle) :
 
         binding.popupBubbleView.setPopupBubbleListener { context ->
             if (newMessagesCount != 0) {
-                val scrollPosition: Int
-                if (newMessagesCount - 1 < 0) {
-                    scrollPosition = 0
+                val scrollPosition = if (newMessagesCount - 1 < 0) {
+                    0
                 } else {
-                    scrollPosition = newMessagesCount - 1
+                    newMessagesCount - 1
                 }
                 Handler().postDelayed(
                     {
@@ -2112,13 +2110,13 @@ class ChatController(args: Bundle) :
 
     private fun setupWebsocket() {
         if (conversationUser != null) {
-            if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
-                magicWebSocketInstance =
+            magicWebSocketInstance =
+                if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
                     WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
-            } else {
-                Log.d(TAG, "magicWebSocketInstance became null")
-                magicWebSocketInstance = null
-            }
+                } else {
+                    Log.d(TAG, "magicWebSocketInstance became null")
+                    null
+                }
         }
     }
 
@@ -2166,11 +2164,10 @@ class ChatController(args: Bundle) :
         fieldMap["limit"] = MESSAGE_PULL_LIMIT
         fieldMap["setReadMarker"] = setReadMarker
 
-        val lastKnown: Int
-        if (lookIntoFuture > 0) {
-            lastKnown = globalLastKnownFutureMessageId
+        val lastKnown = if (lookIntoFuture > 0) {
+            globalLastKnownFutureMessageId
         } else {
-            lastKnown = globalLastKnownPastMessageId
+            globalLastKnownPastMessageId
         }
 
         fieldMap["lastKnownMessageId"] = lastKnown
