@@ -583,8 +583,8 @@ class ChatController(args: Bundle) :
             )
 
             var senderId = ""
-            if (!conversationUser?.userId.equals("?")) {
-                senderId = "users/" + conversationUser?.userId
+            if (!conversationUser.userId.equals("?")) {
+                senderId = "users/" + conversationUser.userId
             } else {
                 senderId = currentConversation?.actorType + "/" + currentConversation?.actorId
             }
@@ -618,7 +618,7 @@ class ChatController(args: Bundle) :
             R.id.playPauseBtn
         ) { view, message ->
             val filename = message.selectedIndividualHashMap!!["name"]
-            val file = File(context!!.cacheDir, filename!!)
+            val file = File(context.cacheDir, filename!!)
             if (file.exists()) {
                 if (message.isPlayingVoiceMessage) {
                     pausePlayback(message)
@@ -771,7 +771,7 @@ class ChatController(args: Bundle) :
                             requestRecordAudioPermissions()
                             return true
                         }
-                        if (!UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                        if (!UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
                             UploadAndShareFilesWorker.requestStoragePermission(this@ChatController)
                             return true
                         }
@@ -806,7 +806,7 @@ class ChatController(args: Bundle) :
                             Log.d(TAG, "voiceRecordDuration: " + voiceRecordDuration)
                             Toast.makeText(
                                 context,
-                                context!!.getString(R.string.nc_voice_message_hold_to_record_info),
+                                context.getString(R.string.nc_voice_message_hold_to_record_info),
                                 Toast.LENGTH_SHORT
                             ).show()
                             stopAndDiscardAudioRecording()
@@ -993,7 +993,7 @@ class ChatController(args: Bundle) :
 
         if (mediaPlayer == null) {
             val fileName = message.selectedIndividualHashMap!!["name"]
-            val absolutePath = context!!.cacheDir.absolutePath + "/" + fileName
+            val absolutePath = context.cacheDir.absolutePath + "/" + fileName
             mediaPlayer = MediaPlayer().apply {
                 setDataSource(absolutePath)
                 prepare()
@@ -1050,7 +1050,7 @@ class ChatController(args: Bundle) :
 
         // check if download worker is already running
         val workers = WorkManager.getInstance(
-            context!!
+            context
         ).getWorkInfosByTag(fileId!!)
         try {
             for (workInfo in workers.get()) {
@@ -1081,7 +1081,7 @@ class ChatController(args: Bundle) :
 
         WorkManager.getInstance().enqueue(downloadWorker)
 
-        WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(downloadWorker.id)
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.id)
             .observeForever { workInfo: WorkInfo ->
                 if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                     startPlayback(message)
@@ -1096,13 +1096,13 @@ class ChatController(args: Bundle) :
         val date: String = simpleDateFormat.format(Date())
 
         val fileNameWithoutSuffix = String.format(
-            context!!.resources.getString(R.string.nc_voice_message_filename),
+            context.resources.getString(R.string.nc_voice_message_filename),
             date,
             currentConversation!!.displayName
         )
         val fileName = fileNameWithoutSuffix + VOICE_MESSAGE_FILE_SUFFIX
 
-        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/$fileName"
+        currentVoiceRecordFile = "${context.cacheDir.absolutePath}/$fileName"
     }
 
     private fun showRecordAudioUi(show: Boolean) {
@@ -1124,14 +1124,14 @@ class ChatController(args: Bundle) :
             binding.messageInputView.smileyButton.visibility = View.VISIBLE
             binding.messageInputView.messageInput.visibility = View.VISIBLE
             binding.messageInputView.messageInput.hint =
-                context?.resources?.getString(R.string.nc_hint_enter_a_message)
+                context.resources?.getString(R.string.nc_hint_enter_a_message)
         }
     }
 
     private fun isRecordAudioPermissionGranted(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return PermissionChecker.checkSelfPermission(
-                context!!,
+                context,
                 Manifest.permission.RECORD_AUDIO
             ) == PermissionChecker.PERMISSION_GRANTED
         } else {
@@ -1211,7 +1211,7 @@ class ChatController(args: Bundle) :
     }
 
     fun vibrate() {
-        val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (Build.VERSION.SDK_INT >= O) {
             vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
@@ -1411,10 +1411,10 @@ class ChatController(args: Bundle) :
                     }
 
                     val confirmationQuestion = when (filesToUpload.size) {
-                        1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
+                        1 -> context.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
                             String.format(it, title.trim())
                         }
-                        else -> context?.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
+                        else -> context.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
                             String.format(it, title.trim())
                         }
                     }
@@ -1445,11 +1445,11 @@ class ChatController(args: Bundle) :
                         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                     )
                 } catch (e: IllegalStateException) {
-                    Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
+                    Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
                         .show()
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 } catch (e: IllegalArgumentException) {
-                    Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
+                    Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
                         .show()
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 }
@@ -1460,8 +1460,8 @@ class ChatController(args: Bundle) :
 
                 if (cursor != null && cursor.moveToFirst()) {
                     val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                    val fileName = ContactUtils.getDisplayNameFromDeviceContact(context!!, id) + ".vcf"
-                    val file = File(context?.cacheDir, fileName)
+                    val fileName = ContactUtils.getDisplayNameFromDeviceContact(context, id) + ".vcf"
+                    val file = File(context.cacheDir, fileName)
                     writeContactToVcfFile(cursor, file)
 
                     val shareUri = FileProvider.getUriForFile(
@@ -1486,7 +1486,7 @@ class ChatController(args: Bundle) :
                         }
                         require(filesToUpload.isNotEmpty())
 
-                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
                             uploadFiles(filesToUpload, false)
                         } else {
                             UploadAndShareFilesWorker.requestStoragePermission(this)
@@ -1494,7 +1494,7 @@ class ChatController(args: Bundle) :
                     } catch (e: IllegalStateException) {
                         Toast.makeText(
                             context,
-                            context?.resources?.getString(R.string.nc_upload_failed),
+                            context.resources?.getString(R.string.nc_upload_failed),
                             Toast.LENGTH_LONG
                         )
                             .show()
@@ -1502,7 +1502,7 @@ class ChatController(args: Bundle) :
                     } catch (e: IllegalArgumentException) {
                         Toast.makeText(
                             context,
-                            context?.resources?.getString(R.string.nc_upload_failed),
+                            context.resources?.getString(R.string.nc_upload_failed),
                             Toast.LENGTH_LONG
                         )
                             .show()
@@ -1554,7 +1554,7 @@ class ChatController(args: Bundle) :
                 }
             } else {
                 Toast
-                    .makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
+                    .makeText(context, context.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
                     .show()
             }
         } else if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
@@ -1563,7 +1563,7 @@ class ChatController(args: Bundle) :
             } else {
                 Toast.makeText(
                     context,
-                    context!!.getString(R.string.nc_voice_message_missing_audio_permission),
+                    context.getString(R.string.nc_voice_message_missing_audio_permission),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -1574,17 +1574,17 @@ class ChatController(args: Bundle) :
             } else {
                 Toast.makeText(
                     context,
-                    context!!.getString(R.string.nc_share_contact_permission),
+                    context.getString(R.string.nc_share_contact_permission),
                     Toast.LENGTH_LONG
                 ).show()
             }
         } else if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "launch cam activity since permission for cam has been granted")
-                startActivityForResult(TakePhotoActivity.createIntent(context!!), REQUEST_CODE_PICK_CAMERA)
+                startActivityForResult(TakePhotoActivity.createIntent(context), REQUEST_CODE_PICK_CAMERA)
             } else {
                 Toast
-                    .makeText(context, context?.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
+                    .makeText(context, context.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
                     .show()
             }
         }
@@ -1621,12 +1621,12 @@ class ChatController(args: Bundle) :
             if (!isVoiceMessage) {
                 Toast.makeText(
                     context,
-                    context?.getString(R.string.nc_upload_in_progess),
+                    context.getString(R.string.nc_upload_in_progess),
                     Toast.LENGTH_LONG
                 ).show()
             }
         } catch (e: IllegalArgumentException) {
-            Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
         }
     }
@@ -1640,7 +1640,7 @@ class ChatController(args: Bundle) :
         startActivityForResult(
             Intent.createChooser(
                 action,
-                context?.resources?.getString(
+                context.resources?.getString(
                     R.string.nc_upload_choose_local_files
                 )
             ),
@@ -1743,13 +1743,13 @@ class ChatController(args: Bundle) :
                 onEmojiPopupShownListener = {
                     if (resources != null) {
                         smileyButton?.setImageDrawable(
-                            ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_keyboard_24)
+                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_24)
                         )
                     }
                 },
                 onEmojiPopupDismissListener = {
                     smileyButton?.setImageDrawable(
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_insert_emoticon_black_24dp)
+                        ContextCompat.getDrawable(context, R.drawable.ic_insert_emoticon_black_24dp)
                     )
                 },
                 onEmojiClickListener = {
@@ -1881,7 +1881,7 @@ class ChatController(args: Bundle) :
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
-                apiVersion = ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.APIv4, 1))
+                apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
             }
 
             val startNanoTime = System.nanoTime()
@@ -2055,7 +2055,7 @@ class ChatController(args: Bundle) :
         if (conversationUser != null) {
             val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
 
-            ncApi!!.sendChatMessage(
+            ncApi.sendChatMessage(
                 credentials,
                 ApiUtils.getUrlForChat(apiVersion, conversationUser.baseUrl, roomToken),
                 message,
@@ -2388,7 +2388,7 @@ class ChatController(args: Bundle) :
                     unreadChatMessage.jsonMessageId = -1
                     unreadChatMessage.actorId = "-1"
                     unreadChatMessage.timestamp = chatMessageList[0].timestamp
-                    unreadChatMessage.message = context?.getString(R.string.nc_new_messages)
+                    unreadChatMessage.message = context.getString(R.string.nc_new_messages)
                     adapter?.addToStart(unreadChatMessage, false)
                 }
 
@@ -2760,7 +2760,7 @@ class ChatController(args: Bundle) :
                     currentConversation,
                     isShowMessageDeletionButton(message),
                     hasChatPermission,
-                    ncApi!!
+                    ncApi
                 ).show()
             }
         }
@@ -2838,7 +2838,7 @@ class ChatController(args: Bundle) :
             message?.user?.id?.substring(INVITE_LENGTH),
             null
         )
-        ncApi!!.createRoom(
+        ncApi.createRoom(
             credentials,
             retrofitBucket.url,
             retrofitBucket.queryMap
@@ -2857,7 +2857,7 @@ class ChatController(args: Bundle) :
                     bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     // FIXME once APIv2+ is used only, the createRoom already returns all the data
-                    ncApi!!.getRoom(
+                    ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion,
@@ -2921,7 +2921,7 @@ class ChatController(args: Bundle) :
     fun markAsUnread(message: IMessage?) {
         val chatMessage = message as ChatMessage?
         if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-            ncApi!!.setChatReadMarker(
+            ncApi.setChatReadMarker(
                 credentials,
                 ApiUtils.getUrlForSetChatReadMarker(
                     ApiUtils.getChatApiVersion(conversationUser, intArrayOf(ApiUtils.APIv1)),
@@ -2966,7 +2966,7 @@ class ChatController(args: Bundle) :
         return !message.isDeleted || // copy message
             message.replyable || // reply to
             message.replyable && // reply privately
-            conversationUser?.userId?.isNotEmpty() == true && conversationUser?.userId != "?" &&
+            conversationUser?.userId?.isNotEmpty() == true && conversationUser.userId != "?" &&
             message.user.id.startsWith("users/") &&
             message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
             currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
@@ -2993,7 +2993,7 @@ class ChatController(args: Bundle) :
             quotedMessage?.ellipsize = TextUtils.TruncateAt.END
             quotedMessage?.text = it.text
             binding.messageInputView.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
-                it.actorDisplayName ?: context!!.getText(R.string.nc_nick_guest)
+                it.actorDisplayName ?: context.getText(R.string.nc_nick_guest)
 
             conversationUser?.let { currentUser ->
                 val quotedMessageImage = binding
@@ -3091,7 +3091,7 @@ class ChatController(args: Bundle) :
 
         val isOlderThanSixHours = message
             .createdAt
-            ?.before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
+            .before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
 
         return when {
             !isUserAllowedByPrivileges -> false
@@ -3219,7 +3219,7 @@ class ChatController(args: Bundle) :
         if (!permissionUtil.isCameraPermissionGranted()) {
             requestCameraPermissions()
         } else {
-            startActivityForResult(TakePhotoActivity.createIntent(context!!), REQUEST_CODE_PICK_CAMERA)
+            startActivityForResult(TakePhotoActivity.createIntent(context), REQUEST_CODE_PICK_CAMERA)
         }
     }
 
