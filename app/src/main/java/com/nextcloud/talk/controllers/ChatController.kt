@@ -2182,7 +2182,6 @@ class ChatController(args: Bundle) :
         }
 
         if (lookIntoFuture > 0) {
-            val finalTimeout = timeout
             Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - calling")
             ncApi.pullChatMessages(
                 credentials,
@@ -2207,7 +2206,7 @@ class ChatController(args: Bundle) :
                             } else if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
                                 futurePreconditionFailed = true
                             } else {
-                                processMessages(response, true, finalTimeout)
+                                processMessages(response, true)
                             }
                         } catch (npe: NullPointerException) {
                             // view binding can be null
@@ -2249,7 +2248,7 @@ class ChatController(args: Bundle) :
                             if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
                                 pastPreconditionFailed = true
                             } else {
-                                processMessages(response, false, 0)
+                                processMessages(response, false)
                             }
                         } catch (e: NullPointerException) {
                             // view binding can be null
@@ -2294,7 +2293,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun processMessages(response: Response<*>, isFromTheFuture: Boolean, timeout: Int) {
+    private fun processMessages(response: Response<*>, isFromTheFuture: Boolean) {
         val xChatLastGivenHeader: String? = response.headers()["X-Chat-Last-Given"]
         val xChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
             Integer.parseInt(it)
