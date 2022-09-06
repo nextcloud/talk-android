@@ -2295,8 +2295,8 @@ class ChatController(args: Bundle) :
     }
 
     private fun processMessages(response: Response<*>, isFromTheFuture: Boolean, timeout: Int) {
-        val xChatLastGivenHeader: String? = response.headers().get("X-Chat-Last-Given")
-        val xChatLastCommonRead = response.headers().get("X-Chat-Last-Common-Read")?.let {
+        val xChatLastGivenHeader: String? = response.headers()["X-Chat-Last-Given"]
+        val xChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
             Integer.parseInt(it)
         }
         if (response.headers().size > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
