@@ -329,7 +329,7 @@ class ChatController(args: Bundle) :
             val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
             val startNanoTime = System.nanoTime()
-            Log.d(TAG, "getRoomInfo - getRoom - calling: " + startNanoTime)
+            Log.d(TAG, "getRoomInfo - getRoom - calling: $startNanoTime")
             ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser.baseUrl, roomToken))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
@@ -340,7 +340,7 @@ class ChatController(args: Bundle) :
 
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
-                        Log.d(TAG, "getRoomInfo - getRoom - got response: " + startNanoTime)
+                        Log.d(TAG, "getRoomInfo - getRoom - got response: $startNanoTime")
                         currentConversation = roomOverall.ocs!!.data
                         Log.d(
                             TAG,
@@ -377,7 +377,7 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onComplete() {
-                        Log.d(TAG, "getRoomInfo - getRoom - onComplete: " + startNanoTime)
+                        Log.d(TAG, "getRoomInfo - getRoom - onComplete: $startNanoTime")
                         if (shouldRepeat) {
                             if (lobbyTimerHandler == null) {
                                 lobbyTimerHandler = Handler()
@@ -588,7 +588,7 @@ class ChatController(args: Bundle) :
                 currentConversation?.actorType + "/" + currentConversation?.actorId
             }
 
-            Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: " + senderId)
+            Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: $senderId")
 
             adapter = TalkMessagesListAdapter(
                 senderId,
@@ -801,7 +801,7 @@ class ChatController(args: Bundle) :
                         voiceRecordEndTime = System.currentTimeMillis()
                         val voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
                         if (voiceRecordDuration < MINIMUM_VOICE_RECORD_DURATION) {
-                            Log.d(TAG, "voiceRecordDuration: " + voiceRecordDuration)
+                            Log.d(TAG, "voiceRecordDuration: $voiceRecordDuration")
                             Toast.makeText(
                                 context,
                                 context.getString(R.string.nc_voice_message_hold_to_record_info),
@@ -1053,7 +1053,7 @@ class ChatController(args: Bundle) :
         try {
             for (workInfo in workers.get()) {
                 if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
-                    Log.d(TAG, "Download worker for " + fileId + " is already running or scheduled")
+                    Log.d(TAG, "Download worker for $fileId is already running or scheduled")
                     return
                 }
             }
@@ -1775,7 +1775,7 @@ class ChatController(args: Bundle) :
 
         cancelNotificationsForCurrentConversation()
 
-        Log.d(TAG, "onAttach inConversation: " + inConversation.toString())
+        Log.d(TAG, "onAttach inConversation: $inConversation")
         if (inConversation) {
             Log.d(TAG, "execute joinRoomWithPassword in onAttach")
             joinRoomWithPassword()
@@ -1883,7 +1883,7 @@ class ChatController(args: Bundle) :
             }
 
             val startNanoTime = System.nanoTime()
-            Log.d(TAG, "joinRoomWithPassword - joinRoom - calling: " + startNanoTime)
+            Log.d(TAG, "joinRoomWithPassword - joinRoom - calling: $startNanoTime")
             ncApi.joinRoom(
                 credentials,
                 ApiUtils.getUrlForParticipantsActive(apiVersion, conversationUser?.baseUrl, roomToken),
@@ -1899,7 +1899,7 @@ class ChatController(args: Bundle) :
 
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
-                        Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: " + startNanoTime)
+                        Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: $startNanoTime")
                         inConversation = true
                         currentConversation?.sessionId = roomOverall.ocs!!.data!!.sessionId
                         Log.d(TAG, "joinRoomWithPassword - sessionId: " + currentConversation?.sessionId)
@@ -1969,7 +1969,7 @@ class ChatController(args: Bundle) :
         }
 
         val startNanoTime = System.nanoTime()
-        Log.d(TAG, "leaveRoom - leaveRoom - calling: " + startNanoTime)
+        Log.d(TAG, "leaveRoom - leaveRoom - calling: $startNanoTime")
         ncApi.leaveRoom(
             credentials,
             ApiUtils.getUrlForParticipantsActive(
@@ -1986,7 +1986,7 @@ class ChatController(args: Bundle) :
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    Log.d(TAG, "leaveRoom - leaveRoom - got response: " + startNanoTime)
+                    Log.d(TAG, "leaveRoom - leaveRoom - got response: $startNanoTime")
                     checkingLobbyStatus = false
 
                     if (lobbyTimerHandler != null) {
@@ -2010,7 +2010,7 @@ class ChatController(args: Bundle) :
                 }
 
                 override fun onComplete() {
-                    Log.d(TAG, "leaveRoom - leaveRoom - completed: " + startNanoTime)
+                    Log.d(TAG, "leaveRoom - leaveRoom - completed: $startNanoTime")
                     disposables.dispose()
                 }
             })
