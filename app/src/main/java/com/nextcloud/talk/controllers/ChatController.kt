@@ -238,32 +238,32 @@ class ChatController(args: Bundle) :
 
     var roomToken: String? = null
     val conversationUser: User?
-    val roomPassword: String
+    private val roomPassword: String
     var credentials: String? = null
     var currentConversation: Conversation? = null
     var inConversation = false
-    var historyRead = false
-    var globalLastKnownFutureMessageId = -1
-    var globalLastKnownPastMessageId = -1
+    private var historyRead = false
+    private var globalLastKnownFutureMessageId = -1
+    private var globalLastKnownPastMessageId = -1
     var adapter: TalkMessagesListAdapter<ChatMessage>? = null
-    var mentionAutocomplete: Autocomplete<*>? = null
+    private var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
-    var lookingIntoFuture = false
+    private var lookingIntoFuture = false
     var newMessagesCount = 0
     var startCallFromNotification: Boolean? = null
     val roomId: String
     val voiceOnly: Boolean
     var isFirstMessagesProcessing = true
-    var emojiPopup: EmojiPopup? = null
+    private var emojiPopup: EmojiPopup? = null
 
     var myFirstMessage: CharSequence? = null
     var checkingLobbyStatus: Boolean = false
 
-    var conversationInfoMenuItem: MenuItem? = null
-    var conversationVoiceCallMenuItem: MenuItem? = null
-    var conversationVideoMenuItem: MenuItem? = null
-    var conversationSharedItemsItem: MenuItem? = null
+    private var conversationInfoMenuItem: MenuItem? = null
+    private var conversationVoiceCallMenuItem: MenuItem? = null
+    private var conversationVideoMenuItem: MenuItem? = null
+    private var conversationSharedItemsItem: MenuItem? = null
 
     var magicWebSocketInstance: MagicWebSocketInstance? = null
 
@@ -271,8 +271,8 @@ class ChatController(args: Bundle) :
     var pastPreconditionFailed = false
     var futurePreconditionFailed = false
 
-    val filesToUpload: MutableList<String> = ArrayList()
-    var sharedText: String
+    private val filesToUpload: MutableList<String> = ArrayList()
+    private var sharedText: String
     var isVoiceRecordingInProgress: Boolean = false
     var currentVoiceRecordFile: String = ""
 
@@ -280,7 +280,7 @@ class ChatController(args: Bundle) :
 
     var mediaPlayer: MediaPlayer? = null
     lateinit var mediaPlayerHandler: Handler
-    var currentlyPlayedVoiceMessage: ChatMessage? = null
+    private var currentlyPlayedVoiceMessage: ChatMessage? = null
 
     var hasChatPermission: Boolean = false
 
