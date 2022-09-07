@@ -2294,23 +2294,12 @@ class ChatController(args: Bundle) :
     }
 
     private fun processMessages(response: Response<*>, isFromTheFuture: Boolean) {
-        val xChatLastGivenHeader: String? = response.headers()["X-Chat-Last-Given"]
+
         val xChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
             Integer.parseInt(it)
         }
-        if (response.headers().size > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
-            val header = Integer.parseInt(xChatLastGivenHeader!!)
-            if (header > 0) {
-                if (isFromTheFuture) {
-                    globalLastKnownFutureMessageId = header
-                } else {
-                    if (globalLastKnownFutureMessageId == -1) {
-                        globalLastKnownFutureMessageId = header
-                    }
-                    globalLastKnownPastMessageId = header
-                }
-            }
-        }
+
+        processHeaderChatLastGiven(response, isFromTheFuture)
 
         if (response.code() == HTTP_CODE_OK) {
             val chatOverall = response.body() as ChatOverall?
@@ -2332,141 +2321,13 @@ class ChatController(args: Bundle) :
                 binding.messagesListView.visibility = View.VISIBLE
             }
 
-            var countGroupedMessages = 0
-            if (!isFromTheFuture) {
-                var previousMessageId = NO_PREVIOUS_MESSAGE_ID
-                for (i in chatMessageList.indices.reversed()) {
-                    val chatMessage = chatMessageList[i]
-
-                    if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-                        chatMessage.previousMessageId = previousMessageId
-                    } else if (adapter?.isEmpty != true) {
-                        if (adapter!!.items[0].item is ChatMessage) {
-                            chatMessage.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
-                        } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
-                            chatMessage.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
-                        }
-                    }
-
-                    previousMessageId = chatMessage.jsonMessageId
-                }
-
-                for (i in chatMessageList.indices) {
-                    if (chatMessageList.size > i + 1) {
-                        if (isSameDayNonSystemMessages(chatMessageList[i], chatMessageList[i + 1]) &&
-                            chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
-                            countGroupedMessages < GROUPED_MESSAGES_THRESHOLD
-                        ) {
-                            chatMessageList[i].isGrouped = true
-                            countGroupedMessages++
-                        } else {
-                            countGroupedMessages = 0
-                        }
-                    }
-
-                    val chatMessage = chatMessageList[i]
-                    chatMessage.isOneToOneConversation =
-                        currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-                    chatMessage.activeUser = conversationUser
-                }
-
-                if (adapter != null) {
-                    adapter?.addToEnd(chatMessageList, false)
-                }
-                scrollToRequestedMessageIfNeeded()
+            if (isFromTheFuture) {
+                processMessagesFromTheFuture(chatMessageList)
             } else {
-                var chatMessage: ChatMessage
-
-                val shouldAddNewMessagesNotice = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
-
-                if (shouldAddNewMessagesNotice) {
-                    val unreadChatMessage = ChatMessage()
-                    unreadChatMessage.jsonMessageId = -1
-                    unreadChatMessage.actorId = "-1"
-                    unreadChatMessage.timestamp = chatMessageList[0].timestamp
-                    unreadChatMessage.message = context.getString(R.string.nc_new_messages)
-                    adapter?.addToStart(unreadChatMessage, false)
-                }
-
-                val isThereANewNotice =
-                    shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
-
-                var previousMessageId = NO_PREVIOUS_MESSAGE_ID
-                for (i in chatMessageList.indices.reversed()) {
-                    val chatMessageItem = chatMessageList[i]
-
-                    if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-                        chatMessageItem.previousMessageId = previousMessageId
-                    } else if (adapter?.isEmpty != true) {
-                        if (adapter!!.items[0].item is ChatMessage) {
-                            chatMessageItem.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
-                        } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
-                            chatMessageItem.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
-                        }
-                    }
-
-                    previousMessageId = chatMessageItem.jsonMessageId
-                }
-
-                for (i in chatMessageList.indices) {
-                    chatMessage = chatMessageList[i]
-
-                    chatMessage.activeUser = conversationUser
-
-                    val shouldScroll =
-                        !isThereANewNotice &&
-                            !shouldAddNewMessagesNotice &&
-                            layoutManager?.findFirstVisibleItemPosition() == 0 ||
-                            adapter != null &&
-                            adapter?.itemCount == 0
-
-                    if (!shouldAddNewMessagesNotice && !shouldScroll) {
-                        if (!binding.popupBubbleView.isShown) {
-                            newMessagesCount = 1
-                            binding.popupBubbleView.show()
-                        } else if (binding.popupBubbleView.isShown) {
-                            newMessagesCount++
-                        }
-                    } else {
-                        newMessagesCount = 0
-                    }
-
-                    if (adapter != null) {
-                        chatMessage.isGrouped = (
-                            adapter!!.isPreviousSameAuthor(
-                                chatMessage.actorId,
-                                -1
-                            ) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) %
-                                GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
-                            )
-                        chatMessage.isOneToOneConversation =
-                            (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
-                        adapter?.addToStart(chatMessage, shouldScroll)
-                    }
-                }
-
-                if (shouldAddNewMessagesNotice && adapter != null) {
-                    layoutManager?.scrollToPositionWithOffset(
-                        adapter!!.getMessagePositionByIdInReverse("-1"),
-                        binding.messagesListView.height / 2
-                    )
-                }
+                processMessagesNotFromTheFuture(chatMessageList)
             }
 
-            // update read status of all messages
-            for (message in adapter!!.items) {
-                xChatLastCommonRead?.let {
-                    if (message.item is ChatMessage) {
-                        val chatMessage = message.item as ChatMessage
-
-                        if (chatMessage.jsonMessageId <= it) {
-                            chatMessage.readStatus = ReadStatus.READ
-                        } else {
-                            chatMessage.readStatus = ReadStatus.SENT
-                        }
-                    }
-                }
-            }
+            updateReadStatusOfAllMessages(xChatLastCommonRead)
             adapter?.notifyDataSetChanged()
 
             if (inConversation) {
@@ -2484,6 +2345,162 @@ class ChatController(args: Bundle) :
 
             if (!lookingIntoFuture && inConversation) {
                 pullChatMessages(1)
+            }
+        }
+    }
+
+    private fun updateReadStatusOfAllMessages(xChatLastCommonRead: Int?) {
+        for (message in adapter!!.items) {
+            xChatLastCommonRead?.let {
+                if (message.item is ChatMessage) {
+                    val chatMessage = message.item as ChatMessage
+
+                    if (chatMessage.jsonMessageId <= it) {
+                        chatMessage.readStatus = ReadStatus.READ
+                    } else {
+                        chatMessage.readStatus = ReadStatus.SENT
+                    }
+                }
+            }
+        }
+    }
+
+    private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>) {
+        var chatMessage: ChatMessage
+
+        val shouldAddNewMessagesNotice = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
+
+        if (shouldAddNewMessagesNotice) {
+            val unreadChatMessage = ChatMessage()
+            unreadChatMessage.jsonMessageId = -1
+            unreadChatMessage.actorId = "-1"
+            unreadChatMessage.timestamp = chatMessageList[0].timestamp
+            unreadChatMessage.message = context.getString(R.string.nc_new_messages)
+            adapter?.addToStart(unreadChatMessage, false)
+        }
+
+        val isThereANewNotice =
+            shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
+
+        var previousMessageId = NO_PREVIOUS_MESSAGE_ID
+        for (i in chatMessageList.indices.reversed()) {
+            val chatMessageItem = chatMessageList[i]
+
+            if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+                chatMessageItem.previousMessageId = previousMessageId
+            } else if (adapter?.isEmpty != true) {
+                if (adapter!!.items[0].item is ChatMessage) {
+                    chatMessageItem.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
+                } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
+                    chatMessageItem.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
+                }
+            }
+
+            previousMessageId = chatMessageItem.jsonMessageId
+        }
+
+        for (i in chatMessageList.indices) {
+            chatMessage = chatMessageList[i]
+
+            chatMessage.activeUser = conversationUser
+
+            val shouldScroll =
+                !isThereANewNotice &&
+                    !shouldAddNewMessagesNotice &&
+                    layoutManager?.findFirstVisibleItemPosition() == 0 ||
+                    adapter != null &&
+                    adapter?.itemCount == 0
+
+            if (!shouldAddNewMessagesNotice && !shouldScroll) {
+                if (!binding.popupBubbleView.isShown) {
+                    newMessagesCount = 1
+                    binding.popupBubbleView.show()
+                } else if (binding.popupBubbleView.isShown) {
+                    newMessagesCount++
+                }
+            } else {
+                newMessagesCount = 0
+            }
+
+            if (adapter != null) {
+                chatMessage.isGrouped = (
+                    adapter!!.isPreviousSameAuthor(
+                        chatMessage.actorId,
+                        -1
+                    ) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) %
+                        GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
+                    )
+                chatMessage.isOneToOneConversation =
+                    (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
+                adapter?.addToStart(chatMessage, shouldScroll)
+            }
+        }
+
+        if (shouldAddNewMessagesNotice && adapter != null) {
+            layoutManager?.scrollToPositionWithOffset(
+                adapter!!.getMessagePositionByIdInReverse("-1"),
+                binding.messagesListView.height / 2
+            )
+        }
+    }
+
+    private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
+        var countGroupedMessages = 0
+        var previousMessageId = NO_PREVIOUS_MESSAGE_ID
+        for (i in chatMessageList.indices.reversed()) {
+            val chatMessage = chatMessageList[i]
+
+            if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+                chatMessage.previousMessageId = previousMessageId
+            } else if (adapter?.isEmpty != true) {
+                if (adapter!!.items[0].item is ChatMessage) {
+                    chatMessage.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
+                } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
+                    chatMessage.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
+                }
+            }
+
+            previousMessageId = chatMessage.jsonMessageId
+        }
+
+        for (i in chatMessageList.indices) {
+            if (chatMessageList.size > i + 1) {
+                if (isSameDayNonSystemMessages(chatMessageList[i], chatMessageList[i + 1]) &&
+                    chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
+                    countGroupedMessages < GROUPED_MESSAGES_THRESHOLD
+                ) {
+                    chatMessageList[i].isGrouped = true
+                    countGroupedMessages++
+                } else {
+                    countGroupedMessages = 0
+                }
+            }
+
+            val chatMessage = chatMessageList[i]
+            chatMessage.isOneToOneConversation =
+                currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            chatMessage.activeUser = conversationUser
+        }
+
+        if (adapter != null) {
+            adapter?.addToEnd(chatMessageList, false)
+        }
+        scrollToRequestedMessageIfNeeded()
+    }
+
+    private fun processHeaderChatLastGiven(response: Response<*>, isFromTheFuture: Boolean) {
+        val xChatLastGivenHeader: String? = response.headers()["X-Chat-Last-Given"]
+        if (response.headers().size > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
+            val header = Integer.parseInt(xChatLastGivenHeader!!)
+            if (header > 0) {
+                if (isFromTheFuture) {
+                    globalLastKnownFutureMessageId = header
+                } else {
+                    if (globalLastKnownFutureMessageId == -1) {
+                        globalLastKnownFutureMessageId = header
+                    }
+                    globalLastKnownPastMessageId = header
+                }
             }
         }
     }
