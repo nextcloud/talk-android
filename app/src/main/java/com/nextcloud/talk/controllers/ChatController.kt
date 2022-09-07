@@ -2373,7 +2373,6 @@ class ChatController(args: Bundle) :
     }
 
     private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>) {
-        var chatMessage: ChatMessage
 
         val shouldAddNewMessagesNotice = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
 
@@ -2386,14 +2385,25 @@ class ChatController(args: Bundle) :
             adapter?.addToStart(unreadChatMessage, false)
         }
 
-        val isThereANewNotice =
-            shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
-
         determinePreviousMessageIds(chatMessageList)
 
-        for (i in chatMessageList.indices) {
-            chatMessage = chatMessageList[i]
+        addMessagesToAdapter(shouldAddNewMessagesNotice, chatMessageList)
 
+        if (shouldAddNewMessagesNotice && adapter != null) {
+            layoutManager?.scrollToPositionWithOffset(
+                adapter!!.getMessagePositionByIdInReverse("-1"),
+                binding.messagesListView.height / 2
+            )
+        }
+    }
+
+    private fun addMessagesToAdapter(
+        shouldAddNewMessagesNotice: Boolean,
+        chatMessageList: List<ChatMessage>
+    ) {
+        val isThereANewNotice =
+            shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
+        for (chatMessage in chatMessageList) {
             chatMessage.activeUser = conversationUser
 
             val shouldScroll =
@@ -2403,36 +2413,33 @@ class ChatController(args: Bundle) :
                     adapter != null &&
                     adapter?.itemCount == 0
 
-            if (!shouldAddNewMessagesNotice && !shouldScroll) {
-                if (!binding.popupBubbleView.isShown) {
-                    newMessagesCount = 1
-                    binding.popupBubbleView.show()
-                } else if (binding.popupBubbleView.isShown) {
-                    newMessagesCount++
-                }
-            } else {
-                newMessagesCount = 0
-            }
+            modifyMessageCount(shouldAddNewMessagesNotice, shouldScroll)
 
-            if (adapter != null) {
+            adapter?.let {
                 chatMessage.isGrouped = (
-                    adapter!!.isPreviousSameAuthor(
+                    it.isPreviousSameAuthor(
                         chatMessage.actorId,
                         -1
-                    ) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) %
+                    ) && it.getSameAuthorLastMessagesCount(chatMessage.actorId) %
                         GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
                     )
                 chatMessage.isOneToOneConversation =
                     (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
-                adapter?.addToStart(chatMessage, shouldScroll)
+                it.addToStart(chatMessage, shouldScroll)
             }
         }
+    }
 
-        if (shouldAddNewMessagesNotice && adapter != null) {
-            layoutManager?.scrollToPositionWithOffset(
-                adapter!!.getMessagePositionByIdInReverse("-1"),
-                binding.messagesListView.height / 2
-            )
+    private fun modifyMessageCount(shouldAddNewMessagesNotice: Boolean, shouldScroll: Boolean) {
+        if (!shouldAddNewMessagesNotice && !shouldScroll) {
+            if (!binding.popupBubbleView.isShown) {
+                newMessagesCount = 1
+                binding.popupBubbleView.show()
+            } else if (binding.popupBubbleView.isShown) {
+                newMessagesCount++
+            }
+        } else {
+            newMessagesCount = 0
         }
     }
 
