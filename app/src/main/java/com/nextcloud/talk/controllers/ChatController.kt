@@ -2486,17 +2486,23 @@ class ChatController(args: Bundle) :
 
     private fun processHeaderChatLastGiven(response: Response<*>, isFromTheFuture: Boolean) {
         val xChatLastGivenHeader: String? = response.headers()["X-Chat-Last-Given"]
-        if (response.headers().size > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
-            val header = Integer.parseInt(xChatLastGivenHeader!!)
-            if (header > 0) {
-                if (isFromTheFuture) {
+
+        val header = if (response.headers().size > 0 &&
+            xChatLastGivenHeader?.isNotEmpty() == true
+        ) {
+            xChatLastGivenHeader.toInt()
+        } else {
+            return
+        }
+
+        if (header > 0) {
+            if (isFromTheFuture) {
+                globalLastKnownFutureMessageId = header
+            } else {
+                if (globalLastKnownFutureMessageId == -1) {
                     globalLastKnownFutureMessageId = header
-                } else {
-                    if (globalLastKnownFutureMessageId == -1) {
-                        globalLastKnownFutureMessageId = header
-                    }
-                    globalLastKnownPastMessageId = header
                 }
+                globalLastKnownPastMessageId = header
             }
         }
     }
