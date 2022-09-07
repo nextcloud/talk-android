@@ -2382,22 +2382,7 @@ class ChatController(args: Bundle) :
         val isThereANewNotice =
             shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
 
-        var previousMessageId = NO_PREVIOUS_MESSAGE_ID
-        for (i in chatMessageList.indices.reversed()) {
-            val chatMessageItem = chatMessageList[i]
-
-            if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-                chatMessageItem.previousMessageId = previousMessageId
-            } else if (adapter?.isEmpty != true) {
-                if (adapter!!.items[0].item is ChatMessage) {
-                    chatMessageItem.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
-                } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
-                    chatMessageItem.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
-                }
-            }
-
-            previousMessageId = chatMessageItem.jsonMessageId
-        }
+        determinePreviousMessageIds(chatMessageList)
 
         for (i in chatMessageList.indices) {
             chatMessage = chatMessageList[i]
@@ -2446,22 +2431,7 @@ class ChatController(args: Bundle) :
 
     private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
         var countGroupedMessages = 0
-        var previousMessageId = NO_PREVIOUS_MESSAGE_ID
-        for (i in chatMessageList.indices.reversed()) {
-            val chatMessage = chatMessageList[i]
-
-            if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-                chatMessage.previousMessageId = previousMessageId
-            } else if (adapter?.isEmpty != true) {
-                if (adapter!!.items[0].item is ChatMessage) {
-                    chatMessage.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
-                } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
-                    chatMessage.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
-                }
-            }
-
-            previousMessageId = chatMessage.jsonMessageId
-        }
+        determinePreviousMessageIds(chatMessageList)
 
         for (i in chatMessageList.indices) {
             if (chatMessageList.size > i + 1) {
@@ -2486,6 +2456,25 @@ class ChatController(args: Bundle) :
             adapter?.addToEnd(chatMessageList, false)
         }
         scrollToRequestedMessageIfNeeded()
+    }
+
+    private fun determinePreviousMessageIds(chatMessageList: List<ChatMessage>) {
+        var previousMessageId = NO_PREVIOUS_MESSAGE_ID
+        for (i in chatMessageList.indices.reversed()) {
+            val chatMessage = chatMessageList[i]
+
+            if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+                chatMessage.previousMessageId = previousMessageId
+            } else if (adapter?.isEmpty != true) {
+                if (adapter!!.items[0].item is ChatMessage) {
+                    chatMessage.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
+                } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
+                    chatMessage.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
+                }
+            }
+
+            previousMessageId = chatMessage.jsonMessageId
+        }
     }
 
     private fun processHeaderChatLastGiven(response: Response<*>, isFromTheFuture: Boolean) {
