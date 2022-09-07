@@ -238,32 +238,32 @@ class ChatController(args: Bundle) :
 
     var roomToken: String? = null
     val conversationUser: User?
-    val roomPassword: String
+    private val roomPassword: String
     var credentials: String? = null
     var currentConversation: Conversation? = null
     var inConversation = false
-    var historyRead = false
-    var globalLastKnownFutureMessageId = -1
-    var globalLastKnownPastMessageId = -1
+    private var historyRead = false
+    private var globalLastKnownFutureMessageId = -1
+    private var globalLastKnownPastMessageId = -1
     var adapter: TalkMessagesListAdapter<ChatMessage>? = null
-    var mentionAutocomplete: Autocomplete<*>? = null
+    private var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
-    var lookingIntoFuture = false
+    private var lookingIntoFuture = false
     var newMessagesCount = 0
     var startCallFromNotification: Boolean? = null
     val roomId: String
     val voiceOnly: Boolean
     var isFirstMessagesProcessing = true
-    var emojiPopup: EmojiPopup? = null
+    private var emojiPopup: EmojiPopup? = null
 
     var myFirstMessage: CharSequence? = null
     var checkingLobbyStatus: Boolean = false
 
-    var conversationInfoMenuItem: MenuItem? = null
-    var conversationVoiceCallMenuItem: MenuItem? = null
-    var conversationVideoMenuItem: MenuItem? = null
-    var conversationSharedItemsItem: MenuItem? = null
+    private var conversationInfoMenuItem: MenuItem? = null
+    private var conversationVoiceCallMenuItem: MenuItem? = null
+    private var conversationVideoMenuItem: MenuItem? = null
+    private var conversationSharedItemsItem: MenuItem? = null
 
     var magicWebSocketInstance: MagicWebSocketInstance? = null
 
@@ -271,8 +271,8 @@ class ChatController(args: Bundle) :
     var pastPreconditionFailed = false
     var futurePreconditionFailed = false
 
-    val filesToUpload: MutableList<String> = ArrayList()
-    var sharedText: String
+    private val filesToUpload: MutableList<String> = ArrayList()
+    private var sharedText: String
     var isVoiceRecordingInProgress: Boolean = false
     var currentVoiceRecordFile: String = ""
 
@@ -280,7 +280,7 @@ class ChatController(args: Bundle) :
 
     var mediaPlayer: MediaPlayer? = null
     lateinit var mediaPlayerHandler: Handler
-    var currentlyPlayedVoiceMessage: ChatMessage? = null
+    private var currentlyPlayedVoiceMessage: ChatMessage? = null
 
     var hasChatPermission: Boolean = false
 
@@ -306,10 +306,10 @@ class ChatController(args: Bundle) :
 
         this.roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
 
-        if (conversationUser?.userId == "?") {
-            credentials = null
+        credentials = if (conversationUser?.userId == "?") {
+            null
         } else {
-            credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token)
+            ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token)
         }
 
         if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
@@ -329,7 +329,7 @@ class ChatController(args: Bundle) :
             val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
             val startNanoTime = System.nanoTime()
-            Log.d(TAG, "getRoomInfo - getRoom - calling: " + startNanoTime)
+            Log.d(TAG, "getRoomInfo - getRoom - calling: $startNanoTime")
             ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser.baseUrl, roomToken))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
@@ -340,7 +340,7 @@ class ChatController(args: Bundle) :
 
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
-                        Log.d(TAG, "getRoomInfo - getRoom - got response: " + startNanoTime)
+                        Log.d(TAG, "getRoomInfo - getRoom - got response: $startNanoTime")
                         currentConversation = roomOverall.ocs!!.data
                         Log.d(
                             TAG,
@@ -367,7 +367,7 @@ class ChatController(args: Bundle) :
                             }
                         } catch (npe: NullPointerException) {
                             // view binding can be null
-                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            // since this is called asynchronously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone")
                         }
                     }
@@ -377,7 +377,7 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onComplete() {
-                        Log.d(TAG, "getRoomInfo - getRoom - onComplete: " + startNanoTime)
+                        Log.d(TAG, "getRoomInfo - getRoom - onComplete: $startNanoTime")
                         if (shouldRepeat) {
                             if (lobbyTimerHandler == null) {
                                 lobbyTimerHandler = Handler()
@@ -582,14 +582,13 @@ class ChatController(args: Bundle) :
                 this
             )
 
-            var senderId = ""
-            if (!conversationUser?.userId.equals("?")) {
-                senderId = "users/" + conversationUser?.userId
+            val senderId = if (!conversationUser.userId.equals("?")) {
+                "users/" + conversationUser.userId
             } else {
-                senderId = currentConversation?.actorType + "/" + currentConversation?.actorId
+                currentConversation?.actorType + "/" + currentConversation?.actorId
             }
 
-            Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: " + senderId)
+            Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: $senderId")
 
             adapter = TalkMessagesListAdapter(
                 senderId,
@@ -618,7 +617,7 @@ class ChatController(args: Bundle) :
             R.id.playPauseBtn
         ) { view, message ->
             val filename = message.selectedIndividualHashMap!!["name"]
-            val file = File(context!!.cacheDir, filename!!)
+            val file = File(context.cacheDir, filename!!)
             if (file.exists()) {
                 if (message.isPlayingVoiceMessage) {
                     pausePlayback(message)
@@ -638,11 +637,10 @@ class ChatController(args: Bundle) :
 
         binding.popupBubbleView.setPopupBubbleListener { context ->
             if (newMessagesCount != 0) {
-                val scrollPosition: Int
-                if (newMessagesCount - 1 < 0) {
-                    scrollPosition = 0
+                val scrollPosition = if (newMessagesCount - 1 < 0) {
+                    0
                 } else {
-                    scrollPosition = newMessagesCount - 1
+                    newMessagesCount - 1
                 }
                 Handler().postDelayed(
                     {
@@ -676,7 +674,7 @@ class ChatController(args: Bundle) :
         })
 
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser) ?: MESSAGE_MAX_LENGTH
+        val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
         binding.messageInputView.inputEditText?.filters = filters
@@ -692,7 +690,7 @@ class ChatController(args: Bundle) :
                     if (s.length >= lengthFilter) {
                         binding.messageInputView.inputEditText?.error = String.format(
                             Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
-                            Integer.toString(lengthFilter)
+                            lengthFilter.toString()
                         )
                     } else {
                         binding.messageInputView.inputEditText?.error = null
@@ -771,7 +769,7 @@ class ChatController(args: Bundle) :
                             requestRecordAudioPermissions()
                             return true
                         }
-                        if (!UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                        if (!UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
                             UploadAndShareFilesWorker.requestStoragePermission(this@ChatController)
                             return true
                         }
@@ -803,10 +801,10 @@ class ChatController(args: Bundle) :
                         voiceRecordEndTime = System.currentTimeMillis()
                         val voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
                         if (voiceRecordDuration < MINIMUM_VOICE_RECORD_DURATION) {
-                            Log.d(TAG, "voiceRecordDuration: " + voiceRecordDuration)
+                            Log.d(TAG, "voiceRecordDuration: $voiceRecordDuration")
                             Toast.makeText(
                                 context,
-                                context!!.getString(R.string.nc_voice_message_hold_to_record_info),
+                                context.getString(R.string.nc_voice_message_hold_to_record_info),
                                 Toast.LENGTH_SHORT
                             ).show()
                             stopAndDiscardAudioRecording()
@@ -993,7 +991,7 @@ class ChatController(args: Bundle) :
 
         if (mediaPlayer == null) {
             val fileName = message.selectedIndividualHashMap!!["name"]
-            val absolutePath = context!!.cacheDir.absolutePath + "/" + fileName
+            val absolutePath = context.cacheDir.absolutePath + "/" + fileName
             mediaPlayer = MediaPlayer().apply {
                 setDataSource(absolutePath)
                 prepare()
@@ -1050,12 +1048,12 @@ class ChatController(args: Bundle) :
 
         // check if download worker is already running
         val workers = WorkManager.getInstance(
-            context!!
+            context
         ).getWorkInfosByTag(fileId!!)
         try {
             for (workInfo in workers.get()) {
                 if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
-                    Log.d(TAG, "Download worker for " + fileId + " is already running or scheduled")
+                    Log.d(TAG, "Download worker for $fileId is already running or scheduled")
                     return
                 }
             }
@@ -1081,7 +1079,7 @@ class ChatController(args: Bundle) :
 
         WorkManager.getInstance().enqueue(downloadWorker)
 
-        WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(downloadWorker.id)
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.id)
             .observeForever { workInfo: WorkInfo ->
                 if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                     startPlayback(message)
@@ -1096,13 +1094,13 @@ class ChatController(args: Bundle) :
         val date: String = simpleDateFormat.format(Date())
 
         val fileNameWithoutSuffix = String.format(
-            context!!.resources.getString(R.string.nc_voice_message_filename),
+            context.resources.getString(R.string.nc_voice_message_filename),
             date,
             currentConversation!!.displayName
         )
         val fileName = fileNameWithoutSuffix + VOICE_MESSAGE_FILE_SUFFIX
 
-        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/$fileName"
+        currentVoiceRecordFile = "${context.cacheDir.absolutePath}/$fileName"
     }
 
     private fun showRecordAudioUi(show: Boolean) {
@@ -1124,14 +1122,14 @@ class ChatController(args: Bundle) :
             binding.messageInputView.smileyButton.visibility = View.VISIBLE
             binding.messageInputView.messageInput.visibility = View.VISIBLE
             binding.messageInputView.messageInput.hint =
-                context?.resources?.getString(R.string.nc_hint_enter_a_message)
+                context.resources?.getString(R.string.nc_hint_enter_a_message)
         }
     }
 
     private fun isRecordAudioPermissionGranted(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return PermissionChecker.checkSelfPermission(
-                context!!,
+                context,
                 Manifest.permission.RECORD_AUDIO
             ) == PermissionChecker.PERMISSION_GRANTED
         } else {
@@ -1211,7 +1209,7 @@ class ChatController(args: Bundle) :
     }
 
     fun vibrate() {
-        val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (Build.VERSION.SDK_INT >= O) {
             vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
@@ -1403,25 +1401,25 @@ class ChatController(args: Bundle) :
                     }
                     require(filesToUpload.isNotEmpty())
 
-                    val filenamesWithLinebreaks = StringBuilder("\n")
+                    val filenamesWithLineBreaks = StringBuilder("\n")
 
                     for (file in filesToUpload) {
                         val filename = UriUtils.getFileName(Uri.parse(file), context)
-                        filenamesWithLinebreaks.append(filename).append("\n")
+                        filenamesWithLineBreaks.append(filename).append("\n")
                     }
 
                     val confirmationQuestion = when (filesToUpload.size) {
-                        1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
+                        1 -> context.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
                             String.format(it, title.trim())
                         }
-                        else -> context?.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
+                        else -> context.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
                             String.format(it, title.trim())
                         }
                     }
 
                     val materialAlertDialogBuilder = MaterialAlertDialogBuilder(binding.messageInputView.context)
                         .setTitle(confirmationQuestion)
-                        .setMessage(filenamesWithLinebreaks.toString())
+                        .setMessage(filenamesWithLineBreaks.toString())
                         .setPositiveButton(R.string.nc_yes) { _, _ ->
                             if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
                                 uploadFiles(filesToUpload, false)
@@ -1445,11 +1443,11 @@ class ChatController(args: Bundle) :
                         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                     )
                 } catch (e: IllegalStateException) {
-                    Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
+                    Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
                         .show()
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 } catch (e: IllegalArgumentException) {
-                    Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
+                    Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
                         .show()
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 }
@@ -1460,8 +1458,8 @@ class ChatController(args: Bundle) :
 
                 if (cursor != null && cursor.moveToFirst()) {
                     val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                    val fileName = ContactUtils.getDisplayNameFromDeviceContact(context!!, id) + ".vcf"
-                    val file = File(context?.cacheDir, fileName)
+                    val fileName = ContactUtils.getDisplayNameFromDeviceContact(context, id) + ".vcf"
+                    val file = File(context.cacheDir, fileName)
                     writeContactToVcfFile(cursor, file)
 
                     val shareUri = FileProvider.getUriForFile(
@@ -1486,7 +1484,7 @@ class ChatController(args: Bundle) :
                         }
                         require(filesToUpload.isNotEmpty())
 
-                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
                             uploadFiles(filesToUpload, false)
                         } else {
                             UploadAndShareFilesWorker.requestStoragePermission(this)
@@ -1494,7 +1492,7 @@ class ChatController(args: Bundle) :
                     } catch (e: IllegalStateException) {
                         Toast.makeText(
                             context,
-                            context?.resources?.getString(R.string.nc_upload_failed),
+                            context.resources?.getString(R.string.nc_upload_failed),
                             Toast.LENGTH_LONG
                         )
                             .show()
@@ -1502,7 +1500,7 @@ class ChatController(args: Bundle) :
                     } catch (e: IllegalArgumentException) {
                         Toast.makeText(
                             context,
-                            context?.resources?.getString(R.string.nc_upload_failed),
+                            context.resources?.getString(R.string.nc_upload_failed),
                             Toast.LENGTH_LONG
                         )
                             .show()
@@ -1554,7 +1552,7 @@ class ChatController(args: Bundle) :
                 }
             } else {
                 Toast
-                    .makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
+                    .makeText(context, context.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
                     .show()
             }
         } else if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
@@ -1563,7 +1561,7 @@ class ChatController(args: Bundle) :
             } else {
                 Toast.makeText(
                     context,
-                    context!!.getString(R.string.nc_voice_message_missing_audio_permission),
+                    context.getString(R.string.nc_voice_message_missing_audio_permission),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -1574,17 +1572,17 @@ class ChatController(args: Bundle) :
             } else {
                 Toast.makeText(
                     context,
-                    context!!.getString(R.string.nc_share_contact_permission),
+                    context.getString(R.string.nc_share_contact_permission),
                     Toast.LENGTH_LONG
                 ).show()
             }
         } else if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "launch cam activity since permission for cam has been granted")
-                startActivityForResult(TakePhotoActivity.createIntent(context!!), REQUEST_CODE_PICK_CAMERA)
+                startActivityForResult(TakePhotoActivity.createIntent(context), REQUEST_CODE_PICK_CAMERA)
             } else {
                 Toast
-                    .makeText(context, context?.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
+                    .makeText(context, context.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
                     .show()
             }
         }
@@ -1621,12 +1619,12 @@ class ChatController(args: Bundle) :
             if (!isVoiceMessage) {
                 Toast.makeText(
                     context,
-                    context?.getString(R.string.nc_upload_in_progess),
+                    context.getString(R.string.nc_upload_in_progess),
                     Toast.LENGTH_LONG
                 ).show()
             }
         } catch (e: IllegalArgumentException) {
-            Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
         }
     }
@@ -1640,7 +1638,7 @@ class ChatController(args: Bundle) :
         startActivityForResult(
             Intent.createChooser(
                 action,
-                context?.resources?.getString(
+                context.resources?.getString(
                     R.string.nc_upload_choose_local_files
                 )
             ),
@@ -1724,7 +1722,7 @@ class ChatController(args: Bundle) :
         eventBus.register(this)
 
         if (conversationUser?.userId != "?" &&
-            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag") ?: false &&
+            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag") &&
             activity != null
         ) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
@@ -1743,13 +1741,13 @@ class ChatController(args: Bundle) :
                 onEmojiPopupShownListener = {
                     if (resources != null) {
                         smileyButton?.setImageDrawable(
-                            ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_keyboard_24)
+                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_24)
                         )
                     }
                 },
                 onEmojiPopupDismissListener = {
                     smileyButton?.setImageDrawable(
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_insert_emoticon_black_24dp)
+                        ContextCompat.getDrawable(context, R.drawable.ic_insert_emoticon_black_24dp)
                     )
                 },
                 onEmojiClickListener = {
@@ -1777,7 +1775,7 @@ class ChatController(args: Bundle) :
 
         cancelNotificationsForCurrentConversation()
 
-        Log.d(TAG, "onAttach inConversation: " + inConversation.toString())
+        Log.d(TAG, "onAttach inConversation: $inConversation")
         if (inConversation) {
             Log.d(TAG, "execute joinRoomWithPassword in onAttach")
             joinRoomWithPassword()
@@ -1881,11 +1879,11 @@ class ChatController(args: Bundle) :
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
-                apiVersion = ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.APIv4, 1))
+                apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
             }
 
             val startNanoTime = System.nanoTime()
-            Log.d(TAG, "joinRoomWithPassword - joinRoom - calling: " + startNanoTime)
+            Log.d(TAG, "joinRoomWithPassword - joinRoom - calling: $startNanoTime")
             ncApi.joinRoom(
                 credentials,
                 ApiUtils.getUrlForParticipantsActive(apiVersion, conversationUser?.baseUrl, roomToken),
@@ -1901,7 +1899,7 @@ class ChatController(args: Bundle) :
 
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
-                        Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: " + startNanoTime)
+                        Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: $startNanoTime")
                         inConversation = true
                         currentConversation?.sessionId = roomOverall.ocs!!.data!!.sessionId
                         Log.d(TAG, "joinRoomWithPassword - sessionId: " + currentConversation?.sessionId)
@@ -1915,7 +1913,7 @@ class ChatController(args: Bundle) :
                             checkLobbyState()
                         } catch (npe: NullPointerException) {
                             // view binding can be null
-                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            // since this is called asynchronously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone")
                         }
 
@@ -1971,7 +1969,7 @@ class ChatController(args: Bundle) :
         }
 
         val startNanoTime = System.nanoTime()
-        Log.d(TAG, "leaveRoom - leaveRoom - calling: " + startNanoTime)
+        Log.d(TAG, "leaveRoom - leaveRoom - calling: $startNanoTime")
         ncApi.leaveRoom(
             credentials,
             ApiUtils.getUrlForParticipantsActive(
@@ -1988,7 +1986,7 @@ class ChatController(args: Bundle) :
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    Log.d(TAG, "leaveRoom - leaveRoom - got response: " + startNanoTime)
+                    Log.d(TAG, "leaveRoom - leaveRoom - got response: $startNanoTime")
                     checkingLobbyStatus = false
 
                     if (lobbyTimerHandler != null) {
@@ -2012,7 +2010,7 @@ class ChatController(args: Bundle) :
                 }
 
                 override fun onComplete() {
-                    Log.d(TAG, "leaveRoom - leaveRoom - completed: " + startNanoTime)
+                    Log.d(TAG, "leaveRoom - leaveRoom - completed: $startNanoTime")
                     disposables.dispose()
                 }
             })
@@ -2055,7 +2053,7 @@ class ChatController(args: Bundle) :
         if (conversationUser != null) {
             val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
 
-            ncApi!!.sendChatMessage(
+            ncApi.sendChatMessage(
                 credentials,
                 ApiUtils.getUrlForChat(apiVersion, conversationUser.baseUrl, roomToken),
                 message,
@@ -2075,14 +2073,14 @@ class ChatController(args: Bundle) :
                         myFirstMessage = message
 
                         try {
-                            if (binding.popupBubbleView.isShown == true) {
+                            if (binding.popupBubbleView.isShown) {
                                 binding.popupBubbleView.hide()
                             }
 
                             binding.messagesListView.smoothScrollToPosition(0)
                         } catch (npe: NullPointerException) {
                             // view binding can be null
-                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            // since this is called asynchronously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone")
                         }
                     }
@@ -2090,10 +2088,10 @@ class ChatController(args: Bundle) :
                     override fun onError(e: Throwable) {
                         if (e is HttpException) {
                             val code = e.code()
-                            if (Integer.toString(code).startsWith("2")) {
+                            if (code.toString().startsWith("2")) {
                                 myFirstMessage = message
 
-                                if (binding.popupBubbleView.isShown == true) {
+                                if (binding.popupBubbleView.isShown) {
                                     binding.popupBubbleView.hide()
                                 }
 
@@ -2112,13 +2110,13 @@ class ChatController(args: Bundle) :
 
     private fun setupWebsocket() {
         if (conversationUser != null) {
-            if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
-                magicWebSocketInstance =
+            magicWebSocketInstance =
+                if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
                     WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
-            } else {
-                Log.d(TAG, "magicWebSocketInstance became null")
-                magicWebSocketInstance = null
-            }
+                } else {
+                    Log.d(TAG, "magicWebSocketInstance became null")
+                    null
+                }
         }
     }
 
@@ -2166,11 +2164,10 @@ class ChatController(args: Bundle) :
         fieldMap["limit"] = MESSAGE_PULL_LIMIT
         fieldMap["setReadMarker"] = setReadMarker
 
-        val lastKnown: Int
-        if (lookIntoFuture > 0) {
-            lastKnown = globalLastKnownFutureMessageId
+        val lastKnown = if (lookIntoFuture > 0) {
+            globalLastKnownFutureMessageId
         } else {
-            lastKnown = globalLastKnownPastMessageId
+            globalLastKnownPastMessageId
         }
 
         fieldMap["lastKnownMessageId"] = lastKnown
@@ -2185,7 +2182,6 @@ class ChatController(args: Bundle) :
         }
 
         if (lookIntoFuture > 0) {
-            val finalTimeout = timeout
             Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - calling")
             ncApi.pullChatMessages(
                 credentials,
@@ -2210,11 +2206,11 @@ class ChatController(args: Bundle) :
                             } else if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
                                 futurePreconditionFailed = true
                             } else {
-                                processMessages(response, true, finalTimeout)
+                                processMessagesResponse(response, true)
                             }
                         } catch (npe: NullPointerException) {
                             // view binding can be null
-                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            // since this is called asynchronously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone")
                         }
 
@@ -2252,11 +2248,11 @@ class ChatController(args: Bundle) :
                             if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
                                 pastPreconditionFailed = true
                             } else {
-                                processMessages(response, false, 0)
+                                processMessagesResponse(response, false)
                             }
                         } catch (e: NullPointerException) {
                             // view binding can be null
-                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            // since this is called asynchronously and UI might have been destroyed in the meantime
                             Log.i(TAG, "UI destroyed - view binding already gone", e)
                         }
 
@@ -2297,185 +2293,19 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun processMessages(response: Response<*>, isFromTheFuture: Boolean, timeout: Int) {
-        val xChatLastGivenHeader: String? = response.headers().get("X-Chat-Last-Given")
-        val xChatLastCommonRead = response.headers().get("X-Chat-Last-Common-Read")?.let {
+    private fun processMessagesResponse(response: Response<*>, isFromTheFuture: Boolean) {
+
+        val xChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
             Integer.parseInt(it)
         }
-        if (response.headers().size > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
-            val header = Integer.parseInt(xChatLastGivenHeader!!)
-            if (header > 0) {
-                if (isFromTheFuture) {
-                    globalLastKnownFutureMessageId = header
-                } else {
-                    if (globalLastKnownFutureMessageId == -1) {
-                        globalLastKnownFutureMessageId = header
-                    }
-                    globalLastKnownPastMessageId = header
-                }
-            }
-        }
+
+        processHeaderChatLastGiven(response, isFromTheFuture)
 
         if (response.code() == HTTP_CODE_OK) {
             val chatOverall = response.body() as ChatOverall?
             val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data!!)
 
-            if (chatMessageList.isNotEmpty() &&
-                ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
-            ) {
-                adapter?.clear()
-                adapter?.notifyDataSetChanged()
-            }
-
-            if (isFirstMessagesProcessing) {
-                cancelNotificationsForCurrentConversation()
-
-                isFirstMessagesProcessing = false
-                binding.progressBar.visibility = View.GONE
-
-                binding.messagesListView.visibility = View.VISIBLE
-            }
-
-            var countGroupedMessages = 0
-            if (!isFromTheFuture) {
-                var previousMessageId = NO_PREVIOUS_MESSAGE_ID
-                for (i in chatMessageList.indices.reversed()) {
-                    val chatMessage = chatMessageList[i]
-
-                    if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-                        chatMessage.previousMessageId = previousMessageId
-                    } else if (adapter?.isEmpty != true) {
-                        if (adapter!!.items[0].item is ChatMessage) {
-                            chatMessage.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
-                        } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
-                            chatMessage.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
-                        }
-                    }
-
-                    previousMessageId = chatMessage.jsonMessageId
-                }
-
-                for (i in chatMessageList.indices) {
-                    if (chatMessageList.size > i + 1) {
-                        if (isSameDayNonSystemMessages(chatMessageList[i], chatMessageList[i + 1]) &&
-                            chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
-                            countGroupedMessages < GROUPED_MESSAGES_THRESHOLD
-                        ) {
-                            chatMessageList[i].isGrouped = true
-                            countGroupedMessages++
-                        } else {
-                            countGroupedMessages = 0
-                        }
-                    }
-
-                    val chatMessage = chatMessageList[i]
-                    chatMessage.isOneToOneConversation =
-                        currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-                    chatMessage.activeUser = conversationUser
-                }
-
-                if (adapter != null) {
-                    adapter?.addToEnd(chatMessageList, false)
-                }
-                scrollToRequestedMessageIfNeeded()
-            } else {
-                var chatMessage: ChatMessage
-
-                val shouldAddNewMessagesNotice = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
-
-                if (shouldAddNewMessagesNotice) {
-                    val unreadChatMessage = ChatMessage()
-                    unreadChatMessage.jsonMessageId = -1
-                    unreadChatMessage.actorId = "-1"
-                    unreadChatMessage.timestamp = chatMessageList[0].timestamp
-                    unreadChatMessage.message = context?.getString(R.string.nc_new_messages)
-                    adapter?.addToStart(unreadChatMessage, false)
-                }
-
-                val isThereANewNotice =
-                    shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
-
-                var previousMessageId = NO_PREVIOUS_MESSAGE_ID
-                for (i in chatMessageList.indices.reversed()) {
-                    val chatMessageItem = chatMessageList[i]
-
-                    if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-                        chatMessageItem.previousMessageId = previousMessageId
-                    } else if (adapter?.isEmpty != true) {
-                        if (adapter!!.items[0].item is ChatMessage) {
-                            chatMessageItem.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
-                        } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
-                            chatMessageItem.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
-                        }
-                    }
-
-                    previousMessageId = chatMessageItem.jsonMessageId
-                }
-
-                for (i in chatMessageList.indices) {
-                    chatMessage = chatMessageList[i]
-
-                    chatMessage.activeUser = conversationUser
-
-                    val shouldScroll =
-                        !isThereANewNotice &&
-                            !shouldAddNewMessagesNotice &&
-                            layoutManager?.findFirstVisibleItemPosition() == 0 ||
-                            adapter != null &&
-                            adapter?.itemCount == 0
-
-                    if (!shouldAddNewMessagesNotice && !shouldScroll) {
-                        if (!binding.popupBubbleView.isShown) {
-                            newMessagesCount = 1
-                            binding.popupBubbleView.show()
-                        } else if (binding.popupBubbleView.isShown == true) {
-                            newMessagesCount++
-                        }
-                    } else {
-                        newMessagesCount = 0
-                    }
-
-                    if (adapter != null) {
-                        chatMessage.isGrouped = (
-                            adapter!!.isPreviousSameAuthor(
-                                chatMessage.actorId,
-                                -1
-                            ) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) %
-                                GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
-                            )
-                        chatMessage.isOneToOneConversation =
-                            (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
-                        adapter?.addToStart(chatMessage, shouldScroll)
-                    }
-                }
-
-                if (shouldAddNewMessagesNotice && adapter != null) {
-                    layoutManager?.scrollToPositionWithOffset(
-                        adapter!!.getMessagePositionByIdInReverse("-1"),
-                        binding.messagesListView.height / 2
-                    )
-                }
-            }
-
-            // update read status of all messages
-            for (message in adapter!!.items) {
-                xChatLastCommonRead?.let {
-                    if (message.item is ChatMessage) {
-                        val chatMessage = message.item as ChatMessage
-
-                        if (chatMessage.jsonMessageId <= it) {
-                            chatMessage.readStatus = ReadStatus.READ
-                        } else {
-                            chatMessage.readStatus = ReadStatus.SENT
-                        }
-                    }
-                }
-            }
-            adapter?.notifyDataSetChanged()
-
-            if (inConversation) {
-                pullChatMessages(1, 1, xChatLastCommonRead)
-            }
+            processMessages(chatMessageList, isFromTheFuture, xChatLastCommonRead)
         } else if (response.code() == HTTP_CODE_NOT_MODIFIED && !isFromTheFuture) {
             if (isFirstMessagesProcessing) {
                 cancelNotificationsForCurrentConversation()
@@ -2488,6 +2318,206 @@ class ChatController(args: Bundle) :
 
             if (!lookingIntoFuture && inConversation) {
                 pullChatMessages(1)
+            }
+        }
+    }
+
+    private fun processMessages(
+        chatMessageList: List<ChatMessage>,
+        isFromTheFuture: Boolean,
+        xChatLastCommonRead: Int?
+    ) {
+        if (chatMessageList.isNotEmpty() &&
+            ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
+        ) {
+            adapter?.clear()
+            adapter?.notifyDataSetChanged()
+        }
+
+        if (isFirstMessagesProcessing) {
+            cancelNotificationsForCurrentConversation()
+
+            isFirstMessagesProcessing = false
+            binding.progressBar.visibility = View.GONE
+
+            binding.messagesListView.visibility = View.VISIBLE
+        }
+
+        if (isFromTheFuture) {
+            processMessagesFromTheFuture(chatMessageList)
+        } else {
+            processMessagesNotFromTheFuture(chatMessageList)
+        }
+
+        updateReadStatusOfAllMessages(xChatLastCommonRead)
+        adapter?.notifyDataSetChanged()
+
+        if (inConversation) {
+            pullChatMessages(1, 1, xChatLastCommonRead)
+        }
+    }
+
+    private fun updateReadStatusOfAllMessages(xChatLastCommonRead: Int?) {
+        for (message in adapter!!.items) {
+            xChatLastCommonRead?.let {
+                updateReadStatusOfMessage(message, it)
+            }
+        }
+    }
+
+    private fun updateReadStatusOfMessage(
+        message: MessagesListAdapter<IMessage>.Wrapper<Any>,
+        xChatLastCommonRead: Int
+    ) {
+        if (message.item is ChatMessage) {
+            val chatMessage = message.item as ChatMessage
+
+            if (chatMessage.jsonMessageId <= xChatLastCommonRead) {
+                chatMessage.readStatus = ReadStatus.READ
+            } else {
+                chatMessage.readStatus = ReadStatus.SENT
+            }
+        }
+    }
+
+    private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>) {
+
+        val shouldAddNewMessagesNotice = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
+
+        if (shouldAddNewMessagesNotice) {
+            val unreadChatMessage = ChatMessage()
+            unreadChatMessage.jsonMessageId = -1
+            unreadChatMessage.actorId = "-1"
+            unreadChatMessage.timestamp = chatMessageList[0].timestamp
+            unreadChatMessage.message = context.getString(R.string.nc_new_messages)
+            adapter?.addToStart(unreadChatMessage, false)
+        }
+
+        determinePreviousMessageIds(chatMessageList)
+
+        addMessagesToAdapter(shouldAddNewMessagesNotice, chatMessageList)
+
+        if (shouldAddNewMessagesNotice && adapter != null) {
+            layoutManager?.scrollToPositionWithOffset(
+                adapter!!.getMessagePositionByIdInReverse("-1"),
+                binding.messagesListView.height / 2
+            )
+        }
+    }
+
+    private fun addMessagesToAdapter(
+        shouldAddNewMessagesNotice: Boolean,
+        chatMessageList: List<ChatMessage>
+    ) {
+        val isThereANewNotice =
+            shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
+        for (chatMessage in chatMessageList) {
+            chatMessage.activeUser = conversationUser
+
+            val shouldScroll =
+                !isThereANewNotice &&
+                    !shouldAddNewMessagesNotice &&
+                    layoutManager?.findFirstVisibleItemPosition() == 0 ||
+                    adapter != null &&
+                    adapter?.itemCount == 0
+
+            modifyMessageCount(shouldAddNewMessagesNotice, shouldScroll)
+
+            adapter?.let {
+                chatMessage.isGrouped = (
+                    it.isPreviousSameAuthor(
+                        chatMessage.actorId,
+                        -1
+                    ) && it.getSameAuthorLastMessagesCount(chatMessage.actorId) %
+                        GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
+                    )
+                chatMessage.isOneToOneConversation =
+                    (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
+                it.addToStart(chatMessage, shouldScroll)
+            }
+        }
+    }
+
+    private fun modifyMessageCount(shouldAddNewMessagesNotice: Boolean, shouldScroll: Boolean) {
+        if (!shouldAddNewMessagesNotice && !shouldScroll) {
+            if (!binding.popupBubbleView.isShown) {
+                newMessagesCount = 1
+                binding.popupBubbleView.show()
+            } else if (binding.popupBubbleView.isShown) {
+                newMessagesCount++
+            }
+        } else {
+            newMessagesCount = 0
+        }
+    }
+
+    private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
+        var countGroupedMessages = 0
+        determinePreviousMessageIds(chatMessageList)
+
+        for (i in chatMessageList.indices) {
+            if (chatMessageList.size > i + 1) {
+                if (isSameDayNonSystemMessages(chatMessageList[i], chatMessageList[i + 1]) &&
+                    chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
+                    countGroupedMessages < GROUPED_MESSAGES_THRESHOLD
+                ) {
+                    chatMessageList[i].isGrouped = true
+                    countGroupedMessages++
+                } else {
+                    countGroupedMessages = 0
+                }
+            }
+
+            val chatMessage = chatMessageList[i]
+            chatMessage.isOneToOneConversation =
+                currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            chatMessage.activeUser = conversationUser
+        }
+
+        if (adapter != null) {
+            adapter?.addToEnd(chatMessageList, false)
+        }
+        scrollToRequestedMessageIfNeeded()
+    }
+
+    private fun determinePreviousMessageIds(chatMessageList: List<ChatMessage>) {
+        var previousMessageId = NO_PREVIOUS_MESSAGE_ID
+        for (i in chatMessageList.indices.reversed()) {
+            val chatMessage = chatMessageList[i]
+
+            if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+                chatMessage.previousMessageId = previousMessageId
+            } else if (adapter?.isEmpty != true) {
+                if (adapter!!.items[0].item is ChatMessage) {
+                    chatMessage.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
+                } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
+                    chatMessage.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
+                }
+            }
+
+            previousMessageId = chatMessage.jsonMessageId
+        }
+    }
+
+    private fun processHeaderChatLastGiven(response: Response<*>, isFromTheFuture: Boolean) {
+        val xChatLastGivenHeader: String? = response.headers()["X-Chat-Last-Given"]
+
+        val header = if (response.headers().size > 0 &&
+            xChatLastGivenHeader?.isNotEmpty() == true
+        ) {
+            xChatLastGivenHeader.toInt()
+        } else {
+            return
+        }
+
+        if (header > 0) {
+            if (isFromTheFuture) {
+                globalLastKnownFutureMessageId = header
+            } else {
+                if (globalLastKnownFutureMessageId == -1) {
+                    globalLastKnownFutureMessageId = header
+                }
+                globalLastKnownPastMessageId = header
             }
         }
     }
@@ -2760,7 +2790,7 @@ class ChatController(args: Bundle) :
                     currentConversation,
                     isShowMessageDeletionButton(message),
                     hasChatPermission,
-                    ncApi!!
+                    ncApi
                 ).show()
             }
         }
@@ -2838,7 +2868,7 @@ class ChatController(args: Bundle) :
             message?.user?.id?.substring(INVITE_LENGTH),
             null
         )
-        ncApi!!.createRoom(
+        ncApi.createRoom(
             credentials,
             retrofitBucket.url,
             retrofitBucket.queryMap
@@ -2857,7 +2887,7 @@ class ChatController(args: Bundle) :
                     bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     // FIXME once APIv2+ is used only, the createRoom already returns all the data
-                    ncApi!!.getRoom(
+                    ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion,
@@ -2921,7 +2951,7 @@ class ChatController(args: Bundle) :
     fun markAsUnread(message: IMessage?) {
         val chatMessage = message as ChatMessage?
         if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-            ncApi!!.setChatReadMarker(
+            ncApi.setChatReadMarker(
                 credentials,
                 ApiUtils.getUrlForSetChatReadMarker(
                     ApiUtils.getChatApiVersion(conversationUser, intArrayOf(ApiUtils.APIv1)),
@@ -2966,7 +2996,7 @@ class ChatController(args: Bundle) :
         return !message.isDeleted || // copy message
             message.replyable || // reply to
             message.replyable && // reply privately
-            conversationUser?.userId?.isNotEmpty() == true && conversationUser?.userId != "?" &&
+            conversationUser?.userId?.isNotEmpty() == true && conversationUser.userId != "?" &&
             message.user.id.startsWith("users/") &&
             message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
             currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
@@ -2993,7 +3023,7 @@ class ChatController(args: Bundle) :
             quotedMessage?.ellipsize = TextUtils.TruncateAt.END
             quotedMessage?.text = it.text
             binding.messageInputView.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
-                it.actorDisplayName ?: context!!.getText(R.string.nc_nick_guest)
+                it.actorDisplayName ?: context.getText(R.string.nc_nick_guest)
 
             conversationUser?.let { currentUser ->
                 val quotedMessageImage = binding
@@ -3091,7 +3121,7 @@ class ChatController(args: Bundle) :
 
         val isOlderThanSixHours = message
             .createdAt
-            ?.before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
+            .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_DELETE_MESSAGE))
 
         return when {
             !isUserAllowedByPrivileges -> false
@@ -3219,7 +3249,7 @@ class ChatController(args: Bundle) :
         if (!permissionUtil.isCameraPermissionGranted()) {
             requestCameraPermissions()
         } else {
-            startActivityForResult(TakePhotoActivity.createIntent(context!!), REQUEST_CODE_PICK_CAMERA)
+            startActivityForResult(TakePhotoActivity.createIntent(context), REQUEST_CODE_PICK_CAMERA)
         }
     }
 
@@ -3244,8 +3274,7 @@ class ChatController(args: Bundle) :
         private const val POP_CURRENT_CONTROLLER_DELAY: Long = 100
         private const val LOBBY_TIMER_DELAY: Long = 5000
         private const val HTTP_CODE_OK: Int = 200
-        private const val MESSAGE_MAX_LENGTH: Int = 1000
-        private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
+        private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
         private const val REQUEST_CODE_MESSAGE_SEARCH: Int = 777
