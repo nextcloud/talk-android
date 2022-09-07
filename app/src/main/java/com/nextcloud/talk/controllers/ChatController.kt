@@ -2352,15 +2352,22 @@ class ChatController(args: Bundle) :
     private fun updateReadStatusOfAllMessages(xChatLastCommonRead: Int?) {
         for (message in adapter!!.items) {
             xChatLastCommonRead?.let {
-                if (message.item is ChatMessage) {
-                    val chatMessage = message.item as ChatMessage
+                updateReadStatusOfMessage(message, it)
+            }
+        }
+    }
 
-                    if (chatMessage.jsonMessageId <= it) {
-                        chatMessage.readStatus = ReadStatus.READ
-                    } else {
-                        chatMessage.readStatus = ReadStatus.SENT
-                    }
-                }
+    private fun updateReadStatusOfMessage(
+        message: MessagesListAdapter<IMessage>.Wrapper<Any>,
+        xChatLastCommonRead: Int
+    ) {
+        if (message.item is ChatMessage) {
+            val chatMessage = message.item as ChatMessage
+
+            if (chatMessage.jsonMessageId <= xChatLastCommonRead) {
+                chatMessage.readStatus = ReadStatus.READ
+            } else {
+                chatMessage.readStatus = ReadStatus.SENT
             }
         }
     }
