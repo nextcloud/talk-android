@@ -2206,7 +2206,7 @@ class ChatController(args: Bundle) :
                             } else if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
                                 futurePreconditionFailed = true
                             } else {
-                                processMessages(response, true)
+                                processMessagesResponse(response, true)
                             }
                         } catch (npe: NullPointerException) {
                             // view binding can be null
@@ -2248,7 +2248,7 @@ class ChatController(args: Bundle) :
                             if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
                                 pastPreconditionFailed = true
                             } else {
-                                processMessages(response, false)
+                                processMessagesResponse(response, false)
                             }
                         } catch (e: NullPointerException) {
                             // view binding can be null
@@ -2293,7 +2293,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun processMessages(response: Response<*>, isFromTheFuture: Boolean) {
+    private fun processMessagesResponse(response: Response<*>, isFromTheFuture: Boolean) {
 
         val xChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
             Integer.parseInt(it)
@@ -2305,34 +2305,7 @@ class ChatController(args: Bundle) :
             val chatOverall = response.body() as ChatOverall?
             val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data!!)
 
-            if (chatMessageList.isNotEmpty() &&
-                ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
-            ) {
-                adapter?.clear()
-                adapter?.notifyDataSetChanged()
-            }
-
-            if (isFirstMessagesProcessing) {
-                cancelNotificationsForCurrentConversation()
-
-                isFirstMessagesProcessing = false
-                binding.progressBar.visibility = View.GONE
-
-                binding.messagesListView.visibility = View.VISIBLE
-            }
-
-            if (isFromTheFuture) {
-                processMessagesFromTheFuture(chatMessageList)
-            } else {
-                processMessagesNotFromTheFuture(chatMessageList)
-            }
-
-            updateReadStatusOfAllMessages(xChatLastCommonRead)
-            adapter?.notifyDataSetChanged()
-
-            if (inConversation) {
-                pullChatMessages(1, 1, xChatLastCommonRead)
-            }
+            processMessages(chatMessageList, isFromTheFuture, xChatLastCommonRead)
         } else if (response.code() == HTTP_CODE_NOT_MODIFIED && !isFromTheFuture) {
             if (isFirstMessagesProcessing) {
                 cancelNotificationsForCurrentConversation()
@@ -2346,6 +2319,41 @@ class ChatController(args: Bundle) :
             if (!lookingIntoFuture && inConversation) {
                 pullChatMessages(1)
             }
+        }
+    }
+
+    private fun processMessages(
+        chatMessageList: List<ChatMessage>,
+        isFromTheFuture: Boolean,
+        xChatLastCommonRead: Int?
+    ) {
+        if (chatMessageList.isNotEmpty() &&
+            ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
+        ) {
+            adapter?.clear()
+            adapter?.notifyDataSetChanged()
+        }
+
+        if (isFirstMessagesProcessing) {
+            cancelNotificationsForCurrentConversation()
+
+            isFirstMessagesProcessing = false
+            binding.progressBar.visibility = View.GONE
+
+            binding.messagesListView.visibility = View.VISIBLE
+        }
+
+        if (isFromTheFuture) {
+            processMessagesFromTheFuture(chatMessageList)
+        } else {
+            processMessagesNotFromTheFuture(chatMessageList)
+        }
+
+        updateReadStatusOfAllMessages(xChatLastCommonRead)
+        adapter?.notifyDataSetChanged()
+
+        if (inConversation) {
+            pullChatMessages(1, 1, xChatLastCommonRead)
         }
     }
 
