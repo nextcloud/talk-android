@@ -286,6 +286,7 @@
     <string name="nc_sort_by">Сортувати по</string>
     <string name="nc_upload_choose_local_files">Виберіть файли</string>
     <string name="nc_upload_failed">Вибачте, помилка завантаження</string>
+    <string name="nc_upload_from_device">Завантажити з пристрою</string>
     <string name="nc_upload_in_progess">Uploading</string>
     <string name="nc_upload_picture_from_cam">Зробити фото</string>
     <string name="nc_user">Користувач</string>
