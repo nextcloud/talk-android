@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,27 +29,16 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
  * see https://nextcloud-talk.readthedocs.io/en/latest/constants/#attendee-permissions
  */
 class AttendeePermissionsUtil(flag: Int) {
-    var isDefault: Boolean = false
-    var isCustom: Boolean = false
-    var canStartCall: Boolean = false
-    var canJoinCall: Boolean = false
-    var canIgnoreLobby: Boolean = false
-    var canPublishAudio: Boolean = false
-    var canPublishVideo: Boolean = false
-    var canPublishScreen: Boolean = false
-    private var hasChatPermission: Boolean = false
 
-    init {
-        isDefault = (flag and DEFAULT) == DEFAULT
-        isCustom = (flag and CUSTOM) == CUSTOM
-        canStartCall = (flag and START_CALL) == START_CALL
-        canJoinCall = (flag and JOIN_CALL) == JOIN_CALL
-        canIgnoreLobby = (flag and CAN_IGNORE_LOBBY) == CAN_IGNORE_LOBBY
-        canPublishAudio = (flag and PUBLISH_AUDIO) == PUBLISH_AUDIO
-        canPublishVideo = (flag and PUBLISH_VIDEO) == PUBLISH_VIDEO
-        canPublishScreen = (flag and PUBLISH_SCREEN) == PUBLISH_SCREEN
-        hasChatPermission = (flag and CHAT) == CHAT
-    }
+    val isDefault = (flag and DEFAULT) == DEFAULT
+    val isCustom = (flag and CUSTOM) == CUSTOM
+    val canStartCall = (flag and START_CALL) == START_CALL
+    val canJoinCall = (flag and JOIN_CALL) == JOIN_CALL
+    val canIgnoreLobby = (flag and CAN_IGNORE_LOBBY) == CAN_IGNORE_LOBBY
+    val canPublishAudio = (flag and PUBLISH_AUDIO) == PUBLISH_AUDIO
+    val canPublishVideo = (flag and PUBLISH_VIDEO) == PUBLISH_VIDEO
+    val canPublishScreen = (flag and PUBLISH_SCREEN) == PUBLISH_SCREEN
+    private val hasChatPermission = (flag and CHAT) == CHAT
 
     fun hasChatPermission(user: User): Boolean {
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "chat-permission")) {
