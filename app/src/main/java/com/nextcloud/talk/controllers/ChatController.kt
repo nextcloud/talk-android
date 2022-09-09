@@ -156,7 +156,7 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.AttendeePermissionsUtil
+import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.ContactUtils
@@ -355,9 +355,7 @@ class ChatController(args: Bundle) :
                         setTitle()
 
                         hasChatPermission =
-                            AttendeePermissionsUtil(currentConversation!!.permissions).hasChatPermission(
-                                conversationUser
-                            )
+                            ParticipantPermissions(conversationUser, currentConversation!!).hasChatPermission()
 
                         try {
                             setupSwipeToReply()
@@ -2727,7 +2725,8 @@ class ChatController(args: Bundle) :
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
-        if (currentConversation?.canStartCall == false && currentConversation?.hasCall == false) {
+        val apu = ParticipantPermissions(conversationUser!!, currentConversation!!)
+        if (apu.canStartCall() && currentConversation?.hasCall == false) {
             Toast.makeText(context, R.string.startCallForbidden, Toast.LENGTH_LONG).show()
         } else {
             ApplicationWideCurrentRoomHolder.getInstance().isDialing = true

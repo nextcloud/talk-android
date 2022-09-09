@@ -104,7 +104,7 @@ import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.AttendeePermissionsUtil
+import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.DisplayUtils
@@ -938,9 +938,7 @@ class ConversationsListController(bundle: Bundle) :
     private fun handleConversation(conversation: Conversation?) {
         selectedConversation = conversation
         if (selectedConversation != null && activity != null) {
-            val hasChatPermission = AttendeePermissionsUtil(selectedConversation!!.permissions).hasChatPermission(
-                currentUser!!
-            )
+            val hasChatPermission = ParticipantPermissions(currentUser!!, selectedConversation!!).hasChatPermission()
             if (showShareToScreen) {
                 if (hasChatPermission &&
                     !isReadOnlyConversation(selectedConversation!!) &&
