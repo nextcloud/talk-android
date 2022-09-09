@@ -23,24 +23,28 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 
 /**
  * see https://nextcloud-talk.readthedocs.io/en/latest/constants/#attendee-permissions
  */
-class AttendeePermissionsUtil(flag: Int) {
+class ParticipantPermissions(
+    private val user: User,
+    private val conversation: Conversation
+) {
 
-    val isDefault = (flag and DEFAULT) == DEFAULT
-    val isCustom = (flag and CUSTOM) == CUSTOM
-    val canStartCall = (flag and START_CALL) == START_CALL
-    val canJoinCall = (flag and JOIN_CALL) == JOIN_CALL
-    val canIgnoreLobby = (flag and CAN_IGNORE_LOBBY) == CAN_IGNORE_LOBBY
-    val canPublishAudio = (flag and PUBLISH_AUDIO) == PUBLISH_AUDIO
-    val canPublishVideo = (flag and PUBLISH_VIDEO) == PUBLISH_VIDEO
-    val canPublishScreen = (flag and PUBLISH_SCREEN) == PUBLISH_SCREEN
-    private val hasChatPermission = (flag and CHAT) == CHAT
+    val isDefault = (conversation.permissions and DEFAULT) == DEFAULT
+    val isCustom = (conversation.permissions and CUSTOM) == CUSTOM
+    private val canStartCall = (conversation.permissions and START_CALL) == START_CALL
+    val canJoinCall = (conversation.permissions and JOIN_CALL) == JOIN_CALL
+    val canIgnoreLobby = (conversation.permissions and CAN_IGNORE_LOBBY) == CAN_IGNORE_LOBBY
+    val canPublishAudio = (conversation.permissions and PUBLISH_AUDIO) == PUBLISH_AUDIO
+    val canPublishVideo = (conversation.permissions and PUBLISH_VIDEO) == PUBLISH_VIDEO
+    val canPublishScreen = (conversation.permissions and PUBLISH_SCREEN) == PUBLISH_SCREEN
+    private val hasChatPermission = (conversation.permissions and CHAT) == CHAT
 
-    fun hasChatPermission(user: User): Boolean {
+    fun hasChatPermission(): Boolean {
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "chat-permission")) {
             return hasChatPermission
         }
@@ -48,8 +52,24 @@ class AttendeePermissionsUtil(flag: Int) {
         return true
     }
 
+    private fun hasConversationPermissions(): Boolean {
+        return CapabilitiesUtilNew.hasSpreedFeatureCapability(
+            user,
+            "conversation-permissions"
+        )
+    }
+
+    fun canStartCall(): Boolean {
+        return if (hasConversationPermissions()) {
+            canStartCall
+        } else {
+            conversation.canStartCall
+        }
+    }
+
     companion object {
-        val TAG = AttendeePermissionsUtil::class.simpleName
+
+        val TAG = ParticipantPermissions::class.simpleName
         const val DEFAULT = 0
         const val CUSTOM = 1
         const val START_CALL = 2
