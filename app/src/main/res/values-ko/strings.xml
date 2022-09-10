@@ -118,6 +118,7 @@
     <string name="nc_guest_access_password_weak_alert_title">약한 암호</string>
     <string name="nc_guest_access_resend_invitations">초대 재전송</string>
     <string name="nc_guest_access_share_link">대화 링크 공유</string>
+    <string name="nc_hint_enter_a_message">메시지 입력…</string>
     <string name="nc_important_conversation">중요한 대화</string>
     <string name="nc_join_via_link">링크로 참여</string>
     <string name="nc_join_via_web">웹에서 참여</string>
@@ -152,6 +153,7 @@
     <string name="nc_no_proxy">프록시 없음</string>
     <string name="nc_notification_channel">%2$s 알림 채널의 %1$s</string>
     <string name="nc_notification_channel_calls">통화</string>
+    <string name="nc_notification_channel_calls_description">수신 통화 알림</string>
     <string name="nc_notification_channel_messages">메시지</string>
     <string name="nc_notification_settings">알림 설정</string>
     <string name="nc_notify_me_always">항상 알림</string>
@@ -241,6 +243,7 @@
     <string name="nc_settings_proxy_type_title">프록시 종류</string>
     <string name="nc_settings_read_privacy_desc">내 읽기 상태 공유 및 다른 사용자의 읽기 상태 표시</string>
     <string name="nc_settings_read_privacy_title">읽기 상태</string>
+    <string name="nc_settings_reauthorize">계정 재인증</string>
     <string name="nc_settings_remove">제거</string>
     <string name="nc_settings_remove_account">계정 삭제</string>
     <string name="nc_settings_remove_confirmation">현재 계정을 삭제하려는 의사를 확인해주십시오.</string>
@@ -255,6 +258,7 @@
     <string name="nc_settings_theme_key">테마</string>
     <string name="nc_settings_theme_light">밝음</string>
     <string name="nc_settings_theme_title">테마</string>
+    <string name="nc_settings_use_credentials_title">프록시가 인증 정보를 요구합니다</string>
     <string name="nc_settings_warning">경고</string>
     <string name="nc_settings_wrong_account">현재 계정만 다시 인증할 수 있음</string>
     <string name="nc_share_current_location">현재 위치 공유</string>
