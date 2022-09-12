@@ -2725,8 +2725,8 @@ class ChatController(args: Bundle) :
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
-        val apu = ParticipantPermissions(conversationUser!!, currentConversation!!)
-        if (apu.canStartCall() && currentConversation?.hasCall == false) {
+        val pp = ParticipantPermissions(conversationUser!!, currentConversation!!)
+        if (!pp.canStartCall() && currentConversation?.hasCall == false) {
             Toast.makeText(context, R.string.startCallForbidden, Toast.LENGTH_LONG).show()
         } else {
             ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
