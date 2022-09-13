@@ -24,6 +24,7 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -87,6 +88,8 @@ class Reaction {
                     break
                 }
             }
+        } else {
+            binding.reactionsEmojiWrapper.visibility = View.GONE
         }
     }
 
