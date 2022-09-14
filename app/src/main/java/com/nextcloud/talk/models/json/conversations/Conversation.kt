@@ -155,10 +155,6 @@ data class Conversation(
         return isParticipantOwnerOrModerator && !isLockedOneToOne(conversationUser)
     }
 
-    fun shouldShowLobby(conversationUser: User): Boolean {
-        return LobbyState.LOBBY_STATE_MODERATORS_ONLY == lobbyState && !canModerate(conversationUser)
-    }
-
     fun isLobbyViewApplicable(conversationUser: User): Boolean {
         return !canModerate(conversationUser) &&
             (type == ConversationType.ROOM_GROUP_CALL || type == ConversationType.ROOM_PUBLIC_CALL)

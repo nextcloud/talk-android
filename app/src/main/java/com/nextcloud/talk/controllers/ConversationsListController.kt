@@ -942,7 +942,7 @@ class ConversationsListController(bundle: Bundle) :
             if (showShareToScreen) {
                 if (hasChatPermission &&
                     !isReadOnlyConversation(selectedConversation!!) &&
-                    !selectedConversation!!.shouldShowLobby(currentUser!!)
+                    !shouldShowLobby(selectedConversation!!)
                 ) {
                     handleSharedData()
                 } else {
@@ -959,6 +959,13 @@ class ConversationsListController(bundle: Bundle) :
                 openConversation()
             }
         }
+    }
+
+    private fun shouldShowLobby(conversation: Conversation): Boolean {
+        val participantPermissions = ParticipantPermissions(currentUser!!, conversation)
+        return conversation.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
+            !conversation.canModerate(currentUser!!) &&
+            !participantPermissions.canIgnoreLobby()
     }
 
     private fun isReadOnlyConversation(conversation: Conversation): Boolean {
