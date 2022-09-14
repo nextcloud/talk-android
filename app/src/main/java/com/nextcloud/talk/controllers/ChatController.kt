@@ -156,7 +156,6 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.ContactUtils
@@ -166,6 +165,7 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.NotificationUtils
+import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
@@ -284,7 +284,7 @@ class ChatController(args: Bundle) :
     lateinit var mediaPlayerHandler: Handler
     private var currentlyPlayedVoiceMessage: ChatMessage? = null
 
-    var hasChatPermission: Boolean = false
+    private lateinit var participantPermissions: ParticipantPermissions
 
     private var videoURI: Uri? = null
 
@@ -306,6 +306,7 @@ class ChatController(args: Bundle) :
 
         if (args.containsKey(KEY_ACTIVE_CONVERSATION)) {
             this.currentConversation = Parcels.unwrap<Conversation>(args.getParcelable(KEY_ACTIVE_CONVERSATION))
+            this.participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
         }
 
         this.roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
@@ -353,9 +354,7 @@ class ChatController(args: Bundle) :
                         )
                         loadAvatarForStatusBar()
                         setTitle()
-
-                        hasChatPermission =
-                            ParticipantPermissions(conversationUser, currentConversation!!).hasChatPermission()
+                        participantPermissions = ParticipantPermissions(conversationUser, currentConversation!!)
 
                         try {
                             setupSwipeToReply()
@@ -393,7 +392,10 @@ class ChatController(args: Bundle) :
     }
 
     private fun setupSwipeToReply() {
-        if (hasChatPermission && !isReadOnlyConversation()) {
+        if (this::participantPermissions.isInitialized &&
+            participantPermissions.hasChatPermission() &&
+            !isReadOnlyConversation()
+        ) {
             val messageSwipeController = MessageSwipeCallback(
                 activity!!,
                 object : MessageSwipeActions {
@@ -432,6 +434,7 @@ class ChatController(args: Bundle) :
                         if (roomId == conversation.roomId) {
                             roomToken = conversation.token
                             currentConversation = conversation
+                            participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
                             setTitle()
                             getRoomInfo()
                             break
@@ -1259,7 +1262,7 @@ class ChatController(args: Bundle) :
         if (isAlive()) {
             if (isReadOnlyConversation() ||
                 shouldShowLobby() ||
-                !hasChatPermission
+                !participantPermissions.hasChatPermission()
             ) {
                 binding.messageInputView.visibility = View.GONE
             } else {
@@ -1270,7 +1273,9 @@ class ChatController(args: Bundle) :
 
     private fun shouldShowLobby(): Boolean {
         if (currentConversation != null) {
-            return currentConversation?.shouldShowLobby(conversationUser!!) == true
+            return currentConversation?.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
+                currentConversation?.canModerate(conversationUser!!) == false &&
+                !participantPermissions.canIgnoreLobby()
         }
         return false
     }
@@ -1309,14 +1314,14 @@ class ChatController(args: Bundle) :
 
     private fun checkLobbyState() {
         if (currentConversation != null &&
-            currentConversation?.isLobbyViewApplicable(conversationUser!!) ?: false &&
+            currentConversation?.isLobbyViewApplicable(conversationUser!!) == true &&
             isAlive()
         ) {
             if (!checkingLobbyStatus) {
                 getRoomInfo()
             }
 
-            if (currentConversation?.shouldShowLobby(conversationUser!!) ?: false) {
+            if (shouldShowLobby()) {
                 binding.lobby.lobbyView.visibility = View.VISIBLE
                 binding.messagesListView.visibility = View.GONE
                 binding.messageInputView.visibility = View.GONE
@@ -1608,8 +1613,8 @@ class ChatController(args: Bundle) :
     private fun uploadFile(fileUri: String, isVoiceMessage: Boolean) {
         var metaData = ""
 
-        if (!hasChatPermission) {
-            Log.w(TAG, "uploading file is forbidden because of missing attendee permissions")
+        if (!participantPermissions.hasChatPermission()) {
+            Log.w(TAG, "uploading file(s) is forbidden because of missing attendee permissions")
             return
         }
 
@@ -2143,10 +2148,6 @@ class ChatController(args: Bundle) :
             return
         }
         pullChatMessagesPending = true
-
-        if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser!!)) {
-            // return
-        }
 
         val fieldMap = HashMap<String, Int>()
         fieldMap["includeLastKnown"] = 0
@@ -2773,7 +2774,7 @@ class ChatController(args: Bundle) :
                 currentConversation,
                 chatMessage,
                 conversationUser,
-                hasChatPermission,
+                participantPermissions.hasChatPermission(),
                 ncApi
             ).show()
         }
@@ -2801,7 +2802,7 @@ class ChatController(args: Bundle) :
                     conversationUser,
                     currentConversation,
                     isShowMessageDeletionButton(message),
-                    hasChatPermission,
+                    participantPermissions.hasChatPermission(),
                     ncApi
                 ).show()
             }
@@ -2813,7 +2814,7 @@ class ChatController(args: Bundle) :
     }
 
     fun deleteMessage(message: IMessage?) {
-        if (!hasChatPermission) {
+        if (!participantPermissions.hasChatPermission()) {
             Log.w(
                 TAG,
                 "Deletion of message is skipped because of restrictions by permissions. " +
@@ -3143,7 +3144,7 @@ class ChatController(args: Bundle) :
             message.hasFileAttachment() -> false
             OBJECT_MESSAGE == message.message -> false
             !CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
-            !hasChatPermission -> false
+            !participantPermissions.hasChatPermission() -> false
             else -> true
         }
     }

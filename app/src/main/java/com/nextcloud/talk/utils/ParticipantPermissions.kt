@@ -38,19 +38,11 @@ class ParticipantPermissions(
     val isCustom = (conversation.permissions and CUSTOM) == CUSTOM
     private val canStartCall = (conversation.permissions and START_CALL) == START_CALL
     val canJoinCall = (conversation.permissions and JOIN_CALL) == JOIN_CALL
-    val canIgnoreLobby = (conversation.permissions and CAN_IGNORE_LOBBY) == CAN_IGNORE_LOBBY
+    private val canIgnoreLobby = (conversation.permissions and CAN_IGNORE_LOBBY) == CAN_IGNORE_LOBBY
     val canPublishAudio = (conversation.permissions and PUBLISH_AUDIO) == PUBLISH_AUDIO
     val canPublishVideo = (conversation.permissions and PUBLISH_VIDEO) == PUBLISH_VIDEO
     val canPublishScreen = (conversation.permissions and PUBLISH_SCREEN) == PUBLISH_SCREEN
     private val hasChatPermission = (conversation.permissions and CHAT) == CHAT
-
-    fun hasChatPermission(): Boolean {
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "chat-permission")) {
-            return hasChatPermission
-        }
-        // if capability is not available then the spreed version doesn't support to restrict this
-        return true
-    }
 
     private fun hasConversationPermissions(): Boolean {
         return CapabilitiesUtilNew.hasSpreedFeatureCapability(
@@ -59,12 +51,28 @@ class ParticipantPermissions(
         )
     }
 
+    fun canIgnoreLobby(): Boolean {
+        if (hasConversationPermissions()) {
+            return canIgnoreLobby
+        }
+
+        return false
+    }
+
     fun canStartCall(): Boolean {
         return if (hasConversationPermissions()) {
             canStartCall
         } else {
             conversation.canStartCall
         }
+    }
+
+    fun hasChatPermission(): Boolean {
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "chat-permission")) {
+            return hasChatPermission
+        }
+        // if capability is not available then the spreed version doesn't support to restrict this
+        return true
     }
 
     companion object {
