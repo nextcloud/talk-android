@@ -61,7 +61,7 @@
 
                 <org.webrtc.SurfaceViewRenderer
                     android:id="@+id/selfVideoRenderer"
-                    android:layout_width="@dimen/large_preview_dimension"
+                    android:layout_width="@dimen/call_self_video_short_side_length"
                     android:layout_height="150dp"
                     android:layout_gravity="center"
                     android:layout_margin="16dp"
