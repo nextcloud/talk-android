@@ -2061,6 +2061,18 @@ public class CallActivity extends CallBaseActivity {
         String sessionId = peerConnectionEvent.getSessionId();
 
         if (peerConnectionEvent.getPeerConnectionEventType() ==
+            PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED) {
+            if (participantDisplayItems.get(sessionId) != null) {
+                participantDisplayItems.get(sessionId).setConnected(true);
+                participantsAdapter.notifyDataSetChanged();
+            }
+        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
+            PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED) {
+            if (participantDisplayItems.get(sessionId) != null) {
+                participantDisplayItems.get(sessionId).setConnected(false);
+                participantsAdapter.notifyDataSetChanged();
+            }
+        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_CLOSED) {
             endPeerConnection(sessionId, VIDEO_STREAM_TYPE_SCREEN.equals(peerConnectionEvent.getVideoStreamType()));
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
@@ -2250,12 +2262,20 @@ public class CallActivity extends CallBaseActivity {
                                            String session,
                                            boolean videoStreamEnabled,
                                            String videoStreamType) {
+        PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(session,
+                                                                                                  videoStreamType);
+
+        boolean connected = false;
+        if (peerConnectionWrapper != null) {
+            PeerConnection.IceConnectionState iceConnectionState = peerConnectionWrapper.getPeerConnection().iceConnectionState();
+            connected = iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
+                        iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
+        }
+
         String nick;
         if (hasExternalSignalingServer) {
             nick = webSocketClient.getDisplayNameForSession(session);
         } else {
-            PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(session,
-                                                                                                      videoStreamType);
             nick = peerConnectionWrapper != null ? peerConnectionWrapper.getNick() : "";
         }
 
@@ -2279,6 +2299,7 @@ public class CallActivity extends CallBaseActivity {
 
         ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(userId,
                                                                                    session,
+                                                                                   connected,
                                                                                    nick,
                                                                                    urlForAvatar,
                                                                                    mediaStream,
