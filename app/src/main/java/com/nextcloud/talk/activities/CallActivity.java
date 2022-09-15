@@ -2008,6 +2008,17 @@ public class CallActivity extends CallBaseActivity {
         updateSelfVideoViewPosition();
     }
 
+    private void updateSelfVideoViewConnected(boolean connected) {
+        // FIXME In voice only calls there is no video view, so the progress bar would appear floating in the middle of
+        // nowhere. However, a way to signal that the local participant is not connected to the HPB is still need in
+        // that case.
+        if (!connected && !isVoiceOnlyCall) {
+            binding.selfVideoViewProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            binding.selfVideoViewProgressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void updateSelfVideoViewPosition() {
         Log.d(TAG, "updateSelfVideoViewPosition");
         if (!isInPipMode) {
@@ -2051,13 +2062,17 @@ public class CallActivity extends CallBaseActivity {
 
         if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED) {
-            if (participantDisplayItems.get(sessionId) != null) {
+            if (webSocketClient != null && webSocketClient.getSessionId() == sessionId) {
+                updateSelfVideoViewConnected(true);
+            } else if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setConnected(true);
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED) {
-            if (participantDisplayItems.get(sessionId) != null) {
+            if (webSocketClient != null && webSocketClient.getSessionId() == sessionId) {
+                updateSelfVideoViewConnected(false);
+            } else if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setConnected(false);
                 participantsAdapter.notifyDataSetChanged();
             }

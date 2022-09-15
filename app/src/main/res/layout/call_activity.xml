@@ -77,6 +77,14 @@
                     android:layout_marginBottom="20dp"
                     app:placeholderImage="@drawable/ic_switch_video_white_24px"
                     app:roundAsCircle="true" />
+
+                <ProgressBar
+                    android:id="@+id/selfVideoViewProgressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="@dimen/call_self_participant_progress_bar_size"
+                    android:layout_height="@dimen/call_self_participant_progress_bar_size"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
             </FrameLayout>
 
             <LinearLayout
