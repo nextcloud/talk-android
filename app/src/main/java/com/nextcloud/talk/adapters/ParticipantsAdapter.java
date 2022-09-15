@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -94,6 +95,13 @@ public class ParticipantsAdapter extends BaseAdapter {
             }
         } else {
             surfaceViewRenderer = convertView.findViewById(R.id.surface_view);
+        }
+
+        ProgressBar progressBar = convertView.findViewById(R.id.participant_progress_bar);
+        if (!participantDisplayItem.isConnected()) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
         }
 
         ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
