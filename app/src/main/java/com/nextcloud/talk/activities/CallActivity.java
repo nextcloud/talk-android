@@ -2070,23 +2070,20 @@ public class CallActivity extends CallBaseActivity {
             PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE) {
             if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setNick(peerConnectionEvent.getNick());
+                participantsAdapter.notifyDataSetChanged();
             }
-            participantsAdapter.notifyDataSetChanged();
-
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE && !isVoiceOnlyCall) {
             if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setStreamEnabled(peerConnectionEvent.getChangeValue());
+                participantsAdapter.notifyDataSetChanged();
             }
-            participantsAdapter.notifyDataSetChanged();
-
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.AUDIO_CHANGE) {
             if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setAudioEnabled(peerConnectionEvent.getChangeValue());
+                participantsAdapter.notifyDataSetChanged();
             }
-            participantsAdapter.notifyDataSetChanged();
-
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED) {
             currentCallStatus = CallStatus.PUBLISHER_FAILED;
