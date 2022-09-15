@@ -1843,6 +1843,14 @@ public class CallActivity extends CallBaseActivity {
         for (String sessionId : newSessions) {
             Log.d(TAG, "   newSession joined: " + sessionId);
             getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
+
+            runOnUiThread(() -> {
+                setupVideoStreamForLayout(
+                    null,
+                    sessionId,
+                    false,
+                    VIDEO_STREAM_TYPE_VIDEO);
+            });
         }
 
         if (newSessions.size() > 0 && !currentCallStatus.equals(CallStatus.IN_CONVERSATION)) {
