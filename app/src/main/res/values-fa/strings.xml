@@ -138,6 +138,7 @@
     <string name="nc_no_proxy">پروکسی نیست</string>
     <string name="nc_notification_channel">کانال اعلان %1$s روی %2$s</string>
     <string name="nc_notification_channel_messages">پیام ها</string>
+    <string name="nc_notification_channel_uploads">آپلودها</string>
     <string name="nc_notification_settings">تنظیمات اعلان</string>
     <string name="nc_notify_me_always">همیشه اعلان شود</string>
     <string name="nc_notify_me_mention">وقتی ذکر شد اطلاع دهید</string>

@@ -181,6 +181,7 @@
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
     <string name="nc_notification_channel_calls">通話</string>
     <string name="nc_notification_channel_messages">訊息</string>
+    <string name="nc_notification_channel_uploads">上傳</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_notify_me_always">總是通知</string>
     <string name="nc_notify_me_never">從不通知</string>

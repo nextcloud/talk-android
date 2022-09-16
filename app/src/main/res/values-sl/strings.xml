@@ -188,6 +188,7 @@
     <string name="nc_notification_channel_calls_description">Obvesti o prejetih klicih</string>
     <string name="nc_notification_channel_messages">Sporočila</string>
     <string name="nc_notification_channel_messages_description">Obvesti o prejetih sporočilih</string>
+    <string name="nc_notification_channel_uploads">Poslano</string>
     <string name="nc_notification_settings">Nastavitve obveščanja</string>
     <string name="nc_notify_me_always">Vedno obvesti</string>
     <string name="nc_notify_me_mention">Obvesti ob omembi</string>

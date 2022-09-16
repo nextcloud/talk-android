@@ -190,6 +190,7 @@
     <string name="nc_notification_channel_calls_description">Notificaciones de llamadas entrantes</string>
     <string name="nc_notification_channel_messages">Mensajes</string>
     <string name="nc_notification_channel_messages_description">Notificaciones de llamadas entrantes</string>
+    <string name="nc_notification_channel_uploads">Subidas</string>
     <string name="nc_notification_settings">Configuración de las notificaciones</string>
     <string name="nc_notify_me_always">Notificar siempre</string>
     <string name="nc_notify_me_mention">Notificar cuando eres mencionado</string>

@@ -200,6 +200,7 @@
     <string name="nc_notification_channel_calls_description">Уведомяване за входящи повиквания</string>
     <string name="nc_notification_channel_messages">Съобщения</string>
     <string name="nc_notification_channel_messages_description">Уведомяване за входящи съобщения</string>
+    <string name="nc_notification_channel_uploads">Качвания</string>
     <string name="nc_notification_settings">Настройки на известие</string>
     <string name="nc_notify_me_always">Винаги уведомявайте</string>
     <string name="nc_notify_me_mention">Уведомяване при споменаване</string>

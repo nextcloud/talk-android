@@ -200,6 +200,7 @@
     <string name="nc_notification_channel_calls_description">Bei eingehenden Anrufen benachrichtigen</string>
     <string name="nc_notification_channel_messages">Nachrichten</string>
     <string name="nc_notification_channel_messages_description">Bei eingehenden Nachrichten benachrichtigen </string>
+    <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_settings">Benachrichtigungseinstellungen</string>
     <string name="nc_notify_me_always">Immer benachrichtigen</string>
     <string name="nc_notify_me_mention">Bei Erwähnung benachrichtigen</string>

@@ -134,6 +134,7 @@
     <string name="nc_notification_channel">%1$s על %2$s בערוץ ההודעות</string>
     <string name="nc_notification_channel_calls">שיחות</string>
     <string name="nc_notification_channel_messages">הודעות</string>
+    <string name="nc_notification_channel_uploads">העלאות</string>
     <string name="nc_notification_settings">הגדרות התראה</string>
     <string name="nc_notify_me_always">להודיע תמיד</string>
     <string name="nc_notify_me_mention">להודיע כשהזכירו אותי</string>

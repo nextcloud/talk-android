@@ -131,6 +131,7 @@
     <string name="nc_no_proxy">Be įgaliotojo serverio</string>
     <string name="nc_notification_channel_calls">Skambučiai</string>
     <string name="nc_notification_channel_messages">Žinutės</string>
+    <string name="nc_notification_channel_uploads">Įkėlimai</string>
     <string name="nc_notification_settings">Pranešimų nustatymai</string>
     <string name="nc_notify_me_always">Visada pranešti</string>
     <string name="nc_notify_me_mention">Pranešti, kai mane pamini</string>

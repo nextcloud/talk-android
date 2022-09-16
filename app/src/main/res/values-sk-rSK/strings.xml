@@ -189,6 +189,7 @@
     <string name="nc_notification_channel_calls_description">Upozorniť na príchodzie hovory</string>
     <string name="nc_notification_channel_messages">Správy</string>
     <string name="nc_notification_channel_messages_description">Upozorniť na príchodzie správy</string>
+    <string name="nc_notification_channel_uploads">Nahrané</string>
     <string name="nc_notification_settings">Nastavenie notifikácií</string>
     <string name="nc_notify_me_always">Notifikuj vždy</string>
     <string name="nc_notify_me_mention">Notifikuj pri spomenutí</string>

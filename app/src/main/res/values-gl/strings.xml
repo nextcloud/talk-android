@@ -147,6 +147,7 @@
     <string name="nc_notification_channel">%1$s na canle de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas</string>
     <string name="nc_notification_channel_messages">Mensaxes</string>
+    <string name="nc_notification_channel_uploads">Envíos</string>
     <string name="nc_notification_settings">Axustes de notificación</string>
     <string name="nc_notify_me_always">Notificar sempre</string>
     <string name="nc_notify_me_mention">Notificar cando son mencionado</string>

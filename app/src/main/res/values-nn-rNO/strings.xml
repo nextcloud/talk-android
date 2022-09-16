@@ -144,6 +144,7 @@
     <string name="nc_notification_channel">%1$s på %2$s varsel kanal</string>
     <string name="nc_notification_channel_calls">Samtalar</string>
     <string name="nc_notification_channel_messages">Meldingar</string>
+    <string name="nc_notification_channel_uploads">Opplastingar</string>
     <string name="nc_notification_settings">Varsel innstillingar</string>
     <string name="nc_notify_me_always">Alltid varsel</string>
     <string name="nc_notify_me_mention">Gi beskjed når nemnd</string>

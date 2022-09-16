@@ -131,6 +131,7 @@
     <string name="nc_notification_channel">%1$s á %2$s tilkynningarásinni</string>
     <string name="nc_notification_channel_calls">Samtöl</string>
     <string name="nc_notification_channel_messages">Skilaboð</string>
+    <string name="nc_notification_channel_uploads">Innsendingar</string>
     <string name="nc_notification_settings">Stillingar á tilkynningum</string>
     <string name="nc_notify_me_always">Alltaf tilkynna</string>
     <string name="nc_notify_me_mention">Tilkynna þegar minnst er á</string>

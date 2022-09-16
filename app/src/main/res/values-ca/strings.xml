@@ -136,6 +136,7 @@
     <string name="nc_notification_channel">%1$s a %2$s canal de notificació </string>
     <string name="nc_notification_channel_calls">Trucades</string>
     <string name="nc_notification_channel_messages">Missatges</string>
+    <string name="nc_notification_channel_uploads">Pujades</string>
     <string name="nc_notification_settings">Paràmetres de les notificacions</string>
     <string name="nc_notify_me_always">Notifica sempre</string>
     <string name="nc_notify_me_mention">Notifica només quan s\'esmenti</string>

@@ -190,6 +190,7 @@
     <string name="nc_notification_channel_calls_description">Jakinarazi sarrera-deiei buruz</string>
     <string name="nc_notification_channel_messages">Mezuak</string>
     <string name="nc_notification_channel_messages_description">Jakinarazi sarrerako mezuei buruz</string>
+    <string name="nc_notification_channel_uploads">Kargak</string>
     <string name="nc_notification_settings">Jakinarazpen-ezarpenak</string>
     <string name="nc_notify_me_always">Jakinarazi beti</string>
     <string name="nc_notify_me_mention">Jakinarazi aipatzen nautenean</string>

@@ -185,6 +185,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_notification_channel_calls_description">Melden inkomende gesprekken</string>
     <string name="nc_notification_channel_messages">Berichten</string>
     <string name="nc_notification_channel_messages_description">Melden over inkomende gesprekken</string>
+    <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_settings">Meldingsinstellingen</string>
     <string name="nc_notify_me_always">Altijd waarschuwen</string>
     <string name="nc_notify_me_mention">Waarschuwen bij vermelding</string>

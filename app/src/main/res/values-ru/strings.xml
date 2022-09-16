@@ -189,6 +189,7 @@
     <string name="nc_notification_channel_calls_description">Уведомление о входящих вызовах</string>
     <string name="nc_notification_channel_messages">Сообщения</string>
     <string name="nc_notification_channel_messages_description">Уведомления о входящих сообщениях</string>
+    <string name="nc_notification_channel_uploads">Загрузки</string>
     <string name="nc_notification_settings">Параметры уведомлений</string>
     <string name="nc_notify_me_always">Всегда уведомлять</string>
     <string name="nc_notify_me_mention">Уведомлять при упоминании</string>
