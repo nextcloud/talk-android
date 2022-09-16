@@ -362,7 +362,7 @@ public class NotificationWorker extends Worker {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (CHAT.equals(decryptedPushMessage.getType()) || ROOM.equals(decryptedPushMessage.getType())) {
-                notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V4);
+                notificationBuilder.setChannelId(NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name());
             }
         } else {
             // red color for the lights

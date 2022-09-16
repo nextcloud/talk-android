@@ -49,19 +49,11 @@ import java.io.IOException
 
 object NotificationUtils {
 
-    // Notification channel IDs commented below are no longer used.
-    // All old notification channels get deleted when the app is upgraded to the current version.
-    //
-    // val NOTIFICATION_CHANNEL_MESSAGES = "NOTIFICATION_CHANNEL_MESSAGES"
-    // val NOTIFICATION_CHANNEL_MESSAGES_V2 = "NOTIFICATION_CHANNEL_MESSAGES_V2"
-    // val NOTIFICATION_CHANNEL_MESSAGES_V3 = "NOTIFICATION_CHANNEL_MESSAGES_V3"
-    // val NOTIFICATION_CHANNEL_CALLS = "NOTIFICATION_CHANNEL_CALLS"
-    // val NOTIFICATION_CHANNEL_CALLS_V2 = "NOTIFICATION_CHANNEL_CALLS_V2"
-    // val NOTIFICATION_CHANNEL_CALLS_V3 = "NOTIFICATION_CHANNEL_CALLS_V3"
-
-    const val NOTIFICATION_CHANNEL_MESSAGES_V4 = "NOTIFICATION_CHANNEL_MESSAGES_V4"
-    const val NOTIFICATION_CHANNEL_CALLS_V4 = "NOTIFICATION_CHANNEL_CALLS_V4"
-    const val NOTIFICATION_CHANNEL_UPLOADS = "NOTIFICATION_CHANNEL_UPLOADS"
+    enum class NotificationChannels {
+        NOTIFICATION_CHANNEL_MESSAGES_V4,
+        NOTIFICATION_CHANNEL_CALLS_V4,
+        NOTIFICATION_CHANNEL_UPLOADS
+    }
 
     const val DEFAULT_CALL_RINGTONE_URI =
         "android.resource://" + BuildConfig.APPLICATION_ID + "/raw/librem_by_feandesign_call"
@@ -121,7 +113,7 @@ object NotificationUtils {
         createNotificationChannel(
             context,
             Channel(
-                NOTIFICATION_CHANNEL_CALLS_V4,
+                NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name,
                 context.resources.getString(R.string.nc_notification_channel_calls),
                 context.resources.getString(R.string.nc_notification_channel_calls_description),
                 true
@@ -145,7 +137,7 @@ object NotificationUtils {
         createNotificationChannel(
             context,
             Channel(
-                NOTIFICATION_CHANNEL_MESSAGES_V4,
+                NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name,
                 context.resources.getString(R.string.nc_notification_channel_messages),
                 context.resources.getString(R.string.nc_notification_channel_messages_description),
                 true
@@ -161,7 +153,7 @@ object NotificationUtils {
         createNotificationChannel(
             context,
             Channel(
-                NOTIFICATION_CHANNEL_UPLOADS,
+                NotificationChannels.NOTIFICATION_CHANNEL_UPLOADS.name,
                 context.resources.getString(R.string.nc_notification_channel_uploads),
                 context.resources.getString(R.string.nc_notification_channel_uploads_description),
                 false
@@ -190,12 +182,11 @@ object NotificationUtils {
                 notificationManager.deleteNotificationChannelGroup(channelGroup.id)
             }
 
+            val channelsToKeep = NotificationChannels.values().map { it.name }
+
             // Delete all notification channels created by previous versions
             for (channel in notificationManager.notificationChannels) {
-                if (
-                    channel.id != NOTIFICATION_CHANNEL_CALLS_V4 &&
-                    channel.id != NOTIFICATION_CHANNEL_MESSAGES_V4
-                ) {
+                if (!channelsToKeep.contains(channel.id)) {
                     notificationManager.deleteNotificationChannel(channel.id)
                 }
             }
@@ -312,7 +303,8 @@ object NotificationUtils {
     ): Uri? {
         return getRingtoneUri(
             context,
-            appPreferences.callRingtoneUri, DEFAULT_CALL_RINGTONE_URI, NOTIFICATION_CHANNEL_CALLS_V4
+            appPreferences.callRingtoneUri,
+            DEFAULT_CALL_RINGTONE_URI, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
         )
     }
 
@@ -322,7 +314,8 @@ object NotificationUtils {
     ): Uri? {
         return getRingtoneUri(
             context,
-            appPreferences.messageRingtoneUri, DEFAULT_MESSAGE_RINGTONE_URI, NOTIFICATION_CHANNEL_MESSAGES_V4
+            appPreferences.messageRingtoneUri,
+            DEFAULT_MESSAGE_RINGTONE_URI, NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
         )
     }
 
