@@ -192,7 +192,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     private fun initNotification() {
         mNotifyManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        mBuilder = NotificationCompat.Builder(context, NotificationUtils.NOTIFICATION_CHANNEL_UPLOADS)
+        mBuilder = NotificationCompat.Builder(
+            context,
+            NotificationUtils.NotificationChannels
+                .NOTIFICATION_CHANNEL_UPLOADS.name
+        )
 
         notification = mBuilder!!
             .setContentTitle(context.resources.getString(R.string.nc_upload_in_progess))
