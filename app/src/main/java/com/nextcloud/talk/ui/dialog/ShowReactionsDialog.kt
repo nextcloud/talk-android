@@ -31,7 +31,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -172,7 +171,7 @@ class ShowReactionsDialog(
                     // unused atm
                 }
 
-                override fun onNext(@NonNull reactionsOverall: ReactionsOverall) {
+                override fun onNext(reactionsOverall: ReactionsOverall) {
                     val reactionVoters: ArrayList<ReactionItem> = ArrayList()
                     if (reactionsOverall.ocs?.data != null) {
                         val map = reactionsOverall.ocs?.data
@@ -227,7 +226,7 @@ class ShowReactionsDialog(
                     // unused atm
                 }
 
-                override fun onNext(@NonNull genericOverall: GenericOverall) {
+                override fun onNext(genericOverall: GenericOverall) {
                     Log.d(TAG, "deleted reaction: $emoji")
                 }
 
