@@ -217,7 +217,7 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
                 )
 
                 val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences)
-                val notificationChannelId = NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4
+                val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
                 val uri = Uri.parse(signatureVerification!!.user!!.baseUrl)
                 val baseUrl = uri.host
 
