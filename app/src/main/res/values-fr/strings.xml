@@ -121,6 +121,7 @@
     <string name="nc_expire_message_one_day">1 jour</string>
     <string name="nc_expire_message_one_hour">1 heure</string>
     <string name="nc_expire_message_one_week">1 semaine</string>
+    <string name="nc_expire_messages_explanation">Les messages instantanés peuvent expirer après un certain temps. Note : les fichiers partagés dans la discussion ne seront pas effacé pour leur propriétaire, mais ils ne seront plus partagés dans la conversation.</string>
     <string name="nc_external_server_failed">Échec de l\'extraction des paramètres de signalisation</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile. Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
@@ -353,6 +354,7 @@
     <string name="open_in_files_app">Ouvrir dans l\'app Fichiers</string>
     <string name="play_pause_voice_message">Jouer/mettre en pause le message vocal</string>
     <string name="polls_add_option">Ajouter une option</string>
+    <string name="polls_end_poll">Fin du sondage</string>
     <string name="polls_multiple_answers">Réponses multiples</string>
     <string name="polls_options">Options</string>
     <string name="polls_private_poll">Sondage privé</string>
@@ -363,11 +365,11 @@
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
     <string name="save">Sauvegarder</string>
-    <string name="scope_federated_description">Ne synchroniser qu\'avec les serveurs de confiance</string>
+    <string name="scope_federated_description">Synchronisation avec les serveurs de confiance uniquement</string>
     <string name="scope_federated_title">Fédéré</string>
     <string name="scope_local_description">Visible uniquement aux personnes dans l\'instance et aux invités</string>
     <string name="scope_local_title">Local</string>
-    <string name="scope_private_description">Seulement visible des utilisateurs mis en correspondance via leur numéro de téléphone par Talk sur mobile</string>
+    <string name="scope_private_description">Visible uniquement pour les personnes correspondantes via l\'intégration du numéro de téléphone dans Talk pour mobile</string>
     <string name="scope_private_title">Privé</string>
     <string name="scope_published_description">Synchronisation avec les serveurs de confiance et le carnet d\'adresses mondial et public</string>
     <string name="scope_published_title">Publier</string>
@@ -386,6 +388,7 @@
     <string name="shared_items_file">Fichier</string>
     <string name="shared_items_media">Média</string>
     <string name="shared_items_other">Autre</string>
+    <string name="shared_items_poll">Sondage</string>
     <string name="shared_items_voice">Voix</string>
     <string name="starred">Favori</string>
     <string name="startCallForbidden">Vous n\'êtes pas autorisé à commencer un appel</string>
