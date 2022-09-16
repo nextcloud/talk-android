@@ -30,7 +30,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.NonNull
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -330,7 +329,7 @@ class MessageActionsDialog(
                     // unused atm
                 }
 
-                override fun onNext(@NonNull genericOverall: GenericOverall) {
+                override fun onNext(genericOverall: GenericOverall) {
                     val statusCode = genericOverall.ocs?.meta?.statusCode
                     if (statusCode == HTTP_CREATED) {
                         chatController.updateAdapterAfterSendReaction(message, emoji)
@@ -366,7 +365,7 @@ class MessageActionsDialog(
                     // unused atm
                 }
 
-                override fun onNext(@NonNull genericOverall: GenericOverall) {
+                override fun onNext(genericOverall: GenericOverall) {
                     Log.d(TAG, "deleted reaction: $emoji")
                 }
 

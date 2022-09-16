@@ -1543,12 +1543,14 @@ class ChatController(args: Bundle) :
         val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey)
 
         val fd: AssetFileDescriptor = activity?.contentResolver!!.openAssetFileDescriptor(uri, "r")!!
-        val fis = fd.createInputStream()
+        fd.use {
+            val fis = fd.createInputStream()
 
-        file.createNewFile()
-        fis.use { input ->
-            file.outputStream().use { output ->
-                input.copyTo(output)
+            file.createNewFile()
+            fis.use { input ->
+                file.outputStream().use { output ->
+                    input.copyTo(output)
+                }
             }
         }
     }
