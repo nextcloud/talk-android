@@ -1551,6 +1551,11 @@ class ChatController(args: Bundle) :
                 input.copyTo(output)
             }
         }
+        try {
+            fd.close()
+        } catch (e: IOException) {
+            Log.w(TAG, "Failed to close AssetFileDescriptor", e)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
