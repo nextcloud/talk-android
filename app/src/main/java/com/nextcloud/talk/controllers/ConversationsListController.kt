@@ -107,8 +107,8 @@ import com.nextcloud.talk.utils.AttendeePermissionsUtil
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
-import com.nextcloud.talk.utils.UriUtils.Companion.getFileName
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
@@ -121,7 +121,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.getAttachmentFolder
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
@@ -924,7 +923,7 @@ class ConversationsListController(bundle: Bundle) :
         if (isStoragePermissionGranted(context)) {
             val fileNamesWithLineBreaks = StringBuilder("\n")
             for (file in filesToShare!!) {
-                val filename = getFileName(Uri.parse(file), context)
+                val filename = FileUtils.getFileName(Uri.parse(file), context)
                 fileNamesWithLineBreaks.append(filename).append("\n")
             }
             val confirmationQuestion: String = if (filesToShare!!.size == 1) {
@@ -1042,25 +1041,14 @@ class ConversationsListController(bundle: Bundle) :
             return
         }
         try {
-            var filesToShareArray: Array<String?> = arrayOfNulls(filesToShare!!.size)
-            filesToShareArray = filesToShare!!.toArray(filesToShareArray)
-            val data = Data.Builder()
-                .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, filesToShareArray)
-                .putString(
-                    UploadAndShareFilesWorker.NC_TARGETPATH,
-                    getAttachmentFolder(currentUser!!)
+            filesToShare?.forEach {
+                UploadAndShareFilesWorker.upload(
+                    it,
+                    selectedConversation!!.token!!,
+                    selectedConversation!!.displayName!!,
+                    null
                 )
-                .putString(UploadAndShareFilesWorker.ROOM_TOKEN, selectedConversation!!.token)
-                .build()
-            val uploadWorker = OneTimeWorkRequest.Builder(UploadAndShareFilesWorker::class.java)
-                .setInputData(data)
-                .build()
-            WorkManager.getInstance().enqueue(uploadWorker)
-            Toast.makeText(
-                context,
-                context.resources.getString(R.string.nc_upload_in_progess),
-                Toast.LENGTH_LONG
-            ).show()
+            }
         } catch (e: IllegalArgumentException) {
             Toast.makeText(context, context.resources.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
             Log.e(TAG, "Something went wrong when trying to upload file", e)

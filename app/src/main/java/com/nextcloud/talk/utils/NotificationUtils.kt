@@ -61,6 +61,7 @@ object NotificationUtils {
 
     const val NOTIFICATION_CHANNEL_MESSAGES_V4 = "NOTIFICATION_CHANNEL_MESSAGES_V4"
     const val NOTIFICATION_CHANNEL_CALLS_V4 = "NOTIFICATION_CHANNEL_CALLS_V4"
+    const val NOTIFICATION_CHANNEL_UPLOADS = "NOTIFICATION_CHANNEL_UPLOADS"
 
     const val DEFAULT_CALL_RINGTONE_URI =
         "android.resource://" + BuildConfig.APPLICATION_ID + "/raw/librem_by_feandesign_call"
@@ -75,7 +76,7 @@ object NotificationUtils {
         context: Context,
         notificationChannel: Channel,
         sound: Uri?,
-        audioAttributes: AudioAttributes
+        audioAttributes: AudioAttributes?
     ) {
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -84,9 +85,16 @@ object NotificationUtils {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
             notificationManager.getNotificationChannel(notificationChannel.id) == null
         ) {
-            val channel = NotificationChannel(
-                notificationChannel.id, notificationChannel.name,
+            val importance = if (notificationChannel.isImportant) {
                 NotificationManager.IMPORTANCE_HIGH
+            } else {
+                NotificationManager.IMPORTANCE_LOW
+            }
+
+            val channel = NotificationChannel(
+                notificationChannel.id,
+                notificationChannel.name,
+                importance
             )
 
             channel.description = notificationChannel.description
@@ -115,7 +123,8 @@ object NotificationUtils {
             Channel(
                 NOTIFICATION_CHANNEL_CALLS_V4,
                 context.resources.getString(R.string.nc_notification_channel_calls),
-                context.resources.getString(R.string.nc_notification_channel_calls_description)
+                context.resources.getString(R.string.nc_notification_channel_calls_description),
+                true
             ),
             soundUri,
             audioAttributes
@@ -138,10 +147,27 @@ object NotificationUtils {
             Channel(
                 NOTIFICATION_CHANNEL_MESSAGES_V4,
                 context.resources.getString(R.string.nc_notification_channel_messages),
-                context.resources.getString(R.string.nc_notification_channel_messages_description)
+                context.resources.getString(R.string.nc_notification_channel_messages_description),
+                true
             ),
             soundUri,
             audioAttributes
+        )
+    }
+
+    private fun createUploadsNotificationChannel(
+        context: Context
+    ) {
+        createNotificationChannel(
+            context,
+            Channel(
+                NOTIFICATION_CHANNEL_UPLOADS,
+                context.resources.getString(R.string.nc_notification_channel_uploads),
+                context.resources.getString(R.string.nc_notification_channel_uploads_description),
+                false
+            ),
+            null,
+            null
         )
     }
 
@@ -151,6 +177,7 @@ object NotificationUtils {
     ) {
         createCallsNotificationChannel(context, appPreferences)
         createMessagesNotificationChannel(context, appPreferences)
+        createUploadsNotificationChannel(context)
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -327,6 +354,7 @@ object NotificationUtils {
     private data class Channel(
         val id: String,
         val name: String,
-        val description: String
+        val description: String,
+        val isImportant: Boolean
     )
 }

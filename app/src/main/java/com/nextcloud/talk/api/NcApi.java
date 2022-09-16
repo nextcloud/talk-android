@@ -65,6 +65,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -393,7 +394,7 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<Void> createRemoteShare(@Nullable @Header("Authorization") String authorization, @Url String url,
+    Observable<GenericOverall> createRemoteShare(@Nullable @Header("Authorization") String authorization, @Url String url,
                                        @Field("path") String remotePath,
                                        @Field("shareWith") String roomToken,
                                        @Field("shareType") String shareType,
@@ -419,6 +420,10 @@ public interface NcApi {
     Observable<Response<GenericOverall>> uploadFile(@Header("Authorization") String authorization,
                                                     @Url String url,
                                                     @Body RequestBody body);
+
+    @HEAD
+    Observable<Response<Void>> checkIfFileExists(@Header("Authorization") String authorization,
+                                               @Url String url);
 
     @GET
     Call<ResponseBody> downloadFile(@Header("Authorization") String authorization,

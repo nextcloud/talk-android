@@ -219,8 +219,10 @@
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
     <string name="nc_notification_channel_calls">Calls</string>
     <string name="nc_notification_channel_messages">Messages</string>
+    <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_channel_calls_description">Notify about incoming calls</string>
     <string name="nc_notification_channel_messages_description">Notify about incoming messages</string>
+    <string name="nc_notification_channel_uploads_description">Notify about upload progress</string>
     <string name="nc_notification_settings">Notification settings</string>
     <string name="nc_plain_old_messages">Messages</string>
     <string name="nc_notify_me_always">Always notify</string>
@@ -416,6 +418,7 @@
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>
     <string name="nc_upload_picture_from_cam">Take photo</string>
+    <string name="nc_upload_video_from_cam">Take video</string>
     <string name="nc_create_poll">Create poll</string>
     <string name="nc_upload_from_cloud">Share from %1$s</string>
     <string name="nc_upload_failed">Sorry, upload failed</string>
@@ -424,6 +427,13 @@
     <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>
     <string name="nc_upload_in_progess">Uploading</string>
     <string name="nc_upload_from_device">Upload from device</string>
+
+    <string name="nc_upload_notification_text">%1$s to %2$s - %3$s\%%</string>
+    <string name="nc_upload_failed_notification_title">Failure</string>
+    <string name="nc_upload_failed_notification_text">Failed to upload %1$s</string>
+
+    <!-- Video -->
+    <string name="nc_video_filename">Video recording from %1$s</string>
 
     <!-- location sharing -->
     <string name="nc_share_location">Share location</string>
@@ -523,6 +533,7 @@
     <string name="take_photo_send">Send</string>
     <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
+    <string name="camera_permission_granted">Camera permission granted. Please choose camera again.</string>
 
     <!-- Audio selection -->
     <string name="audio_output_bluetooth">Bluetooth</string>
