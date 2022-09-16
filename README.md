@@ -13,7 +13,7 @@ Please note that Notifications won't work with the F-Droid version due to missin
 
 |||||||
 |---|---|---|---|---|---|
-|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/conversationList_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/searchParticipant_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/voiceCall.png">|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/voiceRecord_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/markdown_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/settings_light.png">|
+|![Conversation list](/fastlane/metadata/android/en-US/phoneScreenshots/conversationList_light.png "Conversation list")|![Participant search](/fastlane/metadata/android/en-US/phoneScreenshots/searchParticipant_light.png "Participant search")|![Voice call](/fastlane/metadata/android/en-US/phoneScreenshots/voiceCall.png "Voice call")|![Voice recording](/fastlane/metadata/android/en-US/phoneScreenshots/voiceRecord_light.png "Voice recording")|![Markdown view](/fastlane/metadata/android/en-US/phoneScreenshots/markdown_light.png "Markdown view")|![Settings](/fastlane/metadata/android/en-US/phoneScreenshots/settings_light.png "Settings")|
 
 **Video & audio calls through Nextcloud on Android**
 
