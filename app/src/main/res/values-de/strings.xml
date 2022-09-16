@@ -10,6 +10,7 @@
     <string name="avatar">Avatar</string>
     <string name="away">Abwesend</string>
     <string name="call_without_notification">Anruf ohne Benachrichtigung</string>
+    <string name="camera_permission_granted">Kameraerlaubnis erteilt. Bitte wählen Sie die Kamera erneut.</string>
     <string name="choose_avatar_from_cloud">Avatar aus der Cloud auswählen</string>
     <string name="clear_status_message">Statusmeldung löschen</string>
     <string name="clear_status_message_after">Statusmeldung löschen nach</string>
@@ -200,6 +201,8 @@
     <string name="nc_notification_channel_calls_description">Bei eingehenden Anrufen benachrichtigen</string>
     <string name="nc_notification_channel_messages">Nachrichten</string>
     <string name="nc_notification_channel_messages_description">Bei eingehenden Nachrichten benachrichtigen </string>
+    <string name="nc_notification_channel_uploads">Uploads</string>
+    <string name="nc_notification_channel_uploads_description">Über den Hochlade-Fortschritt benachrichtigen</string>
     <string name="nc_notification_settings">Benachrichtigungseinstellungen</string>
     <string name="nc_notify_me_always">Immer benachrichtigen</string>
     <string name="nc_notify_me_mention">Bei Erwähnung benachrichtigen</string>
@@ -345,11 +348,16 @@
     <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>
     <string name="nc_upload_failed">Hochladen leider fehlgeschlagen</string>
+    <string name="nc_upload_failed_notification_text">Fehler beim Hochladen von %1$s</string>
+    <string name="nc_upload_failed_notification_title">Fehler</string>
     <string name="nc_upload_from_cloud">Freigabe von %1$s</string>
     <string name="nc_upload_from_device">Von Gerät hochladen</string>
     <string name="nc_upload_in_progess">Lade hoch</string>
+    <string name="nc_upload_notification_text">%1$s zu %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Foto aufnehmen</string>
+    <string name="nc_upload_video_from_cam">Video aufnehmen</string>
     <string name="nc_user">Benutzer</string>
+    <string name="nc_video_filename">Videoaufnahme von %1$s</string>
     <string name="nc_voice_message_filename">Talk-Aufnahme von %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Halten zum Aufnehmen, zum Versenden loslassen.</string>
     <string name="nc_voice_message_missing_audio_permission">Erlaubnis für Audioaufnahmen ist erforderlich</string>
