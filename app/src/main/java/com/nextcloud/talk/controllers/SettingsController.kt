@@ -196,7 +196,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
                 intent.putExtra(
                     Settings.EXTRA_CHANNEL_ID,
-                    NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4
+                    NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
                 )
 
                 startActivity(intent)
@@ -206,7 +206,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
                 intent.putExtra(
                     Settings.EXTRA_CHANNEL_ID,
-                    NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V4
+                    NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
                 )
                 startActivity(intent)
             }
