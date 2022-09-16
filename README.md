@@ -13,7 +13,7 @@ Please note that Notifications won't work with the F-Droid version due to missin
 
 |||||||
 |---|---|---|---|---|---|
-|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/conversationList_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/searchParticipant_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/voiceCall.png">|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/voiceRecord_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/markdown_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/settings_light.png">|
+|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/conversationList_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/searchParticipant_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/voiceCall.png">|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/voiceRecord_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/markdown_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/settings_light.png">|
 
 **Video & audio calls through Nextcloud on Android**
 
