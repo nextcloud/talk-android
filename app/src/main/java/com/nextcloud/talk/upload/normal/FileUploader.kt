@@ -55,8 +55,10 @@ class FileUploader(
         try {
             val input: InputStream = context.contentResolver.openInputStream(sourceFileUri)!!
             val buf = ByteArray(input.available())
-            while (input.read(buf) != -1)
+            while (input.read(buf) != -1) {
                 requestBody = RequestBody.create("application/octet-stream".toMediaTypeOrNull(), buf)
+            }
+            input.close()
         } catch (e: Exception) {
             Log.e(TAG, "failed to create RequestBody for $sourceFileUri", e)
         }
