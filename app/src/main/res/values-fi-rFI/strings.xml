@@ -164,6 +164,7 @@
     <string name="nc_notification_channel_calls_description">Ilmoita saapuvista puheluista</string>
     <string name="nc_notification_channel_messages">Viestit</string>
     <string name="nc_notification_channel_messages_description">Ilmoita saapuvista viesteistä</string>
+    <string name="nc_notification_channel_uploads">Lähetykset</string>
     <string name="nc_notification_settings">Ilmoitusasetukset</string>
     <string name="nc_notify_me_always">Ilmoita aina</string>
     <string name="nc_notify_me_mention">Ilmoita kun mainittu</string>

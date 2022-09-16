@@ -175,6 +175,7 @@
     <string name="nc_notification_channel_calls">通话</string>
     <string name="nc_notification_channel_calls_description">来电通知</string>
     <string name="nc_notification_channel_messages">消息</string>
+    <string name="nc_notification_channel_uploads">上传</string>
     <string name="nc_notification_settings">通知设置</string>
     <string name="nc_notify_me_always">始终提醒</string>
     <string name="nc_notify_me_mention">当被提及时提醒</string>

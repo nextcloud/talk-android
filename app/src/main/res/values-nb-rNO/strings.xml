@@ -142,6 +142,7 @@
     <string name="nc_notification_channel_calls">Samtaler</string>
     <string name="nc_notification_channel_calls_description">Varsle om innkommende anrop</string>
     <string name="nc_notification_channel_messages">Meldinger</string>
+    <string name="nc_notification_channel_uploads">Last opp</string>
     <string name="nc_notification_settings">Innstillinger for notifiseringer</string>
     <string name="nc_notify_me_always">Alltid varsle</string>
     <string name="nc_notify_me_mention">Varsle når nevnt</string>

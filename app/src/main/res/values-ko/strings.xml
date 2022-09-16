@@ -155,6 +155,7 @@
     <string name="nc_notification_channel_calls">통화</string>
     <string name="nc_notification_channel_calls_description">수신 통화 알림</string>
     <string name="nc_notification_channel_messages">메시지</string>
+    <string name="nc_notification_channel_uploads">업로드</string>
     <string name="nc_notification_settings">알림 설정</string>
     <string name="nc_notify_me_always">항상 알림</string>
     <string name="nc_notify_me_mention">언급 시 알림</string>

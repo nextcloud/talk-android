@@ -179,6 +179,7 @@
     <string name="nc_notification_channel">%1$s na kanalu za obavijesti %2$s</string>
     <string name="nc_notification_channel_calls">Pozivi</string>
     <string name="nc_notification_channel_messages">Poruke</string>
+    <string name="nc_notification_channel_uploads">Otpreme</string>
     <string name="nc_notification_settings">Postavke obavijesti</string>
     <string name="nc_notify_me_always">Uvijek šalji obavijesti</string>
     <string name="nc_notify_me_mention">Obavijesti kada se spomene</string>

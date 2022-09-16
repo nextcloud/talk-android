@@ -188,6 +188,7 @@
     <string name="nc_notification_channel_calls_description">着信について通知</string>
     <string name="nc_notification_channel_messages">メッセージ</string>
     <string name="nc_notification_channel_messages_description">受信メッセージについて通知</string>
+    <string name="nc_notification_channel_uploads">アップロード</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_notify_me_always">常に通知する</string>
     <string name="nc_notify_me_mention">言及したときに通知する</string>

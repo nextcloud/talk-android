@@ -200,6 +200,7 @@
     <string name="nc_notification_channel_calls_description">Powiadamiaj o połączeniach przychodzących</string>
     <string name="nc_notification_channel_messages">Wiadomości</string>
     <string name="nc_notification_channel_messages_description">Powiadamiaj o wiadomościach przychodzących</string>
+    <string name="nc_notification_channel_uploads">Wysłane</string>
     <string name="nc_notification_settings">Ustawienia powiadomień</string>
     <string name="nc_notify_me_always">Zawsze powiadamiaj</string>
     <string name="nc_notify_me_mention">Powiadom, gdy wspomniano</string>

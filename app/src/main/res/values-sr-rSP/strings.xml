@@ -100,6 +100,7 @@
     <string name="nc_no_proxy">Bez posrednika</string>
     <string name="nc_notification_channel">%1$s na kanalu za obaveštenje o %2$s</string>
     <string name="nc_notification_channel_messages">Poruke</string>
+    <string name="nc_notification_channel_uploads">Otpremanja</string>
     <string name="nc_notification_settings">Postavke obaveštenja</string>
     <string name="nc_notify_me_always">Uvek obavesti</string>
     <string name="nc_notify_me_mention">Obavesti na pominjanje</string>

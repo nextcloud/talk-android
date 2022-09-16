@@ -148,6 +148,7 @@
     <string name="nc_notification_channel_calls">Samtal</string>
     <string name="nc_notification_channel_calls_description">Avisera vid inkommande samtal</string>
     <string name="nc_notification_channel_messages">Meddelanden</string>
+    <string name="nc_notification_channel_uploads">Uppladdningar</string>
     <string name="nc_notification_settings">Meddelandeinställningar</string>
     <string name="nc_notify_me_always">Meddela alltid</string>
     <string name="nc_notify_me_mention">Meddela när omnämnd</string>

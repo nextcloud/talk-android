@@ -200,6 +200,7 @@
     <string name="nc_notification_channel_calls_description">Gelen çağrılar bildirilsin</string>
     <string name="nc_notification_channel_messages">İletiler</string>
     <string name="nc_notification_channel_messages_description">Gelen iletiler bildirilsin</string>
+    <string name="nc_notification_channel_uploads">Yüklemeler</string>
     <string name="nc_notification_settings">Bildirim ayarları</string>
     <string name="nc_notify_me_always">Her zaman bildirilsin</string>
     <string name="nc_notify_me_mention">Anmalar bildirilsin</string>

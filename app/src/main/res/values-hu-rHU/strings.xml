@@ -200,6 +200,7 @@
     <string name="nc_notification_channel_calls_description">Értesítés a bejövő hívásokról</string>
     <string name="nc_notification_channel_messages">Üzenetek</string>
     <string name="nc_notification_channel_messages_description">Értesítés a bejövő üzenetekről</string>
+    <string name="nc_notification_channel_uploads">Feltöltések</string>
     <string name="nc_notification_settings">Értesítési beállítások</string>
     <string name="nc_notify_me_always">Mindig értesítsen</string>
     <string name="nc_notify_me_mention">Értesítsen, ha megemlítik Önt</string>

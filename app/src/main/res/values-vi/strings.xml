@@ -133,6 +133,7 @@
     <string name="nc_notification_channel">%1$s từ %2$s thông báo kênh</string>
     <string name="nc_notification_channel_calls">Cuộc gọi</string>
     <string name="nc_notification_channel_messages">Thông điệp</string>
+    <string name="nc_notification_channel_uploads">Tải lên</string>
     <string name="nc_notification_settings">Cài đặt thông báo</string>
     <string name="nc_ok">OK</string>
     <string name="nc_owner">Chủ</string>

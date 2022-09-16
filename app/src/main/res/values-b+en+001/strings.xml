@@ -125,6 +125,7 @@
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
     <string name="nc_notification_channel_calls">Calls</string>
     <string name="nc_notification_channel_messages">Messages</string>
+    <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_settings">Notification settings</string>
     <string name="nc_notify_me_always">Always notify</string>
     <string name="nc_notify_me_mention">Notify when mentioned</string>

@@ -172,6 +172,7 @@
     <string name="nc_notification_channel_calls_description">Сповіщати про вхідні дзвінки</string>
     <string name="nc_notification_channel_messages">Повідомлення</string>
     <string name="nc_notification_channel_messages_description">Сповіщати про вхідні повідомлення</string>
+    <string name="nc_notification_channel_uploads">Завантаження</string>
     <string name="nc_notification_settings">Налаштування сповіщень</string>
     <string name="nc_notify_me_always">Завжди сповіщувати</string>
     <string name="nc_notify_me_mention">Сповіщати на зустрічах</string>

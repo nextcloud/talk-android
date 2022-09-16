@@ -187,6 +187,7 @@
     <string name="nc_notification_channel_calls_description">Notifica sulle chiamate in arrivo</string>
     <string name="nc_notification_channel_messages">Messaggi</string>
     <string name="nc_notification_channel_messages_description">Notifica sui messaggi in arrivo</string>
+    <string name="nc_notification_channel_uploads">Upload</string>
     <string name="nc_notification_settings">Impostazioni di notifica</string>
     <string name="nc_notify_me_always">Notifica sempre</string>
     <string name="nc_notify_me_mention">Notifica su menzione</string>

@@ -136,6 +136,7 @@
     <string name="nc_notification_channel">%1$s på %2$s notifikationskanal</string>
     <string name="nc_notification_channel_calls">Opkald</string>
     <string name="nc_notification_channel_messages">Beskeder</string>
+    <string name="nc_notification_channel_uploads">Uploadede filer</string>
     <string name="nc_notification_settings">Meddelelsesindstillinger</string>
     <string name="nc_notify_me_always">Giv altid besked</string>
     <string name="nc_notify_me_mention">Giv besked når du bliver omtalt</string>

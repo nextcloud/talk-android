@@ -168,6 +168,7 @@
     <string name="nc_notification_channel">%1$s in %2$s canale de notìfica</string>
     <string name="nc_notification_channel_calls">Mutidas</string>
     <string name="nc_notification_channel_messages">Messàgios</string>
+    <string name="nc_notification_channel_uploads">Carrigamentos</string>
     <string name="nc_notification_settings">Impostatziones de notìfica</string>
     <string name="nc_notify_me_always">Notificare semper</string>
     <string name="nc_notify_me_mention">Notificare cando mentovadu</string>

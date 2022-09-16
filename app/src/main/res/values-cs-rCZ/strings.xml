@@ -200,6 +200,7 @@
     <string name="nc_notification_channel_calls_description">Oznámit příchozí volání</string>
     <string name="nc_notification_channel_messages">Zprávy</string>
     <string name="nc_notification_channel_messages_description">Oznámit příchozí zprávy</string>
+    <string name="nc_notification_channel_uploads">Nahrané</string>
     <string name="nc_notification_settings">Nastavení upozorňování</string>
     <string name="nc_notify_me_always">Vždy upozorňovat</string>
     <string name="nc_notify_me_mention">Upozornit, když vás někdo zmíní</string>

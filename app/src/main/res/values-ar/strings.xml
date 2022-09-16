@@ -180,6 +180,7 @@
     <string name="nc_notification_channel">قناة إشعار %1$s في %2$s </string>
     <string name="nc_notification_channel_calls">مكالمات</string>
     <string name="nc_notification_channel_messages">رسائل</string>
+    <string name="nc_notification_channel_uploads">المرفوعات</string>
     <string name="nc_notification_settings">إعدادات الإشعار</string>
     <string name="nc_notify_me_always">أخبرني دومًا </string>
     <string name="nc_notify_me_mention">أخبرني عند منشن</string>
