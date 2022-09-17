@@ -122,6 +122,7 @@
     <string name="nc_expire_message_one_day">1天</string>
     <string name="nc_expire_message_one_hour">1小時</string>
     <string name="nc_expire_message_one_week">1週</string>
+    <string name="nc_expire_messages_explanation">聊天訊息可能會在一定時間後逾期。注意: 在聊天中分享的檔案不會為所有者刪除，但將不再於對話中被分享。</string>
     <string name="nc_external_server_failed">汲取訊號設定失敗</string>
     <string name="nc_failed_signaling_settings">目的伺服器不支援經由行動電話加入公開交談</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>
@@ -248,6 +249,7 @@
     <string name="nc_settings_proxy_host_title">proxy代理主機</string>
     <string name="nc_settings_proxy_port_title">proxy連接埠</string>
     <string name="nc_settings_proxy_type_title">proxy類型</string>
+    <string name="nc_settings_read_privacy_desc">分享我的閱讀狀態並顯示其他人的閱讀狀態</string>
     <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_account">移除帳號</string>
     <string name="nc_settings_remove_confirmation">請確認 是否要清除目前的帳號</string>
