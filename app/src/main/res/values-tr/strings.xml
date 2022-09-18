@@ -10,6 +10,7 @@
     <string name="avatar">Avatar</string>
     <string name="away">Uzakta</string>
     <string name="call_without_notification">Bildirim olmadan çağrı</string>
+    <string name="camera_permission_granted">Kamera izinleri verildi. Lütfen kamerayı yeniden seçin.</string>
     <string name="choose_avatar_from_cloud">Buluttan avatar seç</string>
     <string name="clear_status_message">Durum iletisini kaldır</string>
     <string name="clear_status_message_after">Durum iletisinin kaldırılma süresi</string>
@@ -201,6 +202,7 @@
     <string name="nc_notification_channel_messages">İletiler</string>
     <string name="nc_notification_channel_messages_description">Gelen iletiler bildirilsin</string>
     <string name="nc_notification_channel_uploads">Yüklemeler</string>
+    <string name="nc_notification_channel_uploads_description">Yükleme ilerlemesi bildirilsin</string>
     <string name="nc_notification_settings">Bildirim ayarları</string>
     <string name="nc_notify_me_always">Her zaman bildirilsin</string>
     <string name="nc_notify_me_mention">Anmalar bildirilsin</string>
@@ -346,11 +348,16 @@
     <string name="nc_upload_confirm_send_multiple">Bu dosyalar %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_failed">Yüklenemedi</string>
+    <string name="nc_upload_failed_notification_text">%1$s yüklenemedi</string>
+    <string name="nc_upload_failed_notification_title">Sorun çıktı</string>
     <string name="nc_upload_from_cloud">%1$s üzerinden paylaş</string>
     <string name="nc_upload_from_device">Aygıttan yükle</string>
     <string name="nc_upload_in_progess">Yükleniyor</string>
+    <string name="nc_upload_notification_text">%1$s ile %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Fotoğraf çek</string>
+    <string name="nc_upload_video_from_cam">Görüntü al</string>
     <string name="nc_user">Kullanıcı</string>
+    <string name="nc_video_filename">%1$s üzerinden görüntü kaydı</string>
     <string name="nc_voice_message_filename">%1$s Talk kaydı (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>

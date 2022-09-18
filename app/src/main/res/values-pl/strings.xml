@@ -10,6 +10,7 @@
     <string name="avatar">Awatar</string>
     <string name="away">Bezczynny</string>
     <string name="call_without_notification">Połącz bez powiadomienia</string>
+    <string name="camera_permission_granted">Udzielono dostępu do kamery. Proszę ponownie wybrać kamerę.</string>
     <string name="choose_avatar_from_cloud">Wybierz awatar z chmury</string>
     <string name="clear_status_message">Wyczyść komunikat statusu</string>
     <string name="clear_status_message_after">Wyczyść komunikat statusu po</string>
@@ -201,6 +202,7 @@
     <string name="nc_notification_channel_messages">Wiadomości</string>
     <string name="nc_notification_channel_messages_description">Powiadamiaj o wiadomościach przychodzących</string>
     <string name="nc_notification_channel_uploads">Wysłane</string>
+    <string name="nc_notification_channel_uploads_description">Powiadamiaj o postępie wysyłania</string>
     <string name="nc_notification_settings">Ustawienia powiadomień</string>
     <string name="nc_notify_me_always">Zawsze powiadamiaj</string>
     <string name="nc_notify_me_mention">Powiadom, gdy wspomniano</string>
@@ -346,11 +348,16 @@
     <string name="nc_upload_confirm_send_multiple">Wysłać te pliki do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Wysłać ten plik do %1$s?</string>
     <string name="nc_upload_failed">Wysyłanie nie powiodło się</string>
+    <string name="nc_upload_failed_notification_text">Nie udało się wysłać %1$s</string>
+    <string name="nc_upload_failed_notification_title">Awaria</string>
     <string name="nc_upload_from_cloud">Udostępnij z %1$sa</string>
     <string name="nc_upload_from_device">Wyślij z urządzenia</string>
     <string name="nc_upload_in_progess">Wysyłanie</string>
+    <string name="nc_upload_notification_text">%1$s do %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Zrób zdjęcie</string>
+    <string name="nc_upload_video_from_cam">Nagraj film wideo</string>
     <string name="nc_user">Użytkownik</string>
+    <string name="nc_video_filename">Nagrywanie filmu wideo z %1$s</string>
     <string name="nc_voice_message_filename">Nagranie rozmowy z %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Przytrzymaj, aby nagrać, zwolnij, aby wysłać.</string>
     <string name="nc_voice_message_missing_audio_permission">Wymagane jest uprawnienie na nagrywanie dźwięku</string>
