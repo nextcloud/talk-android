@@ -25,34 +25,40 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/errorImageView"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_above="@id/callStateTextView"
-        android:layout_centerHorizontal="true"
-        android:contentDescription="@null"
-        android:src="@drawable/ic_signal_wifi_off_white_24dp"
-        android:visibility="gone" />
+    <FrameLayout
+        android:id="@+id/callStateIconFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:measureAllChildren="@bool/value_true">
 
-    <ProgressBar
-        android:id="@+id/callStateProgressBar"
-        android:layout_width="@dimen/item_height"
-        android:layout_height="@dimen/item_height"
-        android:layout_above="@id/callStateTextView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/colorPrimary"
-        android:indeterminateTintMode="src_in" />
+        <ImageView
+            android:id="@+id/errorImageView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_signal_wifi_off_white_24dp"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/callStateProgressBar"
+            android:layout_width="@dimen/item_height"
+            android:layout_height="@dimen/item_height"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorPrimary"
+            android:indeterminateTintMode="src_in" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/callStateTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/callStateIconFrameLayout"
         android:layout_centerInParent="true"
         android:layout_margin="16dp"
         android:gravity="center"
