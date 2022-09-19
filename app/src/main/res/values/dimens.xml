@@ -46,7 +46,6 @@
 
     <dimen name="maximum_file_preview_size">192dp</dimen>
 
-    <dimen name="large_preview_dimension">80dp</dimen>
     <dimen name="corner_radius">16dp</dimen>
     <dimen name="button_corner_radius">24dp</dimen>
     <dimen name="standard_margin">16dp</dimen>
@@ -64,6 +63,8 @@
     <dimen name="dialog_padding">24dp</dimen>
     <dimen name="dialog_padding_top_bottom">18dp</dimen>
 
+    <dimen name="call_self_video_long_side_length">150dp</dimen>
+    <dimen name="call_self_video_short_side_length">80dp</dimen>
     <dimen name="call_grid_item_min_height">180dp</dimen>
     <dimen name="call_controls_height">110dp</dimen>
     <dimen name="zero">0dp</dimen>
