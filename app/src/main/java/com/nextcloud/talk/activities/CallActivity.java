@@ -1707,8 +1707,12 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
+        List<String> sessionIdsToEnd = new ArrayList<String>(peerConnectionWrapperList.size());
         for (PeerConnectionWrapper wrapper : peerConnectionWrapperList) {
-            endPeerConnection(wrapper.getSessionId(), false);
+            sessionIdsToEnd.add(wrapper.getSessionId());
+        }
+        for (String sessionId : sessionIdsToEnd) {
+            endPeerConnection(sessionId, false);
         }
 
         if (localStream != null) {
