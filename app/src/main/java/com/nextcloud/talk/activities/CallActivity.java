@@ -396,7 +396,6 @@ public class CallActivity extends CallBaseActivity {
         binding.cameraButton.setOnClickListener(l -> onCameraClick());
 
         binding.hangupButton.setOnClickListener(l -> {
-            setCallState(CallStatus.LEAVING);
             hangup(true);
         });
 
@@ -1167,7 +1166,6 @@ public class CallActivity extends CallBaseActivity {
     @Override
     public void onDestroy() {
         if (!currentCallStatus.equals(CallStatus.LEAVING)) {
-            setCallState(CallStatus.LEAVING);
             hangup(true);
         }
         powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.IDLE);
@@ -1485,6 +1483,10 @@ public class CallActivity extends CallBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
+        if (CallStatus.LEAVING.equals(currentCallStatus)) {
+            return;
+        }
+
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
                 Log.d(TAG, "onMessageEvent 'hello'");
@@ -1660,6 +1662,9 @@ public class CallActivity extends CallBaseActivity {
 
     private void hangup(boolean shutDownView) {
         Log.d(TAG, "hangup! shutDownView=" + shutDownView);
+        if (shutDownView) {
+            setCallState(CallStatus.LEAVING);
+        }
         stopCallingSound();
         dispose(null);
 
@@ -1801,7 +1806,7 @@ public class CallActivity extends CallBaseActivity {
                 }
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
-                if (inCallFlag == 0) {
+                if (inCallFlag == 0 && !CallStatus.LEAVING.equals(currentCallStatus) && ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
                     Log.d(TAG, "Most probably a moderator ended the call for all.");
                     hangup(true);
                 }
