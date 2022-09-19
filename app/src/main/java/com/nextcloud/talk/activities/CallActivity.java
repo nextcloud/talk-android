@@ -1802,7 +1802,7 @@ public class CallActivity extends CallBaseActivity {
                 }
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
-                if (inCallFlag == 0) {
+                if (inCallFlag == 0 && !CallStatus.LEAVING.equals(currentCallStatus) && ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
                     Log.d(TAG, "Most probably a moderator ended the call for all.");
                     hangup(true);
                 }
