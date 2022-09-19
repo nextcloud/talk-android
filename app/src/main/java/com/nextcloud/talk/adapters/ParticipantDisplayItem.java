@@ -6,6 +6,7 @@ import org.webrtc.MediaStream;
 public class ParticipantDisplayItem {
     private String userId;
     private String session;
+    private boolean connected;
     private String nick;
     private String urlForAvatar;
     private MediaStream mediaStream;
@@ -14,9 +15,10 @@ public class ParticipantDisplayItem {
     private EglBase rootEglBase;
     private boolean isAudioEnabled;
 
-    public ParticipantDisplayItem(String userId, String session, String nick, String urlForAvatar, MediaStream mediaStream, String streamType, boolean streamEnabled, EglBase rootEglBase) {
+    public ParticipantDisplayItem(String userId, String session, boolean connected, String nick, String urlForAvatar, MediaStream mediaStream, String streamType, boolean streamEnabled, EglBase rootEglBase) {
         this.userId = userId;
         this.session = session;
+        this.connected = connected;
         this.nick = nick;
         this.urlForAvatar = urlForAvatar;
         this.mediaStream = mediaStream;
@@ -39,6 +41,14 @@ public class ParticipantDisplayItem {
 
     public void setSession(String session) {
         this.session = session;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 
     public String getNick() {

@@ -344,6 +344,8 @@ public class PeerConnectionWrapper {
 
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED,
+                                                                   sessionId, null, null, null));
 
                 if (!isMCUPublisher) {
                     EventBus.getDefault().post(new MediaStreamEvent(remoteStream, sessionId, videoStreamType));
@@ -352,11 +354,20 @@ public class PeerConnectionWrapper {
                 if (hasInitiated) {
                     sendInitialMediaStatus();
                 }
-
+            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.COMPLETED)) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED,
+                                                                   sessionId, null, null, null));
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.CLOSED)) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CLOSED, sessionId, null, null, videoStreamType));
+            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.DISCONNECTED) ||
+                    iceConnectionState.equals(PeerConnection.IceConnectionState.NEW) ||
+                    iceConnectionState.equals(PeerConnection.IceConnectionState.CHECKING)) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
+                                                                   sessionId, null, null, null));
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
+                                                                   sessionId, null, null, null));
                 if (isMCUPublisher) {
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED, sessionId, null, null, null));
                 }
