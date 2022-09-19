@@ -1483,6 +1483,10 @@ public class CallActivity extends CallBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
+        if (CallStatus.LEAVING.equals(currentCallStatus)) {
+            return;
+        }
+
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
                 Log.d(TAG, "onMessageEvent 'hello'");
