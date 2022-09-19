@@ -10,6 +10,7 @@
     <string name="avatar">Profilový obrázek</string>
     <string name="away">Pryč</string>
     <string name="call_without_notification">Zavolat bez upozornění</string>
+    <string name="camera_permission_granted">Oprávnění pro přístup ke kameře uděleno. Prosím vyberte kameru znovu.</string>
     <string name="choose_avatar_from_cloud">Vybrat profilový obrázek z cloudu</string>
     <string name="clear_status_message">Vyčistit stavovou zprávu</string>
     <string name="clear_status_message_after">Vyčistit stavovou zprávu po uplynutí</string>
@@ -201,6 +202,7 @@
     <string name="nc_notification_channel_messages">Zprávy</string>
     <string name="nc_notification_channel_messages_description">Oznámit příchozí zprávy</string>
     <string name="nc_notification_channel_uploads">Nahrané</string>
+    <string name="nc_notification_channel_uploads_description">Upozorňovat ohledně postupu při nahrávání</string>
     <string name="nc_notification_settings">Nastavení upozorňování</string>
     <string name="nc_notify_me_always">Vždy upozorňovat</string>
     <string name="nc_notify_me_mention">Upozornit, když vás někdo zmíní</string>
@@ -346,11 +348,16 @@
     <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>
     <string name="nc_upload_confirm_send_single">Odeslat tento soubor k %1$s?</string>
     <string name="nc_upload_failed">Odesílání se nezdařilo, omlouváme se</string>
+    <string name="nc_upload_failed_notification_text">Nepodařilo se nahrát %1$s</string>
+    <string name="nc_upload_failed_notification_title">Nezdar</string>
     <string name="nc_upload_from_cloud">Nasdílet z %1$s</string>
     <string name="nc_upload_from_device">Nahrát ze zařízení</string>
     <string name="nc_upload_in_progess">Nahrávání</string>
+    <string name="nc_upload_notification_text">%1$s po %2$s  %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Vyfotit</string>
+    <string name="nc_upload_video_from_cam">Natočit video</string>
     <string name="nc_user">Uživatel</string>
+    <string name="nc_video_filename">Videozáznam z %1$s</string>
     <string name="nc_voice_message_filename">Nahrávka z Talk z %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podržením nahrajte, uvolněním odešlete.</string>
     <string name="nc_voice_message_missing_audio_permission">Je zapotřebí oprávnění pro zaznamenávání zvuku</string>
