@@ -396,7 +396,6 @@ public class CallActivity extends CallBaseActivity {
         binding.cameraButton.setOnClickListener(l -> onCameraClick());
 
         binding.hangupButton.setOnClickListener(l -> {
-            setCallState(CallStatus.LEAVING);
             hangup(true);
         });
 
@@ -1167,7 +1166,6 @@ public class CallActivity extends CallBaseActivity {
     @Override
     public void onDestroy() {
         if (!currentCallStatus.equals(CallStatus.LEAVING)) {
-            setCallState(CallStatus.LEAVING);
             hangup(true);
         }
         powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.IDLE);
@@ -1660,6 +1658,9 @@ public class CallActivity extends CallBaseActivity {
 
     private void hangup(boolean shutDownView) {
         Log.d(TAG, "hangup! shutDownView=" + shutDownView);
+        if (shutDownView) {
+            setCallState(CallStatus.LEAVING);
+        }
         stopCallingSound();
         dispose(null);
 
