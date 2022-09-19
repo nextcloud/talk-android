@@ -30,6 +30,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Største først</string>
     <string name="menu_item_sort_by_size_smallest_first">Minste først</string>
     <string name="message_search_begin_empty">Ingen søkeresultater</string>
+    <string name="message_search_hint">Søk...</string>
     <string name="messages">Meldinger</string>
     <string name="nc_Server_account_imported">Valgt konto er nå importert og tilgjengelig</string>
     <string name="nc_about">Om</string>
@@ -85,6 +86,8 @@
     <string name="nc_display_name_not_fetched">Kunne ikke hente visningsnavn, avbryter</string>
     <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
     <string name="nc_email">E-post</string>
+    <string name="nc_expire_message_eight_hours">8 timer</string>
+    <string name="nc_expire_message_four_weeks">4 uker</string>
     <string name="nc_expire_message_off">ett kvarter</string>
     <string name="nc_expire_message_one_day">1 dag</string>
     <string name="nc_expire_message_one_hour">1 time</string>
@@ -102,8 +105,10 @@
     <string name="nc_group">Gruppe</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gjest</string>
+    <string name="nc_guest_access">Gjestetilgang</string>
     <string name="nc_guest_access_allow_title">Tillat gjester</string>
     <string name="nc_guest_access_password_dialog_hint">Skriv inn et passord</string>
+    <string name="nc_guest_access_password_dialog_title">Gjestetilgang-passord</string>
     <string name="nc_guest_access_password_title">Passordbeskyttelse</string>
     <string name="nc_guest_access_password_weak_alert_title">Svakt passord</string>
     <string name="nc_important_conversation">Viktig samtale</string>
@@ -218,6 +223,7 @@
     <string name="nc_settings_notification_sounds">Lyd for varsel</string>
     <string name="nc_settings_notification_sounds_post_oreo">Varsler</string>
     <string name="nc_settings_other_notifications_ringtone">Meldinger</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ugyldig telefonnummer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonnummer</string>
     <string name="nc_settings_privacy">Personvern</string>
     <string name="nc_settings_proxy_host_title">Mellomserver </string>
@@ -241,6 +247,7 @@
     <string name="nc_settings_use_credentials_title">Proxy krever legitimasjon</string>
     <string name="nc_settings_warning">Advarsel</string>
     <string name="nc_settings_wrong_account">Bare gjeldende konto kan reautoriseres</string>
+    <string name="nc_share_contact">Del kontakt</string>
     <string name="nc_share_link">Del lenke</string>
     <string name="nc_share_subject">%1$s invitasjon</string>
     <string name="nc_share_text">Delta i samtalen via %1$s/index.php/call/%2$s</string>
@@ -260,6 +267,7 @@
     <string name="oneHour">1 time</string>
     <string name="online">Pålogget</string>
     <string name="online_status">Online-status</string>
+    <string name="open_in_files_app">Åpne i Filer-appen</string>
     <string name="polls_options">Valg</string>
     <string name="polls_results_subtitle">Resultater</string>
     <string name="polls_settings">Innstillinger</string>
@@ -270,8 +278,11 @@
     <string name="scope_local_title">Lokal</string>
     <string name="scope_private_title">Privat</string>
     <string name="scope_published_description">Synkroniser til betrodde servere og den globale og offentlige adresseboken</string>
+    <string name="scope_published_title">Publisert</string>
     <string name="secondsAgo">sekunder siden</string>
     <string name="selected_list_item">Valgt</string>
+    <string name="send_to">Send til</string>
+    <string name="send_to_three_dots">Send til...</string>
     <string name="set_status">Velg status</string>
     <string name="set_status_message">Velg statusmelding</string>
     <string name="share">Del</string>
@@ -286,12 +297,15 @@
     <string name="take_photo">Ta et bilde</string>
     <string name="take_photo_send">Send</string>
     <string name="take_photo_switch_camera">Bytt kamera</string>
+    <string name="take_photo_toggle_crop">Beskjær bilde</string>
+    <string name="take_photo_toggle_lowres">Reduser bildestørrelse</string>
     <string name="thirtyMinutes">30 minutter</string>
     <string name="thisWeek">Denne uken</string>
     <string name="title_attachments">Vedlegg</string>
     <string name="today">I dag</string>
+    <string name="upload_new_avatar_from_device">Last opp et nytt profilbilde fra enhet</string>
     <string name="user_info_address">Adresse</string>
-    <string name="user_info_displayname">Fullt nav</string>
+    <string name="user_info_displayname">Fullt navn</string>
     <string name="user_info_email">E-post</string>
     <string name="user_info_phone">Telefonnummer</string>
     <string name="user_info_twitter">Twitter</string>
