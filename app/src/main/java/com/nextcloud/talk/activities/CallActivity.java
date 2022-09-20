@@ -1843,6 +1843,14 @@ public class CallActivity extends CallBaseActivity {
         for (String sessionId : newSessions) {
             Log.d(TAG, "   newSession joined: " + sessionId);
             getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
+
+            runOnUiThread(() -> {
+                setupVideoStreamForLayout(
+                    null,
+                    sessionId,
+                    false,
+                    VIDEO_STREAM_TYPE_VIDEO);
+            });
         }
 
         if (newSessions.size() > 0 && !currentCallStatus.equals(CallStatus.IN_CONVERSATION)) {
@@ -2019,6 +2027,17 @@ public class CallActivity extends CallBaseActivity {
         updateSelfVideoViewPosition();
     }
 
+    private void updateSelfVideoViewConnected(boolean connected) {
+        // FIXME In voice only calls there is no video view, so the progress bar would appear floating in the middle of
+        // nowhere. However, a way to signal that the local participant is not connected to the HPB is still need in
+        // that case.
+        if (!connected && !isVoiceOnlyCall) {
+            binding.selfVideoViewProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            binding.selfVideoViewProgressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void updateSelfVideoViewPosition() {
         Log.d(TAG, "updateSelfVideoViewPosition");
         if (!isInPipMode) {
@@ -2061,6 +2080,22 @@ public class CallActivity extends CallBaseActivity {
         String sessionId = peerConnectionEvent.getSessionId();
 
         if (peerConnectionEvent.getPeerConnectionEventType() ==
+            PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED) {
+            if (webSocketClient != null && webSocketClient.getSessionId() == sessionId) {
+                updateSelfVideoViewConnected(true);
+            } else if (participantDisplayItems.get(sessionId) != null) {
+                participantDisplayItems.get(sessionId).setConnected(true);
+                participantsAdapter.notifyDataSetChanged();
+            }
+        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
+            PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED) {
+            if (webSocketClient != null && webSocketClient.getSessionId() == sessionId) {
+                updateSelfVideoViewConnected(false);
+            } else if (participantDisplayItems.get(sessionId) != null) {
+                participantDisplayItems.get(sessionId).setConnected(false);
+                participantsAdapter.notifyDataSetChanged();
+            }
+        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_CLOSED) {
             endPeerConnection(sessionId, VIDEO_STREAM_TYPE_SCREEN.equals(peerConnectionEvent.getVideoStreamType()));
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
@@ -2081,23 +2116,20 @@ public class CallActivity extends CallBaseActivity {
             PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE) {
             if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setNick(peerConnectionEvent.getNick());
+                participantsAdapter.notifyDataSetChanged();
             }
-            participantsAdapter.notifyDataSetChanged();
-
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE && !isVoiceOnlyCall) {
             if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setStreamEnabled(peerConnectionEvent.getChangeValue());
+                participantsAdapter.notifyDataSetChanged();
             }
-            participantsAdapter.notifyDataSetChanged();
-
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.AUDIO_CHANGE) {
             if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setAudioEnabled(peerConnectionEvent.getChangeValue());
+                participantsAdapter.notifyDataSetChanged();
             }
-            participantsAdapter.notifyDataSetChanged();
-
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED) {
             currentCallStatus = CallStatus.PUBLISHER_FAILED;
@@ -2253,12 +2285,20 @@ public class CallActivity extends CallBaseActivity {
                                            String session,
                                            boolean videoStreamEnabled,
                                            String videoStreamType) {
+        PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(session,
+                                                                                                  videoStreamType);
+
+        boolean connected = false;
+        if (peerConnectionWrapper != null) {
+            PeerConnection.IceConnectionState iceConnectionState = peerConnectionWrapper.getPeerConnection().iceConnectionState();
+            connected = iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
+                        iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
+        }
+
         String nick;
         if (hasExternalSignalingServer) {
             nick = webSocketClient.getDisplayNameForSession(session);
         } else {
-            PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(session,
-                                                                                                      videoStreamType);
             nick = peerConnectionWrapper != null ? peerConnectionWrapper.getNick() : "";
         }
 
@@ -2282,6 +2322,7 @@ public class CallActivity extends CallBaseActivity {
 
         ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(userId,
                                                                                    session,
+                                                                                   connected,
                                                                                    nick,
                                                                                    urlForAvatar,
                                                                                    mediaStream,
