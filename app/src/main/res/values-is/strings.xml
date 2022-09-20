@@ -40,6 +40,7 @@
     <string name="nc_biometric_unlock">Aflæsa  %1$s</string>
     <string name="nc_call_name">Heiti samtals</string>
     <string name="nc_call_name_is_same">Nafnið sem þú settir inn er það sama og það sem fyrir er</string>
+    <string name="nc_call_unknown">%s símtal</string>
     <string name="nc_camera_permission_permanently_denied">Til að koma á myndsamtölum þarftu að veita heimildir fyrir \"Myndavél\" í kerfisstillingunum.</string>
     <string name="nc_cancel">Hætta við</string>
     <string name="nc_capabilities_failed">Mistókst að sækja getuupplýsingar, hætti</string>
@@ -58,6 +59,7 @@
     <string name="nc_common_set">Setja</string>
     <string name="nc_common_skip">Sleppa</string>
     <string name="nc_configure_cert_auth">Veldu skilríki fyrir auðkenningu</string>
+    <string name="nc_connecting_call">Tengist ...</string>
     <string name="nc_contacts_done">Lokið</string>
     <string name="nc_conversation_link">Samskiptatengill</string>
     <string name="nc_conversation_menu_conversation_info">Upplýsingar um samtal</string>
@@ -116,6 +118,7 @@
     <string name="nc_make_call_public">Gera samtal opinbert</string>
     <string name="nc_mark_as_read">Merkja sem lesið</string>
     <string name="nc_mark_as_unread">Merkja allt sem ólesið</string>
+    <string name="nc_message_read">Skilaboðin hafa verið lesið</string>
     <string name="nc_message_sent">Skilaboðin hafa verið send</string>
     <string name="nc_microphone_permission_permanently_denied">Til að koma á hljóðsamtölum þarftu að veita heimildir fyrir \"Hljóðnemi\" í kerfisstillingunum.</string>
     <string name="nc_moderator">Umsjónarmaður</string>
@@ -143,6 +146,7 @@
     <string name="nc_password">Lykilorð</string>
     <string name="nc_permissions_settings">Opna stillingar</string>
     <string name="nc_phone_book_integration_account_not_found">Notandaaðgangur fannst ekki</string>
+    <string name="nc_phone_book_integration_chat_via">Spjalla gegnum %s</string>
     <string name="nc_plain_old_messages">Skilaboð</string>
     <string name="nc_privacy">Gagnaleynd</string>
     <string name="nc_proceed">Halda áfram</string>
@@ -245,6 +249,7 @@
     <string name="scope_federated_title">Deilt milli þjóna (skýjasambandssameign)</string>
     <string name="scope_local_title">Staðvært</string>
     <string name="scope_private_title">Einka</string>
+    <string name="scope_published_title">Útgefið</string>
     <string name="secondsAgo">sekúndum síðan</string>
     <string name="selected_list_item">Valið</string>
     <string name="set_status">Setja stöðu</string>
