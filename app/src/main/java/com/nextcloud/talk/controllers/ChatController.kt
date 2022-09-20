@@ -1822,6 +1822,12 @@ class ChatController(args: Bundle) :
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
         }
 
+        checkingLobbyStatus = false
+
+        if (lobbyTimerHandler != null) {
+            lobbyTimerHandler?.removeCallbacksAndMessages(null)
+        }
+
         if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
             if (inConversation && validSessionId()) {
@@ -1956,6 +1962,7 @@ class ChatController(args: Bundle) :
                     currentConversation?.sessionId
                 )
             }
+            checkLobbyState()
             if (isFirstMessagesProcessing) {
                 pullChatMessages(0)
             } else {
