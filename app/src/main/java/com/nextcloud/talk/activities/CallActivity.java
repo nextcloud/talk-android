@@ -2058,14 +2058,14 @@ public class CallActivity extends CallBaseActivity {
             }
 
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                layoutParams.height = (int) getResources().getDimension(R.dimen.large_preview_dimension);
-                layoutParams.width = FrameLayout.LayoutParams.WRAP_CONTENT;
-                newXafterRotate = (float) (screenWidthDp - getResources().getDimension(R.dimen.large_preview_dimension) * 0.8);
+                layoutParams.height = (int) getResources().getDimension(R.dimen.call_self_video_short_side_length);
+                layoutParams.width = (int) getResources().getDimension(R.dimen.call_self_video_long_side_length);
+                newXafterRotate = (float) (screenWidthDp - getResources().getDimension(R.dimen.call_self_video_short_side_length) * 0.8);
 
             } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT;
-                layoutParams.width = (int) getResources().getDimension(R.dimen.large_preview_dimension);
-                newXafterRotate = (float) (screenWidthDp - getResources().getDimension(R.dimen.large_preview_dimension) * 0.5);
+                layoutParams.height = (int) getResources().getDimension(R.dimen.call_self_video_long_side_length);
+                layoutParams.width = (int) getResources().getDimension(R.dimen.call_self_video_short_side_length);
+                newXafterRotate = (float) (screenWidthDp - getResources().getDimension(R.dimen.call_self_video_short_side_length) * 0.5);
             }
             binding.selfVideoRenderer.setLayoutParams(layoutParams);
 
