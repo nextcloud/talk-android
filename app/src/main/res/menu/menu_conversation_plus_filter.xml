@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Marcel Hibbe
+  ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
   ~ Copyright (C) 2017 Mario Danic
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -20,14 +21,23 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-	<!-- Search, should appear as action button -->
-	<item android:id="@+id/action_search"
-	      android:title="@string/nc_search"
-	      android:icon="@drawable/ic_search_white_24dp"
-	      app:showAsAction="collapseActionView|always"
-	      android:animateLayoutChanges="true"
-	      app:actionViewClass="androidx.appcompat.widget.SearchView" />
+    <!-- Search, should appear as action button -->
+    <item
+        android:id="@+id/action_search"
+        android:animateLayoutChanges="true"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/nc_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="collapseActionView|always" />
+
+    <item
+        android:id="@+id/action_choose_account"
+        android:animateLayoutChanges="true"
+        android:title="@string/nc_share_to_choose_account"
+        app:showAsAction="collapseActionView|ifRoom"
+        tools:icon="@drawable/account_circle_48dp" />
 
 </menu>
