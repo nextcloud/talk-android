@@ -49,8 +49,8 @@ import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.models.json.status.StatusOverall;
 import com.nextcloud.talk.ui.StatusDrawable;
-import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
+import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
@@ -74,7 +74,7 @@ import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChooseAccountDialogFragment extends DialogFragment {
-    private static final String TAG = ChooseAccountDialogFragment.class.getSimpleName();
+    public static final String TAG = ChooseAccountDialogFragment.class.getSimpleName();
 
     private static final float STATUS_SIZE_IN_DP = 9f;
 
