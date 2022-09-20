@@ -2132,7 +2132,7 @@ public class CallActivity extends CallBaseActivity {
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED) {
-            currentCallStatus = CallStatus.PUBLISHER_FAILED;
+            setCallState(CallStatus.PUBLISHER_FAILED);
             webSocketClient.clearResumeId();
             hangup(false);
         }
@@ -2394,6 +2394,25 @@ public class CallActivity extends CallBaseActivity {
 
                         if (binding.callStates.errorImageView.getVisibility() != View.VISIBLE) {
                             binding.callStates.errorImageView.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    break;
+                case PUBLISHER_FAILED:
+                    handler.post(() -> {
+                        // No calling sound when the publisher failed
+                        binding.callStates.callStateTextView.setText(R.string.nc_call_reconnecting);
+                        binding.callModeTextView.setText(getDescriptionForCallType());
+                        if (binding.callStates.callStateRelativeLayout.getVisibility() != View.VISIBLE) {
+                            binding.callStates.callStateRelativeLayout.setVisibility(View.VISIBLE);
+                        }
+                        if (binding.gridview.getVisibility() != View.INVISIBLE) {
+                            binding.gridview.setVisibility(View.INVISIBLE);
+                        }
+                        if (binding.callStates.callStateProgressBar.getVisibility() != View.VISIBLE) {
+                            binding.callStates.callStateProgressBar.setVisibility(View.VISIBLE);
+                        }
+                        if (binding.callStates.errorImageView.getVisibility() != View.GONE) {
+                            binding.callStates.errorImageView.setVisibility(View.GONE);
                         }
                     });
                     break;
