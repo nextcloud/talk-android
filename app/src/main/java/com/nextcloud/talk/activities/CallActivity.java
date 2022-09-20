@@ -1167,6 +1167,14 @@ public class CallActivity extends CallBaseActivity {
 
     @Override
     public void onDestroy() {
+        if (localStream != null) {
+            localStream.dispose();
+            localStream = null;
+            Log.d(TAG, "Disposed localStream");
+        } else {
+            Log.d(TAG, "localStream is null");
+        }
+
         if (!currentCallStatus.equals(CallStatus.LEAVING)) {
             hangup(true);
         }
@@ -1720,14 +1728,6 @@ public class CallActivity extends CallBaseActivity {
         }
         for (String sessionId : sessionIdsToEnd) {
             endPeerConnection(sessionId, false);
-        }
-
-        if (localStream != null) {
-            localStream.dispose();
-            localStream = null;
-            Log.d(TAG, "Disposed localStream");
-        } else {
-            Log.d(TAG, "localStream is null");
         }
 
         hangupNetworkCalls(shutDownView);
