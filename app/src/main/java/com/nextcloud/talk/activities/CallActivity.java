@@ -699,7 +699,9 @@ public class CallActivity extends CallBaseActivity {
         if (isVoiceOnlyCall) {
             onMicrophoneClick();
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
+                onPermissionsGranted();
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(PERMISSIONS_CALL, 100);
             } else {
                 onRequestPermissionsResult(100, PERMISSIONS_CALL, new int[]{1, 1});
