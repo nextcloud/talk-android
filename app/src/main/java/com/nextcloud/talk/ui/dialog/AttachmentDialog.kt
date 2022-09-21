@@ -79,7 +79,9 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
             dialogAttachmentBinding.menuShareLocation.visibility = View.GONE
         }
 
-        if (!CapabilitiesUtilNew.hasSpreedFeatureCapability(chatController.conversationUser, "talk-polls")) {
+        if (!CapabilitiesUtilNew.hasSpreedFeatureCapability(chatController.conversationUser, "talk-polls") ||
+            chatController.isOneToOneConversation()
+        ) {
             dialogAttachmentBinding.menuAttachPoll.visibility = View.GONE
         }
 
