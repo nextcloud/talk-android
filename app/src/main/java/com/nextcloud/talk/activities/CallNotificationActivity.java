@@ -129,9 +129,9 @@ public class CallNotificationActivity extends CallBaseActivity {
         eventBus.post(new CallNotificationClick());
 
         Bundle extras = getIntent().getExtras();
-        this.roomId = extras.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
-        this.currentConversation = Parcels.unwrap(extras.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
-        this.userBeingCalled = extras.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());
+        this.roomId = extras.getString(BundleKeys.KEY_ROOM_ID, "");
+        this.currentConversation = Parcels.unwrap(extras.getParcelable(BundleKeys.KEY_ROOM));
+        this.userBeingCalled = extras.getParcelable(BundleKeys.KEY_USER_ENTITY);
 
         this.originalBundle = extras;
         credentials = ApiUtils.getCredentials(userBeingCalled.getUsername(), userBeingCalled.getToken());
@@ -169,13 +169,13 @@ public class CallNotificationActivity extends CallBaseActivity {
     private void initClickListeners() {
         binding.callAnswerVoiceOnlyView.setOnClickListener(l -> {
             Log.d(TAG, "accept call (voice only)");
-            originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), true);
+            originalBundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true);
             proceedToCall();
         });
 
         binding.callAnswerCameraView.setOnClickListener(l -> {
             Log.d(TAG, "accept call (with video)");
-            originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
+            originalBundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
             proceedToCall();
         });
 
@@ -202,8 +202,8 @@ public class CallNotificationActivity extends CallBaseActivity {
     }
 
     private void proceedToCall() {
-        originalBundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), currentConversation.getToken());
-        originalBundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), currentConversation.getDisplayName());
+        originalBundle.putString(BundleKeys.KEY_ROOM_TOKEN, currentConversation.getToken());
+        originalBundle.putString(BundleKeys.KEY_CONVERSATION_NAME, currentConversation.getDisplayName());
 
         Intent intent = new Intent(this, CallActivity.class);
         intent.putExtras(originalBundle);

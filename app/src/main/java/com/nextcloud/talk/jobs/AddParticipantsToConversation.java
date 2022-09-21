@@ -63,18 +63,18 @@ public class AddParticipantsToConversation extends Worker {
     @Override
     public Result doWork() {
         Data data = getInputData();
-        String[] selectedUserIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_USERS());
-        String[] selectedGroupIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS());
-        String[] selectedCircleIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_CIRCLES());
-        String[] selectedEmails = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_EMAILS());
+        String[] selectedUserIds = data.getStringArray(BundleKeys.KEY_SELECTED_USERS);
+        String[] selectedGroupIds = data.getStringArray(BundleKeys.KEY_SELECTED_GROUPS);
+        String[] selectedCircleIds = data.getStringArray(BundleKeys.KEY_SELECTED_CIRCLES);
+        String[] selectedEmails = data.getStringArray(BundleKeys.KEY_SELECTED_EMAILS);
         User user =
             userManager.getUserWithInternalId(
-                data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1))
+                data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1))
                 .blockingGet();
 
         int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.APIv4, 1});
 
-        String conversationToken = data.getString(BundleKeys.INSTANCE.getKEY_TOKEN());
+        String conversationToken = data.getString(BundleKeys.KEY_TOKEN);
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
         RetrofitBucket retrofitBucket;

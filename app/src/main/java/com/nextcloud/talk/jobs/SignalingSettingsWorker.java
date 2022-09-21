@@ -74,7 +74,7 @@ public class SignalingSettingsWorker extends Worker {
 
         Data data = getInputData();
 
-        long internalUserId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1);
+        long internalUserId = data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1);
 
         List<User> userEntityObjectList = new ArrayList<>();
         boolean userExists = userManager.getUserWithInternalId(internalUserId).isEmpty().blockingGet();
