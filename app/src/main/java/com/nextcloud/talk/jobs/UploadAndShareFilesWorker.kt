@@ -128,7 +128,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
 
                 uploadSuccess = ChunkedFileUploader(
-                    okHttpClient!!,
+                    okHttpClient,
                     currentUser,
                     roomToken,
                     metaData,

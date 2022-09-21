@@ -56,7 +56,7 @@ data class Notification(
     @JsonField(name = ["messageRich"])
     var messageRich: String?,
     @JsonField(name = ["messageRichParameters"])
-    var messageRichParameters: HashMap<String, HashMap<String, String>>?,
+    var messageRichParameters: HashMap<String?, HashMap<String?, String?>>?,
     @JsonField(name = ["link"])
     var link: String?,
     @JsonField(name = ["actions"])

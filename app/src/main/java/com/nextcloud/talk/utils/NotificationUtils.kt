@@ -241,7 +241,7 @@ object NotificationUtils {
         }
     }
 
-    fun cancelExistingNotificationWithId(context: Context?, conversationUser: User, notificationId: Long?) {
+    fun cancelNotification(context: Context?, conversationUser: User, notificationId: Long?) {
         scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
             if (notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
                 notificationManager.cancel(statusBarNotification.id)

@@ -391,6 +391,7 @@ public class ApiUtils {
             getApplicationContext().getResources().getString(R.string.nc_push_server_url) + "/devices";
     }
 
+    // see https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md
     public static String getUrlForNotificationWithId(String baseUrl, String notificationId) {
         return baseUrl + ocsApiVersion + "/apps/notifications/api/v2/notifications/" + notificationId;
     }

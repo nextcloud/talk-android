@@ -24,6 +24,8 @@ package com.nextcloud.talk.models.json.notifications
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 
+// see https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md
+
 @JsonObject
 data class NotificationOverall(
     @JsonField(name = ["ocs"])
