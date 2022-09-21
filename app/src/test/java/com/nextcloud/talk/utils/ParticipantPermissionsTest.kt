@@ -50,8 +50,8 @@ class ParticipantPermissionsTest : TestCase() {
 
         assertFalse(attendeePermissions.isCustom)
         assertFalse(attendeePermissions.canStartCall())
-        assertFalse(attendeePermissions.canIgnoreLobby)
-        assertFalse(attendeePermissions.canPublishAudio)
-        assertFalse(attendeePermissions.canPublishVideo)
+        assertFalse(attendeePermissions.canIgnoreLobby())
+        assertTrue(attendeePermissions.canPublishAudio())
+        assertTrue(attendeePermissions.canPublishVideo())
     }
 }
