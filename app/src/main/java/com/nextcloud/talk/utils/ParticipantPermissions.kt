@@ -39,8 +39,8 @@ class ParticipantPermissions(
     private val canStartCall = (conversation.permissions and START_CALL) == START_CALL
     val canJoinCall = (conversation.permissions and JOIN_CALL) == JOIN_CALL
     private val canIgnoreLobby = (conversation.permissions and CAN_IGNORE_LOBBY) == CAN_IGNORE_LOBBY
-    val canPublishAudio = (conversation.permissions and PUBLISH_AUDIO) == PUBLISH_AUDIO
-    val canPublishVideo = (conversation.permissions and PUBLISH_VIDEO) == PUBLISH_VIDEO
+    private val canPublishAudio = (conversation.permissions and PUBLISH_AUDIO) == PUBLISH_AUDIO
+    private val canPublishVideo = (conversation.permissions and PUBLISH_VIDEO) == PUBLISH_VIDEO
     val canPublishScreen = (conversation.permissions and PUBLISH_SCREEN) == PUBLISH_SCREEN
     private val hasChatPermission = (conversation.permissions and CHAT) == CHAT
 
@@ -64,6 +64,22 @@ class ParticipantPermissions(
             canStartCall
         } else {
             conversation.canStartCall
+        }
+    }
+
+    fun canPublishAudio(): Boolean {
+        return if (hasConversationPermissions()) {
+            canPublishAudio
+        } else {
+            true
+        }
+    }
+
+    fun canPublishVideo(): Boolean {
+        return if (hasConversationPermissions()) {
+            canPublishVideo
+        } else {
+            true
         }
     }
 

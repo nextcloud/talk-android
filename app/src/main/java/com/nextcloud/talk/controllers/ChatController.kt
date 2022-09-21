@@ -2747,6 +2747,14 @@ class ChatController(args: Bundle) :
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl)
             bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
+            bundle.putBoolean(
+                BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
+                participantPermissions.canPublishAudio()
+            )
+            bundle.putBoolean(
+                BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
+                participantPermissions.canPublishVideo()
+            )
 
             if (isVoiceOnlyCall) {
                 bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true)

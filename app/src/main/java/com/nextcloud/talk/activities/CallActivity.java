@@ -170,6 +170,8 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
@@ -293,6 +295,9 @@ public class CallActivity extends CallBaseActivity {
             }
         });
 
+    private boolean canPublishAudioStream;
+    private boolean canPublishVideoStream;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -314,6 +319,8 @@ public class CallActivity extends CallBaseActivity {
         conversationName = extras.getString(KEY_CONVERSATION_NAME, "");
         isVoiceOnlyCall = extras.getBoolean(KEY_CALL_VOICE_ONLY, false);
         isCallWithoutNotification = extras.getBoolean(KEY_CALL_WITHOUT_NOTIFICATION, false);
+        canPublishAudioStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO);
+        canPublishVideoStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO);
 
         if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
             isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL);
@@ -387,23 +394,41 @@ public class CallActivity extends CallBaseActivity {
             audioOutputDialog.show();
         });
 
-        binding.microphoneButton.setOnClickListener(l -> onMicrophoneClick());
-        binding.microphoneButton.setOnLongClickListener(l -> {
-            if (!microphoneOn) {
-                callControlHandler.removeCallbacksAndMessages(null);
-                callInfosHandler.removeCallbacksAndMessages(null);
-                cameraSwitchHandler.removeCallbacksAndMessages(null);
-                isPTTActive = true;
-                binding.callControls.setVisibility(View.VISIBLE);
-                if (!isVoiceOnlyCall) {
-                    binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
+        if (canPublishAudioStream) {
+            binding.microphoneButton.setOnClickListener(l -> onMicrophoneClick());
+            binding.microphoneButton.setOnLongClickListener(l -> {
+                if (!microphoneOn) {
+                    callControlHandler.removeCallbacksAndMessages(null);
+                    callInfosHandler.removeCallbacksAndMessages(null);
+                    cameraSwitchHandler.removeCallbacksAndMessages(null);
+                    isPTTActive = true;
+                    binding.callControls.setVisibility(View.VISIBLE);
+                    if (!isVoiceOnlyCall) {
+                        binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
+                    }
                 }
-            }
-            onMicrophoneClick();
-            return true;
-        });
+                onMicrophoneClick();
+                return true;
+            });
+        } else {
+            binding.microphoneButton.setOnClickListener(
+                l -> Toast.makeText(context,
+                                    R.string.nc_not_allowed_to_activate_audio,
+                                    Toast.LENGTH_SHORT
+                                   ).show()
+                                                       );
+        }
 
-        binding.cameraButton.setOnClickListener(l -> onCameraClick());
+        if (canPublishVideoStream) {
+            binding.cameraButton.setOnClickListener(l -> onCameraClick());
+        } else {
+            binding.cameraButton.setOnClickListener(
+                l -> Toast.makeText(context,
+                                    R.string.nc_not_allowed_to_activate_video,
+                                    Toast.LENGTH_SHORT
+                                   ).show()
+                                                   );
+        }
 
         binding.hangupButton.setOnClickListener(l -> {
             hangup(true);
@@ -558,7 +583,7 @@ public class CallActivity extends CallBaseActivity {
                         }
                     }
 
-                    checkPermissions();
+                    checkDevicePermissions();
                 }
 
                 @Override
@@ -705,7 +730,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
 
-    private void checkPermissions() {
+    private void checkDevicePermissions() {
         if (isVoiceOnlyCall) {
             onMicrophoneClick();
         } else {
@@ -764,7 +789,7 @@ public class CallActivity extends CallBaseActivity {
                 binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
             }
 
-            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
+            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) && canPublishVideoStream) {
                 if (!videoOn) {
                     onCameraClick();
                 }
@@ -775,7 +800,7 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
-        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE) && canPublishAudioStream) {
             if (!microphoneOn) {
                 onMicrophoneClick();
             }
@@ -888,6 +913,18 @@ public class CallActivity extends CallBaseActivity {
     }
 
     public void onMicrophoneClick() {
+
+        if (isVoiceOnlyCall && !isConnectionEstablished()) {
+            fetchSignalingSettings();
+        }
+
+        if (!canPublishAudioStream) {
+            microphoneOn = false;
+            binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
+            // In the case no audio stream will be published it's not needed to check microphone permissions
+            return;
+        }
+
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
 
             if (!appPreferences.getPushToTalkIntroShown()) {
@@ -936,11 +973,6 @@ public class CallActivity extends CallBaseActivity {
                 pulseAnimation.start();
                 toggleMedia(true, false);
             }
-
-            if (isVoiceOnlyCall && !isConnectionEstablished()) {
-                fetchSignalingSettings();
-            }
-
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_MICROPHONE)) {
             // Microphone permission is permanently denied so we cannot request it normally.
 
@@ -957,6 +989,14 @@ public class CallActivity extends CallBaseActivity {
     }
 
     public void onCameraClick() {
+
+        if (!canPublishVideoStream) {
+            videoOn = false;
+            binding.cameraButton.getHierarchy().setPlaceholderImage(R.drawable.ic_videocam_off_white_24px);
+            binding.switchSelfVideoButton.setVisibility(View.GONE);
+            return;
+        }
+
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
             videoOn = !videoOn;
 
@@ -1384,12 +1424,14 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void performCall() {
-        int inCallFlag;
-        if (isVoiceOnlyCall) {
-            inCallFlag = Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_AUDIO;
-        } else {
-            inCallFlag =
-                Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_AUDIO + Participant.InCallFlags.WITH_VIDEO;
+        int inCallFlag = Participant.InCallFlags.IN_CALL;
+
+        if (canPublishAudioStream) {
+            inCallFlag += Participant.InCallFlags.WITH_AUDIO;
+        }
+
+        if (!isVoiceOnlyCall && canPublishVideoStream) {
+            inCallFlag += Participant.InCallFlags.WITH_VIDEO;
         }
 
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
@@ -1495,7 +1537,7 @@ public class CallActivity extends CallBaseActivity {
 
     private void initiateCall() {
         if (!TextUtils.isEmpty(roomToken)) {
-            checkPermissions();
+            checkDevicePermissions();
         } else {
             handleFromNotification();
         }
@@ -2302,7 +2344,7 @@ public class CallActivity extends CallBaseActivity {
         if (peerConnectionWrapper != null) {
             PeerConnection.IceConnectionState iceConnectionState = peerConnectionWrapper.getPeerConnection().iceConnectionState();
             connected = iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
-                        iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
+                iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
         }
 
         String nick;
