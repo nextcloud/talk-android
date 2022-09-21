@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -90,7 +92,6 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
-import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -163,6 +164,15 @@ import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
 import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
 import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
 import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
@@ -297,21 +307,21 @@ public class CallActivity extends CallBaseActivity {
         hideNavigationIfNoPipAvailable();
 
         Bundle extras = getIntent().getExtras();
-        roomId = extras.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
-        roomToken = extras.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), "");
-        conversationUser = extras.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());
-        conversationPassword = extras.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), "");
-        conversationName = extras.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), "");
-        isVoiceOnlyCall = extras.getBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
-        isCallWithoutNotification = extras.getBoolean(BundleKeys.INSTANCE.getKEY_CALL_WITHOUT_NOTIFICATION(), false);
+        roomId = extras.getString(KEY_ROOM_ID, "");
+        roomToken = extras.getString(KEY_ROOM_TOKEN, "");
+        conversationUser = extras.getParcelable(KEY_USER_ENTITY);
+        conversationPassword = extras.getString(KEY_CONVERSATION_PASSWORD, "");
+        conversationName = extras.getString(KEY_CONVERSATION_NAME, "");
+        isVoiceOnlyCall = extras.getBoolean(KEY_CALL_VOICE_ONLY, false);
+        isCallWithoutNotification = extras.getBoolean(KEY_CALL_WITHOUT_NOTIFICATION, false);
 
-        if (extras.containsKey(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL())) {
-            isIncomingCallFromNotification = extras.getBoolean(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL());
+        if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
+            isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL);
         }
 
         credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
 
-        baseUrl = extras.getString(BundleKeys.INSTANCE.getKEY_MODIFIED_BASE_URL(), "");
+        baseUrl = extras.getString(KEY_MODIFIED_BASE_URL, "");
         if (TextUtils.isEmpty(baseUrl)) {
             baseUrl = conversationUser.getBaseUrl();
         }

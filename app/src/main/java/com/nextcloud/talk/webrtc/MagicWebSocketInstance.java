@@ -244,8 +244,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                                     shouldRefreshChat = (boolean) chatMap.get("refresh");
                                                     if (shouldRefreshChat) {
                                                         HashMap<String, String> refreshChatHashMap = new HashMap<>();
-                                                        refreshChatHashMap.put(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), (String) messageHashMap.get("roomid"));
-                                                        refreshChatHashMap.put(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), Long.toString(conversationUser.getId()));
+                                                        refreshChatHashMap.put(BundleKeys.KEY_ROOM_TOKEN, (String) messageHashMap.get("roomid"));
+                                                        refreshChatHashMap.put(BundleKeys.KEY_INTERNAL_USER_ID, Long.toString(conversationUser.getId()));
                                                         eventBus.post(new WebSocketCommunicationEvent("refreshChat", refreshChatHashMap));
                                                     }
                                                 }
