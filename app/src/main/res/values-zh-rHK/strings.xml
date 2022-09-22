@@ -7,15 +7,15 @@
     <string name="audio_output_phone">電話</string>
     <string name="audio_output_speaker">喇叭</string>
     <string name="audio_output_wired_headset">有線耳機</string>
-    <string name="avatar">頭像</string>
+    <string name="avatar">虛擬化身大頭照</string>
     <string name="away">不在</string>
     <string name="call_without_notification">通話而不通知</string>
     <string name="camera_permission_granted">已授予相機權限。請重新選擇相機。</string>
-    <string name="choose_avatar_from_cloud">從雲中選擇頭像</string>
+    <string name="choose_avatar_from_cloud">從雲中選擇虛擬化身大頭照</string>
     <string name="clear_status_message">清除狀態訊息</string>
     <string name="clear_status_message_after">繼此之後清空狀態訊息</string>
     <string name="conversations">對話</string>
-    <string name="delete_avatar">刪除頭像</string>
+    <string name="delete_avatar">刪除虛擬化身大頭照</string>
     <string name="dnd">請勿打擾</string>
     <string name="dontClear">不要清除</string>
     <string name="edit">編輯</string>
@@ -408,7 +408,7 @@
     <string name="send_to_forbidden">您不能在此聊天中分享內容</string>
     <string name="send_to_three_dots">傳送到 …</string>
     <string name="send_without_notification">傳送而不通知</string>
-    <string name="set_avatar_from_camera">從相機設置頭像</string>
+    <string name="set_avatar_from_camera">從相機設置虛擬化身大頭照</string>
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>
@@ -434,7 +434,7 @@
     <string name="thisWeek">本星期</string>
     <string name="title_attachments">附件</string>
     <string name="today">今日</string>
-    <string name="upload_new_avatar_from_device">從裝置上傳新頭像</string>
+    <string name="upload_new_avatar_from_device">從裝置上傳新虛擬化身大頭照</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_displayname">全名</string>
     <string name="user_info_email">電郵地址</string>

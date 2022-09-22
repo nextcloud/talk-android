@@ -354,7 +354,10 @@
     <string name="open_in_files_app">Открыть в приложении Файлы</string>
     <string name="play_pause_voice_message">Воспроизведение/пауза голосового сообщения</string>
     <string name="polls_add_option">Добавить вариант</string>
+    <string name="polls_multiple_answers">Множество ответов</string>
     <string name="polls_options">Варианты</string>
+    <string name="polls_private_poll">Закрытый опрос</string>
+    <string name="polls_question">Вопрос</string>
     <string name="polls_results_subtitle">Результаты</string>
     <string name="polls_settings">Настройки</string>
     <string name="polls_submit_vote">Голосовать</string>
