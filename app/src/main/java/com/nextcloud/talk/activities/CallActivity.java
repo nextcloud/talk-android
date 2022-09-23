@@ -914,13 +914,17 @@ public class CallActivity extends CallBaseActivity {
 
     public void onMicrophoneClick() {
 
+        if (!canPublishAudioStream) {
+            microphoneOn = false;
+            binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
+            toggleMedia(false, false);
+        }
+
         if (isVoiceOnlyCall && !isConnectionEstablished()) {
             fetchSignalingSettings();
         }
 
         if (!canPublishAudioStream) {
-            microphoneOn = false;
-            binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
             // In the case no audio stream will be published it's not needed to check microphone permissions
             return;
         }
