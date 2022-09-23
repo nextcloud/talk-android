@@ -452,7 +452,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun loadAvatarForStatusBar() {
-        if (inOneToOneCall() && activity != null) {
+        if (isOneToOneConversation() && activity != null) {
             val imageRequest = DisplayUtils.getImageRequestForUrl(
                 ApiUtils.getUrlForAvatar(
                     conversationUser?.baseUrl,
@@ -493,7 +493,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun inOneToOneCall() = currentConversation != null && currentConversation?.type != null &&
+    fun isOneToOneConversation() = currentConversation != null && currentConversation?.type != null &&
         currentConversation?.type == Conversation.ConversationType
         .ROOM_TYPE_ONE_TO_ONE_CALL
 
@@ -1675,7 +1675,7 @@ class ChatController(args: Bundle) :
         val bundle = Bundle()
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
         bundle.putString(KEY_ROOM_TOKEN, roomToken)
-        bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, inOneToOneCall())
+        bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, isOneToOneConversation())
         router.pushController(
             RouterTransaction.with(ConversationInfoController(bundle))
                 .pushChangeHandler(HorizontalChangeHandler())
