@@ -258,7 +258,7 @@ public class CallActivity extends CallBaseActivity {
     private Handler cameraSwitchHandler = new Handler();
 
     // push to talk
-    private boolean isPTTActive = false;
+    private boolean isPushToTalkActive = false;
     private PulseAnimation pulseAnimation;
 
     private String baseUrl;
@@ -401,7 +401,7 @@ public class CallActivity extends CallBaseActivity {
                     callControlHandler.removeCallbacksAndMessages(null);
                     callInfosHandler.removeCallbacksAndMessages(null);
                     cameraSwitchHandler.removeCallbacksAndMessages(null);
-                    isPTTActive = true;
+                    isPushToTalkActive = true;
                     binding.callControls.setVisibility(View.VISIBLE);
                     if (!isVoiceOnlyCall) {
                         binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
@@ -952,7 +952,7 @@ public class CallActivity extends CallBaseActivity {
                 appPreferences.setPushToTalkIntroShown(true);
             }
 
-            if (!isPTTActive) {
+            if (!isPushToTalkActive) {
                 microphoneOn = !microphoneOn;
 
                 if (microphoneOn) {
@@ -1107,7 +1107,7 @@ public class CallActivity extends CallBaseActivity {
             if (spotlightView != null && spotlightView.getVisibility() != View.GONE) {
                 spotlightView.setVisibility(View.GONE);
             }
-        } else if (!isPTTActive) {
+        } else if (!isPushToTalkActive) {
             float alpha;
             long duration;
 
@@ -1156,7 +1156,7 @@ public class CallActivity extends CallBaseActivity {
                             callControlHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (!isPTTActive) {
+                                    if (!isPushToTalkActive) {
                                         animateCallControls(false, 0);
                                     }
                                 }
@@ -1183,7 +1183,7 @@ public class CallActivity extends CallBaseActivity {
                             callInfosHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (!isPTTActive) {
+                                    if (!isPushToTalkActive) {
                                         animateCallControls(false, 0);
                                     }
                                 }
@@ -2523,7 +2523,7 @@ public class CallActivity extends CallBaseActivity {
                             binding.callInfosLinearLayout.setVisibility(View.GONE);
                         }
 
-                        if (!isPTTActive) {
+                        if (!isPushToTalkActive) {
                             animateCallControls(false, 5000);
                         }
 
@@ -2642,8 +2642,8 @@ public class CallActivity extends CallBaseActivity {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             v.onTouchEvent(event);
-            if (event.getAction() == MotionEvent.ACTION_UP && isPTTActive) {
-                isPTTActive = false;
+            if (event.getAction() == MotionEvent.ACTION_UP && isPushToTalkActive) {
+                isPushToTalkActive = false;
                 binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
                 pulseAnimation.stop();
                 toggleMedia(false, false);
