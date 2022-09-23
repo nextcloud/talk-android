@@ -349,11 +349,14 @@
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
     <string name="nc_upload_failed">Sentitzen dugu, kargatzeak huts egin du.</string>
     <string name="nc_upload_failed_notification_text">Huts egin du %1$s-ren karga</string>
+    <string name="nc_upload_failed_notification_title">Hutsegitea</string>
     <string name="nc_upload_from_cloud">Partekatu %1$s(e)tik</string>
     <string name="nc_upload_from_device">Kargatu gailutik</string>
     <string name="nc_upload_in_progess">Kargatzen</string>
     <string name="nc_upload_picture_from_cam">Atera argazkia</string>
+    <string name="nc_upload_video_from_cam">Atera bideoa</string>
     <string name="nc_user">Erabiltzailea</string>
+    <string name="nc_video_filename">%1$s(r)en bideo grabazioa</string>
     <string name="nc_voice_message_filename">Hizketaldia hemendik grabatzen %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Sakatu grabatzeko, askatu bidaltzeko.</string>
     <string name="nc_voice_message_missing_audio_permission">Audioa grabatzeko baimena behar da</string>
