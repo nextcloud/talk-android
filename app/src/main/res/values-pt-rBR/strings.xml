@@ -10,6 +10,7 @@
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
     <string name="call_without_notification">Ligue sem notificação</string>
+    <string name="camera_permission_granted">Permissão da câmera concedida. Por favor, escolha a câmera novamente.</string>
     <string name="choose_avatar_from_cloud">Escolha o avatar da nuvem</string>
     <string name="clear_status_message">Limpar mensagem de status</string>
     <string name="clear_status_message_after">Limpar mensagem de status após</string>
@@ -201,6 +202,7 @@
     <string name="nc_notification_channel_messages">Mensagens</string>
     <string name="nc_notification_channel_messages_description">Notificar sobre mensagens recebidas</string>
     <string name="nc_notification_channel_uploads">Enviados</string>
+    <string name="nc_notification_channel_uploads_description">Notificar sobre o progresso do envio do arquivo</string>
     <string name="nc_notification_settings">Configurações de notificação</string>
     <string name="nc_notify_me_always">Sempre notificar</string>
     <string name="nc_notify_me_mention">Notificar quando mencionado</string>
@@ -346,11 +348,16 @@
     <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
     <string name="nc_upload_failed">Desculpe, falha no envio</string>
+    <string name="nc_upload_failed_notification_text">Falhou ao se enviado %1$s</string>
+    <string name="nc_upload_failed_notification_title">Falha</string>
     <string name="nc_upload_from_cloud">Compartilhar de 1%1$s</string>
     <string name="nc_upload_from_device">Enviar do dispositivo</string>
     <string name="nc_upload_in_progess">Enviando</string>
+    <string name="nc_upload_notification_text">%1$s para %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Tirar fotos</string>
+    <string name="nc_upload_video_from_cam">Gravar vídeo</string>
     <string name="nc_user">Usuário</string>
+    <string name="nc_video_filename">Gravação de vídeo de %1$s</string>
     <string name="nc_voice_message_filename">Gravação de conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Segure para gravar, solte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">A permissão para gravação de áudio é necessária</string>

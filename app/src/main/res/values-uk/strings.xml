@@ -110,7 +110,9 @@
     <string name="nc_expire_message_eight_hours">8 годин</string>
     <string name="nc_expire_message_four_weeks">4 тижні</string>
     <string name="nc_expire_message_off">Вимкнути</string>
+    <string name="nc_expire_message_one_day">1 день</string>
     <string name="nc_expire_message_one_hour">1 година</string>
+    <string name="nc_expire_message_one_week">1 тиждень</string>
     <string name="nc_external_server_failed">Помилка отримання налаштувань сповіщення</string>
     <string name="nc_failed_signaling_settings">Цільовий сервер не підтримує приєднання до публічних чатів із використанням телефону. Ви можете спробувати приєднатися до розмови з веб-баузера.</string>
     <string name="nc_failed_to_perform_operation">Вибачте, щось пішло не так!</string>
