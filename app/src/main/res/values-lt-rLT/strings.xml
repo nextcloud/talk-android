@@ -232,6 +232,7 @@
     <string name="nc_share_text">Prisijunkite prie pokalbio, adresu %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nSlaptažodis: %1$s</string>
     <string name="nc_share_this_location">Bendrinti šią vietą</string>
+    <string name="nc_share_to_choose_account">Parinkti paskyrą</string>
     <string name="nc_shared_items">Bendrinami elementai</string>
     <string name="nc_shared_items_description">Paveikslai, failai, balso žinutės…</string>
     <string name="nc_shared_items_empty">Nėra bendrinamų elementų</string>

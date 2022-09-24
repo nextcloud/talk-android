@@ -336,6 +336,7 @@
     <string name="nc_share_text">Elkartu elkarrizketara hemen %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
     <string name="nc_share_this_location">Partekatu kokapen hau</string>
+    <string name="nc_share_to_choose_account">Aukeratu kontua</string>
     <string name="nc_shared_items">Partekatutako elementuak</string>
     <string name="nc_shared_items_deck_card">Deck txartela</string>
     <string name="nc_shared_items_description">Irudiak, fitxategiak, ahots-mezuak …</string>
