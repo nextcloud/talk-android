@@ -455,6 +455,9 @@
     <string name="nc_shared_items_location">Location</string>
     <string name="nc_shared_items_deck_card">Deck card</string>
 
+    <!-- share to screen -->
+    <string name="nc_share_to_choose_account">Choose account</string>
+
     <!-- voice messages -->
     <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
@@ -598,6 +601,5 @@
     <string name="nc_expire_message_eight_hours">8 hours</string>
     <string name="nc_expire_message_one_hour">1 hour</string>
     <string name="nc_expire_messages_explanation">Chat messages can be expired after a certain time. Note: Files shared in chat will not be deleted for the owner, but will no longer be shared in the conversation.</string>
-
 
 </resources>
