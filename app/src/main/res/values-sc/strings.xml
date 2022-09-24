@@ -296,6 +296,7 @@
     <string name="nc_share_text">Intra in sa tzarrada in %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nCrae: %1$s</string>
     <string name="nc_share_this_location">Cumpartzi custa positzione</string>
+    <string name="nc_share_to_choose_account">Sèbera contu</string>
     <string name="nc_shared_items_deck_card">Ischeda in Deck</string>
     <string name="nc_shared_items_location">Positzione</string>
     <string name="nc_shared_location">Positzione cumpartzida</string>

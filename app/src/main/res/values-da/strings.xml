@@ -237,6 +237,7 @@
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text">Deltag i samtalen på %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nAdgangskode: %1$s</string>
+    <string name="nc_share_to_choose_account">Vælg konto</string>
     <string name="nc_shared_items_location">Sted</string>
     <string name="nc_sort_by">Sortér efter</string>
     <string name="nc_start_time">Start tid</string>

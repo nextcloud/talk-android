@@ -204,6 +204,7 @@
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text">Join the conversation at %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nPassword: %1$s</string>
+    <string name="nc_share_to_choose_account">Choose account</string>
     <string name="nc_shared_items_location">Location</string>
     <string name="nc_sort_by">Sort by</string>
     <string name="nc_upload_in_progess">Uploading</string>

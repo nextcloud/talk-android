@@ -334,6 +334,7 @@
     <string name="nc_share_text">Csatlakozzon a beszélgetéshez itt: %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nJelszó: %1$s</string>
     <string name="nc_share_this_location">Ezen hely megosztása</string>
+    <string name="nc_share_to_choose_account">Válasszon fiókot</string>
     <string name="nc_shared_items">Megosztott elemek</string>
     <string name="nc_shared_items_deck_card">Kártya</string>
     <string name="nc_shared_items_description">Képek, fájlok, hangüzenetek…</string>

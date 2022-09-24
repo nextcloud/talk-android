@@ -336,6 +336,7 @@
     <string name="nc_share_text">Çağrıya şuradan katılın %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nParola: %1$s</string>
     <string name="nc_share_this_location">Bu konumu paylaş</string>
+    <string name="nc_share_to_choose_account">Hesap seçin</string>
     <string name="nc_shared_items">Paylaşılmış ögeler</string>
     <string name="nc_shared_items_deck_card">Tahta kartı</string>
     <string name="nc_shared_items_description">Görseller, dosyalar, ses iletileri…</string>

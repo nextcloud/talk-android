@@ -307,6 +307,7 @@
     <string name="nc_share_text">加入在 %1$s/index.php/call/%2$s 中的会话</string>
     <string name="nc_share_text_pass">\n密码： %1$s</string>
     <string name="nc_share_this_location">分享这个位置</string>
+    <string name="nc_share_to_choose_account">选择一个账户</string>
     <string name="nc_shared_items_deck_card">Deck 卡片</string>
     <string name="nc_shared_items_location">位置</string>
     <string name="nc_shared_location">共享的位置</string>

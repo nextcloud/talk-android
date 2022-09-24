@@ -238,6 +238,7 @@
     <string name="nc_share_text">به مکالمه %1$s/index.php/call/%2$s ملحق شوید</string>
     <string name="nc_share_text_pass">رمز عبور: %1$s</string>
     <string name="nc_share_this_location">اشتراک این مکان</string>
+    <string name="nc_share_to_choose_account">حساب کاربری را انتخاب کنید</string>
     <string name="nc_shared_items_deck_card">کارت deck</string>
     <string name="nc_shared_items_location">محل</string>
     <string name="nc_sort_by">مرتب‌سازی بر اساس</string>

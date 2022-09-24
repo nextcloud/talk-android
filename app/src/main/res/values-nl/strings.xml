@@ -317,6 +317,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_share_text">Neem deel aan het gesprek %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nWachtwoord: %1$s</string>
     <string name="nc_share_this_location">Deel deze locatie</string>
+    <string name="nc_share_to_choose_account">Kies account</string>
     <string name="nc_shared_items">Gedeelde objecten</string>
     <string name="nc_shared_items_deck_card">Deck kaart</string>
     <string name="nc_shared_items_location">Locatie</string>

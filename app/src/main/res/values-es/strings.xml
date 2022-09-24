@@ -325,6 +325,7 @@
     <string name="nc_share_text">Únete a la conversación en %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nContraseña: %1$s</string>
     <string name="nc_share_this_location">Compartir esta ubicación</string>
+    <string name="nc_share_to_choose_account">Elija una cuenta</string>
     <string name="nc_shared_items">Elementos compartidos</string>
     <string name="nc_shared_items_deck_card">Tarjeta Deck</string>
     <string name="nc_shared_items_description">Imágenes, archivos, mensajes de voz…</string>

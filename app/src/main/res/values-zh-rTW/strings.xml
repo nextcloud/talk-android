@@ -261,6 +261,7 @@
     <string name="nc_settings_wrong_account">只有特定帳號可以被重新授權</string>
     <string name="nc_share_link">分享連結</string>
     <string name="nc_share_this_location">分享地點</string>
+    <string name="nc_share_to_choose_account">選擇帳號</string>
     <string name="nc_shared_items">已分享項目</string>
     <string name="nc_shared_items_deck_card">看板卡片</string>
     <string name="nc_shared_items_empty">無已分享項目</string>
