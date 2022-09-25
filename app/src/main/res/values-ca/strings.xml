@@ -256,6 +256,7 @@
     <string name="online_status">Estat en línia</string>
     <string name="polls_add_option">Afegeix una opció</string>
     <string name="polls_options">Opcions</string>
+    <string name="polls_private_poll">Enquesta privada</string>
     <string name="polls_results_subtitle">Resultats</string>
     <string name="polls_settings">Paràmetres</string>
     <string name="polls_submit_vote">Votar</string>

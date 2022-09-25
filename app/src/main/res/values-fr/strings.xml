@@ -10,6 +10,7 @@
     <string name="avatar">Avatar</string>
     <string name="away">Non présent</string>
     <string name="call_without_notification">Appeler sans notification</string>
+    <string name="camera_permission_granted">Caméra autorisée. Merci de choisir à nouveau la caméra .</string>
     <string name="choose_avatar_from_cloud">Sélectionner l\'avatar depuis le cloud</string>
     <string name="clear_status_message">Effacer le message de statut</string>
     <string name="clear_status_message_after">Effacer le message de statut après</string>
@@ -36,6 +37,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Les plus gros d\'abord</string>
     <string name="menu_item_sort_by_size_smallest_first">Le plus petit en premier</string>
+    <string name="message_poll_tap_to_open">Toucher pour ouvrir le sondage</string>
     <string name="message_search_begin_empty">Aucun résultat</string>
     <string name="message_search_begin_typing">Commencer à taper pour lancer la recherche</string>
     <string name="message_search_hint">Recherche …</string>
@@ -117,10 +119,12 @@
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 heures</string>
+    <string name="nc_expire_message_four_weeks">4 semaines</string>
     <string name="nc_expire_message_off">Éteint</string>
     <string name="nc_expire_message_one_day">1 jour</string>
     <string name="nc_expire_message_one_hour">1 heure</string>
     <string name="nc_expire_message_one_week">1 semaine</string>
+    <string name="nc_expire_messages">Expiration pour les messages</string>
     <string name="nc_expire_messages_explanation">Les messages instantanés peuvent expirer après un certain temps. Note : les fichiers partagés dans la discussion ne seront pas effacé pour leur propriétaire, mais ils ne seront plus partagés dans la conversation.</string>
     <string name="nc_external_server_failed">Échec de l\'extraction des paramètres de signalisation</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile. Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
@@ -135,12 +139,19 @@
     <string name="nc_group">Groupe</string>
     <string name="nc_groups">Groupes</string>
     <string name="nc_guest">Invité</string>
+    <string name="nc_guest_access">Accès invité</string>
+    <string name="nc_guest_access_allow_failed">Impossible d\'activer/désactiver l\'accès invité.</string>
+    <string name="nc_guest_access_allow_summary">Autoriser les inviter à partager le lien public pour rejoindre cette conversation</string>
     <string name="nc_guest_access_allow_title">Autoriser les invités</string>
     <string name="nc_guest_access_password_dialog_hint">Entrez un mot de passe</string>
+    <string name="nc_guest_access_password_dialog_title">Mot de passe de l\'accès invité</string>
+    <string name="nc_guest_access_password_failed">Erreur pendant le paramétrage ou la désactivation du mot de passe.</string>
     <string name="nc_guest_access_password_summary">Définissez un mot de passe pour le lien public</string>
     <string name="nc_guest_access_password_title">Protection par mot de passe</string>
     <string name="nc_guest_access_password_weak_alert_title">Mot de passe faible</string>
     <string name="nc_guest_access_resend_invitations">Renvoyer les invitations</string>
+    <string name="nc_guest_access_resend_invitations_failed">Les invitations n\'ont pas été envoyées en raison d\'une erreur.</string>
+    <string name="nc_guest_access_resend_invitations_successful">Les invitations ont été envoyées à nouveau.</string>
     <string name="nc_guest_access_share_link">Partager le lien de conversation</string>
     <string name="nc_hint_enter_a_message">Saisir un message …</string>
     <string name="nc_important_conversation">Conversation importante</string>
@@ -191,6 +202,7 @@
     <string name="nc_notification_channel_messages">Messages</string>
     <string name="nc_notification_channel_messages_description">Afficher les messages entrants</string>
     <string name="nc_notification_channel_uploads">Envois</string>
+    <string name="nc_notification_channel_uploads_description">Notification concernant la progression du téléchargement</string>
     <string name="nc_notification_settings">Paramètres de notification</string>
     <string name="nc_notify_me_always">Toujours notifier</string>
     <string name="nc_notify_me_mention">Notifier quand mentionné</string>
@@ -249,6 +261,8 @@
     <string name="nc_sent_an_image_you">Vous avez envoyé une image.</string>
     <string name="nc_sent_location" formatted="true">%1$s a envoyé une position.</string>
     <string name="nc_sent_location_you">Vous avez envoyé une position.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s a envoyé un sondage.</string>
+    <string name="nc_sent_poll_you">Vous avez envoyé un sondage.</string>
     <string name="nc_sent_voice" formatted="true">%1$s a envoyé un message vocal.</string>
     <string name="nc_sent_voice_you">Vous avez envoyé un message vocal.</string>
     <string name="nc_server_connect">Test de la connexion au serveur</string>
@@ -335,11 +349,16 @@
     <string name="nc_upload_confirm_send_multiple">Envoyer ces fichiers à %1$s ?</string>
     <string name="nc_upload_confirm_send_single">Envoyer ce fichier à %1$s ?</string>
     <string name="nc_upload_failed">Désolé, l\'envoi a échoué</string>
+    <string name="nc_upload_failed_notification_text">Impossible de télécharger %1$s</string>
+    <string name="nc_upload_failed_notification_title">Échec</string>
     <string name="nc_upload_from_cloud">Partagé de %1$s</string>
     <string name="nc_upload_from_device">Téléverser depuis l\'appareil</string>
     <string name="nc_upload_in_progess">Téléversement</string>
+    <string name="nc_upload_notification_text">%1$s à %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Prendre une photo</string>
+    <string name="nc_upload_video_from_cam">Enregistrer une vidéo</string>
     <string name="nc_user">Utilisateur</string>
+    <string name="nc_video_filename">Enregistrement vidéo de %1$s</string>
     <string name="nc_voice_message_filename">Enregistrement de conversation de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Maintenir pour enregistrer, relâcher pour envoyer.</string>
     <string name="nc_voice_message_missing_audio_permission">La permission d\'enregistrer l\'audio est requise</string>
@@ -356,14 +375,21 @@
     <string name="open_in_files_app">Ouvrir dans l\'app Fichiers</string>
     <string name="play_pause_voice_message">Jouer/mettre en pause le message vocal</string>
     <string name="polls_add_option">Ajouter une option</string>
+    <string name="polls_edit_vote">Éditer le vote</string>
     <string name="polls_end_poll">Fin du sondage</string>
+    <string name="polls_end_poll_confirm">Voulez-vous réellement terminer ce sondage ? Cela ne peut pas être annulé.</string>
+    <string name="polls_max_votes_reached">Vous ne pouvez pas voter avec plus d\'options pour ce sondage.</string>
     <string name="polls_multiple_answers">Réponses multiples</string>
+    <string name="polls_option_delete">Supprimer l\'option %1$s</string>
+    <string name="polls_option_hint">Option %1$s</string>
     <string name="polls_options">Options</string>
     <string name="polls_private_poll">Sondage privé</string>
     <string name="polls_question">Question</string>
+    <string name="polls_question_hint">Votre question</string>
     <string name="polls_results_subtitle">Résultats</string>
     <string name="polls_settings">Paramètres</string>
     <string name="polls_submit_vote">Vote</string>
+    <string name="polls_voted_hidden_success">Vote enregistré</string>
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
     <string name="save">Sauvegarder</string>
@@ -383,6 +409,7 @@
     <string name="send_to_forbidden">Vous n\'êtes pas autorisé à partager du contenu dans cette conversation</string>
     <string name="send_to_three_dots">Envoyer a…</string>
     <string name="send_without_notification">Envoyer sans notification</string>
+    <string name="set_avatar_from_camera">Définir l\'avatar depuis la caméra</string>
     <string name="set_status">Définir le statut</string>
     <string name="set_status_message">Définir le message de statut</string>
     <string name="share">Partage</string>
@@ -420,4 +447,9 @@
     <string name="userinfo_no_info_headline">Aucunes informations personnelles renseignées</string>
     <string name="userinfo_no_info_text">Ajouter le nom, la photo et les coordonnées sur votre page de profil.</string>
     <string name="whats_your_status">Quel est votre statut ?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d vote</item>
+        <item quantity="many">%d votes</item>
+        <item quantity="other">%d votes</item>
+    </plurals>
+</resources>
