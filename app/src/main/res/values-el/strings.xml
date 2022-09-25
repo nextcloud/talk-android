@@ -49,6 +49,7 @@
     <string name="nc_call_incoming">ΕΙΣΕΡΧΟΜΕΝΗ</string>
     <string name="nc_call_name">Όνομα συνομιλίας</string>
     <string name="nc_call_name_is_same">Το όνομα που εισάγατε είναι το ίδιο με ένα υπάρχον</string>
+    <string name="nc_call_reconnecting">Επανασύνδεση ...</string>
     <string name="nc_call_state_in_call">%1$s σε κλήση</string>
     <string name="nc_call_state_with_phone">%1$s με τηλέφωνο</string>
     <string name="nc_call_state_with_video">%1$s με βίντεο</string>
@@ -129,6 +130,7 @@
     <string name="nc_guest_access_password_weak_alert_title">Ασθενές συνηματικό</string>
     <string name="nc_guest_access_resend_invitations">Επαναποστολή προσκλήσεων</string>
     <string name="nc_guest_access_share_link">Κοινή χρήση συνδέσμου συνομιλίας</string>
+    <string name="nc_hint_enter_a_message">Εισάγετε ένα μήνυμα ...</string>
     <string name="nc_important_conversation">Σημαντική συνομιλία</string>
     <string name="nc_important_conversation_desc">Οι Ειδοποιήσεις σε αυτή την συνομιλία θα παρακάμψουν τις ρυθμίσεις Μην ενοχλείτε</string>
     <string name="nc_join_via_link">Συμμετοχή με σύνδεσμο</string>
@@ -137,6 +139,7 @@
     <string name="nc_last_moderator_title">Δεν μπόρεσε να αποχωρήση από την συνομιλία</string>
     <string name="nc_last_modified">%1$s Τελευταία τροποποίηση %2$s</string>
     <string name="nc_leave">Εγκατάλειψη συνομιλίας</string>
+    <string name="nc_leaving_call">Αποχώρηση από την κλήση ...</string>
     <string name="nc_license_summary">Γενική Άδεια Δημόσιας Χρήσης GNU, έκδοση 3</string>
     <string name="nc_license_title">Άδεια χρήσης</string>
     <string name="nc_limit_hit">Το όριο %s χαρακτήρων έχει συμπληρωθεί</string>

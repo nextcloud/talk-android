@@ -193,6 +193,7 @@
     <string name="nc_share_subject">%1$s pozivnica</string>
     <string name="nc_share_text">Pridruži se razgovoru na%1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nLozinka: %1$s</string>
+    <string name="nc_share_to_choose_account">Odaberite nalog</string>
     <string name="nc_sort_by">Razvrstaj</string>
     <string name="nc_start_time">Vreme početka</string>
     <string name="nc_upload_in_progess">Uploading</string>
