@@ -138,7 +138,7 @@ public class NotificationWorker extends Worker {
         importantConversation = arbitraryStorageManager.getStorageSetting(
                 UserIdUtils.INSTANCE.getIdForUser(user),
                 "important_conversation",
-                intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))
+                intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN))
             .map(arbitraryStorage -> {
                 if (arbitraryStorage != null && arbitraryStorage.getValue() != null) {
                     return Boolean.parseBoolean(arbitraryStorage.getValue());
@@ -154,7 +154,7 @@ public class NotificationWorker extends Worker {
         int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, user.getBaseUrl(),
-                intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())))
+                intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN)))
                 .blockingSubscribe(new Observer<RoomOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -165,7 +165,7 @@ public class NotificationWorker extends Worker {
                     public void onNext(RoomOverall roomOverall) {
                         Conversation conversation = roomOverall.getOcs().getData();
 
-                        intent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
+                        intent.putExtra(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
                         if (conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) ||
                                 (!TextUtils.isEmpty(conversation.getObjectType()) && "share:password".equals
                                         (conversation.getObjectType()))) {
@@ -351,12 +351,12 @@ public class NotificationWorker extends Worker {
         }
 
         Bundle notificationInfo = new Bundle();
-        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
+        notificationInfo.putLong(BundleKeys.KEY_INTERNAL_USER_ID,
                                  signatureVerification.getUser().getId());
         // could be an ID or a TOKEN
-        notificationInfo.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(),
+        notificationInfo.putString(BundleKeys.KEY_ROOM_TOKEN,
                                    decryptedPushMessage.getId());
-        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_NOTIFICATION_ID(),
+        notificationInfo.putLong(BundleKeys.KEY_NOTIFICATION_ID,
                                  decryptedPushMessage.getNotificationId());
         notificationBuilder.setExtras(notificationInfo);
 
@@ -442,10 +442,10 @@ public class NotificationWorker extends Worker {
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
+        actualIntent.putExtra(BundleKeys.KEY_SYSTEM_NOTIFICATION_ID, systemNotificationId);
+        actualIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID,
                               Objects.requireNonNull(signatureVerification.getUser()).getId());
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
+        actualIntent.putExtra(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
         actualIntent.putExtra(BundleKeys.KEY_MESSAGE_ID, messageId);
 
         int intentFlag;
@@ -583,8 +583,8 @@ public class NotificationWorker extends Worker {
 
         context = getApplicationContext();
         Data data = getInputData();
-        String subject = data.getString(BundleKeys.INSTANCE.getKEY_NOTIFICATION_SUBJECT());
-        String signature = data.getString(BundleKeys.INSTANCE.getKEY_NOTIFICATION_SIGNATURE());
+        String subject = data.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT);
+        String signature = data.getString(BundleKeys.KEY_NOTIFICATION_SIGNATURE);
 
         try {
             byte[] base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT);
@@ -643,13 +643,13 @@ public class NotificationWorker extends Worker {
 
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
+                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
 
-                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(),
+                            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY,
                                                  signatureVerification.getUser());
 
-                            bundle.putBoolean(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL(),
-                                    startACall);
+                            bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL,
+                                              startACall);
 
                             intent.putExtras(bundle);
 
@@ -657,12 +657,12 @@ public class NotificationWorker extends Worker {
 
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
-                                    if (bundle.containsKey(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())) {
+                                    if (bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
                                         showNotificationForCallWithNoPing(intent);
                                     }
                                     break;
                                 case "room":
-                                    if (bundle.containsKey(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())) {
+                                    if (bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
                                         showNotificationWithObjectData(intent);
                                     }
                                     break;
