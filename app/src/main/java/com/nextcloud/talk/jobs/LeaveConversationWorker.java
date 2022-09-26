@@ -79,8 +79,8 @@ public class LeaveConversationWorker extends Worker {
     @Override
     public Result doWork() {
         Data data = getInputData();
-        long operationUserId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1);
-        String conversationToken = data.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());
+        long operationUserId = data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1);
+        String conversationToken = data.getString(BundleKeys.KEY_ROOM_TOKEN);
         User operationUser = userManager.getUserWithId(operationUserId).blockingGet();
 
         if (operationUser != null) {

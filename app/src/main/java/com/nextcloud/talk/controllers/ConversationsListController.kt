@@ -104,7 +104,7 @@ import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.AttendeePermissionsUtil
+import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.DisplayUtils
@@ -938,13 +938,11 @@ class ConversationsListController(bundle: Bundle) :
     private fun handleConversation(conversation: Conversation?) {
         selectedConversation = conversation
         if (selectedConversation != null && activity != null) {
-            val hasChatPermission = AttendeePermissionsUtil(selectedConversation!!.permissions).hasChatPermission(
-                currentUser!!
-            )
+            val hasChatPermission = ParticipantPermissions(currentUser!!, selectedConversation!!).hasChatPermission()
             if (showShareToScreen) {
                 if (hasChatPermission &&
                     !isReadOnlyConversation(selectedConversation!!) &&
-                    !selectedConversation!!.shouldShowLobby(currentUser!!)
+                    !shouldShowLobby(selectedConversation!!)
                 ) {
                     handleSharedData()
                 } else {
@@ -961,6 +959,13 @@ class ConversationsListController(bundle: Bundle) :
                 openConversation()
             }
         }
+    }
+
+    private fun shouldShowLobby(conversation: Conversation): Boolean {
+        val participantPermissions = ParticipantPermissions(currentUser!!, conversation)
+        return conversation.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
+            !conversation.canModerate(currentUser!!) &&
+            !participantPermissions.canIgnoreLobby()
     }
 
     private fun isReadOnlyConversation(conversation: Conversation): Boolean {

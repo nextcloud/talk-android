@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -90,7 +92,6 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
-import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -163,6 +164,17 @@ import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
 import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
 import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
 import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
@@ -246,7 +258,7 @@ public class CallActivity extends CallBaseActivity {
     private Handler cameraSwitchHandler = new Handler();
 
     // push to talk
-    private boolean isPTTActive = false;
+    private boolean isPushToTalkActive = false;
     private PulseAnimation pulseAnimation;
 
     private String baseUrl;
@@ -283,6 +295,9 @@ public class CallActivity extends CallBaseActivity {
             }
         });
 
+    private boolean canPublishAudioStream;
+    private boolean canPublishVideoStream;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -297,21 +312,23 @@ public class CallActivity extends CallBaseActivity {
         hideNavigationIfNoPipAvailable();
 
         Bundle extras = getIntent().getExtras();
-        roomId = extras.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
-        roomToken = extras.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), "");
-        conversationUser = extras.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());
-        conversationPassword = extras.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), "");
-        conversationName = extras.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), "");
-        isVoiceOnlyCall = extras.getBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
-        isCallWithoutNotification = extras.getBoolean(BundleKeys.INSTANCE.getKEY_CALL_WITHOUT_NOTIFICATION(), false);
+        roomId = extras.getString(KEY_ROOM_ID, "");
+        roomToken = extras.getString(KEY_ROOM_TOKEN, "");
+        conversationUser = extras.getParcelable(KEY_USER_ENTITY);
+        conversationPassword = extras.getString(KEY_CONVERSATION_PASSWORD, "");
+        conversationName = extras.getString(KEY_CONVERSATION_NAME, "");
+        isVoiceOnlyCall = extras.getBoolean(KEY_CALL_VOICE_ONLY, false);
+        isCallWithoutNotification = extras.getBoolean(KEY_CALL_WITHOUT_NOTIFICATION, false);
+        canPublishAudioStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO);
+        canPublishVideoStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO);
 
-        if (extras.containsKey(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL())) {
-            isIncomingCallFromNotification = extras.getBoolean(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL());
+        if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
+            isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL);
         }
 
         credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
 
-        baseUrl = extras.getString(BundleKeys.INSTANCE.getKEY_MODIFIED_BASE_URL(), "");
+        baseUrl = extras.getString(KEY_MODIFIED_BASE_URL, "");
         if (TextUtils.isEmpty(baseUrl)) {
             baseUrl = conversationUser.getBaseUrl();
         }
@@ -377,23 +394,41 @@ public class CallActivity extends CallBaseActivity {
             audioOutputDialog.show();
         });
 
-        binding.microphoneButton.setOnClickListener(l -> onMicrophoneClick());
-        binding.microphoneButton.setOnLongClickListener(l -> {
-            if (!microphoneOn) {
-                callControlHandler.removeCallbacksAndMessages(null);
-                callInfosHandler.removeCallbacksAndMessages(null);
-                cameraSwitchHandler.removeCallbacksAndMessages(null);
-                isPTTActive = true;
-                binding.callControls.setVisibility(View.VISIBLE);
-                if (!isVoiceOnlyCall) {
-                    binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
+        if (canPublishAudioStream) {
+            binding.microphoneButton.setOnClickListener(l -> onMicrophoneClick());
+            binding.microphoneButton.setOnLongClickListener(l -> {
+                if (!microphoneOn) {
+                    callControlHandler.removeCallbacksAndMessages(null);
+                    callInfosHandler.removeCallbacksAndMessages(null);
+                    cameraSwitchHandler.removeCallbacksAndMessages(null);
+                    isPushToTalkActive = true;
+                    binding.callControls.setVisibility(View.VISIBLE);
+                    if (!isVoiceOnlyCall) {
+                        binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
+                    }
                 }
-            }
-            onMicrophoneClick();
-            return true;
-        });
+                onMicrophoneClick();
+                return true;
+            });
+        } else {
+            binding.microphoneButton.setOnClickListener(
+                l -> Toast.makeText(context,
+                                    R.string.nc_not_allowed_to_activate_audio,
+                                    Toast.LENGTH_SHORT
+                                   ).show()
+                                                       );
+        }
 
-        binding.cameraButton.setOnClickListener(l -> onCameraClick());
+        if (canPublishVideoStream) {
+            binding.cameraButton.setOnClickListener(l -> onCameraClick());
+        } else {
+            binding.cameraButton.setOnClickListener(
+                l -> Toast.makeText(context,
+                                    R.string.nc_not_allowed_to_activate_video,
+                                    Toast.LENGTH_SHORT
+                                   ).show()
+                                                   );
+        }
 
         binding.hangupButton.setOnClickListener(l -> {
             hangup(true);
@@ -548,7 +583,7 @@ public class CallActivity extends CallBaseActivity {
                         }
                     }
 
-                    checkPermissions();
+                    checkDevicePermissions();
                 }
 
                 @Override
@@ -695,7 +730,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
 
-    private void checkPermissions() {
+    private void checkDevicePermissions() {
         if (isVoiceOnlyCall) {
             onMicrophoneClick();
         } else {
@@ -754,7 +789,7 @@ public class CallActivity extends CallBaseActivity {
                 binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
             }
 
-            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
+            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) && canPublishVideoStream) {
                 if (!videoOn) {
                     onCameraClick();
                 }
@@ -765,7 +800,7 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
-        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE) && canPublishAudioStream) {
             if (!microphoneOn) {
                 onMicrophoneClick();
             }
@@ -878,6 +913,22 @@ public class CallActivity extends CallBaseActivity {
     }
 
     public void onMicrophoneClick() {
+
+        if (!canPublishAudioStream) {
+            microphoneOn = false;
+            binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
+            toggleMedia(false, false);
+        }
+
+        if (isVoiceOnlyCall && !isConnectionEstablished()) {
+            fetchSignalingSettings();
+        }
+
+        if (!canPublishAudioStream) {
+            // In the case no audio stream will be published it's not needed to check microphone permissions
+            return;
+        }
+
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
 
             if (!appPreferences.getPushToTalkIntroShown()) {
@@ -905,7 +956,7 @@ public class CallActivity extends CallBaseActivity {
                 appPreferences.setPushToTalkIntroShown(true);
             }
 
-            if (!isPTTActive) {
+            if (!isPushToTalkActive) {
                 microphoneOn = !microphoneOn;
 
                 if (microphoneOn) {
@@ -926,11 +977,6 @@ public class CallActivity extends CallBaseActivity {
                 pulseAnimation.start();
                 toggleMedia(true, false);
             }
-
-            if (isVoiceOnlyCall && !isConnectionEstablished()) {
-                fetchSignalingSettings();
-            }
-
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_MICROPHONE)) {
             // Microphone permission is permanently denied so we cannot request it normally.
 
@@ -947,6 +993,14 @@ public class CallActivity extends CallBaseActivity {
     }
 
     public void onCameraClick() {
+
+        if (!canPublishVideoStream) {
+            videoOn = false;
+            binding.cameraButton.getHierarchy().setPlaceholderImage(R.drawable.ic_videocam_off_white_24px);
+            binding.switchSelfVideoButton.setVisibility(View.GONE);
+            return;
+        }
+
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
             videoOn = !videoOn;
 
@@ -1057,7 +1111,7 @@ public class CallActivity extends CallBaseActivity {
             if (spotlightView != null && spotlightView.getVisibility() != View.GONE) {
                 spotlightView.setVisibility(View.GONE);
             }
-        } else if (!isPTTActive) {
+        } else if (!isPushToTalkActive) {
             float alpha;
             long duration;
 
@@ -1106,7 +1160,7 @@ public class CallActivity extends CallBaseActivity {
                             callControlHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (!isPTTActive) {
+                                    if (!isPushToTalkActive) {
                                         animateCallControls(false, 0);
                                     }
                                 }
@@ -1133,7 +1187,7 @@ public class CallActivity extends CallBaseActivity {
                             callInfosHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (!isPTTActive) {
+                                    if (!isPushToTalkActive) {
                                         animateCallControls(false, 0);
                                     }
                                 }
@@ -1374,12 +1428,14 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void performCall() {
-        int inCallFlag;
-        if (isVoiceOnlyCall) {
-            inCallFlag = Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_AUDIO;
-        } else {
-            inCallFlag =
-                Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_AUDIO + Participant.InCallFlags.WITH_VIDEO;
+        int inCallFlag = Participant.InCallFlags.IN_CALL;
+
+        if (canPublishAudioStream) {
+            inCallFlag += Participant.InCallFlags.WITH_AUDIO;
+        }
+
+        if (!isVoiceOnlyCall && canPublishVideoStream) {
+            inCallFlag += Participant.InCallFlags.WITH_VIDEO;
         }
 
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
@@ -1485,7 +1541,7 @@ public class CallActivity extends CallBaseActivity {
 
     private void initiateCall() {
         if (!TextUtils.isEmpty(roomToken)) {
-            checkPermissions();
+            checkDevicePermissions();
         } else {
             handleFromNotification();
         }
@@ -2292,7 +2348,7 @@ public class CallActivity extends CallBaseActivity {
         if (peerConnectionWrapper != null) {
             PeerConnection.IceConnectionState iceConnectionState = peerConnectionWrapper.getPeerConnection().iceConnectionState();
             connected = iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
-                        iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
+                iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
         }
 
         String nick;
@@ -2471,7 +2527,7 @@ public class CallActivity extends CallBaseActivity {
                             binding.callInfosLinearLayout.setVisibility(View.GONE);
                         }
 
-                        if (!isPTTActive) {
+                        if (!isPushToTalkActive) {
                             animateCallControls(false, 5000);
                         }
 
@@ -2590,8 +2646,8 @@ public class CallActivity extends CallBaseActivity {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             v.onTouchEvent(event);
-            if (event.getAction() == MotionEvent.ACTION_UP && isPTTActive) {
-                isPTTActive = false;
+            if (event.getAction() == MotionEvent.ACTION_UP && isPushToTalkActive) {
+                isPushToTalkActive = false;
                 binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
                 pulseAnimation.stop();
                 toggleMedia(false, false);
