@@ -602,7 +602,7 @@
     <string name="nc_expire_message_one_hour">1 hour</string>
     <string name="nc_expire_messages_explanation">Chat messages can be expired after a certain time. Note: Files shared in chat will not be deleted for the owner, but will no longer be shared in the conversation.</string>
 
-    <string name="nc_not_allowed_to_activate_audio">You\'re not allowed to activate audio!</string>
-    <string name="nc_not_allowed_to_activate_video">You\'re not allowed to activate video!</string>
+    <string name="nc_not_allowed_to_activate_audio">You are not allowed to activate audio!</string>
+    <string name="nc_not_allowed_to_activate_video">You are not allowed to activate video!</string>
 
 </resources>
