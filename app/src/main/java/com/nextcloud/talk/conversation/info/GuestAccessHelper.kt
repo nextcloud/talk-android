@@ -58,6 +58,8 @@ class GuestAccessHelper(
             if (conversation.hasPassword) {
                 guestAccessPasswordSwitch.isChecked = true
             }
+        } else {
+            guestAccessAllowSwitch.isChecked = false
         }
 
         binding.guestAccessView.guestAccessAllowSwitch.setOnClickListener {
