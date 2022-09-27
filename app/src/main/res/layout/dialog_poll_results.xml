@@ -42,25 +42,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/standard_margin"
-        android:gravity="end">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/poll_results_end_poll_button"
-            style="@style/Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/standard_margin"
-            android:minHeight="@dimen/min_size_clickable_area"
-            android:text="@string/polls_end_poll"
-            app:cornerRadius="@dimen/button_corner_radius" />
+        android:orientation="vertical"
+        android:gravity="center">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_vote_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/min_size_clickable_area"
+            android:minWidth="@dimen/poll_buttons_min_width"
             android:text="@string/polls_edit_vote"
             android:theme="@style/Button.Primary"
+            app:cornerRadius="@dimen/button_corner_radius" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/poll_results_end_poll_button"
+            style="@style/Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:text="@string/polls_end_poll"
             app:cornerRadius="@dimen/button_corner_radius" />
     </LinearLayout>
 
