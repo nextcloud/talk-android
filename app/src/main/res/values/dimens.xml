@@ -82,4 +82,8 @@
     <dimen name="default_checkbox_dialog_start_margin">18dp</dimen>
 
     <dimen name="mediatab_file_icon_size">50dp</dimen>
+
+    <dimen name="poll_buttons_min_width">150dp</dimen>
+
+
 </resources>
