@@ -10,6 +10,7 @@
     <string name="avatar">Аватар</string>
     <string name="away">Винаги</string>
     <string name="call_without_notification">Обаждане без известие</string>
+    <string name="camera_permission_granted">Дадено е право на камера. Моля, изберете камера отново. </string>
     <string name="choose_avatar_from_cloud">Избор на аватар от облака</string>
     <string name="clear_status_message">Изчистване на съобщението за състоянието</string>
     <string name="clear_status_message_after">Изчистване на съобщение за състоянието след</string>
@@ -201,6 +202,7 @@
     <string name="nc_notification_channel_messages">Съобщения</string>
     <string name="nc_notification_channel_messages_description">Уведомяване за входящи съобщения</string>
     <string name="nc_notification_channel_uploads">Качвания</string>
+    <string name="nc_notification_channel_uploads_description">Уведомяване за напредъка на качването</string>
     <string name="nc_notification_settings">Настройки на известие</string>
     <string name="nc_notify_me_always">Винаги уведомявайте</string>
     <string name="nc_notify_me_mention">Уведомяване при споменаване</string>
@@ -347,11 +349,16 @@
     <string name="nc_upload_confirm_send_multiple">Да се ​​изпратят ли тези файлове до %1$s?</string>
     <string name="nc_upload_confirm_send_single">Да се ​​изпрати ли този файл до %1$s?</string>
     <string name="nc_upload_failed">За съжаление качването беше  неуспешно</string>
+    <string name="nc_upload_failed_notification_text">Неуспешно качване на  %1$s</string>
+    <string name="nc_upload_failed_notification_title">Неуспех</string>
     <string name="nc_upload_from_cloud">Споделяне от %1$s</string>
     <string name="nc_upload_from_device">Качване от устройство</string>
     <string name="nc_upload_in_progess">Качване</string>
+    <string name="nc_upload_notification_text">%1$s to %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Снимане</string>
+    <string name="nc_upload_video_from_cam">Заснемане на видео</string>
     <string name="nc_user">Потребител</string>
+    <string name="nc_video_filename">Видеозапис от %1$s</string>
     <string name="nc_voice_message_filename">Запис на разговор от %1$s(%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Задържане за запис, отпускане за изпращане.</string>
     <string name="nc_voice_message_missing_audio_permission">Нужно е право за аудио запис </string>
