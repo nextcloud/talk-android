@@ -47,6 +47,7 @@ class Reaction {
     ) {
         binding.reactionsEmojiWrapper.removeAllViews()
         if (message.reactions != null && message.reactions!!.isNotEmpty()) {
+            binding.reactionsEmojiWrapper.visibility = View.VISIBLE
 
             var remainingEmojisToDisplay = MAX_EMOJIS_TO_DISPLAY
             val showInfoAboutMoreEmojis = message.reactions!!.size > MAX_EMOJIS_TO_DISPLAY
