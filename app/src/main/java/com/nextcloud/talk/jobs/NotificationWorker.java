@@ -48,8 +48,6 @@ import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.json.chat.ChatUtils;
-import com.nextcloud.talk.models.json.conversations.Conversation;
-import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.push.NotificationUser;
@@ -59,12 +57,9 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
-import com.nextcloud.talk.utils.UserIdUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-
-import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.net.CookieManager;
@@ -92,7 +87,6 @@ import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
-import io.reactivex.Maybe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okhttp3.JavaNetCookieJar;
@@ -130,72 +124,6 @@ public class NotificationWorker extends Worker {
 
     public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-    }
-
-    private void showNotificationForCallWithNoPing(Intent intent) {
-        User user = signatureVerification.getUser();
-
-        importantConversation = arbitraryStorageManager.getStorageSetting(
-                UserIdUtils.INSTANCE.getIdForUser(user),
-                "important_conversation",
-                intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN))
-            .map(arbitraryStorage -> {
-                if (arbitraryStorage != null && arbitraryStorage.getValue() != null) {
-                    return Boolean.parseBoolean(arbitraryStorage.getValue());
-                } else {
-                    return importantConversation;
-                }
-            })
-            .switchIfEmpty(Maybe.just(importantConversation))
-            .blockingGet();
-
-        Log.e(TAG, "showNotificationForCallWithNoPing: importantConversation: " + importantConversation);
-
-        int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.APIv4, 1});
-
-        ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, user.getBaseUrl(),
-                intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN)))
-                .blockingSubscribe(new Observer<RoomOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        // unused atm
-                    }
-
-                    @Override
-                    public void onNext(RoomOverall roomOverall) {
-                        Conversation conversation = roomOverall.getOcs().getData();
-
-                        intent.putExtra(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
-                        if (conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) ||
-                                (!TextUtils.isEmpty(conversation.getObjectType()) && "share:password".equals
-                                        (conversation.getObjectType()))) {
-                            context.startActivity(intent);
-                        } else {
-                            if (conversation.getType().equals(Conversation.ConversationType.ROOM_GROUP_CALL)) {
-                                conversationType = "group";
-                            } else {
-                                conversationType = "public";
-                            }
-                            if (decryptedPushMessage.getNotificationId() != Long.MIN_VALUE) {
-                                showNotificationWithObjectData(intent);
-                            } else {
-                                showNotification(intent);
-                            }
-                        }
-
-                        muteCall = conversation.getNotificationCalls() != 1;
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        // unused atm
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
     }
 
     private void showNotificationWithObjectData(Intent intent) {
@@ -657,9 +585,8 @@ public class NotificationWorker extends Worker {
 
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
-                                    if (bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
-                                        showNotificationForCallWithNoPing(intent);
-                                    }
+                                    Log.e(TAG, "this case should not be reached as it is catched in " +
+                                        "ChatAndCallMessagingService");
                                     break;
                                 case "room":
                                     if (bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
