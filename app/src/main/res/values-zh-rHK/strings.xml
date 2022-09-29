@@ -196,6 +196,8 @@
     <string name="nc_no">否</string>
     <string name="nc_no_messages_yet">目前無任何訊息</string>
     <string name="nc_no_proxy">無proxy代理</string>
+    <string name="nc_not_allowed_to_activate_audio">你無權啟動語音！</string>
+    <string name="nc_not_allowed_to_activate_video">你無權啟動視像！</string>
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
     <string name="nc_notification_channel_calls">通話</string>
     <string name="nc_notification_channel_calls_description">來電通知</string>

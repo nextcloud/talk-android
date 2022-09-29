@@ -196,6 +196,8 @@
     <string name="nc_no">Não</string>
     <string name="nc_no_messages_yet">Sem mensagens ainda</string>
     <string name="nc_no_proxy">Sem proxy</string>
+    <string name="nc_not_allowed_to_activate_audio">Você não tem permissão para ativar o áudio!</string>
+    <string name="nc_not_allowed_to_activate_video">Você não tem permissão para ativar o vídeo!</string>
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas</string>
     <string name="nc_notification_channel_calls_description">Notifique sobre chamadas recebidas</string>
