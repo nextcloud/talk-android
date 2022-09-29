@@ -57,7 +57,7 @@
         android:layout_marginTop="@dimen/standard_margin"
         android:layout_marginEnd="4dp"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="end">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/poll_vote_submit_button"
@@ -66,7 +66,6 @@
             android:minHeight="@dimen/min_size_clickable_area"
             android:minWidth="@dimen/poll_buttons_min_width"
             android:text="@string/polls_submit_vote"
-            android:theme="@style/Button.Primary"
             app:cornerRadius="@dimen/button_corner_radius" />
 
         <com.google.android.material.button.MaterialButton
@@ -83,10 +82,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/poll_vote_end_poll_button"
-            style="@style/Button.Borderless"
+            style="@style/OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/min_size_clickable_area"
+            android:minWidth="@dimen/poll_buttons_min_width"
             android:text="@string/polls_end_poll"
             app:cornerRadius="@dimen/button_corner_radius" />
     </LinearLayout>
