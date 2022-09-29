@@ -585,15 +585,15 @@ class ConversationsListController(bundle: Bundle) :
         if (activity != null) {
             val conversationItem = ConversationItem(
                 conversation,
-                currentUser,
-                activity,
+                currentUser!!,
+                activity!!,
                 viewThemeUtils
             )
             conversationItems.add(conversationItem)
             val conversationItemWithHeader = ConversationItem(
                 conversation,
-                currentUser,
-                activity,
+                currentUser!!,
+                activity!!,
                 callHeaderItems[headerTitle],
                 viewThemeUtils
             )
@@ -651,8 +651,8 @@ class ConversationsListController(bundle: Bundle) :
                         }
                         val conversationItem = ConversationItem(
                             conversation,
-                            currentUser,
-                            activity,
+                            currentUser!!,
+                            activity!!,
                             callHeaderItems[headerTitle],
                             viewThemeUtils
                         )
