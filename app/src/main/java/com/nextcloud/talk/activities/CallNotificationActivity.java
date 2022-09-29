@@ -57,6 +57,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
+import com.nextcloud.talk.utils.ParticipantPermissions;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -204,6 +205,14 @@ public class CallNotificationActivity extends CallBaseActivity {
     private void proceedToCall() {
         originalBundle.putString(BundleKeys.KEY_ROOM_TOKEN, currentConversation.getToken());
         originalBundle.putString(BundleKeys.KEY_CONVERSATION_NAME, currentConversation.getDisplayName());
+
+        ParticipantPermissions participantPermission = new ParticipantPermissions(userBeingCalled, currentConversation);
+        originalBundle.putBoolean(
+            BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
+            participantPermission.canPublishAudio());
+        originalBundle.putBoolean(
+            BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
+            participantPermission.canPublishVideo());
 
         Intent intent = new Intent(this, CallActivity.class);
         intent.putExtras(originalBundle);
