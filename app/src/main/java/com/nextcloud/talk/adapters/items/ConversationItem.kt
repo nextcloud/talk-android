@@ -37,20 +37,18 @@ import android.text.format.DateUtils
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.interfaces.DraweeController
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ConversationItem.ConversationItemViewHolder
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationWithLastMessageBinding
+import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -116,7 +114,6 @@ class ConversationItem(
         payloads: List<Any>
     ) {
         val appContext = sharedApplication!!.applicationContext
-        holder.binding.dialogAvatar.controller = null
         holder.binding.dialogName.setTextColor(
             ResourcesCompat.getColor(
                 context.resources,
@@ -278,32 +275,16 @@ class ConversationItem(
                 layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
                 layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
-                holder.binding.dialogAvatar.hierarchy.setPlaceholderImage(
-                    DisplayUtils.getRoundedDrawable(layerDrawable)
-                )
+                holder.binding.dialogAvatar.loadAvatar(DisplayUtils.getRoundedDrawable(layerDrawable))
             } else {
-                holder.binding.dialogAvatar.hierarchy.setPlaceholderImage(R.mipmap.ic_launcher)
+                holder.binding.dialogAvatar.loadAvatar(R.mipmap.ic_launcher)
             }
             shouldLoadAvatar = false
         }
         if (shouldLoadAvatar) {
             when (model.type) {
                 ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(model.name)) {
-                    val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
-                        .setOldController(holder.binding.dialogAvatar.controller)
-                        .setAutoPlayAnimations(true)
-                        .setImageRequest(
-                            DisplayUtils.getImageRequestForUrl(
-                                ApiUtils.getUrlForAvatar(
-                                    user.baseUrl,
-                                    model.name,
-                                    true
-                                ),
-                                user
-                            )
-                        )
-                        .build()
-                    holder.binding.dialogAvatar.controller = draweeController
+                    holder.binding.dialogAvatar.loadAvatar(user, model.name!!)
                 } else {
                     holder.binding.dialogAvatar.visibility = View.GONE
                 }

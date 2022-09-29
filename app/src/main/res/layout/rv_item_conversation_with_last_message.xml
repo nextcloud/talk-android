@@ -38,7 +38,7 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/double_margin_between_elements">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@id/dialogAvatar"
             android:layout_width="@dimen/small_item_height"
             android:layout_height="@dimen/small_item_height"

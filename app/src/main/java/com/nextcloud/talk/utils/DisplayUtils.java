@@ -617,30 +617,6 @@ public class DisplayUtils {
         avatarImageView.setController(draweeController);
     }
 
-    public static void loadAvatarPlaceholder(final SimpleDraweeView targetView) {
-        final Context context = targetView.getContext();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Drawable[] layers = new Drawable[2];
-            layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background);
-            layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground);
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
-
-            targetView.getHierarchy().setPlaceholderImage(
-                DisplayUtils.getRoundedDrawable(layerDrawable));
-        } else {
-            targetView.getHierarchy().setPlaceholderImage(R.mipmap.ic_launcher);
-        }
-    }
-
-    public static void loadImage(final SimpleDraweeView targetView, final ImageRequest imageRequest) {
-        final DraweeController newController = Fresco.newDraweeControllerBuilder()
-            .setOldController(targetView.getController())
-            .setAutoPlayAnimations(true)
-            .setImageRequest(imageRequest)
-            .build();
-        targetView.setController(newController);
-    }
-
     public static @StringRes
     int getSortOrderStringId(FileSortOrder sortOrder) {
         switch (sortOrder.getName()) {
