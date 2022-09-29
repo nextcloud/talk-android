@@ -153,7 +153,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     }
 
     private fun showEndPollButton(poll: Poll): Boolean {
-        return poll.status == Poll.STATUS_OPEN && (isPollCreatedByCurrentUser(poll) || isOwnerOrModerator)
+        return !editVotes && poll.status == Poll.STATUS_OPEN && (isPollCreatedByCurrentUser(poll) || isOwnerOrModerator)
     }
 
     private fun showVotersAmount(poll: Poll): Boolean {

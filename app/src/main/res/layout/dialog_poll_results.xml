@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/standard_margin"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="end">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_vote_button"
@@ -57,10 +57,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/poll_results_end_poll_button"
-            style="@style/Button.Borderless"
+            style="@style/OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/min_size_clickable_area"
+            android:minWidth="@dimen/poll_buttons_min_width"
             android:text="@string/polls_end_poll"
             app:cornerRadius="@dimen/button_corner_radius" />
     </LinearLayout>
