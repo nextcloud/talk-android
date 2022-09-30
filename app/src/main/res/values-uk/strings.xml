@@ -302,6 +302,7 @@
     <string name="online_status">Статус онлайну</string>
     <string name="polls_options">Параметри</string>
     <string name="polls_settings">Налаштування</string>
+    <string name="polls_submit_vote">Голосувати</string>
     <string name="reactions_tab_all">Всі</string>
     <string name="save">Зберегти</string>
     <string name="scope_federated_description">Синхронізовувати лише з серверами, яким довіряємо</string>
