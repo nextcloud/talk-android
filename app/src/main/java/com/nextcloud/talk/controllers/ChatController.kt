@@ -3290,6 +3290,7 @@ class ChatController(args: Bundle) :
                         )
                         File("$outputDir/$videoName$VIDEO_SUFFIX")
                     } catch (e: IOException) {
+                        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
                         Log.e(TAG, "error while creating video file", e)
                         null
                     }
