@@ -48,7 +48,7 @@
     <string name="nc_account_chooser_add_account">Ajouter un compte</string>
     <string name="nc_account_scheduled_for_deletion">Le compte va être supprimé et ne peut donc pas être utilisé</string>
     <string name="nc_action_open_main_menu">Ouvrir le menu principal</string>
-    <string name="nc_add_attachment">Ajouter une pièce-jointe</string>
+    <string name="nc_add_attachment">Ajouter une pièce jointe</string>
     <string name="nc_add_emojis">Ajouter un emoji</string>
     <string name="nc_add_file">Ajouter à la conversation</string>
     <string name="nc_add_participants">Ajouter des participants</string>
