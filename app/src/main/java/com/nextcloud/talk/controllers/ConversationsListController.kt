@@ -616,6 +616,7 @@ class ConversationsListController(bundle: Bundle) :
                 handleHttpExceptions(throwable)
                 withNullableControllerViewBinding {
                     binding.swipeRefreshLayoutView.isRefreshing = false
+                    showErrorDialog()
                 }
                 dispose(roomsQueryDisposable)
             }) {
@@ -625,6 +626,24 @@ class ConversationsListController(bundle: Bundle) :
                 }
                 isRefreshing = false
             }
+    }
+
+    private fun showErrorDialog() {
+        val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton.context)
+            .setIcon(
+                viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                    context,
+                    R.drawable.ic_baseline_error_outline_24dp,
+                )
+            )
+            .setTitle(R.string.error_loading_chats)
+            .setCancelable(false)
+            .setNegativeButton(R.string.close, null)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun sortConversations(conversationItems: MutableList<AbstractFlexibleItem<*>>) {
@@ -1344,6 +1363,7 @@ class ConversationsListController(bundle: Bundle) :
         handleHttpExceptions(throwable)
         withNullableControllerViewBinding {
             binding.swipeRefreshLayoutView.isRefreshing = false
+            showErrorDialog()
         }
     }
 
