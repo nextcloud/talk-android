@@ -34,9 +34,10 @@ import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DateUtils.getLocalDateTimeStringFromTimestamp
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.Mimetype.FOLDER
+import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class RemoteFileBrowserItemsListViewHolder(
@@ -47,6 +48,9 @@ class RemoteFileBrowserItemsListViewHolder(
     private val viewThemeUtils: ViewThemeUtils,
     onItemClicked: (Int) -> Unit
 ) : RemoteFileBrowserItemsViewHolder(binding, mimeTypeSelectionFilter, currentUser, selectionInterface) {
+
+    @Inject
+    lateinit var dateUtils: DateUtils
 
     override val fileIcon: SimpleDraweeView
         get() = binding.fileIcon
@@ -120,7 +124,7 @@ class RemoteFileBrowserItemsListViewHolder(
         binding.fileModifiedInfo.text = String.format(
             binding.fileModifiedInfo.context.getString(R.string.nc_last_modified),
             Formatter.formatShortFileSize(binding.fileModifiedInfo.context, item.size),
-            getLocalDateTimeStringFromTimestamp(item.modifiedTimestamp)
+            dateUtils.getLocalDateTimeStringFromTimestamp(item.modifiedTimestamp)
         )
 
         binding.selectFileCheckbox.isChecked = selectionInterface.isPathSelected(item.path!!)

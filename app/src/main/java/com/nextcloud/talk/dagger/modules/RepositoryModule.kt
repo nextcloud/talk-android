@@ -39,13 +39,18 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
+import javax.inject.Inject
 
 @Module
 class RepositoryModule {
+
+    @Inject
+    lateinit var dateUtils: DateUtils
 
     @Provides
     fun provideConversationsRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ConversationsRepository {
@@ -54,7 +59,7 @@ class RepositoryModule {
 
     @Provides
     fun provideSharedItemsRepository(ncApi: NcApi): SharedItemsRepository {
-        return SharedItemsRepositoryImpl(ncApi)
+        return SharedItemsRepositoryImpl(ncApi, dateUtils)
     }
 
     @Provides

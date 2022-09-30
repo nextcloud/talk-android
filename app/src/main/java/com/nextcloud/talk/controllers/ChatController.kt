@@ -159,6 +159,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.ContactUtils
+import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
@@ -235,6 +236,9 @@ class ChatController(args: Bundle) :
 
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
+
+    @Inject
+    lateinit var dateUtils: DateUtils
 
     val disposables = DisposableSet()
 
@@ -1334,12 +1338,12 @@ class ChatController(args: Bundle) :
                 if (currentConversation?.lobbyTimer != null && currentConversation?.lobbyTimer !=
                     0L
                 ) {
-                    val timestamp = currentConversation?.lobbyTimer ?: 0
+                    val timestampMS = (currentConversation?.lobbyTimer ?: 0) * DateConstants.SECOND_DIVIDER
                     val stringWithStartDate = String.format(
                         resources!!.getString(R.string.nc_lobby_start_date),
-                        DateUtils.getLocalDateStringFromTimestampForLobby(timestamp)
+                        dateUtils.getLocalDateTimeStringFromTimestamp(timestampMS)
                     )
-                    val relativeTime = DateUtils.relativeStartTimeForLobby(timestamp, resources!!)
+                    val relativeTime = dateUtils.relativeStartTimeForLobby(timestampMS, resources!!)
 
                     sb.append("$stringWithStartDate - $relativeTime")
                         .append("\n\n")
