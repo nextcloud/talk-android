@@ -38,6 +38,7 @@ import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.DataSources
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.image.CloseableBitmap
+import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
@@ -333,7 +334,10 @@ object NotificationUtils {
         val closeableImageRef = DataSources.waitForFinalResult(dataSource) as CloseableReference<CloseableBitmap>?
         val bitmap = closeableImageRef?.get()?.underlyingBitmap
         if (bitmap != null) {
-            avatarIcon = IconCompat.createWithBitmap(DisplayUtils.roundBitmap(bitmap))
+            // According to Fresco documentation a copy of the bitmap should be made before closing the references.
+            // However, it seems to work without making a copy... ;-)
+            RoundAsCirclePostprocessor(true).process(bitmap)
+            avatarIcon = IconCompat.createWithBitmap(bitmap)
         }
         CloseableReference.closeSafely(closeableImageRef)
         dataSource.close()

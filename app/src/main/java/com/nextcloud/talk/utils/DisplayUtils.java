@@ -32,11 +32,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.BitmapDrawable;
@@ -169,28 +164,21 @@ public class DisplayUtils {
         }
     }
 
-    public static Bitmap roundBitmap(Bitmap bitmap) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-
-        final Canvas canvas = new Canvas(output);
-
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        final RectF rectF = new RectF(rect);
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        canvas.drawOval(rectF, paint);
-
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        return output;
-    }
-
     public static Drawable getRoundedDrawable(Drawable drawable) {
         Bitmap bitmap = getBitmap(drawable);
-        return new BitmapDrawable(roundBitmap(bitmap));
+        new RoundAsCirclePostprocessor(true).process(bitmap);
+        return new BitmapDrawable(bitmap);
+    }
+
+    public static Bitmap getRoundedBitmapFromVectorDrawableResource(Resources resources, int resource) {
+        VectorDrawable vectorDrawable = (VectorDrawable) ResourcesCompat.getDrawable(resources, resource, null);
+        Bitmap bitmap = getBitmap(vectorDrawable);
+        new RoundPostprocessor(true).process(bitmap);
+        return bitmap;
+    }
+
+    public static Drawable getRoundedBitmapDrawableFromVectorDrawableResource(Resources resources, int resource) {
+        return new BitmapDrawable(getRoundedBitmapFromVectorDrawableResource(resources, resource));
     }
 
     public static Bitmap getBitmap(Drawable drawable) {
@@ -615,6 +603,30 @@ public class DisplayUtils {
             .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarString))
             .build();
         avatarImageView.setController(draweeController);
+    }
+
+    public static void loadAvatarPlaceholder(final SimpleDraweeView targetView) {
+        final Context context = targetView.getContext();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Drawable[] layers = new Drawable[2];
+            layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background);
+            layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground);
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
+
+            targetView.getHierarchy().setPlaceholderImage(
+                DisplayUtils.getRoundedDrawable(layerDrawable));
+        } else {
+            targetView.getHierarchy().setPlaceholderImage(R.mipmap.ic_launcher);
+        }
+    }
+
+    public static void loadImage(final SimpleDraweeView targetView, final ImageRequest imageRequest) {
+        final DraweeController newController = Fresco.newDraweeControllerBuilder()
+            .setOldController(targetView.getController())
+            .setAutoPlayAnimations(true)
+            .setImageRequest(imageRequest)
+            .build();
+        targetView.setController(newController);
     }
 
     public static @StringRes
