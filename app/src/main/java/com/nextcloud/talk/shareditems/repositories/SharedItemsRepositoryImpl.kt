@@ -37,6 +37,7 @@ import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import io.reactivex.Observable
 import retrofit2.Response
@@ -44,7 +45,8 @@ import java.util.HashMap
 import java.util.Locale
 import javax.inject.Inject
 
-class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : SharedItemsRepository {
+class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, private val dateUtils: DateUtils) :
+    SharedItemsRepository {
 
     override fun media(
         parameters: SharedItemsRepository.Parameters,
@@ -86,8 +88,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
         if (mediaItems != null) {
             for (it in mediaItems) {
                 val actorParameters = it.value.messageParameters!!["actor"]!!
-                val dateTime = DateUtils.getLocalDateTimeStringFromTimestamp(
-                    it.value.timestamp * ONE_SECOND_IN_MILLIS
+                val dateTime = dateUtils.getLocalDateTimeStringFromTimestamp(
+                    it.value.timestamp * DateConstants.SECOND_DIVIDER
                 )
 
                 if (it.value.messageParameters?.containsKey("file") == true) {
@@ -145,6 +147,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                     dateTime
                 )
             }
+
             "geo-location" -> {
                 returnValue = SharedLocationItem(
                     objectParameters["id"]!!,
@@ -155,6 +158,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                     Uri.parse(objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q="))
                 )
             }
+
             "deck-card" -> {
                 returnValue = SharedDeckCardItem(
                     objectParameters["id"]!!,
@@ -165,6 +169,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                     Uri.parse(objectParameters["link"]!!)
                 )
             }
+
             else -> {
                 returnValue = SharedOtherItem(
                     objectParameters["id"]!!,
@@ -212,7 +217,6 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
 
     companion object {
         const val BATCH_SIZE: Int = 28
-        private const val ONE_SECOND_IN_MILLIS = 1000
         private val TAG = SharedItemsRepositoryImpl::class.simpleName
     }
 }

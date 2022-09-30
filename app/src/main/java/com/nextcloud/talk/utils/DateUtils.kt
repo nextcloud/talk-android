@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.utils
 
+import android.content.Context
 import android.content.res.Resources
 import android.icu.text.RelativeDateTimeFormatter
 import android.icu.text.RelativeDateTimeFormatter.Direction
@@ -29,36 +30,36 @@ import com.nextcloud.talk.R
 import java.text.DateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 import kotlin.math.roundToInt
 
-object DateUtils {
+class DateUtils(val context: Context) {
+    private val cal = Calendar.getInstance()
+    private val tz = cal.timeZone
 
-    private const val TIMESTAMP_CORRECTION_MULTIPLIER = 1000
+    /* date formatter in local timezone and locale */
+    private var format: DateFormat = DateFormat.getDateTimeInstance(
+        DateFormat.DEFAULT, // dateStyle
+        DateFormat.SHORT, // timeStyle
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            context.resources.configuration.locales[0]
+        } else {
+            @Suppress("DEPRECATION")
+            context.resources.configuration.locale
+        },
+    )
 
-    fun getLocalDateTimeStringFromTimestamp(timestamp: Long): String {
-        val cal = Calendar.getInstance()
-        val tz = cal.timeZone
-
-        /* date formatter in local timezone */
-        val format = DateFormat.getDateTimeInstance(
-            DateFormat.DEFAULT, DateFormat.SHORT,
-            Locale.getDefault()
-        )
+    init {
         format.timeZone = tz
-
-        return format.format(Date(timestamp))
     }
 
-    fun getLocalDateStringFromTimestampForLobby(timestamp: Long): String {
-        return getLocalDateTimeStringFromTimestamp(timestamp * TIMESTAMP_CORRECTION_MULTIPLIER)
+    fun getLocalDateTimeStringFromTimestamp(timestampMilliseconds: Long): String {
+        return format.format(Date(timestampMilliseconds))
     }
 
-    fun relativeStartTimeForLobby(timestamp: Long, resources: Resources): String {
-
+    fun relativeStartTimeForLobby(timestampMilliseconds: Long, resources: Resources): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val fmt = RelativeDateTimeFormatter.getInstance()
-            val timeLeftMillis = timestamp * TIMESTAMP_CORRECTION_MULTIPLIER - System.currentTimeMillis()
+            val timeLeftMillis = timestampMilliseconds - System.currentTimeMillis()
             val minutes = timeLeftMillis.toDouble() / DateConstants.SECOND_DIVIDER / DateConstants.MINUTES_DIVIDER
             val hours = minutes / DateConstants.HOURS_DIVIDER
             val days = hours / DateConstants.DAYS_DIVIDER
@@ -75,6 +76,7 @@ object DateUtils {
                         RelativeUnit.DAYS
                     )
                 }
+
                 hoursInt > 0 -> {
                     fmt.format(
                         hoursInt.toDouble(),
@@ -82,6 +84,7 @@ object DateUtils {
                         RelativeUnit.HOURS
                     )
                 }
+
                 minutesInt > 1 -> {
                     fmt.format(
                         minutesInt.toDouble(),
@@ -89,6 +92,7 @@ object DateUtils {
                         RelativeUnit.MINUTES
                     )
                 }
+
                 else -> {
                     resources.getString(R.string.nc_lobby_start_soon)
                 }

@@ -22,6 +22,7 @@
 package com.nextcloud.talk.dagger.modules
 
 import android.content.Context
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtilImpl
 import dagger.Module
@@ -34,5 +35,11 @@ class UtilsModule {
     @Reusable
     fun providePermissionUtil(context: Context): PlatformPermissionUtil {
         return PlatformPermissionUtilImpl(context)
+    }
+
+    @Provides
+    @Reusable
+    fun provideDateUtils(context: Context): DateUtils {
+        return DateUtils(context)
     }
 }
