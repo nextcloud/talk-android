@@ -35,6 +35,7 @@ import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall;
 import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
+import com.nextcloud.talk.models.json.opengraph.OpenGraphOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
@@ -570,4 +571,9 @@ public interface NcApi {
     Observable<GenericOverall> setMessageExpiration(@Header("Authorization") String authorization,
                                      @Url String url,
                                      @Field("seconds") Integer seconds);
+
+    @GET
+    Observable<OpenGraphOverall> getOpenGraph(@Header("Authorization") String authorization,
+                                              @Url String url,
+                                              @Query("reference") String urlToFindPreviewFor);
 }

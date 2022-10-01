@@ -37,6 +37,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import kotlinx.android.parcel.Parcelize
@@ -126,7 +127,10 @@ data class ChatMessage(
     var voiceMessagePlayedSeconds: Int = 0,
 
     var voiceMessageDownloadProgress: Int = 0,
+
 ) : Parcelable, MessageContentType, MessageContentType.Image {
+
+    var extractedUrlToPreview: String? = null
 
     // messageTypesToIgnore is weird. must be deleted by refactoring!!!
     @JsonIgnore
@@ -169,6 +173,33 @@ data class ChatMessage(
                 if (isHashMapEntryEqualTo(individualHashMap, "type", "talk-poll")) {
                     return true
                 }
+            }
+        }
+        return false
+    }
+
+    @Suppress("ReturnCount")
+    fun isLinkPreview(): Boolean {
+        if (CapabilitiesUtilNew.isLinkPreviewAvailable(activeUser!!)) {
+            val regexStringFromServer = activeUser?.capabilities?.coreCapability?.referenceRegex
+
+            val regexFromServer = regexStringFromServer?.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
+            val regexDefault = REGEX_STRING_DEFAULT.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
+
+            val messageCharSequence: CharSequence = StringBuffer(message!!)
+
+            if (regexFromServer != null) {
+                val foundLinkInServerRegex = regexFromServer.containsMatchIn(messageCharSequence)
+                if (foundLinkInServerRegex) {
+                    extractedUrlToPreview = regexFromServer.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
+                    return true
+                }
+            }
+
+            val foundLinkInDefaultRegex = regexDefault.containsMatchIn(messageCharSequence)
+            if (foundLinkInDefaultRegex) {
+                extractedUrlToPreview = regexDefault.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
+                return true
             }
         }
         return false
@@ -492,5 +523,8 @@ data class ChatMessage(
     companion object {
         private const val TAG = "ChatMessage"
         private const val MILLIES: Long = 1000L
+
+        private const val REGEX_STRING_DEFAULT =
+            """(\s|\n|^)(https?:\/\/)((?:[-A-Z0-9+_]+\.)+[-A-Z]+(?:\/[-A-Z0-9+&@#%?=~_|!:,.;()]*)*)(\s|\n|$)"""
     }
 }
