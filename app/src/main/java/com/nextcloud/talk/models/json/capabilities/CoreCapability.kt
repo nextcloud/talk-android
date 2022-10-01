@@ -1,10 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Mario Danic
- * @author Tim Krüger
- * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,25 +23,21 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.Serializable
 
 @Parcelize
 @JsonObject
-data class Capabilities(
-    @JsonField(name = ["core"])
-    var coreCapability: CoreCapability?,
-    @JsonField(name = ["spreed"])
-    var spreedCapability: SpreedCapability?,
-    @JsonField(name = ["notifications"])
-    var notificationsCapability: NotificationsCapability?,
-    @JsonField(name = ["theming"])
-    var themingCapability: ThemingCapability?,
-    @JsonField(name = ["external"])
-    var externalCapability: HashMap<String, List<String>>?,
-    @JsonField(name = ["provisioning_api"])
-    var provisioningCapability: ProvisioningCapability?,
-    @JsonField(name = ["user_status"])
-    var userStatusCapability: UserStatusCapability?
+@Serializable
+data class CoreCapability(
+    @JsonField(name = ["pollinterval"])
+    var pollInterval: Int?,
+    @JsonField(name = ["webdav-root"])
+    var webdavRoot: String?,
+    @JsonField(name = ["reference-api"])
+    var referenceApi: String?,
+    @JsonField(name = ["reference-regex"])
+    var referenceRegex: String?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null, null, null, null)
+    constructor() : this(null, null, null, null)
 }

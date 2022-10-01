@@ -491,4 +491,7 @@ public class ApiUtils {
         return getUrlForRoom(version, baseUrl, token) + "/message-expiration";
     }
 
+    public static String getUrlForOpenGraph(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/references/resolve";
+    }
 }

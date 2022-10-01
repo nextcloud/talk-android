@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+
+  Nextcloud Talk application
+
+  Copyright (C) 2022 Marcel Hibbe
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <https://www.gnu.org/licenses/>.
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/referenceWrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp">
+
+    <View
+        android:id="@+id/referenceColoredView"
+        android:layout_width="2dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@color/high_emphasis_text"
+        tools:layout_height="100dp"/>
+
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/referenceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1.2"
+        android:textAlignment="viewStart"
+        android:textIsSelectable="false"
+        android:layout_marginStart="10dp"
+        tools:text="Name of Website" />
+
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/referenceLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/referenceName"
+        android:lineSpacingMultiplier="1.2"
+        android:textAlignment="viewStart"
+        android:textIsSelectable="false"
+        android:layout_marginStart="10dp"
+        tools:text="http://nextcloud.com" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/referenceThumbImage"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="fitEnd"
+        android:layout_below="@id/referenceLink"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        app:roundedCornerRadius="6dp" />
+</RelativeLayout>
