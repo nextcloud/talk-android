@@ -161,7 +161,7 @@ android {
 
 ext {
     androidxCameraVersion = "1.1.0"
-    coilKtVersion = "2.2.1"
+    coilKtVersion = "2.2.2"
     daggerVersion = "2.44"
     lifecycleVersion = '2.5.1'
     okhttpVersion = "4.10.0"
