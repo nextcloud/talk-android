@@ -50,25 +50,30 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
         super.onBindViewHolder(holder, position);
 
         if (holder instanceof MagicIncomingTextMessageViewHolder) {
-            ((MagicIncomingTextMessageViewHolder) holder).assignReactionInterface(chatController);
+            ((MagicIncomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
         } else if (holder instanceof MagicOutcomingTextMessageViewHolder) {
-            ((MagicOutcomingTextMessageViewHolder) holder).assignReactionInterface(chatController);
+            ((MagicOutcomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
 
         } else if (holder instanceof IncomingLocationMessageViewHolder) {
-            ((IncomingLocationMessageViewHolder) holder).assignReactionInterface(chatController);
+            ((IncomingLocationMessageViewHolder) holder).assignCommonMessageInterface(chatController);
         } else if (holder instanceof OutcomingLocationMessageViewHolder) {
-            ((OutcomingLocationMessageViewHolder) holder).assignReactionInterface(chatController);
+            ((OutcomingLocationMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+
+        } else if (holder instanceof IncomingLinkPreviewMessageViewHolder) {
+            ((IncomingLinkPreviewMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+        } else if (holder instanceof OutcomingLinkPreviewMessageViewHolder) {
+            ((OutcomingLinkPreviewMessageViewHolder) holder).assignCommonMessageInterface(chatController);
 
         } else if (holder instanceof IncomingVoiceMessageViewHolder) {
             ((IncomingVoiceMessageViewHolder) holder).assignVoiceMessageInterface(chatController);
-            ((IncomingVoiceMessageViewHolder) holder).assignReactionInterface(chatController);
+            ((IncomingVoiceMessageViewHolder) holder).assignCommonMessageInterface(chatController);
         } else if (holder instanceof OutcomingVoiceMessageViewHolder) {
             ((OutcomingVoiceMessageViewHolder) holder).assignVoiceMessageInterface(chatController);
-            ((OutcomingVoiceMessageViewHolder) holder).assignReactionInterface(chatController);
+            ((OutcomingVoiceMessageViewHolder) holder).assignCommonMessageInterface(chatController);
 
         } else if (holder instanceof MagicPreviewMessageViewHolder) {
             ((MagicPreviewMessageViewHolder) holder).assignPreviewMessageInterface(chatController);
-            ((MagicPreviewMessageViewHolder) holder).assignReactionInterface(chatController);
+            ((MagicPreviewMessageViewHolder) holder).assignCommonMessageInterface(chatController);
         }
     }
 }

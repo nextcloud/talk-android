@@ -2,7 +2,7 @@ package com.nextcloud.talk.adapters.messages
 
 import com.nextcloud.talk.models.json.chat.ChatMessage
 
-interface ReactionsInterface {
+interface CommonMessageInterface {
     fun onClickReactions(chatMessage: ChatMessage)
-    fun onLongClickReactions(chatMessage: ChatMessage)
+    fun onOpenMessageActionsDialog(chatMessage: ChatMessage)
 }

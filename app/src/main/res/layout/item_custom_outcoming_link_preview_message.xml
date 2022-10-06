@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ @author Marcel Hibbe
+  ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="2dp">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@id/bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
+        app:alignContent="stretch"
+        app:alignItems="stretch"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_end">
+
+        <include
+            android:id="@+id/message_quote"
+            layout="@layout/item_message_quote"
+            android:visibility="gone" />
+
+        <androidx.emoji.widget.EmojiTextView
+            android:id="@id/messageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="true"
+            android:lineSpacingMultiplier="1.2"
+            android:textAlignment="viewStart"
+            android:textColorHighlight="@color/nc_grey"
+            android:textIsSelectable="false"
+            tools:text="Talk to you later!" />
+
+        <include
+            android:id="@+id/referenceInclude"
+            layout="@layout/reference_inside_message" />
+
+        <TextView
+            android:id="@id/messageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/messageText"
+            android:layout_marginStart="8dp"
+            android:alpha="0.6"
+            android:gravity="end"
+            android:textColor="@color/no_emphasis_text"
+            android:textIsSelectable="false"
+            app:layout_alignSelf="center"
+            app:layout_flexGrow="1"
+            app:layout_wrapBefore="false"
+            tools:text="10:35" />
+
+        <ImageView
+            android:id="@+id/checkMark"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/message_bubble_checkmark_height"
+            android:layout_below="@id/messageTime"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@null"
+            app:layout_alignSelf="center"
+            app:tint="@color/high_emphasis_text" />
+
+        <include
+            android:id="@+id/reactions"
+            layout="@layout/reactions_inside_message" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+</RelativeLayout>

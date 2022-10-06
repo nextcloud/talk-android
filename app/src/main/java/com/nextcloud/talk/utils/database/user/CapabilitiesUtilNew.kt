@@ -154,5 +154,15 @@ object CapabilitiesUtilNew {
         return hasSpreedFeatureCapability(user, "unified-search")
     }
 
+    @JvmStatic
+    fun isLinkPreviewAvailable(user: User): Boolean {
+        if (user.capabilities?.coreCapability?.referenceApi != null &&
+            user.capabilities?.coreCapability?.referenceApi == "true"
+        ) {
+            return true
+        }
+        return false
+    }
+
     const val DEFAULT_CHAT_SIZE = 1000
 }
