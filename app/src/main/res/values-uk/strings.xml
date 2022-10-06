@@ -22,7 +22,7 @@
     <string name="emoji_search">Пошук емодзі</string>
     <string name="encrypted">Зашифровано</string>
     <string name="failed_to_save">Не вдалося зберегти %1$s</string>
-    <string name="file_list_folder">тека</string>
+    <string name="file_list_folder">каталог</string>
     <string name="file_list_loading">Завантаження …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 години</string>
