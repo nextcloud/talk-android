@@ -64,7 +64,7 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
     lateinit var message: ChatMessage
 
-    lateinit var reactionsInterface: ReactionsInterface
+    lateinit var commonMessageInterface: CommonMessageInterface
 
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
@@ -114,10 +114,10 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
             viewThemeUtils
         )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
-            reactionsInterface.onClickReactions(message)
+            commonMessageInterface.onClickReactions(message)
         }
         binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
-            reactionsInterface.onLongClickReactions(message)
+            commonMessageInterface.onOpenMessageActionsDialog(message)
             true
         }
     }
@@ -190,8 +190,8 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         viewThemeUtils.talk.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
-    fun assignReactionInterface(reactionsInterface: ReactionsInterface) {
-        this.reactionsInterface = reactionsInterface
+    fun assignCommonMessageInterface(commonMessageInterface: CommonMessageInterface) {
+        this.commonMessageInterface = commonMessageInterface
     }
 
     companion object {

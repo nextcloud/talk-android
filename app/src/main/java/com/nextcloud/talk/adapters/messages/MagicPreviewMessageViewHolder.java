@@ -108,7 +108,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
     View clickView;
 
-    ReactionsInterface reactionsInterface;
+    CommonMessageInterface commonMessageInterface;
     PreviewMessageInterface previewMessageInterface;
 
     public MagicPreviewMessageViewHolder(View itemView, Object payload) {
@@ -251,10 +251,10 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                                      true,
                                      viewThemeUtils);
         reactionsBinding.reactionsEmojiWrapper.setOnClickListener(l -> {
-            reactionsInterface.onClickReactions(message);
+            commonMessageInterface.onClickReactions(message);
         });
         reactionsBinding.reactionsEmojiWrapper.setOnLongClickListener(l -> {
-            reactionsInterface.onLongClickReactions(message);
+            commonMessageInterface.onOpenMessageActionsDialog(message);
             return true;
         });
     }
@@ -347,8 +347,8 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
             });
     }
 
-    public void assignReactionInterface(ReactionsInterface reactionsInterface) {
-        this.reactionsInterface = reactionsInterface;
+    public void assignCommonMessageInterface(CommonMessageInterface commonMessageInterface) {
+        this.commonMessageInterface = commonMessageInterface;
     }
 
     public void assignPreviewMessageInterface(PreviewMessageInterface previewMessageInterface) {
