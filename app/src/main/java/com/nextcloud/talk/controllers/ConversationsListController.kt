@@ -784,12 +784,7 @@ class ConversationsListController(bundle: Bundle) :
             for (flexItem in conversationItems) {
                 val conversation: Conversation = (flexItem as ConversationItem).model
                 val position = adapter!!.getGlobalPositionOf(flexItem)
-                if ((
-                    conversation.unreadMention ||
-                        conversation.unreadMessages > 0 &&
-                        conversation.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-                    ) && position > lastVisibleItem
-                ) {
+                if (hasUnreadItems(conversation) && position > lastVisibleItem) {
                     nextUnreadConversationScrollPosition = position
                     if (!binding.newMentionPopupBubble.isShown) {
                         binding.newMentionPopupBubble.show()
@@ -808,6 +803,11 @@ class ConversationsListController(bundle: Bundle) :
             )
         }
     }
+
+    private fun hasUnreadItems(conversation: Conversation) =
+        conversation.unreadMention ||
+            conversation.unreadMessages > 0 &&
+            conversation.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun showNewConversationsScreen() {
         val bundle = Bundle()
@@ -1203,8 +1203,7 @@ class ConversationsListController(bundle: Bundle) :
         conversationMenuBundle = bundle
         if (activity != null &&
             conversationMenuBundle != null &&
-            currentUser != null &&
-            conversationMenuBundle!!.getLong(KEY_INTERNAL_USER_ID) == currentUser!!.id
+            isInternalUserEqualsCurrentUser(currentUser, conversationMenuBundle)
         ) {
             val conversation = Parcels.unwrap<Conversation>(conversationMenuBundle!!.getParcelable(KEY_ROOM))
             if (conversation != null) {
@@ -1237,6 +1236,10 @@ class ConversationsListController(bundle: Bundle) :
                 )
             }
         }
+    }
+
+    private fun isInternalUserEqualsCurrentUser(currentUser: User?, conversationMenuBundle: Bundle?): Boolean {
+        return currentUser != null && conversationMenuBundle!!.getLong(KEY_INTERNAL_USER_ID) == currentUser.id
     }
 
     private fun showUnauthorizedDialog() {
