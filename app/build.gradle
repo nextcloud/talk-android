@@ -131,10 +131,13 @@ android {
             excludeFilter = file("${project.rootDir}/spotbugs-filter.xml")
 
             reports {
-                xml.enabled = false
+                xml {
+                    required = true
+                }
                 html {
-                    enabled = true
-                    destination = file("$project.buildDir/reports/spotbugs/spotbugs.html")
+                    required = true
+                    outputLocation = file("$project.buildDir/reports/spotbugs/spotbugs.html")
+					stylesheet = 'fancy.xsl'
                 }
             }
         }
