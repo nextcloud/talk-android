@@ -106,6 +106,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.activities.TakePhotoActivity
+import com.nextcloud.talk.adapters.messages.CommonMessageInterface
 import com.nextcloud.talk.adapters.messages.IncomingLinkPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPollMessageViewHolder
@@ -122,7 +123,6 @@ import com.nextcloud.talk.adapters.messages.OutcomingPollMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
-import com.nextcloud.talk.adapters.messages.ReactionsInterface
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
@@ -224,7 +224,7 @@ class ChatController(args: Bundle) :
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
     ContentChecker<ChatMessage>,
     VoiceMessageInterface,
-    ReactionsInterface,
+    CommonMessageInterface,
     PreviewMessageInterface {
 
     private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
@@ -2801,7 +2801,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    override fun onLongClickReactions(chatMessage: ChatMessage) {
+    override fun onOpenMessageActionsDialog(chatMessage: ChatMessage) {
         openMessageActionsDialog(chatMessage)
     }
 
@@ -2810,7 +2810,7 @@ class ChatController(args: Bundle) :
     }
 
     override fun onPreviewMessageLongClick(chatMessage: ChatMessage) {
-        openMessageActionsDialog(chatMessage)
+        onOpenMessageActionsDialog(chatMessage)
     }
 
     private fun openMessageActionsDialog(iMessage: IMessage?) {

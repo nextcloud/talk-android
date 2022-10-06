@@ -60,7 +60,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
-    lateinit var reactionsInterface: ReactionsInterface
+    lateinit var commonMessageInterface: CommonMessageInterface
 
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
@@ -123,10 +123,10 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
         Reaction().showReactions(message, binding.reactions, context, true, viewThemeUtils)
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
-            reactionsInterface.onClickReactions(message)
+            commonMessageInterface.onClickReactions(message)
         }
         binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
-            reactionsInterface.onLongClickReactions(message)
+            commonMessageInterface.onOpenMessageActionsDialog(message)
             true
         }
     }
@@ -193,8 +193,8 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         return messageString1
     }
 
-    fun assignReactionInterface(reactionsInterface: ReactionsInterface) {
-        this.reactionsInterface = reactionsInterface
+    fun assignCommonMessageInterface(commonMessageInterface: CommonMessageInterface) {
+        this.commonMessageInterface = commonMessageInterface
     }
 
     companion object {

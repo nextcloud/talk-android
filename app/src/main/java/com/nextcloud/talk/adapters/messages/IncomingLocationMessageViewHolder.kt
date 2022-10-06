@@ -78,7 +78,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
-    lateinit var reactionsInterface: ReactionsInterface
+    lateinit var commonMessageInterface: CommonMessageInterface
 
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
@@ -109,10 +109,10 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
             viewThemeUtils
         )
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
-            reactionsInterface.onClickReactions(message)
+            commonMessageInterface.onClickReactions(message)
         }
         binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
-            reactionsInterface.onLongClickReactions(message)
+            commonMessageInterface.onOpenMessageActionsDialog(message)
             true
         }
     }
@@ -267,8 +267,8 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
         return locationGeoLink.replace("geo:", "geo:0,0?q=")
     }
 
-    fun assignReactionInterface(reactionsInterface: ReactionsInterface) {
-        this.reactionsInterface = reactionsInterface
+    fun assignCommonMessageInterface(commonMessageInterface: CommonMessageInterface) {
+        this.commonMessageInterface = commonMessageInterface
     }
 
     companion object {
