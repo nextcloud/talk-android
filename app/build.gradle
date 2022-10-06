@@ -203,7 +203,7 @@ dependencies {
     implementation "androidx.work:work-runtime:${workVersion}"
     implementation "androidx.work:work-rxjava2:${workVersion}"
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'androidx.exifinterface:exifinterface:1.3.3'
+    implementation 'androidx.exifinterface:exifinterface:1.3.4'
     androidTestImplementation "androidx.work:work-testing:${workVersion}"
     implementation 'com.google.android:flexbox:2.0.1'
     implementation ('com.gitlab.bitfireAT:dav4jvm:2.1.3', {
