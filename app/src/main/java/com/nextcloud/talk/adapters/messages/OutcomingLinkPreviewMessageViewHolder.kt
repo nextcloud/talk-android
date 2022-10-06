@@ -1,9 +1,10 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Mario Danic
  * @author Marcel Hibbe
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,14 +30,12 @@ import androidx.appcompat.content.res.AppCompatResources
 import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.databinding.ItemCustomOutcomingPollMessageBinding
+import com.nextcloud.talk.databinding.ItemCustomOutcomingLinkPreviewMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
-import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -44,11 +43,11 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : MessageHolders
+class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) : MessageHolders
 .OutcomingTextMessageViewHolder<ChatMessage>(outcomingView, payload) {
 
-    private val binding: ItemCustomOutcomingPollMessageBinding =
-        ItemCustomOutcomingPollMessageBinding.bind(itemView)
+    private val binding: ItemCustomOutcomingLinkPreviewMessageBinding =
+        ItemCustomOutcomingLinkPreviewMessageBinding.bind(itemView)
 
     @Inject
     lateinit var context: Context
@@ -104,7 +103,16 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
         binding.checkMark.contentDescription = readStatusContentDescriptionString
 
-        setPollPreview(message)
+        LinkPreview().showLink(
+            message,
+            ncApi,
+            binding.referenceInclude,
+            context
+        )
+        binding.referenceInclude.referenceWrapper.setOnLongClickListener { l: View? ->
+            commonMessageInterface.onOpenMessageActionsDialog(message)
+            true
+        }
 
         Reaction().showReactions(
             message,
@@ -119,42 +127,6 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
         binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
             commonMessageInterface.onOpenMessageActionsDialog(message)
             true
-        }
-    }
-
-    private fun setPollPreview(message: ChatMessage) {
-        var pollId: String? = null
-        var pollName: String? = null
-
-        if (message.messageParameters != null && message.messageParameters!!.size > 0) {
-            for (key in message.messageParameters!!.keys) {
-                val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
-                if (individualHashMap["type"] == "talk-poll") {
-                    pollId = individualHashMap["id"]
-                    pollName = individualHashMap["name"].toString()
-                }
-            }
-        }
-
-        if (pollId != null && pollName != null) {
-            binding.messagePollTitle.text = pollName
-
-            val roomToken = (payload as? MessagePayload)!!.roomToken
-            val isOwnerOrModerator = (payload as? MessagePayload)!!.isOwnerOrModerator ?: false
-
-            binding.bubble.setOnClickListener {
-                val pollVoteDialog = PollMainDialogFragment.newInstance(
-                    message.activeUser!!,
-                    roomToken,
-                    isOwnerOrModerator,
-                    pollId,
-                    pollName
-                )
-                pollVoteDialog.show(
-                    (binding.messagePollIcon.context as MainActivity).supportFragmentManager,
-                    TAG
-                )
-            }
         }
     }
 
@@ -195,6 +167,6 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
     }
 
     companion object {
-        private val TAG = NextcloudTalkApplication::class.java.simpleName
+        private val TAG = OutcomingLinkPreviewMessageViewHolder::class.java.simpleName
     }
 }
