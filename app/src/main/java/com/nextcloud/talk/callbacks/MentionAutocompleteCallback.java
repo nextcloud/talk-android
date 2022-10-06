@@ -39,6 +39,8 @@ import com.otaliastudios.autocomplete.AutocompleteCallback;
 import com.vanniktech.emoji.EmojiRange;
 import com.vanniktech.emoji.Emojis;
 
+import kotlin.OptIn;
+
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
     private final ViewThemeUtils viewThemeUtils;
     private Context context;
@@ -55,6 +57,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         this.viewThemeUtils = viewThemeUtils;
     }
 
+    @OptIn(markerClass = kotlin.ExperimentalStdlibApi.class)
     @Override
     public boolean onPopupItemClicked(Editable editable, Mention item) {
         int[] range = MagicCharPolicy.getQueryRange(editable);
