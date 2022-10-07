@@ -40,7 +40,7 @@
     <string name="nc_about">Про програму</string>
     <string name="nc_account_chooser_active_user">Активний користувач</string>
     <string name="nc_account_chooser_add_account">Додати обліковий запис</string>
-    <string name="nc_account_scheduled_for_deletion">Планується видалення облікового запису, тому він не може бути змінений</string>
+    <string name="nc_account_scheduled_for_deletion">Заплановано вилучення облікового запису, тому до нього неможливо внести зміни</string>
     <string name="nc_action_open_main_menu">Відкрити головне меню</string>
     <string name="nc_add_attachment">Додати вкладення</string>
     <string name="nc_add_emojis">Додати емодзі</string>
@@ -98,7 +98,7 @@
     <string name="nc_delete">Вилучити</string>
     <string name="nc_delete_all">Видалити все</string>
     <string name="nc_delete_call">Вилучити розмову</string>
-    <string name="nc_delete_conversation_more">Якщо Ви видалите розмову - це призведе до вилучення для всіх інших учасників.</string>
+    <string name="nc_delete_conversation_more">Якщо ви вилучите розмову, її буде вилучено у всіх інших учасників цієї розмови.</string>
     <string name="nc_delete_message">Вилучити</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Повідомлення вилучено, але воно могло потрапити до інших сервісів</string>
     <string name="nc_description_record_voice">Записати голосове повідомлення</string>
