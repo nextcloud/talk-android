@@ -283,7 +283,7 @@ public class DisplayUtils {
 
     public static Drawable getTintedDrawable(Resources res, @DrawableRes int drawableResId, @ColorRes int colorResId) {
         Drawable drawable = ResourcesCompat.getDrawable(res, drawableResId, null);
-        ;
+
         int color = res.getColor(colorResId);
         if (drawable != null) {
             drawable.setTint(color);

@@ -183,7 +183,7 @@ public class NotificationWorker extends Worker {
                             }
                         }
 
-                        muteCall = !(conversation.getNotificationCalls() == 1);
+                        muteCall = conversation.getNotificationCalls() != 1;
                     }
 
                     @Override
