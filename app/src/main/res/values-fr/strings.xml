@@ -312,7 +312,7 @@
     <string name="nc_settings_remove_account">Supprimer le compte</string>
     <string name="nc_settings_remove_confirmation">Veuillez confirmer votre volonté de supprimer le compte actuel.</string>
     <string name="nc_settings_screen_lock_desc">Verrouiller %1$s avec le verrouillage d’écran Android ou une méthode biométrique supportée</string>
-    <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage écran</string>
+    <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage de l\'écran</string>
     <string name="nc_settings_screen_lock_title">Écran de verrouillage</string>
     <string name="nc_settings_screen_security_desc">Empêche les captures d\'écran dans la liste récente et dans l\'application</string>
     <string name="nc_settings_screen_security_title">Sécurité de l\'écran</string>

@@ -11,6 +11,7 @@
     <string name="close">Tanca</string>
     <string name="conversations">Converses</string>
     <string name="dnd">No molesteu</string>
+    <string name="dontClear">No l\'esborris</string>
     <string name="edit">Edita</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Xifrat</string>

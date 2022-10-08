@@ -342,7 +342,7 @@
     <string name="nc_share_this_location">Zdieľať túto polohu</string>
     <string name="nc_share_to_choose_account">Zvoliť účet</string>
     <string name="nc_shared_items">Zdieľané položky</string>
-    <string name="nc_shared_items_deck_card">Palubná karta</string>
+    <string name="nc_shared_items_deck_card">Karta aplikácie deck</string>
     <string name="nc_shared_items_description">Obrázky, súbory, hlasové správy …</string>
     <string name="nc_shared_items_empty">Žiadne zdieľané položky</string>
     <string name="nc_shared_items_location">Umiestnenie</string>
