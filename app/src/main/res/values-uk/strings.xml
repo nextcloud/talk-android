@@ -166,7 +166,7 @@
     <string name="nc_new_mention">Непрочитані згадки</string>
     <string name="nc_new_messages">Непрочитані повідомлення</string>
     <string name="nc_new_password">Новий пароль</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Додаток %1$s не встановлено на сервері, скасування</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Застосунок %1$s не встановлено на сервері, скасування</string>
     <string name="nc_nick_guest">Гість</string>
     <string name="nc_no">Ні</string>
     <string name="nc_no_messages_yet">Повідомлень немає</string>
@@ -241,14 +241,14 @@
     <string name="nc_server_db_upgrade_needed">Будь ласка, оновіть Вашу %1$s базу даних</string>
     <string name="nc_server_failed_to_import_account">Не вдалося імпортувати обраний акаунт.</string>
     <string name="nc_server_helper_text">Посилання на ваш веб-інтерфейс %1$s, коли ви відкриєте його у веб-переглядачі.</string>
-    <string name="nc_server_import_account">Імпортувати акаунт з додатку %1$s</string>
+    <string name="nc_server_import_account">Імпортувати обліковий запис із застосунку %1$s</string>
     <string name="nc_server_import_account_plain">Імпорт акаунту</string>
-    <string name="nc_server_import_accounts">Імпортувати акаунти з додатку %1$s</string>
+    <string name="nc_server_import_accounts">Імпортувати облікові записти із застосунку %1$s</string>
     <string name="nc_server_import_accounts_plain">Імпорт акаунтів</string>
     <string name="nc_server_maintenance">Будь ласка, вимкніть для %1$s режим обслуговування</string>
     <string name="nc_server_not_installed">Будь ласка, закінчіть Ваше %1$s встановлення</string>
     <string name="nc_server_testing_connection">Перевірка з\'єднання</string>
-    <string name="nc_server_unsupported">На сервері не встановлено підтримуваний додаток Talk </string>
+    <string name="nc_server_unsupported">На сервері не встановлено застосунок \"Talk\", який може підтримуватися</string>
     <string name="nc_server_url">Адреса сервера https://…</string>
     <string name="nc_set_password">Встановити пароль</string>
     <string name="nc_settings">Налаштування</string>
