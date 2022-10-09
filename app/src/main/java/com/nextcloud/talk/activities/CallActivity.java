@@ -1835,6 +1835,7 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "processUsersInRoom");
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSessions = new HashSet<>();
+        Map<String, String> userIdsBySessionId = new HashMap<>();
 
         hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
         Log.d(TAG, "   hasMCU is " + hasMCU);
@@ -1862,6 +1863,15 @@ public class CallActivity extends CallBaseActivity {
                 } else {
                     oldSessions.add(participant.get("sessionId").toString());
                 }
+
+                // The property is "userId" when not using the external signaling server and "userid" when using it.
+                String userId = null;
+                if (participant.get("userId") != null) {
+                    userId = participant.get("userId").toString();
+                } else if (participant.get("userid") != null) {
+                    userId = participant.get("userid").toString();
+                }
+                userIdsBySessionId.put(participant.get("sessionId").toString(), userId);
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
                 if (inCallFlag == 0 && !CallStatus.LEAVING.equals(currentCallStatus) && ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
@@ -1900,10 +1910,13 @@ public class CallActivity extends CallBaseActivity {
             Log.d(TAG, "   newSession joined: " + sessionId);
             getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
 
+	        String userId = userIdsBySessionId.get(sessionId);
+
             runOnUiThread(() -> {
                 setupVideoStreamForLayout(
                     null,
                     sessionId,
+                    userId,
                     false,
                     VIDEO_STREAM_TYPE_VIDEO);
             });
@@ -2243,12 +2256,14 @@ public class CallActivity extends CallBaseActivity {
             setupVideoStreamForLayout(
                 mediaStreamEvent.getMediaStream(),
                 mediaStreamEvent.getSession(),
+                null,
                 hasAtLeastOneVideoStream,
                 mediaStreamEvent.getVideoStreamType());
         } else {
             setupVideoStreamForLayout(
                 null,
                 mediaStreamEvent.getSession(),
+                null,
                 false,
                 mediaStreamEvent.getVideoStreamType());
         }
@@ -2339,6 +2354,7 @@ public class CallActivity extends CallBaseActivity {
 
     private void setupVideoStreamForLayout(@Nullable MediaStream mediaStream,
                                            String session,
+                                           String userId,
                                            boolean videoStreamEnabled,
                                            String videoStreamType) {
         PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(session,
@@ -2358,17 +2374,20 @@ public class CallActivity extends CallBaseActivity {
             nick = peerConnectionWrapper != null ? peerConnectionWrapper.getNick() : "";
         }
 
-        String userId = "";
-        if (hasMCU) {
-            userId = webSocketClient.getUserIdForSession(session);
-        } else if (participantMap.get(session) != null && participantMap.get(session).getCalculatedActorType() == Participant.ActorType.USERS) {
-            userId = participantMap.get(session).getCalculatedActorId();
+        String userId4Usage = userId;
+
+        if (userId4Usage == null) {
+            if (hasMCU) {
+                userId4Usage = webSocketClient.getUserIdForSession(session);
+            } else if (participantMap.get(session) != null && participantMap.get(session).getCalculatedActorType() == Participant.ActorType.USERS) {
+                userId4Usage = participantMap.get(session).getCalculatedActorId();
+            }
         }
 
         String urlForAvatar;
-        if (!TextUtils.isEmpty(userId)) {
+        if (!TextUtils.isEmpty(userId4Usage)) {
             urlForAvatar = ApiUtils.getUrlForAvatar(baseUrl,
-                                                    userId,
+                                                    userId4Usage,
                                                     true);
         } else {
             urlForAvatar = ApiUtils.getUrlForGuestAvatar(baseUrl,
@@ -2376,7 +2395,7 @@ public class CallActivity extends CallBaseActivity {
                                                          true);
         }
 
-        ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(userId,
+        ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(userId4Usage,
                                                                                    session,
                                                                                    connected,
                                                                                    nick,
