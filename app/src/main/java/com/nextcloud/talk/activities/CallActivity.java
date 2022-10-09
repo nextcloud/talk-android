@@ -2361,7 +2361,7 @@ public class CallActivity extends CallBaseActivity {
         String userId = "";
         if (hasMCU) {
             userId = webSocketClient.getUserIdForSession(session);
-        } else if (participantMap.get(session).getCalculatedActorType() == Participant.ActorType.USERS) {
+        } else if (participantMap.get(session) != null && participantMap.get(session).getCalculatedActorType() == Participant.ActorType.USERS) {
             userId = participantMap.get(session).getCalculatedActorId();
         }
 
