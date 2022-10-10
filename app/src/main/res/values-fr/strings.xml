@@ -24,6 +24,7 @@
     <string name="emoji_category_recent">Récent</string>
     <string name="emoji_search">Chercher un emoji</string>
     <string name="encrypted">Chiffré</string>
+    <string name="error_loading_chats">Un problème est survenu lors du chargement de vos discussions</string>
     <string name="failed_to_save">Echec de la sauvegarde %1$s</string>
     <string name="file_list_folder">Dossier</string>
     <string name="file_list_loading">Chargement …</string>
@@ -197,6 +198,8 @@
     <string name="nc_no">Non</string>
     <string name="nc_no_messages_yet">Pas de messages</string>
     <string name="nc_no_proxy">Aucun proxy</string>
+    <string name="nc_not_allowed_to_activate_audio">Vous n\'êtes pas autorisé(e) à activer l\'audio !</string>
+    <string name="nc_not_allowed_to_activate_video">Vous n\'êtes pas autorisé(e) à activer la vidéo !</string>
     <string name="nc_notification_channel">Canal de notification %1$s sur %2$s</string>
     <string name="nc_notification_channel_calls">Appels</string>
     <string name="nc_notification_channel_calls_description">Afficher les appels entrants</string>
