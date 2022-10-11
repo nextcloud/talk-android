@@ -283,12 +283,12 @@ public class CallNotificationActivity extends CallBaseActivity {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Observer<RoomOverall>() {
                 @Override
-                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                public void onSubscribe(@NonNull Disposable d) {
                     disposablesList.add(d);
                 }
 
                 @Override
-                public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
+                public void onNext(@NonNull RoomOverall roomOverall) {
                     currentConversation = roomOverall.getOcs().getData();
                     setUpAfterConversationIsKnown();
 
@@ -311,7 +311,7 @@ public class CallNotificationActivity extends CallBaseActivity {
                 }
 
                 @Override
-                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                public void onError(@NonNull Throwable e) {
                     Log.e(TAG, e.getMessage(), e);
                 }
 

@@ -215,34 +215,32 @@ public class DisplayUtils {
         return new ControllerListener() {
             @Override
             public void onSubmit(String id, Object callerContext) {
-
+                // unused atm
             }
 
             @Override
-            public void onFinalImageSet(String id,
-                                        @androidx.annotation.Nullable Object imageInfo,
-                                        @androidx.annotation.Nullable Animatable animatable) {
+            public void onFinalImageSet(String id, @Nullable Object imageInfo, @Nullable Animatable animatable) {
                 updateViewSize((ImageInfo) imageInfo, draweeView);
             }
 
             @Override
-            public void onIntermediateImageSet(String id, @androidx.annotation.Nullable Object imageInfo) {
+            public void onIntermediateImageSet(String id, @Nullable Object imageInfo) {
                 updateViewSize((ImageInfo) imageInfo, draweeView);
             }
 
             @Override
             public void onIntermediateImageFailed(String id, Throwable throwable) {
-
+                // unused atm
             }
 
             @Override
             public void onFailure(String id, Throwable throwable) {
-
+                // unused atm
             }
 
             @Override
             public void onRelease(String id) {
-
+                // unused atm
             }
         };
     }
@@ -659,7 +657,7 @@ public class DisplayUtils {
     public static CharSequence getRelativeTimestamp(Context context, long modificationTimestamp, boolean showFuture) {
         return getRelativeDateTimeString(context,
                                          modificationTimestamp,
-                                         android.text.format.DateUtils.SECOND_IN_MILLIS,
+                                         DateUtils.SECOND_IN_MILLIS,
                                          DateUtils.WEEK_IN_MILLIS,
                                          0,
                                          showFuture);
