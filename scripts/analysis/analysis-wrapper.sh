@@ -119,7 +119,7 @@ else
         notNull="org.jetbrains.annotations.NotNull is used. Please use androidx.annotation.NonNull instead.<br><br>"
     fi
 
-    payload="{ \"body\" : \"$codacyResult $lintResult $spotbugsResult $checkLibraryMessage $lintMessage $spotbugsMessage $gplayLimitation $notNull\" }"
+    payload="{ \"body\" : \"$codacyResult $lintResult $spotbugsResult $lintMessage $spotbugsMessage $gplayLimitation $notNull\" }"
     curl_gh -X POST "https://api.github.com/repos/nextcloud/$repository/issues/${PR_NUMBER}/comments" -d "$payload"
 
     if [ ! -z "$gplayLimitation" ]; then
