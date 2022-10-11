@@ -34,11 +34,10 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import okhttp3.Credentials;
 
@@ -471,8 +470,8 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/reaction/" + roomToken + "/" + messageId;
     }
 
-    @NotNull
-    public static String getUrlForUnifiedSearch(@NotNull String baseUrl, @NotNull String providerId) {
+    @NonNull
+    public static String getUrlForUnifiedSearch(@NonNull String baseUrl, @NonNull String providerId) {
         return baseUrl + ocsApiVersion + "/search/providers/" + providerId + "/search";
     }
 
