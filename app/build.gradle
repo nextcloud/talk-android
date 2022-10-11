@@ -311,6 +311,10 @@ dependencies {
     implementation 'com.github.nextcloud.android-common:ui:0.12.0'
 
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:110.5481.0'
+
+    implementation("com.github.nextcloud:android-library:$androidLibraryVersion") {
+        exclude group: 'org.ogce', module: 'xpp3' // unused in Android and brings wrong Junit version
+    }
 }
 
 task installGitHooks(type: Copy, group: "development") {

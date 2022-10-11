@@ -50,7 +50,6 @@ import coil.decode.SvgDecoder
 import coil.memory.MemoryCache
 import coil.util.DebugLogger
 import com.nextcloud.talk.BuildConfig
-import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
 import com.nextcloud.talk.dagger.modules.DatabaseModule
@@ -70,6 +69,7 @@ import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
 import com.nextcloud.talk.utils.database.user.UserModule
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils
+import com.owncloud.android.lib.common.network.WebdavUtils
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.google.GoogleEmojiProvider
 import de.cotech.hw.SecurityKeyManager
@@ -164,7 +164,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
         initializeWebRtc()
         buildComponent()
-        DavUtils.registerCustomFactories()
+        WebdavUtils.registerCustomFactories()
 
         componentApplication.inject(this)
 

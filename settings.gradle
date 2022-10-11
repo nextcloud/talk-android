@@ -32,3 +32,9 @@ include ':app'
 //        substitute module('com.github.nextcloud-deps:ImagePicker') using project(':imagepicker')
 //    }
 //}
+
+includeBuild('../android-library') {
+    dependencySubstitution {
+        substitute module('com.github.nextcloud:android-library') using project(':library')
+    }
+}

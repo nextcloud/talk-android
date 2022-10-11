@@ -34,10 +34,6 @@ import at.bitfire.dav4jvm.property.GetContentType
 import at.bitfire.dav4jvm.property.GetLastModified
 import at.bitfire.dav4jvm.property.ResourceType
 import com.nextcloud.talk.components.filebrowser.models.DavResponse
-import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPermission
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview
-import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite
 import com.nextcloud.talk.components.filebrowser.models.properties.OCId
 import com.nextcloud.talk.components.filebrowser.models.properties.OCSize
 import com.nextcloud.talk.dagger.modules.RestModule.HttpAuthenticator
@@ -45,6 +41,11 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.Mimetype.FOLDER
+import com.owncloud.android.lib.common.network.WebdavUtils
+import com.owncloud.android.lib.resources.files.webdav.NCEncrypted
+import com.owncloud.android.lib.resources.files.webdav.NCFavorite
+import com.owncloud.android.lib.resources.files.webdav.NCPermissions
+import com.owncloud.android.lib.resources.files.webdav.NCPreview
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import java.io.File
@@ -70,7 +71,7 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: User, 
             )
         )
         this.okHttpClient = okHttpClientBuilder.build()
-        basePath = currentUser.baseUrl + DavUtils.DAV_PATH + currentUser.userId
+        basePath = currentUser.baseUrl + ApiUtils.filesApi + currentUser.userId
         url = basePath + path
         this.depth = depth
     }
@@ -86,7 +87,7 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: User, 
                 url.toHttpUrlOrNull()!!
             ).propfind(
                 depth = depth,
-                reqProp = DavUtils.getAllPropSet()
+                reqProp = WebdavUtils.getAllPropertiesList()
             ) { response: Response, hrefRelation: HrefRelation? ->
                 davResponse.setResponse(response)
                 when (hrefRelation) {
@@ -158,7 +159,7 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: User, 
             is NCPreview -> {
                 remoteFileBrowserItem.hasPreview = property.isNcPreview
             }
-            is OCFavorite -> {
+            is NCFavorite -> {
                 remoteFileBrowserItem.isFavorite = property.isOcFavorite
             }
             is DisplayName -> {
@@ -167,8 +168,8 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: User, 
             is NCEncrypted -> {
                 remoteFileBrowserItem.isEncrypted = property.isNcEncrypted
             }
-            is NCPermission -> {
-                remoteFileBrowserItem.permissions = property.ncPermission
+            is NCPermissions -> {
+                remoteFileBrowserItem.permissions = property.permissions
             }
         }
     }

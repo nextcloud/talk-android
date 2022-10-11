@@ -52,6 +52,7 @@ public class ApiUtils {
     private static final String ocsApiVersion = "/ocs/v2.php";
     private static final String spreedApiVersion = "/apps/spreed/api/v1";
     private static final String spreedApiBase = ocsApiVersion + "/apps/spreed/api/v";
+    public static final String filesApi = "/remote.php/dav/files/";
 
     private static final String userAgent = "Mozilla/5.0 (Android) Nextcloud-Talk v";
 
@@ -421,7 +422,7 @@ public class ApiUtils {
     }
 
     public static String getUrlForFileUpload(String baseUrl, String user, String remotePath) {
-        return baseUrl + "/remote.php/dav/files/" + user + remotePath;
+        return baseUrl + filesApi + user + remotePath;
     }
 
     public static String getUrlForChunkedUpload(String baseUrl, String user) {
@@ -429,7 +430,7 @@ public class ApiUtils {
     }
 
     public static String getUrlForFileDownload(String baseUrl, String user, String remotePath) {
-        return baseUrl + "/remote.php/dav/files/" + user + "/" + remotePath;
+        return baseUrl + filesApi + user + "/" + remotePath;
     }
 
     public static String getUrlForTempAvatar(String baseUrl) {

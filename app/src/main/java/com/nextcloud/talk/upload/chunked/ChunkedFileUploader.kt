@@ -41,10 +41,6 @@ import at.bitfire.dav4jvm.property.ResourceType
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.filebrowser.models.DavResponse
-import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPermission
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview
-import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite
 import com.nextcloud.talk.components.filebrowser.models.properties.OCId
 import com.nextcloud.talk.components.filebrowser.models.properties.OCSize
 import com.nextcloud.talk.dagger.modules.RestModule
@@ -54,6 +50,10 @@ import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
+import com.owncloud.android.lib.resources.files.webdav.NCEncrypted
+import com.owncloud.android.lib.resources.files.webdav.NCFavorite
+import com.owncloud.android.lib.resources.files.webdav.NCPermissions
+import com.owncloud.android.lib.resources.files.webdav.NCPreview
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
@@ -355,6 +355,7 @@ class ChunkedFileUploader(
     }
 
     @Suppress("Detekt.ComplexMethod")
+    // TODO remove all of them and combine in library!
     private fun mapPropertyToBrowserFile(property: Property, remoteFileBrowserItem: RemoteFileBrowserItem) {
         when (property) {
             is OCId -> {
@@ -375,7 +376,7 @@ class ChunkedFileUploader(
             is NCPreview -> {
                 remoteFileBrowserItem.hasPreview = property.isNcPreview
             }
-            is OCFavorite -> {
+            is NCFavorite -> {
                 remoteFileBrowserItem.isFavorite = property.isOcFavorite
             }
             is DisplayName -> {
@@ -384,8 +385,8 @@ class ChunkedFileUploader(
             is NCEncrypted -> {
                 remoteFileBrowserItem.isEncrypted = property.isNcEncrypted
             }
-            is NCPermission -> {
-                remoteFileBrowserItem.permissions = property.ncPermission
+            is NCPermissions -> {
+                remoteFileBrowserItem.permissions = property.permissions
             }
         }
     }
