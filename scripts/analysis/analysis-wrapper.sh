@@ -8,7 +8,7 @@ PR_NUMBER=$5
 
 
 stableBranch="master"
-repository="talk"
+repository="talk-android"
 
 ruby scripts/analysis/lint-up.rb
 lintValue=$?
@@ -50,7 +50,7 @@ else
     oldComments=$(curl_gh -X GET "https://api.github.com/repos/nextcloud/$repository/issues/${PR_NUMBER}/comments" | jq '.[] | select((.user.login | contains("github-actions")) and  (.body | test("<h1>Codacy.*"))) | .id')
 
     echo "$oldComments" | while read -r comment ; do
-        curl_gh -X DELETE "https://api.github.com/repos/nextcloud/$repository-android/issues/comments/$comment"
+        curl_gh -X DELETE "https://api.github.com/repos/nextcloud/$repository/issues/comments/$comment"
     done
 
     # lint and spotbugs file must exist
@@ -77,7 +77,7 @@ else
         lintWarningNew=0
     fi
 
-    lintResultOld=$(curl 2>/dev/null "https://raw.githubusercontent.com/nextcloud/$repository-android/$stableBranch/scripts/analysis/lint-results.txt")
+    lintResultOld=$(curl 2>/dev/null "https://raw.githubusercontent.com/nextcloud/$repository/$stableBranch/scripts/analysis/lint-results.txt")
     lintErrorOld=$(echo $lintResultOld | grep "[0-9]* error" -o | cut -f1 -d" ")
     if ( [ -z $lintErrorOld ] ); then
         lintErrorOld=0
@@ -89,7 +89,7 @@ else
     fi
 
     if [ $stableBranch = "master" ] ; then
-        codacyValue=$(curl 2>/dev/null https://app.codacy.com/gh/nextcloud/$repository-android/dashboard | grep "total issues" | cut -d">" -f3 | cut -d"<" -f1)
+        codacyValue=$(curl 2>/dev/null https://app.codacy.com/gh/nextcloud/$repository/dashboard | grep "total issues" | cut -d">" -f3 | cut -d"<" -f1)
         codacyResult="<h1>Codacy</h1>$codacyValue"
     else
         codacyResult=""
@@ -120,7 +120,7 @@ else
     fi
 
     payload="{ \"body\" : \"$codacyResult $lintResult $spotbugsResult $checkLibraryMessage $lintMessage $spotbugsMessage $gplayLimitation $notNull\" }"
-    curl_gh -X POST "https://api.github.com/repos/nextcloud/$repository-android/issues/${PR_NUMBER}/comments" -d "$payload"
+    curl_gh -X POST "https://api.github.com/repos/nextcloud/$repository/issues/${PR_NUMBER}/comments" -d "$payload"
 
     if [ ! -z "$gplayLimitation" ]; then
         exit 1
