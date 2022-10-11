@@ -4,7 +4,7 @@ This list is intended to help users that have problems to receive talk notificat
 not be complete. Please contribute to this list as you gain new knowledge. Just create an issue with the 
 "notification" label or create a pull request for this document. 
 
-# 📱 Users
+## 📱 Users
 - Please make sure to install the app from the Google PlayStore. The f-droid version doesn't support push notifications.
   
   [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
@@ -19,7 +19,7 @@ not be complete. Please contribute to this list as you gain new knowledge. Just 
 
 If your problem still occurs after checking all these hints, create an issue at https://github.com/nextcloud/talk-android/issues
 
-## 🤖 Check android settings
+### 🤖 Check android settings
 
 Please take into account that the android settings might be different for each manufacturer.
 It might be worth it to check what other messaging apps recommend to get their apps running on a certain smartphone and adapt this to the talk app.
@@ -43,7 +43,7 @@ Also [https://dontkillmyapp.com/](https://dontkillmyapp.com/) might be good star
         - enable "Show notifications" and if you like 
           enable "Lock screen notifications"
 
-## 🗨️ Check talk app settings
+### 🗨️ Check talk app settings
 - In the settings, check if ringtones are set for calls and notifications and if vibration is activated if you would 
   like so.
 - In the conversation settings (in the upper right corner of a conversation), check that notifications are set to 
@@ -52,7 +52,7 @@ Also [https://dontkillmyapp.com/](https://dontkillmyapp.com/) might be good star
       needs.
 - Also be aware that notifications are not generated when you have an active session for a conversation. This also applies for tabs that are open in the background, etc.
 
-## 🖥 Check server settings
+### 🖥 Check server settings
 
 Run the `notification:test-push` command for the user who is logged in at the device that should receive the notification:
 
@@ -96,7 +96,7 @@ The notification app is shipped and enabled by default, but could be missing in 
 Install and enable the app by following the instructions at https://github.com/nextcloud/notifications#developers and
  try again to execute the command.
 
-# 🦺 Developers/testers
+## 🦺 Developers/testers
 - Be aware that the "qa"-versions that you can install by scanning the QR-code in a github pull request don't 
   support notifications!
 
