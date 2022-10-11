@@ -126,10 +126,6 @@ else
         exit 1
     fi
 
-    if [ $checkLibrary -eq 1 ]; then
-        exit 1
-    fi
-
     if [ ! $lintValue -eq 2 ]; then
         exit $lintValue
     fi
