@@ -120,26 +120,6 @@ android {
         }
     }
 
-    android.applicationVariants.all { variant ->
-        String variantName = variant.name
-        String capVariantName = variantName.substring(0, 1).toUpperCase(Locale.ROOT) + variantName.substring(1)
-        tasks.register("spotbugs${capVariantName}Report", SpotBugsTask) {
-            ignoreFailures = true // should continue checking
-            effort = "max"
-            reportLevel = "medium"
-            classes = fileTree("$project.buildDir/intermediates/javac/${variantName}/classes/")
-            excludeFilter = file("${project.rootDir}/spotbugs-filter.xml")
-
-            reports {
-                xml.enabled = false
-                html {
-                    enabled = true
-                    destination = file("$project.buildDir/reports/spotbugs/spotbugs.html")
-                }
-            }
-        }
-    }
-
     check.dependsOn 'spotbugsGplayDebug', 'lint', 'ktlintCheck', 'detekt'
 
     compileOptions {
@@ -344,6 +324,32 @@ task installGitHooks(type: Copy, group: "development") {
         include '*'
     }
     into '../.git/hooks'
+}
+
+spotbugs {
+    ignoreFailures = true // should continue checking
+    effort = "max"
+    reportLevel = "medium"
+}
+
+tasks.withType(SpotBugsTask) { task ->
+    String variantNameCap = task.name.replace("spotbugs", "")
+    String variantName = variantNameCap.substring(0, 1).toLowerCase() + variantNameCap.substring(1)
+
+    dependsOn "compile${variantNameCap}Sources"
+
+    excludeFilter = file("${project.rootDir}/spotbugs-filter.xml")
+    classes = fileTree("$project.buildDir/intermediates/javac/${variantName}/classes/")
+    reports {
+        xml {
+            required = true
+        }
+        html {
+            required = true
+            outputLocation = file("$project.buildDir/reports/spotbugs/spotbugs.html")
+            stylesheet = 'fancy.xsl'
+        }
+    }
 }
 
 tasks.named("detekt").configure {

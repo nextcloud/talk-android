@@ -39,8 +39,6 @@ import com.nextcloud.talk.utils.UserIdUtils;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.yarolegovich.mp.io.StorageModule;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -48,6 +46,7 @@ import javax.inject.Inject;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -91,17 +90,17 @@ public class DatabaseStorageModule implements StorageModule {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
                                @Override
-                               public void onSubscribe(@NotNull Disposable d) {
+                               public void onSubscribe(@NonNull Disposable d) {
                                    // unused atm
                                }
 
                                @Override
-                               public void onNext(@NotNull GenericOverall genericOverall) {
+                               public void onNext(@NonNull GenericOverall genericOverall) {
                                    Log.d(TAG, "Toggled notification calls");
                                }
 
                                @Override
-                               public void onError(@NotNull Throwable e) {
+                               public void onError(@NonNull Throwable e) {
                                    Log.e(TAG, "Error when trying to toggle notification calls", e);
                                }
 
@@ -144,17 +143,17 @@ public class DatabaseStorageModule implements StorageModule {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
-                    public void onSubscribe(@NotNull Disposable d) {
+                    public void onSubscribe(@NonNull Disposable d) {
                         // unused atm
                     }
 
                     @Override
-                    public void onNext(@NotNull GenericOverall genericOverall) {
+                    public void onNext(@NonNull GenericOverall genericOverall) {
                         messageExpiration = valueInt;
                     }
 
                     @Override
-                    public void onError(@NotNull Throwable e) {
+                    public void onError(@NonNull Throwable e) {
                         Log.e(TAG, "Error when trying to set message expiration", e);
                     }
 

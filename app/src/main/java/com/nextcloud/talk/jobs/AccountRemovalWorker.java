@@ -39,8 +39,6 @@ import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.List;
@@ -105,12 +103,12 @@ public class AccountRemovalWorker extends Worker {
                         ApiUtils.getUrlNextcloudPush(user.getBaseUrl()))
                     .blockingSubscribe(new Observer<GenericOverall>() {
                         @Override
-                        public void onSubscribe(@NotNull Disposable d) {
+                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
                             // unused atm
                         }
 
                         @Override
-                        public void onNext(@NotNull GenericOverall genericOverall) {
+                        public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
                             GenericMeta meta = Objects.requireNonNull(genericOverall.getOcs()).getMeta();
                             int statusCode = Objects.requireNonNull(meta).getStatusCode();
 
@@ -126,7 +124,7 @@ public class AccountRemovalWorker extends Worker {
                         }
 
                         @Override
-                        public void onError(@NotNull Throwable e) {
+                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                             Log.e(TAG, "error while trying to unregister Device For Notifications", e);
                         }
 

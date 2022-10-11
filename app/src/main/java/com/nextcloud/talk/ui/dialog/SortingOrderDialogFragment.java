@@ -39,8 +39,6 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.FileSortOrder;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
-import org.jetbrains.annotations.NotNull;
-
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
@@ -70,7 +68,7 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
     private View[] taggedViews;
     private String currentSortOrderName;
 
-    public static SortingOrderDialogFragment newInstance(@NotNull FileSortOrder sortOrder) {
+    public static SortingOrderDialogFragment newInstance(@NonNull FileSortOrder sortOrder) {
         SortingOrderDialogFragment dialogFragment = new SortingOrderDialogFragment();
 
         Bundle args = new Bundle();

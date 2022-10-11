@@ -41,8 +41,6 @@ import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.otaliastudios.autocomplete.RecyclerViewPresenter;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +55,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -137,12 +136,12 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                 .retry(3)
                 .subscribe(new Observer<MentionOverall>() {
                     @Override
-                    public void onSubscribe(@NotNull Disposable d) {
+                    public void onSubscribe(@NonNull Disposable d) {
                         // no actions atm
                     }
 
                     @Override
-                    public void onNext(@NotNull MentionOverall mentionOverall) {
+                    public void onNext(@NonNull MentionOverall mentionOverall) {
                         List<Mention> mentionsList = mentionOverall.getOcs().getData();
 
                         if (mentionsList.size() == 0) {
@@ -168,7 +167,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
 
                     @SuppressLint("LongLogTag")
                     @Override
-                    public void onError(@NotNull Throwable e) {
+                    public void onError(@NonNull Throwable e) {
                         adapter.clear();
                         Log.e(TAG, "failed to get MentionAutocompleteSuggestions", e);
                     }
