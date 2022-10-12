@@ -1851,13 +1851,12 @@ public class CallActivity extends CallBaseActivity {
         for (HashMap<String, Object> participant : users) {
             long inCallFlag = (long) participant.get("inCall");
             if (!participant.get("sessionId").equals(currentSessionId)) {
-                boolean isNewSession;
                 Log.d(TAG, "   inCallFlag of participant "
                     + participant.get("sessionId").toString().substring(0, 4)
                     + " : "
                     + inCallFlag);
-                isNewSession = inCallFlag != 0;
 
+                boolean isNewSession = inCallFlag != 0;
                 if (isNewSession) {
                     newSessions.add(participant.get("sessionId").toString());
                 } else {
