@@ -1856,8 +1856,8 @@ public class CallActivity extends CallBaseActivity {
                     + " : "
                     + inCallFlag);
 
-                boolean isNewSession = inCallFlag != 0;
-                if (isNewSession) {
+                boolean isInCall = inCallFlag != 0;
+                if (isInCall) {
                     newSessions.add(participant.get("sessionId").toString());
                 } else {
                     oldSessions.add(participant.get("sessionId").toString());
