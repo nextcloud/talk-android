@@ -1859,8 +1859,6 @@ public class CallActivity extends CallBaseActivity {
                 boolean isInCall = inCallFlag != 0;
                 if (isInCall) {
                     newSessions.add(participant.get("sessionId").toString());
-                } else {
-                    oldSessions.add(participant.get("sessionId").toString());
                 }
 
                 // The property is "userId" when not using the external signaling server and "userid" when using it.
