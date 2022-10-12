@@ -1885,7 +1885,8 @@ public class CallActivity extends CallBaseActivity {
         }
 
         // Calculate sessions that left the call
-        oldSessions.removeAll(newSessions);
+        List<String> disconnectedSessions = new ArrayList<>(oldSessions);
+        disconnectedSessions.removeAll(newSessions);
 
         // Calculate sessions that join the call
         newSessions.removeAll(oldSessions);
@@ -1923,7 +1924,7 @@ public class CallActivity extends CallBaseActivity {
             setCallState(CallStatus.IN_CONVERSATION);
         }
 
-        for (String sessionId : oldSessions) {
+        for (String sessionId : disconnectedSessions) {
             Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
             endPeerConnection(sessionId, false);
         }
