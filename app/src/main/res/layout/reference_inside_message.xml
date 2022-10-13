@@ -27,11 +27,11 @@
     android:layout_marginTop="5dp">
 
     <View
-        android:id="@+id/referenceColoredView"
+        android:id="@+id/referenceIndentedSideBar"
         android:layout_width="2dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:background="@color/high_emphasis_text"
+        android:background="@color/low_emphasis_text"
         tools:layout_height="100dp"/>
 
     <androidx.emoji.widget.EmojiTextView
@@ -42,10 +42,15 @@
         android:textAlignment="viewStart"
         android:textIsSelectable="false"
         android:layout_marginStart="10dp"
-        tools:text="Name of Website" />
+        android:visibility="gone"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textStyle="bold"
+        tools:text="Name of Website"
+        tools:visibility="visible"/>
 
     <androidx.emoji.widget.EmojiTextView
-        android:id="@+id/referenceLink"
+        android:id="@+id/referenceDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/referenceName"
@@ -53,7 +58,28 @@
         android:textAlignment="viewStart"
         android:textIsSelectable="false"
         android:layout_marginStart="10dp"
-        tools:text="http://nextcloud.com" />
+        android:visibility="gone"
+        android:ellipsize="end"
+        android:maxLines="2"
+        tools:text="Description of Website"
+        tools:visibility="visible"/>
+
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/referenceLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/referenceDescription"
+        android:lineSpacingMultiplier="1.2"
+        android:textAlignment="viewStart"
+        android:textIsSelectable="false"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/medium_emphasis_text"
+        android:singleLine="true"
+        android:lines="1"
+        android:ellipsize="end"
+        android:visibility="gone"
+        tools:text="http://nextcloud.com"
+        tools:visibility="visible"/>
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/referenceThumbImage"
@@ -63,5 +89,7 @@
         android:layout_below="@id/referenceLink"
         android:layout_marginTop="5dp"
         android:layout_marginStart="10dp"
-        app:roundedCornerRadius="6dp" />
+        android:visibility="gone"
+        app:roundedCornerRadius="6dp"
+        tools:visibility="visible"/>
 </RelativeLayout>
