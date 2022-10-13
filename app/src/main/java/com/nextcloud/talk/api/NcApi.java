@@ -44,7 +44,6 @@ import com.nextcloud.talk.models.json.search.ContactsByNumberOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.status.StatusOverall;
-import com.nextcloud.talk.models.json.statuses.StatusesOverall;
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
@@ -101,7 +100,8 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
      */
     @GET
-    Observable<RoomsOverall> getRooms(@Header("Authorization") String authorization, @Url String url);
+    Observable<RoomsOverall> getRooms(@Header("Authorization") String authorization, @Url String url,
+                                     @Nullable @Query("includeStatus") Boolean includeStatus);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken
@@ -517,9 +517,6 @@ public interface NcApi {
     Observable<GenericOverall> setStatusType(@Header("Authorization") String authorization,
                                              @Url String url,
                                              @Field("statusType") String statusType);
-
-    @GET
-    Observable<StatusesOverall> getUserStatuses(@Header("Authorization") String authorization, @Url String url);
 
 
     @POST
