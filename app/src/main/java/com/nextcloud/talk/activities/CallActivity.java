@@ -565,7 +565,7 @@ public class CallActivity extends CallBaseActivity {
     private void handleFromNotification() {
         int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
-        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, baseUrl))
+        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, baseUrl), false)
             .retry(3)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
