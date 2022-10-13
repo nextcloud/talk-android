@@ -1851,17 +1851,14 @@ public class CallActivity extends CallBaseActivity {
         for (HashMap<String, Object> participant : users) {
             long inCallFlag = (long) participant.get("inCall");
             if (!participant.get("sessionId").equals(currentSessionId)) {
-                boolean isNewSession;
                 Log.d(TAG, "   inCallFlag of participant "
                     + participant.get("sessionId").toString().substring(0, 4)
                     + " : "
                     + inCallFlag);
-                isNewSession = inCallFlag != 0;
 
-                if (isNewSession) {
+                boolean isInCall = inCallFlag != 0;
+                if (isInCall) {
                     newSessions.add(participant.get("sessionId").toString());
-                } else {
-                    oldSessions.add(participant.get("sessionId").toString());
                 }
 
                 // The property is "userId" when not using the external signaling server and "userid" when using it.
@@ -1888,7 +1885,8 @@ public class CallActivity extends CallBaseActivity {
         }
 
         // Calculate sessions that left the call
-        oldSessions.removeAll(newSessions);
+        List<String> disconnectedSessions = new ArrayList<>(oldSessions);
+        disconnectedSessions.removeAll(newSessions);
 
         // Calculate sessions that join the call
         newSessions.removeAll(oldSessions);
@@ -1926,7 +1924,7 @@ public class CallActivity extends CallBaseActivity {
             setCallState(CallStatus.IN_CONVERSATION);
         }
 
-        for (String sessionId : oldSessions) {
+        for (String sessionId : disconnectedSessions) {
             Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
             endPeerConnection(sessionId, false);
         }
