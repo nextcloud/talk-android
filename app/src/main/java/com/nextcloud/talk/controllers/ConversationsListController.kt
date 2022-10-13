@@ -523,51 +523,9 @@ class ConversationsListController(bundle: Bundle) :
                     adapterWasNull = false
                     binding.loadingContent.visibility = View.GONE
                 }
-                if (ocs!!.data!!.isNotEmpty()) {
-                    if (binding.emptyLayout.visibility != View.GONE) {
-                        binding.emptyLayout.visibility = View.GONE
-                    }
-                    if (binding.swipeRefreshLayoutView.visibility != View.VISIBLE) {
-                        binding.swipeRefreshLayoutView.visibility = View.VISIBLE
-                    }
-                } else {
-                    if (binding.emptyLayout.visibility != View.VISIBLE) {
-                        binding.emptyLayout.visibility = View.VISIBLE
-                    }
-                    if (binding.swipeRefreshLayoutView.visibility != View.GONE) {
-                        binding.swipeRefreshLayoutView.visibility = View.GONE
-                    }
-                }
+                initOverallLayout(ocs!!.data!!.isNotEmpty())
                 for (conversation in ocs.data!!) {
-                    if (bundle.containsKey(KEY_FORWARD_HIDE_SOURCE_ROOM) && conversation.roomId == bundle.getString(
-                            KEY_FORWARD_HIDE_SOURCE_ROOM
-                        )
-                    ) {
-                        continue
-                    }
-                    val headerTitle: String = resources!!.getString(R.string.conversations)
-                    var genericTextHeaderItem: GenericTextHeaderItem
-                    if (!callHeaderItems.containsKey(headerTitle)) {
-                        genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
-                        callHeaderItems[headerTitle] = genericTextHeaderItem
-                    }
-                    if (activity != null) {
-                        val conversationItem = ConversationItem(
-                            conversation,
-                            currentUser,
-                            activity,
-                            viewThemeUtils
-                        )
-                        conversationItems.add(conversationItem)
-                        val conversationItemWithHeader = ConversationItem(
-                            conversation,
-                            currentUser,
-                            activity,
-                            callHeaderItems[headerTitle],
-                            viewThemeUtils
-                        )
-                        conversationItemsWithHeader.add(conversationItemWithHeader)
-                    }
+                    addToConversationItems(conversation)
                 }
                 sortConversations(conversationItems)
                 sortConversations(conversationItemsWithHeader)
