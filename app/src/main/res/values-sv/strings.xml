@@ -57,6 +57,7 @@
     <string name="nc_change_password">Ändra lösenord</string>
     <string name="nc_circle">Cirkel</string>
     <string name="nc_circles">Cirklar</string>
+    <string name="nc_clear_history">Radera alla meddelanden</string>
     <string name="nc_clear_password">Rensa lösenord</string>
     <string name="nc_client_cert_change">Ändra klientcertifikat</string>
     <string name="nc_client_cert_setup">Konfigurera klientcertifikat</string>
