@@ -24,6 +24,7 @@
     <string name="emoji_category_recent">Ostatnie</string>
     <string name="emoji_search">Szukaj emoji</string>
     <string name="encrypted">Zaszyfrowane</string>
+    <string name="error_loading_chats">Wystąpił problem z wczytaniem Twoich czatów</string>
     <string name="failed_to_save">Nie udało się zapisać %1$s</string>
     <string name="file_list_folder">katalog</string>
     <string name="file_list_loading">Wczytywanie…</string>
