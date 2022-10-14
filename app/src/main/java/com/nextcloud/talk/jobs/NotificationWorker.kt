@@ -526,7 +526,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 notificationUser.id,
                 false
             ) else ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.name, false)
-            person.setIcon(loadAvatarSync(avatarUrl))
+            person.setIcon(loadAvatarSync(avatarUrl, context!!))
         }
         notificationBuilder.setStyle(getStyle(person.build(), style))
     }

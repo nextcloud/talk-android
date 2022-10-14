@@ -23,9 +23,9 @@
 package com.nextcloud.talk.adapters.messages;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.card.MaterialCardView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.ItemCustomOutcomingPreviewMessageBinding;
@@ -75,7 +75,7 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
     }
 
     @Override
-    public SimpleDraweeView getPreviewContactPhoto() {
+    public ImageView getPreviewContactPhoto() {
         return binding.contactPhoto;
     }
 

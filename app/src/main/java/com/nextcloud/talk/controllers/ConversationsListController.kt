@@ -31,7 +31,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -49,8 +49,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
@@ -58,15 +56,13 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoInjector
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.target.Target
+import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
-import com.facebook.common.executors.UiThreadImmediateExecutorService
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.DataSource
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
-import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
@@ -104,7 +100,6 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -211,78 +206,56 @@ class ConversationsListController(bundle: Bundle) :
         prepareViews()
     }
 
-    private fun loadUserAvatar(button: MaterialButton) {
-        if (activity != null) {
-            val imageRequest = DisplayUtils.getImageRequestForUrl(
-                ApiUtils.getUrlForAvatar(
-                    currentUser!!.baseUrl,
-                    currentUser!!.userId,
-                    true
-                ),
-                currentUser
-            )
-            val imagePipeline = Fresco.getImagePipeline()
-            val dataSource = imagePipeline.fetchDecodedImage(imageRequest, null)
-            dataSource.subscribe(
-                object : BaseBitmapDataSubscriber() {
-                    override fun onNewResultImpl(bitmap: Bitmap?) {
-                        if (bitmap != null && resources != null) {
-                            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(
-                                resources!!,
-                                bitmap
-                            )
-                            roundedBitmapDrawable.isCircular = true
-                            roundedBitmapDrawable.setAntiAlias(true)
-                            button.icon = roundedBitmapDrawable
-                        }
-                    }
+    private fun loadUserAvatar(
+        target: Target
+    ) {
 
-                    override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
-                        if (resources != null) {
-                            button.icon = ResourcesCompat.getDrawable(resources!!, R.drawable.ic_user, null)
-                        }
-                    }
-                },
-                UiThreadImmediateExecutorService.getInstance()
+        if (activity != null) {
+            val url = ApiUtils.getUrlForAvatar(
+                currentUser!!.baseUrl,
+                currentUser!!.userId,
+                true
+            )
+
+            val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+
+            context.imageLoader.enqueue(
+                ImageRequest.Builder(context)
+                    .data(url)
+                    .addHeader("Authorization", credentials)
+                    .placeholder(R.drawable.ic_user)
+                    .transformations(CircleCropTransformation())
+                    .crossfade(true)
+                    .target(target)
+                    .build()
             )
         }
     }
 
-    private fun loadUserAvatar(menuItem: MenuItem) {
-        if (activity != null) {
-            val imageRequest = DisplayUtils.getImageRequestForUrl(
-                ApiUtils.getUrlForAvatar(
-                    currentUser!!.baseUrl,
-                    currentUser!!.userId,
-                    true
-                ),
-                currentUser
-            )
-            val imagePipeline = Fresco.getImagePipeline()
-            val dataSource = imagePipeline.fetchDecodedImage(imageRequest, null)
-            dataSource.subscribe(
-                object : BaseBitmapDataSubscriber() {
-                    override fun onNewResultImpl(bitmap: Bitmap?) {
-                        if (bitmap != null && resources != null) {
-                            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(
-                                resources!!,
-                                bitmap
-                            )
-                            roundedBitmapDrawable.isCircular = true
-                            roundedBitmapDrawable.setAntiAlias(true)
-                            menuItem.icon = roundedBitmapDrawable
-                        }
-                    }
+    private fun loadUserAvatar(button: MaterialButton) {
 
-                    override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
-                        if (resources != null) {
-                            menuItem.icon = ResourcesCompat.getDrawable(resources!!, R.drawable.ic_user, null)
-                        }
-                    }
-                },
-                UiThreadImmediateExecutorService.getInstance()
-            )
+        val target = object : Target {
+            override fun onStart(placeholder: Drawable?) {
+                button.icon = placeholder
+            }
+            override fun onSuccess(result: Drawable) {
+                button.icon = result
+            }
         }
+
+        loadUserAvatar(target)
+    }
+
+    private fun loadUserAvatar(menuItem: MenuItem) {
+        val target = object : Target {
+            override fun onStart(placeholder: Drawable?) {
+                menuItem.icon = placeholder
+            }
+            override fun onSuccess(result: Drawable) {
+                menuItem.icon = result
+            }
+        }
+        loadUserAvatar(target)
     }
 
     override fun onAttach(view: View) {

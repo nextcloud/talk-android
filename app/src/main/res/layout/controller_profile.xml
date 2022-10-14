@@ -19,7 +19,6 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@+id/avatar_image"
             android:layout_width="@dimen/avatar_size_big"
             android:layout_height="@dimen/avatar_size_big"
@@ -39,9 +38,7 @@
             android:layout_marginTop="@dimen/standard_margin"
             android:src="@drawable/account_circle_96dp"
             android:transitionName="userAvatar.transitionTag"
-            app:roundAsCircle="true"
-            fresco:failureImage="@drawable/account_circle_96dp"
-            fresco:placeholderImage="@drawable/account_circle_96dp" />
+            android:contentDescription="@string/avatar" />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/userinfo_fullName"

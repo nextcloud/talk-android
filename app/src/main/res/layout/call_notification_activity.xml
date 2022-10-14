@@ -3,6 +3,8 @@
   ~
   ~ @author Mario Danic
   ~ @author Andy Scherzinger
+  ~ @author Tim Krüger
+  ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
@@ -36,36 +38,37 @@
         android:animateLayoutChanges="true"
         android:orientation="horizontal">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageButton
             android:id="@+id/callAnswerVoiceOnlyView"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="24dp"
-            android:visibility="gone"
-            app:backgroundImage="@color/nc_darkGreen"
-            app:placeholderImage="@drawable/ic_call_white_24dp"
-            app:roundAsCircle="true"
-            tools:visibility="visible" />
+            android:background="@drawable/shape_oval"
+            android:backgroundTint="@color/nc_darkGreen"
+            android:src="@drawable/ic_call_white_24dp"
+            android:contentDescription="@string/nc_call_button_content_description_answer_voice_only" />
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageButton
             android:id="@+id/hangupButton"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="24dp"
-            app:backgroundImage="@color/nc_darkRed"
-            app:placeholderImage="@drawable/ic_call_end_white_24px"
-            app:roundAsCircle="true" />
+            android:background="@drawable/shape_oval"
+            android:backgroundTint="@color/nc_darkRed"
+            android:src="@drawable/ic_call_end_white_24px"
+            android:contentDescription="@string/nc_call_button_content_description_hangup" />
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageButton
             android:id="@+id/callAnswerCameraView"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="24dp"
+            android:background="@drawable/shape_oval"
+            android:backgroundTint="@color/nc_darkGreen"
+            android:src="@drawable/ic_videocam_white_24px"
             android:visibility="gone"
-            app:backgroundImage="@color/nc_darkGreen"
-            app:placeholderImage="@drawable/ic_videocam_white_24px"
-            app:roundAsCircle="true"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="@string/nc_call_button_content_description_answer_video_call" />
     </LinearLayout>
 
     <RelativeLayout
@@ -111,11 +114,11 @@
 
     </RelativeLayout>
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/avatarImageView"
         android:layout_width="@dimen/avatar_size_big"
         android:layout_height="@dimen/avatar_size_big"
         android:layout_centerInParent="true"
-        app:roundAsCircle="true" />
+        android:contentDescription="@string/avatar" />
 
 </RelativeLayout>

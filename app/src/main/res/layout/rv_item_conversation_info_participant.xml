@@ -26,15 +26,14 @@
     android:layout_marginBottom="@dimen/standard_half_margin"
     android:layout_marginTop="@dimen/standard_margin">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/avatar_drawee_view"
+    <ImageView
+        android:id="@+id/avatar_view"
         android:layout_width="@dimen/small_item_height"
         android:layout_height="@dimen/small_item_height"
         android:layout_marginStart="@dimen/standard_margin"
         android:contentDescription="@null"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:roundAsCircle="true" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.vanniktech.emoji.EmojiEditText
         android:id="@+id/participant_status_emoji"
@@ -54,8 +53,8 @@
         android:layout_height="18dp"
         android:layout_gravity="bottom|end"
         android:contentDescription="@string/nc_account_chooser_active_user"
-        app:layout_constraintBottom_toBottomOf="@+id/avatar_drawee_view"
-        app:layout_constraintEnd_toEndOf="@+id/avatar_drawee_view"
+        app:layout_constraintBottom_toBottomOf="@+id/avatar_view"
+        app:layout_constraintEnd_toEndOf="@+id/avatar_view"
         tools:src="@drawable/emoji_one_category_smileysandpeople"/>
 
     <androidx.emoji.widget.EmojiTextView
@@ -68,8 +67,8 @@
         android:textAlignment="viewStart"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:textColor="@color/conversation_item_header"
-        app:layout_constraintStart_toEndOf="@id/avatar_drawee_view"
-        app:layout_constraintTop_toTopOf="@+id/avatar_drawee_view"
+        app:layout_constraintStart_toEndOf="@id/avatar_view"
+        app:layout_constraintTop_toTopOf="@+id/avatar_view"
         tools:text="Jane Doe" />
 
     <androidx.emoji.widget.EmojiTextView

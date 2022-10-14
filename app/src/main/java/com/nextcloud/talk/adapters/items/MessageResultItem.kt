@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Álvaro Brey
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Nextcloud GmbH
  *
@@ -27,9 +29,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemSearchMessageBinding
+import com.nextcloud.talk.extensions.loadThumbnail
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFilterable
@@ -72,7 +74,7 @@ data class MessageResultItem constructor(
     ) {
         holder.binding.conversationTitle.text = messageEntry.title
         bindMessageExcerpt(holder)
-        loadImage(holder)
+        messageEntry.thumbnailURL?.let { holder.binding.thumbnail.loadThumbnail(it, currentUser) }
     }
 
     private fun bindMessageExcerpt(holder: ViewHolder) {
@@ -81,17 +83,6 @@ data class MessageResultItem constructor(
             messageEntry.messageExcerpt,
             messageEntry.searchTerm
         )
-    }
-
-    private fun loadImage(holder: ViewHolder) {
-        DisplayUtils.loadAvatarPlaceholder(holder.binding.thumbnail)
-        if (messageEntry.thumbnailURL != null) {
-            val imageRequest = DisplayUtils.getImageRequestForUrl(
-                messageEntry.thumbnailURL,
-                currentUser
-            )
-            DisplayUtils.loadImage(holder.binding.thumbnail, imageRequest)
-        }
     }
 
     override fun filter(constraint: String?): Boolean = true

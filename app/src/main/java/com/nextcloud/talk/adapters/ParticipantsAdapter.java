@@ -12,12 +12,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
-import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
 
 import org.webrtc.MediaStream;
 import org.webrtc.MediaStreamTrack;
@@ -109,7 +106,7 @@ public class ParticipantsAdapter extends BaseAdapter {
         convertView.setLayoutParams(layoutParams);
 
         TextView nickTextView = convertView.findViewById(R.id.peer_nick_text_view);
-        SimpleDraweeView imageView = convertView.findViewById(R.id.avatarImageView);
+        ImageView imageView = convertView.findViewById(R.id.avatarImageView);
 
         MediaStream mediaStream = participantDisplayItem.getMediaStream();
         if (hasVideoStream(participantDisplayItem, mediaStream)) {
@@ -128,13 +125,7 @@ public class ParticipantsAdapter extends BaseAdapter {
                 nickTextView.setVisibility(View.VISIBLE);
                 nickTextView.setText(participantDisplayItem.getNick());
             }
-
-            imageView.setController(null);
-            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(imageView.getController())
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(participantDisplayItem.getUrlForAvatar()))
-                    .build();
-            imageView.setController(draweeController);
+            ImageViewExtensionsKt.loadAvatarWithUrl(imageView,null, participantDisplayItem.getUrlForAvatar());
         }
 
         ImageView audioOffView = convertView.findViewById(R.id.remote_audio_off);

@@ -5,7 +5,7 @@
  * @author Marcel Hibbe
  * @author Andy Scherzinger
  * @author Tim Krüger
- * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -30,7 +30,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Handler
 import android.util.Base64
@@ -38,13 +37,13 @@ import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.ProgressBar
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.emoji.widget.EmojiTextView
 import autodagger.AutoInjector
-import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.material.card.MaterialCardView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -53,6 +52,7 @@ import com.nextcloud.talk.components.filebrowser.models.BrowserFile
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
+import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -92,6 +92,8 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     lateinit var commonMessageInterface: CommonMessageInterface
     var previewMessageInterface: PreviewMessageInterface? = null
 
+    private var placeholder: Drawable? = null
+
     init {
         sharedApplication!!.componentApplication.inject(this)
     }
@@ -118,13 +120,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                     }
                 }
                 if (ACTOR_TYPE_BOTS == message.actorType && ACTOR_ID_CHANGELOG == message.actorId) {
-                    if (context != null) {
-                        val layers = arrayOfNulls<Drawable>(2)
-                        layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
-                        layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
-                        val layerDrawable = LayerDrawable(layers)
-                        userAvatar.hierarchy.setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
-                    }
+                    userAvatar.loadChangelogBotAvatar()
                 }
             }
         }
@@ -150,11 +146,10 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             }
             if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_PHOTO)) {
                 image = previewContactPhoto
-                val drawable = getDrawableFromContactDetails(
+                placeholder = getDrawableFromContactDetails(
                     context,
                     message.selectedIndividualHashMap!![KEY_CONTACT_PHOTO]
                 )
-                image.hierarchy.setPlaceholderImage(drawable)
             } else if (message.selectedIndividualHashMap!!.containsKey(KEY_MIMETYPE)) {
                 val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
                 val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
@@ -170,7 +165,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                         PorterDuff.Mode.SRC_ATOP
                     )
                 }
-                image.hierarchy.setPlaceholderImage(drawable)
+                placeholder = drawable
             } else {
                 fetchFileInformation(
                     "/" + message.selectedIndividualHashMap!![KEY_PATH],
@@ -208,13 +203,13 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             DisplayUtils.setClickableString("Tenor", "https://tenor.com", messageText)
         } else {
             if (message.messageType == ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE.name) {
-                (clickView as SimpleDraweeView?)?.setOnClickListener {
+                clickView!!.setOnClickListener {
                     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(message.imageUrl))
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context!!.startActivity(browserIntent)
                 }
             } else {
-                (clickView as SimpleDraweeView?)?.setOnClickListener(null)
+                clickView!!.setOnClickListener(null)
             }
             messageText.text = ""
         }
@@ -236,6 +231,10 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
 
     private fun clickOnReaction(chatMessage: ChatMessage, emoji: String) {
         commonMessageInterface.onClickReaction(chatMessage, emoji)
+    }
+
+    override fun getPayloadForImageLoader(message: ChatMessage?): Any? {
+        return placeholder
     }
 
     private fun getDrawableFromContactDetails(context: Context?, base64: String?): Drawable? {
@@ -300,8 +299,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                         if (browserFileList.isNotEmpty()) {
                             Handler(context!!.mainLooper).post {
                                 val resourceId = getDrawableResourceIdForMimeType(browserFileList[0].mimeType)
-                                val drawable = ContextCompat.getDrawable(context!!, resourceId)
-                                image.hierarchy.setPlaceholderImage(drawable)
+                                placeholder = ContextCompat.getDrawable(context!!, resourceId)
                             }
                         }
                     }
@@ -324,7 +322,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     abstract val messageText: EmojiTextView
     abstract val previewContainer: View
     abstract val previewContactContainer: MaterialCardView
-    abstract val previewContactPhoto: SimpleDraweeView
+    abstract val previewContactPhoto: ImageView
     abstract val previewContactName: EmojiTextView
     abstract val previewContactProgressBar: ProgressBar?
 

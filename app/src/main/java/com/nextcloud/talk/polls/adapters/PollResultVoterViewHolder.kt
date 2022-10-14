@@ -22,16 +22,15 @@ package com.nextcloud.talk.polls.adapters
 
 import android.annotation.SuppressLint
 import android.text.TextUtils
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.interfaces.DraweeController
+import android.widget.ImageView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.PollResultVoterItemBinding
+import com.nextcloud.talk.extensions.loadAvatar
+import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.polls.model.PollDetails
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 
 class PollResultVoterViewHolder(
     private val user: User,
@@ -46,45 +45,19 @@ class PollResultVoterViewHolder(
         binding.root.setOnClickListener { clickListener.onClick() }
 
         binding.pollVoterName.text = item.details.actorDisplayName
-        binding.pollVoterAvatar.controller = getAvatarDraweeController(item.details)
+        loadAvatar(item.details, binding.pollVoterAvatar)
         viewThemeUtils.dialog.colorDialogSupportingText(binding.pollVoterName)
     }
 
-    private fun getAvatarDraweeController(pollDetail: PollDetails): DraweeController? {
-        var draweeController: DraweeController? = null
+    private fun loadAvatar(pollDetail: PollDetails, avatar: ImageView) {
         if (pollDetail.actorType == "guests") {
             var displayName = NextcloudTalkApplication.sharedApplication?.resources?.getString(R.string.nc_guest)
             if (!TextUtils.isEmpty(pollDetail.actorDisplayName)) {
                 displayName = pollDetail.actorDisplayName!!
             }
-            draweeController = Fresco.newDraweeControllerBuilder()
-                .setAutoPlayAnimations(true)
-                .setImageRequest(
-                    DisplayUtils.getImageRequestForUrl(
-                        ApiUtils.getUrlForGuestAvatar(
-                            user.baseUrl,
-                            displayName,
-                            false
-                        ),
-                        user
-                    )
-                )
-                .build()
+            avatar.loadGuestAvatar(user, displayName!!, false)
         } else if (pollDetail.actorType == "users") {
-            draweeController = Fresco.newDraweeControllerBuilder()
-                .setAutoPlayAnimations(true)
-                .setImageRequest(
-                    DisplayUtils.getImageRequestForUrl(
-                        ApiUtils.getUrlForAvatar(
-                            user.baseUrl,
-                            pollDetail.actorId,
-                            false
-                        ),
-                        user
-                    )
-                )
-                .build()
+            avatar.loadAvatar(user, pollDetail.actorId!!, false)
         }
-        return draweeController
     }
 }

@@ -29,8 +29,6 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
@@ -40,18 +38,17 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import autodagger.AutoInjector
 import coil.load
-import com.amulyakhare.textdrawable.TextDrawable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingLocationMessageBinding
+import com.nextcloud.talk.extensions.loadBotsAvatar
+import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -136,22 +133,9 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
             if (message.actorType == "guests") {
                 // do nothing, avatar is set
             } else if (message.actorType == "bots" && message.actorId == "changelog") {
-                val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = AppCompatResources.getDrawable(context!!, R.drawable.ic_launcher_background)
-                layers[1] = AppCompatResources.getDrawable(context!!, R.drawable.ic_launcher_foreground)
-                val layerDrawable = LayerDrawable(layers)
-                binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
+                binding.messageUserAvatar.loadChangelogBotAvatar()
             } else if (message.actorType == "bots") {
-                val drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .bold()
-                    .endConfig()
-                    .buildRound(
-                        ">",
-                        context!!.resources.getColor(R.color.black)
-                    )
-                binding.messageUserAvatar.visibility = View.VISIBLE
-                binding.messageUserAvatar.setImageDrawable(drawable)
+                binding.messageUserAvatar.loadBotsAvatar()
             }
         } else {
             if (message.isOneToOneConversation) {

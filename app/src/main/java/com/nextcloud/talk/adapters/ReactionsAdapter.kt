@@ -34,7 +34,7 @@ class ReactionsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReactionsViewHolder {
         val itemBinding = ReactionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ReactionsViewHolder(itemBinding, user?.baseUrl)
+        return ReactionsViewHolder(itemBinding, user)
     }
 
     override fun onBindViewHolder(holder: ReactionsViewHolder, position: Int) {

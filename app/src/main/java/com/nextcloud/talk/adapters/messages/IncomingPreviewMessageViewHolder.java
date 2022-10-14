@@ -3,7 +3,7 @@
  *
  * @author Andy Scherzinger
  * @author Tim Krüger
- * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@
 package com.nextcloud.talk.adapters.messages;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.card.MaterialCardView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.ItemCustomIncomingPreviewMessageBinding;
@@ -74,7 +74,7 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
     }
 
     @Override
-    public SimpleDraweeView getPreviewContactPhoto() {
+    public ImageView getPreviewContactPhoto() {
         return binding.contactPhoto;
     }
 

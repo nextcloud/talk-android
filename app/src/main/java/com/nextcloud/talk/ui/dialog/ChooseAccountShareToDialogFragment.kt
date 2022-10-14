@@ -33,8 +33,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.interfaces.DraweeController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.items.AdvancedUserItem
@@ -42,11 +40,10 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogChooseAccountShareToBinding
+import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import java.net.CookieManager
@@ -97,21 +94,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
             if (user.baseUrl != null &&
                 (user.baseUrl!!.startsWith("http://") || user.baseUrl!!.startsWith("https://"))
             ) {
-                binding!!.currentAccount.userIcon.visibility = View.VISIBLE
-                val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(binding!!.currentAccount.userIcon.controller)
-                    .setAutoPlayAnimations(true)
-                    .setImageRequest(
-                        DisplayUtils.getImageRequestForUrl(
-                            ApiUtils.getUrlForAvatar(
-                                user.baseUrl,
-                                user.userId,
-                                false
-                            )
-                        )
-                    )
-                    .build()
-                binding!!.currentAccount.userIcon.controller = draweeController
+                binding!!.currentAccount.userIcon.loadAvatar(user, user.userId!!)
             } else {
                 binding!!.currentAccount.userIcon.visibility = View.INVISIBLE
             }

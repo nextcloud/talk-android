@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Andy Scherzinger
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2020 Mario Danic <mario@lovelyhq.com>
  *
@@ -33,11 +35,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Animatable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.text.Spannable;
@@ -51,36 +49,19 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.common.executors.UiThreadImmediateExecutorService;
-import com.facebook.common.references.CloseableReference;
-import com.facebook.datasource.DataSource;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.controller.ControllerListener;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.RotationOptions;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
-import com.facebook.imagepipeline.image.CloseableImage;
-import com.facebook.imagepipeline.image.ImageInfo;
-import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
-import com.facebook.imagepipeline.postprocessors.RoundPostprocessor;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.facebook.widget.text.span.BetterImageSpan;
 import com.google.android.material.chip.ChipDrawable;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.UserMentionClickEvent;
+import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.text.Spans;
 
@@ -91,8 +72,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -109,6 +88,11 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.emoji.text.EmojiCompat;
+import coil.Coil;
+import coil.request.ImageRequest;
+import coil.target.Target;
+import coil.transform.CircleCropTransformation;
+import third.parties.fresco.BetterImageSpan;
 
 import static com.nextcloud.talk.utils.FileSortOrder.sort_a_to_z_id;
 import static com.nextcloud.talk.utils.FileSortOrder.sort_big_to_small_id;
@@ -118,8 +102,6 @@ import static com.nextcloud.talk.utils.FileSortOrder.sort_small_to_big_id;
 import static com.nextcloud.talk.utils.FileSortOrder.sort_z_to_a_id;
 
 public class DisplayUtils {
-
-    private static final String TAG = "DisplayUtils";
 
     private static final int INDEX_LUMINATION = 2;
     private static final double MAX_LIGHTNESS = 0.92;
@@ -154,33 +136,6 @@ public class DisplayUtils {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    private static void updateViewSize(@Nullable ImageInfo imageInfo, SimpleDraweeView draweeView) {
-        if (imageInfo != null && draweeView.getId() != R.id.messageUserAvatar) {
-            int maxSize = draweeView.getContext().getResources().getDimensionPixelSize(R.dimen.maximum_file_preview_size);
-            draweeView.getLayoutParams().width = imageInfo.getWidth() > maxSize ? maxSize : imageInfo.getWidth();
-            draweeView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
-            draweeView.requestLayout();
-        }
-    }
-
-    public static Drawable getRoundedDrawable(Drawable drawable) {
-        Bitmap bitmap = getBitmap(drawable);
-        new RoundAsCirclePostprocessor(true).process(bitmap);
-        return new BitmapDrawable(bitmap);
-    }
-
-    public static Bitmap getRoundedBitmapFromVectorDrawableResource(Resources resources, int resource) {
-        VectorDrawable vectorDrawable = (VectorDrawable) ResourcesCompat.getDrawable(resources, resource, null);
-        Bitmap bitmap = getBitmap(vectorDrawable);
-        new RoundPostprocessor(true).process(bitmap);
-        return bitmap;
-    }
-
-    public static Drawable getRoundedBitmapDrawableFromVectorDrawableResource(Resources resources, int resource) {
-        return new BitmapDrawable(getRoundedBitmapFromVectorDrawableResource(resources, resource));
-    }
-
     public static Bitmap getBitmap(Drawable drawable) {
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
                                             drawable.getIntrinsicHeight(),
@@ -189,60 +144,6 @@ public class DisplayUtils {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bitmap;
-    }
-
-    public static ImageRequest getImageRequestForUrl(String url) {
-        return getImageRequestForUrl(url, (User) null);
-    }
-
-    public static ImageRequest getImageRequestForUrl(String url, @Nullable User user) {
-        Map<String, String> headers = new HashMap<>();
-        if (user != null &&
-            url.startsWith(user.getBaseUrl()) &&
-            (url.contains("index.php/core/preview?fileId=") || url.contains("/avatar/"))) {
-            headers.put("Authorization", ApiUtils.getCredentials(user.getUsername(), user.getToken()));
-        }
-
-        return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
-            .setProgressiveRenderingEnabled(true)
-            .setRotationOptions(RotationOptions.autoRotate())
-            .disableDiskCache()
-            .setHeaders(headers)
-            .build();
-    }
-
-    public static ControllerListener getImageControllerListener(SimpleDraweeView draweeView) {
-        return new ControllerListener() {
-            @Override
-            public void onSubmit(String id, Object callerContext) {
-                // unused atm
-            }
-
-            @Override
-            public void onFinalImageSet(String id, @Nullable Object imageInfo, @Nullable Animatable animatable) {
-                updateViewSize((ImageInfo) imageInfo, draweeView);
-            }
-
-            @Override
-            public void onIntermediateImageSet(String id, @Nullable Object imageInfo) {
-                updateViewSize((ImageInfo) imageInfo, draweeView);
-            }
-
-            @Override
-            public void onIntermediateImageFailed(String id, Throwable throwable) {
-                // unused atm
-            }
-
-            @Override
-            public void onFailure(String id, Throwable throwable) {
-                // unused atm
-            }
-
-            @Override
-            public void onRelease(String id) {
-                // unused atm
-            }
-        };
     }
 
     public static float convertDpToPixel(float dp, Context context) {
@@ -335,33 +236,37 @@ public class DisplayUtils {
                     conversationUser.getBaseUrl(),
                     String.valueOf(label), true);
             }
-            ImageRequest imageRequest = getImageRequestForUrl(url);
-            ImagePipeline imagePipeline = Fresco.getImagePipeline();
-            DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(
-                imageRequest,
-                context);
 
-            dataSource.subscribe(
-                new BaseBitmapDataSubscriber() {
+            ImageRequest imageRequest = new ImageRequest.Builder(context)
+                .data(url)
+                .crossfade(true)
+                .transformations(new CircleCropTransformation())
+                .target(new Target() {
                     @Override
-                    protected void onNewResultImpl(Bitmap bitmap) {
-                        if (bitmap != null) {
-                            chip.setChipIcon(getRoundedDrawable(new BitmapDrawable(bitmap)));
+                    public void onStart(@Nullable Drawable drawable) {
 
-                            // A hack to refresh the chip icon
-                            if (emojiEditText != null) {
-                                emojiEditText.post(() -> emojiEditText.setTextKeepState(
-                                    emojiEditText.getText(),
-                                    TextView.BufferType.SPANNABLE));
-                            }
+                    }
+
+                    @Override
+                    public void onError(@Nullable Drawable drawable) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(@NonNull Drawable drawable) {
+                        chip.setChipIcon(drawable);
+
+                        // A hack to refresh the chip icon
+                        if (emojiEditText != null) {
+                            emojiEditText.post(() -> emojiEditText.setTextKeepState(
+                                emojiEditText.getText(),
+                                TextView.BufferType.SPANNABLE));
                         }
                     }
+                })
+                .build();
 
-                    @Override
-                    protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                    }
-                },
-                UiThreadImmediateExecutorService.getInstance());
+            Coil.imageLoader(context).enqueue(imageRequest);
         }
 
         return chip;
@@ -575,7 +480,7 @@ public class DisplayUtils {
         }
     }
 
-    public static void loadAvatarImage(User user, SimpleDraweeView avatarImageView, boolean deleteCache) {
+    public static void loadAvatarImage(User user, ImageView avatarImageView, boolean deleteCache) {
         String avatarId;
         if (!TextUtils.isEmpty(user.getUserId())) {
             avatarId = user.getUserId();
@@ -583,48 +488,11 @@ public class DisplayUtils {
             avatarId = user.getUsername();
         }
 
-        String avatarString = ApiUtils.getUrlForAvatar(user.getBaseUrl(), avatarId, true);
-
-        // clear cache
         if (deleteCache) {
-            Uri avatarUri = Uri.parse(avatarString);
-
-            ImagePipeline imagePipeline = Fresco.getImagePipeline();
-            imagePipeline.evictFromMemoryCache(avatarUri);
-            imagePipeline.evictFromDiskCache(avatarUri);
-            imagePipeline.evictFromCache(avatarUri);
-        }
-
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-            .setOldController(avatarImageView.getController())
-            .setAutoPlayAnimations(true)
-            .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarString))
-            .build();
-        avatarImageView.setController(draweeController);
-    }
-
-    public static void loadAvatarPlaceholder(final SimpleDraweeView targetView) {
-        final Context context = targetView.getContext();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Drawable[] layers = new Drawable[2];
-            layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background);
-            layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground);
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
-
-            targetView.getHierarchy().setPlaceholderImage(
-                DisplayUtils.getRoundedDrawable(layerDrawable));
+            ImageViewExtensionsKt.replaceAvatar(avatarImageView, user, avatarId, true);
         } else {
-            targetView.getHierarchy().setPlaceholderImage(R.mipmap.ic_launcher);
+            ImageViewExtensionsKt.loadAvatar(avatarImageView, user, avatarId, true);
         }
-    }
-
-    public static void loadImage(final SimpleDraweeView targetView, final ImageRequest imageRequest) {
-        final DraweeController newController = Fresco.newDraweeControllerBuilder()
-            .setOldController(targetView.getController())
-            .setAutoPlayAnimations(true)
-            .setImageRequest(imageRequest)
-            .build();
-        targetView.setController(newController);
     }
 
     public static @StringRes
@@ -649,7 +517,7 @@ public class DisplayUtils {
     /**
      * calculates the relative time string based on the given modification timestamp.
      *
-     * @param context the app's context
+     * @param context               the app's context
      * @param modificationTimestamp the UNIX timestamp of the file modification time in milliseconds.
      * @return a relative time string
      */

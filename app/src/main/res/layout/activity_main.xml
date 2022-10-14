@@ -113,7 +113,8 @@
                         android:transitionName="userAvatar.transitionTag"
                         app:cornerRadius="@dimen/button_corner_radius"
                         app:iconSize="@dimen/avatar_size_app_bar"
-                        tools:visibility="gone" />
+                        app:iconTint="@null"
+                        tools:icon="@drawable/ic_user" />
 
                 </FrameLayout>
 

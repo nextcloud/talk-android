@@ -29,16 +29,13 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.RvItemContactBinding;
+import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -110,7 +107,6 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
     @SuppressLint("SetTextI18n")
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, ContactItemViewHolder holder, int position, List payloads) {
-        holder.binding.avatarDraweeView.setController(null);
 
         if (participant.getSelected()) {
             viewThemeUtils.platform.colorImageView(holder.binding.checkedImageView);
@@ -121,18 +117,18 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
 
         if (!isOnline) {
             holder.binding.nameText.setTextColor(ResourcesCompat.getColor(
-                holder.binding.nameText.getContext().getResources(),
-                R.color.medium_emphasis_text,
-                null)
+                                                     holder.binding.nameText.getContext().getResources(),
+                                                     R.color.medium_emphasis_text,
+                                                     null)
                                                 );
-            holder.binding.avatarDraweeView.setAlpha(0.38f);
+            holder.binding.avatarView.setAlpha(0.38f);
         } else {
             holder.binding.nameText.setTextColor(ResourcesCompat.getColor(
-                holder.binding.nameText.getContext().getResources(),
-                R.color.high_emphasis_text,
-                null)
+                                                     holder.binding.nameText.getContext().getResources(),
+                                                     R.color.high_emphasis_text,
+                                                     null)
                                                 );
-            holder.binding.avatarDraweeView.setAlpha(1.0f);
+            holder.binding.avatarView.setAlpha(1.0f);
         }
 
         holder.binding.nameText.setText(participant.getDisplayName());
@@ -179,38 +175,29 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
                     .getResources().getString(R.string.nc_guest);
             }
 
-            setUserStyleAvatar(holder,
-                               ApiUtils.getUrlForGuestAvatar(user.getBaseUrl(), displayName, false));
+            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, user, displayName, true);
         } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
             PARTICIPANT_SOURCE_USERS.equals(participant.getSource())) {
-            setUserStyleAvatar(holder,
-                               ApiUtils.getUrlForAvatar(user.getBaseUrl(),
-                                                        participant.getCalculatedActorId(),
-                                                        false));
+            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, user, participant.getCalculatedActorId(), true);
         }
-    }
-
-    private void setUserStyleAvatar(ContactItemViewHolder holder, String avatarUrl) {
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-            .setOldController(holder.binding.avatarDraweeView.getController())
-            .setAutoPlayAnimations(true)
-            .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarUrl))
-            .build();
-        holder.binding.avatarDraweeView.setController(draweeController);
     }
 
     private void setGenericAvatar(
         ContactItemViewHolder holder,
         int roundPlaceholderDrawable,
         int fallbackImageResource) {
+        Object avatar;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
-                DisplayUtils.getRoundedDrawable(
-                    viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarDraweeView,
-                                                          roundPlaceholderDrawable)));
+            avatar = viewThemeUtils.talk.themePlaceholderAvatar(
+                holder.binding.avatarView,
+                roundPlaceholderDrawable
+                                                               );
+
         } else {
-            holder.binding.avatarDraweeView.setImageResource(fallbackImageResource);
+            avatar = fallbackImageResource;
         }
+
+        ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, avatar);
     }
 
     @Override

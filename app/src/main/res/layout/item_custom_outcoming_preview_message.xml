@@ -55,14 +55,13 @@
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true">
 
-            <!-- SimpleDraweeView does not support wrap_content for layout_width or layout_height attributes! -->
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@id/image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:scaleType="fitEnd"
-                app:roundedCornerRadius="6dp"
-                tools:src="@drawable/ic_call_black_24dp" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitStart"
+                tools:src="@drawable/ic_call_black_24dp"
+                tools:ignore="ContentDescription" />
 
             <ProgressBar
                 android:id="@+id/progress_bar"
@@ -95,14 +94,13 @@
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true">
 
-                    <!-- SimpleDraweeView does not support wrap_content for layout_width or layout_height attributes! -->
-                    <com.facebook.drawee.view.SimpleDraweeView
+                    <ImageView
                         android:id="@+id/contact_photo"
                         android:layout_width="@dimen/small_item_height"
                         android:layout_height="@dimen/small_item_height"
                         android:scaleType="fitStart"
-                        app:roundAsCircle="true"
-                        tools:src="@drawable/ic_call_black_24dp" />
+                        tools:src="@drawable/ic_call_black_24dp"
+                        tools:ignore="ContentDescription" />
 
                     <ProgressBar
                         android:id="@+id/contact_progress_bar"

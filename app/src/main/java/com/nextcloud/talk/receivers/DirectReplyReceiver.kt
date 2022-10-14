@@ -162,7 +162,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
         val avatarUrl = ApiUtils.getUrlForAvatar(currentUser.baseUrl, currentUser.userId, false)
         val me = Person.Builder()
             .setName(currentUser.displayName)
-            .setIcon(NotificationUtils.loadAvatarSync(avatarUrl))
+            .setIcon(NotificationUtils.loadAvatarSync(avatarUrl, context))
             .build()
         val message = NotificationCompat.MessagingStyle.Message(reply, System.currentTimeMillis(), me)
         previousStyle?.addMessage(message)

@@ -30,13 +30,13 @@
     android:layout_marginRight="16dp"
     android:layout_marginBottom="2dp">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@id/messageUserAvatar"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="8dp"
-        app:roundAsCircle="true" />
+        android:contentDescription="@string/avatar" />
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@id/bubble"

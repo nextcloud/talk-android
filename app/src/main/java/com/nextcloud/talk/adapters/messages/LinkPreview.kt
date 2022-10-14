@@ -25,14 +25,12 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.view.View
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.interfaces.DraweeController
+import coil.load
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.databinding.ReferenceInsideMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.opengraph.OpenGraphOverall
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -92,12 +90,7 @@ class LinkPreview {
                             val referenceThumbUrl = reference.openGraphObject?.thumb
                             if (!referenceThumbUrl.isNullOrEmpty()) {
                                 binding.referenceThumbImage.visibility = View.VISIBLE
-                                val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
-                                    .setAutoPlayAnimations(true)
-                                    .setImageRequest(DisplayUtils.getImageRequestForUrl(referenceThumbUrl))
-                                    .build()
-                                binding.referenceThumbImage.controller =
-                                    draweeController
+                                binding.referenceThumbImage.load(referenceThumbUrl)
                             } else {
                                 binding.referenceThumbImage.visibility = View.GONE
                             }

@@ -29,15 +29,13 @@ import android.content.Context;
 import android.os.Build;
 import android.view.View;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.data.user.model.User;
+import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.models.json.status.StatusType;
 import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
-import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
@@ -151,34 +149,22 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
 
         if (SOURCE_CALLS.equals(source)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
-                    DisplayUtils.getRoundedDrawable(
-                        viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarDraweeView,
-                                                              R.drawable.ic_avatar_group)));
+                ImageViewExtensionsKt.loadAvatar(
+                    holder.binding.avatarView,
+                    viewThemeUtils.talk.themePlaceholderAvatar(
+                        holder.binding.avatarView,
+                        R.drawable.ic_avatar_group
+                                                              )
+                                                );
             } else {
-                holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);
+                ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, R.drawable.ic_circular_group);
             }
         } else {
             String avatarId = objectId;
-            String avatarUrl = ApiUtils.getUrlForAvatar(currentUser.getBaseUrl(),
-                                                        avatarId, true);
-
             if (SOURCE_GUESTS.equals(source)) {
                 avatarId = displayName;
-                avatarUrl = ApiUtils.getUrlForGuestAvatar(
-                    currentUser.getBaseUrl(),
-                    avatarId,
-                    false);
             }
-
-            holder.binding.avatarDraweeView.setController(null);
-
-            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setOldController(holder.binding.avatarDraweeView.getController())
-                .setAutoPlayAnimations(true)
-                .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarUrl))
-                .build();
-            holder.binding.avatarDraweeView.setController(draweeController);
+            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, currentUser, avatarId, true);
         }
 
         drawStatus(holder);

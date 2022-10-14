@@ -28,8 +28,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
@@ -41,24 +39,18 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import autodagger.AutoInjector
-import com.facebook.common.executors.UiThreadImmediateExecutorService
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.DataSource
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
-import com.facebook.imagepipeline.image.CloseableImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding
+import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DoNotDisturbUtils.shouldPlaySound
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
@@ -75,6 +67,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.call_item.*
 import okhttp3.Cache
 import org.parceler.Parcels
 import java.io.IOException
@@ -356,40 +349,12 @@ class CallNotificationActivity : CallBaseActivity() {
     private fun setUpAfterConversationIsKnown() {
         binding!!.conversationNameTextView.text = currentConversation!!.displayName
         if (currentConversation!!.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            setAvatarForOneToOneCall()
+            avatarImageView.loadAvatar(userBeingCalled!!, currentConversation!!.name!!)
         } else {
             binding!!.avatarImageView.setImageResource(R.drawable.ic_circular_group)
         }
         checkIfAnyParticipantsRemainInRoom()
         showAnswerControls()
-    }
-
-    @Suppress("MagicNumber")
-    private fun setAvatarForOneToOneCall() {
-        val imageRequest = DisplayUtils.getImageRequestForUrl(
-            ApiUtils.getUrlForAvatar(
-                userBeingCalled!!.baseUrl,
-                currentConversation!!.name,
-                true
-            )
-        )
-        val imagePipeline = Fresco.getImagePipeline()
-        val dataSource = imagePipeline.fetchDecodedImage(imageRequest, null)
-        dataSource.subscribe(
-            object : BaseBitmapDataSubscriber() {
-                override fun onNewResultImpl(bitmap: Bitmap?) {
-                    binding!!.avatarImageView.hierarchy.setImage(
-                        BitmapDrawable(resources, bitmap), 100f,
-                        true
-                    )
-                }
-
-                override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
-                    Log.e(TAG, "failed to load avatar")
-                }
-            },
-            UiThreadImmediateExecutorService.getInstance()
-        )
     }
 
     private fun endMediaNotifications() {

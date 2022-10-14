@@ -21,7 +21,6 @@
 -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="72dp"
@@ -44,7 +43,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true">
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@+id/user_icon"
                 android:layout_width="@dimen/small_item_height"
                 android:layout_height="@dimen/small_item_height"
@@ -54,10 +53,7 @@
                 android:layout_marginEnd="1dp"
                 android:layout_marginBottom="1dp"
                 android:contentDescription="@string/avatar"
-                android:src="@drawable/account_circle_48dp"
-                fresco:placeholderImage="@drawable/account_circle_48dp"
-                fresco:failureImage="@drawable/account_circle_48dp"
-                app:roundAsCircle="true"/>
+                android:src="@drawable/account_circle_48dp" />
         </FrameLayout>
 
 
