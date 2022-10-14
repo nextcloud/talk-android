@@ -42,6 +42,7 @@ import java.io.File
 
 @Parcelize
 @JsonObject
+@Deprecated("Use library", replaceWith = ReplaceWith("RemoteFile"))
 data class BrowserFile(
     var path: String? = null,
     var displayName: String? = null,

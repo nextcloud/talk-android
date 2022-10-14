@@ -25,7 +25,7 @@ buildscript {
 
     ext {
         kotlinVersion = '1.9.10'
-        androidLibraryVersion = "master-SNAPSHOT"
+        androidLibraryVersion = "dav4jvm-SNAPSHOT"
     }
 
     repositories {
