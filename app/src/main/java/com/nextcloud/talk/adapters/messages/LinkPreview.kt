@@ -73,10 +73,18 @@ class LinkPreview {
                                 binding.referenceName.visibility = View.GONE
                             }
 
+                            val referenceDescription = reference.openGraphObject?.description
+                            if (!referenceDescription.isNullOrEmpty()) {
+                                binding.referenceDescription.visibility = View.VISIBLE
+                                binding.referenceDescription.text = referenceDescription
+                            } else {
+                                binding.referenceDescription.visibility = View.GONE
+                            }
+
                             val referenceLink = reference.openGraphObject?.link
                             if (!referenceLink.isNullOrEmpty()) {
                                 binding.referenceLink.visibility = View.VISIBLE
-                                binding.referenceLink.text = referenceLink
+                                binding.referenceLink.text = referenceLink.replace(HTTPS_PROTOCOL, "")
                             } else {
                                 binding.referenceLink.visibility = View.GONE
                             }
@@ -104,6 +112,11 @@ class LinkPreview {
 
                     override fun onError(e: Throwable) {
                         Log.e(TAG, "failed to get openGraph data", e)
+                        binding.referenceName.visibility = View.GONE
+                        binding.referenceDescription.visibility = View.GONE
+                        binding.referenceLink.visibility = View.GONE
+                        binding.referenceThumbImage.visibility = View.GONE
+                        binding.referenceIndentedSideBar.visibility = View.GONE
                     }
 
                     override fun onComplete() {
@@ -115,5 +128,6 @@ class LinkPreview {
 
     companion object {
         private val TAG = LinkPreview::class.java.simpleName
+        private const val HTTPS_PROTOCOL = "https://"
     }
 }
