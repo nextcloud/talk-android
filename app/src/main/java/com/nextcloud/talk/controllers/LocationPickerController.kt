@@ -442,23 +442,19 @@ class LocationPickerController(args: Bundle) :
     private fun isLocationPermissionsGranted(): Boolean {
         fun isCoarseLocationGranted(): Boolean {
             return PermissionChecker.checkSelfPermission(
-                context!!,
+                context,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PermissionChecker.PERMISSION_GRANTED
         }
 
         fun isFineLocationGranted(): Boolean {
             return PermissionChecker.checkSelfPermission(
-                context!!,
+                context,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PermissionChecker.PERMISSION_GRANTED
         }
 
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            isCoarseLocationGranted() && isFineLocationGranted()
-        } else {
-            true
-        }
+        return isCoarseLocationGranted() && isFineLocationGranted()
     }
 
     private fun requestLocationPermissions() {

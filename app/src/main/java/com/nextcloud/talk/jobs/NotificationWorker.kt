@@ -447,11 +447,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 EmojiCompat.get().process(pushMessage.text!!)
             )
         }
-        if (Build.VERSION.SDK_INT >= 23) {
-            // This method should exist since API 21, but some phones don't have it
-            // So as a safeguard, we don't use it until 23
-            notificationBuilder.color = context!!.resources.getColor(R.color.colorPrimary)
-        }
+
+        notificationBuilder.color = context!!.resources.getColor(R.color.colorPrimary)
+
         val notificationInfoBundle = Bundle()
         notificationInfoBundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
         // could be an ID or a TOKEN
@@ -694,7 +692,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .subscribe(object : Observer<ParticipantsOverall> {
                 override fun onSubscribe(d: Disposable) = Unit
 
-                @RequiresApi(Build.VERSION_CODES.M)
                 override fun onNext(participantsOverall: ParticipantsOverall) {
                     val participantList: List<Participant> = participantsOverall.ocs!!.data!!
                     hasParticipantsInCall = participantList.isNotEmpty()
@@ -726,7 +723,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     Log.e(TAG, "Error in getPeersForCall", e)
                 }
 
-                @RequiresApi(Build.VERSION_CODES.M)
                 override fun onComplete() {
 
                     if (isCallNotificationVisible) {
@@ -821,7 +817,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return PendingIntent.getActivity(context, requestCode, intent, intentFlag)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun isCallNotificationVisible(decryptedPushMessage: DecryptedPushMessage): Boolean {
         var isVisible = false
 

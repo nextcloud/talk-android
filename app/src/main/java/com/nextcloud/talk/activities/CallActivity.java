@@ -732,10 +732,8 @@ public class CallActivity extends CallBaseActivity {
         } else {
             if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
                 onPermissionsGranted();
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(PERMISSIONS_CALL, 100);
             } else {
-                onRequestPermissionsResult(100, PERMISSIONS_CALL, new int[]{1, 1});
+                requestPermissions(PERMISSIONS_CALL, 100);
             }
         }
 
@@ -980,11 +978,7 @@ public class CallActivity extends CallBaseActivity {
                 R.string.nc_microphone_permission_permanently_denied,
                 R.string.nc_permissions_settings, (AppCompatActivity) this);
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(PERMISSIONS_MICROPHONE, 100);
-            } else {
-                onRequestPermissionsResult(100, PERMISSIONS_MICROPHONE, new int[]{1});
-            }
+            requestPermissions(PERMISSIONS_MICROPHONE, 100);
         }
     }
 
@@ -1017,12 +1011,7 @@ public class CallActivity extends CallBaseActivity {
                 R.string.nc_camera_permission_permanently_denied,
                 R.string.nc_permissions_settings, (AppCompatActivity) this);
         } else {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(PERMISSIONS_CAMERA, 100);
-            } else {
-                onRequestPermissionsResult(100, PERMISSIONS_CAMERA, new int[]{1});
-            }
+            requestPermissions(PERMISSIONS_CAMERA, 100);
         }
 
     }

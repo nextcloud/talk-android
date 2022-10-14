@@ -1149,14 +1149,10 @@ class ChatController(args: Bundle) :
     }
 
     private fun isRecordAudioPermissionGranted(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PermissionChecker.checkSelfPermission(
-                context,
-                Manifest.permission.RECORD_AUDIO
-            ) == PermissionChecker.PERMISSION_GRANTED
-        } else {
-            true
-        }
+        return PermissionChecker.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO
+        ) == PermissionChecker.PERMISSION_GRANTED
     }
 
     private fun startAudioRecording(file: String) {

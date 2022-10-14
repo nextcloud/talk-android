@@ -218,7 +218,7 @@ object NotificationUtils {
             notification: Notification
         ) -> Unit
     ) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || conversationUser.id == -1L || context == null) {
+        if (conversationUser.id == -1L || context == null) {
             return
         }
 

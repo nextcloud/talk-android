@@ -24,12 +24,10 @@ package com.nextcloud.talk.activities
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.util.Log
-import androidx.annotation.RequiresApi
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
@@ -148,10 +146,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         super.onStart()
         Log.d(TAG, "onStart: Activity: " + System.identityHashCode(this).toString())
         logRouterBackStack(router!!)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            lockScreenIfConditionsApply()
-        }
+        lockScreenIfConditionsApply()
     }
 
     override fun onResume() {
@@ -323,7 +318,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             })
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     fun lockScreenIfConditionsApply() {
         val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {

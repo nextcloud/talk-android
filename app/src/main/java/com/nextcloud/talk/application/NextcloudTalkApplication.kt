@@ -64,7 +64,6 @@ import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.ui.theme.ThemeModule
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
 import com.nextcloud.talk.utils.database.user.UserModule
@@ -163,7 +162,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         securityKeyManager.init(this, securityKeyConfig)
 
         initializeWebRtc()
-        DisplayUtils.useCompatVectorIfNeeded()
         buildComponent()
         DavUtils.registerCustomFactories()
 

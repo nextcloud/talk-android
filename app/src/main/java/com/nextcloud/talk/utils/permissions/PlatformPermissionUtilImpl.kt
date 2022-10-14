@@ -23,7 +23,6 @@ package com.nextcloud.talk.utils.permissions
 
 import android.Manifest
 import android.content.Context
-import android.os.Build
 import androidx.core.content.PermissionChecker
 import com.nextcloud.talk.BuildConfig
 
@@ -32,13 +31,9 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
         "${BuildConfig.APPLICATION_ID}.${BuildConfig.PERMISSION_LOCAL_BROADCAST}"
 
     override fun isCameraPermissionGranted(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PermissionChecker.checkSelfPermission(
-                context,
-                Manifest.permission.CAMERA
-            ) == PermissionChecker.PERMISSION_GRANTED
-        } else {
-            true
-        }
+        return PermissionChecker.checkSelfPermission(
+            context,
+            Manifest.permission.CAMERA
+        ) == PermissionChecker.PERMISSION_GRANTED
     }
 }

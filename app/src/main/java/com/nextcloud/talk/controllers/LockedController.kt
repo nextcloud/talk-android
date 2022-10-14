@@ -25,12 +25,10 @@ import android.app.Activity
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.core.content.res.ResourcesCompat
@@ -62,15 +60,11 @@ class LockedController : BaseController(R.layout.controller_locked) {
     override fun onViewBound(view: View) {
         super.onViewBound(view)
         sharedApplication!!.componentApplication.inject(this)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            binding.unlockContainer.setOnClickListener {
-                unlock()
-            }
+        binding.unlockContainer.setOnClickListener {
+            unlock()
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     override fun onAttach(view: View) {
         super.onAttach(view)
         Log.d(TAG, "onAttach")
@@ -92,12 +86,10 @@ class LockedController : BaseController(R.layout.controller_locked) {
         Log.d(TAG, "onDetach")
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     fun unlock() {
         checkIfWeAreSecure()
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private fun showBiometricDialog() {
         val context: Context? = activity
         if (context != null) {
@@ -140,11 +132,10 @@ class LockedController : BaseController(R.layout.controller_locked) {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private fun checkIfWeAreSecure() {
         val keyguardManager = activity?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
-        if (keyguardManager?.isKeyguardSecure == true && appPreferences!!.isScreenLocked) {
-            if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences!!.screenLockTimeout)) {
+        if (keyguardManager?.isKeyguardSecure == true && appPreferences.isScreenLocked) {
+            if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
                 Log.d(TAG, "showBiometricDialog because 'we are NOT authenticated'...")
                 showBiometricDialog()
             } else {
@@ -172,8 +163,7 @@ class LockedController : BaseController(R.layout.controller_locked) {
         if (requestCode == REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
             if (resultCode == Activity.RESULT_OK) {
                 if (
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                    SecurityUtils.checkIfWeAreAuthenticated(appPreferences!!.screenLockTimeout)
+                    SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)
                 ) {
                     Log.d(TAG, "All went well, dismiss locked controller")
                     router.popCurrentController()

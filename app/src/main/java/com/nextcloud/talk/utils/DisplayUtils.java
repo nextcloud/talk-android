@@ -24,7 +24,6 @@
 
 package com.nextcloud.talk.utils;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -67,9 +66,6 @@ import com.nextcloud.talk.utils.text.Spans;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -82,7 +78,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.XmlRes;
-import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
@@ -155,31 +150,6 @@ public class DisplayUtils {
         return px / context.getResources().getDisplayMetrics().density;
     }
 
-    // Solution inspired by https://stackoverflow.com/questions/34936590/why-isnt-my-vector-drawable-scaling-as-expected
-    public static void useCompatVectorIfNeeded() {
-        if (Build.VERSION.SDK_INT < 23) {
-            try {
-                @SuppressLint("RestrictedApi") AppCompatDrawableManager drawableManager = AppCompatDrawableManager.get();
-                Class<?> inflateDelegateClass = Class.forName(
-                    "android.support.v7.widget.AppCompatDrawableManager$InflateDelegate");
-                Class<?> vdcInflateDelegateClass = Class.forName(
-                    "android.support.v7.widget.AppCompatDrawableManager$VdcInflateDelegate");
-
-                Constructor<?> constructor = vdcInflateDelegateClass.getDeclaredConstructor();
-                constructor.setAccessible(true);
-                Object vdcInflateDelegate = constructor.newInstance();
-
-                Class<?> args[] = {String.class, inflateDelegateClass};
-                Method addDelegate = AppCompatDrawableManager.class.getDeclaredMethod("addDelegate", args);
-                addDelegate.setAccessible(true);
-                addDelegate.invoke(drawableManager, "vector", vdcInflateDelegate);
-            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
-                InvocationTargetException | IllegalAccessException e) {
-                Log.e(TAG, "Failed to use reflection to enable proper vector scaling");
-            }
-        }
-    }
-
     public static Drawable getTintedDrawable(Resources res, @DrawableRes int drawableResId, @ColorRes int colorResId) {
         Drawable drawable = ResourcesCompat.getDrawable(res, drawableResId, null);
 
@@ -206,10 +176,8 @@ public class DisplayUtils {
             viewThemeUtils.material.colorChipDrawable(context, chip);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Configuration config = context.getResources().getConfiguration();
-            chip.setLayoutDirection(config.getLayoutDirection());
-        }
+        Configuration config = context.getResources().getConfiguration();
+        chip.setLayoutDirection(config.getLayoutDirection());
 
         int drawable;
 
@@ -386,24 +354,23 @@ public class DisplayUtils {
         Window window = activity.getWindow();
         boolean isLightTheme = lightTheme(color);
         if (window != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                View decor = window.getDecorView();
-                if (isLightTheme) {
-                    int systemUiFlagLightStatusBar;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        systemUiFlagLightStatusBar = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR |
-                            View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-                    } else {
-                        systemUiFlagLightStatusBar = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                    }
-                    decor.setSystemUiVisibility(systemUiFlagLightStatusBar);
+
+            View decor = window.getDecorView();
+            if (isLightTheme) {
+                int systemUiFlagLightStatusBar;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    systemUiFlagLightStatusBar = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR |
+                        View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
                 } else {
-                    decor.setSystemUiVisibility(0);
+                    systemUiFlagLightStatusBar = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
                 }
-                window.setStatusBarColor(color);
-            } else if (isLightTheme) {
-                window.setStatusBarColor(Color.BLACK);
+                decor.setSystemUiVisibility(systemUiFlagLightStatusBar);
+            } else {
+                decor.setSystemUiVisibility(0);
             }
+            window.setStatusBarColor(color);
+        } else if (isLightTheme) {
+            window.setStatusBarColor(Color.BLACK);
         }
     }
 
