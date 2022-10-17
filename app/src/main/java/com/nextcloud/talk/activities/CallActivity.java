@@ -266,6 +266,13 @@ public class CallActivity extends CallBaseActivity {
 
     private CallActivitySignalingMessageReceiver signalingMessageReceiver = new CallActivitySignalingMessageReceiver();
 
+    private SignalingMessageReceiver.OfferMessageListener offerMessageListener = new SignalingMessageReceiver.OfferMessageListener() {
+        @Override
+        public void onOffer(String sessionId, String roomType, String sdp, String nick) {
+            getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, roomType, false);
+        }
+    };
+
     private ExternalSignalingServer externalSignalingServer;
     private MagicWebSocketInstance webSocketClient;
     private WebSocketConnectionHelper webSocketConnectionHelper;
@@ -521,6 +528,8 @@ public class CallActivity extends CallBaseActivity {
 
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
+
+        signalingMessageReceiver.addListener(offerMessageListener);
 
         if (!isVoiceOnlyCall) {
             cameraInitialization();
@@ -1206,6 +1215,8 @@ public class CallActivity extends CallBaseActivity {
 
     @Override
     public void onDestroy() {
+        signalingMessageReceiver.removeListener(offerMessageListener);
+
         if (localStream != null) {
             localStream.dispose();
             localStream = null;
@@ -1670,11 +1681,6 @@ public class CallActivity extends CallBaseActivity {
                 endPeerConnection(ncSignalingMessage.getFrom(), true);
 
                 return;
-            }
-
-            if ("offer".equals(type)) {
-                getOrCreatePeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
-                                                                    ncSignalingMessage.getRoomType(), false);
             }
 
             signalingMessageReceiver.process(ncSignalingMessage);
