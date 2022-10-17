@@ -78,7 +78,6 @@ import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
-import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
@@ -86,6 +85,7 @@ import com.nextcloud.talk.models.json.signaling.Signaling;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -263,6 +263,8 @@ public class CallActivity extends CallBaseActivity {
     private String roomId;
 
     private SpotlightView spotlightView;
+
+    private CallActivitySignalingMessageReceiver signalingMessageReceiver = new CallActivitySignalingMessageReceiver();
 
     private ExternalSignalingServer externalSignalingServer;
     private MagicWebSocketInstance webSocketClient;
@@ -1670,44 +1672,12 @@ public class CallActivity extends CallBaseActivity {
                 return;
             }
 
-            PeerConnectionWrapper peerConnectionWrapper = null;
-
             if ("offer".equals(type)) {
-                peerConnectionWrapper =
-                    getOrCreatePeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
-                                                                        ncSignalingMessage.getRoomType(), false);
-            } else {
-                peerConnectionWrapper =
-                    getPeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
-                                                                ncSignalingMessage.getRoomType());
+                getOrCreatePeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
+                                                                    ncSignalingMessage.getRoomType(), false);
             }
 
-            if (peerConnectionWrapper == null) {
-                return;
-            }
-
-            String sdp = ncSignalingMessage.getPayload().getSdp();
-            String nick = ncSignalingMessage.getPayload().getNick();
-
-            switch (type) {
-                case "offer":
-                    peerConnectionWrapper.getWebRtcMessageListener().onOffer(sdp, nick);
-                    break;
-                case "answer":
-                    peerConnectionWrapper.getWebRtcMessageListener().onAnswer(sdp, nick);
-                    break;
-                case "candidate":
-                    NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
-                    peerConnectionWrapper.getWebRtcMessageListener().onCandidate(ncIceCandidate.getSdpMid(),
-                                                                                 ncIceCandidate.getSdpMLineIndex(),
-                                                                                 ncIceCandidate.getCandidate());
-                    break;
-                case "endOfCandidates":
-                    peerConnectionWrapper.getWebRtcMessageListener().onEndOfCandidates();
-                    break;
-                default:
-                    break;
-            }
+            signalingMessageReceiver.process(ncSignalingMessage);
         } else {
             Log.e(TAG, "unexpected RoomType while processing NCSignalingMessage");
         }
@@ -2010,7 +1980,8 @@ public class CallActivity extends CallBaseActivity {
                                                                   localStream,
                                                                   true,
                                                                   true,
-                                                                  type);
+                                                                  type,
+                                                                  signalingMessageReceiver);
 
             } else if (hasMCU) {
                 peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
@@ -2021,7 +1992,8 @@ public class CallActivity extends CallBaseActivity {
                                                                   null,
                                                                   false,
                                                                   true,
-                                                                  type);
+                                                                  type,
+                                                                  signalingMessageReceiver);
             } else {
                 if (!"screen".equals(type)) {
                     peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
@@ -2032,7 +2004,8 @@ public class CallActivity extends CallBaseActivity {
                                                                       localStream,
                                                                       false,
                                                                       false,
-                                                                      type);
+                                                                      type,
+                                                                      signalingMessageReceiver);
                 } else {
                     peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
                                                                       iceServers,
@@ -2042,7 +2015,8 @@ public class CallActivity extends CallBaseActivity {
                                                                       null,
                                                                       false,
                                                                       false,
-                                                                      type);
+                                                                      type,
+                                                                      signalingMessageReceiver);
                 }
             }
 
@@ -2650,6 +2624,15 @@ public class CallActivity extends CallBaseActivity {
 
             mediaPlayer.release();
             mediaPlayer = null;
+        }
+    }
+
+    /**
+     * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted from CallActivity.
+     */
+    private static class CallActivitySignalingMessageReceiver extends SignalingMessageReceiver {
+        public void process(NCSignalingMessage message) {
+            processSignalingMessage(message);
         }
     }
 
