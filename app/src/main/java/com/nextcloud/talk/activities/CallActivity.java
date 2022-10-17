@@ -1684,44 +1684,42 @@ public class CallActivity extends CallBaseActivity {
                                                                 ncSignalingMessage.getRoomType());
             }
 
-            if (("offer".equals(type) ||
-                    "answer".equals(type) ||
-                    "candidate".equals(type) ||
-                    "endOfCandidates".equals(type)) &&
-                    peerConnectionWrapper != null) {
-                switch (type) {
-                    case "offer":
-                    case "answer":
-                        peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
-                        SessionDescription sessionDescriptionWithPreferredCodec;
+            if (peerConnectionWrapper == null) {
+                return;
+            }
 
-                        String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
-                            (ncSignalingMessage.getPayload().getSdp(),
-                             "H264", false);
+            switch (type) {
+                case "offer":
+                case "answer":
+                    peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
+                    SessionDescription sessionDescriptionWithPreferredCodec;
 
-                        sessionDescriptionWithPreferredCodec = new SessionDescription(
-                            SessionDescription.Type.fromCanonicalForm(type),
-                            sessionDescriptionStringWithPreferredCodec);
+                    String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
+                        (ncSignalingMessage.getPayload().getSdp(),
+                         "H264", false);
 
-                        if (peerConnectionWrapper.getPeerConnection() != null) {
-                            peerConnectionWrapper.getPeerConnection().setRemoteDescription(
-                                peerConnectionWrapper.getMagicSdpObserver(),
-                                sessionDescriptionWithPreferredCodec);
-                        }
-                        break;
-                    case "candidate":
-                        NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
-                        IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
-                                                                     ncIceCandidate.getSdpMLineIndex(),
-                                                                     ncIceCandidate.getCandidate());
-                        peerConnectionWrapper.addCandidate(iceCandidate);
-                        break;
-                    case "endOfCandidates":
-                        peerConnectionWrapper.drainIceCandidates();
-                        break;
-                    default:
-                        break;
-                }
+                    sessionDescriptionWithPreferredCodec = new SessionDescription(
+                        SessionDescription.Type.fromCanonicalForm(type),
+                        sessionDescriptionStringWithPreferredCodec);
+
+                    if (peerConnectionWrapper.getPeerConnection() != null) {
+                        peerConnectionWrapper.getPeerConnection().setRemoteDescription(
+                            peerConnectionWrapper.getMagicSdpObserver(),
+                            sessionDescriptionWithPreferredCodec);
+                    }
+                    break;
+                case "candidate":
+                    NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
+                    IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
+                                                                 ncIceCandidate.getSdpMLineIndex(),
+                                                                 ncIceCandidate.getCandidate());
+                    peerConnectionWrapper.addCandidate(iceCandidate);
+                    break;
+                case "endOfCandidates":
+                    peerConnectionWrapper.drainIceCandidates();
+                    break;
+                default:
+                    break;
             }
         } else {
             Log.e(TAG, "unexpected RoomType while processing NCSignalingMessage");
