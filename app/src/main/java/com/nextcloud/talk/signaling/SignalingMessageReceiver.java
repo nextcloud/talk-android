@@ -26,6 +26,14 @@ import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 /**
  * Hub to register listeners for signaling messages of different kinds.
  *
+ * In general, if a listener is added while an event is being handled the new listener will not receive that event.
+ * An exception to that is adding a WebRtcMessageListener when handling an offer in an OfferMessageListener; in that
+ * case the "onOffer()" method of the WebRtcMessageListener will be called for that same offer.
+ *
+ * Similarly, if a listener is removed while an event is being handled the removed listener will still receive that
+ * event. Again the exception is removing a WebRtcMessageListener when handling an offer in an OfferMessageListener; in
+ * that case the "onOffer()" method of the WebRtcMessageListener will not be called for that offer.
+ *
  * Adding and removing listeners, as well as notifying them is internally synchronized. This should be kept in mind
  * if listeners are added or removed when handling an event to prevent deadlocks (nevertheless, just adding or
  * removing a listener in the same thread handling the event is fine, and in most cases it will be fine too if done
@@ -35,6 +43,19 @@ import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
  * the appropriate protected methods to process the messages and notify the listeners.
  */
 public abstract class SignalingMessageReceiver {
+
+    /**
+     * Listener for WebRTC offers.
+     *
+     * Unlike the WebRtcMessageListener, which is bound to a specific peer connection, an OfferMessageListener listens
+     * to all offer messages, no matter which peer connection they are bound to. This can be used, for example, to
+     * create a new peer connection when a remote offer for which there is no previous connection is received.
+     *
+     * When an offer is received all OfferMessageListeners are notified before any WebRtcMessageListener is notified.
+     */
+    public interface OfferMessageListener {
+        void onOffer(String sessionId, String roomType, String sdp, String nick);
+    }
 
     /**
      * Listener for WebRTC messages.
@@ -49,7 +70,24 @@ public abstract class SignalingMessageReceiver {
         void onEndOfCandidates();
     }
 
+    private final OfferMessageNotifier offerMessageNotifier = new OfferMessageNotifier();
+
     private final WebRtcMessageNotifier webRtcMessageNotifier = new WebRtcMessageNotifier();
+
+    /**
+     * Adds a listener for all offer messages.
+     *
+     * A listener is expected to be added only once. If the same listener is added again it will be notified just once.
+     *
+     * @param listener the OfferMessageListener
+     */
+    public void addListener(OfferMessageListener listener) {
+        offerMessageNotifier.addListener(listener);
+    }
+
+    public void removeListener(OfferMessageListener listener) {
+        offerMessageNotifier.removeListener(listener);
+    }
 
     /**
      * Adds a listener for WebRTC messages from the given session ID and room type.
@@ -126,6 +164,11 @@ public abstract class SignalingMessageReceiver {
             String sdp = payload.getSdp();
             String nick = payload.getNick();
 
+            // If "processSignalingMessage" is called with two offers from two different threads it is possible,
+            // although extremely unlikely, that the WebRtcMessageListeners for the second offer are notified before the
+            // WebRtcMessageListeners for the first offer. This should not be a problem, though, so for simplicity
+            // the statements are not synchronized.
+            offerMessageNotifier.notifyOffer(sessionId, roomType, sdp, nick);
             webRtcMessageNotifier.notifyOffer(sessionId, roomType, sdp, nick);
 
             return;
