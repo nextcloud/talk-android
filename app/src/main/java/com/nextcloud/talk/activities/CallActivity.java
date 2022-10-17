@@ -1664,12 +1664,7 @@ public class CallActivity extends CallBaseActivity {
 
     private void processMessage(NCSignalingMessage ncSignalingMessage) {
         if ("video".equals(ncSignalingMessage.getRoomType()) || "screen".equals(ncSignalingMessage.getRoomType())) {
-            String type = null;
-            if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() != null) {
-                type = ncSignalingMessage.getPayload().getType();
-            } else if (ncSignalingMessage.getType() != null) {
-                type = ncSignalingMessage.getType();
-            }
+            String type = ncSignalingMessage.getType();
 
             PeerConnectionWrapper peerConnectionWrapper = null;
 
