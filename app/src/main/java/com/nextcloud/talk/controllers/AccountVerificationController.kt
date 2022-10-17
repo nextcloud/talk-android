@@ -34,6 +34,7 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
+import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -46,6 +47,7 @@ import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
+import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
@@ -205,7 +207,7 @@ class AccountVerificationController(args: Bundle? = null) :
                             capabilitiesOverall.ocs!!.data!!.capabilities!!.spreedCapability!!.features != null &&
                             !capabilitiesOverall.ocs!!.data!!.capabilities!!.spreedCapability!!.features!!.isEmpty()
                     if (hasTalk) {
-                        fetchProfile(credentials)
+                        fetchProfile(credentials, capabilitiesOverall)
                     } else {
                         if (activity != null && resources != null) {
                             activity!!.runOnUiThread {
@@ -247,7 +249,7 @@ class AccountVerificationController(args: Bundle? = null) :
             })
     }
 
-    private fun storeProfile(displayName: String?, userId: String) {
+    private fun storeProfile(displayName: String?, userId: String, capabilities: Capabilities) {
         userManager.storeProfile(
             username,
             UserManager.UserAttributes(
@@ -258,7 +260,7 @@ class AccountVerificationController(args: Bundle? = null) :
                 token = token,
                 displayName = displayName,
                 pushConfigurationState = null,
-                capabilities = null,
+                capabilities = LoganSquare.serialize(capabilities),
                 certificateAlias = appPreferences!!.temporaryClientCertAlias,
                 externalSignalingServer = null
             )
@@ -300,7 +302,7 @@ class AccountVerificationController(args: Bundle? = null) :
             })
     }
 
-    private fun fetchProfile(credentials: String) {
+    private fun fetchProfile(credentials: String, capabilities: CapabilitiesOverall) {
         ncApi.getUserProfile(
             credentials,
             ApiUtils.getUrlForUserProfile(baseUrl)
@@ -320,7 +322,11 @@ class AccountVerificationController(args: Bundle? = null) :
                         displayName = userProfileOverall.ocs!!.data!!.displayNameAlt
                     }
                     if (!TextUtils.isEmpty(displayName)) {
-                        storeProfile(displayName, userProfileOverall.ocs!!.data!!.userId!!)
+                        storeProfile(
+                            displayName, userProfileOverall.ocs!!.data!!.userId!!,
+                            capabilities.ocs!!.data!!
+                                .capabilities!!
+                        )
                     } else {
                         if (activity != null) {
                             activity!!.runOnUiThread {
