@@ -1666,6 +1666,12 @@ public class CallActivity extends CallBaseActivity {
         if ("video".equals(ncSignalingMessage.getRoomType()) || "screen".equals(ncSignalingMessage.getRoomType())) {
             String type = ncSignalingMessage.getType();
 
+            if ("unshareScreen".equals(type)) {
+                endPeerConnection(ncSignalingMessage.getFrom(), true);
+
+                return;
+            }
+
             PeerConnectionWrapper peerConnectionWrapper = null;
 
             if ("offer".equals(type)) {
@@ -1678,16 +1684,12 @@ public class CallActivity extends CallBaseActivity {
                                                                 ncSignalingMessage.getRoomType());
             }
 
-            if ("unshareScreen".equals(type) ||
-                (("offer".equals(type) ||
+            if (("offer".equals(type) ||
                     "answer".equals(type) ||
                     "candidate".equals(type) ||
                     "endOfCandidates".equals(type)) &&
-                    peerConnectionWrapper != null)) {
+                    peerConnectionWrapper != null) {
                 switch (type) {
-                    case "unshareScreen":
-                        endPeerConnection(ncSignalingMessage.getFrom(), true);
-                        break;
                     case "offer":
                     case "answer":
                         peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
