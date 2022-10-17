@@ -116,14 +116,12 @@ import org.webrtc.CameraVideoCapturer;
 import org.webrtc.DefaultVideoDecoderFactory;
 import org.webrtc.DefaultVideoEncoderFactory;
 import org.webrtc.EglBase;
-import org.webrtc.IceCandidate;
 import org.webrtc.Logging;
 import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon;
-import org.webrtc.SessionDescription;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.VideoCapturer;
 import org.webrtc.VideoSource;
@@ -1688,35 +1686,24 @@ public class CallActivity extends CallBaseActivity {
                 return;
             }
 
+            String sdp = ncSignalingMessage.getPayload().getSdp();
+            String nick = ncSignalingMessage.getPayload().getNick();
+
             switch (type) {
                 case "offer":
+                    peerConnectionWrapper.getWebRtcMessageListener().onOffer(sdp, nick);
+                    break;
                 case "answer":
-                    peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
-                    SessionDescription sessionDescriptionWithPreferredCodec;
-
-                    String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
-                        (ncSignalingMessage.getPayload().getSdp(),
-                         "H264", false);
-
-                    sessionDescriptionWithPreferredCodec = new SessionDescription(
-                        SessionDescription.Type.fromCanonicalForm(type),
-                        sessionDescriptionStringWithPreferredCodec);
-
-                    if (peerConnectionWrapper.getPeerConnection() != null) {
-                        peerConnectionWrapper.getPeerConnection().setRemoteDescription(
-                            peerConnectionWrapper.getMagicSdpObserver(),
-                            sessionDescriptionWithPreferredCodec);
-                    }
+                    peerConnectionWrapper.getWebRtcMessageListener().onAnswer(sdp, nick);
                     break;
                 case "candidate":
                     NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
-                    IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
-                                                                 ncIceCandidate.getSdpMLineIndex(),
-                                                                 ncIceCandidate.getCandidate());
-                    peerConnectionWrapper.addCandidate(iceCandidate);
+                    peerConnectionWrapper.getWebRtcMessageListener().onCandidate(ncIceCandidate.getSdpMid(),
+                                                                                 ncIceCandidate.getSdpMLineIndex(),
+                                                                                 ncIceCandidate.getCandidate());
                     break;
                 case "endOfCandidates":
-                    peerConnectionWrapper.drainIceCandidates();
+                    peerConnectionWrapper.getWebRtcMessageListener().onEndOfCandidates();
                     break;
                 default:
                     break;

@@ -74,6 +74,8 @@ public class PeerConnectionWrapper {
 
     private static final String TAG = PeerConnectionWrapper.class.getCanonicalName();
 
+    private final WebRtcMessageListener webRtcMessageListener = new WebRtcMessageListener();
+
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
     private String sessionId;
@@ -265,6 +267,47 @@ public class PeerConnectionWrapper {
             }
         }
         return false;
+    }
+
+    public WebRtcMessageListener getWebRtcMessageListener() {
+        return webRtcMessageListener;
+    }
+
+    public class WebRtcMessageListener {
+
+        public void onOffer(String sdp, String nick) {
+            onOfferOrAnswer("offer", sdp, nick);
+        }
+
+        public void onAnswer(String sdp, String nick) {
+            onOfferOrAnswer("answer", sdp, nick);
+        }
+
+        private void onOfferOrAnswer(String type, String sdp, String nick) {
+            setNick(nick);
+
+            SessionDescription sessionDescriptionWithPreferredCodec;
+
+            boolean isAudio = false;
+            String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec(sdp, "H264", isAudio);
+
+            sessionDescriptionWithPreferredCodec = new SessionDescription(
+                SessionDescription.Type.fromCanonicalForm(type),
+                sessionDescriptionStringWithPreferredCodec);
+
+            if (getPeerConnection() != null) {
+                getPeerConnection().setRemoteDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
+            }
+        }
+
+        public void onCandidate(String sdpMid, int sdpMLineIndex, String sdp) {
+            IceCandidate iceCandidate = new IceCandidate(sdpMid, sdpMLineIndex, sdp);
+            addCandidate(iceCandidate);
+        }
+
+        public void onEndOfCandidates() {
+            drainIceCandidates();
+        }
     }
 
     private class MagicDataChannelObserver implements DataChannel.Observer {
