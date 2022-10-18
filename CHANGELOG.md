@@ -6,17 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
 ## [14.2.0] - 2022-08-31
-## Added
+### Added
 
 - Tabs for deck cards, locations and other objects in shared items view
 - "Mark as read" via notification
 - Create new profile avatar image with camera
 
-## Changed
+### Changed
 
 - Load higher resolution avatars in conversation list
 
-## Fixed
+### Fixed
 
 - Fail to open newly created conversation
 - Starting a call from chat screen crashes
