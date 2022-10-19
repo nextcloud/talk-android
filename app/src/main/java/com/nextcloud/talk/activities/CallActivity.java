@@ -266,6 +266,9 @@ public class CallActivity extends CallBaseActivity {
 
     private CallActivitySignalingMessageReceiver signalingMessageReceiver = new CallActivitySignalingMessageReceiver();
 
+    private Map<String, SignalingMessageReceiver.CallParticipantMessageListener> callParticipantMessageListeners =
+        new HashMap<>();
+
     private SignalingMessageReceiver.OfferMessageListener offerMessageListener = new SignalingMessageReceiver.OfferMessageListener() {
         @Override
         public void onOffer(String sessionId, String roomType, String sdp, String nick) {
@@ -1675,14 +1678,6 @@ public class CallActivity extends CallBaseActivity {
 
     private void processMessage(NCSignalingMessage ncSignalingMessage) {
         if ("video".equals(ncSignalingMessage.getRoomType()) || "screen".equals(ncSignalingMessage.getRoomType())) {
-            String type = ncSignalingMessage.getType();
-
-            if ("unshareScreen".equals(type)) {
-                endPeerConnection(ncSignalingMessage.getFrom(), true);
-
-                return;
-            }
-
             signalingMessageReceiver.process(ncSignalingMessage);
         } else {
             Log.e(TAG, "unexpected RoomType while processing NCSignalingMessage");
@@ -2028,6 +2023,15 @@ public class CallActivity extends CallBaseActivity {
 
             peerConnectionWrapperList.add(peerConnectionWrapper);
 
+            // Currently there is no separation between call participants and peer connections, so any video peer
+            // connection (except the own publisher connection) is treated as a call participant.
+            if (!publisher && "video".equals(type)) {
+                SignalingMessageReceiver.CallParticipantMessageListener callParticipantMessageListener =
+                    new CallActivityCallParticipantMessageListener(sessionId);
+                callParticipantMessageListeners.put(sessionId, callParticipantMessageListener);
+                signalingMessageReceiver.addListener(callParticipantMessageListener, sessionId);
+            }
+
             if (publisher) {
                 startSendingNick();
             }
@@ -2059,6 +2063,11 @@ public class CallActivity extends CallBaseActivity {
                     }
                 }
             }
+        }
+
+        if (!justScreen) {
+            SignalingMessageReceiver.CallParticipantMessageListener listener = callParticipantMessageListeners.remove(sessionId);
+            signalingMessageReceiver.removeListener(listener);
         }
     }
 
@@ -2639,6 +2648,20 @@ public class CallActivity extends CallBaseActivity {
     private static class CallActivitySignalingMessageReceiver extends SignalingMessageReceiver {
         public void process(NCSignalingMessage message) {
             processSignalingMessage(message);
+        }
+    }
+
+    private class CallActivityCallParticipantMessageListener implements SignalingMessageReceiver.CallParticipantMessageListener {
+
+        private final String sessionId;
+
+        public CallActivityCallParticipantMessageListener(String sessionId) {
+            this.sessionId = sessionId;
+        }
+
+        @Override
+        public void onUnshareScreen() {
+            endPeerConnection(sessionId, true);
         }
     }
 
