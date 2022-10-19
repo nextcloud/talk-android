@@ -1624,7 +1624,7 @@ public class CallActivity extends CallBaseActivity {
                 break;
             case "signalingMessage":
                 Log.d(TAG, "onMessageEvent 'signalingMessage'");
-                processMessage((NCSignalingMessage) webSocketClient.getJobWithId(
+                signalingMessageReceiver.process((NCSignalingMessage) webSocketClient.getJobWithId(
                     Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
                 break;
             case "peerReadyForRequestingOffer":
@@ -1670,17 +1670,9 @@ public class CallActivity extends CallBaseActivity {
         } else if ("message".equals(messageType)) {
             NCSignalingMessage ncSignalingMessage = LoganSquare.parse(signaling.getMessageWrapper().toString(),
                                                                       NCSignalingMessage.class);
-            processMessage(ncSignalingMessage);
-        } else {
-            Log.e(TAG, "unexpected message type when receiving signaling message");
-        }
-    }
-
-    private void processMessage(NCSignalingMessage ncSignalingMessage) {
-        if ("video".equals(ncSignalingMessage.getRoomType()) || "screen".equals(ncSignalingMessage.getRoomType())) {
             signalingMessageReceiver.process(ncSignalingMessage);
         } else {
-            Log.e(TAG, "unexpected RoomType while processing NCSignalingMessage");
+            Log.e(TAG, "unexpected message type when receiving signaling message");
         }
     }
 
