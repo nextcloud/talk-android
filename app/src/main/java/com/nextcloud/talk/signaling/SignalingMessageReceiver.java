@@ -45,6 +45,19 @@ import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 public abstract class SignalingMessageReceiver {
 
     /**
+     * Listener for call participant messages.
+     *
+     * The messages are bound to a specific call participant (or, rather, session), so each listener is expected to
+     * handle messages only for a single call participant.
+     *
+     * Although "unshareScreen" is technically bound to a specific peer connection it is instead treated as a general
+     * message on the call participant.
+     */
+    public interface CallParticipantMessageListener {
+        void onUnshareScreen();
+    }
+
+    /**
      * Listener for WebRTC offers.
      *
      * Unlike the WebRtcMessageListener, which is bound to a specific peer connection, an OfferMessageListener listens
@@ -70,9 +83,28 @@ public abstract class SignalingMessageReceiver {
         void onEndOfCandidates();
     }
 
+    private final CallParticipantMessageNotifier callParticipantMessageNotifier = new CallParticipantMessageNotifier();
+
     private final OfferMessageNotifier offerMessageNotifier = new OfferMessageNotifier();
 
     private final WebRtcMessageNotifier webRtcMessageNotifier = new WebRtcMessageNotifier();
+
+    /**
+     * Adds a listener for call participant messages.
+     *
+     * A listener is expected to be added only once. If the same listener is added again it will no longer be notified
+     * for the messages from the previous session ID.
+     *
+     * @param listener the CallParticipantMessageListener
+     * @param sessionId the ID of the session that messages come from
+     */
+    public void addListener(CallParticipantMessageListener listener, String sessionId) {
+        callParticipantMessageNotifier.addListener(listener, sessionId);
+    }
+
+    public void removeListener(CallParticipantMessageListener listener) {
+        callParticipantMessageNotifier.removeListener(listener);
+    }
 
     /**
      * Adds a listener for all offer messages.
@@ -115,6 +147,43 @@ public abstract class SignalingMessageReceiver {
 
         String sessionId = signalingMessage.getFrom();
         String roomType = signalingMessage.getRoomType();
+
+        // "unshareScreen" messages are directly sent to the screen peer connection when the internal signaling
+        // server is used, and to the room when the external signaling server is used. However, the (relevant) data
+        // of the received message ("from" and "type") is the same in both cases.
+        if ("unshareScreen".equals(type)) {
+            // Message schema (external signaling server):
+            // {
+            //     "type": "message",
+            //     "message": {
+            //         "sender": {
+            //             ...
+            //         },
+            //         "data": {
+            //             "roomType": "screen",
+            //             "type": "unshareScreen",
+            //             "from": #STRING#,
+            //         },
+            //     },
+            // }
+            //
+            // Message schema (internal signaling server):
+            // {
+            //     "type": "message",
+            //     "data": {
+            //         "to": #STRING#,
+            //         "sid": #STRING#,
+            //         "broadcaster": #STRING#,
+            //         "roomType": "screen",
+            //         "type": "unshareScreen",
+            //         "from": #STRING#,
+            //     },
+            // }
+
+            callParticipantMessageNotifier.notifyUnshareScreen(sessionId);
+
+            return;
+        }
 
         if ("offer".equals(type)) {
             // Message schema (external signaling server):
