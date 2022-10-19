@@ -40,6 +40,7 @@ import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
+import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.utils.MagicMap;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 
@@ -108,6 +109,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private HashMap<String, Participant> usersHashMap;
 
     private List<String> messagesQueue = new ArrayList<>();
+
+    private final ExternalSignalingMessageReceiver signalingMessageReceiver = new ExternalSignalingMessageReceiver();
 
     MagicWebSocketInstance(User conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
@@ -326,11 +329,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                             ncSignalingMessage.setFrom(callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage().getSessionId());
                         }
 
-                        if (!TextUtils.isEmpty(ncSignalingMessage.getFrom())) {
-                            HashMap<String, String> messageHashMap = new HashMap<>();
-                            messageHashMap.put(JOB_ID, Integer.toString(magicMap.add(ncSignalingMessage)));
-                            eventBus.post(new WebSocketCommunicationEvent("signalingMessage", messageHashMap));
-                        }
+                        signalingMessageReceiver.process(ncSignalingMessage);
                         break;
                     case "bye":
                         connected = false;
@@ -469,6 +468,23 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public void onMessageEvent(NetworkEvent networkEvent) {
         if (networkEvent.getNetworkConnectionEvent() == NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED && !isConnected()) {
             restartWebSocket();
+        }
+    }
+
+    public SignalingMessageReceiver getSignalingMessageReceiver() {
+        return signalingMessageReceiver;
+    }
+
+    /**
+     * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted to a Signaling
+     * class.
+     *
+     * All listeners are called in the WebSocket reader thread. This thread should be the same as long as the
+     * WebSocket stays connected, but it may change whenever it is connected again.
+     */
+    private static class ExternalSignalingMessageReceiver extends SignalingMessageReceiver {
+        public void process(NCSignalingMessage message) {
+            processSignalingMessage(message);
         }
     }
 }
