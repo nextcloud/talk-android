@@ -13,6 +13,7 @@
     <string name="choose_avatar_from_cloud">從雲端選擇頭像</string>
     <string name="clear_status_message">清空狀態訊息</string>
     <string name="clear_status_message_after">在……之後清空狀態訊息</string>
+    <string name="close">關閉</string>
     <string name="conversations">對話</string>
     <string name="delete_avatar">刪除頭像</string>
     <string name="dnd">請勿打擾</string>

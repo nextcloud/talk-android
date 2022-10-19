@@ -8,6 +8,7 @@
     <string name="choose_avatar_from_cloud">Välj avatar från moln</string>
     <string name="clear_status_message">Rensa statusmeddelande</string>
     <string name="clear_status_message_after">Rensa statusmeddelande efter</string>
+    <string name="close">Stäng</string>
     <string name="conversations">Konversationer</string>
     <string name="delete_avatar">Ta bort avatar</string>
     <string name="dnd">Stör ej</string>
@@ -56,6 +57,7 @@
     <string name="nc_change_password">Ändra lösenord</string>
     <string name="nc_circle">Cirkel</string>
     <string name="nc_circles">Cirklar</string>
+    <string name="nc_clear_history">Radera alla meddelanden</string>
     <string name="nc_clear_password">Rensa lösenord</string>
     <string name="nc_client_cert_change">Ändra klientcertifikat</string>
     <string name="nc_client_cert_setup">Konfigurera klientcertifikat</string>

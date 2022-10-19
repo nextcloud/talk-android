@@ -10,6 +10,7 @@
     <string name="choose_avatar_from_cloud">클라우드에서 아바타 선택</string>
     <string name="clear_status_message">상태 메시지 지움</string>
     <string name="clear_status_message_after">상태 메시지 지우기 예약</string>
+    <string name="close">닫기</string>
     <string name="conversations">대화</string>
     <string name="delete_avatar">아바타 삭제</string>
     <string name="dnd">방해 없음</string>

@@ -8,6 +8,7 @@
     <string name="away">Fjarverandi</string>
     <string name="clear_status_message">Hreinsa stöðuskilaboð</string>
     <string name="clear_status_message_after">Hreinsa stöðuskilaboð eftir</string>
+    <string name="close">Loka</string>
     <string name="conversations">Samtöl</string>
     <string name="dnd">Ónáðið ekki</string>
     <string name="dontClear">Ekki hreinsa</string>

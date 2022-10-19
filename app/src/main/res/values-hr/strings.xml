@@ -9,6 +9,7 @@
     <string name="choose_avatar_from_cloud">Odaberi avatar iz oblaka</string>
     <string name="clear_status_message">Izbriši poruku statusa</string>
     <string name="clear_status_message_after">Izbriši poruku statusa nakon</string>
+    <string name="close">Zatvori</string>
     <string name="conversations">Razgovori</string>
     <string name="delete_avatar">Izbriši avatar</string>
     <string name="dnd">Ne ometaj</string>

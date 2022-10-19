@@ -14,6 +14,7 @@
     <string name="choose_avatar_from_cloud">Sélectionner l\'avatar depuis le cloud</string>
     <string name="clear_status_message">Effacer le message de statut</string>
     <string name="clear_status_message_after">Effacer le message de statut après</string>
+    <string name="close">Fermer</string>
     <string name="conversations">Discussions</string>
     <string name="delete_avatar">Supprimer l\'avatar</string>
     <string name="dnd">Ne pas déranger</string>
@@ -23,6 +24,7 @@
     <string name="emoji_category_recent">Récent</string>
     <string name="emoji_search">Chercher un emoji</string>
     <string name="encrypted">Chiffré</string>
+    <string name="error_loading_chats">Un problème est survenu lors du chargement de vos discussions</string>
     <string name="failed_to_save">Echec de la sauvegarde %1$s</string>
     <string name="file_list_folder">Dossier</string>
     <string name="file_list_loading">Chargement …</string>
@@ -196,6 +198,8 @@
     <string name="nc_no">Non</string>
     <string name="nc_no_messages_yet">Pas de messages</string>
     <string name="nc_no_proxy">Aucun proxy</string>
+    <string name="nc_not_allowed_to_activate_audio">Vous n\'êtes pas autorisé(e) à activer l\'audio !</string>
+    <string name="nc_not_allowed_to_activate_video">Vous n\'êtes pas autorisé(e) à activer la vidéo !</string>
     <string name="nc_notification_channel">Canal de notification %1$s sur %2$s</string>
     <string name="nc_notification_channel_calls">Appels</string>
     <string name="nc_notification_channel_calls_description">Afficher les appels entrants</string>
@@ -311,7 +315,7 @@
     <string name="nc_settings_remove_account">Supprimer le compte</string>
     <string name="nc_settings_remove_confirmation">Veuillez confirmer votre volonté de supprimer le compte actuel.</string>
     <string name="nc_settings_screen_lock_desc">Verrouiller %1$s avec le verrouillage d’écran Android ou une méthode biométrique supportée</string>
-    <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage écran</string>
+    <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage de l\'écran</string>
     <string name="nc_settings_screen_lock_title">Écran de verrouillage</string>
     <string name="nc_settings_screen_security_desc">Empêche les captures d\'écran dans la liste récente et dans l\'application</string>
     <string name="nc_settings_screen_security_title">Sécurité de l\'écran</string>

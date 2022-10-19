@@ -14,6 +14,7 @@
     <string name="choose_avatar_from_cloud">Buluttan avatar seç</string>
     <string name="clear_status_message">Durum iletisini kaldır</string>
     <string name="clear_status_message_after">Durum iletisinin kaldırılma süresi</string>
+    <string name="close">Kapat</string>
     <string name="conversations">Görüşmeler</string>
     <string name="delete_avatar">Avatarı sil</string>
     <string name="dnd">Rahatsız etmeyin</string>
@@ -23,6 +24,7 @@
     <string name="emoji_category_recent">Son kullanılan</string>
     <string name="emoji_search">Emoji arama</string>
     <string name="encrypted">Şifrelenmiş</string>
+    <string name="error_loading_chats">Çizelgeleriniz yüklenirken bir sorun çıktı</string>
     <string name="failed_to_save">%1$s kaydedilemedi</string>
     <string name="file_list_folder">klasör</string>
     <string name="file_list_loading">Yükleniyor…</string>

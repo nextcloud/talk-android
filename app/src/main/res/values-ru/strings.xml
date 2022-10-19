@@ -10,9 +10,11 @@
     <string name="avatar">Аватар</string>
     <string name="away">Отошёл</string>
     <string name="call_without_notification">Звонок без уведомления</string>
+    <string name="camera_permission_granted">Разрешение на камеру получено. Пожалуйста, выберите камеру снова.</string>
     <string name="choose_avatar_from_cloud">Выберите аватар из облака</string>
     <string name="clear_status_message">Очистить сообщение о статусе</string>
     <string name="clear_status_message_after">Очищать статус после</string>
+    <string name="close">Закрыть</string>
     <string name="conversations">Разговоры</string>
     <string name="delete_avatar">Удалить аватар</string>
     <string name="dnd">Не беспокоить</string>
@@ -22,6 +24,7 @@
     <string name="emoji_category_recent">Недавние</string>
     <string name="emoji_search">Поиск эмодзи</string>
     <string name="encrypted">Зашифровано</string>
+    <string name="error_loading_chats">Возникла проблема при загрузке ваших чатов</string>
     <string name="failed_to_save">Не удалось сохранить %1$s</string>
     <string name="file_list_folder">каталог</string>
     <string name="file_list_loading">Загрузка …</string>
@@ -36,6 +39,7 @@
     <string name="menu_item_sort_by_name_z_a">Я - А</string>
     <string name="menu_item_sort_by_size_biggest_first">Самый большой первый</string>
     <string name="menu_item_sort_by_size_smallest_first">Самый маленький первый</string>
+    <string name="message_poll_tap_to_open">Нажмите для открытия опроса</string>
     <string name="message_search_begin_empty">Ничего не найдено</string>
     <string name="message_search_begin_typing">Начните печатать для поиска …</string>
     <string name="message_search_hint">Поиск …</string>
@@ -117,10 +121,13 @@
     <string name="nc_display_name_not_stored">Не удалось сохранить отображаемое имя, продолжение невозможно</string>
     <string name="nc_email">Эл. почта</string>
     <string name="nc_expire_message_eight_hours">8 часов</string>
+    <string name="nc_expire_message_four_weeks">4 недели</string>
     <string name="nc_expire_message_off">Отключить</string>
     <string name="nc_expire_message_one_day">1 день</string>
     <string name="nc_expire_message_one_hour">1 час</string>
     <string name="nc_expire_message_one_week">1 неделя</string>
+    <string name="nc_expire_messages">Истечение срока действия сообщений в чате</string>
+    <string name="nc_expire_messages_explanation">Сообщения чата могут быть удалены по истечении определенного времени. Примечание: Файлы, переданные в чате, не будут удалены для владельца, но больше не будут доступны в беседе.</string>
     <string name="nc_external_server_failed">Не удалось получить параметры сигнализации</string>
     <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте присоединиться к беседе используя веб-браузер.</string>
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
@@ -134,12 +141,19 @@
     <string name="nc_group">Группа</string>
     <string name="nc_groups">Группы</string>
     <string name="nc_guest">Гость</string>
+    <string name="nc_guest_access">Гостевой доступ</string>
+    <string name="nc_guest_access_allow_failed">Невозможно включить/выключить гостевой доступ.</string>
+    <string name="nc_guest_access_allow_summary">Разрешите гостям делиться публичной ссылкой, чтобы присоединиться к этому разговору.</string>
     <string name="nc_guest_access_allow_title">Разрешить гостей</string>
     <string name="nc_guest_access_password_dialog_hint">Введите пароль</string>
+    <string name="nc_guest_access_password_dialog_title">Пароль гостевого доступа</string>
+    <string name="nc_guest_access_password_failed">Ошибка при установке/отключении пароля.</string>
     <string name="nc_guest_access_password_summary">Задать пароль для входа по открытой ссылке.</string>
     <string name="nc_guest_access_password_title">Защита паролем</string>
     <string name="nc_guest_access_password_weak_alert_title">Слабый пароль</string>
     <string name="nc_guest_access_resend_invitations">Повторная отправка приглашений</string>
+    <string name="nc_guest_access_resend_invitations_failed">Приглашения не были отправлены из-за ошибки.</string>
+    <string name="nc_guest_access_resend_invitations_successful">Приглашения были разосланы повторно.</string>
     <string name="nc_guest_access_share_link">Поделиться ссылкой на беседу</string>
     <string name="nc_hint_enter_a_message">Напишите сообщение …</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
@@ -184,12 +198,15 @@
     <string name="nc_no">Нет</string>
     <string name="nc_no_messages_yet">Сообщений еще нет</string>
     <string name="nc_no_proxy">Не использовать прокси-сервер</string>
+    <string name="nc_not_allowed_to_activate_audio">Вам запрещено активировать аудио!</string>
+    <string name="nc_not_allowed_to_activate_video">Вам запрещено активировать видео!</string>
     <string name="nc_notification_channel">канал уведомлений %1$s на %2$s</string>
     <string name="nc_notification_channel_calls">Звонки</string>
     <string name="nc_notification_channel_calls_description">Уведомление о входящих вызовах</string>
     <string name="nc_notification_channel_messages">Сообщения</string>
     <string name="nc_notification_channel_messages_description">Уведомления о входящих сообщениях</string>
     <string name="nc_notification_channel_uploads">Загрузки</string>
+    <string name="nc_notification_channel_uploads_description">Уведомление о ходе загрузки</string>
     <string name="nc_notification_settings">Параметры уведомлений</string>
     <string name="nc_notify_me_always">Всегда уведомлять</string>
     <string name="nc_notify_me_mention">Уведомлять при упоминании</string>
@@ -248,6 +265,8 @@
     <string name="nc_sent_an_image_you">Вы отправили изображение.</string>
     <string name="nc_sent_location" formatted="true">%1$s отправил местоположение.</string>
     <string name="nc_sent_location_you">Вы отправили местоположение.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s отправил опрос.</string>
+    <string name="nc_sent_poll_you">Вы отправили опрос.</string>
     <string name="nc_sent_voice" formatted="true">%1$s отправил голосовое сообщение.</string>
     <string name="nc_sent_voice_you">Вы отправили голосовое сообщение.</string>
     <string name="nc_server_connect">Проверить соединение с сервером</string>
@@ -334,11 +353,14 @@
     <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>
     <string name="nc_upload_confirm_send_single">Отправить этот файл %1$s?</string>
     <string name="nc_upload_failed">Ошибка передачи на сервер</string>
+    <string name="nc_upload_failed_notification_text">Не удалось загрузить %1$s</string>
     <string name="nc_upload_from_cloud">Поделиться с %1$s</string>
     <string name="nc_upload_from_device">Загрузить с устройства</string>
     <string name="nc_upload_in_progess">Выгружается</string>
     <string name="nc_upload_picture_from_cam">Сфотографировать</string>
+    <string name="nc_upload_video_from_cam">Снять видео</string>
     <string name="nc_user">Пользователь</string>
+    <string name="nc_video_filename">Запись видео с %1$s</string>
     <string name="nc_voice_message_filename">Запись разговора с %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Удерживайте для записи, отпустите для отправки.</string>
     <string name="nc_voice_message_missing_audio_permission">Требуется разрешение на аудиозапись</string>
@@ -355,6 +377,10 @@
     <string name="open_in_files_app">Открыть в приложении Файлы</string>
     <string name="play_pause_voice_message">Воспроизведение/пауза голосового сообщения</string>
     <string name="polls_add_option">Добавить вариант</string>
+    <string name="polls_edit_vote">Изменить голос</string>
+    <string name="polls_end_poll">Завершить опрос</string>
+    <string name="polls_end_poll_confirm">Вы действительно хотите закончить этот опрос? Это нельзя отменить.</string>
+    <string name="polls_max_votes_reached">Вы не можете голосовать с несколькими вариантами для этого опроса.</string>
     <string name="polls_multiple_answers">Множество ответов</string>
     <string name="polls_options">Варианты</string>
     <string name="polls_private_poll">Закрытый опрос</string>
@@ -388,6 +414,7 @@
     <string name="shared_items_file">Файл</string>
     <string name="shared_items_media">Медиа</string>
     <string name="shared_items_other">Другое</string>
+    <string name="shared_items_poll">Опрос</string>
     <string name="shared_items_voice">Голосовая почта</string>
     <string name="starred">Избранное</string>
     <string name="startCallForbidden">Вам не разрешено звонить</string>
@@ -417,4 +444,10 @@
     <string name="userinfo_no_info_headline">Личная информация не указана</string>
     <string name="userinfo_no_info_text">На странице профиля укажите своё имя, добавьте изображение и подробные сведения</string>
     <string name="whats_your_status">Какой у вас статус?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d голос</item>
+        <item quantity="few">%d голосов</item>
+        <item quantity="many">%d голосов</item>
+        <item quantity="other">%dголоса</item>
+    </plurals>
+</resources>

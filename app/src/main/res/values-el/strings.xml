@@ -10,6 +10,7 @@
     <string name="choose_avatar_from_cloud">Επιλογή εικόνας προφίλ από το cloud</string>
     <string name="clear_status_message">Εκκαθάριση μηνύματος κατάστασης</string>
     <string name="clear_status_message_after">Εκκαθάριση μηνύματος κατάστασης μετά από</string>
+    <string name="close">Κλείσιμο</string>
     <string name="conversations">Συνομιλίες</string>
     <string name="delete_avatar">Διαγραφή εικόνας προφίλ</string>
     <string name="dnd">Μην ενοχλείτε</string>

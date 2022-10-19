@@ -14,6 +14,7 @@
     <string name="choose_avatar_from_cloud">從雲中選擇虛擬化身大頭照</string>
     <string name="clear_status_message">清除狀態訊息</string>
     <string name="clear_status_message_after">繼此之後清空狀態訊息</string>
+    <string name="close">關閉</string>
     <string name="conversations">對話</string>
     <string name="delete_avatar">刪除虛擬化身大頭照</string>
     <string name="dnd">請勿打擾</string>
@@ -23,6 +24,7 @@
     <string name="emoji_category_recent">最新</string>
     <string name="emoji_search">搜尋 emoji</string>
     <string name="encrypted">已加密</string>
+    <string name="error_loading_chats">載入您的聊天記錄時時發生問題</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
     <string name="file_list_folder">資料夾</string>
     <string name="file_list_loading">加載中 …</string>

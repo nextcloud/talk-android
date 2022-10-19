@@ -10,6 +10,7 @@
     <string name="away">Borte</string>
     <string name="clear_status_message">Fjern statusmelding</string>
     <string name="clear_status_message_after">Fjern statusmelding etter</string>
+    <string name="close">Lukk</string>
     <string name="conversations">Samtaler</string>
     <string name="delete_avatar">Slett data</string>
     <string name="dnd">Ikke forstyrr</string>

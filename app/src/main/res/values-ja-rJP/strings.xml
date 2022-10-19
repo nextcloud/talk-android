@@ -13,6 +13,7 @@
     <string name="choose_avatar_from_cloud">クラウドからアバターを選択</string>
     <string name="clear_status_message">ステータスメッセージを消去</string>
     <string name="clear_status_message_after">ステータスメッセージの有効期限</string>
+    <string name="close">閉じる</string>
     <string name="conversations">会話</string>
     <string name="delete_avatar">アバターを削除</string>
     <string name="dnd">取り込み中</string>

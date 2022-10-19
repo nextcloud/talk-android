@@ -14,6 +14,7 @@
     <string name="choose_avatar_from_cloud">Vybrat profilový obrázek z cloudu</string>
     <string name="clear_status_message">Vyčistit stavovou zprávu</string>
     <string name="clear_status_message_after">Vyčistit stavovou zprávu po uplynutí</string>
+    <string name="close">Zavřít</string>
     <string name="conversations">Konverzace</string>
     <string name="delete_avatar">Vymazat profilový obrázek</string>
     <string name="dnd">Nerušit</string>
@@ -23,6 +24,7 @@
     <string name="emoji_category_recent">Nedávné</string>
     <string name="emoji_search">Hledat emotionu</string>
     <string name="encrypted">Šifrované</string>
+    <string name="error_loading_chats">Došlo k problému při načítání vašich chatů</string>
     <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
     <string name="file_list_folder">složka</string>
     <string name="file_list_loading">Načítání…</string>

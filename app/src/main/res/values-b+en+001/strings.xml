@@ -13,6 +13,7 @@
     <string name="choose_avatar_from_cloud">Choose avatar from cloud</string>
     <string name="clear_status_message">Clear status message</string>
     <string name="clear_status_message_after">Clear status message after</string>
+    <string name="close">Close</string>
     <string name="conversations">Conversations</string>
     <string name="delete_avatar">Delete avatar</string>
     <string name="dnd">Do not disturb</string>

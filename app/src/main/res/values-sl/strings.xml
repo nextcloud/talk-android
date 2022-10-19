@@ -12,6 +12,7 @@
     <string name="choose_avatar_from_cloud">Izbor pogodbe iz oblaka</string>
     <string name="clear_status_message">Počisti sporočilo stanja</string>
     <string name="clear_status_message_after">Počisti sporočilo stanja po</string>
+    <string name="close">Zapri</string>
     <string name="conversations">Pogovori</string>
     <string name="delete_avatar">Izbriši podobo</string>
     <string name="dnd">Ne moti</string>
@@ -120,6 +121,7 @@
     <string name="nc_expire_message_one_day">1 dneva</string>
     <string name="nc_expire_message_one_hour">1 uri</string>
     <string name="nc_expire_message_one_week">1 tedna</string>
+    <string name="nc_expire_messages_explanation">Sporočila klepeta lahko po določenem času potečejo. Opomba: datoteke, ki so v skupni rabi v klepetu, se za lastnika ne izbrišejo, vendar se bodo več zbrane v pogovoru.</string>
     <string name="nc_external_server_failed">Pridobivanje signalnih nastavitev je spodletelo</string>
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom po mobilnih telefonih. Poskusite se povezati v spletnem brskalniku.</string>
     <string name="nc_failed_to_perform_operation">Prišlo je do napake!</string>
@@ -133,6 +135,7 @@
     <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupine</string>
     <string name="nc_guest">Gost</string>
+    <string name="nc_guest_access">Dostop gostov</string>
     <string name="nc_guest_access_allow_title">Dovoli udeležbo gostov</string>
     <string name="nc_guest_access_password_dialog_hint">Vpis gesla</string>
     <string name="nc_guest_access_password_summary">Nastavi geslo za omejitev uporabe javne povezave.</string>
@@ -378,6 +381,7 @@
     <string name="selected_list_item">Izbrano</string>
     <string name="send_to">Pošlji</string>
     <string name="send_to_three_dots">Pošlji …</string>
+    <string name="send_without_notification">Pošlji brez obvestila</string>
     <string name="set_avatar_from_camera">Nastavi sličico s kamero</string>
     <string name="set_status">Nastavi stanje</string>
     <string name="set_status_message">Nastavi sporočilo stanja</string>
@@ -386,6 +390,7 @@
     <string name="shared_items_file">Datoteka</string>
     <string name="shared_items_media">Predstavna vsebina</string>
     <string name="shared_items_other">Drugo</string>
+    <string name="shared_items_poll">Anketa</string>
     <string name="shared_items_voice">Glasovna pošta</string>
     <string name="starred">Priljubljeno</string>
     <string name="startCallForbidden">Ni ustreznih dovoljenj za klicanje</string>

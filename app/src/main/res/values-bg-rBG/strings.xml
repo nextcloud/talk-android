@@ -14,6 +14,7 @@
     <string name="choose_avatar_from_cloud">Избор на аватар от облака</string>
     <string name="clear_status_message">Изчистване на съобщението за състоянието</string>
     <string name="clear_status_message_after">Изчистване на съобщение за състоянието след</string>
+    <string name="close">Затваряне</string>
     <string name="conversations">Разговори</string>
     <string name="delete_avatar">Изтриване на аватар</string>
     <string name="dnd">Не безпокойте</string>
@@ -23,6 +24,7 @@
     <string name="emoji_category_recent">Скорошни</string>
     <string name="emoji_search">Търсене на емотикони</string>
     <string name="encrypted">Криптиран</string>
+    <string name="error_loading_chats">Имаше проблем със зареждането на вашите чатове</string>
     <string name="failed_to_save">Неуспешно записване %1$s</string>
     <string name="file_list_folder">папка</string>
     <string name="file_list_loading">Зареждане …</string>
@@ -196,6 +198,8 @@
     <string name="nc_no">Не</string>
     <string name="nc_no_messages_yet">Няма съобщения.</string>
     <string name="nc_no_proxy">Без прокси</string>
+    <string name="nc_not_allowed_to_activate_audio">Не ви е позволено да активирате аудио!</string>
+    <string name="nc_not_allowed_to_activate_video">Не ви е позволено да активирате видео!</string>
     <string name="nc_notification_channel">%1$s на %2$s канал за известие</string>
     <string name="nc_notification_channel_calls">Обаждания</string>
     <string name="nc_notification_channel_calls_description">Уведомяване за входящи повиквания</string>

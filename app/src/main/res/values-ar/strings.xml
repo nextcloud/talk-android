@@ -12,6 +12,7 @@
     <string name="choose_avatar_from_cloud">اختر صورة رمزية من السحابة</string>
     <string name="clear_status_message">امسح رسالة الحالة</string>
     <string name="clear_status_message_after">امسح رسالة الحالة بعد</string>
+    <string name="close">إغلاق</string>
     <string name="conversations">محادثات</string>
     <string name="delete_avatar">امسح الصورة الرمزية</string>
     <string name="dnd">عدم الإزعاج</string>

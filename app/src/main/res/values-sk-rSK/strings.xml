@@ -10,9 +10,11 @@
     <string name="avatar">Avatar</string>
     <string name="away">Preč</string>
     <string name="call_without_notification">Volať bez upozornenia</string>
+    <string name="camera_permission_granted">Povolenie fotoaparátu bolo udelené. Vyberte fotoaparát znova.</string>
     <string name="choose_avatar_from_cloud">Vyberte si avatara z cloudu</string>
     <string name="clear_status_message">Vyčistiť správu o stave</string>
     <string name="clear_status_message_after">Vyčistiť správu o stave po</string>
+    <string name="close">Zatvoriť</string>
     <string name="conversations">Konverzácie</string>
     <string name="delete_avatar">Zmazať avatara</string>
     <string name="dnd">Nerušiť</string>
@@ -22,6 +24,7 @@
     <string name="emoji_category_recent">Nedávne</string>
     <string name="emoji_search">Vyhľadať emotikon</string>
     <string name="encrypted">Šifrované</string>
+    <string name="error_loading_chats">Nastal problém s načítaním vašich správ</string>
     <string name="failed_to_save">Nepodarilo sa uložiť %1$s</string>
     <string name="file_list_folder">priečinok</string>
     <string name="file_list_loading">Načítavam …</string>
@@ -36,6 +39,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Najväčšie prvé</string>
     <string name="menu_item_sort_by_size_smallest_first">Najmenšie prvé</string>
+    <string name="message_poll_tap_to_open">Klepnutím otvoríte anketu</string>
     <string name="message_search_begin_empty">Žiadne výsledky vyhľadávania</string>
     <string name="message_search_begin_typing">Začnite písať pre vyhľadanie …</string>
     <string name="message_search_hint">Hľadať …</string>
@@ -117,10 +121,13 @@
     <string name="nc_display_name_not_stored">Nedá sa uložiť zobrazované meno, ruším</string>
     <string name="nc_email">Email</string>
     <string name="nc_expire_message_eight_hours">8 hodín</string>
+    <string name="nc_expire_message_four_weeks">4 týždne</string>
     <string name="nc_expire_message_off">Vypnúť</string>
     <string name="nc_expire_message_one_day">1 deň</string>
     <string name="nc_expire_message_one_hour">1 hodina</string>
     <string name="nc_expire_message_one_week">1 týždeň</string>
+    <string name="nc_expire_messages">Vypršanie platnosti správ v chate</string>
+    <string name="nc_expire_messages_explanation">Platnosť chatových správ môže po určitom čase vypršať. Poznámka: Súbory zdieľané v chate sa vlastníkovi neodstránia, ale už sa nebudú zdieľať v konverzácii.</string>
     <string name="nc_external_server_failed">Nepodarilo sa načítať nastavenia signalizácie</string>
     <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil Môžete sa pokúsiť pripojiť na rozhovor cez webový prehliadač.</string>
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa nepodarilo!</string>
@@ -134,12 +141,19 @@
     <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_guest">Hosť</string>
+    <string name="nc_guest_access">Prístup pre hostí</string>
+    <string name="nc_guest_access_allow_failed">Nie je možné zapnúť/vypnúť prístup pre hostí.</string>
+    <string name="nc_guest_access_allow_summary">Povoliť hosťom zdieľať verejný odkaz na pripojenie k tejto konverzácii.</string>
     <string name="nc_guest_access_allow_title">Povoliť hostí</string>
     <string name="nc_guest_access_password_dialog_hint">Zadajte heslo</string>
+    <string name="nc_guest_access_password_dialog_title">Heslo pre prístup hostí</string>
+    <string name="nc_guest_access_password_failed">Chyba pri nastavovaní/deaktivácii hesla.</string>
     <string name="nc_guest_access_password_summary">Nastaviť heslo pre obmedzenie kto sa môže pripojiť cez verejný odkaz.</string>
     <string name="nc_guest_access_password_title">Ochrana heslom</string>
     <string name="nc_guest_access_password_weak_alert_title">Slabé heslo</string>
     <string name="nc_guest_access_resend_invitations">Znovy odslať pozvánky</string>
+    <string name="nc_guest_access_resend_invitations_failed">Pozvánky neboli odoslané kvôli chybe.</string>
+    <string name="nc_guest_access_resend_invitations_successful">Pozvánky boli odoslané.</string>
     <string name="nc_guest_access_share_link">Zdieľať odkaz na konverzáciu</string>
     <string name="nc_hint_enter_a_message">Vložte správu …</string>
     <string name="nc_important_conversation">Dôležitý rozhovor</string>
@@ -184,12 +198,15 @@
     <string name="nc_no">Nie</string>
     <string name="nc_no_messages_yet">Ešte žiadne správy</string>
     <string name="nc_no_proxy">Bez proxy</string>
+    <string name="nc_not_allowed_to_activate_audio">Nemáte oprávnenie povoliť zvuk!</string>
+    <string name="nc_not_allowed_to_activate_video">Nemáte oprávnenie povoliť video!</string>
     <string name="nc_notification_channel">%1$s na %2$s notifikačný kanál</string>
     <string name="nc_notification_channel_calls">Hovory</string>
     <string name="nc_notification_channel_calls_description">Upozorniť na príchodzie hovory</string>
     <string name="nc_notification_channel_messages">Správy</string>
     <string name="nc_notification_channel_messages_description">Upozorniť na príchodzie správy</string>
     <string name="nc_notification_channel_uploads">Nahrané</string>
+    <string name="nc_notification_channel_uploads_description">Upozorniť na priebeh nahrávania</string>
     <string name="nc_notification_settings">Nastavenie notifikácií</string>
     <string name="nc_notify_me_always">Notifikuj vždy</string>
     <string name="nc_notify_me_mention">Notifikuj pri spomenutí</string>
@@ -248,6 +265,8 @@
     <string name="nc_sent_an_image_you">Odoslali ste obrázok.</string>
     <string name="nc_sent_location" formatted="true">%1$s poslal umiestnenie.</string>
     <string name="nc_sent_location_you">Odoslali ste súčasnú polohu.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s odoslal/a anketu.</string>
+    <string name="nc_sent_poll_you">Odoslali ste anketu.</string>
     <string name="nc_sent_voice" formatted="true">%1$s poslal hlasovú správu.</string>
     <string name="nc_sent_voice_you">Odoslali ste hlasovú správu.</string>
     <string name="nc_server_connect">Test serverového pripojenia</string>
@@ -323,7 +342,7 @@
     <string name="nc_share_this_location">Zdieľať túto polohu</string>
     <string name="nc_share_to_choose_account">Zvoliť účet</string>
     <string name="nc_shared_items">Zdieľané položky</string>
-    <string name="nc_shared_items_deck_card">Palubná karta</string>
+    <string name="nc_shared_items_deck_card">Karta aplikácie deck</string>
     <string name="nc_shared_items_description">Obrázky, súbory, hlasové správy …</string>
     <string name="nc_shared_items_empty">Žiadne zdieľané položky</string>
     <string name="nc_shared_items_location">Umiestnenie</string>
@@ -334,11 +353,16 @@
     <string name="nc_upload_confirm_send_multiple">Poslať tieto súbory do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Poslať tento súbor do %1$s?</string>
     <string name="nc_upload_failed">Prepáčte, nahrávanie zlyhalo</string>
+    <string name="nc_upload_failed_notification_text">Nahrávanie %1$s zlyhalo</string>
+    <string name="nc_upload_failed_notification_title">Zlyhanie</string>
     <string name="nc_upload_from_cloud">Zdieľať z %1$s</string>
     <string name="nc_upload_from_device">Nahrať zo zariadenia</string>
     <string name="nc_upload_in_progess">Nahrávanie</string>
+    <string name="nc_upload_notification_text">%1$s do %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Urobiť fotografiu</string>
+    <string name="nc_upload_video_from_cam">Natočiť video</string>
     <string name="nc_user">Používateľ</string>
+    <string name="nc_video_filename">Nahrávanie vidia od %1$s</string>
     <string name="nc_voice_message_filename">Nahrávanie hovoru od %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podržte pre nahrávanie, uvoľnite pre poslanie.</string>
     <string name="nc_voice_message_missing_audio_permission">Je potrebné oprávnenie pre nahrávanie zvuku.</string>
@@ -355,10 +379,21 @@
     <string name="open_in_files_app">Otvoriť v aplikácii Súbory</string>
     <string name="play_pause_voice_message">Prehrať/pozastaviť hlasovú správu</string>
     <string name="polls_add_option">Pridajte možnosť</string>
+    <string name="polls_edit_vote">Upraviť hlasovanie</string>
+    <string name="polls_end_poll">Ukončiť anketu</string>
+    <string name="polls_end_poll_confirm">Naozaj chcete ukončiť toto hlasovanie? Toto nie je možné vrátiť späť.</string>
+    <string name="polls_max_votes_reached">Nie je možné vybrať viac možností v tejto ankete,</string>
+    <string name="polls_multiple_answers">Viac odpovedí</string>
+    <string name="polls_option_delete">Odstrániť voľbu %1$s</string>
+    <string name="polls_option_hint">Voľba %1$s</string>
     <string name="polls_options">Možnosti</string>
+    <string name="polls_private_poll">Súkromná anketa</string>
+    <string name="polls_question">Otázka</string>
+    <string name="polls_question_hint">Vaša otázka</string>
     <string name="polls_results_subtitle">Výsledky</string>
     <string name="polls_settings">Nastavenia</string>
     <string name="polls_submit_vote">Hlas</string>
+    <string name="polls_voted_hidden_success">Hlasovanie odoslané</string>
     <string name="reactions_tab_all">Všetko</string>
     <string name="read_storage_no_permission">Zdielanie súborov z úložiska nie je možné bez oprávnenia</string>
     <string name="save">Uložiť</string>
@@ -378,6 +413,7 @@
     <string name="send_to_forbidden">Nemáte oprávnenie zdieľať obsah tohto rozhovoru</string>
     <string name="send_to_three_dots">Odoslať do …</string>
     <string name="send_without_notification">Poslať bez upozornenia</string>
+    <string name="set_avatar_from_camera">Nastaviť avatara z fotoaparátu</string>
     <string name="set_status">Nastaviť stav</string>
     <string name="set_status_message">Nastaviť správu o stave</string>
     <string name="share">Sprístupniť</string>
@@ -385,6 +421,7 @@
     <string name="shared_items_file">Súbor</string>
     <string name="shared_items_media">Média</string>
     <string name="shared_items_other">Iné</string>
+    <string name="shared_items_poll">Anketa</string>
     <string name="shared_items_voice">Odkazová schránka</string>
     <string name="starred">Obľúbené</string>
     <string name="startCallForbidden">Nemáte oprávnenie začat rozhovor</string>
@@ -414,4 +451,10 @@
     <string name="userinfo_no_info_headline">Osobné informácie neboli nastavené</string>
     <string name="userinfo_no_info_text">Pridaj meno, obrázok a kontakt na profilovú stránku.</string>
     <string name="whats_your_status">Aký je váš stav?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d hlas</item>
+        <item quantity="few">%d hlasy</item>
+        <item quantity="many">%d hlasov</item>
+        <item quantity="other">%d hlasov</item>
+    </plurals>
+</resources>

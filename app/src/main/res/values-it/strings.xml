@@ -12,6 +12,7 @@
     <string name="choose_avatar_from_cloud">Scegli avatar dalla rete</string>
     <string name="clear_status_message">Cancella il messaggio di stato</string>
     <string name="clear_status_message_after">Cancella il messaggio di stato dopo</string>
+    <string name="close">Chiudi</string>
     <string name="conversations">Conversazioni</string>
     <string name="delete_avatar">Elimina avatar</string>
     <string name="dnd">Non disturbare</string>

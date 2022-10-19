@@ -12,6 +12,7 @@
     <string name="choose_avatar_from_cloud">Kies een avatar uit de cloud</string>
     <string name="clear_status_message">Statusbericht wissen</string>
     <string name="clear_status_message_after">Statusbericht wissen na</string>
+    <string name="close">Sluit</string>
     <string name="conversations">Gesprekken</string>
     <string name="delete_avatar">Verwijder avatar</string>
     <string name="dnd">Niet storen</string>

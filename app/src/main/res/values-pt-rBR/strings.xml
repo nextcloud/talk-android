@@ -14,6 +14,7 @@
     <string name="choose_avatar_from_cloud">Escolha o avatar da nuvem</string>
     <string name="clear_status_message">Limpar mensagem de status</string>
     <string name="clear_status_message_after">Limpar mensagem de status após</string>
+    <string name="close">Fechar</string>
     <string name="conversations">Conversas</string>
     <string name="delete_avatar">Excluir avatar</string>
     <string name="dnd">Não perturbe</string>
@@ -23,6 +24,7 @@
     <string name="emoji_category_recent">Recente</string>
     <string name="emoji_search">Pesquisar emoji</string>
     <string name="encrypted">Criptografado</string>
+    <string name="error_loading_chats">Ocorreu um problema ao carregar seus bate-papos</string>
     <string name="failed_to_save">Falha ao salvar %1$s</string>
     <string name="file_list_folder">pasta</string>
     <string name="file_list_loading">Carregando …</string>

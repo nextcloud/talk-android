@@ -13,6 +13,7 @@
     <string name="choose_avatar_from_cloud">Profilkép választása a felhőből</string>
     <string name="clear_status_message">Állapotüzenet törlése</string>
     <string name="clear_status_message_after">Állapotüzenet törlése ennyi idő után:</string>
+    <string name="close">Bezárás</string>
     <string name="conversations">Beszélgetések</string>
     <string name="delete_avatar">Profilkép törlése</string>
     <string name="dnd">Ne zavarjanak</string>

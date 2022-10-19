@@ -8,6 +8,7 @@
     <string name="away">Ausente</string>
     <string name="clear_status_message">Limpar a mensaxe de estado</string>
     <string name="clear_status_message_after">Limpar a mensaxe de estado após</string>
+    <string name="close">Pechar</string>
     <string name="conversations">Conversas</string>
     <string name="dnd">Non molestar</string>
     <string name="dontClear">Non limpar</string>

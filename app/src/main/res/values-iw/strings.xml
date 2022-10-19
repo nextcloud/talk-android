@@ -7,6 +7,7 @@
     <string name="away">לא פה</string>
     <string name="clear_status_message">פינוי הודעת המצב</string>
     <string name="clear_status_message_after">מחיקת הודעת מצב לאחר</string>
+    <string name="close">סגירה</string>
     <string name="conversations">דיונים</string>
     <string name="dnd">לא להפריע</string>
     <string name="dontClear">לא לפנות</string>
