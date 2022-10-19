@@ -264,7 +264,8 @@ public class CallActivity extends CallBaseActivity {
 
     private SpotlightView spotlightView;
 
-    private CallActivitySignalingMessageReceiver signalingMessageReceiver = new CallActivitySignalingMessageReceiver();
+    private InternalSignalingMessageReceiver internalSignalingMessageReceiver = new InternalSignalingMessageReceiver();
+    private SignalingMessageReceiver signalingMessageReceiver;
 
     private Map<String, SignalingMessageReceiver.CallParticipantMessageListener> callParticipantMessageListeners =
         new HashMap<>();
@@ -531,8 +532,6 @@ public class CallActivity extends CallBaseActivity {
 
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
-
-        signalingMessageReceiver.addListener(offerMessageListener);
 
         if (!isVoiceOnlyCall) {
             cameraInitialization();
@@ -1350,6 +1349,8 @@ public class CallActivity extends CallBaseActivity {
                     if (hasExternalSignalingServer) {
                         setupAndInitiateWebSocketsConnection();
                     } else {
+                        signalingMessageReceiver = internalSignalingMessageReceiver;
+                        signalingMessageReceiver.addListener(offerMessageListener);
                         joinRoomAndCall();
                     }
                 }
@@ -1548,6 +1549,10 @@ public class CallActivity extends CallBaseActivity {
                 externalSignalingServer.getExternalSignalingServer(),
                 conversationUser, externalSignalingServer.getExternalSignalingTicket(),
                 TextUtils.isEmpty(credentials));
+            // Although setupAndInitiateWebSocketsConnection could be called several times the web socket is
+            // initialized just once, so the message receiver is also initialized just once.
+            signalingMessageReceiver = webSocketClient.getSignalingMessageReceiver();
+            signalingMessageReceiver.addListener(offerMessageListener);
         } else {
             if (webSocketClient.isConnected() && currentCallStatus == CallStatus.PUBLISHER_FAILED) {
                 webSocketClient.restartWebSocket();
@@ -1622,11 +1627,6 @@ public class CallActivity extends CallBaseActivity {
 
                 }
                 break;
-            case "signalingMessage":
-                Log.d(TAG, "onMessageEvent 'signalingMessage'");
-                signalingMessageReceiver.process((NCSignalingMessage) webSocketClient.getJobWithId(
-                    Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
-                break;
             case "peerReadyForRequestingOffer":
                 Log.d(TAG, "onMessageEvent 'peerReadyForRequestingOffer'");
                 webSocketClient.requestOfferForSessionIdWithType(
@@ -1670,7 +1670,7 @@ public class CallActivity extends CallBaseActivity {
         } else if ("message".equals(messageType)) {
             NCSignalingMessage ncSignalingMessage = LoganSquare.parse(signaling.getMessageWrapper().toString(),
                                                                       NCSignalingMessage.class);
-            signalingMessageReceiver.process(ncSignalingMessage);
+            internalSignalingMessageReceiver.process(ncSignalingMessage);
         } else {
             Log.e(TAG, "unexpected message type when receiving signaling message");
         }
@@ -2636,8 +2636,10 @@ public class CallActivity extends CallBaseActivity {
 
     /**
      * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted from CallActivity.
+     *
+     * All listeners are called in the main thread.
      */
-    private static class CallActivitySignalingMessageReceiver extends SignalingMessageReceiver {
+    private static class InternalSignalingMessageReceiver extends SignalingMessageReceiver {
         public void process(NCSignalingMessage message) {
             processSignalingMessage(message);
         }
