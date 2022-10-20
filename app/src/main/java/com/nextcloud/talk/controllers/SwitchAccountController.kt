@@ -44,7 +44,7 @@ import com.nextcloud.talk.databinding.ControllerGenericRvBinding
 import com.nextcloud.talk.models.ImportAccount
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.AccountUtils.findAccountsForUsers
+import com.nextcloud.talk.utils.AccountUtils.findAvailableAccountsOnDevice
 import com.nextcloud.talk.utils.AccountUtils.getInformationFromAccount
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
@@ -147,7 +147,7 @@ class SwitchAccountController(args: Bundle? = null) :
                 var account: Account
                 var importAccount: ImportAccount
                 var user: User
-                for (accountObject in findAccountsForUsers(userManager.users.blockingGet())) {
+                for (accountObject in findAvailableAccountsOnDevice(userManager.users.blockingGet())) {
                     account = accountObject
                     importAccount = getInformationFromAccount(account)
                     participant = Participant()

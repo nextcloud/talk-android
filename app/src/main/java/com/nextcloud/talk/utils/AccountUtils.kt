@@ -41,7 +41,7 @@ object AccountUtils {
     private const val TAG = "AccountUtils"
     private const val MIN_SUPPORTED_FILES_APP_VERSION = 30060151
 
-    fun findAccountsForUsers(users: List<User>): List<Account> {
+    fun findAvailableAccountsOnDevice(users: List<User>): List<Account> {
         val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
         val accMgr = AccountManager.get(context)
         val accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type))
