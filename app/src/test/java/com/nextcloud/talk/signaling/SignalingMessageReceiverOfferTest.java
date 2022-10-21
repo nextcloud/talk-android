@@ -49,7 +49,7 @@ public class SignalingMessageReceiverOfferTest {
     @Test
     public void testAddOfferMessageListenerWithNullListener() {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            signalingMessageReceiver.addListener(null);
+            signalingMessageReceiver.addListener((SignalingMessageReceiver.OfferMessageListener) null);
         });
     }
 
