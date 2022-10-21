@@ -19,9 +19,15 @@
  */
 package com.nextcloud.talk.signaling;
 
+import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Hub to register listeners for signaling messages of different kinds.
@@ -43,6 +49,74 @@ import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
  * the appropriate protected methods to process the messages and notify the listeners.
  */
 public abstract class SignalingMessageReceiver {
+
+    /**
+     * Listener for participant list messages.
+     *
+     * The messages are implicitly bound to the room currently joined in the signaling server; listeners are expected
+     * to know the current room.
+     */
+    public interface ParticipantListMessageListener {
+
+        /**
+         * List of all the participants in the room.
+         *
+         * This message is received only when the internal signaling server is used.
+         *
+         * The message is received periodically, and the participants may not have been modified since the last message.
+         *
+         * Only the following participant properties are set:
+         * - inCall
+         * - lastPing
+         * - sessionId
+         * - userId (if the participant is not a guest)
+         *
+         * "participantPermissions" is provided in the message (since Talk 13), but not currently set in the
+         * participant. "publishingPermissions" was provided instead in Talk 12, but it was not used anywhere, so it is
+         * ignored.
+         *
+         * @param participants all the participants (users and guests) in the room
+         */
+        void onUsersInRoom(List<Participant> participants);
+
+        /**
+         * List of all the participants in the call or the room (depending on what triggered the event).
+         *
+         * This message is received only when the external signaling server is used.
+         *
+         * The message is received when any participant changed, although what changed is not provided and should be
+         * derived from the difference with previous messages. The list of participants may include only the
+         * participants in the call (including those that just left it and thus triggered the event) or all the
+         * participants currently in the room (participants in the room but not currently active, that is, without a
+         * session, are not included).
+         *
+         * Only the following participant properties are set:
+         * - inCall
+         * - lastPing
+         * - sessionId
+         * - type
+         * - userId (if the participant is not a guest)
+         *
+         * "nextcloudSessionId" is provided in the message (when the "inCall" property of any participant changed), but
+         * not currently set in the participant.
+         *
+         * "participantPermissions" is provided in the message (since Talk 13), but not currently set in the
+         * participant. "publishingPermissions" was provided instead in Talk 12, but it was not used anywhere, so it is
+         * ignored.
+         *
+         * @param participants all the participants (users and guests) in the room
+         */
+        void onParticipantsUpdate(List<Participant> participants);
+
+        /**
+         * Update of the properties of all the participants in the room.
+         *
+         * This message is received only when the external signaling server is used.
+         *
+         * @param inCall the new value of the inCall property
+         */
+        void onAllParticipantsUpdate(long inCall);
+    }
 
     /**
      * Listener for call participant messages.
@@ -83,11 +157,28 @@ public abstract class SignalingMessageReceiver {
         void onEndOfCandidates();
     }
 
+    private final ParticipantListMessageNotifier participantListMessageNotifier = new ParticipantListMessageNotifier();
+
     private final CallParticipantMessageNotifier callParticipantMessageNotifier = new CallParticipantMessageNotifier();
 
     private final OfferMessageNotifier offerMessageNotifier = new OfferMessageNotifier();
 
     private final WebRtcMessageNotifier webRtcMessageNotifier = new WebRtcMessageNotifier();
+
+    /**
+     * Adds a listener for participant list messages.
+     *
+     * A listener is expected to be added only once. If the same listener is added again it will be notified just once.
+     *
+     * @param listener the ParticipantListMessageListener
+     */
+    public void addListener(ParticipantListMessageListener listener) {
+        participantListMessageNotifier.addListener(listener);
+    }
+
+    public void removeListener(ParticipantListMessageListener listener) {
+        participantListMessageNotifier.removeListener(listener);
+    }
 
     /**
      * Adds a listener for call participant messages.
@@ -137,6 +228,182 @@ public abstract class SignalingMessageReceiver {
 
     public void removeListener(WebRtcMessageListener listener) {
         webRtcMessageNotifier.removeListener(listener);
+    }
+
+    protected void processEvent(Map<String, Object> eventMap) {
+        if (!"update".equals(eventMap.get("type")) || !"participants".equals(eventMap.get("target"))) {
+            return;
+        }
+
+        Map<String, Object> updateMap;
+        try {
+            updateMap = (Map<String, Object>) eventMap.get("update");
+        } catch (RuntimeException e) {
+            // Broken message, this should not happen.
+            return;
+        }
+
+        if (updateMap == null) {
+            // Broken message, this should not happen.
+            return;
+        }
+
+        if (updateMap.get("all") != null && Boolean.parseBoolean(updateMap.get("all").toString())) {
+            processAllParticipantsUpdate(updateMap);
+
+            return;
+        }
+
+        if (updateMap.get("users") != null) {
+            processParticipantsUpdate(updateMap);
+
+            return;
+        }
+    }
+
+    private void processAllParticipantsUpdate(Map<String, Object> updateMap) {
+        // Message schema:
+        // {
+        //     "type": "event",
+        //     "event": {
+        //         "target": "participants",
+        //         "type": "update",
+        //         "update": {
+        //             "roomid": #STRING#,
+        //             "incall": 0,
+        //             "all": true,
+        //         },
+        //     },
+        // }
+
+        long inCall;
+        try {
+            inCall = Long.parseLong(updateMap.get("inCall").toString());
+        } catch (RuntimeException e) {
+            // Broken message, this should not happen.
+            return;
+        }
+
+        participantListMessageNotifier.notifyAllParticipantsUpdate(inCall);
+    }
+
+    private void processParticipantsUpdate(Map<String, Object> updateMap) {
+        // Message schema:
+        // {
+        //     "type": "event",
+        //     "event": {
+        //         "target": "participants",
+        //         "type": "update",
+        //         "update": {
+        //             "roomid": #INTEGER#,
+        //             "users": [
+        //                 {
+        //                     "inCall": #INTEGER#,
+        //                     "lastPing": #INTEGER#,
+        //                     "sessionId": #STRING#,
+        //                     "participantType": #INTEGER#,
+        //                     "userId": #STRING#, // Optional
+        //                     "nextcloudSessionId": #STRING#, // Optional
+        //                     "participantPermissions": #INTEGER#, // Talk >= 13
+        //                 },
+        //                 ...
+        //             ],
+        //         },
+        //     },
+        // }
+        //
+        // Note that "userId" in participants->update comes from the Nextcloud server, so it is "userId"; in other
+        // messages, like room->join, it comes directly from the external signaling server, so it is "userid" instead.
+
+        List<Map<String, Object>> users;
+        try {
+            users = (List<Map<String, Object>>) updateMap.get("users");
+        } catch (RuntimeException e) {
+            // Broken message, this should not happen.
+            return;
+        }
+
+        if (users == null) {
+            // Broken message, this should not happen.
+            return;
+        }
+
+        List<Participant> participants = new ArrayList<>(users.size());
+
+        for (Map<String, Object> user: users) {
+            try {
+                participants.add(getParticipantFromMessageMap(user));
+            } catch (RuntimeException e) {
+                // Broken message, this should not happen.
+                return;
+            }
+        }
+
+        participantListMessageNotifier.notifyParticipantsUpdate(participants);
+    }
+
+    protected void processUsersInRoom(List<Map<String, Object>> users) {
+        // Message schema:
+        // {
+        //     "type": "usersInRoom",
+        //     "data": [
+        //         {
+        //             "inCall": #INTEGER#,
+        //             "lastPing": #INTEGER#,
+        //             "roomId": #INTEGER#,
+        //             "sessionId": #STRING#,
+        //             "userId": #STRING#, // Always included, although it can be empty
+        //             "participantPermissions": #INTEGER#, // Talk >= 13
+        //         },
+        //         ...
+        //     ],
+        // }
+
+        List<Participant> participants = new ArrayList<>(users.size());
+
+        for (Map<String, Object> user: users) {
+            try {
+                participants.add(getParticipantFromMessageMap(user));
+            } catch (RuntimeException e) {
+                // Broken message, this should not happen.
+                return;
+            }
+        }
+
+        participantListMessageNotifier.notifyUsersInRoom(participants);
+    }
+
+    /**
+     * Creates and initializes a Participant from the data in the given map.
+     *
+     * Maps from internal and external signaling server messages can be used. Nevertheless, besides the differences
+     * between the messages and the optional properties, it is expected that the message is correct and the given data
+     * is parseable. Broken messages (for example, a string instead of an integer for "inCall" or a missing
+     * "sessionId") may cause a RuntimeException to be thrown.
+     *
+     * @param participantMap the map with the participant data
+     * @return the Participant
+     */
+    private Participant getParticipantFromMessageMap(Map<String, Object> participantMap) {
+        Participant participant = new Participant();
+
+        participant.setInCall(Long.parseLong(participantMap.get("inCall").toString()));
+        participant.setLastPing(Long.parseLong(participantMap.get("lastPing").toString()));
+        participant.setSessionId(participantMap.get("sessionId").toString());
+
+        if (participantMap.get("userId") != null && !participantMap.get("userId").toString().isEmpty()) {
+            participant.setUserId(participantMap.get("userId").toString());
+        }
+
+        // Only in external signaling messages
+        if (participantMap.get("participantType") != null) {
+            int participantTypeInt = Integer.parseInt(participantMap.get("participantType").toString());
+
+            EnumParticipantTypeConverter converter = new EnumParticipantTypeConverter();
+            participant.setType(converter.getFromInt(participantTypeInt));
+        }
+
+        return participant;
     }
 
     protected void processSignalingMessage(NCSignalingMessage signalingMessage) {
