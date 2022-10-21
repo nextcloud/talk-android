@@ -161,14 +161,14 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
                     decryptMessage(privateKey, base64DecodedSubject, subject, signature)
                 }
             } catch (e1: NoSuchAlgorithmException) {
-                Log.e(NotificationWorker.TAG, "No proper algorithm to decrypt the message.", e1)
+                Log.e(TAG, "No proper algorithm to decrypt the message.", e1)
             } catch (e1: NoSuchPaddingException) {
-                Log.e(NotificationWorker.TAG, "No proper padding to decrypt the message.", e1)
+                Log.e(TAG, "No proper padding to decrypt the message.", e1)
             } catch (e1: InvalidKeyException) {
-                Log.e(NotificationWorker.TAG, "Invalid private key.", e1)
+                Log.e(TAG, "Invalid private key.", e1)
             }
         } catch (exception: Exception) {
-            Log.e(NotificationWorker.TAG, "Something went very wrong!", exception)
+            Log.e(TAG, "Something went very wrong!", exception)
         }
     }
 
