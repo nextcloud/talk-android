@@ -270,6 +270,27 @@ public class CallActivity extends CallBaseActivity {
     private Map<String, SignalingMessageReceiver.CallParticipantMessageListener> callParticipantMessageListeners =
         new HashMap<>();
 
+    private SignalingMessageReceiver.ParticipantListMessageListener participantListMessageListener = new SignalingMessageReceiver.ParticipantListMessageListener() {
+
+        @Override
+        public void onUsersInRoom(List<Participant> participants) {
+            processUsersInRoom(participants);
+        }
+
+        @Override
+        public void onParticipantsUpdate(List<Participant> participants) {
+            processUsersInRoom(participants);
+        }
+
+        @Override
+        public void onAllParticipantsUpdate(long inCall) {
+            if (inCall == Participant.InCallFlags.DISCONNECTED) {
+                Log.d(TAG, "A moderator ended the call for all.");
+                hangup(true);
+            }
+        }
+    };
+
     private SignalingMessageReceiver.OfferMessageListener offerMessageListener = new SignalingMessageReceiver.OfferMessageListener() {
         @Override
         public void onOffer(String sessionId, String roomType, String sdp, String nick) {
@@ -1217,6 +1238,7 @@ public class CallActivity extends CallBaseActivity {
 
     @Override
     public void onDestroy() {
+        signalingMessageReceiver.removeListener(participantListMessageListener);
         signalingMessageReceiver.removeListener(offerMessageListener);
 
         if (localStream != null) {
@@ -1350,6 +1372,7 @@ public class CallActivity extends CallBaseActivity {
                         setupAndInitiateWebSocketsConnection();
                     } else {
                         signalingMessageReceiver = internalSignalingMessageReceiver;
+                        signalingMessageReceiver.addListener(participantListMessageListener);
                         signalingMessageReceiver.addListener(offerMessageListener);
                         joinRoomAndCall();
                     }
@@ -1552,6 +1575,7 @@ public class CallActivity extends CallBaseActivity {
             // Although setupAndInitiateWebSocketsConnection could be called several times the web socket is
             // initialized just once, so the message receiver is also initialized just once.
             signalingMessageReceiver = webSocketClient.getSignalingMessageReceiver();
+            signalingMessageReceiver.addListener(participantListMessageListener);
             signalingMessageReceiver.addListener(offerMessageListener);
         } else {
             if (webSocketClient.isConnected() && currentCallStatus == CallStatus.PUBLISHER_FAILED) {
@@ -1596,37 +1620,6 @@ public class CallActivity extends CallBaseActivity {
                     performCall();
                 }
                 break;
-            case PARTICIPANTS_UPDATE:
-                Log.d(TAG, "onMessageEvent 'participantsUpdate'");
-
-                // See MagicWebSocketInstance#onMessage in case "participants" how the 'updateParameters' are created
-                Map<String, String> updateParameters = webSocketCommunicationEvent.getHashMap();
-
-                if (updateParameters == null) {
-                    break;
-                }
-
-                String updateRoomToken = updateParameters.get(ROOM_TOKEN);
-                String updateAll = updateParameters.get(UPDATE_ALL);
-                String updateInCall = updateParameters.get(UPDATE_IN_CALL);
-                String jobId = updateParameters.get(JOB_ID);
-
-                if (roomToken.equals(updateRoomToken)) {
-                    if (updateAll != null && Boolean.parseBoolean(updateAll)) {
-                        if ("0".equals(updateInCall)) {
-                            Log.d(TAG, "Most probably a moderator ended the call for all.");
-                            hangup(true);
-                        }
-                    } else if (jobId != null) {
-                        // In that case a list of users for the room is passed.
-                        processUsersInRoom(
-                            (List<HashMap<String, Object>>) webSocketClient
-                                .getJobWithId(
-                                    Integer.valueOf(jobId)));
-                    }
-
-                }
-                break;
             case "peerReadyForRequestingOffer":
                 Log.d(TAG, "onMessageEvent 'peerReadyForRequestingOffer'");
                 webSocketClient.requestOfferForSessionIdWithType(
@@ -1666,7 +1659,7 @@ public class CallActivity extends CallBaseActivity {
         }
 
         if ("usersInRoom".equals(messageType)) {
-            processUsersInRoom((List<HashMap<String, Object>>) signaling.getMessageWrapper());
+            internalSignalingMessageReceiver.process((List<Map<String, Object>>) signaling.getMessageWrapper());
         } else if ("message".equals(messageType)) {
             NCSignalingMessage ncSignalingMessage = LoganSquare.parse(signaling.getMessageWrapper().toString(),
                                                                       NCSignalingMessage.class);
@@ -1781,7 +1774,7 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private void processUsersInRoom(List<HashMap<String, Object>> users) {
+    private void processUsersInRoom(List<Participant> participants) {
         Log.d(TAG, "processUsersInRoom");
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSessions = new HashSet<>();
@@ -1800,27 +1793,20 @@ public class CallActivity extends CallBaseActivity {
 
         boolean isSelfInCall = false;
 
-        for (HashMap<String, Object> participant : users) {
-            long inCallFlag = (long) participant.get("inCall");
-            if (!participant.get("sessionId").equals(currentSessionId)) {
+        for (Participant participant : participants) {
+            long inCallFlag = participant.getInCall();
+            if (!participant.getSessionId().equals(currentSessionId)) {
                 Log.d(TAG, "   inCallFlag of participant "
-                    + participant.get("sessionId").toString().substring(0, 4)
+                    + participant.getSessionId().substring(0, 4)
                     + " : "
                     + inCallFlag);
 
                 boolean isInCall = inCallFlag != 0;
                 if (isInCall) {
-                    newSessions.add(participant.get("sessionId").toString());
+                    newSessions.add(participant.getSessionId());
                 }
 
-                // The property is "userId" when not using the external signaling server and "userid" when using it.
-                String userId = null;
-                if (participant.get("userId") != null) {
-                    userId = participant.get("userId").toString();
-                } else if (participant.get("userid") != null) {
-                    userId = participant.get("userid").toString();
-                }
-                userIdsBySessionId.put(participant.get("sessionId").toString(), userId);
+                userIdsBySessionId.put(participant.getSessionId(), participant.getUserId());
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
                 isSelfInCall = inCallFlag != 0;
@@ -2640,6 +2626,10 @@ public class CallActivity extends CallBaseActivity {
      * All listeners are called in the main thread.
      */
     private static class InternalSignalingMessageReceiver extends SignalingMessageReceiver {
+        public void process(List<Map<String, Object>> users) {
+            processUsersInRoom(users);
+        }
+
         public void process(NCSignalingMessage message) {
             processSignalingMessage(message);
         }

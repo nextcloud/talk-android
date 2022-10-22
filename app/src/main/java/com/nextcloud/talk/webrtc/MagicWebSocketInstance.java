@@ -279,45 +279,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                     }
                                     break;
                                 case TARGET_PARTICIPANTS:
-                                    if (EVENT_TYPE_UPDATE.equals(eventOverallWebSocketMessage.getEventMap().get(EVENT_TYPE))) {
-                                        HashMap<String, String> refreshChatHashMap = new HashMap<>();
-                                        HashMap<String, Object> updateEventMap = (HashMap<String, Object>) eventOverallWebSocketMessage.getEventMap().get(EVENT_TYPE_UPDATE);
-
-                                        if (updateEventMap == null) {
-                                            break;
-                                        }
-
-                                        if (updateEventMap.containsKey(UPDATE_ROOM_ID)) {
-                                            Object updateRoomId = updateEventMap.get(UPDATE_ROOM_ID);
-                                            if (updateRoomId != null) {
-                                                refreshChatHashMap.put(ROOM_TOKEN,
-                                                                       (String) updateEventMap.get(UPDATE_ROOM_ID));
-                                            }
-                                        }
-
-                                        if (updateEventMap.containsKey(UPDATE_USERS)) {
-                                            Object updateUsers = updateEventMap.get(UPDATE_USERS);
-                                            if (updateUsers != null) {
-                                                refreshChatHashMap.put(JOB_ID, Integer.toString(magicMap.add(updateUsers)));
-                                            }
-                                        }
-
-                                        if (updateEventMap.containsKey(UPDATE_IN_CALL)) {
-                                            Object inCall = updateEventMap.get(UPDATE_IN_CALL);
-                                            if (inCall != null) {
-                                                refreshChatHashMap.put(UPDATE_IN_CALL, Long.toString((Long) inCall));
-                                            }
-                                        }
-
-                                        if (updateEventMap.containsKey(UPDATE_ALL)) {
-                                            Object updateAll = updateEventMap.get(UPDATE_ALL);
-                                            if (updateAll != null) {
-                                                refreshChatHashMap.put(UPDATE_ALL, Boolean.toString((Boolean) updateAll));
-                                            }
-                                        }
-
-                                        eventBus.post(new WebSocketCommunicationEvent(PARTICIPANTS_UPDATE, refreshChatHashMap));
-                                    }
+                                    signalingMessageReceiver.process(eventOverallWebSocketMessage.getEventMap());
                                     break;
                             }
                         }
@@ -483,6 +445,10 @@ public class MagicWebSocketInstance extends WebSocketListener {
      * WebSocket stays connected, but it may change whenever it is connected again.
      */
     private static class ExternalSignalingMessageReceiver extends SignalingMessageReceiver {
+        public void process(Map<String, Object> eventMap) {
+            processEvent(eventMap);
+        }
+
         public void process(NCSignalingMessage message) {
             processSignalingMessage(message);
         }
