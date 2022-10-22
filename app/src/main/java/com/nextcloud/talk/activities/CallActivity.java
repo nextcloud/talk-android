@@ -173,11 +173,6 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISS
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
-import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
-import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
-import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_ALL;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_IN_CALL;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends CallBaseActivity {

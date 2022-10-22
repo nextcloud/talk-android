@@ -41,7 +41,6 @@ import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
-import com.nextcloud.talk.utils.MagicMap;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,16 +65,8 @@ import okio.ByteString;
 
 import static com.nextcloud.talk.models.json.participants.Participant.ActorType.GUESTS;
 import static com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS;
-import static com.nextcloud.talk.webrtc.Globals.EVENT_TYPE;
-import static com.nextcloud.talk.webrtc.Globals.EVENT_TYPE_UPDATE;
-import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
-import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
 import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
 import static com.nextcloud.talk.webrtc.Globals.TARGET_PARTICIPANTS;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_ALL;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_IN_CALL;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_ROOM_ID;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_USERS;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicWebSocketInstance extends WebSocketListener {
@@ -99,7 +90,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private boolean connected;
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private WebSocket internalWebSocket;
-    private MagicMap magicMap;
     private String connectionUrl;
 
     private String currentRoomToken;
@@ -120,7 +110,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         this.webSocketTicket = webSocketTicket;
         this.webSocketConnectionHelper = new WebSocketConnectionHelper();
         this.usersHashMap = new HashMap<>();
-        magicMap = new MagicMap();
 
         connected = false;
         eventBus.register(this);
@@ -366,12 +355,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         } catch (IOException e) {
             Log.e(TAG, "Failed to serialize signaling message", e);
         }
-    }
-
-    public Object getJobWithId(Integer id) {
-        Object copyJob = magicMap.get(id);
-        magicMap.remove(id);
-        return copyJob;
     }
 
     public void requestOfferForSessionIdWithType(String sessionIdParam, String roomType) {
