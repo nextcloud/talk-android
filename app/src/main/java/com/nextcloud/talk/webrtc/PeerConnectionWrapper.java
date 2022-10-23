@@ -59,8 +59,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -364,9 +364,9 @@ public class PeerConnectionWrapper {
                         }
                     } else {
                         if (dataChannelMessage.getPayload() != null) {
-                            HashMap<String, String> payloadHashMap = (HashMap<String, String>) dataChannelMessage.getPayload();
+                            Map<String, String> payloadMap = (Map<String, String>) dataChannelMessage.getPayload();
                             EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                    .NICK_CHANGE, sessionId, payloadHashMap.get("name"), null, videoStreamType));
+                                    .NICK_CHANGE, sessionId, payloadMap.get("name"), null, videoStreamType));
                         }
                     }
                 } else if ("audioOn".equals(dataChannelMessage.getType())) {
