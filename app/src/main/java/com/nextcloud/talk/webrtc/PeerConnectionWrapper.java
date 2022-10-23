@@ -33,7 +33,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
-import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
@@ -200,18 +199,6 @@ public class PeerConnectionWrapper {
             peerConnection.addIceCandidate(iceCandidate);
         } else {
             iceCandidates.add(iceCandidate);
-        }
-    }
-
-    public void sendNickChannelData(DataChannelMessageNick dataChannelMessage) {
-        ByteBuffer buffer;
-        if (dataChannel != null) {
-            try {
-                buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
-                dataChannel.send(new DataChannel.Buffer(buffer, false));
-            } catch (IOException e) {
-                Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
-            }
         }
     }
 

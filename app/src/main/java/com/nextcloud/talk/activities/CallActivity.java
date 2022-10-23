@@ -76,7 +76,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
-import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.signaling.Signaling;
@@ -2176,12 +2175,12 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void startSendingNick() {
-        DataChannelMessageNick dataChannelMessage = new DataChannelMessageNick();
+        DataChannelMessage dataChannelMessage = new DataChannelMessage();
         dataChannelMessage.setType("nickChanged");
-        HashMap<String, String> nickChangedPayload = new HashMap<>();
+        Map<String, String> nickChangedPayload = new HashMap<>();
         nickChangedPayload.put("userid", conversationUser.getUserId());
         nickChangedPayload.put("name", conversationUser.getDisplayName());
-        dataChannelMessage.setPayload(nickChangedPayload);
+        dataChannelMessage.setPayloadMap(nickChangedPayload);
         for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
             if (peerConnectionWrapper.isMCUPublisher()) {
                 Observable
@@ -2196,7 +2195,7 @@ public class CallActivity extends CallBaseActivity {
 
                         @Override
                         public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
-                            peerConnectionWrapper.sendNickChannelData(dataChannelMessage);
+                            peerConnectionWrapper.sendChannelData(dataChannelMessage);
                         }
 
                         @Override

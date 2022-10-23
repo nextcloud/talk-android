@@ -34,10 +34,15 @@ import kotlinx.android.parcel.TypeParceler
 data class DataChannelMessage(
     @JsonField(name = ["type"])
     var type: String? = null,
+    /** Can be String or Map<String, String>
+     *  Use only for received messages */
     @JsonField(name = ["payload"])
-    var payload: Any? = null
+    var payload: Any? = null,
+    /** Use only to send messages */
+    @JsonField(name = ["payload"])
+    var payloadMap: Map<String, String>? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null)
+    constructor() : this(null, null, null)
     constructor(type: String) : this(type, null)
 }
