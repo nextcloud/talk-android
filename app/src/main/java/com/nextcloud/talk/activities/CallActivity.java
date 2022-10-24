@@ -2304,7 +2304,7 @@ public class CallActivity extends CallBaseActivity {
                     }
                 });
         } else {
-            webSocketClient.sendCallMessage(ncMessageWrapper);
+            webSocketClient.sendCallMessage(ncSignalingMessage);
         }
     }
 

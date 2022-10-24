@@ -31,7 +31,6 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.NetworkEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessage;
@@ -344,9 +343,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
         }
     }
 
-    public void sendCallMessage(NCMessageWrapper ncMessageWrapper) {
+    public void sendCallMessage(NCSignalingMessage ncSignalingMessage) {
         try {
-            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledCallMessageModel(ncMessageWrapper));
+            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage));
             if (!connected || reconnecting) {
                 messagesQueue.add(message);
             } else {
