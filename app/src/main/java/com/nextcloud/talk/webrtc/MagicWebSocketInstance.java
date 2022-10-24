@@ -356,19 +356,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         }
     }
 
-    public void requestOfferForSessionIdWithType(String sessionIdParam, String roomType) {
-        try {
-            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledRequestOfferModel(sessionIdParam, roomType));
-            if (!connected || reconnecting) {
-                messagesQueue.add(message);
-            } else {
-                internalWebSocket.send(message);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to offer request. sessionIdParam: " + sessionIdParam + " roomType:" + roomType, e);
-        }
-    }
-
     void sendBye() {
         if (connected) {
             try {

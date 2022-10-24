@@ -1616,8 +1616,15 @@ public class CallActivity extends CallBaseActivity {
                 break;
             case "peerReadyForRequestingOffer":
                 Log.d(TAG, "onMessageEvent 'peerReadyForRequestingOffer'");
-                webSocketClient.requestOfferForSessionIdWithType(
-                    webSocketCommunicationEvent.getHashMap().get("sessionId"), "video");
+
+                NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+                // "to" property is not actually needed in the "requestoffer" signaling message, but it is used to
+                // set the recipient session ID in the assembled call message.
+                ncSignalingMessage.setTo(webSocketCommunicationEvent.getHashMap().get("sessionId"));
+                ncSignalingMessage.setRoomType("video");
+                ncSignalingMessage.setType("requestoffer");
+
+                webSocketClient.sendCallMessage(ncSignalingMessage);
                 break;
         }
     }
