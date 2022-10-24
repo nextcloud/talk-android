@@ -21,6 +21,7 @@
  */
 package com.nextcloud.talk.controllers
 
+import android.accounts.Account
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -46,8 +47,7 @@ import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerServerSelectionBinding
 import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.AccountUtils.findAccountsForUsers
-import com.nextcloud.talk.utils.AccountUtils.getAppNameBasedOnPackage
+import com.nextcloud.talk.utils.AccountUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.UriUtils
@@ -99,82 +99,27 @@ class ServerSelectionController :
 
         actionBar?.hide()
 
-        binding.hostUrlInputHelperText.setText(
-            String.format(
-                resources!!.getString(R.string.nc_server_helper_text),
-                resources!!.getString(R.string.nc_server_product_name)
-            )
+        binding.hostUrlInputHelperText.text = String.format(
+            resources!!.getString(R.string.nc_server_helper_text),
+            resources!!.getString(R.string.nc_server_product_name)
         )
         binding.serverEntryTextInputLayout.setEndIconOnClickListener { checkServerAndProceed() }
+
         if (resources!!.getBoolean(R.bool.hide_auth_cert)) {
             binding.certTextView.visibility = View.GONE
         }
-        if (resources!!.getBoolean(R.bool.hide_provider) ||
-            TextUtils.isEmpty(resources!!.getString(R.string.nc_providers_url)) &&
-            TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type))
-        ) {
-            binding.helperTextView.visibility = View.INVISIBLE
+
+        val loggedInUsers = userManager.users.blockingGet()
+        val availableAccounts = AccountUtils.findAvailableAccountsOnDevice(loggedInUsers)
+
+        if (isImportAccountNameSet() && availableAccounts.isNotEmpty()) {
+            showImportAccountsInfo(availableAccounts)
+        } else if (isAbleToShowProviderLink() && loggedInUsers.isEmpty()) {
+            showVisitProvidersInfo()
         } else {
-            if (
-                (
-                    TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type)) ||
-                        findAccountsForUsers(userManager.users.blockingGet()).isEmpty()
-                    ) &&
-                userManager.users.blockingGet().isEmpty()
-            ) {
-                binding.helperTextView.setText(R.string.nc_get_from_provider)
-                binding.helperTextView.setOnClickListener {
-                    val browserIntent = Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(
-                            resources!!
-                                .getString(R.string.nc_providers_url)
-                        )
-                    )
-                    startActivity(browserIntent)
-                }
-            } else if (findAccountsForUsers(userManager.users.blockingGet()).isNotEmpty()) {
-                if (!TextUtils.isEmpty(
-                        getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
-                    )
-                ) {
-                    if (findAccountsForUsers(userManager.users.blockingGet()).size > 1) {
-                        binding.helperTextView.setText(
-                            String.format(
-                                resources!!.getString(R.string.nc_server_import_accounts),
-                                getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
-                            )
-                        )
-                    } else {
-                        binding.helperTextView.setText(
-                            String.format(
-                                resources!!.getString(R.string.nc_server_import_account),
-                                getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
-                            )
-                        )
-                    }
-                } else {
-                    if (findAccountsForUsers(userManager.users.blockingGet()).size > 1) {
-                        binding.helperTextView.text = resources!!.getString(R.string.nc_server_import_accounts_plain)
-                    } else {
-                        binding.helperTextView.text = resources!!.getString(R.string.nc_server_import_account_plain)
-                    }
-                }
-                binding.helperTextView.setOnClickListener {
-                    val bundle = Bundle()
-                    bundle.putBoolean(KEY_IS_ACCOUNT_IMPORT, true)
-                    router.pushController(
-                        RouterTransaction.with(
-                            SwitchAccountController(bundle)
-                        )
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler())
-                    )
-                }
-            } else {
-                binding.helperTextView.visibility = View.INVISIBLE
-            }
+            binding.importOrChooseProviderText.visibility = View.INVISIBLE
         }
+
         binding.serverEntryTextInputEditText.requestFocus()
         if (!TextUtils.isEmpty(resources!!.getString(R.string.weblogin_url))) {
             binding.serverEntryTextInputEditText.setText(resources!!.getString(R.string.weblogin_url))
@@ -189,6 +134,66 @@ class ServerSelectionController :
         binding.certTextView.setOnClickListener { onCertClick() }
     }
 
+    private fun isAbleToShowProviderLink(): Boolean {
+        return !resources!!.getBoolean(R.bool.hide_provider) &&
+            !TextUtils.isEmpty(resources!!.getString(R.string.nc_providers_url))
+    }
+
+    private fun showImportAccountsInfo(availableAccounts: List<Account>) {
+        if (!TextUtils.isEmpty(
+                AccountUtils.getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
+            )
+        ) {
+            if (availableAccounts.size > 1) {
+                binding.importOrChooseProviderText.text = String.format(
+                    resources!!.getString(R.string.nc_server_import_accounts),
+                    AccountUtils.getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
+                )
+            } else {
+                binding.importOrChooseProviderText.text = String.format(
+                    resources!!.getString(R.string.nc_server_import_account),
+                    AccountUtils.getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
+                )
+            }
+        } else {
+            if (availableAccounts.size > 1) {
+                binding.importOrChooseProviderText.text =
+                    resources!!.getString(R.string.nc_server_import_accounts_plain)
+            } else {
+                binding.importOrChooseProviderText.text = resources!!.getString(R.string.nc_server_import_account_plain)
+            }
+        }
+        binding.importOrChooseProviderText.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putBoolean(KEY_IS_ACCOUNT_IMPORT, true)
+            router.pushController(
+                RouterTransaction.with(
+                    SwitchAccountController(bundle)
+                )
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
+        }
+    }
+
+    private fun showVisitProvidersInfo() {
+        binding.importOrChooseProviderText.setText(R.string.nc_get_from_provider)
+        binding.importOrChooseProviderText.setOnClickListener {
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(
+                    resources!!
+                        .getString(R.string.nc_providers_url)
+                )
+            )
+            startActivity(browserIntent)
+        }
+    }
+
+    private fun isImportAccountNameSet(): Boolean {
+        return !TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type))
+    }
+
     @SuppressLint("LongLogTag")
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkServerAndProceed() {
@@ -197,8 +202,8 @@ class ServerSelectionController :
             var url: String = binding.serverEntryTextInputEditText.text.toString().trim { it <= ' ' }
             binding.serverEntryTextInputEditText.isEnabled = false
             showserverEntryProgressBar()
-            if (binding.helperTextView.visibility != View.INVISIBLE) {
-                binding.helperTextView.visibility = View.INVISIBLE
+            if (binding.importOrChooseProviderText.visibility != View.INVISIBLE) {
+                binding.importOrChooseProviderText.visibility = View.INVISIBLE
                 binding.certTextView.visibility = View.INVISIBLE
             }
             if (url.endsWith("/")) {
@@ -279,16 +284,16 @@ class ServerSelectionController :
 
                     binding.serverEntryTextInputEditText.isEnabled = true
 
-                    if (binding.helperTextView.visibility != View.INVISIBLE) {
-                        binding.helperTextView.visibility = View.VISIBLE
+                    if (binding.importOrChooseProviderText.visibility != View.INVISIBLE) {
+                        binding.importOrChooseProviderText.visibility = View.VISIBLE
                         binding.certTextView.visibility = View.VISIBLE
                     }
                     dispose()
                 }
             }) {
                 hideserverEntryProgressBar()
-                if (binding.helperTextView.visibility != View.INVISIBLE) {
-                    binding.helperTextView.visibility = View.VISIBLE
+                if (binding.importOrChooseProviderText.visibility != View.INVISIBLE) {
+                    binding.importOrChooseProviderText.visibility = View.VISIBLE
                     binding.certTextView.visibility = View.VISIBLE
                 }
                 dispose()
