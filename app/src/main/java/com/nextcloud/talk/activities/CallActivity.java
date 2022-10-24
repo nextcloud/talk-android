@@ -79,7 +79,6 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
-import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.signaling.Signaling;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
@@ -2236,9 +2235,6 @@ public class CallActivity extends CallBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
-        NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
-        ncMessageWrapper.setEv("message");
-        ncMessageWrapper.setSessionId(callSession);
         NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
         ncSignalingMessage.setTo(sessionDescriptionSend.getPeerId());
         ncSignalingMessage.setRoomType(sessionDescriptionSend.getVideoStreamType());
@@ -2253,17 +2249,16 @@ public class CallActivity extends CallBaseActivity {
             ncMessagePayload.setIceCandidate(sessionDescriptionSend.getNcIceCandidate());
         }
 
-
-        // Set all we need
         ncSignalingMessage.setPayload(ncMessagePayload);
-        ncMessageWrapper.setSignalingMessage(ncSignalingMessage);
-
 
         if (!hasExternalSignalingServer) {
+            // The message wrapper can not be defined in a JSON model to be directly serialized, as sent messages
+            // need to be serialized twice; first the signaling message, and then the wrapper as a whole. Received
+            // messages, on the other hand, just need to be deserialized once.
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("{")
                 .append("\"fn\":\"")
-                .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper.getSignalingMessage())))
+                .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncSignalingMessage)))
                 .append("\"")
                 .append(",")
                 .append("\"sessionId\":")
