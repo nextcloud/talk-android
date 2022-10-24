@@ -271,6 +271,7 @@
     <string name="share">שתף</string>
     <string name="shared_items_audio">שמע</string>
     <string name="shared_items_file">קובץ</string>
+    <string name="shared_items_media">מדיה</string>
     <string name="shared_items_other">אחר</string>
     <string name="shared_items_voice">קולי</string>
     <string name="starred">סימון כמועדף</string>
