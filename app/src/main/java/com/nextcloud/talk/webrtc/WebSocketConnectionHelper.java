@@ -33,11 +33,8 @@ import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloWebSocketMessage;
-import com.nextcloud.talk.models.json.websocket.RequestOfferOverallWebSocketMessage;
-import com.nextcloud.talk.models.json.websocket.RequestOfferSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessage;
-import com.nextcloud.talk.models.json.websocket.SignalingDataWebSocketMessageForOffer;
 import com.nextcloud.talk.utils.ApiUtils;
 
 import java.util.HashMap;
@@ -146,24 +143,15 @@ public class WebSocketConnectionHelper {
         return roomOverallWebSocketMessage;
     }
 
-    RequestOfferOverallWebSocketMessage getAssembledRequestOfferModel(String sessionId, String roomType) {
-        RequestOfferOverallWebSocketMessage requestOfferOverallWebSocketMessage = new RequestOfferOverallWebSocketMessage();
-        requestOfferOverallWebSocketMessage.setType("message");
+    CallOverallWebSocketMessage getAssembledRequestOfferModel(String sessionId, String roomType) {
+        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+        // "to" property is not actually needed in the "requestoffer" signaling message, but it is used to set the
+        // recipient session ID in the assembled call message.
+        ncSignalingMessage.setTo(sessionId);
+        ncSignalingMessage.setRoomType(roomType);
+        ncSignalingMessage.setType("requestoffer");
 
-        RequestOfferSignalingMessage requestOfferSignalingMessage = new RequestOfferSignalingMessage();
-
-        ActorWebSocketMessage actorWebSocketMessage = new ActorWebSocketMessage();
-        actorWebSocketMessage.setType("session");
-        actorWebSocketMessage.setSessionId(sessionId);
-        requestOfferSignalingMessage.setActorWebSocketMessage(actorWebSocketMessage);
-
-        SignalingDataWebSocketMessageForOffer signalingDataWebSocketMessageForOffer = new SignalingDataWebSocketMessageForOffer();
-        signalingDataWebSocketMessageForOffer.setRoomType(roomType);
-        signalingDataWebSocketMessageForOffer.setType("requestoffer");
-        requestOfferSignalingMessage.setSignalingDataWebSocketMessageForOffer(signalingDataWebSocketMessageForOffer);
-
-        requestOfferOverallWebSocketMessage.setRequestOfferOverallWebSocketMessage(requestOfferSignalingMessage);
-        return requestOfferOverallWebSocketMessage;
+        return getAssembledCallMessageModel(ncSignalingMessage);
     }
 
     CallOverallWebSocketMessage getAssembledCallMessageModel(NCSignalingMessage ncSignalingMessage) {
