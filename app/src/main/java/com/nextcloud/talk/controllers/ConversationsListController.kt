@@ -96,20 +96,18 @@ import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
-import com.nextcloud.talk.models.json.status.Status
-import com.nextcloud.talk.models.json.statuses.StatusesOverall
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
+import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
@@ -131,7 +129,6 @@ import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import io.reactivex.Observable
-import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -198,7 +195,6 @@ class ConversationsListController(bundle: Bundle) :
     private var layoutManager: SmoothScrollLinearLayoutManager? = null
     private val callHeaderItems = HashMap<String, GenericTextHeaderItem>()
     private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
-    private val userStatuses = HashMap<String?, Status>()
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
 
@@ -318,7 +314,7 @@ class ConversationsListController(bundle: Bundle) :
                 viewThemeUtils.material
                     .colorMaterialTextButton((activity as MainActivity?)!!.binding.switchAccountButton)
             }
-            fetchData()
+            fetchRooms()
         }
     }
 
@@ -493,39 +489,9 @@ class ConversationsListController(bundle: Bundle) :
         searchItem!!.expandActionView()
     }
 
-    fun fetchData() {
-        if (isUserStatusAvailable(userManager.currentUser.blockingGet())) {
-            fetchUserStatusesAndRooms()
-        } else {
-            fetchRooms()
-        }
-    }
+    fun fetchRooms() {
+        val includeStatus = isUserStatusAvailable(userManager.currentUser.blockingGet())
 
-    private fun fetchUserStatusesAndRooms() {
-        ncApi.getUserStatuses(credentials, ApiUtils.getUrlForUserStatuses(currentUser!!.baseUrl))
-            .subscribe(object : Observer<StatusesOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-                override fun onNext(statusesOverall: StatusesOverall) {
-                    for (status in statusesOverall.ocs!!.data!!) {
-                        userStatuses[status.userId] = status
-                    }
-                    fetchRooms()
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "failed to fetch user statuses", e)
-                    fetchRooms()
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
-    }
-
-    private fun fetchRooms() {
         dispose(null)
         isRefreshing = true
         conversationItems = ArrayList()
@@ -538,7 +504,8 @@ class ConversationsListController(bundle: Bundle) :
             ApiUtils.getUrlForRooms(
                 apiVersion,
                 currentUser!!.baseUrl
-            )
+            ),
+            includeStatus
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -556,53 +523,9 @@ class ConversationsListController(bundle: Bundle) :
                     adapterWasNull = false
                     binding.loadingContent.visibility = View.GONE
                 }
-                if (ocs!!.data!!.isNotEmpty()) {
-                    if (binding.emptyLayout.visibility != View.GONE) {
-                        binding.emptyLayout.visibility = View.GONE
-                    }
-                    if (binding.swipeRefreshLayoutView.visibility != View.VISIBLE) {
-                        binding.swipeRefreshLayoutView.visibility = View.VISIBLE
-                    }
-                } else {
-                    if (binding.emptyLayout.visibility != View.VISIBLE) {
-                        binding.emptyLayout.visibility = View.VISIBLE
-                    }
-                    if (binding.swipeRefreshLayoutView.visibility != View.GONE) {
-                        binding.swipeRefreshLayoutView.visibility = View.GONE
-                    }
-                }
+                initOverallLayout(ocs!!.data!!.isNotEmpty())
                 for (conversation in ocs.data!!) {
-                    if (bundle.containsKey(KEY_FORWARD_HIDE_SOURCE_ROOM) && conversation.roomId == bundle.getString(
-                            KEY_FORWARD_HIDE_SOURCE_ROOM
-                        )
-                    ) {
-                        continue
-                    }
-                    val headerTitle: String = resources!!.getString(R.string.conversations)
-                    var genericTextHeaderItem: GenericTextHeaderItem
-                    if (!callHeaderItems.containsKey(headerTitle)) {
-                        genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
-                        callHeaderItems[headerTitle] = genericTextHeaderItem
-                    }
-                    if (activity != null) {
-                        val conversationItem = ConversationItem(
-                            conversation,
-                            currentUser,
-                            activity,
-                            userStatuses[conversation.name],
-                            viewThemeUtils
-                        )
-                        conversationItems.add(conversationItem)
-                        val conversationItemWithHeader = ConversationItem(
-                            conversation,
-                            currentUser,
-                            activity,
-                            callHeaderItems[headerTitle],
-                            userStatuses[conversation.name],
-                            viewThemeUtils
-                        )
-                        conversationItemsWithHeader.add(conversationItemWithHeader)
-                    }
+                    addToConversationItems(conversation)
                 }
                 sortConversations(conversationItems)
                 sortConversations(conversationItemsWithHeader)
@@ -626,6 +549,56 @@ class ConversationsListController(bundle: Bundle) :
                 }
                 isRefreshing = false
             }
+    }
+
+    private fun initOverallLayout(isConversationListNotEmpty: Boolean) {
+        if (isConversationListNotEmpty) {
+            if (binding.emptyLayout.visibility != View.GONE) {
+                binding.emptyLayout.visibility = View.GONE
+            }
+            if (binding.swipeRefreshLayoutView.visibility != View.VISIBLE) {
+                binding.swipeRefreshLayoutView.visibility = View.VISIBLE
+            }
+        } else {
+            if (binding.emptyLayout.visibility != View.VISIBLE) {
+                binding.emptyLayout.visibility = View.VISIBLE
+            }
+            if (binding.swipeRefreshLayoutView.visibility != View.GONE) {
+                binding.swipeRefreshLayoutView.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun addToConversationItems(conversation: Conversation) {
+        if (bundle.containsKey(KEY_FORWARD_HIDE_SOURCE_ROOM) && conversation.roomId == bundle.getString(
+                KEY_FORWARD_HIDE_SOURCE_ROOM
+            )
+        ) {
+            return
+        }
+        val headerTitle: String = resources!!.getString(R.string.conversations)
+        val genericTextHeaderItem: GenericTextHeaderItem
+        if (!callHeaderItems.containsKey(headerTitle)) {
+            genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
+            callHeaderItems[headerTitle] = genericTextHeaderItem
+        }
+        if (activity != null) {
+            val conversationItem = ConversationItem(
+                conversation,
+                currentUser,
+                activity,
+                viewThemeUtils
+            )
+            conversationItems.add(conversationItem)
+            val conversationItemWithHeader = ConversationItem(
+                conversation,
+                currentUser,
+                activity,
+                callHeaderItems[headerTitle],
+                viewThemeUtils
+            )
+            conversationItemsWithHeader.add(conversationItemWithHeader)
+        }
     }
 
     private fun showErrorDialog() {
@@ -681,7 +654,6 @@ class ConversationsListController(bundle: Bundle) :
                             currentUser,
                             activity,
                             callHeaderItems[headerTitle],
-                            userStatuses[conversation.name],
                             viewThemeUtils
                         )
                         openConversationItems.add(conversationItem)
@@ -742,7 +714,7 @@ class ConversationsListController(bundle: Bundle) :
             }
             false
         }
-        binding.swipeRefreshLayoutView.setOnRefreshListener { fetchData() }
+        binding.swipeRefreshLayoutView.setOnRefreshListener { fetchRooms() }
         viewThemeUtils.androidx.themeSwipeRefreshLayout(binding.swipeRefreshLayoutView)
         binding.emptyLayout.setOnClickListener { showNewConversationsScreen() }
         binding.floatingActionButton.setOnClickListener {
@@ -1182,7 +1154,7 @@ class ConversationsListController(bundle: Bundle) :
         if (currentUser != null && eventStatus.userId == currentUser!!.id) {
             when (eventStatus.eventType) {
                 EventStatus.EventType.CONVERSATION_UPDATE -> if (eventStatus.isAllGood && !isRefreshing) {
-                    fetchData()
+                    fetchRooms()
                 }
                 else -> {}
             }
@@ -1191,7 +1163,7 @@ class ConversationsListController(bundle: Bundle) :
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(conversationsListFetchDataEvent: ConversationsListFetchDataEvent?) {
-        fetchData()
+        fetchRooms()
         Handler().postDelayed({
             if (conversationsListBottomDialog!!.isShowing) {
                 conversationsListBottomDialog!!.dismiss()

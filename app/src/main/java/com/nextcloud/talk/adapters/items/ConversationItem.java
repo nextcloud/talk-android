@@ -43,7 +43,6 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.RvItemConversationWithLastMessageBinding;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.conversations.Conversation;
-import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -51,7 +50,6 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 import androidx.core.content.ContextCompat;
@@ -74,22 +72,20 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     private final User user;
     private final Context context;
     private GenericTextHeaderItem header;
-    private final Status status;
     private final ViewThemeUtils viewThemeUtils;
 
 
-    public ConversationItem(Conversation conversation, User user, Context activityContext, Status status, final ViewThemeUtils viewThemeUtils) {
+    public ConversationItem(Conversation conversation, User user, Context activityContext, final ViewThemeUtils viewThemeUtils) {
         this.conversation = conversation;
         this.user = user;
         this.context = activityContext;
-        this.status = status;
         this.viewThemeUtils = viewThemeUtils;
     }
 
     public ConversationItem(Conversation conversation, User user,
-                            Context activityContext, GenericTextHeaderItem genericTextHeaderItem, Status status,
+                            Context activityContext, GenericTextHeaderItem genericTextHeaderItem,
                             final ViewThemeUtils viewThemeUtils) {
-        this(conversation, user, activityContext, status, viewThemeUtils);
+        this(conversation, user, activityContext, viewThemeUtils);
         this.header = genericTextHeaderItem;
     }
 
@@ -97,7 +93,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     public boolean equals(Object o) {
         if (o instanceof ConversationItem) {
             ConversationItem inItem = (ConversationItem) o;
-            return conversation.equals(inItem.getModel()) && Objects.equals(status, inItem.status);
+            return conversation.equals(inItem.getModel());
         }
         return false;
     }
@@ -109,7 +105,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     @Override
     public int hashCode() {
         int result = conversation.hashCode();
-        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result;
         return result;
     }
 
@@ -196,13 +192,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.binding.favoriteConversationImageView.setVisibility(View.GONE);
         }
 
-        if (status != null && Conversation.ConversationType.ROOM_SYSTEM != conversation.getType()) {
+        if (conversation.getStatus() != null && Conversation.ConversationType.ROOM_SYSTEM != conversation.getType()) {
             float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, appContext);
 
             holder.binding.userStatusImage.setVisibility(View.VISIBLE);
             holder.binding.userStatusImage.setImageDrawable(new StatusDrawable(
-                status.getStatus(),
-                status.getIcon(),
+                conversation.getStatus(),
+                conversation.getStatusIcon(),
                 size,
                 context.getResources().getColor(R.color.bg_default),
                 appContext));

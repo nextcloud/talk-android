@@ -127,7 +127,19 @@ data class Conversation(
     var permissions: Int = 0,
 
     @JsonField(name = ["messageExpiration"])
-    var messageExpiration: Int = 0
+    var messageExpiration: Int = 0,
+
+    @JsonField(name = ["status"])
+    var status: String? = null,
+
+    @JsonField(name = ["statusIcon"])
+    var statusIcon: String? = null,
+
+    @JsonField(name = ["statusMessage"])
+    var statusMessage: String? = null,
+
+    @JsonField(name = ["statusClearAt"])
+    var statusClearAt: Long? = 0
 
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

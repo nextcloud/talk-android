@@ -423,7 +423,7 @@ class ChatController(args: Bundle) :
         }
 
         Log.d(TAG, "handleFromNotification - getRooms - calling")
-        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl))
+        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl), false)
             ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<RoomsOverall> {
                 override fun onSubscribe(d: Disposable) {
