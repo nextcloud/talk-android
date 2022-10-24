@@ -25,7 +25,7 @@ import android.util.Log;
 
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.ActorWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.AuthParametersWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.AuthWebSocketMessage;
@@ -166,7 +166,7 @@ public class WebSocketConnectionHelper {
         return requestOfferOverallWebSocketMessage;
     }
 
-    CallOverallWebSocketMessage getAssembledCallMessageModel(NCMessageWrapper ncMessageWrapper) {
+    CallOverallWebSocketMessage getAssembledCallMessageModel(NCSignalingMessage ncSignalingMessage) {
         CallOverallWebSocketMessage callOverallWebSocketMessage = new CallOverallWebSocketMessage();
         callOverallWebSocketMessage.setType("message");
 
@@ -174,9 +174,9 @@ public class WebSocketConnectionHelper {
 
         ActorWebSocketMessage actorWebSocketMessage = new ActorWebSocketMessage();
         actorWebSocketMessage.setType("session");
-        actorWebSocketMessage.setSessionId(ncMessageWrapper.getSignalingMessage().getTo());
+        actorWebSocketMessage.setSessionId(ncSignalingMessage.getTo());
         callWebSocketMessage.setRecipientWebSocketMessage(actorWebSocketMessage);
-        callWebSocketMessage.setNcSignalingMessage(ncMessageWrapper.getSignalingMessage());
+        callWebSocketMessage.setNcSignalingMessage(ncSignalingMessage);
 
         callOverallWebSocketMessage.setCallWebSocketMessage(callWebSocketMessage);
         return callOverallWebSocketMessage;
