@@ -358,7 +358,7 @@
     <string name="nc_upload_from_cloud">Partekatu %1$s(e)tik</string>
     <string name="nc_upload_from_device">Kargatu gailutik</string>
     <string name="nc_upload_in_progess">Kargatzen</string>
-    <string name="nc_upload_notification_text">%1$s%2$s-ra  - %3$s \ %%</string>
+    <string name="nc_upload_notification_text">%1$s %2$s-ra  - %3$s \%%</string>
     <string name="nc_upload_picture_from_cam">Atera argazkia</string>
     <string name="nc_upload_video_from_cam">Atera bideoa</string>
     <string name="nc_user">Erabiltzailea</string>
