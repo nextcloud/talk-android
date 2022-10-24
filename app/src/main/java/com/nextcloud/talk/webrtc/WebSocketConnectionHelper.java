@@ -143,17 +143,6 @@ public class WebSocketConnectionHelper {
         return roomOverallWebSocketMessage;
     }
 
-    CallOverallWebSocketMessage getAssembledRequestOfferModel(String sessionId, String roomType) {
-        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
-        // "to" property is not actually needed in the "requestoffer" signaling message, but it is used to set the
-        // recipient session ID in the assembled call message.
-        ncSignalingMessage.setTo(sessionId);
-        ncSignalingMessage.setRoomType(roomType);
-        ncSignalingMessage.setType("requestoffer");
-
-        return getAssembledCallMessageModel(ncSignalingMessage);
-    }
-
     CallOverallWebSocketMessage getAssembledCallMessageModel(NCSignalingMessage ncSignalingMessage) {
         CallOverallWebSocketMessage callOverallWebSocketMessage = new CallOverallWebSocketMessage();
         callOverallWebSocketMessage.setType("message");
