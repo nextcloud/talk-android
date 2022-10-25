@@ -152,6 +152,7 @@ ext {
     workVersion = "2.7.1"
     markwonVersion = "4.6.2"
     espressoVersion = "3.4.0"
+    mockkVersion = "1.13.2"
 }
 
 def webRtcVersion = "96.4664.0"
@@ -294,8 +295,12 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:4.8.1'
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "io.mockk:mockk-android:$mockkVersion"
+
 
     androidTestImplementation "androidx.test:core:1.4.0"
+    androidTestImplementation "androidx.test:core-ktx:1.4.0"
 
     // Espresso core
     androidTestImplementation ("androidx.test.espresso:espresso-core:$espressoVersion", {
