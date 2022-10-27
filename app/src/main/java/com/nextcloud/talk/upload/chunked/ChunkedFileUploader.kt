@@ -57,11 +57,13 @@ import com.nextcloud.talk.utils.Mimetype
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.Response
 import java.io.File
 import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
+import java.util.Arrays
 import java.util.Locale
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -290,6 +292,7 @@ class ChunkedFileUploader(
         okHttpClientBuilder.followRedirects(false)
         okHttpClientBuilder.followSslRedirects(false)
         // okHttpClientBuilder.readTimeout(Duration.ofMinutes(30)) // TODO set timeout
+        okHttpClientBuilder.protocols(Arrays.asList(Protocol.HTTP_1_1))
         okHttpClientBuilder.authenticator(
             RestModule.MagicAuthenticator(
                 ApiUtils.getCredentials(
