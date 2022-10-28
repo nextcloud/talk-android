@@ -10,6 +10,7 @@
     <string name="avatar">Profiilikuva</string>
     <string name="away">Poissa</string>
     <string name="call_without_notification">Puhelu ilman ilmoitusta</string>
+    <string name="camera_permission_granted">Kameraoikeus myönnetty. Valitse kamera uudelleen.</string>
     <string name="clear_status_message">Tyhjennä tilaviesti</string>
     <string name="clear_status_message_after">Tyhjennä tilaviesti, kun on kulunut</string>
     <string name="close">Sulje</string>
@@ -20,6 +21,7 @@
     <string name="emoji_category_recent">Viimeaikaiset</string>
     <string name="emoji_search">Etsi emojia</string>
     <string name="encrypted">Salattu</string>
+    <string name="failed_to_save">Ei voitu tallentaa %1$s</string>
     <string name="file_list_folder">kansio</string>
     <string name="file_list_loading">Ladataan…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -101,6 +103,7 @@
     <string name="nc_dialog_reauth_or_delete">Haluatko valtuuttaa tämän tilin uudelleen vai poistaa tilin?</string>
     <string name="nc_email">Sähköposti</string>
     <string name="nc_expire_message_eight_hours">8 tuntia</string>
+    <string name="nc_expire_message_four_weeks">4 viikkoa</string>
     <string name="nc_expire_message_off">Pois</string>
     <string name="nc_expire_message_one_day">1 päivä</string>
     <string name="nc_expire_message_one_hour">1 tunti</string>
@@ -123,6 +126,8 @@
     <string name="nc_guest_access_password_title">Salasanasuojaus</string>
     <string name="nc_guest_access_password_weak_alert_title">Heikko salasana</string>
     <string name="nc_guest_access_resend_invitations">Lähetä kutsut uudelleen</string>
+    <string name="nc_guest_access_resend_invitations_successful">Kutsut lähetettiin uudelleen.</string>
+    <string name="nc_guest_access_share_link">Jaa keskustelulinkki</string>
     <string name="nc_hint_enter_a_message">Kirjoita viesti…</string>
     <string name="nc_important_conversation">Tärkeä keskustelu</string>
     <string name="nc_important_conversation_desc">Tämän keskustelun ilmoitukset eivät noudata Älä häiritse -asetuksia</string>
@@ -136,6 +141,7 @@
     <string name="nc_license_title">Lisenssi</string>
     <string name="nc_limit_hit">%s merkin raja tuli täyteen</string>
     <string name="nc_lobby">Aula</string>
+    <string name="nc_lobby_start_date">Kokous on ajoitettu alkavaksi %1$s</string>
     <string name="nc_lobby_start_soon">Kokous alkaa pian</string>
     <string name="nc_lobby_waiting">Odotat parhaillaan aulassa.</string>
     <string name="nc_location_current_position_description">Nykyinen sijaintisi</string>
@@ -222,6 +228,8 @@
     <string name="nc_sent_an_image_you">Lähetit kuvan.</string>
     <string name="nc_sent_location" formatted="true">%1$s lähetti sijainnin.</string>
     <string name="nc_sent_location_you">Lähetit sijainnin.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s lähetti kyselyn.</string>
+    <string name="nc_sent_poll_you">Lähetit kyselyn.</string>
     <string name="nc_sent_voice" formatted="true">%1$s lähetti ääniviestin.</string>
     <string name="nc_sent_voice_you">Lähetit ääniviestin.</string>
     <string name="nc_server_connect">Testaa palvelinyhteys</string>
@@ -312,7 +320,9 @@
     <string name="openConversations">Avaa keskustelut</string>
     <string name="play_pause_voice_message">Toista/keskeytä ääniviesti</string>
     <string name="polls_add_option">Lisää valinta</string>
+    <string name="polls_edit_vote">Muokkaa ääntä</string>
     <string name="polls_end_poll">Lopeta kysely</string>
+    <string name="polls_end_poll_confirm">Haluatko varmasti lopettaa kyselyn? Toimintoa ei voi perua.</string>
     <string name="polls_multiple_answers">Useita vastauksia</string>
     <string name="polls_options">Valinnat</string>
     <string name="polls_private_poll">Yksityinen kysely</string>
@@ -347,6 +357,7 @@
     <string name="status_message">Tilaviesti</string>
     <string name="take_photo">Ota kuva</string>
     <string name="take_photo_error_deleting_picture">Virhe kuvaa ottaessa</string>
+    <string name="take_photo_permission">Kuvan ottaminen ei ole mahdollista ilman käyttöoikeuksia</string>
     <string name="take_photo_retake_photo">Ota kuva uudelleen</string>
     <string name="take_photo_send">Lähetä</string>
     <string name="take_photo_switch_camera">Vaihda kamera</string>
@@ -367,4 +378,8 @@
     <string name="userinfo_no_info_headline">Henkilökohtaisia tietoja ei ole asetettu</string>
     <string name="userinfo_no_info_text">Lisää nimi, kuva ja yhteystiedot profiilisivullasi.</string>
     <string name="whats_your_status">Mikä on tilatietosi?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d ääni</item>
+        <item quantity="other">%d ääntä</item>
+    </plurals>
+</resources>
