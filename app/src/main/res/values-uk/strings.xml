@@ -105,8 +105,8 @@
     <string name="nc_description_send_message_button">Надіслати повідомлення</string>
     <string name="nc_dialog_invalid_password">Invalid Password</string>
     <string name="nc_dialog_reauth_or_delete">Чи хочете ви повторно авторизувати чи вилучити цей акаунт?</string>
-    <string name="nc_display_name_not_fetched">Ім\'я для відображення не вдалося розпізнати, скасування</string>
-    <string name="nc_display_name_not_stored">Неможливо отримати ім\'я для відображення, скасування</string>
+    <string name="nc_display_name_not_fetched">Ім\'я для показу не вдалося розпізнати. Скасування</string>
+    <string name="nc_display_name_not_stored">Неможливо отримати ім\'я для показу. Скасування</string>
     <string name="nc_email">Електронна пошта</string>
     <string name="nc_expire_message_eight_hours">8 годин</string>
     <string name="nc_expire_message_four_weeks">4 тижні</string>
