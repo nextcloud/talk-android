@@ -284,6 +284,7 @@
     <string name="online_status">Online-status</string>
     <string name="polls_add_option">Lägg till alternativ</string>
     <string name="polls_options">Alternativ</string>
+    <string name="polls_private_poll">Privat omröstning</string>
     <string name="polls_results_subtitle">Resultat</string>
     <string name="polls_settings">Inställningar</string>
     <string name="polls_submit_vote">Rösta</string>
