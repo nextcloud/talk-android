@@ -40,6 +40,7 @@ import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
+import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import org.greenrobot.eventbus.EventBus;
@@ -100,6 +101,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private List<String> messagesQueue = new ArrayList<>();
 
     private final ExternalSignalingMessageReceiver signalingMessageReceiver = new ExternalSignalingMessageReceiver();
+
+    private final ExternalSignalingMessageSender signalingMessageSender = new ExternalSignalingMessageSender();
 
     MagicWebSocketInstance(User conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
@@ -343,7 +346,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
         }
     }
 
-    public void sendCallMessage(NCSignalingMessage ncSignalingMessage) {
+    private void sendCallMessage(NCSignalingMessage ncSignalingMessage) {
         try {
             String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage));
             if (!connected || reconnecting) {
@@ -406,6 +409,10 @@ public class MagicWebSocketInstance extends WebSocketListener {
         return signalingMessageReceiver;
     }
 
+    public SignalingMessageSender getSignalingMessageSender() {
+        return signalingMessageSender;
+    }
+
     /**
      * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted to a Signaling
      * class.
@@ -420,6 +427,13 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
         public void process(NCSignalingMessage message) {
             processSignalingMessage(message);
+        }
+    }
+
+    private class ExternalSignalingMessageSender implements SignalingMessageSender {
+        @Override
+        public void send(NCSignalingMessage ncSignalingMessage) {
+            sendCallMessage(ncSignalingMessage);
         }
     }
 }
