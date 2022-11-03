@@ -32,12 +32,13 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
-import com.nextcloud.talk.events.SessionDescriptionSendEvent;
-import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
+import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
+import com.nextcloud.talk.signaling.SignalingMessageSender;
 
 import org.greenrobot.eventbus.EventBus;
 import org.webrtc.AudioTrack;
@@ -78,6 +79,8 @@ public class PeerConnectionWrapper {
     private final SignalingMessageReceiver signalingMessageReceiver;
     private final WebRtcMessageListener webRtcMessageListener = new WebRtcMessageListener();
 
+    private final SignalingMessageSender signalingMessageSender;
+
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
     private String sessionId;
@@ -101,7 +104,8 @@ public class PeerConnectionWrapper {
                                  MediaConstraints mediaConstraints,
                                  String sessionId, String localSession, @Nullable MediaStream localStream,
                                  boolean isMCUPublisher, boolean hasMCU, String videoStreamType,
-                                 SignalingMessageReceiver signalingMessageReceiver) {
+                                 SignalingMessageReceiver signalingMessageReceiver,
+                                 SignalingMessageSender signalingMessageSender) {
 
         Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
 
@@ -121,6 +125,8 @@ public class PeerConnectionWrapper {
 
         this.signalingMessageReceiver = signalingMessageReceiver;
         this.signalingMessageReceiver.addListener(webRtcMessageListener, sessionId, videoStreamType);
+
+        this.signalingMessageSender = signalingMessageSender;
 
         if (peerConnection != null) {
             if (this.localStream != null) {
@@ -143,9 +149,10 @@ public class PeerConnectionWrapper {
                 } else if (hasMCU && this.videoStreamType.equals("video")) {
                     // If the connection type is "screen" the client sharing the screen will send an
                     // offer; offers should be requested only for videos.
-                    HashMap<String, String> hashMap = new HashMap<>();
-                    hashMap.put("sessionId", sessionId);
-                    EventBus.getDefault().post(new WebSocketCommunicationEvent("peerReadyForRequestingOffer", hashMap));
+                    // "to" property is not actually needed in the "requestoffer" signaling message, but it is used to
+                    // set the recipient session ID in the assembled call message.
+                    NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage("requestoffer");
+                    signalingMessageSender.send(ncSignalingMessage);
                 } else if (!hasMCU && hasInitiated) {
                     peerConnection.createOffer(magicSdpObserver, mediaConstraints);
                 }
@@ -267,6 +274,15 @@ public class PeerConnectionWrapper {
             }
         }
         return false;
+    }
+
+    private NCSignalingMessage createBaseSignalingMessage(String type) {
+        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+        ncSignalingMessage.setTo(sessionId);
+        ncSignalingMessage.setRoomType(videoStreamType);
+        ncSignalingMessage.setType(type);
+
+        return ncSignalingMessage;
     }
 
     private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
@@ -425,12 +441,19 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onIceCandidate(IceCandidate iceCandidate) {
+            NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage("candidate");
+            NCMessagePayload ncMessagePayload = new NCMessagePayload();
+            ncMessagePayload.setType("candidate");
+
             NCIceCandidate ncIceCandidate = new NCIceCandidate();
             ncIceCandidate.setSdpMid(iceCandidate.sdpMid);
             ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
             ncIceCandidate.setCandidate(iceCandidate.sdp);
-            EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
-                    "candidate", ncIceCandidate, videoStreamType));
+            ncMessagePayload.setIceCandidate(ncIceCandidate);
+
+            ncSignalingMessage.setPayload(ncMessagePayload);
+
+            signalingMessageSender.send(ncSignalingMessage);
         }
 
         @Override
@@ -484,6 +507,12 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onCreateSuccess(SessionDescription sessionDescription) {
+            String type = sessionDescription.type.canonicalForm();
+
+            NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage(type);
+            NCMessagePayload ncMessagePayload = new NCMessagePayload();
+            ncMessagePayload.setType(type);
+
             SessionDescription sessionDescriptionWithPreferredCodec;
             String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
                     (sessionDescription.description,
@@ -492,9 +521,11 @@ public class PeerConnectionWrapper {
                     sessionDescription.type,
                     sessionDescriptionStringWithPreferredCodec);
 
+            ncMessagePayload.setSdp(sessionDescriptionWithPreferredCodec.description);
 
-            EventBus.getDefault().post(new SessionDescriptionSendEvent(sessionDescriptionWithPreferredCodec, sessionId,
-                    sessionDescription.type.canonicalForm(), null, videoStreamType));
+            ncSignalingMessage.setPayload(ncMessagePayload);
+
+            signalingMessageSender.send(ncSignalingMessage);
 
             if (peerConnection != null) {
                 peerConnection.setLocalDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
