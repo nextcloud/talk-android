@@ -23,7 +23,7 @@ class ReadFilesystemOperationIT {
             this.username = username
             token = password
         }
-        val sut = ReadFilesystemOperation(client, user, "", 1)
+        val sut = ReadFilesystemOperation(client, user, "/", 1)
         val data = sut.readRemotePath().data as List<BrowserFile>
         assertEquals(1, data.size)
     }

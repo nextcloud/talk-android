@@ -94,7 +94,7 @@ data class BrowserFile(
                     browserFile.modifiedTimestamp = property.lastModified
                 }
                 is GetContentType -> {
-                    browserFile.mimeType = property.type
+                    browserFile.mimeType = property.type?.toString()
                 }
                 is OCSize -> {
                     browserFile.size = property.ocSize

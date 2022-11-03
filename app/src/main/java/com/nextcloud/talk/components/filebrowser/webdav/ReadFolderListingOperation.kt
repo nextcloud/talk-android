@@ -151,7 +151,7 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: User, 
                 remoteFileBrowserItem.modifiedTimestamp = property.lastModified
             }
             is GetContentType -> {
-                remoteFileBrowserItem.mimeType = property.type
+                remoteFileBrowserItem.mimeType = property.type?.toString()
             }
             is OCSize -> {
                 remoteFileBrowserItem.size = property.ocSize

@@ -36,11 +36,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import at.bitfire.dav4jvm.DavResource;
+import at.bitfire.dav4jvm.MultiResponseCallback;
 import at.bitfire.dav4jvm.Response;
 import at.bitfire.dav4jvm.exception.DavException;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
@@ -77,10 +77,11 @@ public class ReadFilesystemOperation {
         final List<RemoteFile> remoteFiles = new ArrayList<>();
 
         try {
-            new DavResource(okHttpClient, HttpUrl.parse(url)).propfind(depth, WebdavUtils.getAllPropertiesList(),
-                                                                       new Function2<Response, Response.HrefRelation, Unit>() {
+            new DavResource(okHttpClient, HttpUrl.parse(url)).propfind(depth,
+                                                                       WebdavUtils.getAllPropertiesList(),
+                                                                       new MultiResponseCallback() {
                                                                            @Override
-                                                                           public Unit invoke(Response response, Response.HrefRelation hrefRelation) {
+                                                                           public void onResponse(@NonNull Response response, @NonNull Response.HrefRelation hrefRelation) {
                                                                                davResponse.setResponse(response);
                                                                                switch (hrefRelation) {
                                                                                    case MEMBER:
@@ -92,7 +93,6 @@ public class ReadFilesystemOperation {
                                                                                    case OTHER:
                                                                                    default:
                                                                                }
-                                                                               return Unit.INSTANCE;
                                                                            }
                                                                        });
         } catch (IOException | DavException e) {
