@@ -66,7 +66,6 @@ import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.NetworkEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
-import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
@@ -1620,18 +1619,6 @@ public class CallActivity extends CallBaseActivity {
                     performCall();
                 }
                 break;
-            case "peerReadyForRequestingOffer":
-                Log.d(TAG, "onMessageEvent 'peerReadyForRequestingOffer'");
-
-                NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
-                // "to" property is not actually needed in the "requestoffer" signaling message, but it is used to
-                // set the recipient session ID in the assembled call message.
-                ncSignalingMessage.setTo(webSocketCommunicationEvent.getHashMap().get("sessionId"));
-                ncSignalingMessage.setRoomType("video");
-                ncSignalingMessage.setType("requestoffer");
-
-                signalingMessageSender.send(ncSignalingMessage);
-                break;
         }
     }
 
@@ -1967,7 +1954,8 @@ public class CallActivity extends CallBaseActivity {
                                                                   true,
                                                                   true,
                                                                   type,
-                                                                  signalingMessageReceiver);
+                                                                  signalingMessageReceiver,
+                                                                  signalingMessageSender);
 
             } else if (hasMCU) {
                 peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
@@ -1979,7 +1967,8 @@ public class CallActivity extends CallBaseActivity {
                                                                   false,
                                                                   true,
                                                                   type,
-                                                                  signalingMessageReceiver);
+                                                                  signalingMessageReceiver,
+                                                                  signalingMessageSender);
             } else {
                 if (!"screen".equals(type)) {
                     peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
@@ -1991,7 +1980,8 @@ public class CallActivity extends CallBaseActivity {
                                                                       false,
                                                                       false,
                                                                       type,
-                                                                      signalingMessageReceiver);
+                                                                      signalingMessageReceiver,
+                                                                      signalingMessageSender);
                 } else {
                     peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
                                                                       iceServers,
@@ -2002,7 +1992,8 @@ public class CallActivity extends CallBaseActivity {
                                                                       false,
                                                                       false,
                                                                       type,
-                                                                      signalingMessageReceiver);
+                                                                      signalingMessageReceiver,
+                                                                      signalingMessageSender);
                 }
             }
 
@@ -2244,27 +2235,6 @@ public class CallActivity extends CallBaseActivity {
                 false,
                 mediaStreamEvent.getVideoStreamType());
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) {
-        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
-        ncSignalingMessage.setTo(sessionDescriptionSend.getPeerId());
-        ncSignalingMessage.setRoomType(sessionDescriptionSend.getVideoStreamType());
-        ncSignalingMessage.setType(sessionDescriptionSend.getType());
-        NCMessagePayload ncMessagePayload = new NCMessagePayload();
-        ncMessagePayload.setType(sessionDescriptionSend.getType());
-
-        if (!"candidate".equals(sessionDescriptionSend.getType())) {
-            ncMessagePayload.setSdp(sessionDescriptionSend.getSessionDescription().description);
-            ncMessagePayload.setNick(conversationUser.getDisplayName());
-        } else {
-            ncMessagePayload.setIceCandidate(sessionDescriptionSend.getNcIceCandidate());
-        }
-
-        ncSignalingMessage.setPayload(ncMessagePayload);
-
-        signalingMessageSender.send(ncSignalingMessage);
     }
 
     @Override
@@ -2607,6 +2577,8 @@ public class CallActivity extends CallBaseActivity {
 
         @Override
         public void send(NCSignalingMessage ncSignalingMessage) {
+            addLocalParticipantNickIfNeeded(ncSignalingMessage);
+
             String serializedNcSignalingMessage;
             try {
                 serializedNcSignalingMessage = LoganSquare.serialize(ncSignalingMessage);
@@ -2662,6 +2634,29 @@ public class CallActivity extends CallBaseActivity {
                     public void onComplete() {
                     }
                 });
+        }
+
+        /**
+         * Adds the local participant nick to offers and answers.
+         *
+         * For legacy reasons the offers and answers sent when the internal signaling server is used are expected to
+         * provide the nick of the local participant.
+         *
+         * @param ncSignalingMessage the message to add the nick to
+         */
+        private void addLocalParticipantNickIfNeeded(NCSignalingMessage ncSignalingMessage) {
+            String type = ncSignalingMessage.getType();
+            if (!"offer".equals(type) && !"answer".equals(type)) {
+                return;
+            }
+
+            NCMessagePayload payload = ncSignalingMessage.getPayload();
+            if (payload == null) {
+                // Broken message, this should not happen
+                return;
+            }
+
+            payload.setNick(conversationUser.getDisplayName());
         }
     }
 
