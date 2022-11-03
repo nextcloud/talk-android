@@ -2263,16 +2263,16 @@ public class CallActivity extends CallBaseActivity {
             // need to be serialized twice; first the signaling message, and then the wrapper as a whole. Received
             // messages, on the other hand, just need to be deserialized once.
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("{")
+            stringBuilder.append('{')
                 .append("\"fn\":\"")
                 .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncSignalingMessage)))
-                .append("\"")
-                .append(",")
+                .append('\"')
+                .append(',')
                 .append("\"sessionId\":")
-                .append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"")
-                .append(",")
+                .append('\"').append(StringEscapeUtils.escapeJson(callSession)).append('\"')
+                .append(',')
                 .append("\"ev\":\"message\"")
-                .append("}");
+                .append('}');
 
             List<String> strings = new ArrayList<>();
             String stringToSend = stringBuilder.toString();
