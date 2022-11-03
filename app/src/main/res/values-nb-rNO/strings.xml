@@ -279,6 +279,7 @@
     <string name="scope_federated_description">Synkroniser kun til betrodde servere</string>
     <string name="scope_federated_title">Sammenknyttet</string>
     <string name="scope_local_title">Lokal</string>
+    <string name="scope_private_description">Kun synlig for personer som matches via telefonnummerintegrasjon via Talk på mobil</string>
     <string name="scope_private_title">Privat</string>
     <string name="scope_published_description">Synkroniser til betrodde servere og den globale og offentlige adresseboken</string>
     <string name="scope_published_title">Publisert</string>
