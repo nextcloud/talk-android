@@ -85,6 +85,7 @@ import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
+import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -260,6 +261,9 @@ public class CallActivity extends CallBaseActivity {
 
     private InternalSignalingMessageReceiver internalSignalingMessageReceiver = new InternalSignalingMessageReceiver();
     private SignalingMessageReceiver signalingMessageReceiver;
+
+    private InternalSignalingMessageSender internalSignalingMessageSender = new InternalSignalingMessageSender();
+    private SignalingMessageSender signalingMessageSender;
 
     private Map<String, SignalingMessageReceiver.CallParticipantMessageListener> callParticipantMessageListeners =
         new HashMap<>();
@@ -1368,6 +1372,7 @@ public class CallActivity extends CallBaseActivity {
                         signalingMessageReceiver = internalSignalingMessageReceiver;
                         signalingMessageReceiver.addListener(participantListMessageListener);
                         signalingMessageReceiver.addListener(offerMessageListener);
+                        signalingMessageSender = internalSignalingMessageSender;
                         joinRoomAndCall();
                     }
                 }
@@ -1571,6 +1576,7 @@ public class CallActivity extends CallBaseActivity {
             signalingMessageReceiver = webSocketClient.getSignalingMessageReceiver();
             signalingMessageReceiver.addListener(participantListMessageListener);
             signalingMessageReceiver.addListener(offerMessageListener);
+            signalingMessageSender = webSocketClient.getSignalingMessageSender();
         } else {
             if (webSocketClient.isConnected() && currentCallStatus == CallStatus.PUBLISHER_FAILED) {
                 webSocketClient.restartWebSocket();
@@ -1624,7 +1630,7 @@ public class CallActivity extends CallBaseActivity {
                 ncSignalingMessage.setRoomType("video");
                 ncSignalingMessage.setType("requestoffer");
 
-                webSocketClient.sendCallMessage(ncSignalingMessage);
+                signalingMessageSender.send(ncSignalingMessage);
                 break;
         }
     }
@@ -2241,7 +2247,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
+    public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) {
         NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
         ncSignalingMessage.setTo(sessionDescriptionSend.getPeerId());
         ncSignalingMessage.setRoomType(sessionDescriptionSend.getVideoStreamType());
@@ -2258,56 +2264,7 @@ public class CallActivity extends CallBaseActivity {
 
         ncSignalingMessage.setPayload(ncMessagePayload);
 
-        if (!hasExternalSignalingServer) {
-            // The message wrapper can not be defined in a JSON model to be directly serialized, as sent messages
-            // need to be serialized twice; first the signaling message, and then the wrapper as a whole. Received
-            // messages, on the other hand, just need to be deserialized once.
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append('{')
-                .append("\"fn\":\"")
-                .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncSignalingMessage)))
-                .append('\"')
-                .append(',')
-                .append("\"sessionId\":")
-                .append('\"').append(StringEscapeUtils.escapeJson(callSession)).append('\"')
-                .append(',')
-                .append("\"ev\":\"message\"")
-                .append('}');
-
-            List<String> strings = new ArrayList<>();
-            String stringToSend = stringBuilder.toString();
-            strings.add(stringToSend);
-
-            int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[]{ApiUtils.APIv3, 2, 1});
-
-            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, roomToken),
-                                        strings.toString())
-                .retry(3)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<SignalingOverall>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        // unused atm
-                    }
-
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull SignalingOverall signalingOverall) {
-                        receivedSignalingMessages(signalingOverall.getOcs().getSignalings());
-                    }
-
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        Log.e(TAG, "", e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
-        } else {
-            webSocketClient.sendCallMessage(ncSignalingMessage);
-        }
+        signalingMessageSender.send(ncSignalingMessage);
     }
 
     @Override
@@ -2643,6 +2600,68 @@ public class CallActivity extends CallBaseActivity {
         @Override
         public void onUnshareScreen() {
             endPeerConnection(sessionId, true);
+        }
+    }
+
+    private class InternalSignalingMessageSender implements SignalingMessageSender {
+
+        @Override
+        public void send(NCSignalingMessage ncSignalingMessage) {
+            String serializedNcSignalingMessage;
+            try {
+                serializedNcSignalingMessage = LoganSquare.serialize(ncSignalingMessage);
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to serialize signaling message", e);
+                return;
+            }
+
+            // The message wrapper can not be defined in a JSON model to be directly serialized, as sent messages
+            // need to be serialized twice; first the signaling message, and then the wrapper as a whole. Received
+            // messages, on the other hand, just need to be deserialized once.
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append('{')
+                .append("\"fn\":\"")
+                .append(StringEscapeUtils.escapeJson(serializedNcSignalingMessage))
+                .append('\"')
+                .append(',')
+                .append("\"sessionId\":")
+                .append('\"').append(StringEscapeUtils.escapeJson(callSession)).append('\"')
+                .append(',')
+                .append("\"ev\":\"message\"")
+                .append('}');
+
+            List<String> strings = new ArrayList<>();
+            String stringToSend = stringBuilder.toString();
+            strings.add(stringToSend);
+
+            int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[]{ApiUtils.APIv3, 2, 1});
+
+            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, roomToken),
+                                        strings.toString())
+                .retry(3)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<SignalingOverall>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull SignalingOverall signalingOverall) {
+                        // When sending messages to the internal signaling server the response has been empty since
+                        // Talk v2.9.0, so it is not really needed to process it, but there is no harm either in
+                        // doing that, as technically messages could be returned.
+                        receivedSignalingMessages(signalingOverall.getOcs().getSignalings());
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        Log.e(TAG, "", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
         }
     }
 
