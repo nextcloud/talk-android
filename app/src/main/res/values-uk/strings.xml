@@ -289,7 +289,7 @@
     <string name="nc_share_to_choose_account">Оберіть обліковий запис</string>
     <string name="nc_shared_items_location">Місце</string>
     <string name="nc_shared_location">Місце у спільному доступі</string>
-    <string name="nc_sort_by">Сортувати по</string>
+    <string name="nc_sort_by">Впорядкувати за</string>
     <string name="nc_upload_choose_local_files">Виберіть файли</string>
     <string name="nc_upload_failed">Вибачте, помилка завантаження</string>
     <string name="nc_upload_from_device">Завантажити з пристрою</string>
@@ -319,7 +319,7 @@
     <string name="selected_list_item">Selected</string>
     <string name="set_status">Встановити статус</string>
     <string name="set_status_message">Встановити повідомлення про стан</string>
-    <string name="share">Поділитися</string>
+    <string name="share">Спільний доступ</string>
     <string name="shared_items_audio">Аудіо</string>
     <string name="shared_items_file">Файл</string>
     <string name="shared_items_media">Зображення та відео</string>
