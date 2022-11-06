@@ -1480,7 +1480,15 @@ public class CallActivity extends CallBaseActivity {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .repeatWhen(observable -> observable)
                                 .takeWhile(observable -> isConnectionEstablished())
-                                .retry(observable -> isConnectionEstablished())
+                                .retryWhen(errors -> errors
+                                    .flatMap(error -> {
+                                        if (!isConnectionEstablished()) {
+                                            return Observable.error(error);
+                                        }
+
+                                        return Observable.just(0l);
+                                    })
+                                )
                                 .subscribe(new Observer<SignalingOverall>() {
                                     @Override
                                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
