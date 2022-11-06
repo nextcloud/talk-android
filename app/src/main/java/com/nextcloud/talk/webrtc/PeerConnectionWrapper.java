@@ -494,7 +494,7 @@ public class PeerConnectionWrapper {
 
 
             EventBus.getDefault().post(new SessionDescriptionSendEvent(sessionDescriptionWithPreferredCodec, sessionId,
-                    sessionDescription.type.canonicalForm().toLowerCase(), null, videoStreamType));
+                    sessionDescription.type.canonicalForm(), null, videoStreamType));
 
             if (peerConnection != null) {
                 peerConnection.setLocalDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
