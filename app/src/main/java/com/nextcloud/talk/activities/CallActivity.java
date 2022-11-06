@@ -138,6 +138,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
@@ -1472,6 +1473,8 @@ public class CallActivity extends CallBaseActivity {
                             int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser,
                                                                              new int[]{ApiUtils.APIv3, 2, 1});
 
+                            AtomicInteger delayOnError = new AtomicInteger(0);
+
                             ncApi.pullSignalingMessages(credentials,
                                                         ApiUtils.getUrlForSignaling(apiVersion,
                                                                                     baseUrl,
@@ -1480,13 +1483,20 @@ public class CallActivity extends CallBaseActivity {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .repeatWhen(observable -> observable)
                                 .takeWhile(observable -> isConnectionEstablished())
+                                .doOnNext(value -> delayOnError.set(0))
                                 .retryWhen(errors -> errors
                                     .flatMap(error -> {
                                         if (!isConnectionEstablished()) {
                                             return Observable.error(error);
                                         }
 
-                                        return Observable.just(0l);
+                                        if (delayOnError.get() == 0) {
+                                            delayOnError.set(1);
+                                        } else if (delayOnError.get() < 16) {
+                                            delayOnError.set(delayOnError.get() * 2);
+                                        }
+
+                                        return Observable.timer(delayOnError.get(), TimeUnit.SECONDS);
                                     })
                                 )
                                 .subscribe(new Observer<SignalingOverall>() {
