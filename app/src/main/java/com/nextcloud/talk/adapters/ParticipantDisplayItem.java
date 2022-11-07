@@ -13,6 +13,7 @@ public class ParticipantDisplayItem {
     private String session;
     private boolean connected;
     private String nick;
+    private final String defaultGuestNick;
     private String urlForAvatar;
     private MediaStream mediaStream;
     private String streamType;
@@ -20,12 +21,13 @@ public class ParticipantDisplayItem {
     private EglBase rootEglBase;
     private boolean isAudioEnabled;
 
-    public ParticipantDisplayItem(String baseUrl, String userId, String session, boolean connected, String nick, MediaStream mediaStream, String streamType, boolean streamEnabled, EglBase rootEglBase) {
+    public ParticipantDisplayItem(String baseUrl, String userId, String session, boolean connected, String nick, String defaultGuestNick, MediaStream mediaStream, String streamType, boolean streamEnabled, EglBase rootEglBase) {
         this.baseUrl = baseUrl;
         this.userId = userId;
         this.session = session;
         this.connected = connected;
         this.nick = nick;
+        this.defaultGuestNick = defaultGuestNick;
         this.mediaStream = mediaStream;
         this.streamType = streamType;
         this.streamEnabled = streamEnabled;
@@ -61,6 +63,10 @@ public class ParticipantDisplayItem {
     }
 
     public String getNick() {
+        if (TextUtils.isEmpty(userId) && TextUtils.isEmpty(nick)) {
+            return defaultGuestNick;
+        }
+
         return nick;
     }
 
@@ -78,7 +84,7 @@ public class ParticipantDisplayItem {
         if (!TextUtils.isEmpty(userId)) {
             urlForAvatar = ApiUtils.getUrlForAvatar(baseUrl, userId, true);
         } else {
-            urlForAvatar = ApiUtils.getUrlForGuestAvatar(baseUrl, nick, true);
+            urlForAvatar = ApiUtils.getUrlForGuestAvatar(baseUrl, getNick(), true);
         }
     }
 
