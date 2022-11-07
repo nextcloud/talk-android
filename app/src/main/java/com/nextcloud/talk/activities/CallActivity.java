@@ -2277,11 +2277,14 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
+        String defaultGuestNick = getResources().getString(R.string.nc_nick_guest);
+
         ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(baseUrl,
                                                                                    userId4Usage,
                                                                                    session,
                                                                                    connected,
                                                                                    nick,
+                                                                                   defaultGuestNick,
                                                                                    mediaStream,
                                                                                    videoStreamType,
                                                                                    videoStreamEnabled,

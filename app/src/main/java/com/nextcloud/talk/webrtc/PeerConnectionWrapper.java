@@ -24,11 +24,9 @@
 package com.nextcloud.talk.webrtc;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
@@ -223,11 +221,7 @@ public class PeerConnectionWrapper {
     }
 
     public String getNick() {
-        if (!TextUtils.isEmpty(nick)) {
-            return nick;
-        } else {
-            return Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getString(R.string.nc_nick_guest);
-        }
+        return nick;
     }
 
     private void setNick(String nick) {
