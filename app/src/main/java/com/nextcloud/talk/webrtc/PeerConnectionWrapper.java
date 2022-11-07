@@ -320,37 +320,40 @@ public class PeerConnectionWrapper {
             String strData = new String(bytes);
             Log.d(TAG, "Got msg: " + strData + " over " + TAG + " " + sessionId);
 
+            DataChannelMessage dataChannelMessage;
             try {
-                DataChannelMessage dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
-
-                if ("nickChanged".equals(dataChannelMessage.getType())) {
-                    String nick = null;
-                    if (dataChannelMessage.getPayload() instanceof String) {
-                        nick = (String) dataChannelMessage.getPayload();
-                    } else if (dataChannelMessage.getPayload() instanceof Map) {
-                        Map<String, String> payloadMap = (Map<String, String>) dataChannelMessage.getPayload();
-                        nick = payloadMap.get("name");
-                    }
-
-                    if (nick != null) {
-                        EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                .NICK_CHANGE, sessionId, nick, null, videoStreamType));
-                    }
-                } else if ("audioOn".equals(dataChannelMessage.getType())) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .AUDIO_CHANGE, sessionId, null, TRUE, videoStreamType));
-                } else if ("audioOff".equals(dataChannelMessage.getType())) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .AUDIO_CHANGE, sessionId, null, FALSE, videoStreamType));
-                } else if ("videoOn".equals(dataChannelMessage.getType())) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .VIDEO_CHANGE, sessionId, null, TRUE, videoStreamType));
-                } else if ("videoOff".equals(dataChannelMessage.getType())) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .VIDEO_CHANGE, sessionId, null, FALSE, videoStreamType));
-                }
+                dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
             } catch (IOException e) {
                 Log.d(TAG, "Failed to parse data channel message");
+
+                return;
+            }
+
+            if ("nickChanged".equals(dataChannelMessage.getType())) {
+                String nick = null;
+                if (dataChannelMessage.getPayload() instanceof String) {
+                    nick = (String) dataChannelMessage.getPayload();
+                } else if (dataChannelMessage.getPayload() instanceof Map) {
+                    Map<String, String> payloadMap = (Map<String, String>) dataChannelMessage.getPayload();
+                    nick = payloadMap.get("name");
+                }
+
+                if (nick != null) {
+                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                            .NICK_CHANGE, sessionId, nick, null, videoStreamType));
+                }
+            } else if ("audioOn".equals(dataChannelMessage.getType())) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                        .AUDIO_CHANGE, sessionId, null, TRUE, videoStreamType));
+            } else if ("audioOff".equals(dataChannelMessage.getType())) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                        .AUDIO_CHANGE, sessionId, null, FALSE, videoStreamType));
+            } else if ("videoOn".equals(dataChannelMessage.getType())) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                        .VIDEO_CHANGE, sessionId, null, TRUE, videoStreamType));
+            } else if ("videoOff".equals(dataChannelMessage.getType())) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                        .VIDEO_CHANGE, sessionId, null, FALSE, videoStreamType));
             }
         }
     }
