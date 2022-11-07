@@ -2170,7 +2170,7 @@ public class CallActivity extends CallBaseActivity {
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE && !isVoiceOnlyCall) {
+            PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE) {
             if (participantDisplayItems.get(participantDisplayItemId) != null) {
                 participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(peerConnectionEvent.getChangeValue());
                 participantsAdapter.notifyDataSetChanged();
