@@ -2382,22 +2382,11 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
-        String urlForAvatar;
-        if (!TextUtils.isEmpty(userId4Usage)) {
-            urlForAvatar = ApiUtils.getUrlForAvatar(baseUrl,
-                                                    userId4Usage,
-                                                    true);
-        } else {
-            urlForAvatar = ApiUtils.getUrlForGuestAvatar(baseUrl,
-                                                         nick,
-                                                         true);
-        }
-
-        ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(userId4Usage,
+        ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(baseUrl,
+                                                                                   userId4Usage,
                                                                                    session,
                                                                                    connected,
                                                                                    nick,
-                                                                                   urlForAvatar,
                                                                                    mediaStream,
                                                                                    videoStreamType,
                                                                                    videoStreamEnabled,
