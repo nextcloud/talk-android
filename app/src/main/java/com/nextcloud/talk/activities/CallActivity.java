@@ -268,6 +268,8 @@ public class CallActivity extends CallBaseActivity {
     private Map<String, SignalingMessageReceiver.CallParticipantMessageListener> callParticipantMessageListeners =
         new HashMap<>();
 
+    private Map<String, PeerConnectionWrapper.DataChannelMessageListener> dataChannelMessageListeners = new HashMap<>();
+
     private SignalingMessageReceiver.ParticipantListMessageListener participantListMessageListener = new SignalingMessageReceiver.ParticipantListMessageListener() {
 
         @Override
@@ -2007,6 +2009,12 @@ public class CallActivity extends CallBaseActivity {
                     new CallActivityCallParticipantMessageListener(sessionId);
                 callParticipantMessageListeners.put(sessionId, callParticipantMessageListener);
                 signalingMessageReceiver.addListener(callParticipantMessageListener, sessionId);
+
+                // DataChannel messages are sent only in video peers; (sender) screen peers do not even open them.
+                PeerConnectionWrapper.DataChannelMessageListener dataChannelMessageListener =
+                    new CallActivityDataChannelMessageListener(sessionId);
+                dataChannelMessageListeners.put(sessionId, dataChannelMessageListener);
+                peerConnectionWrapper.addListener(dataChannelMessageListener);
             }
 
             if (!publisher && !hasExternalSignalingServer && offerAnswerNickProviders.get(sessionId) == null) {
@@ -2040,6 +2048,10 @@ public class CallActivity extends CallBaseActivity {
         if (!(peerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()) {
             for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrappers) {
                 if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
+                    if (!justScreen && VIDEO_STREAM_TYPE_VIDEO.equals(peerConnectionWrapper.getVideoStreamType())) {
+                        PeerConnectionWrapper.DataChannelMessageListener dataChannelMessageListener = dataChannelMessageListeners.remove(sessionId);
+                        peerConnectionWrapper.removeListener(dataChannelMessageListener);
+                    }
                     String videoStreamType = peerConnectionWrapper.getVideoStreamType();
                     if (VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType) || !justScreen) {
                         runOnUiThread(() -> removeMediaStream(sessionId, videoStreamType));
@@ -2162,24 +2174,6 @@ public class CallActivity extends CallBaseActivity {
                     && enableVideo != localVideoTrack.enabled()) {
                     toggleMedia(enableVideo, true);
                 }
-            }
-        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE) {
-            if (participantDisplayItems.get(participantDisplayItemId) != null) {
-                participantDisplayItems.get(participantDisplayItemId).setNick(peerConnectionEvent.getNick());
-                participantsAdapter.notifyDataSetChanged();
-            }
-        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE) {
-            if (participantDisplayItems.get(participantDisplayItemId) != null) {
-                participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(peerConnectionEvent.getChangeValue());
-                participantsAdapter.notifyDataSetChanged();
-            }
-        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.AUDIO_CHANGE) {
-            if (participantDisplayItems.get(participantDisplayItemId) != null) {
-                participantDisplayItems.get(participantDisplayItemId).setAudioEnabled(peerConnectionEvent.getChangeValue());
-                participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED) {
@@ -2628,6 +2622,66 @@ public class CallActivity extends CallBaseActivity {
         @Override
         public void onUnshareScreen() {
             endPeerConnection(sessionId, true);
+        }
+    }
+
+    private class CallActivityDataChannelMessageListener implements PeerConnectionWrapper.DataChannelMessageListener {
+
+        private final String participantDisplayItemId;
+
+        private CallActivityDataChannelMessageListener(String sessionId) {
+            // DataChannel messages are sent only in video peers, so the listener only acts on the "video" items.
+            this.participantDisplayItemId = sessionId + "-video";
+        }
+
+        @Override
+        public void onAudioOn() {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setAudioEnabled(true);
+                    participantsAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onAudioOff() {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setAudioEnabled(false);
+                    participantsAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onVideoOn() {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(true);
+                    participantsAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onVideoOff() {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(false);
+                    participantsAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onNickChanged(String nick) {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setNick(nick);
+                    participantsAdapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 
