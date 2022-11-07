@@ -81,7 +81,6 @@ public class PeerConnectionWrapper {
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
     private String sessionId;
-    private String nick;
     private final MediaConstraints mediaConstraints;
     private DataChannel dataChannel;
     private final MagicSdpObserver magicSdpObserver;
@@ -220,14 +219,6 @@ public class PeerConnectionWrapper {
         return sessionId;
     }
 
-    public String getNick() {
-        return nick;
-    }
-
-    private void setNick(String nick) {
-        this.nick = nick;
-    }
-
     private void sendInitialMediaStatus() {
         if (localStream != null) {
             if (localStream.videoTracks.size() == 1 && localStream.videoTracks.get(0).enabled()) {
@@ -269,16 +260,14 @@ public class PeerConnectionWrapper {
     private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
 
         public void onOffer(String sdp, String nick) {
-            onOfferOrAnswer("offer", sdp, nick);
+            onOfferOrAnswer("offer", sdp);
         }
 
         public void onAnswer(String sdp, String nick) {
-            onOfferOrAnswer("answer", sdp, nick);
+            onOfferOrAnswer("answer", sdp);
         }
 
-        private void onOfferOrAnswer(String type, String sdp, String nick) {
-            setNick(nick);
-
+        private void onOfferOrAnswer(String type, String sdp) {
             SessionDescription sessionDescriptionWithPreferredCodec;
 
             boolean isAudio = false;
@@ -334,15 +323,10 @@ public class PeerConnectionWrapper {
             try {
                 DataChannelMessage dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
 
-                String internalNick;
                 if ("nickChanged".equals(dataChannelMessage.getType())) {
                     if (dataChannelMessage.getPayload() instanceof String) {
-                        internalNick = (String) dataChannelMessage.getPayload();
-                        if (!internalNick.equals(nick)) {
-                            setNick(internalNick);
-                            EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                    .NICK_CHANGE, sessionId, getNick(), null, videoStreamType));
-                        }
+                        EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                                .NICK_CHANGE, sessionId, (String) dataChannelMessage.getPayload(), null, videoStreamType));
                     } else {
                         if (dataChannelMessage.getPayload() != null) {
                             Map<String, String> payloadMap = (Map<String, String>) dataChannelMessage.getPayload();
