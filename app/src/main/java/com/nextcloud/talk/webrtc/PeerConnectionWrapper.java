@@ -65,11 +65,25 @@ import javax.inject.Inject;
 import androidx.annotation.Nullable;
 import autodagger.AutoInjector;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
 @AutoInjector(NextcloudTalkApplication.class)
 public class PeerConnectionWrapper {
+
+    /**
+     * Listener for data channel messages.
+     *
+     * The messages are bound to a specific peer connection, so each listener is expected to handle messages only for
+     * a single peer connection.
+     *
+     * All methods are called on the so called "signaling" thread of WebRTC, which is an internal thread created by the
+     * WebRTC library and NOT the same thread where signaling messages are received.
+     */
+    public interface DataChannelMessageListener {
+        void onAudioOn();
+        void onAudioOff();
+        void onVideoOn();
+        void onVideoOff();
+        void onNickChanged(String nick);
+    }
 
     private static final String TAG = PeerConnectionWrapper.class.getCanonicalName();
 
@@ -77,6 +91,8 @@ public class PeerConnectionWrapper {
     private final WebRtcMessageListener webRtcMessageListener = new WebRtcMessageListener();
 
     private final SignalingMessageSender signalingMessageSender;
+
+    private final DataChannelMessageNotifier dataChannelMessageNotifier = new DataChannelMessageNotifier();
 
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
@@ -154,6 +170,21 @@ public class PeerConnectionWrapper {
                 }
             }
         }
+    }
+
+    /**
+     * Adds a listener for data channel messages.
+     *
+     * A listener is expected to be added only once. If the same listener is added again it will be notified just once.
+     *
+     * @param listener the DataChannelMessageListener
+     */
+    public void addListener(DataChannelMessageListener listener) {
+        dataChannelMessageNotifier.addListener(listener);
+    }
+
+    public void removeListener(DataChannelMessageListener listener) {
+        dataChannelMessageNotifier.removeListener(listener);
     }
 
     public String getVideoStreamType() {
@@ -339,21 +370,16 @@ public class PeerConnectionWrapper {
                 }
 
                 if (nick != null) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .NICK_CHANGE, sessionId, nick, null, videoStreamType));
+                    dataChannelMessageNotifier.notifyNickChanged(nick);
                 }
             } else if ("audioOn".equals(dataChannelMessage.getType())) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .AUDIO_CHANGE, sessionId, null, TRUE, videoStreamType));
+                dataChannelMessageNotifier.notifyAudioOn();
             } else if ("audioOff".equals(dataChannelMessage.getType())) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .AUDIO_CHANGE, sessionId, null, FALSE, videoStreamType));
+                dataChannelMessageNotifier.notifyAudioOff();
             } else if ("videoOn".equals(dataChannelMessage.getType())) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .VIDEO_CHANGE, sessionId, null, TRUE, videoStreamType));
+                dataChannelMessageNotifier.notifyVideoOn();
             } else if ("videoOff".equals(dataChannelMessage.getType())) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .VIDEO_CHANGE, sessionId, null, FALSE, videoStreamType));
+                dataChannelMessageNotifier.notifyVideoOff();
             }
         }
     }
