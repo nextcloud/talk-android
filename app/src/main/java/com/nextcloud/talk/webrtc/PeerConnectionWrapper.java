@@ -324,15 +324,17 @@ public class PeerConnectionWrapper {
                 DataChannelMessage dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
 
                 if ("nickChanged".equals(dataChannelMessage.getType())) {
+                    String nick = null;
                     if (dataChannelMessage.getPayload() instanceof String) {
+                        nick = (String) dataChannelMessage.getPayload();
+                    } else if (dataChannelMessage.getPayload() instanceof Map) {
+                        Map<String, String> payloadMap = (Map<String, String>) dataChannelMessage.getPayload();
+                        nick = payloadMap.get("name");
+                    }
+
+                    if (nick != null) {
                         EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                .NICK_CHANGE, sessionId, (String) dataChannelMessage.getPayload(), null, videoStreamType));
-                    } else {
-                        if (dataChannelMessage.getPayload() != null) {
-                            Map<String, String> payloadMap = (Map<String, String>) dataChannelMessage.getPayload();
-                            EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                    .NICK_CHANGE, sessionId, payloadMap.get("name"), null, videoStreamType));
-                        }
+                                .NICK_CHANGE, sessionId, nick, null, videoStreamType));
                     }
                 } else if ("audioOn".equals(dataChannelMessage.getType())) {
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
