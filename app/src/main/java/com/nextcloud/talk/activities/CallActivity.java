@@ -263,6 +263,8 @@ public class CallActivity extends CallBaseActivity {
     private InternalSignalingMessageSender internalSignalingMessageSender = new InternalSignalingMessageSender();
     private SignalingMessageSender signalingMessageSender;
 
+    private Map<String, OfferAnswerNickProvider> offerAnswerNickProviders = new HashMap<>();
+
     private Map<String, SignalingMessageReceiver.CallParticipantMessageListener> callParticipantMessageListeners =
         new HashMap<>();
 
@@ -2007,6 +2009,13 @@ public class CallActivity extends CallBaseActivity {
                 signalingMessageReceiver.addListener(callParticipantMessageListener, sessionId);
             }
 
+            if (!publisher && !hasExternalSignalingServer && offerAnswerNickProviders.get(sessionId) == null) {
+                OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider();
+                offerAnswerNickProviders.put(sessionId, offerAnswerNickProvider);
+                signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
+                signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
+            }
+
             if (publisher) {
                 startSendingNick();
             }
@@ -2043,6 +2052,12 @@ public class CallActivity extends CallBaseActivity {
         if (!justScreen) {
             SignalingMessageReceiver.CallParticipantMessageListener listener = callParticipantMessageListeners.remove(sessionId);
             signalingMessageReceiver.removeListener(listener);
+
+            OfferAnswerNickProvider offerAnswerNickProvider = offerAnswerNickProviders.remove(sessionId);
+            if (offerAnswerNickProvider != null) {
+                signalingMessageReceiver.removeListener(offerAnswerNickProvider.getVideoWebRtcMessageListener());
+                signalingMessageReceiver.removeListener(offerAnswerNickProvider.getScreenWebRtcMessageListener());
+            }
         }
     }
 
@@ -2264,7 +2279,7 @@ public class CallActivity extends CallBaseActivity {
         if (hasExternalSignalingServer) {
             nick = webSocketClient.getDisplayNameForSession(session);
         } else {
-            nick = peerConnectionWrapper != null ? peerConnectionWrapper.getNick() : "";
+            nick = offerAnswerNickProviders.get(session) != null ? offerAnswerNickProviders.get(session).getNick() : "";
         }
 
         String userId4Usage = userId;
@@ -2558,6 +2573,47 @@ public class CallActivity extends CallBaseActivity {
 
         public void process(NCSignalingMessage message) {
             processSignalingMessage(message);
+        }
+    }
+
+    private static class OfferAnswerNickProvider {
+
+        private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
+
+            @Override
+            public void onOffer(String sdp, String nick) {
+                (OfferAnswerNickProvider.this).nick = nick;
+            }
+
+            @Override
+            public void onAnswer(String sdp, String nick) {
+                (OfferAnswerNickProvider.this).nick = nick;
+            }
+
+            @Override
+            public void onCandidate(String sdpMid, int sdpMLineIndex, String sdp) {
+            }
+
+            @Override
+            public void onEndOfCandidates() {
+            }
+        }
+
+        private final WebRtcMessageListener videoWebRtcMessageListener = new WebRtcMessageListener();
+        private final WebRtcMessageListener screenWebRtcMessageListener = new WebRtcMessageListener();
+
+        private String nick;
+
+        public WebRtcMessageListener getVideoWebRtcMessageListener() {
+            return videoWebRtcMessageListener;
+        }
+
+        public WebRtcMessageListener getScreenWebRtcMessageListener() {
+            return screenWebRtcMessageListener;
+        }
+
+        public String getNick() {
+            return nick;
         }
     }
 
