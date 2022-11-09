@@ -151,7 +151,7 @@ ext {
     roomVersion = "2.4.3"
     workVersion = "2.7.1"
     markwonVersion = "4.6.2"
-    espressoVersion = "3.4.0"
+    espressoVersion = "3.5.0"
 }
 
 def webRtcVersion = "96.4664.0"
