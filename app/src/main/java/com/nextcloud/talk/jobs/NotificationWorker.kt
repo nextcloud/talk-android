@@ -53,7 +53,6 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallNotificationActivity
 import com.nextcloud.talk.activities.MainActivity
@@ -136,14 +135,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private var conversationType: String? = "one2one"
     private var muteCall = false
     private var importantConversation = false
-    private var deliveryDelayTime: Long = 0
     private lateinit var notificationManager: NotificationManagerCompat
 
     override fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
         context = applicationContext
 
-        calculateDeliveryDelayTime(inputData)
         initDecryptedData(inputData)
         initNcApiAndCredentials()
 
@@ -247,9 +244,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setSubText(baseUrl)
                 .setShowWhen(true)
                 .setWhen(pushMessage.timestamp)
-                .setContentTitle(
-                    EmojiCompat.get().process(pushMessage.subject + getDeliveryDelayTimeForDebug())
-                )
+                .setContentTitle(EmojiCompat.get().process(pushMessage.subject))
                 .setAutoCancel(true)
                 .setOngoing(true)
                 .setContentIntent(fullScreenPendingIntent)
@@ -261,20 +256,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         sendNotification(pushMessage.timestamp.toInt(), notification)
 
         checkIfCallIsActive(signatureVerification, pushMessage)
-    }
-
-    /**
-     * Calculates the time between the sent time (from firebase) and the received time on the device.
-     * 'deliveryDelayTime' is displayed in debug mode right after the notification message.
-     * A huge delay means that there might be something wrong on device side.
-     */
-    private fun calculateDeliveryDelayTime(inputData: Data) {
-        val messageSentTime = inputData.getLong(BundleKeys.KEY_NOTIFICATION_SENT_TIME, 0)
-        deliveryDelayTime = if (messageSentTime == 0L) {
-            0
-        } else {
-            System.currentTimeMillis() - messageSentTime
-        }
     }
 
     private fun initNcApiAndCredentials() {
@@ -456,12 +437,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setAutoCancel(true)
         if (!TextUtils.isEmpty(pushMessage.subject)) {
             notificationBuilder.setContentTitle(
-                EmojiCompat.get().process(pushMessage.subject + getDeliveryDelayTimeForDebug())
+                EmojiCompat.get().process(pushMessage.subject)
             )
         }
         if (!TextUtils.isEmpty(pushMessage.text)) {
             notificationBuilder.setContentText(
-                EmojiCompat.get().process(pushMessage.text!! + getDeliveryDelayTimeForDebug())
+                EmojiCompat.get().process(pushMessage.text!!)
             )
         }
         if (Build.VERSION.SDK_INT >= 23) {
@@ -625,15 +606,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 )
             }
         )
-        newStyle.addMessage(pushMessage.text + getDeliveryDelayTimeForDebug(), pushMessage.timestamp, person)
+        newStyle.addMessage(pushMessage.text, pushMessage.timestamp, person)
         return newStyle
-    }
-
-    private fun getDeliveryDelayTimeForDebug(): String {
-        if (BuildConfig.DEBUG) {
-            return " ($deliveryDelayTime ms delay)"
-        }
-        return ""
     }
 
     @Throws(NumberFormatException::class)
@@ -801,7 +775,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                             String.format(
                                 context!!.resources.getString(R.string.nc_missed_call),
                                 currentConversation!!.displayName
-                            ) + getDeliveryDelayTimeForDebug()
+                            )
                         )
                         .setSmallIcon(R.drawable.ic_baseline_phone_missed_24)
                         .setOngoing(false)
