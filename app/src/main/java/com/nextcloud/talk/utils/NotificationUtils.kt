@@ -47,6 +47,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import java.io.IOException
 
+@Suppress("TooManyFunctions")
 object NotificationUtils {
 
     enum class NotificationChannels {

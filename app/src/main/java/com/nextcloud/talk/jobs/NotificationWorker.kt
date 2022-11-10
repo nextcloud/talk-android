@@ -274,6 +274,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         )
     }
 
+    @Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "ComplexMethod", "LongMethod")
     private fun initDecryptedData(inputData: Data) {
         val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT)
         val signature = inputData.getString(BundleKeys.KEY_NOTIFICATION_SIGNATURE)
@@ -389,6 +390,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             })
     }
 
+    @Suppress("MagicNumber")
     private fun showNotification(intent: Intent) {
         val largeIcon: Bitmap
         val priority = NotificationCompat.PRIORITY_HIGH

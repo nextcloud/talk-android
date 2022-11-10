@@ -297,6 +297,7 @@ class CallNotificationActivity : CallBaseActivity() {
         return PendingIntent.getActivity(context, requestCode, intent, intentFlag)
     }
 
+    @Suppress("MagicNumber")
     private fun handleFromNotification() {
         val apiVersion = ApiUtils.getConversationApiVersion(
             userBeingCalled,
@@ -363,6 +364,7 @@ class CallNotificationActivity : CallBaseActivity() {
         showAnswerControls()
     }
 
+    @Suppress("MagicNumber")
     private fun setAvatarForOneToOneCall() {
         val imageRequest = DisplayUtils.getImageRequestForUrl(
             ApiUtils.getUrlForAvatar(
