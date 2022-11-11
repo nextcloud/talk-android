@@ -39,7 +39,7 @@
         <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
 
         <service
-            android:name=".services.firebase.ChatAndCallMessagingService"
+            android:name=".services.firebase.NCFirebaseMessagingService"
             android:exported="false"
             android:foregroundServiceType="phoneCall">
             <intent-filter>

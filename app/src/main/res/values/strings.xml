@@ -210,6 +210,7 @@
     <string name="nc_call_state_in_call">%1$s in call</string>
     <string name="nc_call_state_with_phone">%1$s with phone</string>
     <string name="nc_call_state_with_video">%1$s with video</string>
+    <string name="nc_missed_call">You missed a call from %s</string>
 
     <!-- Picture in Picture -->
     <string name="nc_pip_microphone_mute">Mute microphone</string>
@@ -246,7 +247,6 @@
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text_pass">\nPassword: %1$s</string>
 
-    <!-- Magical stuff -->
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">With microphone disabled, click&amp;hold to use Push-to-talk</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
