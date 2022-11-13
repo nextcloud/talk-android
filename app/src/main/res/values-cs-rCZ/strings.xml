@@ -187,6 +187,7 @@
     <string name="nc_message_read">Zpráva přečtena</string>
     <string name="nc_message_sent">Zpráva odeslána</string>
     <string name="nc_microphone_permission_permanently_denied">Pro zapnutí hlasové komunikace udělte v nastavení systému oprávnění „Mikrofon“ .</string>
+    <string name="nc_missed_call">Zmeškali jste hovor od %s</string>
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_never">Nikdy nepřipojeno</string>
     <string name="nc_new_conversation">Nová konverzace</string>

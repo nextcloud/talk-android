@@ -187,6 +187,7 @@
     <string name="nc_message_read">Nachricht gelesen</string>
     <string name="nc_message_sent">Nachricht gesendet</string>
     <string name="nc_microphone_permission_permanently_denied">Um Audioanrufe zu ermöglichen, gewähren Sie die Berechtigung für das \"Mikrofon\" in den Systemeinstellungen</string>
+    <string name="nc_missed_call">Sie haben einen Anruf von %s verpasst</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nie beigetreten</string>
     <string name="nc_new_conversation">Neue Unterhaltung</string>

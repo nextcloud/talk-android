@@ -187,6 +187,7 @@
     <string name="nc_message_read">訊息已讀</string>
     <string name="nc_message_sent">訊息已傳送</string>
     <string name="nc_microphone_permission_permanently_denied">為了開啟聲音的通訊請在系統設定內同意\"麥克風\"的需求。</string>
+    <string name="nc_missed_call">您錯過了 %s 的來電</string>
     <string name="nc_moderator">主持人</string>
     <string name="nc_never">從未加入</string>
     <string name="nc_new_conversation">新對話</string>
