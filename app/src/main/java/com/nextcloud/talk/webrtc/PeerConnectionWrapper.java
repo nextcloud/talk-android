@@ -372,14 +372,32 @@ public class PeerConnectionWrapper {
                 if (nick != null) {
                     dataChannelMessageNotifier.notifyNickChanged(nick);
                 }
-            } else if ("audioOn".equals(dataChannelMessage.getType())) {
+
+                return;
+            }
+
+            if ("audioOn".equals(dataChannelMessage.getType())) {
                 dataChannelMessageNotifier.notifyAudioOn();
-            } else if ("audioOff".equals(dataChannelMessage.getType())) {
+
+                return;
+            }
+
+            if ("audioOff".equals(dataChannelMessage.getType())) {
                 dataChannelMessageNotifier.notifyAudioOff();
-            } else if ("videoOn".equals(dataChannelMessage.getType())) {
+
+                return;
+            }
+
+            if ("videoOn".equals(dataChannelMessage.getType())) {
                 dataChannelMessageNotifier.notifyVideoOn();
-            } else if ("videoOff".equals(dataChannelMessage.getType())) {
+
+                return;
+            }
+
+            if ("videoOff".equals(dataChannelMessage.getType())) {
                 dataChannelMessageNotifier.notifyVideoOff();
+
+                return;
             }
         }
     }
