@@ -27,6 +27,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -61,7 +62,6 @@ import okhttp3.Cache
 import org.parceler.Parcels
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.concurrent.thread
 
 @SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -239,16 +239,16 @@ class CallNotificationActivity : CallBaseActivity() {
             binding!!.avatarImageView.setImageResource(R.drawable.ic_circular_group)
         }
 
-        thread(start = true) {
-            var isNotificationOpen = true
-            while (isNotificationOpen) {
-                Thread.sleep(1000)
-                if (!NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
-                    isNotificationOpen = false
+        val notificationHandler = Handler(Looper.getMainLooper())
+        notificationHandler.post(object : Runnable {
+            override fun run() {
+                if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
+                    notificationHandler.postDelayed(this, 1000)
+                } else {
                     finish()
                 }
             }
-        }
+        })
 
         showAnswerControls()
     }
