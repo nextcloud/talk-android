@@ -187,6 +187,7 @@
     <string name="nc_message_read">İleti okundu</string>
     <string name="nc_message_sent">İleti gönderildi</string>
     <string name="nc_microphone_permission_permanently_denied">Sesli iletişim kurabilmek için sistem ayarlarından \"Mikrofon\" erişme iznini verin.</string>
+    <string name="nc_missed_call">%s sizi aramış</string>
     <string name="nc_moderator">Sorumlu</string>
     <string name="nc_never">Hiç katılmadı</string>
     <string name="nc_new_conversation">Yeni görüşme</string>
