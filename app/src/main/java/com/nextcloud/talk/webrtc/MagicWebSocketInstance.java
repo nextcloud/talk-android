@@ -467,7 +467,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(NetworkEvent networkEvent) {
-        if (networkEvent.getNetworkConnectionEvent().equals(NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED) && !isConnected()) {
+        if (networkEvent.getNetworkConnectionEvent() == NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED && !isConnected()) {
             restartWebSocket();
         }
     }
