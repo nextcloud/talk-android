@@ -140,8 +140,8 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
         }
 
         if (TextUtils.isEmpty(participant.getDisplayName()) &&
-            (participant.getType().equals(Participant.ParticipantType.GUEST) ||
-                participant.getType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
+            (participant.getType() == Participant.ParticipantType.GUEST ||
+                participant.getType() == Participant.ParticipantType.USER_FOLLOWING_LINK)) {
             holder.binding.nameText.setText(NextcloudTalkApplication
                                                 .Companion
                                                 .getSharedApplication()
@@ -170,8 +170,8 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                 holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_mail);
             }
         } else if (participant.getCalculatedActorType() == Participant.ActorType.GUESTS ||
-            Participant.ParticipantType.GUEST.equals(participant.getType()) ||
-            Participant.ParticipantType.GUEST_MODERATOR.equals(participant.getType())) {
+            participant.getType() == Participant.ParticipantType.GUEST ||
+            participant.getType() == Participant.ParticipantType.GUEST_MODERATOR) {
 
             String displayName = NextcloudTalkApplication.Companion.getSharedApplication()
                 .getResources().getString(R.string.nc_guest);

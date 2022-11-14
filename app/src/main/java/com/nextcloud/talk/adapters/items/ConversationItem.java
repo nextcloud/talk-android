@@ -278,7 +278,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             }
         }
 
-        if (Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
+        if (conversation.getType() == Conversation.ConversationType.ROOM_SYSTEM) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
                 Drawable[] layers = new Drawable[2];
