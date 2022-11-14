@@ -276,7 +276,7 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onStateChange() {
-            if (dataChannel != null && dataChannel.state().equals(DataChannel.State.OPEN) &&
+            if (dataChannel != null && dataChannel.state() == DataChannel.State.OPEN &&
                     dataChannel.label().equals("status")) {
                 sendInitialMediaStatus();
             }
@@ -343,7 +343,7 @@ public class PeerConnectionWrapper {
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
 
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
-            if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
+            if (iceConnectionState == PeerConnection.IceConnectionState.CONNECTED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED,
                                                                    sessionId, null, null, null));
 
@@ -354,18 +354,18 @@ public class PeerConnectionWrapper {
                 if (hasInitiated) {
                     sendInitialMediaStatus();
                 }
-            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.COMPLETED)) {
+            } else if (iceConnectionState == PeerConnection.IceConnectionState.COMPLETED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED,
                                                                    sessionId, null, null, null));
-            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.CLOSED)) {
+            } else if (iceConnectionState == PeerConnection.IceConnectionState.CLOSED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CLOSED, sessionId, null, null, videoStreamType));
-            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.DISCONNECTED) ||
-                    iceConnectionState.equals(PeerConnection.IceConnectionState.NEW) ||
-                    iceConnectionState.equals(PeerConnection.IceConnectionState.CHECKING)) {
+            } else if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED ||
+                    iceConnectionState == PeerConnection.IceConnectionState.NEW ||
+                    iceConnectionState == PeerConnection.IceConnectionState.CHECKING) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
                                                                    sessionId, null, null, null));
-            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
+            } else if (iceConnectionState == PeerConnection.IceConnectionState.FAILED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
                                                                    sessionId, null, null, null));
                 if (isMCUPublisher) {
@@ -469,7 +469,7 @@ public class PeerConnectionWrapper {
 
                     if (shouldNotReceiveVideo()) {
                         for (RtpTransceiver t : peerConnection.getTransceivers()) {
-                            if (t.getMediaType().equals(MediaStreamTrack.MediaType.MEDIA_TYPE_VIDEO)) {
+                            if (t.getMediaType() == MediaStreamTrack.MediaType.MEDIA_TYPE_VIDEO) {
                                 t.stop();
                             }
                         }
