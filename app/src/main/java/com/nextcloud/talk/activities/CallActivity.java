@@ -2087,8 +2087,9 @@ public class CallActivity extends CallBaseActivity {
         if (!(peerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()) {
             for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrappers) {
                 if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
-                    if (VIDEO_STREAM_TYPE_SCREEN.equals(peerConnectionWrapper.getVideoStreamType()) || !justScreen) {
-                        runOnUiThread(() -> removeMediaStream(sessionId));
+                    String videoStreamType = peerConnectionWrapper.getVideoStreamType();
+                    if (VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType) || !justScreen) {
+                        runOnUiThread(() -> removeMediaStream(sessionId, videoStreamType));
                         deletePeerConnection(peerConnectionWrapper);
                     }
                 }
@@ -2096,9 +2097,9 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private void removeMediaStream(String sessionId) {
+    private void removeMediaStream(String sessionId, String videoStreamType) {
         Log.d(TAG, "removeMediaStream");
-        participantDisplayItems.remove(sessionId);
+        participantDisplayItems.remove(sessionId + "-" + videoStreamType);
 
         if (!isDestroyed()) {
             initGridAdapter();
@@ -2409,7 +2410,7 @@ public class CallActivity extends CallBaseActivity {
                                                                                    videoStreamType,
                                                                                    videoStreamEnabled,
                                                                                    rootEglBase);
-        participantDisplayItems.put(session, participantDisplayItem);
+        participantDisplayItems.put(session + "-" + videoStreamType, participantDisplayItem);
 
         initGridAdapter();
     }
