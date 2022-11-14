@@ -24,10 +24,8 @@
 package com.nextcloud.talk.jobs
 
 import android.app.Notification
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.AudioAttributes
@@ -85,6 +83,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CA
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
@@ -212,6 +211,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
+        bundle.putInt(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
         bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
         bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
         fullScreenIntent.putExtras(bundle)
@@ -231,8 +231,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         )
 
         val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
-        val notificationChannelId = NotificationUtils
-            .NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
+        val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
         val uri = Uri.parse(signatureVerification.user!!.baseUrl)
         val baseUrl = uri.host
 
@@ -245,7 +244,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setShowWhen(true)
                 .setWhen(pushMessage.timestamp)
                 .setContentTitle(EmojiCompat.get().process(pushMessage.subject))
-                .setAutoCancel(true)
+                // auto cancel is set to false because notification (including sound) should continue while
+                // CallNotificationActivity is active
+                .setAutoCancel(false)
                 .setOngoing(true)
                 .setContentIntent(fullScreenPendingIntent)
                 .setFullScreenIntent(fullScreenPendingIntent, true)
@@ -716,7 +717,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                         removeNotification(decryptedPushMessage.timestamp.toInt())
                     }
 
-                    isCallNotificationVisible = isCallNotificationVisible(decryptedPushMessage)
+                    isCallNotificationVisible = NotificationUtils.isNotificationVisible(
+                        context,
+                        decryptedPushMessage.timestamp.toInt()
+                    )
                 }
 
                 override fun onError(e: Throwable) {
@@ -815,20 +819,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             0
         }
         return PendingIntent.getActivity(context, requestCode, intent, intentFlag)
-    }
-
-    private fun isCallNotificationVisible(decryptedPushMessage: DecryptedPushMessage): Boolean {
-        var isVisible = false
-
-        val notificationManager = context!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val notifications = notificationManager.activeNotifications
-        for (notification in notifications) {
-            if (notification.id == decryptedPushMessage.timestamp.toInt()) {
-                isVisible = true
-                break
-            }
-        }
-        return isVisible
     }
 
     companion object {
