@@ -299,7 +299,7 @@ public class RestModule {
 
         @Override
         public void run() {
-            if (Proxy.Type.SOCKS.equals(Proxy.Type.valueOf(appPreferences.getProxyType()))) {
+            if (Proxy.Type.valueOf(appPreferences.getProxyType()) == Proxy.Type.SOCKS) {
                 proxy = new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
                         InetSocketAddress.createUnresolved(appPreferences.getProxyHost(), Integer.parseInt(
                                 appPreferences.getProxyPort())));
