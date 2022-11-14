@@ -202,7 +202,7 @@ class ConversationsListBottomDialog(
                 .popChangeHandler(HorizontalChangeHandler())
         )
 
-        controller.fetchData()
+        controller.fetchRooms()
     }
 
     private fun executeEntryMenuController(operation: ConversationOperationEnum) {
