@@ -243,7 +243,6 @@ class CallNotificationActivity : CallBaseActivity() {
             var isNotificationOpen = true
             while (isNotificationOpen) {
                 Thread.sleep(1000)
-                Log.d(TAG, ".")
                 if (!NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
                     isNotificationOpen = false
                     finish()

@@ -24,7 +24,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Build;
-import android.os.Vibrator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +31,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class DoNotDisturbUtilsTest {
@@ -46,17 +44,13 @@ public class DoNotDisturbUtilsTest {
     @Mock
     private AudioManager audioManager;
 
-    @Mock
-    private Vibrator vibrator;
 
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         when(context.getSystemService(Context.NOTIFICATION_SERVICE)).thenReturn(notificationManager);
         when(context.getSystemService(Context.AUDIO_SERVICE)).thenReturn(audioManager);
-        when(context.getSystemService(Context.VIBRATOR_SERVICE)).thenReturn(vibrator);
     }
-
 
     @Test
     public void shouldPlaySound_givenAndroidMAndInterruptionFilterNone_assertReturnsFalse() {
@@ -76,33 +70,5 @@ public class DoNotDisturbUtilsTest {
 
         assertFalse("shouldPlaySound incorrectly returned true",
                     DoNotDisturbUtils.INSTANCE.shouldPlaySound(context));
-    }
-
-    @Test
-    public void shouldVibrate_givenNoVibrator_assertReturnsFalse() {
-        when(vibrator.hasVibrator()).thenReturn(false);
-
-        assertFalse("shouldVibrate returned true despite no vibrator",
-                    DoNotDisturbUtils.INSTANCE.shouldVibrate(context, true));
-    }
-
-    @Test
-    public void shouldVibrate_givenVibratorAndRingerModeNormal_assertReturnsTrue() {
-        when(vibrator.hasVibrator()).thenReturn(true);
-
-        when(audioManager.getRingerMode()).thenReturn(AudioManager.RINGER_MODE_NORMAL);
-
-        assertTrue("shouldVibrate incorrectly returned false",
-                   DoNotDisturbUtils.INSTANCE.shouldVibrate(context, true));
-    }
-
-    @Test
-    public void shouldVibrate_givenVibratorAndRingerModeSilent_assertReturnsFalse() {
-        when(vibrator.hasVibrator()).thenReturn(true);
-
-        when(audioManager.getRingerMode()).thenReturn(AudioManager.RINGER_MODE_SILENT);
-
-        assertFalse("shouldVibrate returned true despite ringer mode set to silent",
-                    DoNotDisturbUtils.INSTANCE.shouldVibrate(context, true));
     }
 }
