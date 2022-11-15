@@ -45,7 +45,7 @@ abstract class DownloadWebRtcTask extends DefaultTask {
 
     private String getDownloadUrl() {
         def webRtcVersion = version.get()
-        return "https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/${webRtcVersion}-RC1/${getFileName()}"
+        return "https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/${webRtcVersion}/${getFileName()}"
     }
 
     private String getOutputPath() {
