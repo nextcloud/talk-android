@@ -36,7 +36,7 @@ apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: 'kotlinx-serialization'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     buildToolsVersion '33.0.0'
 
     namespace 'com.nextcloud.talk'
