@@ -350,7 +350,7 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun isInCallWithVideo(callFlag: Int): Boolean {
-        return callFlag >= Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_VIDEO
+        return (callFlag and Participant.InCallFlags.WITH_VIDEO) > 0
     }
 
     private fun setUpAfterConversationIsKnown() {
