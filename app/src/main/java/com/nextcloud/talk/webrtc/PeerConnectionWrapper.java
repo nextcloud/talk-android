@@ -345,7 +345,7 @@ public class PeerConnectionWrapper {
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
             if (iceConnectionState == PeerConnection.IceConnectionState.CONNECTED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED,
-                                                                   sessionId, null, null, null));
+                                                                   sessionId, null, null, videoStreamType));
 
                 if (!isMCUPublisher) {
                     EventBus.getDefault().post(new MediaStreamEvent(remoteStream, sessionId, videoStreamType));
@@ -356,7 +356,7 @@ public class PeerConnectionWrapper {
                 }
             } else if (iceConnectionState == PeerConnection.IceConnectionState.COMPLETED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED,
-                                                                   sessionId, null, null, null));
+                                                                   sessionId, null, null, videoStreamType));
             } else if (iceConnectionState == PeerConnection.IceConnectionState.CLOSED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CLOSED, sessionId, null, null, videoStreamType));
@@ -364,12 +364,12 @@ public class PeerConnectionWrapper {
                     iceConnectionState == PeerConnection.IceConnectionState.NEW ||
                     iceConnectionState == PeerConnection.IceConnectionState.CHECKING) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
-                                                                   sessionId, null, null, null));
+                                                                   sessionId, null, null, videoStreamType));
             } else if (iceConnectionState == PeerConnection.IceConnectionState.FAILED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
-                                                                   sessionId, null, null, null));
+                                                                   sessionId, null, null, videoStreamType));
                 if (isMCUPublisher) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED, sessionId, null, null, null));
+                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED, sessionId, null, null, videoStreamType));
                 }
             }
         }
