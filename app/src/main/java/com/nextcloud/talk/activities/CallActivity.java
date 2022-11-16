@@ -2087,8 +2087,9 @@ public class CallActivity extends CallBaseActivity {
         if (!(peerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()) {
             for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrappers) {
                 if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
-                    if (VIDEO_STREAM_TYPE_SCREEN.equals(peerConnectionWrapper.getVideoStreamType()) || !justScreen) {
-                        runOnUiThread(() -> removeMediaStream(sessionId));
+                    String videoStreamType = peerConnectionWrapper.getVideoStreamType();
+                    if (VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType) || !justScreen) {
+                        runOnUiThread(() -> removeMediaStream(sessionId, videoStreamType));
                         deletePeerConnection(peerConnectionWrapper);
                     }
                 }
@@ -2096,9 +2097,9 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private void removeMediaStream(String sessionId) {
+    private void removeMediaStream(String sessionId, String videoStreamType) {
         Log.d(TAG, "removeMediaStream");
-        participantDisplayItems.remove(sessionId);
+        participantDisplayItems.remove(sessionId + "-" + videoStreamType);
 
         if (!isDestroyed()) {
             initGridAdapter();
@@ -2163,21 +2164,22 @@ public class CallActivity extends CallBaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
         String sessionId = peerConnectionEvent.getSessionId();
+        String participantDisplayItemId = sessionId + "-" + peerConnectionEvent.getVideoStreamType();
 
         if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED) {
             if (webSocketClient != null && webSocketClient.getSessionId() == sessionId) {
                 updateSelfVideoViewConnected(true);
-            } else if (participantDisplayItems.get(sessionId) != null) {
-                participantDisplayItems.get(sessionId).setConnected(true);
+            } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                participantDisplayItems.get(participantDisplayItemId).setConnected(true);
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED) {
             if (webSocketClient != null && webSocketClient.getSessionId() == sessionId) {
                 updateSelfVideoViewConnected(false);
-            } else if (participantDisplayItems.get(sessionId) != null) {
-                participantDisplayItems.get(sessionId).setConnected(false);
+            } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                participantDisplayItems.get(participantDisplayItemId).setConnected(false);
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
@@ -2199,20 +2201,20 @@ public class CallActivity extends CallBaseActivity {
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE) {
-            if (participantDisplayItems.get(sessionId) != null) {
-                participantDisplayItems.get(sessionId).setNick(peerConnectionEvent.getNick());
+            if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                participantDisplayItems.get(participantDisplayItemId).setNick(peerConnectionEvent.getNick());
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE && !isVoiceOnlyCall) {
-            if (participantDisplayItems.get(sessionId) != null) {
-                participantDisplayItems.get(sessionId).setStreamEnabled(peerConnectionEvent.getChangeValue());
+            if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(peerConnectionEvent.getChangeValue());
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.AUDIO_CHANGE) {
-            if (participantDisplayItems.get(sessionId) != null) {
-                participantDisplayItems.get(sessionId).setAudioEnabled(peerConnectionEvent.getChangeValue());
+            if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                participantDisplayItems.get(participantDisplayItemId).setAudioEnabled(peerConnectionEvent.getChangeValue());
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
@@ -2409,7 +2411,7 @@ public class CallActivity extends CallBaseActivity {
                                                                                    videoStreamType,
                                                                                    videoStreamEnabled,
                                                                                    rootEglBase);
-        participantDisplayItems.put(session, participantDisplayItem);
+        participantDisplayItems.put(session + "-" + videoStreamType, participantDisplayItem);
 
         initGridAdapter();
     }
