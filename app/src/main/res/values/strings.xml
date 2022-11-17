@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-  <resources>
+<resources>
     <string name="account_icon">Account icon</string>
     <string name="appbar_search_in">Search in %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -204,7 +204,7 @@
     <string name="nc_new_mention">Unread mentions</string>
     <string name="nc_new_messages">Unread messages</string>
     <string name="nc_new_password">New password</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s app not installed on the server, aborting</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s not available (not installed or restricted by admin)</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_no">No</string>
     <string name="nc_no_messages_yet">No messages yet</string>
