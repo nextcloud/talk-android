@@ -280,8 +280,7 @@ dependencies {
 
     implementation "io.noties.markwon:core:$markwonVersion"
 
-    //implementation 'com.github.dhaval2404:imagepicker:1.8'
-    implementation 'com.github.nextcloud-deps:ImagePicker:1.8.0.2'
+    implementation 'com.github.nextcloud-deps:ImagePicker:2.1.0.2'
     implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
 
     implementation 'org.osmdroid:osmdroid-android:6.1.14'

@@ -40,13 +40,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getError
-import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getFile
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.with
+import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.api.NcApi
@@ -486,14 +487,13 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     }
 
     private fun sendSelectLocalFileIntent() {
-        val intent = with(activity!!)
-            .galleryOnly()
+        with(activity!!)
+            .provider(ImageProvider.GALLERY)
             .crop()
             .cropSquare()
             .compress(MAX_SIZE)
             .maxResultSize(MAX_SIZE, MAX_SIZE)
-            .prepareIntent()
-        startActivityForResult(intent, 1)
+            .createIntent { intent -> startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER) }
     }
 
     private fun showBrowserScreen() {
@@ -584,21 +584,21 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     }
 
     private fun openImageWithPicker(file: File) {
-        val intent = with(activity!!)
-            .fileOnly()
+        with(activity!!)
+            .provider(ImageProvider.URI)
             .crop()
             .cropSquare()
             .compress(MAX_SIZE)
             .maxResultSize(MAX_SIZE, MAX_SIZE)
-            .prepareIntent()
-        intent.putExtra("extra.file", file)
-        startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER)
+            .setUri(Uri.fromFile(file))
+            .createIntent { intent -> startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_IMAGE_PICKER) {
-                uploadAvatar(getFile(data))
+                val uri: Uri = data?.data!!
+                uploadAvatar(uri.toFile())
             } else if (requestCode == REQUEST_CODE_SELECT_REMOTE_FILES) {
                 val pathList = data?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
                 if (pathList?.size!! >= 1) {
