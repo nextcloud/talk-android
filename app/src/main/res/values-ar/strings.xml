@@ -173,7 +173,6 @@
     <string name="nc_new_mention">إشارات غير مقروءة</string>
     <string name="nc_new_messages">رسائل غير مقروءة</string>
     <string name="nc_new_password">كلمة سرية جديدة</string>
-    <string name="nc_nextcloud_talk_app_not_installed">تطبيق %1$s غير مثبت على الخادم، جارِ الإلغاء</string>
     <string name="nc_nick_guest">ضيف</string>
     <string name="nc_no">لا</string>
     <string name="nc_no_messages_yet">ليس لديك رسائل بعد</string>

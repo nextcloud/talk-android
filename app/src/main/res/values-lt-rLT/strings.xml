@@ -125,7 +125,6 @@
     <string name="nc_new_conversation">Naujas pokalbis</string>
     <string name="nc_new_messages">Neskaitytos žinutės</string>
     <string name="nc_new_password">Naujas slaptažodis</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Serveryje nėra įdiegta programėlė %1$s, nutraukiama</string>
     <string name="nc_nick_guest">Svečias</string>
     <string name="nc_no">Ne</string>
     <string name="nc_no_messages_yet">Kol kas žinučių nėra</string>

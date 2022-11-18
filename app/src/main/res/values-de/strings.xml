@@ -194,7 +194,6 @@
     <string name="nc_new_mention">Ungelesene Erwähnungen</string>
     <string name="nc_new_messages">Ungelesene Nachrichten</string>
     <string name="nc_new_password">Neues Passwort</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s App nicht auf dem Server installiert, Abbruch</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nein</string>
     <string name="nc_no_messages_yet">Noch keine Nachrichten</string>

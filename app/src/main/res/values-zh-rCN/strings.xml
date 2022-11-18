@@ -171,7 +171,6 @@
     <string name="nc_new_mention">未读的提及</string>
     <string name="nc_new_messages">未读消息</string>
     <string name="nc_new_password">新密码</string>
-    <string name="nc_nextcloud_talk_app_not_installed">服务器未安装 %1$s 应用，中止</string>
     <string name="nc_nick_guest">来宾</string>
     <string name="nc_no">不</string>
     <string name="nc_no_messages_yet">暂无消息</string>

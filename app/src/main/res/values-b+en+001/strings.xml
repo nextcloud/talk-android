@@ -118,7 +118,6 @@
     <string name="nc_never">Never joined</string>
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_new_password">New password</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s app not installed on the server, aborting</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_no">No</string>
     <string name="nc_no_messages_yet">No messages yet</string>

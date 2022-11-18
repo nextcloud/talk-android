@@ -132,7 +132,6 @@
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_new_messages">Missatges sense llegir</string>
     <string name="nc_new_password">Nova contrasenya</string>
-    <string name="nc_nextcloud_talk_app_not_installed">L\'aplicació %1$s no està instal·lada al servidor, s\'està avortant</string>
     <string name="nc_nick_guest">Convidat</string>
     <string name="nc_no">No</string>
     <string name="nc_no_messages_yet">No hi ha cap missatge encara</string>

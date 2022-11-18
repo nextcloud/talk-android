@@ -129,7 +129,6 @@
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_new_messages">Ulæste beskedder</string>
     <string name="nc_new_password">Ny adgangskode</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s appen er ikke installeret på serveren, afbryder</string>
     <string name="nc_nick_guest">Gæst</string>
     <string name="nc_no">Nej</string>
     <string name="nc_no_messages_yet">Ingen beskeder endnu</string>
