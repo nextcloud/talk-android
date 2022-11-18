@@ -58,22 +58,6 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return userRepository.getUserWithId(id)
     }
 
-    fun disableAllUsersWithoutId(id: Long): Single<Int> {
-        val results = userRepository.getUsersWithoutUserId(id)
-
-        return results.map { users ->
-            var count = 0
-            if (users.isNotEmpty()) {
-                for (entity in users) {
-                    entity.current = false
-                    userRepository.updateUser(entity)
-                    count++
-                }
-            }
-            count
-        }
-    }
-
     fun checkIfUserIsScheduledForDeletion(username: String, server: String): Single<Boolean> {
         return userRepository
             .getUserWithUsernameAndServer(username, server)
