@@ -149,7 +149,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
                     else -> {
                         user.token = userAttributes.token
                         user.baseUrl = userAttributes.serverUrl
-                        user.current = true
+                        user.current = userAttributes.currentUser
                         user.userId = userAttributes.userId
                         user.token = userAttributes.token
                         user.displayName = userAttributes.displayName
@@ -237,7 +237,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     data class UserAttributes(
         val id: Long?,
         val serverUrl: String?,
-        val currentUser: Boolean?,
+        val currentUser: Boolean,
         val userId: String?,
         val token: String?,
         val displayName: String?,
