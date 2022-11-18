@@ -74,9 +74,6 @@ abstract class UsersDao {
     @Query("SELECT * FROM User where userId = :userId")
     abstract fun getUserWithUserId(userId: String): Maybe<UserEntity>
 
-    @Query("SELECT * FROM User where id != :id")
-    abstract fun getUsersWithoutId(id: Long): Single<List<UserEntity>>
-
     @Query("SELECT * FROM User where scheduledForDeletion = 1")
     abstract fun getUsersScheduledForDeletion(): Single<List<UserEntity>>
 
@@ -92,6 +89,13 @@ abstract class UsersDao {
         return try {
             getUsers().blockingGet().forEach { user ->
                 user.current = user.id == id
+
+                Log.d(TAG, "xxxxxxxxxxxx")
+                Log.d(TAG, "setUserAsActiveWithId. user.username: " + user.username)
+                Log.d(TAG, "setUserAsActiveWithId. user.id: " + user.id)
+                Log.d(TAG, "setUserAsActiveWithId. user.current: " + user.current)
+                Log.d(TAG, "xxxxxxxxxxxx")
+
                 updateUser(user)
             }
             true
