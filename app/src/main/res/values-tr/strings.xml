@@ -194,6 +194,7 @@
     <string name="nc_new_mention">Okunmamış anmalar</string>
     <string name="nc_new_messages">Okunmamış iletiler</string>
     <string name="nc_new_password">Yeni parola</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s kullanılamıyor (kurulmamış ya da yönetici tarafından engellenmiş)</string>
     <string name="nc_nick_guest">Konuk</string>
     <string name="nc_no">Hayır</string>
     <string name="nc_no_messages_yet">Henüz bir ileti yok</string>
