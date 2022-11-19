@@ -1,6 +1,6 @@
 ---
-status: proposed
-date: 2022-10-24
+status: accepted
+date: 2022-11-29
 ---
 
 # Use Markdown Any Decision Records

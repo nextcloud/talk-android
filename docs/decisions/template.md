@@ -1,10 +1,8 @@
 ---
-# These are optional elements. Feel free to remove any of them.
-status: {proposed | rejected | accepted | deprecated | … | superseded by [ADR-0005](0005-example.md)}
+status: { rejected | accepted | deprecated | … | superseded by [ADR-0005](0005-example.md)}
 date: {YYYY-MM-DD when the decision was last updated}
+# These are optional elements. Feel free to remove any of them.
 deciders: {list everyone involved in the decision}
-consulted: {list everyone whose opinions are sought (typically subject-matter experts); and with whom there is a two-way communication}
-informed: {list everyone who is kept up-to-date on progress; and with whom there is a one-way communication}
 ---
 # {short title of solved problem and solution}
 
