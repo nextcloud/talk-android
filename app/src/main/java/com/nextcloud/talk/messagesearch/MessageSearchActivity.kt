@@ -210,13 +210,13 @@ class MessageSearchActivity : BaseActivity() {
         binding.emptyContainer.emptyListView.visibility = View.VISIBLE
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_search, menu)
         return true
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        val menuItem = menu!!.findItem(R.id.action_search)
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val menuItem = menu.findItem(R.id.action_search)
         searchView = menuItem.actionView as SearchView
         setupSearchView()
         menuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
