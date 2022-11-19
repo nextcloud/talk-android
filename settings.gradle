@@ -26,3 +26,9 @@ include ':app'
 //        substitute module('com.github.nextcloud.android-common:ui') using project(':ui')
 //    }
 //}
+
+//includeBuild('../../../deps/ImagePicker') {
+//    dependencySubstitution {
+//        substitute module('com.github.nextcloud-deps:ImagePicker') using project(':imagepicker')
+//    }
+//}

@@ -193,7 +193,6 @@
     <string name="nc_new_mention">Neprečítané upozornenia</string>
     <string name="nc_new_messages">Neprečítané správy</string>
     <string name="nc_new_password">Nové heslo</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Aplikácia %1$s nie je na serveri nainštalovaná, ruší sa</string>
     <string name="nc_nick_guest">Hosť</string>
     <string name="nc_no">Nie</string>
     <string name="nc_no_messages_yet">Ešte žiadne správy</string>

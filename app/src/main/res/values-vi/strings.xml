@@ -126,7 +126,6 @@
     <string name="nc_new_conversation">Tạo đàm thoại mới</string>
     <string name="nc_new_messages">Tin nhắn chưa đọc</string>
     <string name="nc_new_password">Mật khẩu mới</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s ứng dụng chưa cài đặt trên hệ thống, hủy bỏ</string>
     <string name="nc_nick_guest">Khách</string>
     <string name="nc_no">Không</string>
     <string name="nc_no_messages_yet">Chưa có thông điệp nào</string>

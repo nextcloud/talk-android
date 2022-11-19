@@ -4,6 +4,8 @@
     <string name="appbar_search_in">Cerca a %s</string>
     <string name="audio_output_dialog_headline">Sortida d\'àudio</string>
     <string name="audio_output_phone">Telèfon</string>
+    <string name="audio_output_speaker">Altaveu</string>
+    <string name="audio_output_wired_headset">Auriculars per cable</string>
     <string name="avatar">Avatar</string>
     <string name="away">Absent</string>
     <string name="clear_status_message">Esborrar el missatge d\'estat</string>
@@ -28,12 +30,15 @@
     <string name="menu_item_sort_by_size_biggest_first">Més gran primer</string>
     <string name="menu_item_sort_by_size_smallest_first">Més petit primer</string>
     <string name="message_search_begin_empty">No s\'han trobat resultats</string>
+    <string name="message_search_begin_typing">Comença a escriure per cercar ...</string>
+    <string name="message_search_hint">Cerca ...</string>
     <string name="messages">Missatges</string>
     <string name="nc_Server_account_imported">El compte que heu seleccionat s\'ha importat i ja és disponible</string>
     <string name="nc_about">Quant a</string>
     <string name="nc_account_chooser_active_user">Usuari actiu</string>
     <string name="nc_account_chooser_add_account">Afegeix un compte</string>
     <string name="nc_account_scheduled_for_deletion">El compte està planificat per ser suprimit i no es pot canviar</string>
+    <string name="nc_action_open_main_menu">Obre el menú principal</string>
     <string name="nc_add_attachment">Afegeix un adjunt</string>
     <string name="nc_add_emojis">Afegeix emoji</string>
     <string name="nc_add_participants">Afegeix participants</string>
@@ -62,6 +67,7 @@
     <string name="nc_common_set">Estableix</string>
     <string name="nc_common_skip">Omet</string>
     <string name="nc_configure_cert_auth">Selecciona el certificat d’autenticació</string>
+    <string name="nc_connecting_call">S\'està connectant …</string>
     <string name="nc_contacts_done">Fet</string>
     <string name="nc_conversation_link">Enllaç de conversa</string>
     <string name="nc_conversation_menu_conversation_info">Informació de la conversa</string>
@@ -85,6 +91,8 @@
     <string name="nc_display_name_not_fetched">No s’ha pogut obtenir el nom de visualització, s\'està avortant</string>
     <string name="nc_display_name_not_stored">No s\'ha pogut emmagatzemar el nom de visualització, s\'està avortant</string>
     <string name="nc_email">Correu</string>
+    <string name="nc_expire_message_eight_hours">8 hores</string>
+    <string name="nc_expire_message_four_weeks">4 setmanes</string>
     <string name="nc_expire_message_off">Desactivada</string>
     <string name="nc_expire_message_one_day">1 dia</string>
     <string name="nc_expire_message_one_hour">1 hora</string>
@@ -105,6 +113,7 @@
     <string name="nc_guest_access_password_dialog_hint">Introduïu una contrasenya</string>
     <string name="nc_guest_access_password_title">Protecció amb contrasenya</string>
     <string name="nc_guest_access_password_weak_alert_title">Contrasenya feble</string>
+    <string name="nc_hint_enter_a_message">Introduïu un missatge …</string>
     <string name="nc_important_conversation">Conversa important</string>
     <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
     <string name="nc_join_via_link">Uniu-vos amb un enllaç</string>
@@ -118,6 +127,7 @@
     <string name="nc_limit_hit">S\'ha arribat al límit de %s caràcters </string>
     <string name="nc_lobby">Vestíbul</string>
     <string name="nc_lobby_waiting">Esteu esperant al vestíbul.</string>
+    <string name="nc_location_current_position_description">La vostra ubicació actual</string>
     <string name="nc_locked_tap_to_unlock">Toca per desblocar</string>
     <string name="nc_make_call_private">Fes que la conversa sigui privada</string>
     <string name="nc_make_call_public">Fes que la conversa sigui pública</string>
@@ -132,7 +142,6 @@
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_new_messages">Missatges sense llegir</string>
     <string name="nc_new_password">Nova contrasenya</string>
-    <string name="nc_nextcloud_talk_app_not_installed">L\'aplicació %1$s no està instal·lada al servidor, s\'està avortant</string>
     <string name="nc_nick_guest">Convidat</string>
     <string name="nc_no">No</string>
     <string name="nc_no_messages_yet">No hi ha cap missatge encara</string>

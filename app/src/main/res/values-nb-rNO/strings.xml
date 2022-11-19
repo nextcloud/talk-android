@@ -140,7 +140,6 @@
     <string name="nc_new_mention">Uleste nevner</string>
     <string name="nc_new_messages">Uleste meldinger</string>
     <string name="nc_new_password">Nytt passord</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s-appen er ikke installert på serveren, avbryter</string>
     <string name="nc_nick_guest">Gjest</string>
     <string name="nc_no">Nei</string>
     <string name="nc_no_messages_yet">Ingen meldiner enda</string>
@@ -279,6 +278,7 @@
     <string name="scope_federated_description">Synkroniser kun til betrodde servere</string>
     <string name="scope_federated_title">Sammenknyttet</string>
     <string name="scope_local_title">Lokal</string>
+    <string name="scope_private_description">Kun synlig for personer som matches via telefonnummerintegrasjon via Talk på mobil</string>
     <string name="scope_private_title">Privat</string>
     <string name="scope_published_description">Synkroniser til betrodde servere og den globale og offentlige adresseboken</string>
     <string name="scope_published_title">Publisert</string>

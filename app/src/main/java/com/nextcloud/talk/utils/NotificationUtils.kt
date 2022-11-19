@@ -47,6 +47,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import java.io.IOException
 
+@Suppress("TooManyFunctions")
 object NotificationUtils {
 
     enum class NotificationChannels {
@@ -241,7 +242,7 @@ object NotificationUtils {
         }
     }
 
-    fun cancelExistingNotificationWithId(context: Context?, conversationUser: User, notificationId: Long?) {
+    fun cancelNotification(context: Context?, conversationUser: User, notificationId: Long?) {
         scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
             if (notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
                 notificationManager.cancel(statusBarNotification.id)

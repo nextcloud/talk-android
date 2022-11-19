@@ -193,7 +193,6 @@
     <string name="nc_new_mention">Nieprzeczytane wzmianki</string>
     <string name="nc_new_messages">Nieprzeczytane wiadomości</string>
     <string name="nc_new_password">Nowe hasło</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Aplikacja %1$s nie została zainstalowana na serwerze, przerwano żądanie</string>
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_no">Nie</string>
     <string name="nc_no_messages_yet">Nie ma nowych wiadomości</string>

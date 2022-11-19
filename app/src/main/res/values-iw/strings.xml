@@ -127,7 +127,6 @@
     <string name="nc_new_conversation">דיון חדש</string>
     <string name="nc_new_messages">הודעות שלא נקראו</string>
     <string name="nc_new_password">ססמה חדשה</string>
-    <string name="nc_nextcloud_talk_app_not_installed">היישומון %1$s אינו מותקן על השרת, הפעולה מבוטלת</string>
     <string name="nc_nick_guest">אורח/ת</string>
     <string name="nc_no">לא</string>
     <string name="nc_no_messages_yet">אין הודעות עדיין</string>

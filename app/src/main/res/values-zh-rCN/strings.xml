@@ -51,6 +51,7 @@
     <string name="nc_call_name">会话名称</string>
     <string name="nc_call_name_is_same">您输入的名称已经存在</string>
     <string name="nc_call_notifications">呼叫通知</string>
+    <string name="nc_call_reconnecting">正在重新连接 ...</string>
     <string name="nc_call_ringing">响铃</string>
     <string name="nc_call_state_in_call">%1$s 在通话中</string>
     <string name="nc_call_state_with_phone">%1$s 通过手机</string>
@@ -112,6 +113,7 @@
     <string name="nc_expire_message_one_day">1 天</string>
     <string name="nc_expire_message_one_hour">1 小时</string>
     <string name="nc_expire_message_one_week">1 周</string>
+    <string name="nc_expire_messages_explanation">可指定聊天消息在一定时间后过期。注意：聊天中分享的文件不会被从所有者一方删除，但是会被从会话中取消分享。</string>
     <string name="nc_external_server_failed">获取网络设置失败</string>
     <string name="nc_failed_signaling_settings">目标服务器不支持通过移动电话加入公共对话。你可以尝试通过浏览器加入对话。</string>
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
@@ -132,6 +134,7 @@
     <string name="nc_guest_access_password_weak_alert_title">弱密码</string>
     <string name="nc_guest_access_resend_invitations">重发邀请</string>
     <string name="nc_guest_access_share_link">共享会话链接</string>
+    <string name="nc_hint_enter_a_message">输入消息…</string>
     <string name="nc_important_conversation">重要会话</string>
     <string name="nc_important_conversation_desc">此会话中的通知将覆盖免打扰设置</string>
     <string name="nc_join_via_link">使用链接加入</string>
@@ -140,6 +143,7 @@
     <string name="nc_last_moderator_title">无法离开会话</string>
     <string name="nc_last_modified">%1$s 我上一次更改： %2$s</string>
     <string name="nc_leave">离开会话</string>
+    <string name="nc_leaving_call">正在离开通话 ...</string>
     <string name="nc_license_summary">GNU 通用公共许可证，第3版</string>
     <string name="nc_license_title">许可证</string>
     <string name="nc_limit_hit">已达到%s字符限制</string>
@@ -167,7 +171,6 @@
     <string name="nc_new_mention">未读的提及</string>
     <string name="nc_new_messages">未读消息</string>
     <string name="nc_new_password">新密码</string>
-    <string name="nc_nextcloud_talk_app_not_installed">服务器未安装 %1$s 应用，中止</string>
     <string name="nc_nick_guest">来宾</string>
     <string name="nc_no">不</string>
     <string name="nc_no_messages_yet">暂无消息</string>
@@ -309,7 +312,9 @@
     <string name="nc_share_text_pass">\n密码： %1$s</string>
     <string name="nc_share_this_location">分享这个位置</string>
     <string name="nc_share_to_choose_account">选择一个账户</string>
+    <string name="nc_shared_items">已分享项目</string>
     <string name="nc_shared_items_deck_card">Deck 卡片</string>
+    <string name="nc_shared_items_empty">沒有已分享的项目</string>
     <string name="nc_shared_items_location">位置</string>
     <string name="nc_shared_location">共享的位置</string>
     <string name="nc_sort_by">排序依据</string>

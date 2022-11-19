@@ -58,7 +58,7 @@
     <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
     <string name="nc_external_server_failed">Failed to fetch signaling settings</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s app not installed on the server, aborting</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s not available (not installed or restricted by admin)</string>
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
 
     <string name="nc_never">Never joined</string>
@@ -210,6 +210,7 @@
     <string name="nc_call_state_in_call">%1$s in call</string>
     <string name="nc_call_state_with_phone">%1$s with phone</string>
     <string name="nc_call_state_with_video">%1$s with video</string>
+    <string name="nc_missed_call">You missed a call from %s</string>
 
     <!-- Picture in Picture -->
     <string name="nc_pip_microphone_mute">Mute microphone</string>
@@ -246,7 +247,6 @@
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text_pass">\nPassword: %1$s</string>
 
-    <!-- Magical stuff -->
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">With microphone disabled, click&amp;hold to use Push-to-talk</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>

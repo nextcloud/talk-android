@@ -70,6 +70,7 @@ data class DecryptedPushMessage(
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null, "", null, 0, null, false, false, false, null, null, 0, null)
 
+    @Suppress("Detekt.ComplexMethod")
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

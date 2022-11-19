@@ -49,7 +49,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     private lateinit var path: String
     private lateinit var player: SimpleExoPlayer
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
         return true
     }

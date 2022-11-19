@@ -138,6 +138,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
@@ -439,7 +440,7 @@ public class CallActivity extends CallBaseActivity {
         binding.gridview.setOnItemClickListener((parent, view, position, id) -> animateCallControls(true, 0));
 
         binding.callStates.callStateRelativeLayout.setOnClickListener(l -> {
-            if (currentCallStatus.equals(CallStatus.CALLING_TIMEOUT)) {
+            if (currentCallStatus == CallStatus.CALLING_TIMEOUT) {
                 setCallState(CallStatus.RECONNECTING);
                 hangupNetworkCalls(false);
             }
@@ -746,7 +747,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private boolean isConnectionEstablished() {
-        return (currentCallStatus.equals(CallStatus.JOINED) || currentCallStatus.equals(CallStatus.IN_CONVERSATION));
+        return (currentCallStatus == CallStatus.JOINED || currentCallStatus == CallStatus.IN_CONVERSATION);
     }
 
     @AfterPermissionGranted(100)
@@ -837,9 +838,9 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
             + "currentDevice: " + currentDevice);
 
-        final boolean shouldDisableProximityLock = (currentDevice.equals(WebRtcAudioManager.AudioDevice.WIRED_HEADSET)
-            || currentDevice.equals(WebRtcAudioManager.AudioDevice.SPEAKER_PHONE)
-            || currentDevice.equals(WebRtcAudioManager.AudioDevice.BLUETOOTH));
+        final boolean shouldDisableProximityLock = (currentDevice == WebRtcAudioManager.AudioDevice.WIRED_HEADSET
+            || currentDevice == WebRtcAudioManager.AudioDevice.SPEAKER_PHONE
+            || currentDevice == WebRtcAudioManager.AudioDevice.BLUETOOTH);
 
         if (shouldDisableProximityLock) {
             powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITHOUT_PROXIMITY_SENSOR_LOCK);
@@ -1229,7 +1230,7 @@ public class CallActivity extends CallBaseActivity {
             Log.d(TAG, "localStream is null");
         }
 
-        if (!currentCallStatus.equals(CallStatus.LEAVING)) {
+        if (currentCallStatus != CallStatus.LEAVING) {
             hangup(true);
         }
         powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.IDLE);
@@ -1456,7 +1457,7 @@ public class CallActivity extends CallBaseActivity {
 
                 @Override
                 public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-                    if (!currentCallStatus.equals(CallStatus.LEAVING)) {
+                    if (currentCallStatus != CallStatus.LEAVING) {
                         setCallState(CallStatus.JOINED);
 
                         ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
@@ -1472,6 +1473,8 @@ public class CallActivity extends CallBaseActivity {
                             int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser,
                                                                              new int[]{ApiUtils.APIv3, 2, 1});
 
+                            AtomicInteger delayOnError = new AtomicInteger(0);
+
                             ncApi.pullSignalingMessages(credentials,
                                                         ApiUtils.getUrlForSignaling(apiVersion,
                                                                                     baseUrl,
@@ -1480,7 +1483,22 @@ public class CallActivity extends CallBaseActivity {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .repeatWhen(observable -> observable)
                                 .takeWhile(observable -> isConnectionEstablished())
-                                .retry(3, observable -> isConnectionEstablished())
+                                .doOnNext(value -> delayOnError.set(0))
+                                .retryWhen(errors -> errors
+                                    .flatMap(error -> {
+                                        if (!isConnectionEstablished()) {
+                                            return Observable.error(error);
+                                        }
+
+                                        if (delayOnError.get() == 0) {
+                                            delayOnError.set(1);
+                                        } else if (delayOnError.get() < 16) {
+                                            delayOnError.set(delayOnError.get() * 2);
+                                        }
+
+                                        return Observable.timer(delayOnError.get(), TimeUnit.SECONDS);
+                                    })
+                                )
                                 .subscribe(new Observer<SignalingOverall>() {
                                     @Override
                                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
@@ -1531,7 +1549,7 @@ public class CallActivity extends CallBaseActivity {
                 conversationUser, externalSignalingServer.getExternalSignalingTicket(),
                 TextUtils.isEmpty(credentials));
         } else {
-            if (webSocketClient.isConnected() && currentCallStatus.equals(CallStatus.PUBLISHER_FAILED)) {
+            if (webSocketClient.isConnected() && currentCallStatus == CallStatus.PUBLISHER_FAILED) {
                 webSocketClient.restartWebSocket();
             }
         }
@@ -1549,7 +1567,7 @@ public class CallActivity extends CallBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
-        if (CallStatus.LEAVING.equals(currentCallStatus)) {
+        if (currentCallStatus == CallStatus.LEAVING) {
             return;
         }
 
@@ -1557,7 +1575,7 @@ public class CallActivity extends CallBaseActivity {
             case "hello":
                 Log.d(TAG, "onMessageEvent 'hello'");
                 if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
-                    if (currentCallStatus.equals(CallStatus.RECONNECTING)) {
+                    if (currentCallStatus == CallStatus.RECONNECTING) {
                         hangup(false);
                     } else {
                         initiateCall();
@@ -1642,7 +1660,7 @@ public class CallActivity extends CallBaseActivity {
     private void receivedSignalingMessage(Signaling signaling) throws IOException {
         String messageType = signaling.getType();
 
-        if (!isConnectionEstablished() && !currentCallStatus.equals(CallStatus.CONNECTING)) {
+        if (!isConnectionEstablished() && currentCallStatus != CallStatus.CONNECTING) {
             return;
         }
 
@@ -1871,7 +1889,7 @@ public class CallActivity extends CallBaseActivity {
                 userIdsBySessionId.put(participant.get("sessionId").toString(), userId);
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
-                if (inCallFlag == 0 && !CallStatus.LEAVING.equals(currentCallStatus) && ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
+                if (inCallFlag == 0 && currentCallStatus != CallStatus.LEAVING && ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
                     Log.d(TAG, "Most probably a moderator ended the call for all.");
                     hangup(true);
                 }
@@ -1891,7 +1909,7 @@ public class CallActivity extends CallBaseActivity {
         // Calculate sessions that join the call
         newSessions.removeAll(oldSessions);
 
-        if (!isConnectionEstablished() && !currentCallStatus.equals(CallStatus.CONNECTING)) {
+        if (!isConnectionEstablished() && currentCallStatus != CallStatus.CONNECTING) {
             return;
         }
 
@@ -1920,7 +1938,7 @@ public class CallActivity extends CallBaseActivity {
             });
         }
 
-        if (newSessions.size() > 0 && !currentCallStatus.equals(CallStatus.IN_CONVERSATION)) {
+        if (newSessions.size() > 0 && currentCallStatus != CallStatus.IN_CONVERSATION) {
             setCallState(CallStatus.IN_CONVERSATION);
         }
 
@@ -2069,8 +2087,9 @@ public class CallActivity extends CallBaseActivity {
         if (!(peerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()) {
             for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrappers) {
                 if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
-                    if (VIDEO_STREAM_TYPE_SCREEN.equals(peerConnectionWrapper.getVideoStreamType()) || !justScreen) {
-                        runOnUiThread(() -> removeMediaStream(sessionId));
+                    String videoStreamType = peerConnectionWrapper.getVideoStreamType();
+                    if (VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType) || !justScreen) {
+                        runOnUiThread(() -> removeMediaStream(sessionId, videoStreamType));
                         deletePeerConnection(peerConnectionWrapper);
                     }
                 }
@@ -2078,9 +2097,9 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private void removeMediaStream(String sessionId) {
+    private void removeMediaStream(String sessionId, String videoStreamType) {
         Log.d(TAG, "removeMediaStream");
-        participantDisplayItems.remove(sessionId);
+        participantDisplayItems.remove(sessionId + "-" + videoStreamType);
 
         if (!isDestroyed()) {
             initGridAdapter();
@@ -2145,21 +2164,22 @@ public class CallActivity extends CallBaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
         String sessionId = peerConnectionEvent.getSessionId();
+        String participantDisplayItemId = sessionId + "-" + peerConnectionEvent.getVideoStreamType();
 
         if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED) {
-            if (webSocketClient != null && webSocketClient.getSessionId() == sessionId) {
+            if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
                 updateSelfVideoViewConnected(true);
-            } else if (participantDisplayItems.get(sessionId) != null) {
-                participantDisplayItems.get(sessionId).setConnected(true);
+            } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                participantDisplayItems.get(participantDisplayItemId).setConnected(true);
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED) {
-            if (webSocketClient != null && webSocketClient.getSessionId() == sessionId) {
+            if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
                 updateSelfVideoViewConnected(false);
-            } else if (participantDisplayItems.get(sessionId) != null) {
-                participantDisplayItems.get(sessionId).setConnected(false);
+            } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                participantDisplayItems.get(participantDisplayItemId).setConnected(false);
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
@@ -2174,27 +2194,27 @@ public class CallActivity extends CallBaseActivity {
                 boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType() ==
                     PeerConnectionEvent.PeerConnectionEventType.SENSOR_FAR && videoOn;
                 if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) &&
-                    (currentCallStatus.equals(CallStatus.CONNECTING) || isConnectionEstablished()) && videoOn
+                    (currentCallStatus == CallStatus.CONNECTING || isConnectionEstablished()) && videoOn
                     && enableVideo != localVideoTrack.enabled()) {
                     toggleMedia(enableVideo, true);
                 }
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE) {
-            if (participantDisplayItems.get(sessionId) != null) {
-                participantDisplayItems.get(sessionId).setNick(peerConnectionEvent.getNick());
+            if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                participantDisplayItems.get(participantDisplayItemId).setNick(peerConnectionEvent.getNick());
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE && !isVoiceOnlyCall) {
-            if (participantDisplayItems.get(sessionId) != null) {
-                participantDisplayItems.get(sessionId).setStreamEnabled(peerConnectionEvent.getChangeValue());
+            if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(peerConnectionEvent.getChangeValue());
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.AUDIO_CHANGE) {
-            if (participantDisplayItems.get(sessionId) != null) {
-                participantDisplayItems.get(sessionId).setAudioEnabled(peerConnectionEvent.getChangeValue());
+            if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                participantDisplayItems.get(participantDisplayItemId).setAudioEnabled(peerConnectionEvent.getChangeValue());
                 participantsAdapter.notifyDataSetChanged();
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
@@ -2382,33 +2402,22 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
-        String urlForAvatar;
-        if (!TextUtils.isEmpty(userId4Usage)) {
-            urlForAvatar = ApiUtils.getUrlForAvatar(baseUrl,
-                                                    userId4Usage,
-                                                    true);
-        } else {
-            urlForAvatar = ApiUtils.getUrlForGuestAvatar(baseUrl,
-                                                         nick,
-                                                         true);
-        }
-
-        ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(userId4Usage,
+        ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(baseUrl,
+                                                                                   userId4Usage,
                                                                                    session,
                                                                                    connected,
                                                                                    nick,
-                                                                                   urlForAvatar,
                                                                                    mediaStream,
                                                                                    videoStreamType,
                                                                                    videoStreamEnabled,
                                                                                    rootEglBase);
-        participantDisplayItems.put(session, participantDisplayItem);
+        participantDisplayItems.put(session + "-" + videoStreamType, participantDisplayItem);
 
         initGridAdapter();
     }
 
     private void setCallState(CallStatus callState) {
-        if (currentCallStatus == null || !currentCallStatus.equals(callState)) {
+        if (currentCallStatus == null || currentCallStatus != callState) {
             currentCallStatus = callState;
             if (handler == null) {
                 handler = new Handler(Looper.getMainLooper());

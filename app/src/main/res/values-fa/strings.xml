@@ -20,6 +20,7 @@
     <string name="file_list_loading">بارگذاری …</string>
     <string name="fourHours">۴ ساعت</string>
     <string name="invisible">نامرئی</string>
+    <string name="load_more_results">بار کردن نتیحه‌های بیش‌تر</string>
     <string name="lock_symbol">نماد قفل</string>
     <string name="menu_item_sort_by_date_newest_first">تازه‌ترین‌ها اول </string>
     <string name="menu_item_sort_by_date_oldest_first">قدیمی‌ترین‌ها اول </string>
@@ -132,7 +133,6 @@
     <string name="nc_new_conversation">مکالمه جدید</string>
     <string name="nc_new_messages">پیام‌های خوانده نشده</string>
     <string name="nc_new_password">گذرواژه جدید</string>
-    <string name="nc_nextcloud_talk_app_not_installed">برنامه %1$s روی سرور نصب نمی‌باشد. درحال لغو</string>
     <string name="nc_nick_guest">مهمان</string>
     <string name="nc_no">نه</string>
     <string name="nc_no_messages_yet">هنوز پیامی ارسال نشده است</string>

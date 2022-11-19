@@ -141,7 +141,6 @@
     <string name="nc_new_conversation">Ny konversation</string>
     <string name="nc_new_messages">Olästa meddelanden</string>
     <string name="nc_new_password">Nytt lösenord</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s app inte installerad på servern, avbryter</string>
     <string name="nc_nick_guest">Gäst</string>
     <string name="nc_no">Nej</string>
     <string name="nc_no_messages_yet">Inga meddelanden än</string>
@@ -284,6 +283,7 @@
     <string name="online_status">Online-status</string>
     <string name="polls_add_option">Lägg till alternativ</string>
     <string name="polls_options">Alternativ</string>
+    <string name="polls_private_poll">Privat omröstning</string>
     <string name="polls_results_subtitle">Resultat</string>
     <string name="polls_settings">Inställningar</string>
     <string name="polls_submit_vote">Rösta</string>

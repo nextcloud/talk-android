@@ -193,7 +193,6 @@
     <string name="nc_new_mention">Irakurri gabeko aipamenak</string>
     <string name="nc_new_messages">Irakurri gabeko mezuak</string>
     <string name="nc_new_password">Pasahitz berria</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s app-a ez dago instalatuta zerbitzarian, bertan behera uzten</string>
     <string name="nc_nick_guest">Gonbidatua</string>
     <string name="nc_no">Ez</string>
     <string name="nc_no_messages_yet">Ez dago mezurik oraindik</string>

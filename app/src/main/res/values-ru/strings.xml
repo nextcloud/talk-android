@@ -193,7 +193,7 @@
     <string name="nc_new_mention">Непрочитанные упоминания</string>
     <string name="nc_new_messages">Непрочитанные сообщения</string>
     <string name="nc_new_password">Новый пароль</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s не установлено на сервере. Действие отменено.</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s недоступно (не установлено, либо использование приложения ограничено администратором)</string>
     <string name="nc_nick_guest">Гость</string>
     <string name="nc_no">Нет</string>
     <string name="nc_no_messages_yet">Сообщений еще нет</string>

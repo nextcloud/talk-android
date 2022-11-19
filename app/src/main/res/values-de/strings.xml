@@ -187,13 +187,14 @@
     <string name="nc_message_read">Nachricht gelesen</string>
     <string name="nc_message_sent">Nachricht gesendet</string>
     <string name="nc_microphone_permission_permanently_denied">Um Audioanrufe zu ermöglichen, gewähren Sie die Berechtigung für das \"Mikrofon\" in den Systemeinstellungen</string>
+    <string name="nc_missed_call">Sie haben einen Anruf von %s verpasst</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nie beigetreten</string>
     <string name="nc_new_conversation">Neue Unterhaltung</string>
     <string name="nc_new_mention">Ungelesene Erwähnungen</string>
     <string name="nc_new_messages">Ungelesene Nachrichten</string>
     <string name="nc_new_password">Neues Passwort</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s App nicht auf dem Server installiert, Abbruch</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s nicht verfügbar (nicht installiert oder von der Administration eingeschränkt)</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nein</string>
     <string name="nc_no_messages_yet">Noch keine Nachrichten</string>

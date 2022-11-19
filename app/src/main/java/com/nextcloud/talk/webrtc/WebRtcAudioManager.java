@@ -129,7 +129,7 @@ public class WebRtcAudioManager {
             return;
         }
 
-        if (userSelectedAudioDevice.equals(AudioDevice.SPEAKER_PHONE)
+        if (userSelectedAudioDevice == AudioDevice.SPEAKER_PHONE
             && audioDevices.contains(AudioDevice.EARPIECE)
             && audioDevices.contains(AudioDevice.SPEAKER_PHONE)) {
 

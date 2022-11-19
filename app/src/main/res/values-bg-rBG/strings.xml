@@ -187,13 +187,13 @@
     <string name="nc_message_read">Съобщението е прочетено</string>
     <string name="nc_message_sent">Съобщението е изпратено</string>
     <string name="nc_microphone_permission_permanently_denied">За активиране на гласова комуникация, моля, дайте право на „Микрофон“ в системните настройки.</string>
+    <string name="nc_missed_call">Пропуснахте обаждане от %s</string>
     <string name="nc_moderator">Модератор</string>
     <string name="nc_never">Никога не е присъединяван</string>
     <string name="nc_new_conversation">Нов разговор</string>
     <string name="nc_new_mention">Непрочетени споменавания</string>
     <string name="nc_new_messages">Непрочетени съобщения.</string>
     <string name="nc_new_password">Нова парола</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Приложението %1$s не е инсталирано на сървъра, прекратяване</string>
     <string name="nc_nick_guest">Гост</string>
     <string name="nc_no">Не</string>
     <string name="nc_no_messages_yet">Няма съобщения.</string>

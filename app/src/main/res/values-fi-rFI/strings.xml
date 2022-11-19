@@ -164,7 +164,6 @@
     <string name="nc_new_mention">Lukemattomat maininnat</string>
     <string name="nc_new_messages">Lukemattomat viestit</string>
     <string name="nc_new_password">Uusi salasana</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Sovellusta %1$s ei ole asennettu, keskeytetään</string>
     <string name="nc_nick_guest">Vieras</string>
     <string name="nc_no">Ei</string>
     <string name="nc_no_messages_yet">Ei viestejä vielä</string>

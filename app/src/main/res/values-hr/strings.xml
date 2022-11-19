@@ -172,7 +172,6 @@
     <string name="nc_new_mention">Nepročitana spominjanja</string>
     <string name="nc_new_messages">Nove poruke</string>
     <string name="nc_new_password">Nova zaporka</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Aplikacija %1$s nije instalirana na poslužitelju, prekid</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_no">Ne</string>
     <string name="nc_no_messages_yet">Još nema poruka</string>

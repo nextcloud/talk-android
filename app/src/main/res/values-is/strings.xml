@@ -127,7 +127,6 @@
     <string name="nc_new_conversation">Nýtt samtal</string>
     <string name="nc_new_messages">Ólesin skilaboð</string>
     <string name="nc_new_password">Nýtt lykilorð</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s forritið ekki uppsett á þjóninu, hætti við</string>
     <string name="nc_nick_guest">Gestur</string>
     <string name="nc_no">Nei</string>
     <string name="nc_no_messages_yet">Engin skilaboð ennþá</string>

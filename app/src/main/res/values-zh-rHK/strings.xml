@@ -187,13 +187,14 @@
     <string name="nc_message_read">訊息已讀</string>
     <string name="nc_message_sent">訊息已傳送</string>
     <string name="nc_microphone_permission_permanently_denied">為了開啟聲音的通訊請在系統設定內同意\"麥克風\"的需求。</string>
+    <string name="nc_missed_call">您錯過了 %s 的來電</string>
     <string name="nc_moderator">主持人</string>
     <string name="nc_never">從未加入</string>
     <string name="nc_new_conversation">新對話</string>
     <string name="nc_new_mention">未讀的提及</string>
     <string name="nc_new_messages">未讀郵件</string>
     <string name="nc_new_password">新密碼</string>
-    <string name="nc_nextcloud_talk_app_not_installed">此伺服器並未安裝%1$s應用程式，操作中斷。</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s 不可用（管理員未安裝或限制）</string>
     <string name="nc_nick_guest">訪客</string>
     <string name="nc_no">否</string>
     <string name="nc_no_messages_yet">目前無任何訊息</string>

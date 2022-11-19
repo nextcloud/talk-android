@@ -187,13 +187,13 @@
     <string name="nc_message_read">Message lu</string>
     <string name="nc_message_sent">Message envoyé</string>
     <string name="nc_microphone_permission_permanently_denied">Pour établir une communication audio, veuillez autoriser l’utilisation du microphone dans les paramètres du système.</string>
+    <string name="nc_missed_call">Vous avez manqué un appel de %s</string>
     <string name="nc_moderator">Modérateur</string>
     <string name="nc_never">Jamais contacté</string>
     <string name="nc_new_conversation">Nouvelle conversation</string>
     <string name="nc_new_mention">Mentions non lues</string>
     <string name="nc_new_messages">Messages non lus</string>
     <string name="nc_new_password">Nouveau mot de passe</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Application %1$s non installée sur le serveur, abandon</string>
     <string name="nc_nick_guest">Invité</string>
     <string name="nc_no">Non</string>
     <string name="nc_no_messages_yet">Pas de messages</string>

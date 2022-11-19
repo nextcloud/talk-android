@@ -187,13 +187,14 @@
     <string name="nc_message_read">Mensajes leídos</string>
     <string name="nc_message_sent">Mensaje enviado</string>
     <string name="nc_microphone_permission_permanently_denied">Para permitir la comunicación de voz, concede el permiso de \"Micrófono\" en la configuración del sistema.</string>
+    <string name="nc_missed_call">Perdiste una llamada de %s</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Nunca unido</string>
     <string name="nc_new_conversation">Nueva conversación</string>
     <string name="nc_new_mention">Menciones sin leer</string>
     <string name="nc_new_messages">Mensajes no leídos</string>
     <string name="nc_new_password">Nueva contraseña</string>
-    <string name="nc_nextcloud_talk_app_not_installed">La app %1$s no está instalada en el servidor. Abortando</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s no está disponible (no se encuentra instalado o está restringido por el administrador)</string>
     <string name="nc_nick_guest">Invitado</string>
     <string name="nc_no">No</string>
     <string name="nc_no_messages_yet">Aún no hay mensajes</string>
@@ -354,7 +355,7 @@
     <string name="nc_upload_confirm_send_multiple">¿Enviar estos archivos a %1$s?</string>
     <string name="nc_upload_confirm_send_single">¿Enviar este archivo a %1$s?</string>
     <string name="nc_upload_failed">Lo siento, error en la subida</string>
-    <string name="nc_upload_failed_notification_text">Imposible subir %1$s</string>
+    <string name="nc_upload_failed_notification_text">Fallo al subir %1$s</string>
     <string name="nc_upload_failed_notification_title">Falla</string>
     <string name="nc_upload_from_cloud">Compartido por %1$s</string>
     <string name="nc_upload_from_device">Subir desde dispositivo</string>
