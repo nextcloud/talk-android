@@ -1879,6 +1879,8 @@ public class CallActivity extends CallBaseActivity {
                 if (inCallFlag == 0 && currentCallStatus != CallStatus.LEAVING && ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
                     Log.d(TAG, "Most probably a moderator ended the call for all.");
                     hangup(true);
+
+                    return;
                 }
             }
         }
