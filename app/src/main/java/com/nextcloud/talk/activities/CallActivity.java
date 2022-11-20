@@ -1853,6 +1853,8 @@ public class CallActivity extends CallBaseActivity {
 
         Log.d(TAG, "   currentSessionId is " + currentSessionId);
 
+        boolean isSelfInCall = false;
+
         for (HashMap<String, Object> participant : users) {
             long inCallFlag = (long) participant.get("inCall");
             if (!participant.get("sessionId").equals(currentSessionId)) {
@@ -1876,6 +1878,7 @@ public class CallActivity extends CallBaseActivity {
                 userIdsBySessionId.put(participant.get("sessionId").toString(), userId);
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
+                isSelfInCall = inCallFlag != 0;
                 if (inCallFlag == 0 && currentCallStatus != CallStatus.LEAVING && ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
                     Log.d(TAG, "Most probably a moderator ended the call for all.");
                     hangup(true);
@@ -1891,6 +1894,17 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
+        if (!isSelfInCall) {
+            Log.d(TAG, "Self not in call, disconnecting from all other sessions");
+
+            for (String sessionId : oldSessions) {
+                Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
+                endPeerConnection(sessionId, false);
+            }
+
+            return;
+        }
+
         // Calculate sessions that left the call
         List<String> disconnectedSessions = new ArrayList<>(oldSessions);
         disconnectedSessions.removeAll(newSessions);
@@ -1898,7 +1912,7 @@ public class CallActivity extends CallBaseActivity {
         // Calculate sessions that join the call
         newSessions.removeAll(oldSessions);
 
-        if (!isConnectionEstablished() && currentCallStatus != CallStatus.CONNECTING) {
+        if (currentCallStatus == CallStatus.LEAVING) {
             return;
         }
 
