@@ -1442,7 +1442,9 @@ public class CallActivity extends CallBaseActivity {
                 @Override
                 public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
                     if (currentCallStatus != CallStatus.LEAVING) {
-                        setCallState(CallStatus.JOINED);
+                        if (currentCallStatus != CallStatus.IN_CONVERSATION) {
+                            setCallState(CallStatus.JOINED);
+                        }
 
                         ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
                         ApplicationWideCurrentRoomHolder.getInstance().setDialing(false);
