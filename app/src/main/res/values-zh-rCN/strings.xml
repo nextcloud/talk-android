@@ -2,8 +2,11 @@
   <resources>
     <string name="account_icon">账户图标</string>
     <string name="appbar_search_in">搜索位置 %s</string>
+    <string name="audio_output_bluetooth">蓝牙</string>
+    <string name="audio_output_dialog_headline">音频输出</string>
     <string name="audio_output_phone">电话</string>
     <string name="audio_output_speaker">扬声器</string>
+    <string name="audio_output_wired_headset">有线耳机</string>
     <string name="avatar">头像</string>
     <string name="away">离开</string>
     <string name="choose_avatar_from_cloud">从云端选择头像</string>
@@ -13,9 +16,12 @@
     <string name="conversations">会话</string>
     <string name="delete_avatar">删除头像</string>
     <string name="dnd">不要打扰</string>
+    <string name="dontClear">不要清除</string>
     <string name="edit">编辑</string>
     <string name="emoji_category_recent">最近</string>
+    <string name="emoji_search">搜索 emoji</string>
     <string name="encrypted">已加密</string>
+    <string name="error_loading_chats">加载聊天记录时出错</string>
     <string name="failed_to_save">未能保存 %1$s</string>
     <string name="file_list_folder">文件夹</string>
     <string name="file_list_loading">正在加载 …</string>
@@ -30,7 +36,9 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">大文件在前</string>
     <string name="menu_item_sort_by_size_smallest_first">小文件在前</string>
+    <string name="message_poll_tap_to_open">点击打开投票</string>
     <string name="message_search_begin_empty">无搜索结果</string>
+    <string name="message_search_hint">搜索...</string>
     <string name="messages">消息</string>
     <string name="nc_Server_account_imported">所选帐户现已导入并可用</string>
     <string name="nc_about">关于</string>
@@ -109,6 +117,7 @@
     <string name="nc_display_name_not_stored">无法储存显示名称，正在终止</string>
     <string name="nc_email">电子邮件</string>
     <string name="nc_expire_message_eight_hours">8 小时</string>
+    <string name="nc_expire_message_four_weeks">4 星期</string>
     <string name="nc_expire_message_off">关闭</string>
     <string name="nc_expire_message_one_day">1 天</string>
     <string name="nc_expire_message_one_hour">1 小时</string>
@@ -133,6 +142,7 @@
     <string name="nc_guest_access_password_title">密码保护</string>
     <string name="nc_guest_access_password_weak_alert_title">弱密码</string>
     <string name="nc_guest_access_resend_invitations">重发邀请</string>
+    <string name="nc_guest_access_resend_invitations_successful">邀请函已再次发出。</string>
     <string name="nc_guest_access_share_link">共享会话链接</string>
     <string name="nc_hint_enter_a_message">输入消息…</string>
     <string name="nc_important_conversation">重要会话</string>
@@ -161,10 +171,12 @@
     <string name="nc_manual">未设置</string>
     <string name="nc_mark_as_read">标为已读</string>
     <string name="nc_mark_as_unread">标为未读</string>
+    <string name="nc_message_failed_to_send">消息发送失败：</string>
     <string name="nc_message_quote_cancel_reply">取消回复</string>
     <string name="nc_message_read">消息已读</string>
     <string name="nc_message_sent">消息已发送</string>
     <string name="nc_microphone_permission_permanently_denied">为了启用语音通话请在系统设置中允许“麦克风使用权限”</string>
+    <string name="nc_missed_call">你错过了来自 %s 的一个通话</string>
     <string name="nc_moderator">主持人</string>
     <string name="nc_never">从未加入</string>
     <string name="nc_new_conversation">新的会话</string>
@@ -314,6 +326,7 @@
     <string name="nc_share_to_choose_account">选择一个账户</string>
     <string name="nc_shared_items">已分享项目</string>
     <string name="nc_shared_items_deck_card">Deck 卡片</string>
+    <string name="nc_shared_items_description">图片、文件、语音消息</string>
     <string name="nc_shared_items_empty">沒有已分享的项目</string>
     <string name="nc_shared_items_location">位置</string>
     <string name="nc_shared_location">共享的位置</string>
@@ -323,9 +336,13 @@
     <string name="nc_upload_confirm_send_multiple">将这些文件发送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">将此文件发送到 %1$s？</string>
     <string name="nc_upload_failed">抱歉，上传失败</string>
+    <string name="nc_upload_failed_notification_text">%1$s 上传失败</string>
+    <string name="nc_upload_failed_notification_title">失败</string>
     <string name="nc_upload_from_cloud">分享来源：%1$s</string>
+    <string name="nc_upload_from_device">从设备上传</string>
     <string name="nc_upload_in_progess">上传中</string>
     <string name="nc_upload_picture_from_cam">拍照</string>
+    <string name="nc_upload_video_from_cam">拍摄视频</string>
     <string name="nc_user">用户</string>
     <string name="nc_voice_message_filename">来自 %1$s 的 Talk 录音 (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">按住录音，松开发送</string>
@@ -343,10 +360,19 @@
     <string name="open_in_files_app">在 Files 应用中打开</string>
     <string name="play_pause_voice_message">播放/暂停语音消息</string>
     <string name="polls_add_option">添加选项</string>
+    <string name="polls_edit_vote">编辑投票</string>
+    <string name="polls_end_poll">结束投票</string>
+    <string name="polls_end_poll_confirm">你确定要结束此投票吗？本操作无法撤销。</string>
+    <string name="polls_option_delete">删除选项 %1$s</string>
+    <string name="polls_option_hint">选项 %1$s</string>
     <string name="polls_options">选项</string>
+    <string name="polls_private_poll">私密投票</string>
+    <string name="polls_question">问题</string>
+    <string name="polls_question_hint">你的问题</string>
     <string name="polls_results_subtitle">结果</string>
     <string name="polls_settings">设置</string>
     <string name="polls_submit_vote">投票</string>
+    <string name="polls_voted_hidden_success">投票已提交</string>
     <string name="reactions_tab_all">所有</string>
     <string name="read_storage_no_permission">如果没有权限，不能共享来自存储的文件</string>
     <string name="save">保存</string>
@@ -363,6 +389,7 @@
     <string name="secondsAgo">数秒前</string>
     <string name="selected_list_item">已选中</string>
     <string name="send_to">发送到</string>
+    <string name="send_to_forbidden">你不能在此聊天中分享内容</string>
     <string name="send_to_three_dots">发送到 …</string>
     <string name="set_status">设定状态</string>
     <string name="set_status_message">设置状态消息</string>
@@ -371,6 +398,7 @@
     <string name="shared_items_file">文件</string>
     <string name="shared_items_media">媒体文件</string>
     <string name="shared_items_other">其他</string>
+    <string name="shared_items_poll">投票</string>
     <string name="shared_items_voice">语音</string>
     <string name="starred">收藏</string>
     <string name="status_message">状态消息</string>
@@ -399,4 +427,7 @@
     <string name="userinfo_no_info_headline">未设置个人信息</string>
     <string name="userinfo_no_info_text">在你的个人资料页上添加姓名、图片和联系方式。</string>
     <string name="whats_your_status">你什么状态？</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="other">%d 票</item>
+    </plurals>
+</resources>
