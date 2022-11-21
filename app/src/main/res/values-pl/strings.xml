@@ -187,12 +187,14 @@
     <string name="nc_message_read">Wiadomość przeczytana</string>
     <string name="nc_message_sent">Wiadomość wysłana</string>
     <string name="nc_microphone_permission_permanently_denied">Aby włączyć komunikację głosową, należy udzielić dostępu dla \"Mikrofon\" w ustawieniach systemu.</string>
+    <string name="nc_missed_call">Nie odebrałeś połączenia od %s</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nigdy nie dołączył</string>
     <string name="nc_new_conversation">Nowa rozmowa</string>
     <string name="nc_new_mention">Nieprzeczytane wzmianki</string>
     <string name="nc_new_messages">Nieprzeczytane wiadomości</string>
     <string name="nc_new_password">Nowe hasło</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s niedostępne (niezainstalowane lub ograniczone przez administratora)</string>
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_no">Nie</string>
     <string name="nc_no_messages_yet">Nie ma nowych wiadomości</string>
