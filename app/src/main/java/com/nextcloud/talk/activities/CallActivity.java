@@ -1858,15 +1858,22 @@ public class CallActivity extends CallBaseActivity {
             getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
 
             String userId = userIdsBySessionId.get(sessionId);
-
-            runOnUiThread(() -> {
-                setupVideoStreamForLayout(
-                    null,
-                    sessionId,
-                    userId,
-                    false,
-                    VIDEO_STREAM_TYPE_VIDEO);
-            });
+            if (userId != null) {
+                runOnUiThread(() -> {
+                    boolean notifyDataSetChanged = false;
+                    if (participantDisplayItems.get(sessionId + "-video") != null) {
+                        participantDisplayItems.get(sessionId + "-video").setUserId(userId);
+                        notifyDataSetChanged = true;
+                    }
+                    if (participantDisplayItems.get(sessionId + "-screen") != null) {
+                        participantDisplayItems.get(sessionId + "-screen").setUserId(userId);
+                        notifyDataSetChanged = true;
+                    }
+                    if (notifyDataSetChanged) {
+                        participantsAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
         }
 
         if (newSessions.size() > 0 && currentCallStatus != CallStatus.IN_CONVERSATION) {
@@ -2022,6 +2029,18 @@ public class CallActivity extends CallBaseActivity {
                 offerAnswerNickProviders.put(sessionId, offerAnswerNickProvider);
                 signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
                 signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
+            }
+
+            if (!publisher) {
+                runOnUiThread(() -> {
+                    // userId is unknown here, but it will be got based on the session id, and the stream will be
+                    // updated once it is added to the connection.
+                    setupVideoStreamForLayout(
+                        null,
+                        sessionId,
+                        false,
+                        type);
+                });
             }
 
             if (publisher) {
@@ -2227,14 +2246,7 @@ public class CallActivity extends CallBaseActivity {
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
         String participantDisplayItemId = mediaStreamEvent.getSession() + "-" + mediaStreamEvent.getVideoStreamType();
         if (participantDisplayItems.get(participantDisplayItemId) == null) {
-            // Initial setup, ignore media related properties as they will be set after it.
-            // userId is unknown from the event, but it will be got based on the session id.
-            setupVideoStreamForLayout(
-                null,
-                mediaStreamEvent.getSession(),
-                null,
-                false,
-                mediaStreamEvent.getVideoStreamType());
+            return;
         }
 
         boolean hasAtLeastOneVideoStream = false;
@@ -2260,7 +2272,6 @@ public class CallActivity extends CallBaseActivity {
 
     private void setupVideoStreamForLayout(@Nullable MediaStream mediaStream,
                                            String session,
-                                           String userId,
                                            boolean videoStreamEnabled,
                                            String videoStreamType) {
         PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(session,
@@ -2280,20 +2291,17 @@ public class CallActivity extends CallBaseActivity {
             nick = offerAnswerNickProviders.get(session) != null ? offerAnswerNickProviders.get(session).getNick() : "";
         }
 
-        String userId4Usage = userId;
-
-        if (userId4Usage == null) {
-            if (hasMCU) {
-                userId4Usage = webSocketClient.getUserIdForSession(session);
-            } else if (participantMap.get(session) != null && participantMap.get(session).getCalculatedActorType() == Participant.ActorType.USERS) {
-                userId4Usage = participantMap.get(session).getCalculatedActorId();
-            }
+        String userId = null;
+        if (hasMCU) {
+            userId = webSocketClient.getUserIdForSession(session);
+        } else if (participantMap.get(session) != null && participantMap.get(session).getCalculatedActorType() == Participant.ActorType.USERS) {
+            userId = participantMap.get(session).getCalculatedActorId();
         }
 
         String defaultGuestNick = getResources().getString(R.string.nc_nick_guest);
 
         ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(baseUrl,
-                                                                                   userId4Usage,
+                                                                                   userId,
                                                                                    session,
                                                                                    connected,
                                                                                    nick,
