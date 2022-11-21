@@ -2225,17 +2225,10 @@ public class CallActivity extends CallBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
-        if (mediaStreamEvent.getMediaStream() != null) {
-            boolean hasAtLeastOneVideoStream = mediaStreamEvent.getMediaStream().videoTracks != null
-                && mediaStreamEvent.getMediaStream().videoTracks.size() > 0;
-
-            setupVideoStreamForLayout(
-                mediaStreamEvent.getMediaStream(),
-                mediaStreamEvent.getSession(),
-                null,
-                hasAtLeastOneVideoStream,
-                mediaStreamEvent.getVideoStreamType());
-        } else {
+        String participantDisplayItemId = mediaStreamEvent.getSession() + "-" + mediaStreamEvent.getVideoStreamType();
+        if (participantDisplayItems.get(participantDisplayItemId) == null) {
+            // Initial setup, ignore media related properties as they will be set after it.
+            // userId is unknown from the event, but it will be got based on the session id.
             setupVideoStreamForLayout(
                 null,
                 mediaStreamEvent.getSession(),
@@ -2243,6 +2236,17 @@ public class CallActivity extends CallBaseActivity {
                 false,
                 mediaStreamEvent.getVideoStreamType());
         }
+
+        boolean hasAtLeastOneVideoStream = false;
+        if (mediaStreamEvent.getMediaStream() != null) {
+            hasAtLeastOneVideoStream = mediaStreamEvent.getMediaStream().videoTracks != null
+                && mediaStreamEvent.getMediaStream().videoTracks.size() > 0;
+        }
+
+        ParticipantDisplayItem participantDisplayItem = participantDisplayItems.get(participantDisplayItemId);
+        participantDisplayItem.setMediaStream(mediaStreamEvent.getMediaStream());
+        participantDisplayItem.setStreamEnabled(hasAtLeastOneVideoStream);
+        participantsAdapter.notifyDataSetChanged();
     }
 
     @Override
