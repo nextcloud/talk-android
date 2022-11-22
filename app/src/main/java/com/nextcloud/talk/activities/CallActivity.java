@@ -2117,24 +2117,13 @@ public class CallActivity extends CallBaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
         String sessionId = peerConnectionEvent.getSessionId();
-        String participantDisplayItemId = sessionId + "-" + peerConnectionEvent.getVideoStreamType();
 
         if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED) {
-            if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
-                updateSelfVideoViewConnected(true);
-            } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
-                participantDisplayItems.get(participantDisplayItemId).setConnected(true);
-                participantsAdapter.notifyDataSetChanged();
-            }
+            handlePeerConnected(sessionId, peerConnectionEvent.getVideoStreamType());
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED) {
-            if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
-                updateSelfVideoViewConnected(false);
-            } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
-                participantDisplayItems.get(participantDisplayItemId).setConnected(false);
-                participantsAdapter.notifyDataSetChanged();
-            }
+            handlePeerDisconnected(sessionId, peerConnectionEvent.getVideoStreamType());
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_CLOSED) {
             endPeerConnection(sessionId, VIDEO_STREAM_TYPE_SCREEN.equals(peerConnectionEvent.getVideoStreamType()));
@@ -2159,6 +2148,28 @@ public class CallActivity extends CallBaseActivity {
                 webSocketClient.clearResumeId();
                 hangup(false);
             }
+        }
+    }
+
+    private void handlePeerConnected(String sessionId, String videoStreamType) {
+        String participantDisplayItemId = sessionId + "-" + videoStreamType;
+
+        if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
+            updateSelfVideoViewConnected(true);
+        } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
+            participantDisplayItems.get(participantDisplayItemId).setConnected(true);
+            participantsAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void handlePeerDisconnected(String sessionId, String videoStreamType) {
+        String participantDisplayItemId = sessionId + "-" + videoStreamType;
+
+        if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
+            updateSelfVideoViewConnected(false);
+        } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
+            participantDisplayItems.get(participantDisplayItemId).setConnected(false);
+            participantsAdapter.notifyDataSetChanged();
         }
     }
 
