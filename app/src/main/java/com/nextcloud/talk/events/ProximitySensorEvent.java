@@ -20,31 +20,31 @@
 
 package com.nextcloud.talk.events;
 
-public class PeerConnectionEvent {
-    private final PeerConnectionEventType peerConnectionEventType;
+public class ProximitySensorEvent {
+    private final ProximitySensorEventType proximitySensorEventType;
 
-    public PeerConnectionEvent(PeerConnectionEventType peerConnectionEventType) {
-        this.peerConnectionEventType = peerConnectionEventType;
+    public ProximitySensorEvent(ProximitySensorEventType proximitySensorEventType) {
+        this.proximitySensorEventType = proximitySensorEventType;
     }
 
-    public PeerConnectionEventType getPeerConnectionEventType() {
-        return this.peerConnectionEventType;
+    public ProximitySensorEventType getProximitySensorEventType() {
+        return this.proximitySensorEventType;
     }
 
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof PeerConnectionEvent)) {
+        if (!(o instanceof ProximitySensorEvent)) {
             return false;
         }
-        final PeerConnectionEvent other = (PeerConnectionEvent) o;
+        final ProximitySensorEvent other = (ProximitySensorEvent) o;
         if (!other.canEqual((Object) this)) {
             return false;
         }
-        final Object this$peerConnectionEventType = this.getPeerConnectionEventType();
-        final Object other$peerConnectionEventType = other.getPeerConnectionEventType();
-        if (this$peerConnectionEventType == null ? other$peerConnectionEventType != null : !this$peerConnectionEventType.equals(other$peerConnectionEventType)) {
+        final Object this$proximitySensorEventType = this.getProximitySensorEventType();
+        final Object other$proximitySensorEventType = other.getProximitySensorEventType();
+        if (this$proximitySensorEventType == null ? other$proximitySensorEventType != null : !this$proximitySensorEventType.equals(other$proximitySensorEventType)) {
             return false;
         }
 
@@ -52,22 +52,22 @@ public class PeerConnectionEvent {
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof PeerConnectionEvent;
+        return other instanceof ProximitySensorEvent;
     }
 
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        final Object $peerConnectionEventType = this.getPeerConnectionEventType();
-        result = result * PRIME + ($peerConnectionEventType == null ? 43 : $peerConnectionEventType.hashCode());
+        final Object $proximitySensorEventType = this.getProximitySensorEventType();
+        result = result * PRIME + ($proximitySensorEventType == null ? 43 : $proximitySensorEventType.hashCode());
         return result;
     }
 
     public String toString() {
-        return "PeerConnectionEvent(peerConnectionEventType=" + this.getPeerConnectionEventType() + ")";
+        return "ProximitySensorEvent(proximitySensorEventType=" + this.getProximitySensorEventType() + ")";
     }
 
-    public enum PeerConnectionEventType {
+    public enum ProximitySensorEventType {
         SENSOR_FAR, SENSOR_NEAR
     }
 }

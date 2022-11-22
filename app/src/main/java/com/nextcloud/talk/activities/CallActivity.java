@@ -64,7 +64,7 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.CallActivityBinding;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.events.NetworkEvent;
-import com.nextcloud.talk.events.PeerConnectionEvent;
+import com.nextcloud.talk.events.ProximitySensorEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
@@ -2124,15 +2124,15 @@ public class CallActivity extends CallBaseActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
-         if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.SENSOR_FAR ||
-            peerConnectionEvent.getPeerConnectionEventType() ==
-                PeerConnectionEvent.PeerConnectionEventType.SENSOR_NEAR) {
+    public void onMessageEvent(ProximitySensorEvent proximitySensorEvent) {
+         if (proximitySensorEvent.getProximitySensorEventType() ==
+            ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR ||
+            proximitySensorEvent.getProximitySensorEventType() ==
+                ProximitySensorEvent.ProximitySensorEventType.SENSOR_NEAR) {
 
             if (!isVoiceOnlyCall) {
-                boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType() ==
-                    PeerConnectionEvent.PeerConnectionEventType.SENSOR_FAR && videoOn;
+                boolean enableVideo = proximitySensorEvent.getProximitySensorEventType() ==
+                    ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR && videoOn;
                 if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) &&
                     (currentCallStatus == CallStatus.CONNECTING || isConnectionEstablished()) && videoOn
                     && enableVideo != localVideoTrack.enabled()) {
