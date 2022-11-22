@@ -1303,7 +1303,8 @@ class ConversationsListController(bundle: Bundle) :
                 if (results.hasMore) {
                     adapterItems.add(LoadMoreResultsItem)
                 }
-                adapter!!.addItems(0, adapterItems)
+                // add unified search result at the end of the list
+                adapter!!.addItems(adapter!!.mainItemCount + adapter!!.scrollableHeaders.size, adapterItems)
                 binding.recyclerView.scrollToPosition(0)
             }
         }
