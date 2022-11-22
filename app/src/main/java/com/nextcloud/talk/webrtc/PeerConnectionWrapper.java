@@ -432,9 +432,8 @@ public class PeerConnectionWrapper {
             } else if (iceConnectionState == PeerConnection.IceConnectionState.FAILED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
                                                                    sessionId, null, null, videoStreamType));
-                if (isMCUPublisher) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED, sessionId, null, null, videoStreamType));
-                }
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_FAILED,
+                                                                   sessionId, null, null, videoStreamType));
             }
         }
 
