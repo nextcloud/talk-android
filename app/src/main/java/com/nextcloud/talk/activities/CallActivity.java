@@ -2153,10 +2153,12 @@ public class CallActivity extends CallBaseActivity {
                 }
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED) {
-            setCallState(CallStatus.PUBLISHER_FAILED);
-            webSocketClient.clearResumeId();
-            hangup(false);
+            PeerConnectionEvent.PeerConnectionEventType.PEER_FAILED) {
+            if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
+                setCallState(CallStatus.PUBLISHER_FAILED);
+                webSocketClient.clearResumeId();
+                hangup(false);
+            }
         }
     }
 
