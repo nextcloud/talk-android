@@ -2119,10 +2119,16 @@ public class CallActivity extends CallBaseActivity {
         String sessionId = peerConnectionEvent.getSessionId();
 
         if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED) {
+                PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED ||
+            peerConnectionEvent.getPeerConnectionEventType() ==
+                PeerConnectionEvent.PeerConnectionEventType.PEER_COMPLETED) {
             handlePeerConnected(sessionId, peerConnectionEvent.getVideoStreamType());
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED) {
+                PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED ||
+            peerConnectionEvent.getPeerConnectionEventType() ==
+                PeerConnectionEvent.PeerConnectionEventType.PEER_NEW ||
+            peerConnectionEvent.getPeerConnectionEventType() ==
+                PeerConnectionEvent.PeerConnectionEventType.PEER_CHECKING) {
             handlePeerDisconnected(sessionId, peerConnectionEvent.getVideoStreamType());
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PEER_CLOSED) {
@@ -2147,6 +2153,8 @@ public class CallActivity extends CallBaseActivity {
                 setCallState(CallStatus.PUBLISHER_FAILED);
                 webSocketClient.clearResumeId();
                 hangup(false);
+            } else {
+                handlePeerDisconnected(sessionId, peerConnectionEvent.getVideoStreamType());
             }
         }
     }
