@@ -100,7 +100,6 @@ public class PeerConnectionWrapper {
     private final MediaConstraints mediaConstraints;
     private DataChannel dataChannel;
     private final MagicSdpObserver magicSdpObserver;
-    private MediaStream remoteStream;
 
     private final boolean hasInitiated;
 
@@ -416,10 +415,6 @@ public class PeerConnectionWrapper {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED,
                                                                    sessionId, null, null, videoStreamType));
 
-                if (!isMCUPublisher) {
-                    EventBus.getDefault().post(new MediaStreamEvent(remoteStream, sessionId, videoStreamType));
-                }
-
                 if (hasInitiated) {
                     sendInitialMediaStatus();
                 }
@@ -477,7 +472,7 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onAddStream(MediaStream mediaStream) {
-            remoteStream = mediaStream;
+            EventBus.getDefault().post(new MediaStreamEvent(mediaStream, sessionId, videoStreamType));
         }
 
         @Override
