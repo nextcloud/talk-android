@@ -477,9 +477,7 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onRemoveStream(MediaStream mediaStream) {
-            if (!isMCUPublisher) {
-                EventBus.getDefault().post(new MediaStreamEvent(null, sessionId, videoStreamType));
-            }
+            EventBus.getDefault().post(new MediaStreamEvent(null, sessionId, videoStreamType));
         }
 
         @Override
