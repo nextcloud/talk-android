@@ -419,19 +419,21 @@ public class PeerConnectionWrapper {
                     sendInitialMediaStatus();
                 }
             } else if (iceConnectionState == PeerConnection.IceConnectionState.COMPLETED) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED,
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_COMPLETED,
                                                                    sessionId, null, null, videoStreamType));
             } else if (iceConnectionState == PeerConnection.IceConnectionState.CLOSED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CLOSED, sessionId, null, null, videoStreamType));
-            } else if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED ||
-                    iceConnectionState == PeerConnection.IceConnectionState.NEW ||
-                    iceConnectionState == PeerConnection.IceConnectionState.CHECKING) {
+            } else if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
+                                                                   sessionId, null, null, videoStreamType));
+            } else if (iceConnectionState == PeerConnection.IceConnectionState.NEW) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_NEW,
+                                                                   sessionId, null, null, videoStreamType));
+            } else if (iceConnectionState == PeerConnection.IceConnectionState.CHECKING) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CHECKING,
                                                                    sessionId, null, null, videoStreamType));
             } else if (iceConnectionState == PeerConnection.IceConnectionState.FAILED) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
-                                                                   sessionId, null, null, videoStreamType));
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_FAILED,
                                                                    sessionId, null, null, videoStreamType));
             }
