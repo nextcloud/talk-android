@@ -2125,19 +2125,13 @@ public class CallActivity extends CallBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ProximitySensorEvent proximitySensorEvent) {
-         if (proximitySensorEvent.getProximitySensorEventType() ==
-            ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR ||
-            proximitySensorEvent.getProximitySensorEventType() ==
-                ProximitySensorEvent.ProximitySensorEventType.SENSOR_NEAR) {
-
-            if (!isVoiceOnlyCall) {
-                boolean enableVideo = proximitySensorEvent.getProximitySensorEventType() ==
-                    ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR && videoOn;
-                if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) &&
-                    (currentCallStatus == CallStatus.CONNECTING || isConnectionEstablished()) && videoOn
-                    && enableVideo != localVideoTrack.enabled()) {
-                    toggleMedia(enableVideo, true);
-                }
+        if (!isVoiceOnlyCall) {
+            boolean enableVideo = proximitySensorEvent.getProximitySensorEventType() ==
+                ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR && videoOn;
+            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) &&
+                (currentCallStatus == CallStatus.CONNECTING || isConnectionEstablished()) && videoOn
+                && enableVideo != localVideoTrack.enabled()) {
+                toggleMedia(enableVideo, true);
             }
         }
     }
