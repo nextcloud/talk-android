@@ -2704,13 +2704,25 @@ public class CallActivity extends CallBaseActivity {
                 if (iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
                         iceConnectionState == PeerConnection.IceConnectionState.COMPLETED) {
                     handlePeerConnected(sessionId, videoStreamType);
-                } else if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED ||
+
+                    return;
+                }
+
+                if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED ||
                         iceConnectionState == PeerConnection.IceConnectionState.NEW ||
                         iceConnectionState == PeerConnection.IceConnectionState.CHECKING) {
                     handlePeerDisconnected(sessionId, videoStreamType);
-                } else if (iceConnectionState == PeerConnection.IceConnectionState.CLOSED) {
+
+                    return;
+                }
+
+                if (iceConnectionState == PeerConnection.IceConnectionState.CLOSED) {
                     endPeerConnection(sessionId, VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType));
-                } else if (iceConnectionState == PeerConnection.IceConnectionState.FAILED) {
+
+                    return;
+                }
+
+                if (iceConnectionState == PeerConnection.IceConnectionState.FAILED) {
                     if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
                         setCallState(CallStatus.PUBLISHER_FAILED);
                         webSocketClient.clearResumeId();
@@ -2718,6 +2730,8 @@ public class CallActivity extends CallBaseActivity {
                     } else {
                         handlePeerDisconnected(sessionId, videoStreamType);
                     }
+
+                    return;
                 }
             });
         }
