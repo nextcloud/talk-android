@@ -26,14 +26,26 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.vanniktech.emoji.EmojiTextView
+import javax.inject.Inject
 
-class Reaction {
+class Reaction() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewModel: ReactionsInsideMessageViewModel
+
+    fun init() {
+        // TODO: is it okay to create a viewModel here? if yes, what to pass as first param???
+        // viewModel = ViewModelProvider(, viewModelFactory)[ReactionsInsideMessageViewModel::class.java]
+    }
 
     fun showReactions(
         message: ChatMessage,
