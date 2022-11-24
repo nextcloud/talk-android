@@ -250,13 +250,13 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                                      getMessageText().getContext(),
                                      true,
                                      viewThemeUtils);
-        reactionsBinding.reactionsEmojiWrapper.setOnClickListener(l -> {
-            commonMessageInterface.onClickReactions(message);
-        });
-        reactionsBinding.reactionsEmojiWrapper.setOnLongClickListener(l -> {
-            commonMessageInterface.onOpenMessageActionsDialog(message);
-            return true;
-        });
+//        reactionsBinding.reactionsEmojiWrapper.setOnClickListener(l -> {
+//            commonMessageInterface.onClickReactions(message);
+//        });
+//        reactionsBinding.reactionsEmojiWrapper.setOnLongClickListener(l -> {
+//            commonMessageInterface.onOpenMessageActionsDialog(message);
+//            return true;
+//        });
     }
 
     private Drawable getDrawableFromContactDetails(Context context, String base64) {

@@ -17,20 +17,20 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/reactions_emoji_wrapper"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    app:layout_alignSelf="flex_start"
-    app:layout_flexGrow="1"
-    app:layout_wrapBefore="true">
 
-    <TextView
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/reactions_emoji_horizontal_scroller"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:fillViewport="true"
+    android:measureAllChildren="false"
+    android:scrollbars="none" >
+    <LinearLayout
+        android:id="@+id/reactions_emoji_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="emojis">
-    </TextView>
-</LinearLayout>
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+    </LinearLayout>
+</HorizontalScrollView>

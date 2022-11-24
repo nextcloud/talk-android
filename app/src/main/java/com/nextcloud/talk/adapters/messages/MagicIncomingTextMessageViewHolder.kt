@@ -124,13 +124,13 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
             false,
             viewThemeUtils
         )
-        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
-            commonMessageInterface.onClickReactions(message)
-        }
-        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
-        }
+        // binding.reactions.reactionsEmojiWrapper.setOnClickListener {
+        //     commonMessageInterface.onClickReactions(message)
+        // }
+        // binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
+        //     commonMessageInterface.onOpenMessageActionsDialog(message)
+        //     true
+        // }
     }
 
     private fun processAuthor(message: ChatMessage) {

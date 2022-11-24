@@ -46,9 +46,6 @@ class Reaction {
         if (message.reactions != null && message.reactions!!.isNotEmpty()) {
             binding.reactionsEmojiWrapper.visibility = View.VISIBLE
 
-            var remainingEmojisToDisplay = MAX_EMOJIS_TO_DISPLAY
-            val showInfoAboutMoreEmojis = message.reactions!!.size > MAX_EMOJIS_TO_DISPLAY
-
             val amountParams = getAmountLayoutParams(context)
             val wrapperParams = getWrapperLayoutParams(context)
 
@@ -78,13 +75,9 @@ class Reaction {
                     ),
                 )
 
-                binding.reactionsEmojiWrapper.addView(emojiWithAmountWrapper)
+                emojiWithAmountWrapper.setOnClickListener { }
 
-                remainingEmojisToDisplay--
-                if (remainingEmojisToDisplay == 0 && showInfoAboutMoreEmojis) {
-                    binding.reactionsEmojiWrapper.addView(getMoreReactionsTextView(context, textColor))
-                    break
-                }
+                binding.reactionsEmojiWrapper.addView(emojiWithAmountWrapper)
             }
         } else {
             binding.reactionsEmojiWrapper.visibility = View.GONE
@@ -130,13 +123,6 @@ class Reaction {
             )
         }
         return emojiWithAmountWrapper
-    }
-
-    private fun getMoreReactionsTextView(context: Context, textColor: Int): TextView {
-        val infoAboutMoreEmojis = TextView(context)
-        infoAboutMoreEmojis.setTextColor(textColor)
-        infoAboutMoreEmojis.text = EMOJI_MORE
-        return infoAboutMoreEmojis
     }
 
     private fun getEmojiTextView(context: Context, emoji: String): EmojiTextView {
@@ -202,12 +188,10 @@ class Reaction {
     )
 
     companion object {
-        const val MAX_EMOJIS_TO_DISPLAY = 4
         const val AMOUNT_START_MARGIN: Float = 2F
         const val EMOJI_END_MARGIN: Float = 6F
         const val EMOJI_AND_AMOUNT_PADDING_SIDE: Float = 4F
         const val WRAPPER_PADDING_TOP: Float = 2F
         const val WRAPPER_PADDING_BOTTOM: Float = 3F
-        const val EMOJI_MORE = "…"
     }
 }

@@ -122,13 +122,13 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
 
         Reaction().showReactions(message, binding.reactions, context, true, viewThemeUtils)
-        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
-            commonMessageInterface.onClickReactions(message)
-        }
-        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
-        }
+        // binding.reactions.reactionsEmojiWrapper.setOnClickListener {
+        //     commonMessageInterface.onClickReactions(message)
+        // }
+        // binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
+        //     commonMessageInterface.onOpenMessageActionsDialog(message)
+        //     true
+        // }
     }
 
     private fun processParentMessage(message: ChatMessage) {

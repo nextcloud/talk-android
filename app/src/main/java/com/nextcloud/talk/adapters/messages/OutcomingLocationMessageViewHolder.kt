@@ -127,13 +127,13 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             true,
             viewThemeUtils
         )
-        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
-            commonMessageInterface.onClickReactions(message)
-        }
-        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
-        }
+        // binding.reactions.reactionsEmojiWrapper.setOnClickListener {
+        //     commonMessageInterface.onClickReactions(message)
+        // }
+        // binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
+        //     commonMessageInterface.onOpenMessageActionsDialog(message)
+        //     true
+        // }
     }
 
     @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
