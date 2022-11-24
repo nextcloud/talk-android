@@ -2072,7 +2072,10 @@ public class CallActivity extends CallBaseActivity {
         updateSelfVideoViewPosition();
     }
 
-    private void updateSelfVideoViewConnected(boolean connected) {
+    private void updateSelfVideoViewIceConnectionState(PeerConnection.IceConnectionState iceConnectionState) {
+        boolean connected = iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
+                                iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
+
         // FIXME In voice only calls there is no video view, so the progress bar would appear floating in the middle of
         // nowhere. However, a way to signal that the local participant is not connected to the HPB is still need in
         // that case.
@@ -2133,28 +2136,6 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private void handlePeerConnected(String sessionId, String videoStreamType) {
-        String participantDisplayItemId = sessionId + "-" + videoStreamType;
-
-        if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
-            updateSelfVideoViewConnected(true);
-        } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
-            participantDisplayItems.get(participantDisplayItemId).setConnected(true);
-            participantsAdapter.notifyDataSetChanged();
-        }
-    }
-
-    private void handlePeerDisconnected(String sessionId, String videoStreamType) {
-        String participantDisplayItemId = sessionId + "-" + videoStreamType;
-
-        if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
-            updateSelfVideoViewConnected(false);
-        } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
-            participantDisplayItems.get(participantDisplayItemId).setConnected(false);
-            participantsAdapter.notifyDataSetChanged();
-        }
-    }
-
     private void startSendingNick() {
         DataChannelMessage dataChannelMessage = new DataChannelMessage();
         dataChannelMessage.setType("nickChanged");
@@ -2211,11 +2192,9 @@ public class CallActivity extends CallBaseActivity {
         PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(session,
                                                                                                   videoStreamType);
 
-        boolean connected = false;
+        PeerConnection.IceConnectionState iceConnectionState = null;
         if (peerConnectionWrapper != null) {
-            PeerConnection.IceConnectionState iceConnectionState = peerConnectionWrapper.getPeerConnection().iceConnectionState();
-            connected = iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
-                iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
+            iceConnectionState = peerConnectionWrapper.getPeerConnection().iceConnectionState();
         }
 
         String nick;
@@ -2232,7 +2211,7 @@ public class CallActivity extends CallBaseActivity {
         ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(baseUrl,
                                                                                    userId,
                                                                                    session,
-                                                                                   connected,
+                                                                                   iceConnectionState,
                                                                                    nick,
                                                                                    defaultGuestNick,
                                                                                    mediaStream,
@@ -2692,19 +2671,11 @@ public class CallActivity extends CallBaseActivity {
         @Override
         public void onIceConnectionStateChanged(PeerConnection.IceConnectionState iceConnectionState) {
             runOnUiThread(() -> {
-                if (iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
-                        iceConnectionState == PeerConnection.IceConnectionState.COMPLETED) {
-                    handlePeerConnected(sessionId, videoStreamType);
-
-                    return;
-                }
-
-                if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED ||
-                        iceConnectionState == PeerConnection.IceConnectionState.NEW ||
-                        iceConnectionState == PeerConnection.IceConnectionState.CHECKING) {
-                    handlePeerDisconnected(sessionId, videoStreamType);
-
-                    return;
+                if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
+                    updateSelfVideoViewIceConnectionState(iceConnectionState);
+                } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setIceConnectionState(iceConnectionState);
+                    participantsAdapter.notifyDataSetChanged();
                 }
 
                 if (iceConnectionState == PeerConnection.IceConnectionState.CLOSED) {
@@ -2718,8 +2689,6 @@ public class CallActivity extends CallBaseActivity {
                         setCallState(CallStatus.PUBLISHER_FAILED);
                         webSocketClient.clearResumeId();
                         hangup(false);
-                    } else {
-                        handlePeerDisconnected(sessionId, videoStreamType);
                     }
 
                     return;

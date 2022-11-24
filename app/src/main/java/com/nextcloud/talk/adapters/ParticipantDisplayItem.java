@@ -6,12 +6,13 @@ import com.nextcloud.talk.utils.ApiUtils;
 
 import org.webrtc.EglBase;
 import org.webrtc.MediaStream;
+import org.webrtc.PeerConnection;
 
 public class ParticipantDisplayItem {
     private String baseUrl;
     private String userId;
     private String session;
-    private boolean connected;
+    private PeerConnection.IceConnectionState iceConnectionState;
     private String nick;
     private final String defaultGuestNick;
     private String urlForAvatar;
@@ -21,11 +22,11 @@ public class ParticipantDisplayItem {
     private EglBase rootEglBase;
     private boolean isAudioEnabled;
 
-    public ParticipantDisplayItem(String baseUrl, String userId, String session, boolean connected, String nick, String defaultGuestNick, MediaStream mediaStream, String streamType, boolean streamEnabled, EglBase rootEglBase) {
+    public ParticipantDisplayItem(String baseUrl, String userId, String session, PeerConnection.IceConnectionState iceConnectionState, String nick, String defaultGuestNick, MediaStream mediaStream, String streamType, boolean streamEnabled, EglBase rootEglBase) {
         this.baseUrl = baseUrl;
         this.userId = userId;
         this.session = session;
-        this.connected = connected;
+        this.iceConnectionState = iceConnectionState;
         this.nick = nick;
         this.defaultGuestNick = defaultGuestNick;
         this.mediaStream = mediaStream;
@@ -55,11 +56,12 @@ public class ParticipantDisplayItem {
     }
 
     public boolean isConnected() {
-        return connected;
+        return iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
+            iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
     }
 
-    public void setConnected(boolean connected) {
-        this.connected = connected;
+    public void setIceConnectionState(PeerConnection.IceConnectionState iceConnectionState) {
+        this.iceConnectionState = iceConnectionState;
     }
 
     public String getNick() {
