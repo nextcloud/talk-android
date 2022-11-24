@@ -258,9 +258,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         notification = mBuilder!!
             .setContentTitle(failureTitle)
             .setContentText(failureText)
+            .setOngoing(false)
             .build()
 
-        mNotifyManager!!.notify(notificationId, notification)
+        // Cancel original notification
+        mNotifyManager?.cancel(notificationId)
+        // Then show information about failure
+        mNotifyManager!!.notify(SystemClock.uptimeMillis().toInt(), notification)
     }
 
     companion object {
