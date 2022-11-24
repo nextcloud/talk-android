@@ -103,18 +103,21 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
 
         Reaction().showReactions(
             message,
+            ::clickOnReaction,
+            ::longClickOnReaction,
             binding.reactions,
             binding.messageText.context,
             false,
             viewThemeUtils
         )
-        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
-            commonMessageInterface.onClickReactions(message)
-        }
-        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
-        }
+    }
+
+    private fun longClickOnReaction(chatMessage: ChatMessage) {
+        commonMessageInterface.onLongClickReactions(chatMessage)
+    }
+
+    private fun clickOnReaction(chatMessage: ChatMessage, emoji: String) {
+        commonMessageInterface.onClickReaction(chatMessage, emoji)
     }
 
     private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
