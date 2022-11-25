@@ -740,6 +740,10 @@ public class CallActivity extends CallBaseActivity {
                 }
             });
 
+        if (participantsAdapter != null) {
+            participantsAdapter.destroy();
+        }
+
         participantsAdapter = new ParticipantsAdapter(
             this,
             participantDisplayItems,
@@ -1853,17 +1857,11 @@ public class CallActivity extends CallBaseActivity {
             String userId = userIdsBySessionId.get(sessionId);
             if (userId != null) {
                 runOnUiThread(() -> {
-                    boolean notifyDataSetChanged = false;
                     if (participantDisplayItems.get(sessionId + "-video") != null) {
                         participantDisplayItems.get(sessionId + "-video").setUserId(userId);
-                        notifyDataSetChanged = true;
                     }
                     if (participantDisplayItems.get(sessionId + "-screen") != null) {
                         participantDisplayItems.get(sessionId + "-screen").setUserId(userId);
-                        notifyDataSetChanged = true;
-                    }
-                    if (notifyDataSetChanged) {
-                        participantsAdapter.notifyDataSetChanged();
                     }
                 });
             }
@@ -2527,17 +2525,11 @@ public class CallActivity extends CallBaseActivity {
         private void onOfferOrAnswer(String nick) {
             this.nick = nick;
 
-            boolean notifyDataSetChanged = false;
             if (participantDisplayItems.get(sessionId + "-video") != null) {
                 participantDisplayItems.get(sessionId + "-video").setNick(nick);
-                notifyDataSetChanged = true;
             }
             if (participantDisplayItems.get(sessionId + "-screen") != null) {
                 participantDisplayItems.get(sessionId + "-screen").setNick(nick);
-                notifyDataSetChanged = true;
-            }
-            if (notifyDataSetChanged) {
-                participantsAdapter.notifyDataSetChanged();
             }
         }
 
@@ -2582,7 +2574,6 @@ public class CallActivity extends CallBaseActivity {
             runOnUiThread(() -> {
                 if (participantDisplayItems.get(participantDisplayItemId) != null) {
                     participantDisplayItems.get(participantDisplayItemId).setAudioEnabled(true);
-                    participantsAdapter.notifyDataSetChanged();
                 }
             });
         }
@@ -2592,7 +2583,6 @@ public class CallActivity extends CallBaseActivity {
             runOnUiThread(() -> {
                 if (participantDisplayItems.get(participantDisplayItemId) != null) {
                     participantDisplayItems.get(participantDisplayItemId).setAudioEnabled(false);
-                    participantsAdapter.notifyDataSetChanged();
                 }
             });
         }
@@ -2602,7 +2592,6 @@ public class CallActivity extends CallBaseActivity {
             runOnUiThread(() -> {
                 if (participantDisplayItems.get(participantDisplayItemId) != null) {
                     participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(true);
-                    participantsAdapter.notifyDataSetChanged();
                 }
             });
         }
@@ -2612,7 +2601,6 @@ public class CallActivity extends CallBaseActivity {
             runOnUiThread(() -> {
                 if (participantDisplayItems.get(participantDisplayItemId) != null) {
                     participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(false);
-                    participantsAdapter.notifyDataSetChanged();
                 }
             });
         }
@@ -2622,7 +2610,6 @@ public class CallActivity extends CallBaseActivity {
             runOnUiThread(() -> {
                 if (participantDisplayItems.get(participantDisplayItemId) != null) {
                     participantDisplayItems.get(participantDisplayItemId).setNick(nick);
-                    participantsAdapter.notifyDataSetChanged();
                 }
             });
         }
@@ -2664,7 +2651,6 @@ public class CallActivity extends CallBaseActivity {
                 ParticipantDisplayItem participantDisplayItem = participantDisplayItems.get(participantDisplayItemId);
                 participantDisplayItem.setMediaStream(mediaStream);
                 participantDisplayItem.setStreamEnabled(hasAtLeastOneVideoStream);
-                participantsAdapter.notifyDataSetChanged();
             });
         }
 
@@ -2675,7 +2661,6 @@ public class CallActivity extends CallBaseActivity {
                     updateSelfVideoViewIceConnectionState(iceConnectionState);
                 } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
                     participantDisplayItems.get(participantDisplayItemId).setIceConnectionState(iceConnectionState);
-                    participantsAdapter.notifyDataSetChanged();
                 }
 
                 if (iceConnectionState == PeerConnection.IceConnectionState.CLOSED) {
