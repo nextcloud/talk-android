@@ -9,17 +9,17 @@ import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 
 public class ParticipantDisplayItem {
-    private String baseUrl;
+    private final String baseUrl;
     private String userId;
-    private String session;
+    private final String session;
     private PeerConnection.IceConnectionState iceConnectionState;
     private String nick;
     private final String defaultGuestNick;
     private String urlForAvatar;
     private MediaStream mediaStream;
-    private String streamType;
+    private final String streamType;
     private boolean streamEnabled;
-    private EglBase rootEglBase;
+    private final EglBase rootEglBase;
     private boolean isAudioEnabled;
 
     public ParticipantDisplayItem(String baseUrl, String userId, String session, PeerConnection.IceConnectionState iceConnectionState, String nick, String defaultGuestNick, MediaStream mediaStream, String streamType, boolean streamEnabled, EglBase rootEglBase) {
