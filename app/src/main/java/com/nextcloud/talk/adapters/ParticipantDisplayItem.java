@@ -1,7 +1,10 @@
 package com.nextcloud.talk.adapters;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
+import com.nextcloud.talk.call.CallParticipantModel;
 import com.nextcloud.talk.utils.ApiUtils;
 
 import org.webrtc.EglBase;
@@ -14,6 +17,11 @@ public class ParticipantDisplayItem {
         void onChange();
     }
 
+    /**
+     * Shared handler to receive change notifications from the model on the main thread.
+     */
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+
     private final ParticipantDisplayItemNotifier participantDisplayItemNotifier = new ParticipantDisplayItemNotifier();
 
     private final String baseUrl;
@@ -23,6 +31,10 @@ public class ParticipantDisplayItem {
     private final String session;
     private final String streamType;
 
+    private final CallParticipantModel callParticipantModel;
+
+    private final CallParticipantModel.Observer callParticipantModelObserver = this::updateFromModel;
+
     private String userId;
     private PeerConnection.IceConnectionState iceConnectionState;
     private String nick;
@@ -31,58 +43,46 @@ public class ParticipantDisplayItem {
     private boolean streamEnabled;
     private boolean isAudioEnabled;
 
-    public ParticipantDisplayItem(String baseUrl, String userId, String session, PeerConnection.IceConnectionState iceConnectionState, String nick, String defaultGuestNick, MediaStream mediaStream, String streamType, boolean streamEnabled, EglBase rootEglBase) {
+    public ParticipantDisplayItem(String baseUrl, String defaultGuestNick, EglBase rootEglBase, String streamType,
+                                  CallParticipantModel callParticipantModel) {
         this.baseUrl = baseUrl;
-        this.userId = userId;
-        this.session = session;
-        this.iceConnectionState = iceConnectionState;
-        this.nick = nick;
         this.defaultGuestNick = defaultGuestNick;
-        this.mediaStream = mediaStream;
-        this.streamType = streamType;
-        this.streamEnabled = streamEnabled;
         this.rootEglBase = rootEglBase;
 
+        this.session = callParticipantModel.getSessionId();
+        this.streamType = streamType;
+
+        this.callParticipantModel = callParticipantModel;
+        this.callParticipantModel.addObserver(callParticipantModelObserver, handler);
+
+        updateFromModel();
+    }
+
+    public void destroy() {
+        this.callParticipantModel.removeObserver(callParticipantModelObserver);
+    }
+
+    private void updateFromModel() {
+        userId = callParticipantModel.getUserId();
+        nick = callParticipantModel.getNick();
+
         this.updateUrlForAvatar();
-    }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-
-        this.updateUrlForAvatar();
-
-        participantDisplayItemNotifier.notifyChange();
-    }
-
-    public boolean isConnected() {
-        return iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
-            iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
-    }
-
-    public void setIceConnectionState(PeerConnection.IceConnectionState iceConnectionState) {
-        this.iceConnectionState = iceConnectionState;
-
-        participantDisplayItemNotifier.notifyChange();
-    }
-
-    public String getNick() {
-        if (TextUtils.isEmpty(userId) && TextUtils.isEmpty(nick)) {
-            return defaultGuestNick;
+        if ("screen".equals(streamType)) {
+            iceConnectionState = callParticipantModel.getScreenIceConnectionState();
+            mediaStream = callParticipantModel.getScreenMediaStream();
+            isAudioEnabled = true;
+            streamEnabled = true;
+        } else {
+            iceConnectionState = callParticipantModel.getIceConnectionState();
+            mediaStream = callParticipantModel.getMediaStream();
+            isAudioEnabled = callParticipantModel.isAudioAvailable() != null ?
+                callParticipantModel.isAudioAvailable() : false;
+            streamEnabled = callParticipantModel.isVideoAvailable() != null ?
+                callParticipantModel.isVideoAvailable() : false;
         }
 
-        return nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
-
-        this.updateUrlForAvatar();
-
         participantDisplayItemNotifier.notifyChange();
-    }
-
-    public String getUrlForAvatar() {
-        return urlForAvatar;
     }
 
     private void updateUrlForAvatar() {
@@ -93,24 +93,29 @@ public class ParticipantDisplayItem {
         }
     }
 
+    public boolean isConnected() {
+        return iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
+            iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
+    }
+
+    public String getNick() {
+        if (TextUtils.isEmpty(userId) && TextUtils.isEmpty(nick)) {
+            return defaultGuestNick;
+        }
+
+        return nick;
+    }
+
+    public String getUrlForAvatar() {
+        return urlForAvatar;
+    }
+
     public MediaStream getMediaStream() {
         return mediaStream;
     }
 
-    public void setMediaStream(MediaStream mediaStream) {
-        this.mediaStream = mediaStream;
-
-        participantDisplayItemNotifier.notifyChange();
-    }
-
     public boolean isStreamEnabled() {
         return streamEnabled;
-    }
-
-    public void setStreamEnabled(boolean streamEnabled) {
-        this.streamEnabled = streamEnabled;
-
-        participantDisplayItemNotifier.notifyChange();
     }
 
     public EglBase getRootEglBase() {
@@ -119,12 +124,6 @@ public class ParticipantDisplayItem {
 
     public boolean isAudioEnabled() {
         return isAudioEnabled;
-    }
-
-    public void setAudioEnabled(boolean audioEnabled) {
-        isAudioEnabled = audioEnabled;
-
-        participantDisplayItemNotifier.notifyChange();
     }
 
     public void addObserver(Observer observer) {
