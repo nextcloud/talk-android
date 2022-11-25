@@ -37,22 +37,10 @@ public class ParticipantDisplayItem {
         this.updateUrlForAvatar();
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
     public void setUserId(String userId) {
         this.userId = userId;
 
         this.updateUrlForAvatar();
-    }
-
-    public String getSession() {
-        return session;
-    }
-
-    public void setSession(String session) {
-        this.session = session;
     }
 
     public boolean isConnected() {
@@ -98,14 +86,6 @@ public class ParticipantDisplayItem {
         this.mediaStream = mediaStream;
     }
 
-    public String getStreamType() {
-        return streamType;
-    }
-
-    public void setStreamType(String streamType) {
-        this.streamType = streamType;
-    }
-
     public boolean isStreamEnabled() {
         return streamEnabled;
     }
@@ -116,10 +96,6 @@ public class ParticipantDisplayItem {
 
     public EglBase getRootEglBase() {
         return rootEglBase;
-    }
-
-    public void setRootEglBase(EglBase rootEglBase) {
-        this.rootEglBase = rootEglBase;
     }
 
     public boolean isAudioEnabled() {
