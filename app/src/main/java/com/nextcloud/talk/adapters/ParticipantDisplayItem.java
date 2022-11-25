@@ -9,6 +9,13 @@ import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 
 public class ParticipantDisplayItem {
+
+    public interface Observer {
+        void onChange();
+    }
+
+    private final ParticipantDisplayItemNotifier participantDisplayItemNotifier = new ParticipantDisplayItemNotifier();
+
     private final String baseUrl;
     private final String defaultGuestNick;
     private final EglBase rootEglBase;
@@ -43,6 +50,8 @@ public class ParticipantDisplayItem {
         this.userId = userId;
 
         this.updateUrlForAvatar();
+
+        participantDisplayItemNotifier.notifyChange();
     }
 
     public boolean isConnected() {
@@ -52,6 +61,8 @@ public class ParticipantDisplayItem {
 
     public void setIceConnectionState(PeerConnection.IceConnectionState iceConnectionState) {
         this.iceConnectionState = iceConnectionState;
+
+        participantDisplayItemNotifier.notifyChange();
     }
 
     public String getNick() {
@@ -66,6 +77,8 @@ public class ParticipantDisplayItem {
         this.nick = nick;
 
         this.updateUrlForAvatar();
+
+        participantDisplayItemNotifier.notifyChange();
     }
 
     public String getUrlForAvatar() {
@@ -86,6 +99,8 @@ public class ParticipantDisplayItem {
 
     public void setMediaStream(MediaStream mediaStream) {
         this.mediaStream = mediaStream;
+
+        participantDisplayItemNotifier.notifyChange();
     }
 
     public boolean isStreamEnabled() {
@@ -94,6 +109,8 @@ public class ParticipantDisplayItem {
 
     public void setStreamEnabled(boolean streamEnabled) {
         this.streamEnabled = streamEnabled;
+
+        participantDisplayItemNotifier.notifyChange();
     }
 
     public EglBase getRootEglBase() {
@@ -106,6 +123,16 @@ public class ParticipantDisplayItem {
 
     public void setAudioEnabled(boolean audioEnabled) {
         isAudioEnabled = audioEnabled;
+
+        participantDisplayItemNotifier.notifyChange();
+    }
+
+    public void addObserver(Observer observer) {
+        participantDisplayItemNotifier.addObserver(observer);
+    }
+
+    public void removeObserver(Observer observer) {
+        participantDisplayItemNotifier.removeObserver(observer);
     }
 
     @Override
