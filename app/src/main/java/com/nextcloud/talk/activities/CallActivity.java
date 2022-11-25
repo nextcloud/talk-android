@@ -2018,7 +2018,7 @@ public class CallActivity extends CallBaseActivity {
             }
 
             if (!publisher && !hasExternalSignalingServer && offerAnswerNickProviders.get(sessionId) == null) {
-                OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider();
+                OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider(sessionId);
                 offerAnswerNickProviders.put(sessionId, offerAnswerNickProvider);
                 signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
                 signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
@@ -2570,18 +2570,18 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private static class OfferAnswerNickProvider {
+    private class OfferAnswerNickProvider {
 
         private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
 
             @Override
             public void onOffer(String sdp, String nick) {
-                (OfferAnswerNickProvider.this).nick = nick;
+                onOfferOrAnswer(nick);
             }
 
             @Override
             public void onAnswer(String sdp, String nick) {
-                (OfferAnswerNickProvider.this).nick = nick;
+                onOfferOrAnswer(nick);
             }
 
             @Override
@@ -2596,7 +2596,30 @@ public class CallActivity extends CallBaseActivity {
         private final WebRtcMessageListener videoWebRtcMessageListener = new WebRtcMessageListener();
         private final WebRtcMessageListener screenWebRtcMessageListener = new WebRtcMessageListener();
 
+        private final String sessionId;
+
         private String nick;
+
+        private OfferAnswerNickProvider(String sessionId) {
+            this.sessionId = sessionId;
+        }
+
+        private void onOfferOrAnswer(String nick) {
+            this.nick = nick;
+
+            boolean notifyDataSetChanged = false;
+            if (participantDisplayItems.get(sessionId + "-video") != null) {
+                participantDisplayItems.get(sessionId + "-video").setNick(nick);
+                notifyDataSetChanged = true;
+            }
+            if (participantDisplayItems.get(sessionId + "-screen") != null) {
+                participantDisplayItems.get(sessionId + "-screen").setNick(nick);
+                notifyDataSetChanged = true;
+            }
+            if (notifyDataSetChanged) {
+                participantsAdapter.notifyDataSetChanged();
+            }
+        }
 
         public WebRtcMessageListener getVideoWebRtcMessageListener() {
             return videoWebRtcMessageListener;
