@@ -1578,7 +1578,8 @@ public class CallActivity extends CallBaseActivity {
                     if (currentCallStatus == CallStatus.RECONNECTING) {
                         hangup(false);
                     } else {
-                        initiateCall();
+                        setCallState(CallStatus.RECONNECTING);
+                        runOnUiThread(this::initiateCall);
                     }
                 }
                 break;
