@@ -268,6 +268,10 @@ public class CallActivity extends CallBaseActivity {
 
     private Map<String, CallParticipant> callParticipants = new HashMap<>();
 
+    private Map<String, ScreenParticipantDisplayItemManager> screenParticipantDisplayItemManagers = new HashMap<>();
+
+    private Handler screenParticipantDisplayItemManagersHandler = new Handler(Looper.getMainLooper());
+
     private SignalingMessageReceiver.ParticipantListMessageListener participantListMessageListener = new SignalingMessageReceiver.ParticipantListMessageListener() {
 
         @Override
@@ -1988,6 +1992,17 @@ public class CallActivity extends CallBaseActivity {
                         signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
                         signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
                     }
+
+                    final CallParticipantModel callParticipantModel = callParticipant.getCallParticipantModel();
+
+                    ScreenParticipantDisplayItemManager screenParticipantDisplayItemManager =
+                        new ScreenParticipantDisplayItemManager(callParticipantModel);
+                    screenParticipantDisplayItemManagers.put(sessionId, screenParticipantDisplayItemManager);
+                    callParticipantModel.addObserver(screenParticipantDisplayItemManager, screenParticipantDisplayItemManagersHandler);
+
+                    runOnUiThread(() -> {
+                        addParticipantDisplayItem(callParticipantModel, "video");
+                    });
                 }
 
                 if ("screen".equals(type)) {
@@ -1995,12 +2010,6 @@ public class CallActivity extends CallBaseActivity {
                 } else {
                     callParticipant.setPeerConnectionWrapper(peerConnectionWrapper);
                 }
-
-                final CallParticipantModel callParticipantModel = callParticipant.getCallParticipantModel();
-
-                runOnUiThread(() -> {
-                    addParticipantDisplayItem(callParticipantModel, type);
-                });
             }
 
             if (publisher) {
@@ -2032,8 +2041,6 @@ public class CallActivity extends CallBaseActivity {
                         PeerConnectionWrapper.PeerConnectionObserver peerConnectionObserver = peerConnectionObservers.remove(sessionId + "-" + videoStreamType);
                         peerConnectionWrapper.removeObserver(peerConnectionObserver);
 
-                        runOnUiThread(() -> removeParticipantDisplayItem(sessionId, videoStreamType));
-
                         CallParticipant callParticipant = callParticipants.get(sessionId);
                         if (callParticipant != null) {
                             if ("screen".equals(videoStreamType)) {
@@ -2052,6 +2059,10 @@ public class CallActivity extends CallBaseActivity {
         if (!justScreen) {
             CallParticipant callParticipant = callParticipants.remove(sessionId);
             if (callParticipant != null) {
+                ScreenParticipantDisplayItemManager screenParticipantDisplayItemManager =
+                    screenParticipantDisplayItemManagers.remove(sessionId);
+                callParticipant.getCallParticipantModel().removeObserver(screenParticipantDisplayItemManager);
+
                 callParticipant.destroy();
 
                 SignalingMessageReceiver.CallParticipantMessageListener listener = callParticipantMessageListeners.remove(sessionId);
@@ -2062,6 +2073,8 @@ public class CallActivity extends CallBaseActivity {
                     signalingMessageReceiver.removeListener(offerAnswerNickProvider.getVideoWebRtcMessageListener());
                     signalingMessageReceiver.removeListener(offerAnswerNickProvider.getScreenWebRtcMessageListener());
                 }
+
+                runOnUiThread(() -> removeParticipantDisplayItem(sessionId, "video"));
             }
         }
     }
@@ -2591,6 +2604,30 @@ public class CallActivity extends CallBaseActivity {
                     return;
                 }
             });
+        }
+    }
+
+    private class ScreenParticipantDisplayItemManager implements CallParticipantModel.Observer {
+
+        private final CallParticipantModel callParticipantModel;
+
+        private ScreenParticipantDisplayItemManager(CallParticipantModel callParticipantModel) {
+            this.callParticipantModel = callParticipantModel;
+        }
+
+        @Override
+        public void onChange() {
+            String sessionId = callParticipantModel.getSessionId();
+            if (callParticipantModel.getScreenIceConnectionState() == null) {
+                removeParticipantDisplayItem(sessionId, "screen");
+
+                return;
+            }
+
+            boolean hasScreenParticipantDisplayItem = participantDisplayItems.get(sessionId + "-screen") != null;
+            if (!hasScreenParticipantDisplayItem) {
+                addParticipantDisplayItem(callParticipantModel, "screen");
+            }
         }
     }
 
