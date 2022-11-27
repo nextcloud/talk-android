@@ -1999,7 +1999,7 @@ public class CallActivity extends CallBaseActivity {
                 final CallParticipantModel callParticipantModel = callParticipant.getCallParticipantModel();
 
                 runOnUiThread(() -> {
-                    setupVideoStreamForLayout(callParticipantModel, type);
+                    addParticipantDisplayItem(callParticipantModel, type);
                 });
             }
 
@@ -2032,7 +2032,7 @@ public class CallActivity extends CallBaseActivity {
                         PeerConnectionWrapper.PeerConnectionObserver peerConnectionObserver = peerConnectionObservers.remove(sessionId + "-" + videoStreamType);
                         peerConnectionWrapper.removeObserver(peerConnectionObserver);
 
-                        runOnUiThread(() -> removeMediaStream(sessionId, videoStreamType));
+                        runOnUiThread(() -> removeParticipantDisplayItem(sessionId, videoStreamType));
 
                         CallParticipant callParticipant = callParticipants.get(sessionId);
                         if (callParticipant != null) {
@@ -2066,8 +2066,8 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private void removeMediaStream(String sessionId, String videoStreamType) {
-        Log.d(TAG, "removeMediaStream");
+    private void removeParticipantDisplayItem(String sessionId, String videoStreamType) {
+        Log.d(TAG, "removeParticipantDisplayItem");
         ParticipantDisplayItem participantDisplayItem = participantDisplayItems.remove(sessionId + "-" + videoStreamType);
         if (participantDisplayItem == null) {
             return;
@@ -2200,7 +2200,7 @@ public class CallActivity extends CallBaseActivity {
                                                          this);
     }
 
-    private void setupVideoStreamForLayout(CallParticipantModel callParticipantModel, String videoStreamType) {
+    private void addParticipantDisplayItem(CallParticipantModel callParticipantModel, String videoStreamType) {
         String defaultGuestNick = getResources().getString(R.string.nc_nick_guest);
 
         ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(baseUrl,
