@@ -74,7 +74,6 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
@@ -236,7 +235,7 @@ public class CallActivity extends CallBaseActivity {
     private MediaStream localStream;
     private String credentials;
     private List<PeerConnectionWrapper> peerConnectionWrapperList = new ArrayList<>();
-    private Map<String, Participant> participantMap = new HashMap<>();
+    private Map<String, String> userIdsBySessionId = new HashMap<>();
 
     private boolean videoOn = false;
     private boolean microphoneOn = false;
@@ -1775,7 +1774,7 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "processUsersInRoom");
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSessions = new HashSet<>();
-        Map<String, String> userIdsBySessionId = new HashMap<>();
+        userIdsBySessionId = new HashMap<>();
 
         hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
         Log.d(TAG, "   hasMCU is " + hasMCU);
@@ -1844,10 +1843,6 @@ public class CallActivity extends CallBaseActivity {
             return;
         }
 
-        if (newSessions.size() > 0 && !hasMCU) {
-            getPeersForCall();
-        }
-
         if (hasMCU) {
             // Ensure that own publishing peer is set up.
             getOrCreatePeerConnectionWrapperForSessionIdAndType(webSocketClient.getSessionId(), VIDEO_STREAM_TYPE_VIDEO, true);
@@ -1884,43 +1879,6 @@ public class CallActivity extends CallBaseActivity {
             Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
             endPeerConnection(sessionId, false);
         }
-    }
-
-    private void getPeersForCall() {
-        Log.d(TAG, "getPeersForCall");
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
-
-        ncApi.getPeersForCall(
-                credentials,
-                ApiUtils.getUrlForCall(
-                    apiVersion,
-                    baseUrl,
-                    roomToken))
-            .subscribeOn(Schedulers.io())
-            .subscribe(new Observer<ParticipantsOverall>() {
-                @Override
-                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                    // unused atm
-                }
-
-                @Override
-                public void onNext(@io.reactivex.annotations.NonNull ParticipantsOverall participantsOverall) {
-                    participantMap = new HashMap<>();
-                    for (Participant participant : participantsOverall.getOcs().getData()) {
-                        participantMap.put(participant.getSessionId(), participant);
-                    }
-                }
-
-                @Override
-                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                    Log.e(TAG, "error while executing getPeersForCall", e);
-                }
-
-                @Override
-                public void onComplete() {
-                    // unused atm
-                }
-            });
     }
 
     private void deletePeerConnection(PeerConnectionWrapper peerConnectionWrapper) {
@@ -2291,12 +2249,7 @@ public class CallActivity extends CallBaseActivity {
             nick = offerAnswerNickProviders.get(session) != null ? offerAnswerNickProviders.get(session).getNick() : "";
         }
 
-        String userId = null;
-        if (hasMCU) {
-            userId = webSocketClient.getUserIdForSession(session);
-        } else if (participantMap.get(session) != null && participantMap.get(session).getCalculatedActorType() == Participant.ActorType.USERS) {
-            userId = participantMap.get(session).getCalculatedActorId();
-        }
+        String userId = userIdsBySessionId.get(session);
 
         String defaultGuestNick = getResources().getString(R.string.nc_nick_guest);
 
