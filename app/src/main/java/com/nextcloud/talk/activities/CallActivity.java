@@ -1971,7 +1971,7 @@ public class CallActivity extends CallBaseActivity {
             peerConnectionWrapperList.add(peerConnectionWrapper);
 
             PeerConnectionWrapper.PeerConnectionObserver peerConnectionObserver =
-                new CallActivityPeerConnectionObserver(sessionId, type);
+                new CallActivityPeerConnectionObserver(sessionId);
             peerConnectionObservers.put(sessionId + "-" + type, peerConnectionObserver);
             peerConnectionWrapper.addObserver(peerConnectionObserver);
 
@@ -2566,11 +2566,9 @@ public class CallActivity extends CallBaseActivity {
     private class CallActivityPeerConnectionObserver implements PeerConnectionWrapper.PeerConnectionObserver {
 
         private final String sessionId;
-        private final String videoStreamType;
 
-        private CallActivityPeerConnectionObserver(String sessionId, String videoStreamType) {
+        private CallActivityPeerConnectionObserver(String sessionId) {
             this.sessionId = sessionId;
-            this.videoStreamType = videoStreamType;
         }
 
         @Override
@@ -2586,12 +2584,6 @@ public class CallActivity extends CallBaseActivity {
             runOnUiThread(() -> {
                 if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
                     updateSelfVideoViewIceConnectionState(iceConnectionState);
-                }
-
-                if (iceConnectionState == PeerConnection.IceConnectionState.CLOSED) {
-                    endPeerConnection(sessionId, VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType));
-
-                    return;
                 }
 
                 if (iceConnectionState == PeerConnection.IceConnectionState.FAILED) {
