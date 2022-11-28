@@ -264,7 +264,7 @@ public class CallActivity extends CallBaseActivity {
     private Map<String, SignalingMessageReceiver.CallParticipantMessageListener> callParticipantMessageListeners =
         new HashMap<>();
 
-    private Map<String, PeerConnectionWrapper.PeerConnectionObserver> peerConnectionObservers = new HashMap<>();
+    private PeerConnectionWrapper.PeerConnectionObserver selfPeerConnectionObserver = new CallActivitySelfPeerConnectionObserver();
 
     private Map<String, CallParticipant> callParticipants = new HashMap<>();
 
@@ -1970,11 +1970,6 @@ public class CallActivity extends CallBaseActivity {
 
             peerConnectionWrapperList.add(peerConnectionWrapper);
 
-            PeerConnectionWrapper.PeerConnectionObserver peerConnectionObserver =
-                new CallActivityPeerConnectionObserver(sessionId);
-            peerConnectionObservers.put(sessionId + "-" + type, peerConnectionObserver);
-            peerConnectionWrapper.addObserver(peerConnectionObserver);
-
             if (!publisher) {
                 CallParticipant callParticipant = callParticipants.get(sessionId);
                 if (callParticipant == null) {
@@ -2013,6 +2008,8 @@ public class CallActivity extends CallBaseActivity {
             }
 
             if (publisher) {
+                peerConnectionWrapper.addObserver(selfPeerConnectionObserver);
+
                 startSendingNick();
             }
 
@@ -2036,11 +2033,12 @@ public class CallActivity extends CallBaseActivity {
         if (!(peerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()) {
             for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrappers) {
                 if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
+                    if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
+                       peerConnectionWrapper.removeObserver(selfPeerConnectionObserver);
+                    }
+
                     String videoStreamType = peerConnectionWrapper.getVideoStreamType();
                     if (VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType) || !justScreen) {
-                        PeerConnectionWrapper.PeerConnectionObserver peerConnectionObserver = peerConnectionObservers.remove(sessionId + "-" + videoStreamType);
-                        peerConnectionWrapper.removeObserver(peerConnectionObserver);
-
                         CallParticipant callParticipant = callParticipants.get(sessionId);
                         if (callParticipant != null) {
                             if ("screen".equals(videoStreamType)) {
@@ -2563,13 +2561,7 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private class CallActivityPeerConnectionObserver implements PeerConnectionWrapper.PeerConnectionObserver {
-
-        private final String sessionId;
-
-        private CallActivityPeerConnectionObserver(String sessionId) {
-            this.sessionId = sessionId;
-        }
+    private class CallActivitySelfPeerConnectionObserver implements PeerConnectionWrapper.PeerConnectionObserver {
 
         @Override
         public void onStreamAdded(MediaStream mediaStream) {
@@ -2582,18 +2574,12 @@ public class CallActivity extends CallBaseActivity {
         @Override
         public void onIceConnectionStateChanged(PeerConnection.IceConnectionState iceConnectionState) {
             runOnUiThread(() -> {
-                if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
-                    updateSelfVideoViewIceConnectionState(iceConnectionState);
-                }
+                updateSelfVideoViewIceConnectionState(iceConnectionState);
 
                 if (iceConnectionState == PeerConnection.IceConnectionState.FAILED) {
-                    if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
-                        setCallState(CallStatus.PUBLISHER_FAILED);
-                        webSocketClient.clearResumeId();
-                        hangup(false);
-                    }
-
-                    return;
+                    setCallState(CallStatus.PUBLISHER_FAILED);
+                    webSocketClient.clearResumeId();
+                    hangup(false);
                 }
             });
         }
