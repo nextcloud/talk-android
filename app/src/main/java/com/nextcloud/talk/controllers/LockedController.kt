@@ -73,6 +73,7 @@ class LockedController : BaseController(R.layout.controller_locked) {
     @RequiresApi(api = Build.VERSION_CODES.M)
     override fun onAttach(view: View) {
         super.onAttach(view)
+        Log.d(TAG, "onAttach")
         if (activity != null && resources != null) {
             DisplayUtils.applyColorToStatusBar(
                 activity,
@@ -84,6 +85,11 @@ class LockedController : BaseController(R.layout.controller_locked) {
             )
         }
         checkIfWeAreSecure()
+    }
+
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        Log.d(TAG, "onDetach")
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -139,14 +145,21 @@ class LockedController : BaseController(R.layout.controller_locked) {
         val keyguardManager = activity?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
         if (keyguardManager?.isKeyguardSecure == true && appPreferences!!.isScreenLocked) {
             if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences!!.screenLockTimeout)) {
+                Log.d(TAG, "showBiometricDialog because 'we are NOT authenticated'...")
                 showBiometricDialog()
             } else {
+                Log.d(
+                    TAG,
+                    "popCurrentController because 'we are authenticated'. backstacksize= " +
+                        router.backstack.size
+                )
                 router.popCurrentController()
             }
         }
     }
 
     private fun showAuthenticationScreen() {
+        Log.d(TAG, "showAuthenticationScreen")
         val keyguardManager = activity?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
         val intent = keyguardManager?.createConfirmDeviceCredentialIntent(null, null)
         if (intent != null) {
