@@ -333,30 +333,30 @@ class SettingsController : BaseController(R.layout.controller_settings) {
     }
 
     private fun registerChangeListeners() {
-        appPreferences!!.registerProxyTypeListener(ProxyTypeChangeListener().also { proxyTypeChangeListener = it })
-        appPreferences!!.registerProxyCredentialsListener(
+        appPreferences.registerProxyTypeListener(ProxyTypeChangeListener().also { proxyTypeChangeListener = it })
+        appPreferences.registerProxyCredentialsListener(
             ProxyCredentialsChangeListener().also {
                 proxyCredentialsChangeListener = it
             }
         )
-        appPreferences!!.registerScreenSecurityListener(
+        appPreferences.registerScreenSecurityListener(
             ScreenSecurityChangeListener().also {
                 screenSecurityChangeListener = it
             }
         )
-        appPreferences!!.registerScreenLockListener(ScreenLockListener().also { screenLockChangeListener = it })
-        appPreferences!!.registerScreenLockTimeoutListener(
+        appPreferences.registerScreenLockListener(ScreenLockListener().also { screenLockChangeListener = it })
+        appPreferences.registerScreenLockTimeoutListener(
             ScreenLockTimeoutListener().also {
                 screenLockTimeoutChangeListener = it
             }
         )
-        appPreferences!!.registerThemeChangeListener(ThemeChangeListener().also { themeChangeListener = it })
-        appPreferences!!.registerPhoneBookIntegrationChangeListener(
+        appPreferences.registerThemeChangeListener(ThemeChangeListener().also { themeChangeListener = it })
+        appPreferences.registerPhoneBookIntegrationChangeListener(
             PhoneBookIntegrationChangeListener(this).also {
                 phoneBookIntegrationChangeListener = it
             }
         )
-        appPreferences!!.registerReadPrivacyChangeListener(
+        appPreferences.registerReadPrivacyChangeListener(
             ReadPrivacyChangeListener().also {
                 readPrivacyChangeListener = it
             }
@@ -525,7 +525,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
     }
 
     private fun setupProxyTypeSettings() {
-        if (("No proxy" == appPreferences!!.proxyType) || appPreferences!!.proxyType == null) {
+        if (("No proxy" == appPreferences.proxyType) || appPreferences.proxyType == null) {
             hideProxySettings()
         } else {
             showProxySettings()
@@ -533,7 +533,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
     }
 
     private fun setupProxyCredentialSettings() {
-        if (appPreferences!!.proxyCredentials) {
+        if (appPreferences.proxyCredentials) {
             showProxyCredentials()
         } else {
             hideProxyCredentials()
@@ -655,16 +655,16 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
     private fun setupCheckables() {
         (binding.settingsScreenSecurity.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-            appPreferences!!.isScreenSecured
+            appPreferences.isScreenSecured
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             (binding.settingsIncognitoKeyboard.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-                appPreferences!!.isKeyboardIncognito
+                appPreferences.isKeyboardIncognito
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             (binding.settingsIncognitoKeyboard.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-                appPreferences!!.isKeyboardIncognito
+                appPreferences.isKeyboardIncognito
         }
 
         if (CapabilitiesUtilNew.isReadStatusAvailable(userManager.currentUser.blockingGet())) {
@@ -675,19 +675,19 @@ class SettingsController : BaseController(R.layout.controller_settings) {
         }
 
         (binding.settingsPhoneBookIntegration.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-            appPreferences!!.isPhoneBookIntegrationEnabled
+            appPreferences.isPhoneBookIntegrationEnabled
     }
 
     private fun setupScreenLockSetting() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val keyguardManager = context!!.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+            val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
             if (keyguardManager.isKeyguardSecure) {
                 binding.settingsScreenLock.isEnabled = true
                 binding.settingsScreenLockTimeout.isEnabled = true
                 (binding.settingsScreenLock.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-                    appPreferences!!.isScreenLocked
-                binding.settingsScreenLockTimeout.isEnabled = appPreferences!!.isScreenLocked
-                if (appPreferences!!.isScreenLocked) {
+                    appPreferences.isScreenLocked
+                binding.settingsScreenLockTimeout.isEnabled = appPreferences.isScreenLocked
+                if (appPreferences.isScreenLocked) {
                     binding.settingsScreenLockTimeout.alpha = ENABLED_ALPHA
                 } else {
                     binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
@@ -696,8 +696,8 @@ class SettingsController : BaseController(R.layout.controller_settings) {
             } else {
                 binding.settingsScreenLock.isEnabled = false
                 binding.settingsScreenLockTimeout.isEnabled = false
-                appPreferences!!.removeScreenLock()
-                appPreferences!!.removeScreenLockTimeout()
+                appPreferences.removeScreenLock()
+                appPreferences.removeScreenLockTimeout()
                 (binding.settingsScreenLock.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked = false
                 binding.settingsScreenLock.alpha = DISABLED_ALPHA
                 binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
@@ -792,12 +792,12 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 .enqueue(OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java).build())
             checkForPhoneNumber()
         } else {
-            appPreferences!!.setPhoneBookIntegration(false)
+            appPreferences.setPhoneBookIntegration(false)
             (binding.settingsPhoneBookIntegration.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-                appPreferences!!.isPhoneBookIntegrationEnabled
+                appPreferences.isPhoneBookIntegrationEnabled
             Toast.makeText(
                 context,
-                context!!.resources.getString(R.string.no_phone_book_integration_due_to_permissions),
+                context.resources.getString(R.string.no_phone_book_integration_due_to_permissions),
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -806,7 +806,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
     private inner class ScreenLockTimeoutListener : OnPreferenceValueChangedListener<String?> {
         override fun onChanged(newValue: String?) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                SecurityUtils.createKey(appPreferences!!.screenLockTimeout)
+                SecurityUtils.createKey(appPreferences.screenLockTimeout)
             }
         }
     }
@@ -949,8 +949,8 @@ class SettingsController : BaseController(R.layout.controller_settings) {
             .setTitle(R.string.nc_settings_phone_book_integration_phone_number_dialog_title)
             .setMessage(R.string.nc_settings_phone_book_integration_phone_number_dialog_description)
             .setView(phoneNumberLayoutWrapper)
-            .setPositiveButton(context!!.resources.getString(R.string.nc_common_set), null)
-            .setNegativeButton(context!!.resources.getString(R.string.nc_common_skip), null)
+            .setPositiveButton(context.resources.getString(R.string.nc_common_set), null)
+            .setNegativeButton(context.resources.getString(R.string.nc_common_skip), null)
 
         viewThemeUtils.dialog.colorMaterialAlertDialogBackground(phoneNumberInputLayout.context, dialogBuilder)
 
@@ -994,13 +994,13 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                         dialog.dismiss()
                         Toast.makeText(
                             context,
-                            context!!.resources.getString(
+                            context.resources.getString(
                                 R.string.nc_settings_phone_book_integration_phone_number_dialog_success
                             ),
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
-                        textInputLayout.helperText = context!!.resources.getString(
+                        textInputLayout.helperText = context.resources.getString(
                             R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid
                         )
                         Log.d(TAG, "failed to set phoneNumber. statusCode=$statusCode")
@@ -1008,7 +1008,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 }
 
                 override fun onError(e: Throwable) {
-                    textInputLayout.helperText = context!!.resources.getString(
+                    textInputLayout.helperText = context.resources.getString(
                         R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid
                     )
                     Log.e(TAG, "setPhoneNumber error", e)
@@ -1041,7 +1041,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                     }
 
                     override fun onError(e: Throwable) {
-                        appPreferences!!.setReadPrivacy(!newValue)
+                        appPreferences.setReadPrivacy(!newValue)
                         (binding.settingsReadPrivacy.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
                             !newValue
                     }
