@@ -1726,7 +1726,8 @@ public class CallActivity extends CallBaseActivity {
             peerConnectionIdsToEnd.add(wrapper.getSessionId());
         }
         for (String sessionId : peerConnectionIdsToEnd) {
-            endPeerConnection(sessionId, false);
+            endPeerConnection(sessionId, "video");
+            endPeerConnection(sessionId, "screen");
         }
 
         List<String> callParticipantIdsToEnd = new ArrayList<String>(peerConnectionWrapperList.size());
@@ -1835,7 +1836,8 @@ public class CallActivity extends CallBaseActivity {
             for (Participant participant : participantsInCall) {
                 String sessionId = participant.getSessionId();
                 Log.d(TAG, "   session that will be removed is: " + sessionId);
-                endPeerConnection(sessionId, false);
+                endPeerConnection(sessionId, "video");
+                endPeerConnection(sessionId, "screen");
                 removeCallParticipant(sessionId);
             }
 
@@ -1904,7 +1906,8 @@ public class CallActivity extends CallBaseActivity {
         for (Participant participant : left) {
             String sessionId = participant.getSessionId();
             Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
-            endPeerConnection(sessionId, false);
+            endPeerConnection(sessionId, "video");
+            endPeerConnection(sessionId, "screen");
             removeCallParticipant(sessionId);
         }
     }
@@ -1916,11 +1919,6 @@ public class CallActivity extends CallBaseActivity {
 
         return (participant.getInCall() & Participant.InCallFlags.WITH_AUDIO) > 0 ||
             (!isVoiceOnlyCall && (participant.getInCall() & Participant.InCallFlags.WITH_VIDEO) > 0);
-    }
-
-    private void deletePeerConnection(PeerConnectionWrapper peerConnectionWrapper) {
-        peerConnectionWrapper.removePeerConnection();
-        peerConnectionWrapperList.remove(peerConnectionWrapper);
     }
 
     private PeerConnectionWrapper getPeerConnectionWrapperForSessionIdAndType(String sessionId, String type) {
@@ -2057,42 +2055,27 @@ public class CallActivity extends CallBaseActivity {
         return callParticipant;
     }
 
-    private List<PeerConnectionWrapper> getPeerConnectionWrapperListForSessionId(String sessionId) {
-        List<PeerConnectionWrapper> internalList = new ArrayList<>();
-        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-            if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
-                internalList.add(peerConnectionWrapper);
+    private void endPeerConnection(String sessionId, String type) {
+        PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(sessionId, type);
+        if (peerConnectionWrapper == null) {
+            return;
+        }
+
+        if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
+            peerConnectionWrapper.removeObserver(selfPeerConnectionObserver);
+        }
+
+        CallParticipant callParticipant = callParticipants.get(sessionId);
+        if (callParticipant != null) {
+            if ("screen".equals(type)) {
+                callParticipant.setScreenPeerConnectionWrapper(null);
+            } else {
+                callParticipant.setPeerConnectionWrapper(null);
             }
         }
 
-        return internalList;
-    }
-
-    private void endPeerConnection(String sessionId, boolean justScreen) {
-        List<PeerConnectionWrapper> peerConnectionWrappers;
-        if (!(peerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()) {
-            for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrappers) {
-                if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
-                    if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
-                       peerConnectionWrapper.removeObserver(selfPeerConnectionObserver);
-                    }
-
-                    String videoStreamType = peerConnectionWrapper.getVideoStreamType();
-                    if (VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType) || !justScreen) {
-                        CallParticipant callParticipant = callParticipants.get(sessionId);
-                        if (callParticipant != null) {
-                            if ("screen".equals(videoStreamType)) {
-                                callParticipant.setScreenPeerConnectionWrapper(null);
-                            } else {
-                                callParticipant.setPeerConnectionWrapper(null);
-                            }
-                        }
-
-                        deletePeerConnection(peerConnectionWrapper);
-                    }
-                }
-            }
-        }
+        peerConnectionWrapper.removePeerConnection();
+        peerConnectionWrapperList.remove(peerConnectionWrapper);
     }
 
     private void removeCallParticipant(String sessionId) {
@@ -2599,7 +2582,7 @@ public class CallActivity extends CallBaseActivity {
 
         @Override
         public void onUnshareScreen() {
-            endPeerConnection(sessionId, true);
+            endPeerConnection(sessionId, "screen");
         }
     }
 
