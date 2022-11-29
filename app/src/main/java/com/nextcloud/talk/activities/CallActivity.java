@@ -61,6 +61,7 @@ import com.nextcloud.talk.adapters.ParticipantsAdapter;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.call.CallParticipant;
+import com.nextcloud.talk.call.CallParticipantList;
 import com.nextcloud.talk.call.CallParticipantModel;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.CallActivityBinding;
@@ -125,8 +126,8 @@ import org.webrtc.VideoTrack;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -272,26 +273,21 @@ public class CallActivity extends CallBaseActivity {
 
     private Handler screenParticipantDisplayItemManagersHandler = new Handler(Looper.getMainLooper());
 
-    private SignalingMessageReceiver.ParticipantListMessageListener participantListMessageListener = new SignalingMessageReceiver.ParticipantListMessageListener() {
-
+    private CallParticipantList.Observer callParticipantListObserver = new CallParticipantList.Observer() {
         @Override
-        public void onUsersInRoom(List<Participant> participants) {
-            processUsersInRoom(participants);
+        public void onCallParticipantsChanged(Collection<Participant> joined, Collection<Participant> updated,
+                                              Collection<Participant> left, Collection<Participant> unchanged) {
+            handleCallParticipantsChanged(joined, updated, left, unchanged);
         }
 
         @Override
-        public void onParticipantsUpdate(List<Participant> participants) {
-            processUsersInRoom(participants);
-        }
-
-        @Override
-        public void onAllParticipantsUpdate(long inCall) {
-            if (inCall == Participant.InCallFlags.DISCONNECTED) {
-                Log.d(TAG, "A moderator ended the call for all.");
-                hangup(true);
-            }
+        public void onCallEndedForAll() {
+            Log.d(TAG, "A moderator ended the call for all.");
+            hangup(true);
         }
     };
+
+    private CallParticipantList callParticipantList;
 
     private SignalingMessageReceiver.OfferMessageListener offerMessageListener = new SignalingMessageReceiver.OfferMessageListener() {
         @Override
@@ -1245,7 +1241,6 @@ public class CallActivity extends CallBaseActivity {
 
     @Override
     public void onDestroy() {
-        signalingMessageReceiver.removeListener(participantListMessageListener);
         signalingMessageReceiver.removeListener(offerMessageListener);
 
         if (localStream != null) {
@@ -1379,7 +1374,6 @@ public class CallActivity extends CallBaseActivity {
                         setupAndInitiateWebSocketsConnection();
                     } else {
                         signalingMessageReceiver = internalSignalingMessageReceiver;
-                        signalingMessageReceiver.addListener(participantListMessageListener);
                         signalingMessageReceiver.addListener(offerMessageListener);
                         signalingMessageSender = internalSignalingMessageSender;
                         joinRoomAndCall();
@@ -1468,6 +1462,9 @@ public class CallActivity extends CallBaseActivity {
         if (!isVoiceOnlyCall && canPublishVideoStream) {
             inCallFlag += Participant.InCallFlags.WITH_VIDEO;
         }
+
+        callParticipantList = new CallParticipantList(signalingMessageReceiver);
+        callParticipantList.addObserver(callParticipantListObserver);
 
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
@@ -1583,7 +1580,6 @@ public class CallActivity extends CallBaseActivity {
             // Although setupAndInitiateWebSocketsConnection could be called several times the web socket is
             // initialized just once, so the message receiver is also initialized just once.
             signalingMessageReceiver = webSocketClient.getSignalingMessageReceiver();
-            signalingMessageReceiver.addListener(participantListMessageListener);
             signalingMessageReceiver.addListener(offerMessageListener);
             signalingMessageSender = webSocketClient.getSignalingMessageSender();
         } else {
@@ -1741,6 +1737,9 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "hangupNetworkCalls. shutDownView=" + shutDownView);
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
+        callParticipantList.removeObserver(callParticipantListObserver);
+        callParticipantList.destroy();
+
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -1778,11 +1777,9 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private void processUsersInRoom(List<Participant> participants) {
-        Log.d(TAG, "processUsersInRoom");
-        List<String> newSessions = new ArrayList<>();
-        Set<String> oldSessions = new HashSet<>();
-        Map<String, String> userIdsBySessionId = new HashMap<>();
+    private void handleCallParticipantsChanged(Collection<Participant> joined, Collection<Participant> updated,
+                                               Collection<Participant> left, Collection<Participant> unchanged) {
+        Log.d(TAG, "handleCallParticipantsChanged");
 
         hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
         Log.d(TAG, "   hasMCU is " + hasMCU);
@@ -1795,57 +1792,44 @@ public class CallActivity extends CallBaseActivity {
 
         Log.d(TAG, "   currentSessionId is " + currentSessionId);
 
+        List<Participant> participantsInCall = new ArrayList<>();
+        participantsInCall.addAll(joined);
+        participantsInCall.addAll(updated);
+        participantsInCall.addAll(unchanged);
+
         boolean isSelfInCall = false;
 
-        for (Participant participant : participants) {
+        for (Participant participant : participantsInCall) {
             long inCallFlag = participant.getInCall();
             if (!participant.getSessionId().equals(currentSessionId)) {
                 Log.d(TAG, "   inCallFlag of participant "
                     + participant.getSessionId().substring(0, 4)
                     + " : "
                     + inCallFlag);
-
-                boolean isInCall = inCallFlag != 0;
-                if (isInCall) {
-                    newSessions.add(participant.getSessionId());
-                }
-
-                userIdsBySessionId.put(participant.getSessionId(), participant.getUserId());
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
                 isSelfInCall = inCallFlag != 0;
-                if (inCallFlag == 0 && currentCallStatus != CallStatus.LEAVING && ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
-                    Log.d(TAG, "Most probably a moderator ended the call for all.");
-                    hangup(true);
-
-                    return;
-                }
             }
         }
 
-        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-            if (!peerConnectionWrapper.isMCUPublisher()) {
-                oldSessions.add(peerConnectionWrapper.getSessionId());
-            }
+        if (!isSelfInCall && currentCallStatus != CallStatus.LEAVING && ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
+            Log.d(TAG, "Most probably a moderator ended the call for all.");
+            hangup(true);
+
+            return;
         }
 
         if (!isSelfInCall) {
             Log.d(TAG, "Self not in call, disconnecting from all other sessions");
 
-            for (String sessionId : oldSessions) {
-                Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
+            for (Participant participant : participantsInCall) {
+                String sessionId = participant.getSessionId();
+                Log.d(TAG, "   session that will be removed is: " + sessionId);
                 endPeerConnection(sessionId, false);
             }
 
             return;
         }
-
-        // Calculate sessions that left the call
-        List<String> disconnectedSessions = new ArrayList<>(oldSessions);
-        disconnectedSessions.removeAll(newSessions);
-
-        // Calculate sessions that join the call
-        newSessions.removeAll(oldSessions);
 
         if (currentCallStatus == CallStatus.LEAVING) {
             return;
@@ -1856,11 +1840,25 @@ public class CallActivity extends CallBaseActivity {
             getOrCreatePeerConnectionWrapperForSessionIdAndType(webSocketClient.getSessionId(), VIDEO_STREAM_TYPE_VIDEO, true);
         }
 
-        for (String sessionId : newSessions) {
+        boolean selfJoined = false;
+
+        for (Participant participant : joined) {
+            String sessionId = participant.getSessionId();
+
+            if (sessionId == null) {
+                Log.w(TAG, "Null sessionId for call participant, this should not happen: " + participant);
+                continue;
+            }
+
+            if (sessionId.equals(currentSessionId)) {
+                selfJoined = true;
+                continue;
+            }
+
             Log.d(TAG, "   newSession joined: " + sessionId);
             getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
 
-            String userId = userIdsBySessionId.get(sessionId);
+            String userId = participant.getUserId();
             if (userId != null) {
                 callParticipants.get(sessionId).setUserId(userId);
             }
@@ -1874,11 +1872,13 @@ public class CallActivity extends CallBaseActivity {
             callParticipants.get(sessionId).setNick(nick);
         }
 
-        if (newSessions.size() > 0 && currentCallStatus != CallStatus.IN_CONVERSATION) {
+        boolean othersInCall = selfJoined ? joined.size() > 1 : joined.size() > 0;
+        if (othersInCall && currentCallStatus != CallStatus.IN_CONVERSATION) {
             setCallState(CallStatus.IN_CONVERSATION);
         }
 
-        for (String sessionId : disconnectedSessions) {
+        for (Participant participant : left) {
+            String sessionId = participant.getSessionId();
             Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
             endPeerConnection(sessionId, false);
         }
