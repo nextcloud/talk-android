@@ -95,7 +95,10 @@ public class ParticipantDisplayItem {
 
     public boolean isConnected() {
         return iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
-            iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
+            iceConnectionState == PeerConnection.IceConnectionState.COMPLETED ||
+            // If there is no connection state that means that no connection is needed, so it is a special case that is
+            // also seen as "connected".
+            iceConnectionState == null;
     }
 
     public String getNick() {
