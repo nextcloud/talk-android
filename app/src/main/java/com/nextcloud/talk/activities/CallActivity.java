@@ -1973,31 +1973,7 @@ public class CallActivity extends CallBaseActivity {
             if (!publisher) {
                 CallParticipant callParticipant = callParticipants.get(sessionId);
                 if (callParticipant == null) {
-                    callParticipant = new CallParticipant(sessionId);
-                    callParticipants.put(sessionId, callParticipant);
-
-                    SignalingMessageReceiver.CallParticipantMessageListener callParticipantMessageListener =
-                        new CallActivityCallParticipantMessageListener(sessionId);
-                    callParticipantMessageListeners.put(sessionId, callParticipantMessageListener);
-                    signalingMessageReceiver.addListener(callParticipantMessageListener, sessionId);
-
-                    if (!hasExternalSignalingServer) {
-                        OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider(sessionId);
-                        offerAnswerNickProviders.put(sessionId, offerAnswerNickProvider);
-                        signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
-                        signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
-                    }
-
-                    final CallParticipantModel callParticipantModel = callParticipant.getCallParticipantModel();
-
-                    ScreenParticipantDisplayItemManager screenParticipantDisplayItemManager =
-                        new ScreenParticipantDisplayItemManager(callParticipantModel);
-                    screenParticipantDisplayItemManagers.put(sessionId, screenParticipantDisplayItemManager);
-                    callParticipantModel.addObserver(screenParticipantDisplayItemManager, screenParticipantDisplayItemManagersHandler);
-
-                    runOnUiThread(() -> {
-                        addParticipantDisplayItem(callParticipantModel, "video");
-                    });
+                    callParticipant = addCallParticipant(sessionId);
                 }
 
                 if ("screen".equals(type)) {
@@ -2015,6 +1991,36 @@ public class CallActivity extends CallBaseActivity {
 
             return peerConnectionWrapper;
         }
+    }
+
+    private CallParticipant addCallParticipant(String sessionId) {
+        CallParticipant callParticipant = new CallParticipant(sessionId);
+        callParticipants.put(sessionId, callParticipant);
+
+        SignalingMessageReceiver.CallParticipantMessageListener callParticipantMessageListener =
+            new CallActivityCallParticipantMessageListener(sessionId);
+        callParticipantMessageListeners.put(sessionId, callParticipantMessageListener);
+        signalingMessageReceiver.addListener(callParticipantMessageListener, sessionId);
+
+        if (!hasExternalSignalingServer) {
+            OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider(sessionId);
+            offerAnswerNickProviders.put(sessionId, offerAnswerNickProvider);
+            signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
+            signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
+        }
+
+        final CallParticipantModel callParticipantModel = callParticipant.getCallParticipantModel();
+
+        ScreenParticipantDisplayItemManager screenParticipantDisplayItemManager =
+            new ScreenParticipantDisplayItemManager(callParticipantModel);
+        screenParticipantDisplayItemManagers.put(sessionId, screenParticipantDisplayItemManager);
+        callParticipantModel.addObserver(screenParticipantDisplayItemManager, screenParticipantDisplayItemManagersHandler);
+
+        runOnUiThread(() -> {
+            addParticipantDisplayItem(callParticipantModel, "video");
+        });
+
+        return callParticipant;
     }
 
     private List<PeerConnectionWrapper> getPeerConnectionWrapperListForSessionId(String sessionId) {
@@ -2055,26 +2061,32 @@ public class CallActivity extends CallBaseActivity {
         }
 
         if (!justScreen) {
-            CallParticipant callParticipant = callParticipants.remove(sessionId);
-            if (callParticipant != null) {
-                ScreenParticipantDisplayItemManager screenParticipantDisplayItemManager =
-                    screenParticipantDisplayItemManagers.remove(sessionId);
-                callParticipant.getCallParticipantModel().removeObserver(screenParticipantDisplayItemManager);
-
-                callParticipant.destroy();
-
-                SignalingMessageReceiver.CallParticipantMessageListener listener = callParticipantMessageListeners.remove(sessionId);
-                signalingMessageReceiver.removeListener(listener);
-
-                OfferAnswerNickProvider offerAnswerNickProvider = offerAnswerNickProviders.remove(sessionId);
-                if (offerAnswerNickProvider != null) {
-                    signalingMessageReceiver.removeListener(offerAnswerNickProvider.getVideoWebRtcMessageListener());
-                    signalingMessageReceiver.removeListener(offerAnswerNickProvider.getScreenWebRtcMessageListener());
-                }
-
-                runOnUiThread(() -> removeParticipantDisplayItem(sessionId, "video"));
-            }
+            removeCallParticipant(sessionId);
         }
+    }
+
+    private void removeCallParticipant(String sessionId) {
+        CallParticipant callParticipant = callParticipants.remove(sessionId);
+        if (callParticipant == null) {
+            return;
+        }
+
+        ScreenParticipantDisplayItemManager screenParticipantDisplayItemManager =
+            screenParticipantDisplayItemManagers.remove(sessionId);
+        callParticipant.getCallParticipantModel().removeObserver(screenParticipantDisplayItemManager);
+
+        callParticipant.destroy();
+
+        SignalingMessageReceiver.CallParticipantMessageListener listener = callParticipantMessageListeners.remove(sessionId);
+        signalingMessageReceiver.removeListener(listener);
+
+        OfferAnswerNickProvider offerAnswerNickProvider = offerAnswerNickProviders.remove(sessionId);
+        if (offerAnswerNickProvider != null) {
+            signalingMessageReceiver.removeListener(offerAnswerNickProvider.getVideoWebRtcMessageListener());
+            signalingMessageReceiver.removeListener(offerAnswerNickProvider.getScreenWebRtcMessageListener());
+        }
+
+        runOnUiThread(() -> removeParticipantDisplayItem(sessionId, "video"));
     }
 
     private void removeParticipantDisplayItem(String sessionId, String videoStreamType) {
