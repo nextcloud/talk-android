@@ -1966,22 +1966,6 @@ public class CallActivity extends CallBaseActivity {
 
             peerConnectionWrapperList.add(peerConnectionWrapper);
 
-            // Currently there is no separation between call participants and peer connections, so any video peer
-            // connection (except the own publisher connection) is treated as a call participant.
-            if (!publisher && "video".equals(type)) {
-                SignalingMessageReceiver.CallParticipantMessageListener callParticipantMessageListener =
-                    new CallActivityCallParticipantMessageListener(sessionId);
-                callParticipantMessageListeners.put(sessionId, callParticipantMessageListener);
-                signalingMessageReceiver.addListener(callParticipantMessageListener, sessionId);
-            }
-
-            if (!publisher && !hasExternalSignalingServer && offerAnswerNickProviders.get(sessionId) == null) {
-                OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider(sessionId);
-                offerAnswerNickProviders.put(sessionId, offerAnswerNickProvider);
-                signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
-                signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
-            }
-
             PeerConnectionWrapper.PeerConnectionObserver peerConnectionObserver =
                 new CallActivityPeerConnectionObserver(sessionId, type);
             peerConnectionObservers.put(sessionId + "-" + type, peerConnectionObserver);
@@ -1992,6 +1976,18 @@ public class CallActivity extends CallBaseActivity {
                 if (callParticipant == null) {
                     callParticipant = new CallParticipant(sessionId);
                     callParticipants.put(sessionId, callParticipant);
+
+                    SignalingMessageReceiver.CallParticipantMessageListener callParticipantMessageListener =
+                        new CallActivityCallParticipantMessageListener(sessionId);
+                    callParticipantMessageListeners.put(sessionId, callParticipantMessageListener);
+                    signalingMessageReceiver.addListener(callParticipantMessageListener, sessionId);
+
+                    if (!hasExternalSignalingServer) {
+                        OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider(sessionId);
+                        offerAnswerNickProviders.put(sessionId, offerAnswerNickProvider);
+                        signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
+                        signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
+                    }
                 }
 
                 if ("screen".equals(type)) {
@@ -2054,18 +2050,18 @@ public class CallActivity extends CallBaseActivity {
         }
 
         if (!justScreen) {
-            SignalingMessageReceiver.CallParticipantMessageListener listener = callParticipantMessageListeners.remove(sessionId);
-            signalingMessageReceiver.removeListener(listener);
-
-            OfferAnswerNickProvider offerAnswerNickProvider = offerAnswerNickProviders.remove(sessionId);
-            if (offerAnswerNickProvider != null) {
-                signalingMessageReceiver.removeListener(offerAnswerNickProvider.getVideoWebRtcMessageListener());
-                signalingMessageReceiver.removeListener(offerAnswerNickProvider.getScreenWebRtcMessageListener());
-            }
-
             CallParticipant callParticipant = callParticipants.remove(sessionId);
             if (callParticipant != null) {
                 callParticipant.destroy();
+
+                SignalingMessageReceiver.CallParticipantMessageListener listener = callParticipantMessageListeners.remove(sessionId);
+                signalingMessageReceiver.removeListener(listener);
+
+                OfferAnswerNickProvider offerAnswerNickProvider = offerAnswerNickProviders.remove(sessionId);
+                if (offerAnswerNickProvider != null) {
+                    signalingMessageReceiver.removeListener(offerAnswerNickProvider.getVideoWebRtcMessageListener());
+                    signalingMessageReceiver.removeListener(offerAnswerNickProvider.getScreenWebRtcMessageListener());
+                }
             }
         }
     }
