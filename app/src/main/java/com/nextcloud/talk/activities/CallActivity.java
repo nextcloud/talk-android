@@ -1721,12 +1721,20 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
-        List<String> sessionIdsToEnd = new ArrayList<String>(peerConnectionWrapperList.size());
+        List<String> peerConnectionIdsToEnd = new ArrayList<String>(peerConnectionWrapperList.size());
         for (PeerConnectionWrapper wrapper : peerConnectionWrapperList) {
-            sessionIdsToEnd.add(wrapper.getSessionId());
+            peerConnectionIdsToEnd.add(wrapper.getSessionId());
         }
-        for (String sessionId : sessionIdsToEnd) {
+        for (String sessionId : peerConnectionIdsToEnd) {
             endPeerConnection(sessionId, false);
+        }
+
+        List<String> callParticipantIdsToEnd = new ArrayList<String>(peerConnectionWrapperList.size());
+        for (CallParticipant callParticipant : callParticipants.values()) {
+            callParticipantIdsToEnd.add(callParticipant.getCallParticipantModel().getSessionId());
+        }
+        for (String sessionId : callParticipantIdsToEnd) {
+            removeCallParticipant(sessionId);
         }
 
         hangupNetworkCalls(shutDownView);
@@ -1798,6 +1806,7 @@ public class CallActivity extends CallBaseActivity {
         participantsInCall.addAll(unchanged);
 
         boolean isSelfInCall = false;
+        Participant selfParticipant = null;
 
         for (Participant participant : participantsInCall) {
             long inCallFlag = participant.getInCall();
@@ -1809,6 +1818,7 @@ public class CallActivity extends CallBaseActivity {
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
                 isSelfInCall = inCallFlag != 0;
+                selfParticipant = participant;
             }
         }
 
@@ -1826,6 +1836,7 @@ public class CallActivity extends CallBaseActivity {
                 String sessionId = participant.getSessionId();
                 Log.d(TAG, "   session that will be removed is: " + sessionId);
                 endPeerConnection(sessionId, false);
+                removeCallParticipant(sessionId);
             }
 
             return;
@@ -1841,6 +1852,7 @@ public class CallActivity extends CallBaseActivity {
         }
 
         boolean selfJoined = false;
+        boolean selfParticipantHasAudioOrVideo = participantInCallFlagsHaveAudioOrVideo(selfParticipant);
 
         for (Participant participant : joined) {
             String sessionId = participant.getSessionId();
@@ -1856,7 +1868,8 @@ public class CallActivity extends CallBaseActivity {
             }
 
             Log.d(TAG, "   newSession joined: " + sessionId);
-            getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
+
+            CallParticipant callParticipant = addCallParticipant(sessionId);
 
             String userId = participant.getUserId();
             if (userId != null) {
@@ -1870,6 +1883,17 @@ public class CallActivity extends CallBaseActivity {
                 nick = offerAnswerNickProviders.get(sessionId) != null ? offerAnswerNickProviders.get(sessionId).getNick() : "";
             }
             callParticipants.get(sessionId).setNick(nick);
+
+            boolean participantHasAudioOrVideo = participantInCallFlagsHaveAudioOrVideo(participant);
+
+            // FIXME Without MCU, PeerConnectionWrapper only sends an offer if the local session ID is higher than the
+            // remote session ID. However, if the other participant does not have audio nor video that participant
+            // will not send an offer, so no connection is actually established when the remote participant has a
+            // higher session ID but is not publishing media.
+            if ((hasMCU && participantHasAudioOrVideo) ||
+                    (!hasMCU && selfParticipantHasAudioOrVideo && (!participantHasAudioOrVideo || sessionId.compareTo(currentSessionId) < 0))) {
+                getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
+            }
         }
 
         boolean othersInCall = selfJoined ? joined.size() > 1 : joined.size() > 0;
@@ -1881,7 +1905,17 @@ public class CallActivity extends CallBaseActivity {
             String sessionId = participant.getSessionId();
             Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
             endPeerConnection(sessionId, false);
+            removeCallParticipant(sessionId);
         }
+    }
+
+    private boolean participantInCallFlagsHaveAudioOrVideo(Participant participant) {
+        if (participant == null) {
+            return false;
+        }
+
+        return (participant.getInCall() & Participant.InCallFlags.WITH_AUDIO) > 0 ||
+            (!isVoiceOnlyCall && (participant.getInCall() & Participant.InCallFlags.WITH_VIDEO) > 0);
     }
 
     private void deletePeerConnection(PeerConnectionWrapper peerConnectionWrapper) {
@@ -2058,10 +2092,6 @@ public class CallActivity extends CallBaseActivity {
                     }
                 }
             }
-        }
-
-        if (!justScreen) {
-            removeCallParticipant(sessionId);
         }
     }
 
