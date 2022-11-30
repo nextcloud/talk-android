@@ -2013,6 +2013,17 @@ public class CallActivity extends CallBaseActivity {
                 } else {
                     callParticipant.setPeerConnectionWrapper(peerConnectionWrapper);
                 }
+
+                if (!hasExternalSignalingServer) {
+                    OfferAnswerNickProvider offerAnswerNickProvider = offerAnswerNickProviders.get(sessionId);
+                    if ("screen".equals(type)) {
+                        signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(),
+                                                             sessionId, "screen");
+                    } else {
+                        signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(),
+                                                             sessionId, "video");
+                    }
+                }
             }
 
             if (publisher) {
@@ -2037,8 +2048,6 @@ public class CallActivity extends CallBaseActivity {
         if (!hasExternalSignalingServer) {
             OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider(sessionId);
             offerAnswerNickProviders.put(sessionId, offerAnswerNickProvider);
-            signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
-            signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
         }
 
         final CallParticipantModel callParticipantModel = callParticipant.getCallParticipantModel();
@@ -2074,6 +2083,15 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
+        if (!hasExternalSignalingServer) {
+            OfferAnswerNickProvider offerAnswerNickProvider = offerAnswerNickProviders.get(sessionId);
+            if ("screen".equals(type)) {
+                signalingMessageReceiver.removeListener(offerAnswerNickProvider.getScreenWebRtcMessageListener());
+            } else {
+                signalingMessageReceiver.removeListener(offerAnswerNickProvider.getVideoWebRtcMessageListener());
+            }
+        }
+
         peerConnectionWrapper.removePeerConnection();
         peerConnectionWrapperList.remove(peerConnectionWrapper);
     }
@@ -2093,11 +2111,7 @@ public class CallActivity extends CallBaseActivity {
         SignalingMessageReceiver.CallParticipantMessageListener listener = callParticipantMessageListeners.remove(sessionId);
         signalingMessageReceiver.removeListener(listener);
 
-        OfferAnswerNickProvider offerAnswerNickProvider = offerAnswerNickProviders.remove(sessionId);
-        if (offerAnswerNickProvider != null) {
-            signalingMessageReceiver.removeListener(offerAnswerNickProvider.getVideoWebRtcMessageListener());
-            signalingMessageReceiver.removeListener(offerAnswerNickProvider.getScreenWebRtcMessageListener());
-        }
+        offerAnswerNickProviders.remove(sessionId);
 
         runOnUiThread(() -> removeParticipantDisplayItem(sessionId, "video"));
     }
