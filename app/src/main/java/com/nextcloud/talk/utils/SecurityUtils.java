@@ -27,17 +27,31 @@ import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.security.keystore.UserNotAuthenticatedException;
 import android.util.Log;
-import androidx.annotation.RequiresApi;
-import androidx.biometric.BiometricPrompt;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 
-import javax.crypto.*;
 import java.io.IOException;
-import java.security.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+
+import androidx.annotation.RequiresApi;
+import androidx.biometric.BiometricPrompt;
 
 public class SecurityUtils {
     private static final String TAG = "SecurityUtils";
@@ -68,8 +82,8 @@ public class SecurityUtils {
             return false;
         } catch (KeyPermanentlyInvalidatedException e) {
             // This happens if the lock screen has been disabled or reset after the key was
-            // generated after the key was generated.
-            // Shouldnt really happen because we regenerate the key every time an activity
+            // generated.
+            // Shouldn't really happen because we regenerate the key every time an activity
             // is created, but oh well
             // Create key, and attempt again
             createKey(screenLockTimeout);
