@@ -37,6 +37,7 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.snackbar.Snackbar
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -144,14 +145,13 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     override fun onStart() {
-        Log.d(TAG, "onStart: Activity: " + System.identityHashCode(this).toString())
-
         super.onStart()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkIfWeAreSecure()
-        }
+        Log.d(TAG, "onStart: Activity: " + System.identityHashCode(this).toString())
+        logRouterBackStack(router!!)
 
-        handleActionFromContact(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            lockScreenIfConditionsApply()
+        }
     }
 
     override fun onResume() {
@@ -324,7 +324,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    fun checkIfWeAreSecure() {
+    fun lockScreenIfConditionsApply() {
         val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {
             if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
@@ -335,14 +335,15 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                             .popChangeHandler(VerticalChangeHandler())
                             .tag(LockedController.TAG)
                     )
+                    logRouterBackStack(router!!)
                 }
             }
         }
     }
 
     override fun onNewIntent(intent: Intent) {
-        Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
         super.onNewIntent(intent)
+        Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
         handleActionFromContact(intent)
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
@@ -353,10 +354,16 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 intent.extras?.let { callNotificationIntent.putExtras(it) }
                 startActivity(callNotificationIntent)
             } else {
+                logRouterBackStack(router!!)
                 remapChatController(
-                    router!!, intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
-                    intent.getStringExtra(KEY_ROOM_TOKEN)!!, intent.extras!!, false, true
+                    router!!,
+                    intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
+                    intent.getStringExtra(KEY_ROOM_TOKEN)!!,
+                    intent.extras!!,
+                    false,
+                    true
                 )
+                logRouterBackStack(router!!)
             }
         }
     }
@@ -368,6 +375,18 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         if (!router!!.handleBack()) {
             super.onBackPressed()
+        }
+    }
+
+    private fun logRouterBackStack(router: Router) {
+        if (BuildConfig.DEBUG) {
+            val backstack = router.backstack
+            var routerTransaction: RouterTransaction?
+            Log.d(TAG, "   backstack size: " + router.backstackSize)
+            for (i in 0 until router.backstackSize) {
+                routerTransaction = backstack[i]
+                Log.d(TAG, "     controller: " + routerTransaction.controller)
+            }
         }
     }
 

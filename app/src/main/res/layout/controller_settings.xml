@@ -197,6 +197,14 @@
         apc:cardElevation="0dp"
         apc:mpc_title="@string/nc_settings_privacy">
 
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_screen_lock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@bool/value_false"
+            apc:mp_key="@string/nc_settings_screen_lock_key"
+            apc:mp_title="@string/nc_settings_screen_lock_title" />
+
         <com.yarolegovich.mp.MaterialChoicePreference
             android:id="@+id/settings_screen_lock_timeout"
             android:layout_width="match_parent"
@@ -207,14 +215,6 @@
             apc:mp_key="@string/nc_settings_screen_lock_timeout_key"
             apc:mp_show_value="onBottom"
             apc:mp_title="@string/nc_settings_screen_lock_timeout_title" />
-
-        <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/settings_screen_lock"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_default_value="@bool/value_false"
-            apc:mp_key="@string/nc_settings_screen_lock_key"
-            apc:mp_title="@string/nc_settings_screen_lock_title" />
 
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/settings_screen_security"

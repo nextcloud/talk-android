@@ -21,14 +21,18 @@
 package com.nextcloud.talk.utils
 
 import android.os.Bundle
+import android.util.Log
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.controllers.ConversationsListController
+import com.nextcloud.talk.controllers.LockedController
 
 object ConductorRemapping {
+
+    private val TAG = ConductorRemapping::class.simpleName
 
     fun remapChatController(
         router: Router,
@@ -48,20 +52,10 @@ object ConductorRemapping {
         replaceTop: Boolean,
         pushImmediately: Boolean
     ) {
-        val tag = "$internalUserId@$roomTokenOrId"
-        if (router.getControllerWithTag(tag) != null) {
-            val backstack = router.backstack
-            var routerTransaction: RouterTransaction? = null
-            for (i in 0 until router.backstackSize) {
-                if (tag == backstack[i].tag()) {
-                    routerTransaction = backstack[i]
-                    backstack.remove(routerTransaction)
-                    break
-                }
-            }
+        val chatControllerTag = "$internalUserId@$roomTokenOrId"
 
-            backstack.add(routerTransaction)
-            router.setBackstack(backstack, HorizontalChangeHandler())
+        if (router.getControllerWithTag(chatControllerTag) != null) {
+            moveControllerToTop(router, chatControllerTag)
         } else {
             val pushChangeHandler = if (pushImmediately) {
                 SimpleSwapChangeHandler()
@@ -70,29 +64,55 @@ object ConductorRemapping {
             }
             if (!replaceTop) {
                 if (!router.hasRootController()) {
+                    Log.d(TAG, "router has no RootController. creating backstack with ConversationsListController")
                     val newBackstack = listOf(
                         RouterTransaction.with(ConversationsListController(Bundle()))
                             .pushChangeHandler(HorizontalChangeHandler())
                             .popChangeHandler(HorizontalChangeHandler()),
                         RouterTransaction.with(ChatController(bundle))
                             .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler()).tag(tag)
+                            .popChangeHandler(HorizontalChangeHandler()).tag(chatControllerTag)
                     )
                     router.setBackstack(newBackstack, SimpleSwapChangeHandler())
                 } else {
+                    Log.d(TAG, "router has RootController. pushing ChatController")
                     router.pushController(
                         RouterTransaction.with(ChatController(bundle))
                             .pushChangeHandler(pushChangeHandler)
-                            .popChangeHandler(HorizontalChangeHandler()).tag(tag)
+                            .popChangeHandler(HorizontalChangeHandler()).tag(chatControllerTag)
                     )
                 }
             } else {
+                Log.d(TAG, "ChatController replace topController")
+
                 router.replaceTopController(
                     RouterTransaction.with(ChatController(bundle))
                         .pushChangeHandler(pushChangeHandler)
-                        .popChangeHandler(HorizontalChangeHandler()).tag(tag)
+                        .popChangeHandler(HorizontalChangeHandler()).tag(chatControllerTag)
                 )
             }
         }
+
+        if (router.getControllerWithTag(LockedController.TAG) != null) {
+            moveControllerToTop(router, LockedController.TAG)
+        }
+    }
+
+    private fun moveControllerToTop(router: Router, controllerTag: String) {
+        Log.d(TAG, "moving $controllerTag to top...")
+        val backstack = router.backstack
+        var routerTransaction: RouterTransaction? = null
+        for (i in 0 until router.backstackSize) {
+            if (controllerTag == backstack[i].tag()) {
+                routerTransaction = backstack[i]
+                backstack.remove(routerTransaction)
+                Log.d(TAG, "removed controller: " + routerTransaction.controller)
+                break
+            }
+        }
+
+        backstack.add(routerTransaction)
+        Log.d(TAG, "added controller to top: " + routerTransaction!!.controller)
+        router.setBackstack(backstack, HorizontalChangeHandler())
     }
 }
