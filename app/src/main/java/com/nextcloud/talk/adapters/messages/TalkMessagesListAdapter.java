@@ -49,10 +49,10 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
     public void onBindViewHolder(ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
 
-        if (holder instanceof MagicIncomingTextMessageViewHolder) {
-            ((MagicIncomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
-        } else if (holder instanceof MagicOutcomingTextMessageViewHolder) {
-            ((MagicOutcomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+        if (holder instanceof IncomingTextMessageViewHolder) {
+            ((IncomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+        } else if (holder instanceof OutcomingTextMessageViewHolder) {
+            ((OutcomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
 
         } else if (holder instanceof IncomingLocationMessageViewHolder) {
             ((IncomingLocationMessageViewHolder) holder).assignCommonMessageInterface(chatController);

@@ -111,19 +111,19 @@ import com.nextcloud.talk.adapters.messages.IncomingLinkPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPollMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
+import com.nextcloud.talk.adapters.messages.IncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingVoiceMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MessagePayload
 import com.nextcloud.talk.adapters.messages.OutcomingLinkPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPollMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
+import com.nextcloud.talk.adapters.messages.OutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
+import com.nextcloud.talk.adapters.messages.SystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
+import com.nextcloud.talk.adapters.messages.UnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -524,12 +524,12 @@ class ChatController(args: Bundle) :
                 MessagePayload(roomToken!!, currentConversation?.isParticipantOwnerOrModerator, profileBottomSheet)
 
             messageHolders.setIncomingTextConfig(
-                MagicIncomingTextMessageViewHolder::class.java,
+                IncomingTextMessageViewHolder::class.java,
                 R.layout.item_custom_incoming_text_message,
                 payload
             )
             messageHolders.setOutcomingTextConfig(
-                MagicOutcomingTextMessageViewHolder::class.java,
+                OutcomingTextMessageViewHolder::class.java,
                 R.layout.item_custom_outcoming_text_message
             )
 
@@ -546,18 +546,18 @@ class ChatController(args: Bundle) :
 
             messageHolders.registerContentType(
                 CONTENT_TYPE_SYSTEM_MESSAGE,
-                MagicSystemMessageViewHolder::class.java,
+                SystemMessageViewHolder::class.java,
                 R.layout.item_system_message,
-                MagicSystemMessageViewHolder::class.java,
+                SystemMessageViewHolder::class.java,
                 R.layout.item_system_message,
                 this
             )
 
             messageHolders.registerContentType(
                 CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
-                MagicUnreadNoticeMessageViewHolder::class.java,
+                UnreadNoticeMessageViewHolder::class.java,
                 R.layout.item_date_header,
-                MagicUnreadNoticeMessageViewHolder::class.java,
+                UnreadNoticeMessageViewHolder::class.java,
                 R.layout.item_date_header,
                 this
             )

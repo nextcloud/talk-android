@@ -45,7 +45,7 @@ import autodagger.AutoInjector;
 import static com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback.REPLYABLE_VIEW_TAG;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
+public class SystemMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 
     @Inject
     AppPreferences appPreferences;
@@ -55,7 +55,7 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
     protected ViewGroup background;
 
-    public MagicSystemMessageViewHolder(View itemView) {
+    public SystemMessageViewHolder(View itemView) {
         super(itemView);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         background = itemView.findViewById(R.id.container);

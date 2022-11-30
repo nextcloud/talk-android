@@ -55,7 +55,7 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolders
+class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolders
 .IncomingTextMessageViewHolder<ChatMessage>(itemView, payload) {
 
     private val binding: ItemCustomIncomingTextMessageBinding = ItemCustomIncomingTextMessageBinding.bind(itemView)
