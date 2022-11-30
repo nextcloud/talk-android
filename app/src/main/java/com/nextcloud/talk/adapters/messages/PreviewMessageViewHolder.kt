@@ -97,6 +97,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     }
 
     @SuppressLint("SetTextI18n")
+    @Suppress("NestedBlockDepth", "ComplexMethod", "LongMethod")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         if (userAvatar != null) {

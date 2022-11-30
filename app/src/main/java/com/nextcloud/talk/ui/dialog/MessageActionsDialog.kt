@@ -27,6 +27,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -321,6 +322,7 @@ class MessageActionsDialog(
 
     inner class ReactionAddedObserver : Observer<ReactionAddedModel> {
         override fun onSubscribe(d: Disposable) {
+            // unused atm
         }
 
         override fun onNext(reactionAddedModel: ReactionAddedModel) {
@@ -333,6 +335,7 @@ class MessageActionsDialog(
         }
 
         override fun onError(e: Throwable) {
+            Log.e(TAG, "failure in ReactionAddedObserver", e)
         }
 
         override fun onComplete() {
@@ -342,6 +345,7 @@ class MessageActionsDialog(
 
     inner class ReactionDeletedObserver : Observer<ReactionDeletedModel> {
         override fun onSubscribe(d: Disposable) {
+            // unused atm
         }
 
         override fun onNext(reactionDeletedModel: ReactionDeletedModel) {
@@ -354,6 +358,7 @@ class MessageActionsDialog(
         }
 
         override fun onError(e: Throwable) {
+            Log.e(TAG, "failure in ReactionDeletedObserver", e)
         }
 
         override fun onComplete() {
