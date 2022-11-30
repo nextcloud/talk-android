@@ -141,7 +141,7 @@ public abstract class SignalingMessageReceiver {
      * When an offer is received all OfferMessageListeners are notified before any WebRtcMessageListener is notified.
      */
     public interface OfferMessageListener {
-        void onOffer(String sessionId, String roomType, String sdp, String nick);
+        void onOffer(String sessionId, String roomType, String sid, String sdp, String nick);
     }
 
     /**
@@ -218,12 +218,19 @@ public abstract class SignalingMessageReceiver {
      * A listener is expected to be added only once. If the same listener is added again it will no longer be notified
      * for the messages from the previous session ID or room type.
      *
+     * At any given time there will be just one peer connection with the same session ID and room type. The peer
+     * connection ID is an additional guarantee to ensure that both ends are using the same peer connection. However,
+     * in some cases (older external signaling server or app versions) the WebRTC messages may not contain a peer
+     * connection ID. In those cases the listener will still receive the messages, even if it was registered against
+     * a specific peer connection ID.
+     *
      * @param listener the WebRtcMessageListener
      * @param sessionId the ID of the session that messages come from
      * @param roomType the room type that messages come from
+     * @param sid the ID of the peer connection
      */
-    public void addListener(WebRtcMessageListener listener, String sessionId, String roomType) {
-        webRtcMessageNotifier.addListener(listener, sessionId, roomType);
+    public void addListener(WebRtcMessageListener listener, String sessionId, String roomType, String sid) {
+        webRtcMessageNotifier.addListener(listener, sessionId, roomType, sid);
     }
 
     public void removeListener(WebRtcMessageListener listener) {
@@ -452,6 +459,8 @@ public abstract class SignalingMessageReceiver {
             return;
         }
 
+        String sid = signalingMessage.getSid();
+
         if ("offer".equals(type)) {
             // Message schema (external signaling server):
             // {
@@ -504,8 +513,8 @@ public abstract class SignalingMessageReceiver {
             // although extremely unlikely, that the WebRtcMessageListeners for the second offer are notified before the
             // WebRtcMessageListeners for the first offer. This should not be a problem, though, so for simplicity
             // the statements are not synchronized.
-            offerMessageNotifier.notifyOffer(sessionId, roomType, sdp, nick);
-            webRtcMessageNotifier.notifyOffer(sessionId, roomType, sdp, nick);
+            offerMessageNotifier.notifyOffer(sessionId, roomType, sid, sdp, nick);
+            webRtcMessageNotifier.notifyOffer(sessionId, roomType, sid, sdp, nick);
 
             return;
         }
@@ -522,7 +531,7 @@ public abstract class SignalingMessageReceiver {
             String sdp = payload.getSdp();
             String nick = payload.getNick();
 
-            webRtcMessageNotifier.notifyAnswer(sessionId, roomType, sdp, nick);
+            webRtcMessageNotifier.notifyAnswer(sessionId, roomType, sid, sdp, nick);
 
             return;
         }
@@ -585,6 +594,7 @@ public abstract class SignalingMessageReceiver {
 
             webRtcMessageNotifier.notifyCandidate(sessionId,
                                                   roomType,
+                                                  sid,
                                                   ncIceCandidate.getSdpMid(),
                                                   ncIceCandidate.getSdpMLineIndex(),
                                                   ncIceCandidate.getCandidate());
@@ -593,7 +603,7 @@ public abstract class SignalingMessageReceiver {
         }
 
         if ("endOfCandidates".equals(type)) {
-            webRtcMessageNotifier.notifyEndOfCandidates(sessionId, roomType);
+            webRtcMessageNotifier.notifyEndOfCandidates(sessionId, roomType, sid);
 
             return;
         }

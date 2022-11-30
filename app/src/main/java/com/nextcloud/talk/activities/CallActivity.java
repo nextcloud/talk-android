@@ -291,8 +291,15 @@ public class CallActivity extends CallBaseActivity {
 
     private SignalingMessageReceiver.OfferMessageListener offerMessageListener = new SignalingMessageReceiver.OfferMessageListener() {
         @Override
-        public void onOffer(String sessionId, String roomType, String sdp, String nick) {
-            getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, roomType, false);
+        public void onOffer(String sessionId, String roomType, String sid, String sdp, String nick) {
+            // If there is already a peer connection but a new offer is received with a different sid the existing
+            // peer connection is stale, so it needs to be removed and a new one created instead.
+            PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(sessionId, roomType);
+            if (peerConnectionWrapper != null && sid != null && !sid.equals(peerConnectionWrapper.getSid())) {
+                endPeerConnection(sessionId, roomType);
+            }
+
+            getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, roomType, sid, false);
         }
     };
 
@@ -1850,7 +1857,7 @@ public class CallActivity extends CallBaseActivity {
 
         if (hasMCU) {
             // Ensure that own publishing peer is set up.
-            getOrCreatePeerConnectionWrapperForSessionIdAndType(webSocketClient.getSessionId(), VIDEO_STREAM_TYPE_VIDEO, true);
+            getOrCreatePeerConnectionWrapperForSessionIdAndType(webSocketClient.getSessionId(), VIDEO_STREAM_TYPE_VIDEO, null, true);
         }
 
         boolean selfJoined = false;
@@ -1894,7 +1901,7 @@ public class CallActivity extends CallBaseActivity {
             // higher session ID but is not publishing media.
             if ((hasMCU && participantHasAudioOrVideo) ||
                     (!hasMCU && selfParticipantHasAudioOrVideo && (!participantHasAudioOrVideo || sessionId.compareTo(currentSessionId) < 0))) {
-                getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
+                getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, null, false);
             }
         }
 
@@ -1934,6 +1941,7 @@ public class CallActivity extends CallBaseActivity {
 
     private PeerConnectionWrapper getOrCreatePeerConnectionWrapperForSessionIdAndType(String sessionId,
                                                                                       String type,
+                                                                                      String sid,
                                                                                       boolean publisher) {
         PeerConnectionWrapper peerConnectionWrapper;
         if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(sessionId, type)) != null) {
@@ -1952,6 +1960,7 @@ public class CallActivity extends CallBaseActivity {
                                                                   iceServers,
                                                                   sdpConstraintsForMCU,
                                                                   sessionId,
+                                                                  sid,
                                                                   callSession,
                                                                   localStream,
                                                                   true,
@@ -1965,6 +1974,7 @@ public class CallActivity extends CallBaseActivity {
                                                                   iceServers,
                                                                   sdpConstraints,
                                                                   sessionId,
+                                                                  sid,
                                                                   callSession,
                                                                   null,
                                                                   false,
@@ -1978,6 +1988,7 @@ public class CallActivity extends CallBaseActivity {
                                                                       iceServers,
                                                                       sdpConstraints,
                                                                       sessionId,
+                                                                      sid,
                                                                       callSession,
                                                                       localStream,
                                                                       false,
@@ -1990,6 +2001,7 @@ public class CallActivity extends CallBaseActivity {
                                                                       iceServers,
                                                                       sdpConstraints,
                                                                       sessionId,
+                                                                      sid,
                                                                       callSession,
                                                                       null,
                                                                       false,
@@ -2018,10 +2030,10 @@ public class CallActivity extends CallBaseActivity {
                     OfferAnswerNickProvider offerAnswerNickProvider = offerAnswerNickProviders.get(sessionId);
                     if ("screen".equals(type)) {
                         signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(),
-                                                             sessionId, "screen");
+                                                             sessionId, "screen", peerConnectionWrapper.getSid());
                     } else {
                         signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(),
-                                                             sessionId, "video");
+                                                             sessionId, "video", peerConnectionWrapper.getSid());
                     }
                 }
             }

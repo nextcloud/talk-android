@@ -50,7 +50,7 @@ public class SignalingMessageReceiverWebRtcTest {
     @Test
     public void testAddWebRtcMessageListenerWithNullListener() {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            signalingMessageReceiver.addListener(null, "theSessionId", "theRoomType");
+            signalingMessageReceiver.addListener(null, "theSessionId", "theRoomType", "theSid");
         });
     }
 
@@ -60,7 +60,7 @@ public class SignalingMessageReceiverWebRtcTest {
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            signalingMessageReceiver.addListener(mockedWebRtcMessageListener, null, "theRoomType");
+            signalingMessageReceiver.addListener(mockedWebRtcMessageListener, null, "theRoomType", "theSid");
         });
     }
 
@@ -70,7 +70,17 @@ public class SignalingMessageReceiverWebRtcTest {
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", null);
+            signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", null, "theSid");
+        });
+    }
+
+    @Test
+    public void testAddWebRtcMessageListenerWithNullSid() {
+        SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
+            mock(SignalingMessageReceiver.WebRtcMessageListener.class);
+
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", null);
         });
     }
 
@@ -79,7 +89,28 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
+
+        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        signalingMessage.setFrom("theSessionId");
+        signalingMessage.setType("offer");
+        signalingMessage.setRoomType("theRoomType");
+        NCMessagePayload messagePayload = new NCMessagePayload();
+        messagePayload.setType("offer");
+        messagePayload.setSdp("theSdp");
+        signalingMessage.setPayload(messagePayload);
+        signalingMessage.setSid("theSid");
+        signalingMessageReceiver.processSignalingMessage(signalingMessage);
+
+        verify(mockedWebRtcMessageListener, only()).onOffer("theSdp", null);
+    }
+
+    @Test
+    public void testWebRtcMessageOfferWithoutSid() {
+        SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
+            mock(SignalingMessageReceiver.WebRtcMessageListener.class);
+
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
@@ -99,7 +130,7 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
@@ -110,6 +141,7 @@ public class SignalingMessageReceiverWebRtcTest {
         messagePayload.setSdp("theSdp");
         messagePayload.setNick("theNick");
         signalingMessage.setPayload(messagePayload);
+        signalingMessage.setSid("theSid");
         signalingMessageReceiver.processSignalingMessage(signalingMessage);
 
         verify(mockedWebRtcMessageListener, only()).onOffer("theSdp", "theNick");
@@ -120,7 +152,28 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
+
+        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        signalingMessage.setFrom("theSessionId");
+        signalingMessage.setType("answer");
+        signalingMessage.setRoomType("theRoomType");
+        NCMessagePayload messagePayload = new NCMessagePayload();
+        messagePayload.setType("answer");
+        messagePayload.setSdp("theSdp");
+        signalingMessage.setPayload(messagePayload);
+        signalingMessage.setSid("theSid");
+        signalingMessageReceiver.processSignalingMessage(signalingMessage);
+
+        verify(mockedWebRtcMessageListener, only()).onAnswer("theSdp", null);
+    }
+
+    @Test
+    public void testWebRtcMessageAnswerWithoutSid() {
+        SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
+            mock(SignalingMessageReceiver.WebRtcMessageListener.class);
+
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
@@ -140,7 +193,7 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
@@ -151,6 +204,7 @@ public class SignalingMessageReceiverWebRtcTest {
         messagePayload.setSdp("theSdp");
         messagePayload.setNick("theNick");
         signalingMessage.setPayload(messagePayload);
+        signalingMessage.setSid("theSid");
         signalingMessageReceiver.processSignalingMessage(signalingMessage);
 
         verify(mockedWebRtcMessageListener, only()).onAnswer("theSdp", "theNick");
@@ -161,7 +215,31 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
+
+        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        signalingMessage.setFrom("theSessionId");
+        signalingMessage.setType("candidate");
+        signalingMessage.setRoomType("theRoomType");
+        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCIceCandidate iceCandidate = new NCIceCandidate();
+        iceCandidate.setSdpMid("theSdpMid");
+        iceCandidate.setSdpMLineIndex(42);
+        iceCandidate.setCandidate("theSdp");
+        messagePayload.setIceCandidate(iceCandidate);
+        signalingMessage.setPayload(messagePayload);
+        signalingMessage.setSid("theSid");
+        signalingMessageReceiver.processSignalingMessage(signalingMessage);
+
+        verify(mockedWebRtcMessageListener, only()).onCandidate("theSdpMid", 42, "theSdp");
+    }
+
+    @Test
+    public void testWebRtcMessageCandidateWithoutSid() {
+        SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
+            mock(SignalingMessageReceiver.WebRtcMessageListener.class);
+
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
@@ -184,7 +262,24 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
+
+        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        signalingMessage.setFrom("theSessionId");
+        signalingMessage.setType("endOfCandidates");
+        signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid");
+        signalingMessageReceiver.processSignalingMessage(signalingMessage);
+
+        verify(mockedWebRtcMessageListener, only()).onEndOfCandidates();
+    }
+
+    @Test
+    public void testWebRtcMessageEndOfCandidatesWithoutSid() {
+        SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
+            mock(SignalingMessageReceiver.WebRtcMessageListener.class);
+
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
@@ -202,8 +297,29 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener2 =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType");
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType", "theSid");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType", "theSid");
+
+        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        signalingMessage.setFrom("theSessionId");
+        signalingMessage.setType("endOfCandidates");
+        signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid");
+        signalingMessageReceiver.processSignalingMessage(signalingMessage);
+
+        verify(mockedWebRtcMessageListener1, only()).onEndOfCandidates();
+        verify(mockedWebRtcMessageListener2, only()).onEndOfCandidates();
+    }
+
+    @Test
+    public void testWebRtcMessageSeveralListenersSameFromDifferentSidWithoutSid() {
+        SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener1 =
+            mock(SignalingMessageReceiver.WebRtcMessageListener.class);
+        SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener2 =
+            mock(SignalingMessageReceiver.WebRtcMessageListener.class);
+
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType", "theSid");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType", "theSid2");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
@@ -220,12 +336,13 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("notMatchingSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid");
         signalingMessageReceiver.processSignalingMessage(signalingMessage);
 
         verifyNoInteractions(mockedWebRtcMessageListener);
@@ -236,12 +353,30 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("notMatchingRoomType");
+        signalingMessage.setSid("theSid");
+        signalingMessageReceiver.processSignalingMessage(signalingMessage);
+
+        verifyNoInteractions(mockedWebRtcMessageListener);
+    }
+
+    @Test
+    public void testWebRtcMessageNotMatchingSid() {
+        SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
+            mock(SignalingMessageReceiver.WebRtcMessageListener.class);
+
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
+
+        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        signalingMessage.setFrom("theSessionId");
+        signalingMessage.setType("endOfCandidates");
+        signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("notMatchingSid");
         signalingMessageReceiver.processSignalingMessage(signalingMessage);
 
         verifyNoInteractions(mockedWebRtcMessageListener);
@@ -252,13 +387,14 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
         signalingMessageReceiver.removeListener(mockedWebRtcMessageListener);
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid");
         signalingMessageReceiver.processSignalingMessage(signalingMessage);
 
         verifyNoInteractions(mockedWebRtcMessageListener);
@@ -273,15 +409,16 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener3 =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType");
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType");
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener3, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType", "theSid");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType", "theSid");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener3, "theSessionId", "theRoomType", "theSid");
         signalingMessageReceiver.removeListener(mockedWebRtcMessageListener2);
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid");
         signalingMessageReceiver.processSignalingMessage(signalingMessage);
 
         verify(mockedWebRtcMessageListener1, only()).onEndOfCandidates();
@@ -294,13 +431,14 @@ public class SignalingMessageReceiverWebRtcTest {
         SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId2", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId2", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid");
         signalingMessageReceiver.processSignalingMessage(signalingMessage);
 
         verifyNoInteractions(mockedWebRtcMessageListener);
@@ -308,6 +446,33 @@ public class SignalingMessageReceiverWebRtcTest {
         signalingMessage.setFrom("theSessionId2");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid");
+        signalingMessageReceiver.processSignalingMessage(signalingMessage);
+
+        verify(mockedWebRtcMessageListener, only()).onEndOfCandidates();
+    }
+
+    @Test
+    public void testWebRtcMessageAfterAddingListenerAgainForSameFromDifferentSid() {
+        SignalingMessageReceiver.WebRtcMessageListener mockedWebRtcMessageListener =
+            mock(SignalingMessageReceiver.WebRtcMessageListener.class);
+
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType", "theSid2");
+
+        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        signalingMessage.setFrom("theSessionId");
+        signalingMessage.setType("endOfCandidates");
+        signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid");
+        signalingMessageReceiver.processSignalingMessage(signalingMessage);
+
+        verifyNoInteractions(mockedWebRtcMessageListener);
+
+        signalingMessage.setFrom("theSessionId");
+        signalingMessage.setType("endOfCandidates");
+        signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid2");
         signalingMessageReceiver.processSignalingMessage(signalingMessage);
 
         verify(mockedWebRtcMessageListener, only()).onEndOfCandidates();
@@ -321,16 +486,17 @@ public class SignalingMessageReceiverWebRtcTest {
             mock(SignalingMessageReceiver.WebRtcMessageListener.class);
 
         doAnswer((invocation) -> {
-            signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType");
+            signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType", "theSid");
             return null;
         }).when(mockedWebRtcMessageListener1).onEndOfCandidates();
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid");
         signalingMessageReceiver.processSignalingMessage(signalingMessage);
 
         verify(mockedWebRtcMessageListener1, only()).onEndOfCandidates();
@@ -349,13 +515,14 @@ public class SignalingMessageReceiverWebRtcTest {
             return null;
         }).when(mockedWebRtcMessageListener1).onEndOfCandidates();
 
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType");
-        signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType", "theSid");
+        signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType", "theSid");
 
         NCSignalingMessage signalingMessage = new NCSignalingMessage();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
+        signalingMessage.setSid("theSid");
         signalingMessageReceiver.processSignalingMessage(signalingMessage);
 
         InOrder inOrder = inOrder(mockedWebRtcMessageListener1, mockedWebRtcMessageListener2);

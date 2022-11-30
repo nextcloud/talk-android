@@ -111,6 +111,7 @@ public class PeerConnectionWrapper {
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
     private String sessionId;
+    private final String sid;
     private final MediaConstraints mediaConstraints;
     private DataChannel dataChannel;
     private final MagicSdpObserver magicSdpObserver;
@@ -130,7 +131,8 @@ public class PeerConnectionWrapper {
     public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                  List<PeerConnection.IceServer> iceServerList,
                                  MediaConstraints mediaConstraints,
-                                 String sessionId, String localSession, @Nullable MediaStream localStream,
+                                 String sessionId, @Nullable String sid, String localSession,
+                                 @Nullable MediaStream localStream,
                                  boolean isMCUPublisher, boolean hasMCU, String videoStreamType,
                                  SignalingMessageReceiver signalingMessageReceiver,
                                  SignalingMessageSender signalingMessageSender) {
@@ -141,6 +143,7 @@ public class PeerConnectionWrapper {
         this.videoStreamType = videoStreamType;
 
         this.sessionId = sessionId;
+        this.sid = sid != null ? sid : Long.toString(System.currentTimeMillis());
         this.mediaConstraints = mediaConstraints;
 
         magicSdpObserver = new MagicSdpObserver();
@@ -152,7 +155,7 @@ public class PeerConnectionWrapper {
         peerConnection = peerConnectionFactory.createPeerConnection(configuration, new MagicPeerConnectionObserver());
 
         this.signalingMessageReceiver = signalingMessageReceiver;
-        this.signalingMessageReceiver.addListener(webRtcMessageListener, sessionId, videoStreamType);
+        this.signalingMessageReceiver.addListener(webRtcMessageListener, sessionId, videoStreamType, this.sid);
 
         this.signalingMessageSender = signalingMessageSender;
 
@@ -174,7 +177,9 @@ public class PeerConnectionWrapper {
                 dataChannel.registerObserver(new MagicDataChannelObserver());
                 if (isMCUPublisher) {
                     peerConnection.createOffer(magicSdpObserver, mediaConstraints);
-                } else if (hasMCU && "video".equals(this.videoStreamType)) {
+                } else if (hasMCU && "video".equals(this.videoStreamType) && sid == null) {
+                    // If no sid is provided during creation then the PeerConnectionWrapper is a dummy one that just
+                    // requests an offer and then gets replaced with a new one once the offer with the sid is received.
                     // If the connection type is "screen" the client sharing the screen will send an
                     // offer; offers should be requested only for videos.
                     // "to" property is not actually needed in the "requestoffer" signaling message, but it is used to
@@ -285,6 +290,10 @@ public class PeerConnectionWrapper {
         return sessionId;
     }
 
+    public String getSid() {
+        return sid;
+    }
+
     private void sendInitialMediaStatus() {
         if (localStream != null) {
             if (localStream.videoTracks.size() == 1 && localStream.videoTracks.get(0).enabled()) {
@@ -318,6 +327,7 @@ public class PeerConnectionWrapper {
         NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
         ncSignalingMessage.setTo(sessionId);
         ncSignalingMessage.setRoomType(videoStreamType);
+        ncSignalingMessage.setSid(sid);
         ncSignalingMessage.setType(type);
 
         return ncSignalingMessage;
