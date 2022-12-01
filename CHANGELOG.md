@@ -5,6 +5,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [15.0.2] - 2022-12-01
+
+### Fixed
+- Fail to show user status in conversation list in some scenarios
+- Fail to upload files on some devices
+- Fail to pick avatar from local gallery
+- Minor call issues
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/63?closed=1
+
+## [15.0.1] - 2022-10-19
+
+### Fixed
+- Defect translations for regions like de_AT
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/62?closed=1
+
 ## [15.0.0] - 2022-10-17
 
 ### Added
