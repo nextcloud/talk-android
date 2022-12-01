@@ -59,8 +59,10 @@
     <string name="nc_client_cert_setup">Indstil klientcertifikat</string>
     <string name="nc_common_dismiss">Afvis</string>
     <string name="nc_common_error_sorry">Noget gik galt, undskyld!</string>
+    <string name="nc_common_set">Sæt</string>
     <string name="nc_common_skip">Spring over</string>
     <string name="nc_configure_cert_auth">Vælg godkendelsescertifikat</string>
+    <string name="nc_connecting_call">Forbinder ...</string>
     <string name="nc_contacts_done">Færdig</string>
     <string name="nc_conversation_link">Samtalelink</string>
     <string name="nc_conversation_menu_conversation_info">Samtaleinfo</string>
