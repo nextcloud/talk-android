@@ -47,6 +47,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import io.reactivex.Observer
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -159,19 +160,25 @@ class DirectReplyReceiver : BroadcastReceiver() {
             .extractMessagingStyleFromNotification(previousNotification)
 
         // Add reply
-        val avatarUrl = ApiUtils.getUrlForAvatar(currentUser.baseUrl, currentUser.userId, false)
-        val me = Person.Builder()
-            .setName(currentUser.displayName)
-            .setIcon(NotificationUtils.loadAvatarSync(avatarUrl, context))
-            .build()
-        val message = NotificationCompat.MessagingStyle.Message(reply, System.currentTimeMillis(), me)
-        previousStyle?.addMessage(message)
+        Single.fromCallable {
+            val avatarUrl = ApiUtils.getUrlForAvatar(currentUser.baseUrl, currentUser.userId, false)
+            val me = Person.Builder()
+                .setName(currentUser.displayName)
+                .setIcon(NotificationUtils.loadAvatarSync(avatarUrl, context))
+                .build()
+            val message = NotificationCompat.MessagingStyle.Message(reply, System.currentTimeMillis(), me)
+            previousStyle?.addMessage(message)
 
-        // Set the updated style
-        previousBuilder.setStyle(previousStyle)
+            // Set the updated style
+            previousBuilder.setStyle(previousStyle)
 
-        // Update the active notification.
-        NotificationManagerCompat.from(context).notify(systemNotificationId!!, previousBuilder.build())
+            // Check if notification still exists
+            if (findActiveNotification(systemNotificationId!!) != null) {
+                NotificationManagerCompat.from(context).notify(systemNotificationId!!, previousBuilder.build())
+            }
+        }
+            .subscribeOn(Schedulers.io())
+            .subscribe()
     }
 
     companion object {

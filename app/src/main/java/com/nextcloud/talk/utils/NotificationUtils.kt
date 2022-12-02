@@ -330,7 +330,6 @@ object NotificationUtils {
             .data(avatarUrl)
             .transformations(CircleCropTransformation())
             .placeholder(R.drawable.account_circle_96dp)
-            .placeholder(R.drawable.account_circle_96dp)
             .target(
                 onSuccess = { result ->
                     val bitmap = (result as BitmapDrawable).bitmap
