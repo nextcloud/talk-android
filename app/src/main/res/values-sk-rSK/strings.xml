@@ -187,12 +187,14 @@
     <string name="nc_message_read">Správa bola prečítaná</string>
     <string name="nc_message_sent">Správa bola odoslaná</string>
     <string name="nc_microphone_permission_permanently_denied">Na zapnutie hlasovej komunikácie, prosím povoľte \"Mikrofón\" v nastaveniach systému.</string>
+    <string name="nc_missed_call">Zmeškali ste hovor od %s</string>
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_never">Nikdy nepridaný</string>
     <string name="nc_new_conversation">Nový rozhovor</string>
     <string name="nc_new_mention">Neprečítané upozornenia</string>
     <string name="nc_new_messages">Neprečítané správy</string>
     <string name="nc_new_password">Nové heslo</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s nie je dostupné (nie je nainštalované alebo je obmedzené administrátorom)</string>
     <string name="nc_nick_guest">Hosť</string>
     <string name="nc_no">Nie</string>
     <string name="nc_no_messages_yet">Ešte žiadne správy</string>
