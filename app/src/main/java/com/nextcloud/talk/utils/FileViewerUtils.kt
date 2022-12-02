@@ -41,7 +41,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.FullScreenImageActivity
 import com.nextcloud.talk.activities.FullScreenMediaActivity
 import com.nextcloud.talk.activities.FullScreenTextViewerActivity
-import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
+import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.models.json.chat.ChatMessage
@@ -78,12 +78,12 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         message: ChatMessage,
         progressUi: ProgressUi
     ) {
-        val fileName = message.selectedIndividualHashMap!![MagicPreviewMessageViewHolder.KEY_NAME]!!
-        val mimetype = message.selectedIndividualHashMap!![MagicPreviewMessageViewHolder.KEY_MIMETYPE]!!
+        val fileName = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_NAME]!!
+        val mimetype = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_MIMETYPE]!!
         val link = message.selectedIndividualHashMap!!["link"]!!
 
-        val fileId = message.selectedIndividualHashMap!![MagicPreviewMessageViewHolder.KEY_ID]!!
-        val path = message.selectedIndividualHashMap!![MagicPreviewMessageViewHolder.KEY_PATH]!!
+        val fileId = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_ID]!!
+        val path = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_PATH]!!
 
         var size = message.selectedIndividualHashMap!!["size"]
         if (size == null) {

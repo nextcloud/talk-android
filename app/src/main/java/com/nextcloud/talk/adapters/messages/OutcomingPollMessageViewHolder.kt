@@ -108,18 +108,21 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
         Reaction().showReactions(
             message,
+            ::clickOnReaction,
+            ::longClickOnReaction,
             binding.reactions,
             binding.messageTime.context,
             true,
             viewThemeUtils
         )
-        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
-            commonMessageInterface.onClickReactions(message)
-        }
-        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
-        }
+    }
+
+    private fun longClickOnReaction(chatMessage: ChatMessage) {
+        commonMessageInterface.onLongClickReactions(chatMessage)
+    }
+
+    private fun clickOnReaction(chatMessage: ChatMessage, emoji: String) {
+        commonMessageInterface.onClickReaction(chatMessage, emoji)
     }
 
     private fun setPollPreview(message: ChatMessage) {

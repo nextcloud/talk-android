@@ -50,7 +50,7 @@ import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHold
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
+class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
     private val binding: ItemCustomOutcomingTextMessageBinding = ItemCustomOutcomingTextMessageBinding.bind(itemView)
     private val realView: View = itemView
 
@@ -121,14 +121,23 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
 
-        Reaction().showReactions(message, binding.reactions, context, true, viewThemeUtils)
-        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
-            commonMessageInterface.onClickReactions(message)
-        }
-        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
-        }
+        Reaction().showReactions(
+            message,
+            ::clickOnReaction,
+            ::longClickOnReaction,
+            binding.reactions,
+            context,
+            true,
+            viewThemeUtils
+        )
+    }
+
+    private fun longClickOnReaction(chatMessage: ChatMessage) {
+        commonMessageInterface.onLongClickReactions(chatMessage)
+    }
+
+    private fun clickOnReaction(chatMessage: ChatMessage, emoji: String) {
+        commonMessageInterface.onClickReaction(chatMessage, emoji)
     }
 
     private fun processParentMessage(message: ChatMessage) {

@@ -3,6 +3,8 @@
  *
  * @author Álvaro Brey
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Nextcloud GmbH
@@ -35,6 +37,8 @@ import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsR
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepositoryImpl
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl
+import com.nextcloud.talk.repositories.reactions.ReactionsRepository
+import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
@@ -81,5 +85,10 @@ class RepositoryModule {
     @Provides
     fun provideArbitraryStoragesRepository(database: TalkDatabase): ArbitraryStoragesRepository {
         return ArbitraryStoragesRepositoryImpl(database.arbitraryStoragesDao())
+    }
+
+    @Provides
+    fun provideReactionsRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ReactionsRepository {
+        return ReactionsRepositoryImpl(ncApi, userProvider)
     }
 }

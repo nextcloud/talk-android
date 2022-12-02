@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,16 +37,16 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
-import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
+import com.nextcloud.talk.models.domain.ReactionAddedModel
+import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
@@ -63,12 +65,14 @@ class MessageActionsDialog(
     private val user: User?,
     private val currentConversation: Conversation?,
     private val showMessageDeletionButton: Boolean,
-    private val hasChatPermission: Boolean,
-    private val ncApi: NcApi
+    private val hasChatPermission: Boolean
 ) : BottomSheetDialog(chatController.activity!!) {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var reactionsRepository: ReactionsRepository
 
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
 
@@ -138,7 +142,7 @@ class MessageActionsDialog(
             },
             onEmojiClickListener = {
                 popup.dismiss()
-                sendReaction(message, it.unicode)
+                clickOnEmoji(message, it.unicode)
             },
             onEmojiPopupDismissListener = {
                 dialogMessageActionsBinding.emojiMore.clearFocus()
@@ -180,27 +184,27 @@ class MessageActionsDialog(
         ) {
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
             dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
-                sendReaction(message, dialogMessageActionsBinding.emojiThumbsUp.text.toString())
+                clickOnEmoji(message, dialogMessageActionsBinding.emojiThumbsUp.text.toString())
             }
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsDown)
             dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener {
-                sendReaction(message, dialogMessageActionsBinding.emojiThumbsDown.text.toString())
+                clickOnEmoji(message, dialogMessageActionsBinding.emojiThumbsDown.text.toString())
             }
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiLaugh)
             dialogMessageActionsBinding.emojiLaugh.setOnClickListener {
-                sendReaction(message, dialogMessageActionsBinding.emojiLaugh.text.toString())
+                clickOnEmoji(message, dialogMessageActionsBinding.emojiLaugh.text.toString())
             }
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiHeart)
             dialogMessageActionsBinding.emojiHeart.setOnClickListener {
-                sendReaction(message, dialogMessageActionsBinding.emojiHeart.text.toString())
+                clickOnEmoji(message, dialogMessageActionsBinding.emojiHeart.text.toString())
             }
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiConfused)
             dialogMessageActionsBinding.emojiConfused.setOnClickListener {
-                sendReaction(message, dialogMessageActionsBinding.emojiConfused.text.toString())
+                clickOnEmoji(message, dialogMessageActionsBinding.emojiConfused.text.toString())
             }
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiSad)
             dialogMessageActionsBinding.emojiSad.setOnClickListener {
-                sendReaction(message, dialogMessageActionsBinding.emojiSad.text.toString())
+                clickOnEmoji(message, dialogMessageActionsBinding.emojiSad.text.toString())
             }
 
             dialogMessageActionsBinding.emojiMore.setOnClickListener {
@@ -302,88 +306,70 @@ class MessageActionsDialog(
         }
     }
 
-    private fun sendReaction(message: ChatMessage, emoji: String) {
+    private fun clickOnEmoji(message: ChatMessage, emoji: String) {
         if (message.reactionsSelf?.contains(emoji) == true) {
-            deleteReaction(message, emoji)
+            reactionsRepository.deleteReaction(currentConversation!!, message, emoji)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(ReactionDeletedObserver())
         } else {
-            addReaction(message, emoji)
+            reactionsRepository.addReaction(currentConversation!!, message, emoji)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(ReactionAddedObserver())
         }
     }
 
-    private fun addReaction(message: ChatMessage, emoji: String) {
-        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
+    inner class ReactionAddedObserver : Observer<ReactionAddedModel> {
+        override fun onSubscribe(d: Disposable) {
+            // unused atm
+        }
 
-        ncApi.sendReaction(
-            credentials,
-            ApiUtils.getUrlForMessageReaction(
-                user?.baseUrl,
-                currentConversation!!.token,
-                message.id
-            ),
-            emoji
-        )
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+        override fun onNext(reactionAddedModel: ReactionAddedModel) {
+            if (reactionAddedModel.success) {
+                chatController.updateUiToAddReaction(
+                    reactionAddedModel.chatMessage,
+                    reactionAddedModel.emoji
+                )
+            }
+        }
 
-                override fun onNext(genericOverall: GenericOverall) {
-                    val statusCode = genericOverall.ocs?.meta?.statusCode
-                    if (statusCode == HTTP_CREATED) {
-                        chatController.updateAdapterAfterSendReaction(message, emoji)
-                    }
-                }
+        override fun onError(e: Throwable) {
+            Log.e(TAG, "failure in ReactionAddedObserver", e)
+        }
 
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "error while sending reaction: $emoji")
-                }
-
-                override fun onComplete() {
-                    dismiss()
-                }
-            })
+        override fun onComplete() {
+            dismiss()
+        }
     }
 
-    private fun deleteReaction(message: ChatMessage, emoji: String) {
-        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
+    inner class ReactionDeletedObserver : Observer<ReactionDeletedModel> {
+        override fun onSubscribe(d: Disposable) {
+            // unused atm
+        }
 
-        ncApi.deleteReaction(
-            credentials,
-            ApiUtils.getUrlForMessageReaction(
-                user?.baseUrl,
-                currentConversation!!.token,
-                message.id
-            ),
-            emoji
-        )
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+        override fun onNext(reactionDeletedModel: ReactionDeletedModel) {
+            if (reactionDeletedModel.success) {
+                chatController.updateUiToDeleteReaction(
+                    reactionDeletedModel.chatMessage,
+                    reactionDeletedModel.emoji
+                )
+            }
+        }
 
-                override fun onNext(genericOverall: GenericOverall) {
-                    Log.d(TAG, "deleted reaction: $emoji")
-                }
+        override fun onError(e: Throwable) {
+            Log.e(TAG, "failure in ReactionDeletedObserver", e)
+        }
 
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "error while deleting reaction: $emoji")
-                }
-
-                override fun onComplete() {
-                    dismiss()
-                }
-            })
+        override fun onComplete() {
+            dismiss()
+        }
     }
 
     companion object {
-        private const val TAG = "MessageActionsDialog"
+        private val TAG = MessageActionsDialog::class.java.simpleName
         private const val ACTOR_LENGTH = 6
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
-        private const val HTTP_CREATED: Int = 201
         private const val DELAY: Long = 200
     }
 }

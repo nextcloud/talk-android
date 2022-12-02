@@ -35,7 +35,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage;
 import androidx.core.content.ContextCompat;
 import androidx.emoji.widget.EmojiTextView;
 
-public class OutcomingPreviewMessageViewHolder extends MagicPreviewMessageViewHolder {
+public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
 
     private final ItemCustomOutcomingPreviewMessageBinding binding;
 
@@ -62,11 +62,6 @@ public class OutcomingPreviewMessageViewHolder extends MagicPreviewMessageViewHo
     @Override
     public ProgressBar getProgressBar() {
         return binding.progressBar;
-    }
-
-    @Override
-    public SimpleDraweeView getImage() {
-        return binding.image;
     }
 
     @Override

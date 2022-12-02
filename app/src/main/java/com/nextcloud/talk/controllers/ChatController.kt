@@ -7,7 +7,7 @@
  * @author Tim Krüger
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
- * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2021-2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -111,19 +111,19 @@ import com.nextcloud.talk.adapters.messages.IncomingLinkPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPollMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
+import com.nextcloud.talk.adapters.messages.IncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingVoiceMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MessagePayload
 import com.nextcloud.talk.adapters.messages.OutcomingLinkPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPollMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
+import com.nextcloud.talk.adapters.messages.OutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
+import com.nextcloud.talk.adapters.messages.SystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
+import com.nextcloud.talk.adapters.messages.UnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -138,6 +138,8 @@ import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.messagesearch.MessageSearchActivity
+import com.nextcloud.talk.models.domain.ReactionAddedModel
+import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
@@ -150,6 +152,7 @@ import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
+import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
@@ -234,6 +237,9 @@ class ChatController(args: Bundle) :
 
     @Inject
     lateinit var eventBus: EventBus
+
+    @Inject
+    lateinit var reactionsRepository: ReactionsRepository
 
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
@@ -518,12 +524,12 @@ class ChatController(args: Bundle) :
                 MessagePayload(roomToken!!, currentConversation?.isParticipantOwnerOrModerator, profileBottomSheet)
 
             messageHolders.setIncomingTextConfig(
-                MagicIncomingTextMessageViewHolder::class.java,
+                IncomingTextMessageViewHolder::class.java,
                 R.layout.item_custom_incoming_text_message,
                 payload
             )
             messageHolders.setOutcomingTextConfig(
-                MagicOutcomingTextMessageViewHolder::class.java,
+                OutcomingTextMessageViewHolder::class.java,
                 R.layout.item_custom_outcoming_text_message
             )
 
@@ -540,18 +546,18 @@ class ChatController(args: Bundle) :
 
             messageHolders.registerContentType(
                 CONTENT_TYPE_SYSTEM_MESSAGE,
-                MagicSystemMessageViewHolder::class.java,
+                SystemMessageViewHolder::class.java,
                 R.layout.item_system_message,
-                MagicSystemMessageViewHolder::class.java,
+                SystemMessageViewHolder::class.java,
                 R.layout.item_system_message,
                 this
             )
 
             messageHolders.registerContentType(
                 CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
-                MagicUnreadNoticeMessageViewHolder::class.java,
+                UnreadNoticeMessageViewHolder::class.java,
                 R.layout.item_date_header,
-                MagicUnreadNoticeMessageViewHolder::class.java,
+                UnreadNoticeMessageViewHolder::class.java,
                 R.layout.item_date_header,
                 this
             )
@@ -1225,7 +1231,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    fun vibrate() {
+    private fun vibrate() {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (Build.VERSION.SDK_INT >= O) {
             vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
@@ -2788,7 +2794,22 @@ class ChatController(args: Bundle) :
         }
     }
 
-    override fun onClickReactions(chatMessage: ChatMessage) {
+    override fun onClickReaction(chatMessage: ChatMessage, emoji: String) {
+        vibrate()
+        if (chatMessage.reactionsSelf?.contains(emoji) == true) {
+            reactionsRepository.deleteReaction(currentConversation!!, chatMessage, emoji)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(ReactionDeletedObserver())
+        } else {
+            reactionsRepository.addReaction(currentConversation!!, chatMessage, emoji)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(ReactionAddedObserver())
+        }
+    }
+
+    override fun onLongClickReactions(chatMessage: ChatMessage) {
         activity?.let {
             ShowReactionsDialog(
                 activity!!,
@@ -2798,6 +2819,52 @@ class ChatController(args: Bundle) :
                 participantPermissions.hasChatPermission(),
                 ncApi
             ).show()
+        }
+    }
+
+    inner class ReactionAddedObserver : Observer<ReactionAddedModel> {
+        override fun onSubscribe(d: Disposable) {
+        }
+
+        override fun onNext(reactionAddedModel: ReactionAddedModel) {
+            Log.d(TAG, "onNext")
+            if (reactionAddedModel.success) {
+                updateUiToAddReaction(
+                    reactionAddedModel.chatMessage,
+                    reactionAddedModel.emoji
+                )
+            }
+        }
+
+        override fun onError(e: Throwable) {
+            Log.d(TAG, "onError")
+        }
+
+        override fun onComplete() {
+            Log.d(TAG, "onComplete")
+        }
+    }
+
+    inner class ReactionDeletedObserver : Observer<ReactionDeletedModel> {
+        override fun onSubscribe(d: Disposable) {
+        }
+
+        override fun onNext(reactionDeletedModel: ReactionDeletedModel) {
+            Log.d(TAG, "onNext")
+            if (reactionDeletedModel.success) {
+                updateUiToDeleteReaction(
+                    reactionDeletedModel.chatMessage,
+                    reactionDeletedModel.emoji
+                )
+            }
+        }
+
+        override fun onError(e: Throwable) {
+            Log.d(TAG, "onError")
+        }
+
+        override fun onComplete() {
+            Log.d(TAG, "onComplete")
         }
     }
 
@@ -2823,8 +2890,7 @@ class ChatController(args: Bundle) :
                     conversationUser,
                     currentConversation,
                     isShowMessageDeletionButton(message),
-                    participantPermissions.hasChatPermission(),
-                    ncApi
+                    participantPermissions.hasChatPermission()
                 ).show()
             }
         }
@@ -3126,7 +3192,7 @@ class ChatController(args: Bundle) :
         adapter?.update(messageTemp)
     }
 
-    fun updateAdapterAfterSendReaction(message: ChatMessage, emoji: String) {
+    fun updateUiToAddReaction(message: ChatMessage, emoji: String) {
         if (message.reactions == null) {
             message.reactions = LinkedHashMap()
         }
@@ -3141,6 +3207,24 @@ class ChatController(args: Bundle) :
         }
         message.reactions!![emoji] = amount + 1
         message.reactionsSelf!!.add(emoji)
+        adapter?.update(message)
+    }
+
+    fun updateUiToDeleteReaction(message: ChatMessage, emoji: String) {
+        if (message.reactions == null) {
+            message.reactions = LinkedHashMap()
+        }
+
+        if (message.reactionsSelf == null) {
+            message.reactionsSelf = ArrayList<String>()
+        }
+
+        var amount = message.reactions!![emoji]
+        if (amount == null) {
+            amount = 0
+        }
+        message.reactions!![emoji] = amount - 1
+        message.reactionsSelf!!.remove(emoji)
         adapter?.update(message)
     }
 

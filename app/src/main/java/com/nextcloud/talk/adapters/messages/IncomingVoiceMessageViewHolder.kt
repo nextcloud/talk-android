@@ -147,18 +147,21 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
 
         Reaction().showReactions(
             message,
+            ::clickOnReaction,
+            ::longClickOnReaction,
             binding.reactions,
             binding.messageTime.context,
             false,
             viewThemeUtils
         )
-        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
-            commonMessageInterface.onClickReactions(message)
-        }
-        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
-        }
+    }
+
+    private fun longClickOnReaction(chatMessage: ChatMessage) {
+        commonMessageInterface.onLongClickReactions(chatMessage)
+    }
+
+    private fun clickOnReaction(chatMessage: ChatMessage, emoji: String) {
+        commonMessageInterface.onClickReaction(chatMessage, emoji)
     }
 
     private fun updateDownloadState(message: ChatMessage) {

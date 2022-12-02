@@ -49,10 +49,10 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
     public void onBindViewHolder(ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
 
-        if (holder instanceof MagicIncomingTextMessageViewHolder) {
-            ((MagicIncomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
-        } else if (holder instanceof MagicOutcomingTextMessageViewHolder) {
-            ((MagicOutcomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+        if (holder instanceof IncomingTextMessageViewHolder) {
+            ((IncomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+        } else if (holder instanceof OutcomingTextMessageViewHolder) {
+            ((OutcomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
 
         } else if (holder instanceof IncomingLocationMessageViewHolder) {
             ((IncomingLocationMessageViewHolder) holder).assignCommonMessageInterface(chatController);
@@ -71,9 +71,9 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
             ((OutcomingVoiceMessageViewHolder) holder).assignVoiceMessageInterface(chatController);
             ((OutcomingVoiceMessageViewHolder) holder).assignCommonMessageInterface(chatController);
 
-        } else if (holder instanceof MagicPreviewMessageViewHolder) {
-            ((MagicPreviewMessageViewHolder) holder).assignPreviewMessageInterface(chatController);
-            ((MagicPreviewMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+        } else if (holder instanceof PreviewMessageViewHolder) {
+            ((PreviewMessageViewHolder) holder).assignPreviewMessageInterface(chatController);
+            ((PreviewMessageViewHolder) holder).assignCommonMessageInterface(chatController);
         }
     }
 }
