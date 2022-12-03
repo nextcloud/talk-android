@@ -35,6 +35,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Найбільші за розміром спочатку</string>
     <string name="menu_item_sort_by_size_smallest_first">Найменші за розміром спочатку</string>
     <string name="message_search_begin_empty">Нічого не знайдено</string>
+    <string name="message_search_begin_typing">Що шукаємо?</string>
     <string name="messages">Повідомлення</string>
     <string name="nc_Server_account_imported">Обраний обліковий запис імпортовано і він доступний</string>
     <string name="nc_about">Про програму</string>

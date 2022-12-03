@@ -33,7 +33,7 @@
     <string name="invisible">Unsichtbar</string>
     <string name="load_more_results">Weitere Ergebnisse laden</string>
     <string name="lock_symbol">Schloss-Symbol</string>
-    <string name="menu_item_sort_by_date_newest_first">Neueste zuerst</string>
+    <string name="menu_item_sort_by_date_newest_first">Neue zuerst</string>
     <string name="menu_item_sort_by_date_oldest_first">Älteste zuerst</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
