@@ -1903,6 +1903,31 @@ public class CallActivity extends CallBaseActivity {
             setCallState(CallStatus.IN_CONVERSATION);
         }
 
+        for (Participant participant : updated) {
+            String sessionId = participant.getSessionId();
+
+            if (sessionId.equals(currentSessionId)) {
+                continue;
+            }
+
+            boolean participantHasAudioOrVideo = participantInCallFlagsHaveAudioOrVideo(participant);
+            PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(sessionId, "video");
+
+            if (hasMCU) {
+                if (participantHasAudioOrVideo && peerConnectionWrapper == null) {
+                    getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, "video", false);
+                } else if (!participantHasAudioOrVideo && peerConnectionWrapper != null) {
+                    endPeerConnection(sessionId, "video");
+                }
+            } else {
+                if ((participantHasAudioOrVideo || selfParticipantHasAudioOrVideo) && peerConnectionWrapper == null) {
+                    getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, "video", false);
+                } else if (!participantHasAudioOrVideo && !selfParticipantHasAudioOrVideo && peerConnectionWrapper != null) {
+                    endPeerConnection(sessionId, "video");
+                }
+            }
+        }
+
         for (Participant participant : left) {
             String sessionId = participant.getSessionId();
             Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
