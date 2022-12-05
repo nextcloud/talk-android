@@ -35,6 +35,8 @@ import com.nextcloud.talk.polls.repositories.PollRepository
 import com.nextcloud.talk.polls.repositories.PollRepositoryImpl
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepositoryImpl
+import com.nextcloud.talk.repositories.callrecording.CallRecordingRepository
+import com.nextcloud.talk.repositories.callrecording.CallRecordingRepositoryImpl
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
@@ -91,5 +93,10 @@ class RepositoryModule {
     @Provides
     fun provideReactionsRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ReactionsRepository {
         return ReactionsRepositoryImpl(ncApi, userProvider)
+    }
+
+    @Provides
+    fun provideCallRecordingRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): CallRecordingRepository {
+        return CallRecordingRepositoryImpl(ncApi, userProvider)
     }
 }

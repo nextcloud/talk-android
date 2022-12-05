@@ -230,7 +230,7 @@ public class CallActivity extends CallBaseActivity {
     private Disposable signalingDisposable;
     private List<PeerConnection.IceServer> iceServers;
     private CameraEnumerator cameraEnumerator;
-    private String roomToken;
+    public String roomToken;
     private User conversationUser;
     private String conversationName;
     private String callSession;
@@ -2879,6 +2879,10 @@ public class CallActivity extends CallBaseActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         eventBus.post(new ConfigurationChangeEvent());
+    }
+
+    public void showCallRecordingIndicator(){
+        binding.callRecordingIndicator.setVisibility(View.VISIBLE);
     }
 
     private class SelfVideoTouchListener implements View.OnTouchListener {

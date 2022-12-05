@@ -99,10 +99,13 @@
                 android:orientation="horizontal"
                 android:weightSum="1">
                 <ImageView
+                    android:id="@+id/call_recording_indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/record_circle"
-                    android:contentDescription="@null">
+                    android:contentDescription="@null"
+                    android:visibility="gone"
+                    tools:visibility="visible">
                 </ImageView>
             </LinearLayout>
 

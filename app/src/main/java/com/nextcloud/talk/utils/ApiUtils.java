@@ -494,4 +494,8 @@ public class ApiUtils {
     public static String getUrlForOpenGraph(String baseUrl) {
         return baseUrl + ocsApiVersion + "/references/resolve";
     }
+
+    public static String getUrlForRecording(int version, String baseUrl, String token) {
+        return getUrlForCall(version, baseUrl, token) + "/recording";
+    }
 }
