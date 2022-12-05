@@ -1485,20 +1485,20 @@ public class CallActivity extends CallBaseActivity {
                                 .takeWhile(observable -> isConnectionEstablished())
                                 .doOnNext(value -> delayOnError.set(0))
                                 .retryWhen(errors -> errors
-                                    .flatMap(error -> {
-                                        if (!isConnectionEstablished()) {
-                                            return Observable.error(error);
-                                        }
+                                               .flatMap(error -> {
+                                                   if (!isConnectionEstablished()) {
+                                                       return Observable.error(error);
+                                                   }
 
-                                        if (delayOnError.get() == 0) {
-                                            delayOnError.set(1);
-                                        } else if (delayOnError.get() < 16) {
-                                            delayOnError.set(delayOnError.get() * 2);
-                                        }
+                                                   if (delayOnError.get() == 0) {
+                                                       delayOnError.set(1);
+                                                   } else if (delayOnError.get() < 16) {
+                                                       delayOnError.set(delayOnError.get() * 2);
+                                                   }
 
-                                        return Observable.timer(delayOnError.get(), TimeUnit.SECONDS);
-                                    })
-                                )
+                                                   return Observable.timer(delayOnError.get(), TimeUnit.SECONDS);
+                                               })
+                                          )
                                 .subscribe(new Observer<SignalingOverall>() {
                                     @Override
                                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
@@ -1927,7 +1927,7 @@ public class CallActivity extends CallBaseActivity {
             Log.d(TAG, "   newSession joined: " + sessionId);
             getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
 
-	        String userId = userIdsBySessionId.get(sessionId);
+            String userId = userIdsBySessionId.get(sessionId);
 
             runOnUiThread(() -> {
                 setupVideoStreamForLayout(
@@ -2637,22 +2637,24 @@ public class CallActivity extends CallBaseActivity {
                                         "/tr110_1_kap8_3_freiton1");
         }
 
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(this, ringtoneUri);
-            mediaPlayer.setLooping(true);
-            AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(
-                    AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
-                .build();
-            mediaPlayer.setAudioAttributes(audioAttributes);
+        if (ringtoneUri != null) {
+            mediaPlayer = new MediaPlayer();
+            try {
+                mediaPlayer.setDataSource(this, ringtoneUri);
+                mediaPlayer.setLooping(true);
+                AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(
+                        AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                    .build();
+                mediaPlayer.setAudioAttributes(audioAttributes);
 
-            mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
+                mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
 
-            mediaPlayer.prepareAsync();
+                mediaPlayer.prepareAsync();
 
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to play sound");
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to play sound");
+            }
         }
     }
 
