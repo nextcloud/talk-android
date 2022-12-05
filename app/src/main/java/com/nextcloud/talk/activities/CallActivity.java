@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Tim Krüger
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
@@ -86,6 +88,7 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOveral
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
+import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -317,6 +320,7 @@ public class CallActivity extends CallBaseActivity {
     private CallActivityBinding binding;
 
     private AudioOutputDialog audioOutputDialog;
+    private MoreCallActionsDialog moreCallActionsDialog;
 
     private final ActivityResultLauncher<String> requestBluetoothPermissionLauncher =
         registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -423,6 +427,11 @@ public class CallActivity extends CallBaseActivity {
         binding.audioOutputButton.setOnClickListener(v -> {
             audioOutputDialog = new AudioOutputDialog(this);
             audioOutputDialog.show();
+        });
+
+        binding.moreCallActions.setOnClickListener(v -> {
+            moreCallActionsDialog = new MoreCallActionsDialog(this);
+            moreCallActionsDialog.show();
         });
 
         if (canPublishAudioStream) {

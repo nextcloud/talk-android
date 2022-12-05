@@ -557,6 +557,9 @@
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_wired_headset">Wired headset</string>
 
+    <string name="call_more_actions_dialog_headline">Advanced call options</string>
+    <string name="call_record_description">Record call</string>
+
     <!-- Shared items -->
     <string name="shared_items_media">Media</string>
     <string name="shared_items_file">File</string>
