@@ -63,7 +63,7 @@
             android:layout_gravity="start|center_vertical"
             android:paddingStart="@dimen/standard_double_padding"
             android:paddingEnd="@dimen/zero"
-            android:text="@string/call_record_description"
+            android:text="@string/record_start_description"
             android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text_dark_background"
             android:textSize="@dimen/bottom_sheet_text_size" />

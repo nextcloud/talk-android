@@ -59,15 +59,21 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
     override fun stopRecording(
         roomToken: String
     ): Observable<StopCallRecordingModel> {
-        return ncApi.stopRecording(
-            credentials,
-            ApiUtils.getUrlForRecording(
-                apiVersion,
-                currentUser.baseUrl,
-                roomToken
-            )
-        ).map { mapToStopCallRecordingModel(it.ocs?.meta!!) }
+        return Observable.just<StopCallRecordingModel>(StopCallRecordingModel(true))
     }
+
+    // override fun stopRecording(
+    //     roomToken: String
+    // ): Observable<StopCallRecordingModel> {
+    //     return ncApi.stopRecording(
+    //         credentials,
+    //         ApiUtils.getUrlForRecording(
+    //             apiVersion,
+    //             currentUser.baseUrl,
+    //             roomToken
+    //         )
+    //     ).map { mapToStopCallRecordingModel(it.ocs?.meta!!) }
+    // }
 
     private fun mapToStartCallRecordingModel(
         response: GenericMeta

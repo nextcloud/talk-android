@@ -31,13 +31,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogMoreCallActionsBinding
-import com.nextcloud.talk.models.domain.StartCallRecordingModel
-import com.nextcloud.talk.repositories.callrecording.CallRecordingRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import com.nextcloud.talk.viewmodels.CallRecordingViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -45,9 +40,6 @@ class MoreCallActionsDialog(val callActivity: CallActivity) : BottomSheetDialog(
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
-
-    @Inject
-    lateinit var callRecordingRepository: CallRecordingRepository
 
     private lateinit var binding: DialogMoreCallActionsBinding
 
@@ -60,16 +52,41 @@ class MoreCallActionsDialog(val callActivity: CallActivity) : BottomSheetDialog(
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         viewThemeUtils.platform.themeDialogDark(binding.root)
+
         initClickListeners()
+        initObservers()
     }
 
     private fun initClickListeners() {
         binding.recordCall.setOnClickListener {
-            callRecordingRepository.startRecording(callActivity.roomToken)
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(CallStartRecordingObserver())
-            // dismiss()
+            callActivity.callRecordingViewModel.clickRecordButton()
+        }
+    }
+
+    private fun initObservers() {
+        callActivity.callRecordingViewModel.viewState.observe(this) { state ->
+            when (state) {
+                is CallRecordingViewModel.RecordingStartedState -> {
+                    binding.recordCallText.text = context.getText(R.string.record_stop_description)
+                    dismiss()
+                }
+                is CallRecordingViewModel.RecordingStoppedState -> {
+                    binding.recordCallText.text = context.getText(R.string.record_start_description)
+                    dismiss()
+                }
+                is CallRecordingViewModel.RecordingStartLoadingState -> {
+                    binding.recordCallText.text = context.getText(R.string.record_start_loading)
+                }
+                is CallRecordingViewModel.RecordingStopLoadingState -> {
+                    binding.recordCallText.text = context.getText(R.string.record_stop_loading)
+                }
+                is CallRecordingViewModel.RecordingConfirmStopState -> {
+                    binding.recordCallText.text = context.getText(R.string.record_stop_description)
+                }
+                else -> {
+                    Log.e(TAG, "unknown viewState for callRecordingViewModel")
+                }
+            }
         }
     }
 
@@ -78,27 +95,6 @@ class MoreCallActionsDialog(val callActivity: CallActivity) : BottomSheetDialog(
         val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
         val behavior = BottomSheetBehavior.from(bottomSheet as View)
         behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
-    inner class CallStartRecordingObserver : Observer<StartCallRecordingModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-
-        override fun onNext(startCallRecordingModel: StartCallRecordingModel) {
-            if (startCallRecordingModel.success) {
-                binding.recordCallText.text = "started"
-                callActivity.showCallRecordingIndicator()
-            }
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "failure in CallStartRecordingObserver", e)
-        }
-
-        override fun onComplete() {
-            // dismiss()
-        }
     }
 
     companion object {

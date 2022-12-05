@@ -105,6 +105,7 @@
                     android:src="@drawable/record_circle"
                     android:contentDescription="@null"
                     android:visibility="gone"
+                    android:translationZ="2dp"
                     tools:visibility="visible">
                 </ImageView>
             </LinearLayout>

@@ -57,6 +57,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.ParticipantDisplayItem;
 import com.nextcloud.talk.adapters.ParticipantsAdapter;
@@ -97,6 +98,7 @@ import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
+import com.nextcloud.talk.viewmodels.CallRecordingViewModel;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
@@ -146,9 +148,11 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProvider;
 import autodagger.AutoInjector;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -191,10 +195,14 @@ public class CallActivity extends CallBaseActivity {
 
     @Inject
     PlatformPermissionUtil permissionUtil;
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     public static final String TAG = "CallActivity";
 
     public WebRtcAudioManager audioManager;
+
+    public CallRecordingViewModel callRecordingViewModel;
 
     private static final String[] PERMISSIONS_CALL = {
         Manifest.permission.CAMERA,
@@ -230,7 +238,7 @@ public class CallActivity extends CallBaseActivity {
     private Disposable signalingDisposable;
     private List<PeerConnection.IceServer> iceServers;
     private CameraEnumerator cameraEnumerator;
-    public String roomToken;
+    private String roomToken;
     private User conversationUser;
     private String conversationName;
     private String callSession;
@@ -375,6 +383,33 @@ public class CallActivity extends CallBaseActivity {
             setCallState(CallStatus.CONNECTING);
         }
 
+        callRecordingViewModel = new ViewModelProvider(this, viewModelFactory).get((CallRecordingViewModel.class));
+        callRecordingViewModel.setData(roomToken);
+
+        callRecordingViewModel.getViewState().observe(this, viewState -> {
+            if (viewState instanceof CallRecordingViewModel.RecordingStartedState) {
+                showCallRecordingIndicator();
+            } else if (viewState instanceof CallRecordingViewModel.RecordingConfirmStopState) {
+                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.record_stop_confirm_title)
+                    .setMessage(R.string.record_stop_confirm_message)
+                    .setPositiveButton(R.string.record_stop_description,
+                                       (dialog, which) -> callRecordingViewModel.stopRecording())
+                    .setNegativeButton(R.string.nc_common_dismiss,
+                                       (dialog, which) -> callRecordingViewModel.dismissStopRecording());
+                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder);
+                AlertDialog dialog = dialogBuilder.show();
+
+                viewThemeUtils.platform.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                                                        );
+
+            } else {
+                hideCallRecordingIndicator();
+            }
+        });
+
         initClickListeners();
         binding.microphoneButton.setOnTouchListener(new MicrophoneButtonTouchListener());
 
@@ -483,6 +518,10 @@ public class CallActivity extends CallBaseActivity {
                 setCallState(CallStatus.RECONNECTING);
                 hangupNetworkCalls(false);
             }
+        });
+
+        binding.callRecordingIndicator.setOnClickListener(l -> {
+            callRecordingViewModel.clickRecordButton();
         });
     }
 
@@ -2881,8 +2920,13 @@ public class CallActivity extends CallBaseActivity {
         eventBus.post(new ConfigurationChangeEvent());
     }
 
-    public void showCallRecordingIndicator(){
+    public void showCallRecordingIndicator() {
         binding.callRecordingIndicator.setVisibility(View.VISIBLE);
+
+    }
+
+    public void hideCallRecordingIndicator() {
+        binding.callRecordingIndicator.setVisibility(View.GONE);
     }
 
     private class SelfVideoTouchListener implements View.OnTouchListener {
