@@ -518,6 +518,8 @@ data class ChatMessage(
         POLL_CLOSED,
         MESSAGE_EXPIRATION_ENABLED,
         MESSAGE_EXPIRATION_DISABLED,
+        RECORDING_STARTED,
+        RECORDING_STOPPED,
     }
 
     companion object {

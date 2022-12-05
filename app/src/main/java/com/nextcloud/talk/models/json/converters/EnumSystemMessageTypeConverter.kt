@@ -74,6 +74,8 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTIO
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTION_REVOKED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.READ_ONLY
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.READ_ONLY_OFF
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.RECORDING_STARTED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.RECORDING_STOPPED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_ADDED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_REMOVED
 
@@ -175,6 +177,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "poll_closed" -> POLL_CLOSED
             "message_expiration_enabled" -> MESSAGE_EXPIRATION_ENABLED
             "message_expiration_disabled" -> MESSAGE_EXPIRATION_DISABLED
+            "recording_started" -> RECORDING_STARTED
+            "recording_stopped" -> RECORDING_STOPPED
             else -> DUMMY
         }
     }
@@ -232,6 +236,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             POLL_CLOSED -> "poll_closed"
             MESSAGE_EXPIRATION_ENABLED -> "message_expiration_enabled"
             MESSAGE_EXPIRATION_DISABLED -> "message_expiration_disabled"
+            RECORDING_STARTED -> "recording_started"
+            RECORDING_STOPPED -> "recording_stopped"
             else -> ""
         }
     }
