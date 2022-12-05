@@ -37,6 +37,7 @@ import com.nextcloud.talk.databinding.ItemCustomIncomingLinkPreviewMessageBindin
 import com.nextcloud.talk.extensions.loadBotsAvatar
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -91,6 +92,8 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) : M
             commonMessageInterface.onOpenMessageActionsDialog(message)
             true
         }
+
+        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
 
         Reaction().showReactions(
             message,
