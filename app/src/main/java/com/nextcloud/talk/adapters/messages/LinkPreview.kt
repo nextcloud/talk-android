@@ -44,6 +44,11 @@ class LinkPreview {
         binding: ReferenceInsideMessageBinding,
         context: Context
     ) {
+        binding.referenceName.text = ""
+        binding.referenceDescription.text = ""
+        binding.referenceLink.text = ""
+        binding.referenceThumbImage.controller = null
+
         if (!message.extractedUrlToPreview.isNullOrEmpty()) {
             val credentials: String = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)
             val openGraphLink = ApiUtils.getUrlForOpenGraph(message.activeUser?.baseUrl)
