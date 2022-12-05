@@ -42,7 +42,7 @@ import android.widget.PopupMenu
 import android.widget.ProgressBar
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
-import androidx.emoji.widget.EmojiTextView
+import androidx.emoji2.widget.EmojiTextView
 import autodagger.AutoInjector
 import com.google.android.material.card.MaterialCardView
 import com.nextcloud.talk.R

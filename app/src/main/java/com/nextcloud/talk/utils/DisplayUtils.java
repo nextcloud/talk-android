@@ -82,7 +82,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.emoji.text.EmojiCompat;
+import androidx.emoji2.text.EmojiCompat;
 import coil.Coil;
 import coil.request.ImageRequest;
 import coil.target.Target;

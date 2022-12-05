@@ -33,7 +33,7 @@ import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 
 import androidx.core.content.ContextCompat;
-import androidx.emoji.widget.EmojiTextView;
+import androidx.emoji2.widget.EmojiTextView;
 
 public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
     private final ItemCustomIncomingPreviewMessageBinding binding;

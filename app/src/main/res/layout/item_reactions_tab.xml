@@ -25,7 +25,7 @@
     android:layout_height="wrap_content"
     android:gravity="center">
 
-    <androidx.emoji.widget.EmojiTextView
+    <androidx.emoji2.widget.EmojiTextView
         android:id="@+id/reaction_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

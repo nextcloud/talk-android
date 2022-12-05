@@ -54,7 +54,7 @@
             layout="@layout/item_message_quote"
             android:visibility="gone" />
 
-        <androidx.emoji.widget.EmojiTextView
+        <androidx.emoji2.widget.EmojiTextView
             android:id="@+id/messageAuthor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
             android:textSize="12sp"
             tools:text="Jane Doe" />
 
-        <androidx.emoji.widget.EmojiTextView
+        <androidx.emoji2.widget.EmojiTextView
             android:id="@id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

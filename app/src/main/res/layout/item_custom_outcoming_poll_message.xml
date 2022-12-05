@@ -58,7 +58,7 @@
                 android:src="@drawable/ic_baseline_bar_chart_24"
                 app:tint="@color/high_emphasis_text" />
 
-            <androidx.emoji.widget.EmojiTextView
+            <androidx.emoji2.widget.EmojiTextView
                 android:id="@+id/message_poll_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

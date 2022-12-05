@@ -129,7 +129,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    fun colorContactChatItemName(contactName: androidx.emoji.widget.EmojiTextView) {
+    fun colorContactChatItemName(contactName: androidx.emoji2.widget.EmojiTextView) {
         withScheme(contactName) { scheme ->
             contactName.setTextColor(scheme.onPrimaryContainer)
         }
