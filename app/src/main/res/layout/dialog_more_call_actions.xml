@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@null"
-            android:src="@drawable/record_circle"
+            android:src="@drawable/record_start"
             app:tint="@color/high_emphasis_menu_icon_inverse" />
 
         <androidx.appcompat.widget.AppCompatTextView

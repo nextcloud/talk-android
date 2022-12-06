@@ -2,6 +2,7 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~ @author Marcel Hibbe
   ~ @author Tim Krüger
   ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
@@ -102,7 +103,7 @@
                     android:id="@+id/call_recording_indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/record_circle"
+                    android:src="@drawable/record_stop"
                     android:contentDescription="@null"
                     android:visibility="gone"
                     android:translationZ="2dp"

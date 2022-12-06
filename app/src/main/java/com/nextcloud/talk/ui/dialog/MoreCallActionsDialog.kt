@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -36,7 +37,7 @@ import com.nextcloud.talk.viewmodels.CallRecordingViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class MoreCallActionsDialog(val callActivity: CallActivity) : BottomSheetDialog(callActivity) {
+class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomSheetDialog(callActivity) {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -68,10 +69,16 @@ class MoreCallActionsDialog(val callActivity: CallActivity) : BottomSheetDialog(
             when (state) {
                 is CallRecordingViewModel.RecordingStartedState -> {
                     binding.recordCallText.text = context.getText(R.string.record_stop_description)
+                    binding.recordCallIcon.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.record_start)
+                    )
                     dismiss()
                 }
                 is CallRecordingViewModel.RecordingStoppedState -> {
                     binding.recordCallText.text = context.getText(R.string.record_start_description)
+                    binding.recordCallIcon.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.record_stop)
+                    )
                     dismiss()
                 }
                 is CallRecordingViewModel.RecordingStartLoadingState -> {
