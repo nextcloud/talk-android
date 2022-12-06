@@ -55,14 +55,23 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     private var disposable: Disposable? = null
 
     fun clickRecordButton() {
-        if (viewState.value == RecordingStartedState) {
-            _viewState.value = RecordingConfirmStopState
-        } else if (viewState.value == RecordingStoppedState) {
-            _viewState.value = RecordingStartLoadingState
-            repository.startRecording(roomToken)
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(CallStartRecordingObserver())
+        when (viewState.value) {
+            RecordingStartedState -> {
+                _viewState.value = RecordingConfirmStopState
+            }
+            RecordingStoppedState -> {
+                _viewState.value = RecordingStartLoadingState
+                repository.startRecording(roomToken)
+                    .subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(CallStartRecordingObserver())
+            }
+            RecordingConfirmStopState -> {
+                // confirm dialog to stop recording might have been dismissed without to click an action.
+                // just show it again.
+                _viewState.value = RecordingConfirmStopState
+            }
+            else -> {}
         }
     }
 
