@@ -105,8 +105,5 @@
     <!-- this is just a helper for status icon background because getting the background color of a dialog is not
     possible?! don't use this to set the background of dialogs -->
     <color name="dialog_background">#FFFFFF</color>
-    <color name="vote_dialog_background">#FFFFFF</color>
-
-
 
 </resources>
