@@ -98,6 +98,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
@@ -414,6 +415,7 @@ public class CallActivity extends CallBaseActivity {
             }
         });
 
+        initFeaturesVisibility();
         initClickListeners();
         binding.microphoneButton.setOnTouchListener(new MicrophoneButtonTouchListener());
 
@@ -458,6 +460,18 @@ public class CallActivity extends CallBaseActivity {
         } catch (IOException e) {
             Log.e(TAG, "Failed to evict cache");
         }
+    }
+
+    private void initFeaturesVisibility() {
+        // TODO: check for isAllowedToRecordCall once api is ready
+//       boolean showMoreCallActionsItem = isAllowedToRecordCall();
+//        if (showMoreCallActionsItem) {
+//            binding.moreCallActions.setVisibility(View.VISIBLE);
+//        } else {
+//          binding.moreCallActions.setVisibility(View.GONE);
+//        }
+
+        binding.moreCallActions.setVisibility(View.VISIBLE);
     }
 
     private void initClickListeners() {
@@ -2938,6 +2952,11 @@ public class CallActivity extends CallBaseActivity {
     public void hideCallRecordingIndicator() {
         binding.callRecordingIndicator.clearAnimation();
         binding.callRecordingIndicator.setVisibility(View.GONE);
+    }
+
+    public boolean isAllowedToRecordCall() {
+        return CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "recording-v1") &&
+            CapabilitiesUtilNew.isCallRecordingAvailable(conversationUser);
     }
 
     private class SelfVideoTouchListener implements View.OnTouchListener {

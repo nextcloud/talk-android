@@ -54,8 +54,25 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
 
         viewThemeUtils.platform.themeDialogDark(binding.root)
 
+        initItemsVisibility()
         initClickListeners()
         initObservers()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
+        val behavior = BottomSheetBehavior.from(bottomSheet as View)
+        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun initItemsVisibility() {
+        // if (callActivity.isAllowedToRecordCall) {
+        if (true) {
+            binding.recordCall.visibility = View.VISIBLE
+        } else {
+            binding.recordCall.visibility = View.GONE
+        }
     }
 
     private fun initClickListeners() {
@@ -70,14 +87,14 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                 is CallRecordingViewModel.RecordingStartedState -> {
                     binding.recordCallText.text = context.getText(R.string.record_stop_description)
                     binding.recordCallIcon.setImageDrawable(
-                        ContextCompat.getDrawable(context, R.drawable.record_start)
+                        ContextCompat.getDrawable(context, R.drawable.record_stop)
                     )
                     dismiss()
                 }
                 is CallRecordingViewModel.RecordingStoppedState -> {
                     binding.recordCallText.text = context.getText(R.string.record_start_description)
                     binding.recordCallIcon.setImageDrawable(
-                        ContextCompat.getDrawable(context, R.drawable.record_stop)
+                        ContextCompat.getDrawable(context, R.drawable.record_start)
                     )
                     dismiss()
                 }
@@ -95,13 +112,6 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                 }
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
-        val behavior = BottomSheetBehavior.from(bottomSheet as View)
-        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     companion object {

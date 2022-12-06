@@ -98,6 +98,7 @@ object CapabilitiesUtilNew {
         return false
     }
 
+    @JvmStatic
     fun isCallRecordingAvailable(user: User): Boolean {
         if (user.capabilities?.spreedCapability?.config?.containsKey("call") == true) {
             val map: Map<String, String>? = user.capabilities!!.spreedCapability!!.config!!["call"]
