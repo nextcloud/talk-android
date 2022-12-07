@@ -24,10 +24,8 @@
 package com.nextcloud.talk.jobs
 
 import android.app.Notification
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.AudioAttributes
@@ -85,6 +83,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CA
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
@@ -212,6 +211,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
+        bundle.putInt(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
         bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
         bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
         fullScreenIntent.putExtras(bundle)
@@ -231,8 +231,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         )
 
         val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
-        val notificationChannelId = NotificationUtils
-            .NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
+        val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
         val uri = Uri.parse(signatureVerification.user!!.baseUrl)
         val baseUrl = uri.host
 
@@ -245,7 +244,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setShowWhen(true)
                 .setWhen(pushMessage.timestamp)
                 .setContentTitle(EmojiCompat.get().process(pushMessage.subject))
-                .setAutoCancel(true)
+                // auto cancel is set to false because notification (including sound) should continue while
+                // CallNotificationActivity is active
+                .setAutoCancel(false)
                 .setOngoing(true)
                 .setContentIntent(fullScreenPendingIntent)
                 .setFullScreenIntent(fullScreenPendingIntent, true)
@@ -255,7 +256,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         sendNotification(pushMessage.timestamp.toInt(), notification)
 
-        checkIfCallIsActive(signatureVerification, pushMessage)
+        checkIfCallIsActive(signatureVerification)
     }
 
     private fun initNcApiAndCredentials() {
@@ -660,10 +661,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationManager.cancel(notificationId)
     }
 
-    private fun checkIfCallIsActive(
-        signatureVerification: SignatureVerification,
-        decryptedPushMessage: DecryptedPushMessage
-    ) {
+    private fun checkIfCallIsActive(signatureVerification: SignatureVerification) {
         Log.d(TAG, "checkIfCallIsActive")
         var hasParticipantsInCall = true
         var inCallOnDifferentDevice = false
@@ -680,7 +678,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             ApiUtils.getUrlForCall(
                 apiVersion,
                 signatureVerification.user!!.baseUrl,
-                decryptedPushMessage.id
+                pushMessage.id
             )
         )
             .repeatWhen { completed ->
@@ -707,16 +705,19 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     }
                     if (inCallOnDifferentDevice) {
                         Log.d(TAG, "inCallOnDifferentDevice is true")
-                        removeNotification(decryptedPushMessage.timestamp.toInt())
+                        removeNotification(pushMessage.timestamp.toInt())
                     }
 
                     if (!hasParticipantsInCall) {
                         showMissedCallNotification()
                         Log.d(TAG, "no participants in call")
-                        removeNotification(decryptedPushMessage.timestamp.toInt())
+                        removeNotification(pushMessage.timestamp.toInt())
                     }
 
-                    isCallNotificationVisible = isCallNotificationVisible(decryptedPushMessage)
+                    isCallNotificationVisible = NotificationUtils.isNotificationVisible(
+                        context,
+                        pushMessage.timestamp.toInt()
+                    )
                 }
 
                 override fun onError(e: Throwable) {
@@ -730,71 +731,78 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                         showMissedCallNotification()
                     }
 
-                    removeNotification(decryptedPushMessage.timestamp.toInt())
+                    removeNotification(pushMessage.timestamp.toInt())
                 }
             })
     }
 
     fun showMissedCallNotification() {
-        val apiVersion = ApiUtils.getConversationApiVersion(
-            signatureVerification.user,
-            intArrayOf(
-                ApiUtils.APIv4,
-                ApiUtils.APIv3, 1
-            )
+        val isOngoingCallNotificationVisible = NotificationUtils.isNotificationVisible(
+            context,
+            pushMessage.timestamp.toInt()
         )
-        ncApi.getRoom(
-            credentials,
-            ApiUtils.getUrlForRoom(
-                apiVersion, signatureVerification.user?.baseUrl,
-                pushMessage.id
+
+        if (isOngoingCallNotificationVisible) {
+            val apiVersion = ApiUtils.getConversationApiVersion(
+                signatureVerification.user,
+                intArrayOf(
+                    ApiUtils.APIv4,
+                    ApiUtils.APIv3, 1
+                )
             )
-        )
-            .subscribeOn(Schedulers.io())
-            .retry(GET_ROOM_RETRY_COUNT)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<RoomOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+            ncApi.getRoom(
+                credentials,
+                ApiUtils.getUrlForRoom(
+                    apiVersion, signatureVerification.user?.baseUrl,
+                    pushMessage.id
+                )
+            )
+                .subscribeOn(Schedulers.io())
+                .retry(GET_ROOM_RETRY_COUNT)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<RoomOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
 
-                override fun onNext(roomOverall: RoomOverall) {
-                    val currentConversation = roomOverall.ocs!!.data
-                    val notificationBuilder: NotificationCompat.Builder?
+                    override fun onNext(roomOverall: RoomOverall) {
+                        val currentConversation = roomOverall.ocs!!.data
+                        val notificationBuilder: NotificationCompat.Builder?
 
-                    notificationBuilder = NotificationCompat.Builder(
-                        context!!,
-                        NotificationUtils.NotificationChannels
-                            .NOTIFICATION_CHANNEL_MESSAGES_V4.name
-                    )
-
-                    val notification: Notification = notificationBuilder
-                        .setContentTitle(
-                            String.format(
-                                context!!.resources.getString(R.string.nc_missed_call),
-                                currentConversation!!.displayName
-                            )
+                        notificationBuilder = NotificationCompat.Builder(
+                            context!!,
+                            NotificationUtils.NotificationChannels
+                                .NOTIFICATION_CHANNEL_MESSAGES_V4.name
                         )
-                        .setSmallIcon(R.drawable.ic_baseline_phone_missed_24)
-                        .setOngoing(false)
-                        .setAutoCancel(true)
-                        .setPriority(NotificationCompat.PRIORITY_LOW)
-                        .setContentIntent(getIntentToOpenConversation())
-                        .build()
 
-                    val notificationId: Int = SystemClock.uptimeMillis().toInt()
-                    notificationManager.notify(notificationId, notification)
-                    Log.d(TAG, "'you missed a call' notification was created")
-                }
+                        val notification: Notification = notificationBuilder
+                            .setContentTitle(
+                                String.format(
+                                    context!!.resources.getString(R.string.nc_missed_call),
+                                    currentConversation!!.displayName
+                                )
+                            )
+                            .setSmallIcon(R.drawable.ic_baseline_phone_missed_24)
+                            .setOngoing(false)
+                            .setAutoCancel(true)
+                            .setPriority(NotificationCompat.PRIORITY_LOW)
+                            .setContentIntent(getIntentToOpenConversation())
+                            .build()
 
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "An error occurred while fetching room for the 'missed call' notification", e)
-                }
+                        val notificationId: Int = SystemClock.uptimeMillis().toInt()
+                        notificationManager.notify(notificationId, notification)
+                        Log.d(TAG, "'you missed a call' notification was created")
+                    }
 
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "An error occurred while fetching room for the 'missed call' notification", e)
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        }
     }
 
     private fun getIntentToOpenConversation(): PendingIntent? {
@@ -815,20 +823,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             0
         }
         return PendingIntent.getActivity(context, requestCode, intent, intentFlag)
-    }
-
-    private fun isCallNotificationVisible(decryptedPushMessage: DecryptedPushMessage): Boolean {
-        var isVisible = false
-
-        val notificationManager = context!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val notifications = notificationManager.activeNotifications
-        for (notification in notifications) {
-            if (notification.id == decryptedPushMessage.timestamp.toInt()) {
-                isVisible = true
-                break
-            }
-        }
-        return isVisible
     }
 
     companion object {

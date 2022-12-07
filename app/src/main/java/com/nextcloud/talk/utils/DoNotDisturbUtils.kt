@@ -25,7 +25,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.media.AudioManager
 import android.os.Build
-import android.os.Vibrator
 import androidx.annotation.VisibleForTesting
 import com.nextcloud.talk.application.NextcloudTalkApplication
 
@@ -59,29 +58,5 @@ object DoNotDisturbUtils {
         }
 
         return shouldPlaySound
-    }
-
-    private fun hasVibrator(context: Context?): Boolean {
-        val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        return vibrator.hasVibrator()
-    }
-
-    @JvmOverloads
-    fun shouldVibrate(
-        context: Context? = NextcloudTalkApplication.sharedApplication?.applicationContext,
-        vibrate: Boolean
-    ): Boolean {
-
-        if (hasVibrator(context)) {
-            val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-            return if (vibrate) {
-                audioManager.ringerMode != AudioManager.RINGER_MODE_SILENT
-            } else {
-                audioManager.ringerMode == AudioManager.RINGER_MODE_VIBRATE
-            }
-        }
-
-        return false
     }
 }

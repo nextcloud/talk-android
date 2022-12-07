@@ -274,6 +274,24 @@ object NotificationUtils {
         }
     }
 
+    fun isNotificationVisible(
+        context: Context?,
+        notificationId: Int
+    ): Boolean {
+
+        var isVisible = false
+
+        val notificationManager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notifications = notificationManager.activeNotifications
+        for (notification in notifications) {
+            if (notification.id == notificationId) {
+                isVisible = true
+                break
+            }
+        }
+        return isVisible
+    }
+
     private fun getRingtoneUri(
         context: Context,
         ringtonePreferencesString: String?,

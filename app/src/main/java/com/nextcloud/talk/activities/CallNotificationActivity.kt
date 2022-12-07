@@ -22,22 +22,16 @@
 package com.nextcloud.talk.activities
 
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.SystemClock
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
@@ -49,11 +43,8 @@ import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DoNotDisturbUtils.shouldPlaySound
 import com.nextcloud.talk.utils.NotificationUtils
-import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
@@ -62,7 +53,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
-import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -71,7 +61,6 @@ import kotlinx.android.synthetic.main.call_item.*
 import okhttp3.Cache
 import org.parceler.Parcels
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @SuppressLint("LongLogTag")
@@ -88,13 +77,14 @@ class CallNotificationActivity : CallBaseActivity() {
     private val disposablesList: MutableList<Disposable> = ArrayList()
     private var originalBundle: Bundle? = null
     private var roomToken: String? = null
+    private var notificationTimestamp: Int? = null
     private var userBeingCalled: User? = null
     private var credentials: String? = null
     private var currentConversation: Conversation? = null
-    private var mediaPlayer: MediaPlayer? = null
     private var leavingScreen = false
     private var handler: Handler? = null
     private var binding: CallNotificationActivityBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
@@ -104,6 +94,7 @@ class CallNotificationActivity : CallBaseActivity() {
         hideNavigationIfNoPipAvailable()
         val extras = intent.extras
         roomToken = extras!!.getString(KEY_ROOM_TOKEN, "")
+        notificationTimestamp = extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
         currentConversation = Parcels.unwrap(extras.getParcelable(KEY_ROOM))
         userBeingCalled = extras.getParcelable(KEY_USER_ENTITY)
         originalBundle = extras
@@ -113,9 +104,6 @@ class CallNotificationActivity : CallBaseActivity() {
             handleFromNotification()
         } else {
             setUpAfterConversationIsKnown()
-        }
-        if (shouldPlaySound()) {
-            playRingtoneSound()
         }
         initClickListeners()
     }
@@ -162,7 +150,6 @@ class CallNotificationActivity : CallBaseActivity() {
     private fun hangup() {
         leavingScreen = true
         dispose()
-        endMediaNotifications()
         finish()
     }
 
@@ -186,108 +173,6 @@ class CallNotificationActivity : CallBaseActivity() {
         val intent = Intent(this, CallActivity::class.java)
         intent.putExtras(originalBundle!!)
         startActivity(intent)
-    }
-
-    private fun checkIfAnyParticipantsRemainInRoom() {
-        val apiVersion = ApiUtils.getCallApiVersion(userBeingCalled, intArrayOf(ApiUtils.APIv4, 1))
-        ncApi!!.getPeersForCall(
-            credentials,
-            ApiUtils.getUrlForCall(
-                apiVersion,
-                userBeingCalled!!.baseUrl,
-                currentConversation!!.token
-            )
-        )
-            .subscribeOn(Schedulers.io())
-            .repeatWhen { completed: Observable<Any?> ->
-                completed.zipWith(Observable.range(TIMER_START, TIMER_COUNT)) { _: Any?, i: Int? -> i!! }
-                    .flatMap { Observable.timer(TIMER_DELAY, TimeUnit.SECONDS) }
-                    .takeWhile { !leavingScreen }
-            }
-            .subscribe(object : Observer<ParticipantsOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposablesList.add(d)
-                }
-
-                override fun onNext(participantsOverall: ParticipantsOverall) {
-                    val hasParticipantsInCall: Boolean
-                    var inCallOnDifferentDevice = false
-                    val participantList = participantsOverall.ocs!!.data
-                    hasParticipantsInCall = participantList!!.isNotEmpty()
-                    if (hasParticipantsInCall) {
-                        for (participant in participantList) {
-                            if (participant.calculatedActorType === Participant.ActorType.USERS &&
-                                participant.calculatedActorId == userBeingCalled!!.userId
-                            ) {
-                                inCallOnDifferentDevice = true
-                                break
-                            }
-                        }
-                    }
-                    if (inCallOnDifferentDevice) {
-                        runOnUiThread { hangup() }
-                    }
-                    if (!hasParticipantsInCall) {
-                        showMissedCallNotification()
-                        runOnUiThread { hangup() }
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "error while getPeersForCall", e)
-                }
-
-                override fun onComplete() {
-                    showMissedCallNotification()
-                    runOnUiThread { hangup() }
-                }
-            })
-    }
-
-    private fun showMissedCallNotification() {
-        val mNotifyManager: NotificationManager?
-        val mBuilder: NotificationCompat.Builder?
-
-        mNotifyManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        mBuilder = NotificationCompat.Builder(
-            context,
-            NotificationUtils.NotificationChannels
-                .NOTIFICATION_CHANNEL_MESSAGES_V4.name
-        )
-
-        val notification: Notification = mBuilder
-            .setContentTitle(
-                String.format(resources.getString(R.string.nc_missed_call), currentConversation!!.displayName)
-            )
-            .setSmallIcon(R.drawable.ic_baseline_phone_missed_24)
-            .setOngoing(false)
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setContentIntent(getIntentToOpenConversation())
-            .build()
-
-        val notificationId: Int = SystemClock.uptimeMillis().toInt()
-        mNotifyManager.notify(notificationId, notification)
-    }
-
-    private fun getIntentToOpenConversation(): PendingIntent? {
-        val bundle = Bundle()
-        val intent = Intent(context, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-
-        bundle.putString(KEY_ROOM_TOKEN, currentConversation?.token)
-        bundle.putParcelable(KEY_USER_ENTITY, userBeingCalled)
-        bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)
-
-        intent.putExtras(bundle)
-
-        val requestCode = System.currentTimeMillis().toInt()
-        val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE
-        } else {
-            0
-        }
-        return PendingIntent.getActivity(context, requestCode, intent, intentFlag)
     }
 
     @Suppress("MagicNumber")
@@ -353,18 +238,25 @@ class CallNotificationActivity : CallBaseActivity() {
         } else {
             binding!!.avatarImageView.setImageResource(R.drawable.ic_circular_group)
         }
-        checkIfAnyParticipantsRemainInRoom()
+
+        val notificationHandler = Handler(Looper.getMainLooper())
+        notificationHandler.post(object : Runnable {
+            override fun run() {
+                if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
+                    notificationHandler.postDelayed(this, 1000)
+                } else {
+                    finish()
+                }
+            }
+        })
+
         showAnswerControls()
     }
 
-    private fun endMediaNotifications() {
-        if (mediaPlayer != null) {
-            if (mediaPlayer!!.isPlaying) {
-                mediaPlayer!!.stop()
-            }
-            mediaPlayer!!.release()
-            mediaPlayer = null
-        }
+    override fun onStop() {
+        val notificationManager = NotificationManagerCompat.from(context)
+        notificationManager.cancel(notificationTimestamp!!)
+        super.onStop()
     }
 
     public override fun onDestroy() {
@@ -374,7 +266,6 @@ class CallNotificationActivity : CallBaseActivity() {
             handler = null
         }
         dispose()
-        endMediaNotifications()
         super.onDestroy()
     }
 
@@ -382,26 +273,6 @@ class CallNotificationActivity : CallBaseActivity() {
         for (disposable in disposablesList) {
             if (!disposable.isDisposed) {
                 disposable.dispose()
-            }
-        }
-    }
-
-    private fun playRingtoneSound() {
-        val ringtoneUri = getCallRingtoneUri(applicationContext, appPreferences)
-        if (ringtoneUri != null) {
-            mediaPlayer = MediaPlayer()
-            try {
-                mediaPlayer!!.setDataSource(this, ringtoneUri)
-                mediaPlayer!!.isLooping = true
-                val audioAttributes = AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                    .build()
-                mediaPlayer!!.setAudioAttributes(audioAttributes)
-                mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
-                mediaPlayer!!.prepareAsync()
-            } catch (e: IOException) {
-                Log.e(TAG, "Failed to set data source")
             }
         }
     }
@@ -433,9 +304,6 @@ class CallNotificationActivity : CallBaseActivity() {
 
     companion object {
         const val TAG = "CallNotificationActivity"
-        const val TIMER_START = 1
-        const val TIMER_COUNT = 12
-        const val TIMER_DELAY: Long = 5
         const val GET_ROOM_RETRY_COUNT: Long = 3
     }
 }
