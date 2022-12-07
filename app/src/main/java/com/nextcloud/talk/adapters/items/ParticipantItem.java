@@ -27,23 +27,20 @@ package com.nextcloud.talk.adapters.items;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.RvItemConversationInfoParticipantBinding;
+import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.Participant.InCallFlags;
 import com.nextcloud.talk.models.json.status.StatusType;
 import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
-import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
@@ -111,24 +108,22 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, ParticipantItemViewHolder holder, int position, List payloads) {
 
-        holder.binding.avatarDraweeView.setController(null);
-
         drawStatus(holder);
 
         if (!isOnline) {
             holder.binding.nameText.setTextColor(ResourcesCompat.getColor(
-                holder.binding.nameText.getContext().getResources(),
-                R.color.medium_emphasis_text,
-                null)
+                                                     holder.binding.nameText.getContext().getResources(),
+                                                     R.color.medium_emphasis_text,
+                                                     null)
                                                 );
-            holder.binding.avatarDraweeView.setAlpha(0.38f);
+            holder.binding.avatarView.setAlpha(0.38f);
         } else {
             holder.binding.nameText.setTextColor(ResourcesCompat.getColor(
-                holder.binding.nameText.getContext().getResources(),
-                R.color.high_emphasis_text,
-                null)
+                                                     holder.binding.nameText.getContext().getResources(),
+                                                     R.color.high_emphasis_text,
+                                                     null)
                                                 );
-            holder.binding.avatarDraweeView.setAlpha(1.0f);
+            holder.binding.avatarView.setAlpha(1.0f);
         }
 
         holder.binding.nameText.setText(participant.getDisplayName());
@@ -152,23 +147,9 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             "groups".equals(participant.getSource()) ||
             participant.getCalculatedActorType() == Participant.ActorType.CIRCLES ||
             "circles".equals(participant.getSource())) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
-                    DisplayUtils.getRoundedDrawable(
-                        viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarDraweeView,
-                                                              R.drawable.ic_avatar_group)));
-            } else {
-                holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);
-            }
+            ImageViewExtensionsKt.loadGroupCallAvatar(holder.binding.avatarView, viewThemeUtils);
         } else if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                holder.binding.avatarDraweeView.getHierarchy().setPlaceholderImage(
-                    DisplayUtils.getRoundedDrawable(
-                        viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarDraweeView,
-                                                              R.drawable.ic_avatar_mail)));
-            } else {
-                holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_mail);
-            }
+            ImageViewExtensionsKt.loadMailAvatar(holder.binding.avatarView, viewThemeUtils);
         } else if (participant.getCalculatedActorType() == Participant.ActorType.GUESTS ||
             participant.getType() == Participant.ParticipantType.GUEST ||
             participant.getType() == Participant.ParticipantType.GUEST_MODERATOR) {
@@ -180,25 +161,11 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                 displayName = participant.getDisplayName();
             }
 
-            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setOldController(holder.binding.avatarDraweeView.getController())
-                .setAutoPlayAnimations(true)
-                .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForGuestAvatar(user.getBaseUrl(),
-                                                  displayName, false)))
-                .build();
-            holder.binding.avatarDraweeView.setController(draweeController);
+            ImageViewExtensionsKt.loadGuestAvatar(holder.binding.avatarView, user, displayName, false);
 
         } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
             participant.getSource().equals("users")) {
-            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setOldController(holder.binding.avatarDraweeView.getController())
-                .setAutoPlayAnimations(true)
-                .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForAvatar(user.getBaseUrl(),
-                                             participant.getCalculatedActorId(), false)))
-                .build();
-            holder.binding.avatarDraweeView.setController(draweeController);
+            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, user, participant.getCalculatedActorId(), true);
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();

@@ -3,6 +3,8 @@
   ~
   ~ @author Mario Danic
   ~ @author Andy Scherzinger
+  ~ @author Tim Krüger
+  ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
@@ -38,12 +40,11 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/double_margin_between_elements">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@id/dialogAvatar"
             android:layout_width="@dimen/small_item_height"
             android:layout_height="@dimen/small_item_height"
-            android:contentDescription="@null"
-            app:roundAsCircle="true" />
+            android:contentDescription="@null" />
 
         <ImageView
             android:id="@+id/favoriteConversationImageView"

@@ -28,9 +28,6 @@ package com.nextcloud.talk.controllers
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.TextUtils
@@ -42,7 +39,6 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.content.ContextCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -53,7 +49,6 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.datetime.dateTimePicker
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
-import com.facebook.drawee.backends.pipeline.Fresco
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ParticipantItem
@@ -67,6 +62,10 @@ import com.nextcloud.talk.conversation.info.GuestAccessHelper
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
+import com.nextcloud.talk.extensions.loadAvatar
+import com.nextcloud.talk.extensions.loadSystemAvatar
+import com.nextcloud.talk.extensions.loadGroupCallAvatar
+import com.nextcloud.talk.extensions.loadPublicCallAvatar
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -83,7 +82,6 @@ import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
@@ -778,54 +776,16 @@ class ConversationInfoController(args: Bundle) :
     private fun loadConversationAvatar() {
         when (conversation!!.type) {
             Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
-                val draweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(binding.avatarImage.controller)
-                    .setAutoPlayAnimations(true)
-                    .setImageRequest(
-                        DisplayUtils.getImageRequestForUrl(
-                            ApiUtils.getUrlForAvatar(
-                                conversationUser!!.baseUrl,
-                                conversation!!.name,
-                                true
-                            ),
-                            conversationUser
-                        )
-                    )
-                    .build()
-                binding.avatarImage.controller = draweeController
+                conversation!!.name?.let { binding.avatarImage.loadAvatar(conversationUser!!, it) }
             }
             Conversation.ConversationType.ROOM_GROUP_CALL -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    binding.avatarImage.hierarchy.setPlaceholderImage(
-                        DisplayUtils.getRoundedDrawable(
-                            viewThemeUtils.talk.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_group)
-                        )
-                    )
-                } else {
-                    binding.avatarImage.hierarchy.setPlaceholderImage(
-                        R.drawable.ic_circular_group
-                    )
-                }
+                binding.avatarImage.loadGroupCallAvatar(viewThemeUtils)
             }
             Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    binding.avatarImage.hierarchy.setPlaceholderImage(
-                        DisplayUtils.getRoundedDrawable(
-                            viewThemeUtils.talk.themePlaceholderAvatar(binding.avatarImage, R.drawable.ic_avatar_link)
-                        )
-                    )
-                } else {
-                    binding.avatarImage.hierarchy.setPlaceholderImage(
-                        R.drawable.ic_circular_link
-                    )
-                }
+                binding.avatarImage.loadPublicCallAvatar(viewThemeUtils)
             }
             Conversation.ConversationType.ROOM_SYSTEM -> {
-                val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
-                layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
-                val layerDrawable = LayerDrawable(layers)
-                binding.avatarImage.hierarchy.setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
+                binding.avatarImage.loadSystemAvatar()
             }
 
             else -> {

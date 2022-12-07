@@ -22,7 +22,7 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
-import third_parties.daveKoeller.AlphanumComparator
+import third.parties.daveKoeller.AlphanumComparator
 import java.util.Collections
 
 class FileSortOrderByName internal constructor(name: String, ascending: Boolean) : FileSortOrder(name, ascending) {
@@ -40,7 +40,8 @@ class FileSortOrderByName internal constructor(name: String, ascending: Boolean)
      * Comparator for RemoteFileBrowserItems, sorts by name.
      */
     class RemoteFileBrowserItemNameComparator(private val multiplier: Int) : Comparator<RemoteFileBrowserItem> {
-        private val alphanumComparator = AlphanumComparator<RemoteFileBrowserItem>()
+        private val alphanumComparator =
+            AlphanumComparator<RemoteFileBrowserItem>()
 
         override fun compare(left: RemoteFileBrowserItem, right: RemoteFileBrowserItem): Int {
             return if (!left.isFile && !right.isFile) {

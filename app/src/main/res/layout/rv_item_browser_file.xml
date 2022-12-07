@@ -93,13 +93,12 @@
         android:textSize="@dimen/two_line_primary_text_size"
         tools:text="filename.md" />
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/file_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/standard_margin"
-        app:actualImageScaleType="fitCenter"
-        app:placeholderImageScaleType="fitCenter" />
+        tools:ignore="ContentDescription" />
 
 </RelativeLayout>

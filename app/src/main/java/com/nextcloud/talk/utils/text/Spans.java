@@ -22,9 +22,10 @@ package com.nextcloud.talk.utils.text;
 
 import android.graphics.drawable.Drawable;
 
-import com.facebook.widget.text.span.BetterImageSpan;
+
 
 import androidx.annotation.NonNull;
+import third.parties.fresco.BetterImageSpan;
 
 public class Spans {
 

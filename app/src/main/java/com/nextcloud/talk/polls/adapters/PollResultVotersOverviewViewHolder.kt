@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,20 +24,16 @@ package com.nextcloud.talk.polls.adapters
 
 import android.annotation.SuppressLint
 import android.text.TextUtils
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.generic.RoundingParams
-import com.facebook.drawee.interfaces.DraweeController
-import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.PollResultVotersOverviewItemBinding
+import com.nextcloud.talk.extensions.loadAvatar
+import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.polls.model.PollDetails
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 
 class PollResultVotersOverviewViewHolder(
     private val user: User,
@@ -61,24 +59,14 @@ class PollResultVotersOverviewViewHolder(
 
         for (i in 0 until avatarsToDisplay) {
             val pollDetails = item.detailsList[i]
-            val avatar = SimpleDraweeView(binding.root.context)
+            val avatar = ImageView(binding.root.context)
 
             layoutParams.marginStart = i * AVATAR_OFFSET
             avatar.layoutParams = layoutParams
 
             avatar.translationZ = i.toFloat() * -1
 
-            val roundingParams = RoundingParams.fromCornersRadius(AVATAR_RADIUS)
-            roundingParams.roundAsCircle = true
-            roundingParams.borderColor = ResourcesCompat.getColor(
-                itemView.context.resources!!,
-                R.color.vote_dialog_background,
-                null
-            )
-            roundingParams.borderWidth = DisplayUtils.convertDpToPixel(2.0f, itemView.context)
-
-            avatar.hierarchy.roundingParams = roundingParams
-            avatar.controller = getAvatarDraweeController(pollDetails)
+            loadAvatar(pollDetails, avatar)
 
             binding.votersAvatarsOverviewWrapper.addView(avatar)
 
@@ -92,47 +80,20 @@ class PollResultVotersOverviewViewHolder(
         }
     }
 
-    private fun getAvatarDraweeController(pollDetail: PollDetails): DraweeController? {
-        var draweeController: DraweeController? = null
+    private fun loadAvatar(pollDetail: PollDetails, avatar: ImageView) {
         if (pollDetail.actorType == "guests") {
             var displayName = NextcloudTalkApplication.sharedApplication?.resources?.getString(R.string.nc_guest)
             if (!TextUtils.isEmpty(pollDetail.actorDisplayName)) {
                 displayName = pollDetail.actorDisplayName!!
             }
-            draweeController = Fresco.newDraweeControllerBuilder()
-                .setAutoPlayAnimations(true)
-                .setImageRequest(
-                    DisplayUtils.getImageRequestForUrl(
-                        ApiUtils.getUrlForGuestAvatar(
-                            user.baseUrl,
-                            displayName,
-                            false
-                        ),
-                        user
-                    )
-                )
-                .build()
+            avatar.loadGuestAvatar(user, displayName!!, false)
         } else if (pollDetail.actorType == "users") {
-            draweeController = Fresco.newDraweeControllerBuilder()
-                .setAutoPlayAnimations(true)
-                .setImageRequest(
-                    DisplayUtils.getImageRequestForUrl(
-                        ApiUtils.getUrlForAvatar(
-                            user.baseUrl,
-                            pollDetail.actorId,
-                            false
-                        ),
-                        user
-                    )
-                )
-                .build()
+            avatar.loadAvatar(user, pollDetail.actorId!!, false)
         }
-        return draweeController
     }
 
     companion object {
         const val AVATAR_SIZE = 60
-        const val AVATAR_RADIUS = 5f
         const val MAX_AVATARS = 10
         const val AVATAR_OFFSET = AVATAR_SIZE - 20
         const val DOTS_OFFSET = 70

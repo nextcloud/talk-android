@@ -295,7 +295,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                         false
                     }
                 }
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                else -> {
                     if (PermissionChecker.checkSelfPermission(
                             context,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -307,10 +307,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                         Log.d(TAG, "Permission is revoked")
                         false
                     }
-                }
-                else -> { // permission is automatically granted on sdk<23 upon installation
-                    Log.d(TAG, "Permission is granted")
-                    true
                 }
             }
         }
@@ -325,15 +321,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                         REQUEST_PERMISSION
                     )
                 }
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                else -> {
                     controller.requestPermissions(
                         arrayOf(
                             Manifest.permission.WRITE_EXTERNAL_STORAGE
                         ),
                         REQUEST_PERMISSION
                     )
-                }
-                else -> { // permission is automatically granted on sdk<23 upon installation
                 }
             }
         }

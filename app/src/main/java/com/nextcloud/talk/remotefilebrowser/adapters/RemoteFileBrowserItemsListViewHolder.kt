@@ -22,20 +22,18 @@ package com.nextcloud.talk.remotefilebrowser.adapters
 
 import android.text.format.Formatter
 import android.view.View
+import android.widget.ImageView
 import autodagger.AutoInjector
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.interfaces.DraweeController
-import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemBrowserFileBinding
+import com.nextcloud.talk.extensions.loadImage
 import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils.getLocalDateTimeStringFromTimestamp
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.Mimetype.FOLDER
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -48,7 +46,7 @@ class RemoteFileBrowserItemsListViewHolder(
     onItemClicked: (Int) -> Unit
 ) : RemoteFileBrowserItemsViewHolder(binding, mimeTypeSelectionFilter, currentUser, selectionInterface) {
 
-    override val fileIcon: SimpleDraweeView
+    override val fileIcon: ImageView
         get() = binding.fileIcon
 
     private var selectable: Boolean = true
@@ -68,7 +66,6 @@ class RemoteFileBrowserItemsListViewHolder(
     override fun onBind(item: RemoteFileBrowserItem) {
         super.onBind(item)
 
-        binding.fileIcon.controller = null
         if (!item.isAllowedToReShare || item.isEncrypted) {
             binding.root.isEnabled = false
             binding.root.alpha = DISABLED_ALPHA
@@ -95,11 +92,7 @@ class RemoteFileBrowserItemsListViewHolder(
         calculateClickability(item, selectable)
         setSelectability()
 
-        binding.fileIcon
-            .hierarchy
-            .setPlaceholderImage(
-                viewThemeUtils.talk.getPlaceholderImage(binding.root.context, item.mimeType)
-            )
+        val placeholder = viewThemeUtils.talk.getPlaceholderImage(binding.root.context, item.mimeType)
 
         if (item.hasPreview) {
             val path = ApiUtils.getUrlForFilePreviewWithRemotePath(
@@ -108,12 +101,10 @@ class RemoteFileBrowserItemsListViewHolder(
                 binding.fileIcon.context.resources.getDimensionPixelSize(R.dimen.small_item_height)
             )
             if (path.isNotEmpty()) {
-                val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
-                    .setAutoPlayAnimations(true)
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(path))
-                    .build()
-                binding.fileIcon.controller = draweeController
+                binding.fileIcon.loadImage(path, currentUser, placeholder)
             }
+        } else {
+            binding.fileIcon.setImageDrawable(placeholder)
         }
 
         binding.filenameTextView.text = item.displayName

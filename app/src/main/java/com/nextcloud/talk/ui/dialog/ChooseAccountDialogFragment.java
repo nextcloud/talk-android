@@ -33,8 +33,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
@@ -42,6 +40,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.DialogChooseAccountBinding;
+import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.models.json.status.StatusOverall;
@@ -132,22 +131,10 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             if (user.getBaseUrl() != null &&
                 (user.getBaseUrl().startsWith("http://") || user.getBaseUrl().startsWith("https://"))) {
                 binding.currentAccount.userIcon.setVisibility(View.VISIBLE);
-
-                DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(binding.currentAccount.userIcon.getController())
-                    .setAutoPlayAnimations(true)
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                        ApiUtils.getUrlForAvatar(
-                            user.getBaseUrl(),
-                            user.getUserId(),
-                            false)))
-                    .build();
-                binding.currentAccount.userIcon.setController(draweeController);
-
+                ImageViewExtensionsKt.loadAvatar(binding.currentAccount.userIcon, user, user.getUserId(), true);
             } else {
                 binding.currentAccount.userIcon.setVisibility(View.INVISIBLE);
             }
-
             loadCurrentStatus(user);
         }
     }

@@ -28,6 +28,7 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.content.FileProvider
@@ -36,7 +37,6 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.FullScreenImageActivity
 import com.nextcloud.talk.activities.FullScreenMediaActivity
@@ -412,7 +412,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     data class ProgressUi(
         val progressBar: ProgressBar?,
         val messageText: EmojiTextView?,
-        val previewImage: SimpleDraweeView
+        val previewImage: ImageView
     )
 
     data class FileInfo(

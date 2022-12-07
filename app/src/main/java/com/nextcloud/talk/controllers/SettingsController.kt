@@ -157,18 +157,13 @@ class SettingsController : BaseController(R.layout.controller_settings) {
             binding.settingsIncognitoKeyboard.visibility = View.GONE
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            binding.settingsScreenLock.visibility = View.GONE
-            binding.settingsScreenLockTimeout.visibility = View.GONE
-        } else {
-            binding.settingsScreenLock.setSummary(
-                String.format(
-                    Locale.getDefault(),
-                    resources!!.getString(R.string.nc_settings_screen_lock_desc),
-                    resources!!.getString(R.string.nc_app_product_name)
-                )
+        binding.settingsScreenLock.setSummary(
+            String.format(
+                Locale.getDefault(),
+                resources!!.getString(R.string.nc_settings_screen_lock_desc),
+                resources!!.getString(R.string.nc_app_product_name)
             )
-        }
+        )
 
         setupPrivacyUrl()
         setupSourceCodeUrl()
@@ -662,10 +657,8 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 appPreferences.isKeyboardIncognito
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            (binding.settingsIncognitoKeyboard.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-                appPreferences.isKeyboardIncognito
-        }
+        (binding.settingsIncognitoKeyboard.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+            appPreferences.isKeyboardIncognito
 
         if (CapabilitiesUtilNew.isReadStatusAvailable(userManager.currentUser.blockingGet())) {
             (binding.settingsReadPrivacy.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
@@ -679,29 +672,27 @@ class SettingsController : BaseController(R.layout.controller_settings) {
     }
 
     private fun setupScreenLockSetting() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-            if (keyguardManager.isKeyguardSecure) {
-                binding.settingsScreenLock.isEnabled = true
-                binding.settingsScreenLockTimeout.isEnabled = true
-                (binding.settingsScreenLock.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-                    appPreferences.isScreenLocked
-                binding.settingsScreenLockTimeout.isEnabled = appPreferences.isScreenLocked
-                if (appPreferences.isScreenLocked) {
-                    binding.settingsScreenLockTimeout.alpha = ENABLED_ALPHA
-                } else {
-                    binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
-                }
-                binding.settingsScreenLock.alpha = ENABLED_ALPHA
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if (keyguardManager.isKeyguardSecure) {
+            binding.settingsScreenLock.isEnabled = true
+            binding.settingsScreenLockTimeout.isEnabled = true
+            (binding.settingsScreenLock.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+                appPreferences.isScreenLocked
+            binding.settingsScreenLockTimeout.isEnabled = appPreferences.isScreenLocked
+            if (appPreferences.isScreenLocked) {
+                binding.settingsScreenLockTimeout.alpha = ENABLED_ALPHA
             } else {
-                binding.settingsScreenLock.isEnabled = false
-                binding.settingsScreenLockTimeout.isEnabled = false
-                appPreferences.removeScreenLock()
-                appPreferences.removeScreenLockTimeout()
-                (binding.settingsScreenLock.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked = false
-                binding.settingsScreenLock.alpha = DISABLED_ALPHA
                 binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
             }
+            binding.settingsScreenLock.alpha = ENABLED_ALPHA
+        } else {
+            binding.settingsScreenLock.isEnabled = false
+            binding.settingsScreenLockTimeout.isEnabled = false
+            appPreferences.removeScreenLock()
+            appPreferences.removeScreenLockTimeout()
+            (binding.settingsScreenLock.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked = false
+            binding.settingsScreenLock.alpha = DISABLED_ALPHA
+            binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
         }
     }
 
@@ -805,9 +796,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
     private inner class ScreenLockTimeoutListener : OnPreferenceValueChangedListener<String?> {
         override fun onChanged(newValue: String?) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                SecurityUtils.createKey(appPreferences.screenLockTimeout)
-            }
+            SecurityUtils.createKey(appPreferences.screenLockTimeout)
         }
     }
 

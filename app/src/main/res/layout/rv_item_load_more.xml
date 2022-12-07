@@ -41,8 +41,7 @@
         android:layout_height="@dimen/small_item_height"
         android:importantForAccessibility="no"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:roundAsCircle="true" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:layout_width="0dp"

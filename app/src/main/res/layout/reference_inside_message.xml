@@ -19,7 +19,6 @@
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/referenceWrapper"
     android:layout_width="match_parent"
@@ -32,64 +31,64 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:background="@color/low_emphasis_text"
-        tools:layout_height="100dp"/>
+        tools:layout_height="100dp" />
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/referenceName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:ellipsize="end"
         android:lineSpacingMultiplier="1.2"
+        android:maxLines="2"
         android:textAlignment="viewStart"
         android:textIsSelectable="false"
-        android:layout_marginStart="10dp"
-        android:visibility="gone"
-        android:ellipsize="end"
-        android:maxLines="2"
         android:textStyle="bold"
+        android:visibility="gone"
         tools:text="Name of Website"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/referenceDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/referenceName"
+        android:layout_marginStart="10dp"
+        android:ellipsize="end"
         android:lineSpacingMultiplier="1.2"
+        android:maxLines="2"
         android:textAlignment="viewStart"
         android:textIsSelectable="false"
-        android:layout_marginStart="10dp"
         android:visibility="gone"
-        android:ellipsize="end"
-        android:maxLines="2"
         tools:text="Description of Website"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/referenceLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/referenceDescription"
-        android:lineSpacingMultiplier="1.2"
-        android:textAlignment="viewStart"
-        android:textIsSelectable="false"
         android:layout_marginStart="10dp"
-        android:textColor="@color/medium_emphasis_text"
-        android:singleLine="true"
-        android:lines="1"
         android:ellipsize="end"
+        android:lineSpacingMultiplier="1.2"
+        android:lines="1"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textColor="@color/medium_emphasis_text"
+        android:textIsSelectable="false"
         android:visibility="gone"
         tools:text="http://nextcloud.com"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/referenceThumbImage"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:scaleType="fitEnd"
         android:layout_below="@id/referenceLink"
-        android:layout_marginTop="5dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:scaleType="fitEnd"
         android:visibility="gone"
-        app:roundedCornerRadius="6dp"
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        tools:ignore="ContentDescription" />
 </RelativeLayout>

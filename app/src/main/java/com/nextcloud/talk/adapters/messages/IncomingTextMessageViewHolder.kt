@@ -26,24 +26,21 @@ package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import android.net.Uri
-import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import coil.load
-import com.amulyakhare.textdrawable.TextDrawable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
+import com.nextcloud.talk.extensions.loadBotsAvatar
+import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -179,28 +176,9 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
         if (message.actorType == "guests") {
             // do nothing, avatar is set
         } else if (message.actorType == "bots" && message.actorId == "changelog") {
-            if (context != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val layers = arrayOfNulls<Drawable>(2)
-                    layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
-                    layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
-                    val layerDrawable = LayerDrawable(layers)
-                    binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
-                } else {
-                    binding.messageUserAvatar.setImageResource(R.mipmap.ic_launcher)
-                }
-            }
+            binding.messageUserAvatar.loadChangelogBotAvatar()
         } else if (message.actorType == "bots") {
-            val drawable = TextDrawable.builder()
-                .beginConfig()
-                .bold()
-                .endConfig()
-                .buildRound(
-                    ">",
-                    ResourcesCompat.getColor(context!!.resources, R.color.black, null)
-                )
-            binding.messageUserAvatar.visibility = View.VISIBLE
-            binding.messageUserAvatar.setImageDrawable(drawable)
+            binding.messageUserAvatar.loadBotsAvatar()
         }
     }
 

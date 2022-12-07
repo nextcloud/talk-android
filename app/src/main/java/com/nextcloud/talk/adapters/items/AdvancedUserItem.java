@@ -27,15 +27,12 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.AccountItemBinding;
+import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -108,7 +105,6 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
-        holder.binding.userIcon.setController(null);
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(
@@ -129,24 +125,10 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
             }
         }
 
-        holder.binding.userIcon.getHierarchy().setPlaceholderImage(R.drawable.account_circle_48dp);
-        holder.binding.userIcon.getHierarchy().setFailureImage(R.drawable.account_circle_48dp);
-
         if (user != null && user.getBaseUrl() != null &&
                 user.getBaseUrl().startsWith("http://") ||
                 user.getBaseUrl().startsWith("https://")) {
-
-            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setOldController(holder.binding.userIcon.getController())
-                .setAutoPlayAnimations(true)
-                .setImageRequest(
-                    DisplayUtils.getImageRequestForUrl(
-                        ApiUtils.getUrlForAvatar(
-                            user.getBaseUrl(),
-                            participant.getCalculatedActorId(),
-                            true)))
-                .build();
-            holder.binding.userIcon.setController(draweeController);
+            ImageViewExtensionsKt.loadAvatar(holder.binding.userIcon, user, participant.getCalculatedActorId(), true);
         }
     }
 

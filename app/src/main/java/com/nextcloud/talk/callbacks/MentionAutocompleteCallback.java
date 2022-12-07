@@ -27,7 +27,7 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.widget.EditText;
 
-import com.facebook.widget.text.span.BetterImageSpan;
+import third.parties.fresco.BetterImageSpan;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.mention.Mention;

@@ -21,7 +21,6 @@
 package com.nextcloud.talk.utils;
 
 import android.content.res.Resources;
-import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
@@ -50,7 +49,6 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
-import androidx.annotation.RequiresApi;
 import androidx.biometric.BiometricPrompt;
 
 public class SecurityUtils {
@@ -60,7 +58,6 @@ public class SecurityUtils {
 
     private static BiometricPrompt.CryptoObject cryptoObject;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean checkIfWeAreAuthenticated(String screenLockTimeout) {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -95,12 +92,10 @@ public class SecurityUtils {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static BiometricPrompt.CryptoObject getCryptoObject() {
         return cryptoObject;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static void createKey(String validity) {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");

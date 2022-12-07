@@ -27,18 +27,19 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.drawable.BitmapDrawable
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
+import android.util.Log
 import androidx.core.graphics.drawable.IconCompat
+import coil.executeBlocking
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 import com.bluelinelabs.logansquare.LoganSquare
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.DataSources
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.image.CloseableBitmap
-import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
@@ -49,6 +50,8 @@ import java.io.IOException
 
 @Suppress("TooManyFunctions")
 object NotificationUtils {
+
+    const val TAG = "NotificationUtils"
 
     enum class NotificationChannels {
         NOTIFICATION_CHANNEL_MESSAGES_V4,
@@ -215,7 +218,7 @@ object NotificationUtils {
             notification: Notification
         ) -> Unit
     ) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || conversationUser.id == -1L || context == null) {
+        if (conversationUser.id == -1L || context == null) {
             return
         }
 
@@ -320,28 +323,30 @@ object NotificationUtils {
         )
     }
 
-    /*
-    * Load user avatar synchronously.
-    * Inspired by:
-    * https://frescolib.org/docs/using-image-pipeline.html
-    * https://github.com/facebook/fresco/issues/830
-    * https://localcoder.org/using-facebooks-fresco-to-load-a-bitmap
-    */
-    fun loadAvatarSync(avatarUrl: String): IconCompat? {
-        // TODO - how to handle errors here?
+    fun loadAvatarSync(avatarUrl: String, context: Context): IconCompat? {
         var avatarIcon: IconCompat? = null
-        val imageRequest = DisplayUtils.getImageRequestForUrl(avatarUrl)
-        val dataSource = Fresco.getImagePipeline().fetchDecodedImage(imageRequest, null)
-        val closeableImageRef = DataSources.waitForFinalResult(dataSource) as CloseableReference<CloseableBitmap>?
-        val bitmap = closeableImageRef?.get()?.underlyingBitmap
-        if (bitmap != null) {
-            // According to Fresco documentation a copy of the bitmap should be made before closing the references.
-            // However, it seems to work without making a copy... ;-)
-            RoundAsCirclePostprocessor(true).process(bitmap)
-            avatarIcon = IconCompat.createWithBitmap(bitmap)
-        }
-        CloseableReference.closeSafely(closeableImageRef)
-        dataSource.close()
+
+        val request = ImageRequest.Builder(context)
+            .data(avatarUrl)
+            .transformations(CircleCropTransformation())
+            .placeholder(R.drawable.account_circle_96dp)
+            .target(
+                onSuccess = { result ->
+                    val bitmap = (result as BitmapDrawable).bitmap
+                    avatarIcon = IconCompat.createWithBitmap(bitmap)
+                },
+                onError = { error ->
+                    error?.let {
+                        val bitmap = (error as BitmapDrawable).bitmap
+                        avatarIcon = IconCompat.createWithBitmap(bitmap)
+                    }
+                    Log.w(TAG, "Can't load avatar for URL: $avatarUrl")
+                }
+            )
+            .build()
+
+        context.imageLoader.executeBlocking(request)
+
         return avatarIcon
     }
 

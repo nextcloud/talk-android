@@ -22,7 +22,7 @@
  *
  */
 
-package third_parties.daveKoeller;
+package third.parties.daveKoeller;
 
 import java.io.Serializable;
 import java.math.BigInteger;

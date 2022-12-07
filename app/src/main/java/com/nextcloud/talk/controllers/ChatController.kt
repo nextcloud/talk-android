@@ -5,7 +5,7 @@
  * @author Marcel Hibbe
  * @author Andy Scherzinger
  * @author Tim Krüger
- * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021-2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
@@ -37,8 +37,9 @@ import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.content.res.Resources
 import android.database.Cursor
-import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
@@ -78,7 +79,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.widget.EmojiTextView
@@ -90,15 +91,13 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
+import coil.imageLoader
 import coil.load
+import coil.request.ImageRequest
+import coil.target.Target
+import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
-import com.facebook.common.executors.UiThreadImmediateExecutorService
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.DataSource
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
-import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.BuildConfig
@@ -134,6 +133,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
+import com.nextcloud.talk.extensions.loadAvatarOrImagePreview
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -165,7 +165,6 @@ import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
@@ -462,42 +461,48 @@ class ChatController(args: Bundle) :
 
     private fun loadAvatarForStatusBar() {
         if (isOneToOneConversation() && activity != null) {
-            val imageRequest = DisplayUtils.getImageRequestForUrl(
-                ApiUtils.getUrlForAvatar(
-                    conversationUser?.baseUrl,
-                    currentConversation?.name,
-                    true
-                ),
-                conversationUser!!
+
+            val url = ApiUtils.getUrlForAvatar(
+                conversationUser!!.baseUrl,
+                currentConversation!!.name,
+                true
             )
+            val target = object : Target {
 
-            val imagePipeline = Fresco.getImagePipeline()
-            val dataSource = imagePipeline.fetchDecodedImage(imageRequest, null)
+                private fun setIcon(drawable: Drawable?) {
 
-            dataSource.subscribe(
-                object : BaseBitmapDataSubscriber() {
-                    override fun onNewResultImpl(bitmap: Bitmap?) {
-                        if (actionBar != null && bitmap != null && resources != null) {
-                            val avatarSize = (actionBar?.height!! / TOOLBAR_AVATAR_RATIO).roundToInt()
-                            if (avatarSize > 0) {
-                                val bitmapResized = Bitmap.createScaledBitmap(bitmap, avatarSize, avatarSize, false)
+                    actionBar?.let {
+                        val avatarSize = (it.height / TOOLBAR_AVATAR_RATIO).roundToInt()
 
-                                val roundedBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(resources!!, bitmapResized)
-                                roundedBitmapDrawable.isCircular = true
-                                roundedBitmapDrawable.setAntiAlias(true)
-                                actionBar?.setIcon(roundedBitmapDrawable)
-                            } else {
-                                Log.d(TAG, "loadAvatarForStatusBar avatarSize <= 0")
-                            }
+                        if (drawable != null && avatarSize > 0) {
+                            val bitmap = drawable.toBitmap(avatarSize, avatarSize)
+                            it.setIcon(BitmapDrawable(resources, bitmap))
+                        } else {
+                            Log.d(TAG, "loadAvatarForStatusBar avatarSize <= 0")
                         }
                     }
+                }
 
-                    override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>) {
-                        // unused atm
-                    }
-                },
-                UiThreadImmediateExecutorService.getInstance()
+                override fun onStart(placeholder: Drawable?) {
+                    this.setIcon(placeholder)
+                }
+
+                override fun onSuccess(result: Drawable) {
+                    this.setIcon(result)
+                }
+            }
+
+            val credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
+
+            context.imageLoader.enqueue(
+                ImageRequest.Builder(context)
+                    .data(url)
+                    .addHeader("Authorization", credentials)
+                    .placeholder(R.drawable.ic_user)
+                    .transformations(CircleCropTransformation())
+                    .crossfade(true)
+                    .target(target)
+                    .build()
             )
         }
     }
@@ -617,14 +622,8 @@ class ChatController(args: Bundle) :
             adapter = TalkMessagesListAdapter(
                 senderId,
                 messageHolders,
-                ImageLoader { imageView, url, payload ->
-                    val draweeController = Fresco.newDraweeControllerBuilder()
-                        .setImageRequest(DisplayUtils.getImageRequestForUrl(url, conversationUser))
-                        .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
-                        .setOldController(imageView.controller)
-                        .setAutoPlayAnimations(true)
-                        .build()
-                    imageView.controller = draweeController
+                ImageLoader { imageView, url, _ ->
+                    imageView.loadAvatarOrImagePreview(url!!, conversationUser, placeholder = payload as? Drawable)
                 },
                 this
             )
@@ -1150,14 +1149,10 @@ class ChatController(args: Bundle) :
     }
 
     private fun isRecordAudioPermissionGranted(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PermissionChecker.checkSelfPermission(
-                context,
-                Manifest.permission.RECORD_AUDIO
-            ) == PermissionChecker.PERMISSION_GRANTED
-        } else {
-            true
-        }
+        return PermissionChecker.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO
+        ) == PermissionChecker.PERMISSION_GRANTED
     }
 
     private fun startAudioRecording(file: String) {

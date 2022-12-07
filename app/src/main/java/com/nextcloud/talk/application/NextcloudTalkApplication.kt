@@ -4,6 +4,8 @@
  * @author Marcel Hibbe
  * @author Andy Scherzinger
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
@@ -46,9 +48,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.decode.SvgDecoder
 import coil.memory.MemoryCache
-import com.facebook.cache.disk.DiskCacheConfig
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.core.ImagePipelineConfig
+import coil.util.DebugLogger
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
 import com.nextcloud.talk.dagger.modules.BusModule
@@ -64,9 +64,7 @@ import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.ui.theme.ThemeModule
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
-import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
 import com.nextcloud.talk.utils.database.user.UserModule
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -164,7 +162,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         securityKeyManager.init(this, securityKeyConfig)
 
         initializeWebRtc()
-        DisplayUtils.useCompatVectorIfNeeded()
         buildComponent()
         DavUtils.registerCustomFactories()
 
@@ -174,18 +171,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         setAppTheme(appPreferences.theme)
         super.onCreate()
 
-        val imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
-            .setNetworkFetcher(OkHttpNetworkFetcherWithCache(okHttpClient))
-            .setMainDiskCacheConfig(
-                DiskCacheConfig.newBuilder(this)
-                    .setMaxCacheSize(0)
-                    .setMaxCacheSizeOnLowDiskSpace(0)
-                    .setMaxCacheSizeOnVeryLowDiskSpace(0)
-                    .build()
-            )
-            .build()
-
-        Fresco.initialize(this, imagePipelineConfig)
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
         ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
@@ -240,7 +225,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
     }
 
     private fun buildDefaultImageLoader(): ImageLoader {
-        return ImageLoader.Builder(applicationContext)
+        val imageLoaderBuilder = ImageLoader.Builder(applicationContext)
             .memoryCache {
                 // Use 50% of the application's available memory.
                 MemoryCache.Builder(applicationContext).maxSizePercent(FIFTY_PERCENT).build()
@@ -254,8 +239,12 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
                 }
                 add(SvgDecoder.Factory())
             }
-            .okHttpClient(okHttpClient)
-            .build()
+
+        if (BuildConfig.DEBUG) {
+            imageLoaderBuilder.logger(DebugLogger())
+        }
+
+        return imageLoaderBuilder.build()
     }
 
     companion object {

@@ -19,19 +19,18 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/item_height"
     android:background="?android:attr/selectableItemBackground">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_gravity="center_vertical"
         android:layout_margin="@dimen/standard_margin"
-        app:roundAsCircle="true" />
+        android:contentDescription="@string/avatar"/>
 
     <TextView
         android:id="@+id/name"

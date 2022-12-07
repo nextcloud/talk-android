@@ -20,11 +20,9 @@
 
 package com.nextcloud.talk.remotefilebrowser.adapters
 
-import android.graphics.drawable.Drawable
-import androidx.core.content.ContextCompat
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
@@ -37,17 +35,9 @@ abstract class RemoteFileBrowserItemsViewHolder(
     val selectionInterface: SelectionInterface,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    abstract val fileIcon: SimpleDraweeView
+    abstract val fileIcon: ImageView
 
     open fun onBind(item: RemoteFileBrowserItem) {
-        fileIcon.hierarchy.setPlaceholderImage(staticImage(item.mimeType, fileIcon))
-    }
-
-    private fun staticImage(
-        mimeType: String?,
-        image: SimpleDraweeView
-    ): Drawable {
-        val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimeType)
-        return ContextCompat.getDrawable(image.context, drawableResourceId)!!
+        fileIcon.setImageResource(DrawableUtils.getDrawableResourceIdForMimeType(item.mimeType))
     }
 }

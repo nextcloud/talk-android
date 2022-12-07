@@ -29,7 +29,7 @@
     android:orientation="vertical">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/simple_drawee_view"
+        android:id="@+id/loader_text_view"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_centerVertical="true"
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/simple_drawee_view"
+        android:layout_toEndOf="@id/loader_text_view"
         app:custom_color="@color/nc_shimmer_default_color" />
 
 </RelativeLayout>

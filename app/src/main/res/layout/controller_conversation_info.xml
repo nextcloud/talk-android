@@ -77,13 +77,13 @@
                         android:layout_marginTop="@dimen/margin_between_elements"
                         tools:text="Jane Doe" />
 
-                    <com.facebook.drawee.view.SimpleDraweeView
+                    <ImageView
                         android:id="@+id/avatar_image"
                         android:layout_width="@dimen/avatar_size_big"
                         android:layout_height="@dimen/avatar_size_big"
                         android:layout_centerHorizontal="true"
-                        apc:roundAsCircle="true"
-                        tools:background="@color/hwSecurityRed" />
+                        tools:background="@color/hwSecurityRed"
+                        android:contentDescription="@string/avatar" />
 
                 </RelativeLayout>
             </com.yarolegovich.mp.MaterialPreferenceCategory>

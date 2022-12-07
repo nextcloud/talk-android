@@ -8,12 +8,9 @@
 
 package com.nextcloud.talk.utils.ssl
 
-import android.os.Build
-import java.io.IOException
 import java.net.InetAddress
 import java.net.Socket
 import java.security.GeneralSecurityException
-import java.util.LinkedList
 import javax.net.ssl.KeyManager
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocket
@@ -35,69 +32,12 @@ class SSLSocketFactoryCompat(
         var cipherSuites: Array<String>? = null
 
         init {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                // Since Android 6.0 (API level 23),
-                // - TLSv1.1 and TLSv1.2 is enabled by default
-                // - SSLv3 is disabled by default
-                // - all modern ciphers are activated by default
-                protocols = null
-                cipherSuites = null
-            } else {
-                val socket = SSLSocketFactory.getDefault().createSocket() as SSLSocket?
-                try {
-                    socket?.let {
-                        /* set reasonable protocol versions */
-                        // - enable all supported protocols (enables TLSv1.1 and TLSv1.2 on Android <5.0)
-                        // - remove all SSL versions (especially SSLv3) because they're insecure now
-                        val _protocols = LinkedList<String>()
-                        for (protocol in socket.supportedProtocols.filterNot { it.contains("SSL", true) })
-                            _protocols += protocol
-                        protocols = _protocols.toTypedArray()
-
-                        /* set up reasonable cipher suites */
-                        val knownCiphers = arrayOf<String>(
-                            // TLS 1.2
-                            "TLS_RSA_WITH_AES_256_GCM_SHA384",
-                            "TLS_RSA_WITH_AES_128_GCM_SHA256",
-                            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
-                            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-                            "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-                            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-                            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-                            // maximum interoperability
-                            "TLS_RSA_WITH_3DES_EDE_CBC_SHA",
-                            "SSL_RSA_WITH_3DES_EDE_CBC_SHA",
-                            "TLS_RSA_WITH_AES_128_CBC_SHA",
-                            // additionally
-                            "TLS_RSA_WITH_AES_256_CBC_SHA",
-                            "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA",
-                            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
-                            "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA",
-                            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
-                        )
-                        val availableCiphers = socket.supportedCipherSuites
-
-                        /* For maximum security, preferredCiphers should *replace* enabled ciphers (thus
-                         * disabling ciphers which are enabled by default, but have become unsecure), but for
-                         * the security level of DAVdroid and maximum compatibility, disabling of insecure
-                         * ciphers should be a server-side task */
-
-                        // for the final set of enabled ciphers, take the ciphers enabled by default, ...
-                        val _cipherSuites = LinkedList<String>()
-                        _cipherSuites.addAll(socket.enabledCipherSuites)
-                        // ... add explicitly allowed ciphers ...
-                        _cipherSuites.addAll(knownCiphers)
-                        // ... and keep only those which are actually available
-                        _cipherSuites.retainAll(availableCiphers)
-
-                        cipherSuites = _cipherSuites.toTypedArray()
-                    }
-                } catch (e: IOException) {
-                    // Exception is to be ignored
-                } finally {
-                    socket?.close() // doesn't implement Closeable on all supported Android versions
-                }
-            }
+            // Since Android 6.0 (API level 23),
+            // - TLSv1.1 and TLSv1.2 is enabled by default
+            // - SSLv3 is disabled by default
+            // - all modern ciphers are activated by default
+            protocols = null
+            cipherSuites = null
         }
     }
 

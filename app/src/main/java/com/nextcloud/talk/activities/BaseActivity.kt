@@ -22,7 +22,6 @@ package com.nextcloud.talk.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
@@ -76,9 +75,7 @@ open class BaseActivity : AppCompatActivity() {
         }
 
         if (appPreferences.isScreenLocked) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                SecurityUtils.createKey(appPreferences.screenLockTimeout)
-            }
+            SecurityUtils.createKey(appPreferences.screenLockTimeout)
         }
     }
 

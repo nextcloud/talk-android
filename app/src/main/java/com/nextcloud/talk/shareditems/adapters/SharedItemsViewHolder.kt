@@ -23,29 +23,20 @@
 package com.nextcloud.talk.shareditems.adapters
 
 import android.content.Context
-import android.net.Uri
-import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.controller.BaseControllerListener
-import com.facebook.drawee.controller.ControllerListener
-import com.facebook.drawee.interfaces.DraweeController
-import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.common.RotationOptions
-import com.facebook.imagepipeline.image.ImageInfo
-import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.extensions.loadImage
 import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
-import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 
 abstract class SharedItemsViewHolder(
@@ -58,21 +49,21 @@ abstract class SharedItemsViewHolder(
         private val TAG = SharedItemsViewHolder::class.simpleName
     }
 
-    abstract val image: SimpleDraweeView
+    abstract val image: ImageView
     abstract val clickTarget: View
     abstract val progressBar: ProgressBar
 
-    private val authHeader = mapOf(
-        Pair(
-            "Authorization",
-            ApiUtils.getCredentials(user.username, user.token)
-        )
-    )
-
     open fun onBind(item: SharedFileItem) {
-        image.hierarchy.setPlaceholderImage(viewThemeUtils.talk.getPlaceholderImage(image.context, item.mimeType))
+
+        val placeholder = viewThemeUtils.talk.getPlaceholderImage(image.context, item.mimeType)
         if (item.previewAvailable) {
-            image.controller = configurePreview(item)
+            image.loadImage(
+                item.previewLink,
+                user,
+                placeholder
+            )
+        } else {
+            image.setImageDrawable(placeholder)
         }
 
         /*
@@ -103,28 +94,6 @@ abstract class SharedItemsViewHolder(
             item.mimeType,
             FileViewerUtils.ProgressUi(progressBar, null, image)
         )
-    }
-
-    private fun configurePreview(item: SharedFileItem): DraweeController {
-        val imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.previewLink))
-            .setProgressiveRenderingEnabled(true)
-            .setRotationOptions(RotationOptions.autoRotate())
-            .disableDiskCache()
-            .setHeaders(authHeader)
-            .build()
-
-        val listener: ControllerListener<ImageInfo?> = object : BaseControllerListener<ImageInfo?>() {
-            override fun onFailure(id: String, e: Throwable) {
-                Log.w(TAG, "Failed to load image. A static mimetype image will be used", e)
-            }
-        }
-
-        return Fresco.newDraweeControllerBuilder()
-            .setOldController(image.controller)
-            .setAutoPlayAnimations(true)
-            .setImageRequest(imageRequest)
-            .setControllerListener(listener)
-            .build()
     }
 
     open fun onBind(item: SharedPollItem, showPoll: (item: SharedItem, context: Context) -> Unit) {}

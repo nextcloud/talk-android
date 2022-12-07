@@ -26,9 +26,10 @@ import android.content.Context
 import android.content.Intent
 import android.text.format.Formatter
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
-import com.facebook.drawee.view.SimpleDraweeView
+import coil.load
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.SharedItemListBinding
@@ -46,7 +47,7 @@ class SharedItemsListViewHolder(
     viewThemeUtils: ViewThemeUtils
 ) : SharedItemsViewHolder(binding, user, viewThemeUtils) {
 
-    override val image: SimpleDraweeView
+    override val image: ImageView
         get() = binding.fileImage
     override val clickTarget: View
         get() = binding.fileItem
@@ -75,7 +76,7 @@ class SharedItemsListViewHolder(
         binding.separator1.visibility = View.GONE
         binding.fileDate.text = item.dateTime
         binding.actor.text = item.actorName
-        image.hierarchy.setPlaceholderImage(R.drawable.ic_baseline_bar_chart_24)
+        image.load(R.drawable.ic_baseline_bar_chart_24)
         image.setColorFilter(
             ContextCompat.getColor(image.context, R.color.high_emphasis_menu_icon),
             android.graphics.PorterDuff.Mode.SRC_IN
@@ -93,7 +94,7 @@ class SharedItemsListViewHolder(
         binding.separator1.visibility = View.GONE
         binding.fileDate.text = item.dateTime
         binding.actor.text = item.actorName
-        image.hierarchy.setPlaceholderImage(R.drawable.ic_baseline_location_on_24)
+        image.load(R.drawable.ic_baseline_location_on_24)
         image.setColorFilter(
             ContextCompat.getColor(image.context, R.color.high_emphasis_menu_icon),
             android.graphics.PorterDuff.Mode.SRC_IN
@@ -114,7 +115,7 @@ class SharedItemsListViewHolder(
         binding.separator1.visibility = View.GONE
         binding.fileDate.text = item.dateTime
         binding.actor.text = item.actorName
-        image.hierarchy.setPlaceholderImage(R.drawable.ic_mimetype_file)
+        image.load(R.drawable.ic_mimetype_file)
         image.setColorFilter(
             ContextCompat.getColor(image.context, R.color.high_emphasis_menu_icon),
             android.graphics.PorterDuff.Mode.SRC_IN
@@ -129,7 +130,7 @@ class SharedItemsListViewHolder(
         binding.separator1.visibility = View.GONE
         binding.fileDate.text = item.dateTime
         binding.actor.text = item.actorName
-        image.hierarchy.setPlaceholderImage(R.drawable.ic_baseline_deck_24)
+        image.load(R.drawable.ic_baseline_deck_24)
         image.setColorFilter(
             ContextCompat.getColor(image.context, R.color.high_emphasis_menu_icon),
             android.graphics.PorterDuff.Mode.SRC_IN

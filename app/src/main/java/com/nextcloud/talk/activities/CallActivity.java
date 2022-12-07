@@ -149,7 +149,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import autodagger.AutoInjector;
@@ -540,20 +539,16 @@ public class CallActivity extends CallBaseActivity {
     private void updateAudioOutputButton(WebRtcAudioManager.AudioDevice activeAudioDevice) {
         switch (activeAudioDevice) {
             case BLUETOOTH:
-                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_bluetooth_audio_24));
+                binding.audioOutputButton.setImageResource ( R.drawable.ic_baseline_bluetooth_audio_24);
                 break;
             case SPEAKER_PHONE:
-                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_volume_up_white_24dp));
+                binding.audioOutputButton.setImageResource(R.drawable.ic_volume_up_white_24dp);
                 break;
             case EARPIECE:
-                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_phone_in_talk_24));
+                binding.audioOutputButton.setImageResource(R.drawable.ic_baseline_phone_in_talk_24);
                 break;
             case WIRED_HEADSET:
-                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_headset_mic_24));
+                binding.audioOutputButton.setImageResource(R.drawable.ic_baseline_headset_mic_24);
                 break;
             default:
                 Log.e(TAG, "Icon for audio output not available");
@@ -737,10 +732,8 @@ public class CallActivity extends CallBaseActivity {
         } else {
             if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
                 onPermissionsGranted();
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(PERMISSIONS_CALL, 100);
             } else {
-                onRequestPermissionsResult(100, PERMISSIONS_CALL, new int[]{1, 1});
+                requestPermissions(PERMISSIONS_CALL, 100);
             }
         }
 
@@ -795,7 +788,7 @@ public class CallActivity extends CallBaseActivity {
                     onCameraClick();
                 }
             } else {
-                binding.cameraButton.getHierarchy().setPlaceholderImage(R.drawable.ic_videocam_off_white_24px);
+                binding.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
                 binding.cameraButton.setAlpha(0.7f);
                 binding.switchSelfVideoButton.setVisibility(View.GONE);
             }
@@ -806,7 +799,7 @@ public class CallActivity extends CallBaseActivity {
                 onMicrophoneClick();
             }
         } else {
-            binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
+            binding.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px);
         }
 
         if (!isConnectionEstablished()) {
@@ -917,7 +910,7 @@ public class CallActivity extends CallBaseActivity {
 
         if (!canPublishAudioStream) {
             microphoneOn = false;
-            binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
+            binding.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px);
             toggleMedia(false, false);
         }
 
@@ -961,12 +954,12 @@ public class CallActivity extends CallBaseActivity {
                 microphoneOn = !microphoneOn;
 
                 if (microphoneOn) {
-                    binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_white_24px);
+                    binding.microphoneButton.setImageResource(R.drawable.ic_mic_white_24px);
                     updatePictureInPictureActions(R.drawable.ic_mic_white_24px,
                                                   getResources().getString(R.string.nc_pip_microphone_mute),
                                                   MICROPHONE_PIP_REQUEST_MUTE);
                 } else {
-                    binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
+                    binding.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px);
                     updatePictureInPictureActions(R.drawable.ic_mic_off_white_24px,
                                                   getResources().getString(R.string.nc_pip_microphone_unmute),
                                                   MICROPHONE_PIP_REQUEST_UNMUTE);
@@ -974,7 +967,7 @@ public class CallActivity extends CallBaseActivity {
 
                 toggleMedia(microphoneOn, false);
             } else {
-                binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_white_24px);
+                binding.microphoneButton.setImageResource(R.drawable.ic_mic_white_24px);
                 pulseAnimation.start();
                 toggleMedia(true, false);
             }
@@ -985,11 +978,7 @@ public class CallActivity extends CallBaseActivity {
                 R.string.nc_microphone_permission_permanently_denied,
                 R.string.nc_permissions_settings, (AppCompatActivity) this);
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(PERMISSIONS_MICROPHONE, 100);
-            } else {
-                onRequestPermissionsResult(100, PERMISSIONS_MICROPHONE, new int[]{1});
-            }
+            requestPermissions(PERMISSIONS_MICROPHONE, 100);
         }
     }
 
@@ -997,7 +986,7 @@ public class CallActivity extends CallBaseActivity {
 
         if (!canPublishVideoStream) {
             videoOn = false;
-            binding.cameraButton.getHierarchy().setPlaceholderImage(R.drawable.ic_videocam_off_white_24px);
+            binding.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
             binding.switchSelfVideoButton.setVisibility(View.GONE);
             return;
         }
@@ -1006,12 +995,12 @@ public class CallActivity extends CallBaseActivity {
             videoOn = !videoOn;
 
             if (videoOn) {
-                binding.cameraButton.getHierarchy().setPlaceholderImage(R.drawable.ic_videocam_white_24px);
+                binding.cameraButton.setImageResource(R.drawable.ic_videocam_white_24px);
                 if (cameraEnumerator.getDeviceNames().length > 1) {
                     binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
                 }
             } else {
-                binding.cameraButton.getHierarchy().setPlaceholderImage(R.drawable.ic_videocam_off_white_24px);
+                binding.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
                 binding.switchSelfVideoButton.setVisibility(View.GONE);
             }
 
@@ -1022,12 +1011,7 @@ public class CallActivity extends CallBaseActivity {
                 R.string.nc_camera_permission_permanently_denied,
                 R.string.nc_permissions_settings, (AppCompatActivity) this);
         } else {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(PERMISSIONS_CAMERA, 100);
-            } else {
-                onRequestPermissionsResult(100, PERMISSIONS_CAMERA, new int[]{1});
-            }
+            requestPermissions(PERMISSIONS_CAMERA, 100);
         }
 
     }
@@ -2675,7 +2659,7 @@ public class CallActivity extends CallBaseActivity {
             v.onTouchEvent(event);
             if (event.getAction() == MotionEvent.ACTION_UP && isPushToTalkActive) {
                 isPushToTalkActive = false;
-                binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
+                binding.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px);
                 pulseAnimation.stop();
                 toggleMedia(false, false);
                 animateCallControls(false, 5000);
