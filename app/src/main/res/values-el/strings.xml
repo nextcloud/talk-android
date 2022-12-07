@@ -342,6 +342,7 @@
     <string name="scope_federated_title">Federated</string>
     <string name="scope_local_description">Ορατό μόνο σε άτομα σε αυτήν την εγκατάσταση και σε επισκέπτες</string>
     <string name="scope_local_title">Τοπικά</string>
+    <string name="scope_private_description">Ορατό μόνο σε άτομα που αντιστοιχίζονται μέσω ενσωμάτωσης αριθμού τηλεφώνου μέσω του Talk σε κινητά</string>
     <string name="scope_private_title">Ιδιωτικά</string>
     <string name="scope_published_description">Συγχρονισμός με έμπιστους διακομιστές και το παγκόσμιο και δημόσιο βιβλίο διευθύνσεων</string>
     <string name="scope_published_title">Δημοσιεύτηκε</string>
