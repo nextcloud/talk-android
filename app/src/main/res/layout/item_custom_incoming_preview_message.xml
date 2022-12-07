@@ -121,7 +121,7 @@
                         tools:visibility="visible" />
                 </FrameLayout>
 
-                <androidx.emoji.widget.EmojiTextView
+                <androidx.emoji2.widget.EmojiTextView
                     android:id="@+id/contact_name"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -145,7 +145,7 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <androidx.emoji.widget.EmojiTextView
+        <androidx.emoji2.widget.EmojiTextView
             android:id="@id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

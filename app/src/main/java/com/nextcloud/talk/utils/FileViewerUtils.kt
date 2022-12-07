@@ -32,7 +32,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.emoji.widget.EmojiTextView
+import androidx.emoji2.widget.EmojiTextView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo

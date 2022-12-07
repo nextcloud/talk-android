@@ -28,7 +28,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
-import androidx.emoji.widget.EmojiEditText
+import androidx.emoji2.widget.EmojiEditText
 import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PNG
@@ -47,9 +47,9 @@ class ImageEmojiEditText : EmojiEditText {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection {
+    override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection? {
 
-        val ic: InputConnection = super.onCreateInputConnection(editorInfo)
+        val ic: InputConnection? = super.onCreateInputConnection(editorInfo)
 
         EditorInfoCompat.setContentMimeTypes(editorInfo, arrayOf(IMAGE_GIF, IMAGE_JPEG, IMAGE_PNG))
 
@@ -73,6 +73,6 @@ class ImageEmojiEditText : EmojiEditText {
                 }
             }
 
-        return InputConnectionCompat.createWrapper(ic, editorInfo, callback)
+        return InputConnectionCompat.createWrapper(ic!!, editorInfo, callback)
     }
 }

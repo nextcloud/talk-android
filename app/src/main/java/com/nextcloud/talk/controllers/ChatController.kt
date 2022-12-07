@@ -81,8 +81,8 @@ import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.doAfterTextChanged
-import androidx.emoji.text.EmojiCompat
-import androidx.emoji.widget.EmojiTextView
+import androidx.emoji2.text.EmojiCompat
+import androidx.emoji2.widget.EmojiTextView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

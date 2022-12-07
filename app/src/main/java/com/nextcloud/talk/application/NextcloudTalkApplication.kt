@@ -31,8 +31,8 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.P
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.emoji.bundled.BundledEmojiCompatConfig
-import androidx.emoji.text.EmojiCompat
+import androidx.emoji2.bundled.BundledEmojiCompatConfig
+import androidx.emoji2.text.EmojiCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication

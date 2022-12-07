@@ -45,7 +45,7 @@ import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.emoji.text.EmojiCompat
+import androidx.emoji2.text.EmojiCompat
 import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters

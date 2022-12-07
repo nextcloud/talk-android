@@ -25,7 +25,8 @@ import android.util.AttributeSet;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import androidx.emoji.widget.EmojiEditTextHelper;
+import androidx.annotation.NonNull;
+import androidx.emoji2.viewsintegration.EmojiEditTextHelper;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -57,7 +58,7 @@ public class EmojiTextInputEditText extends TextInputEditText {
     }
 
     @Override
-    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+    public InputConnection onCreateInputConnection(@NonNull EditorInfo outAttrs) {
         InputConnection inputConnection = super.onCreateInputConnection(outAttrs);
         return getEmojiEditTextHelper().onCreateInputConnection(inputConnection, outAttrs);
     }
