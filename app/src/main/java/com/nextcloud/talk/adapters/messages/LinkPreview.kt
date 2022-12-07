@@ -47,7 +47,7 @@ class LinkPreview {
         binding.referenceName.text = ""
         binding.referenceDescription.text = ""
         binding.referenceLink.text = ""
-        binding.referenceThumbImage.controller = null
+        binding.referenceThumbImage.setImageDrawable(null)
 
         if (!message.extractedUrlToPreview.isNullOrEmpty()) {
             val credentials: String = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)
