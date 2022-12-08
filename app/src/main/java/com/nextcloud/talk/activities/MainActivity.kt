@@ -360,7 +360,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
                     intent.getStringExtra(KEY_ROOM_TOKEN)!!,
                     intent.extras!!,
-                    false,
+                    true,
                     true
                 )
                 logRouterBackStack(router!!)
