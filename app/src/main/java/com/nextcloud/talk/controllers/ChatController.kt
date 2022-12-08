@@ -336,6 +336,8 @@ class ChatController(args: Bundle) :
     }
 
     private fun getRoomInfo() {
+        logConversationInfos("getRoomInfo")
+
         val shouldRepeat = CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "webinary-lobby")
         if (shouldRepeat) {
             checkingLobbyStatus = true
@@ -358,11 +360,9 @@ class ChatController(args: Bundle) :
                     override fun onNext(roomOverall: RoomOverall) {
                         Log.d(TAG, "getRoomInfo - getRoom - got response: $startNanoTime")
                         currentConversation = roomOverall.ocs!!.data
-                        Log.d(
-                            TAG,
-                            "getRoomInfo. token: " + currentConversation?.token +
-                                " sessionId: " + currentConversation?.sessionId
-                        )
+
+                        logConversationInfos("getRoomInfo#onNext")
+
                         loadAvatarForStatusBar()
                         setTitle()
                         participantPermissions = ParticipantPermissions(conversationUser, currentConversation!!)
@@ -1739,11 +1739,8 @@ class ChatController(args: Bundle) :
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onAttach(view: View) {
         super.onAttach(view)
-        Log.d(
-            TAG,
-            "onAttach: Controller: " + System.identityHashCode(this).toString() +
-                " Activity: " + System.identityHashCode(activity).toString()
-        )
+        logConversationInfos("onAttach")
+
         eventBus.register(this)
 
         if (conversationUser?.userId != "?" &&
@@ -1831,11 +1828,8 @@ class ChatController(args: Bundle) :
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-        Log.d(
-            TAG,
-            "onDetach: Controller: " + System.identityHashCode(this).toString() +
-                " Activity: " + System.identityHashCode(activity).toString()
-        )
+
+        logConversationInfos("onDetach")
 
         eventBus.unregister(this)
 
@@ -1851,9 +1845,15 @@ class ChatController(args: Bundle) :
 
         if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
+            // why is sessionId = 0 here ?!?! this causes that leaveRoom is not executed and callbacks continue to
+            // receive which causes bugs!!!
             if (inConversation && validSessionId()) {
                 leaveRoom()
+            } else {
+                Log.e(TAG, "not leaving room (inConversation is false and/or validSessionId is false)")
             }
+        } else {
+            Log.e(TAG, "not leaving room...")
         }
 
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
@@ -1993,7 +1993,8 @@ class ChatController(args: Bundle) :
     }
 
     private fun leaveRoom() {
-        Log.d(TAG, "leaveRoom")
+        logConversationInfos("leaveRoom")
+
         var apiVersion = 1
         // FIXME Fix API checking with guests?
         if (conversationUser != null) {
@@ -3410,6 +3411,18 @@ class ChatController(args: Bundle) :
             (activity as MainActivity?)!!.supportFragmentManager,
             TAG
         )
+    }
+
+    private fun logConversationInfos(methodName: String) {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, " | -----------------------------------------------")
+            Log.d(TAG, " | method: $methodName")
+            Log.d(TAG, " | ChatController: " + System.identityHashCode(this).toString())
+            Log.d(TAG, " | roomToken: $roomToken")
+            Log.d(TAG, " | currentConversation?.displayName: ${currentConversation?.displayName}")
+            Log.d(TAG, " | currentConversation?.sessionId: ${currentConversation?.sessionId}")
+            Log.d(TAG, " | -----------------------------------------------")
+        }
     }
 
     companion object {

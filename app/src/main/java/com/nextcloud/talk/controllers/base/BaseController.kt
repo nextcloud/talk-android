@@ -245,6 +245,9 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
                 calculateValidParentController()
             }
             actionBar!!.title = title
+            Log.d(TAG, "setTitle: $title")
+        } else {
+            Log.d(TAG, "title was not set!!!!")
         }
     }
 
