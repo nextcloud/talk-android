@@ -217,6 +217,7 @@
     <string name="nc_call_button_content_description_audio_output">Change audio output</string>
     <string name="nc_call_button_content_description_camera">Toggle camera</string>
     <string name="nc_call_button_content_description_microphone">Toggle microphone</string>
+    <string name="nc_call_button_content_description_advanced">Advanced call options</string>
     <string name="nc_call_button_content_description_hangup">Hangup</string>
     <string name="nc_call_button_content_description_answer_voice_only">Answer as voice call only</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
