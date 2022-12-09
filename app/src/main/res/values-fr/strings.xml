@@ -59,6 +59,13 @@
     <string name="nc_allow_guests">Autoriser les invités</string>
     <string name="nc_attendee_pin">Épingler : %1$s</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
+    <string name="nc_call_button_content_description_answer_video_call">Répondre par appel vidéo</string>
+    <string name="nc_call_button_content_description_answer_voice_only">Répondre par appel vocal uniquement</string>
+    <string name="nc_call_button_content_description_audio_output">Changer de sortie audio</string>
+    <string name="nc_call_button_content_description_camera">Activer / Désactiver la caméra</string>
+    <string name="nc_call_button_content_description_hangup">Raccrocher</string>
+    <string name="nc_call_button_content_description_microphone">Activer / Désactiver le micro</string>
+    <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_name">Nom de la conversation</string>
     <string name="nc_call_name_is_same">Le nom que vous avez entré est le même que celui existant</string>

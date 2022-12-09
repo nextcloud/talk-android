@@ -59,6 +59,14 @@
     <string name="nc_allow_guests">Позволи гости</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Отключване %1$s</string>
+    <string name="nc_call_button_content_description_answer_video_call">Отговор с видео обаждане</string>
+    <string name="nc_call_button_content_description_answer_voice_only">Отговор само с гласово повикване</string>
+    <string name="nc_call_button_content_description_audio_output">Промяна на аудиоизхода</string>
+    <string name="nc_call_button_content_description_camera">Превключване на камера</string>
+    <string name="nc_call_button_content_description_hangup">Затваряне</string>
+    <string name="nc_call_button_content_description_microphone">Превключване на микрофона</string>
+    <string name="nc_call_button_content_description_pip">Отваряне на картина в режим на картина</string>
+    <string name="nc_call_button_content_description_switch_to_self_vide">Превключване към самозснемане на видео</string>
     <string name="nc_call_incoming">ВХОДЯЩИ</string>
     <string name="nc_call_name">Име на разговор</string>
     <string name="nc_call_name_is_same">Името, което сте въвели, е същото като съществуващото</string>

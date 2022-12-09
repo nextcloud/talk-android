@@ -59,6 +59,14 @@
     <string name="nc_allow_guests">Povolit hosty</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Odemknout %1$s</string>
+    <string name="nc_call_button_content_description_answer_video_call">Zvednou videohovor</string>
+    <string name="nc_call_button_content_description_answer_voice_only">Zvednout pouze jako hlasový</string>
+    <string name="nc_call_button_content_description_audio_output">Změnit zvukový výstup</string>
+    <string name="nc_call_button_content_description_camera">Vyp/zap. kameru</string>
+    <string name="nc_call_button_content_description_hangup">Zavěsit</string>
+    <string name="nc_call_button_content_description_microphone">Vyp/zap. mikrofon</string>
+    <string name="nc_call_button_content_description_pip">Otevřít v režimu obraz-v-obraze</string>
+    <string name="nc_call_button_content_description_switch_to_self_vide">Přepnout na video sama sebe</string>
     <string name="nc_call_incoming">PŘÍCHOZÍ</string>
     <string name="nc_call_name">Název konverzace</string>
     <string name="nc_call_name_is_same">Zadaný název je stejný jako ten stávající</string>
