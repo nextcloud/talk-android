@@ -40,6 +40,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
@@ -61,6 +62,9 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) : M
     lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
+    lateinit var dateUtils: DateUtils
+
+    @Inject
     lateinit var ncApi: NcApi
 
     lateinit var message: ChatMessage
@@ -72,6 +76,7 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) : M
         super.onBind(message)
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
+        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         setAvatarAndAuthorOnMessageItem(message)
 

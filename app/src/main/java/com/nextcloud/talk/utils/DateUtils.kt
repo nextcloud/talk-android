@@ -48,12 +48,28 @@ class DateUtils(val context: Context) {
         },
     )
 
+    /* date formatter in local timezone and locale */
+    private var formatTime: DateFormat = DateFormat.getTimeInstance(
+        DateFormat.SHORT, // timeStyle
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            context.resources.configuration.locales[0]
+        } else {
+            @Suppress("DEPRECATION")
+            context.resources.configuration.locale
+        },
+    )
+
     init {
         format.timeZone = tz
+        formatTime.timeZone = tz
     }
 
     fun getLocalDateTimeStringFromTimestamp(timestampMilliseconds: Long): String {
         return format.format(Date(timestampMilliseconds))
+    }
+
+    fun getLocalTimeStringFromTimestamp(timestampSeconds: Long): String {
+        return formatTime.format(Date(timestampSeconds * DateConstants.SECOND_DIVIDER))
     }
 
     fun relativeStartTimeForLobby(timestampMilliseconds: Long, resources: Resources): String {

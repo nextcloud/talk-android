@@ -46,6 +46,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.net.URLEncoder
@@ -70,6 +71,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
+    @Inject
+    lateinit var dateUtils: DateUtils
+
     lateinit var commonMessageInterface: CommonMessageInterface
 
     @SuppressLint("SetTextI18n")
@@ -78,6 +82,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         sharedApplication!!.componentApplication.inject(this)
         val textColor = viewThemeUtils.getScheme(binding.messageTime.context).onSurfaceVariant
         binding.messageTime.setTextColor(textColor)
+        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         realView.isSelected = false
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams

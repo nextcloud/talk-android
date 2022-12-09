@@ -45,6 +45,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -65,6 +66,9 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var dateUtils: DateUtils
 
     lateinit var commonMessageInterface: CommonMessageInterface
 
@@ -103,6 +107,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
 
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageText.text = messageString
+
+        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         // parent message handling
         if (!message.isDeleted && message.parentMessage != null) {

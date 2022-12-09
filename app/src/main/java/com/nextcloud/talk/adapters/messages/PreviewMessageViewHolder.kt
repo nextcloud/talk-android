@@ -56,6 +56,7 @@ import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.FileViewerUtils
@@ -81,6 +82,9 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     @Inject
     var viewThemeUtils: ViewThemeUtils? = null
 
+    @Inject
+    lateinit var dateUtils: DateUtils
+
     @JvmField
     @Inject
     var okHttpClient: OkHttpClient? = null
@@ -102,6 +106,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     @Suppress("NestedBlockDepth", "ComplexMethod", "LongMethod")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
+        time.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         if (userAvatar != null) {
             if (message.isGrouped || message.isOneToOneConversation) {
                 if (message.isOneToOneConversation) {
