@@ -376,6 +376,8 @@ class ChatController(args: Bundle) :
 
                             if (!inConversation) {
                                 joinRoomWithPassword()
+                            } else {
+                                Log.d(TAG, "already inConversation. joinRoomWithPassword is skipped")
                             }
                         } catch (npe: NullPointerException) {
                             // view binding can be null
@@ -910,7 +912,7 @@ class ChatController(args: Bundle) :
         }
 
         if (adapterWasNull) {
-            // we're starting
+            Log.d(TAG, "starting for the first time (because adapter was null)")
             if (TextUtils.isEmpty(roomToken)) {
                 handleFromNotification()
             } else {
@@ -1801,6 +1803,8 @@ class ChatController(args: Bundle) :
         if (inConversation) {
             Log.d(TAG, "execute joinRoomWithPassword in onAttach")
             joinRoomWithPassword()
+            // replace with getRoomInfo() ? otherwise getRoomInfo is not called periodically after coming
+            //  back to app when it was in background
         }
     }
 
@@ -1845,12 +1849,18 @@ class ChatController(args: Bundle) :
 
         if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
-            // why is sessionId = 0 here ?!?! this causes that leaveRoom is not executed and callbacks continue to
-            // receive which causes bugs!!!
+            // sessionId is sometimes 0 here! this causes that leaveRoom is not executed and callbacks continue to
+            // live which causes bugs!!!
             if (inConversation && validSessionId()) {
                 leaveRoom()
             } else {
                 Log.e(TAG, "not leaving room (inConversation is false and/or validSessionId is false)")
+                if (BuildConfig.DEBUG) {
+                    Toast.makeText(
+                        context, "not leaving room (inConversation is false and/or validSessionId is false)",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         } else {
             Log.e(TAG, "not leaving room...")
@@ -1884,6 +1894,7 @@ class ChatController(args: Bundle) :
 
     public override fun onDestroy() {
         super.onDestroy()
+        logConversationInfos("onDestroy")
 
         if (activity != null) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
@@ -1896,17 +1907,15 @@ class ChatController(args: Bundle) :
         currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
 
         adapter = null
-        inConversation = false
+        inConversation = false // move to onDetach??
+        Log.d(TAG, "inConversation was set to false!")
     }
 
     private fun joinRoomWithPassword() {
-        Log.d(
-            TAG,
-            "joinRoomWithPassword start: " + (currentConversation == null).toString() +
-                "  sessionId: " + currentConversation?.sessionId
-        )
+        Log.d(TAG, "joinRoomWithPassword. currentConversation==null ?:" + (currentConversation == null).toString())
 
         if (!validSessionId()) {
+            Log.d(TAG, "sessionID was not valid -> joinRoom")
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
@@ -1933,7 +1942,8 @@ class ChatController(args: Bundle) :
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: $startNanoTime")
                         inConversation = true
                         currentConversation?.sessionId = roomOverall.ocs!!.data!!.sessionId
-                        Log.d(TAG, "joinRoomWithPassword - sessionId: " + currentConversation?.sessionId)
+
+                        logConversationInfos("joinRoomWithPassword#onNext")
 
                         ApplicationWideCurrentRoomHolder.getInstance().session =
                             currentConversation?.sessionId
@@ -1975,6 +1985,8 @@ class ChatController(args: Bundle) :
                     }
                 })
         } else {
+            Log.d(TAG, "sessionID was valid -> skip joinRoom")
+
             inConversation = true
             ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation?.sessionId
             if (magicWebSocketInstance != null) {
@@ -2020,6 +2032,8 @@ class ChatController(args: Bundle) :
 
                 override fun onNext(genericOverall: GenericOverall) {
                     Log.d(TAG, "leaveRoom - leaveRoom - got response: $startNanoTime")
+                    logConversationInfos("leaveRoom#onNext")
+
                     checkingLobbyStatus = false
 
                     if (lobbyTimerHandler != null) {
@@ -2033,6 +2047,13 @@ class ChatController(args: Bundle) :
                         )
                     } else {
                         Log.e(TAG, "magicWebSocketInstance or currentConversation were null! Failed to leave the room!")
+                        if (BuildConfig.DEBUG) {
+                            Toast.makeText(
+                                context,
+                                "magicWebSocketInstance or currentConversation were null! Failed to leave the room!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
 
                     currentConversation?.sessionId = "0"
@@ -3414,15 +3435,14 @@ class ChatController(args: Bundle) :
     }
 
     private fun logConversationInfos(methodName: String) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, " | -----------------------------------------------")
-            Log.d(TAG, " | method: $methodName")
-            Log.d(TAG, " | ChatController: " + System.identityHashCode(this).toString())
-            Log.d(TAG, " | roomToken: $roomToken")
-            Log.d(TAG, " | currentConversation?.displayName: ${currentConversation?.displayName}")
-            Log.d(TAG, " | currentConversation?.sessionId: ${currentConversation?.sessionId}")
-            Log.d(TAG, " | -----------------------------------------------")
-        }
+        Log.d(TAG, " |-----------------------------------------------")
+        Log.d(TAG, " | method: $methodName")
+        Log.d(TAG, " | ChatController: " + System.identityHashCode(this).toString())
+        Log.d(TAG, " | roomToken: $roomToken")
+        Log.d(TAG, " | currentConversation?.displayName: ${currentConversation?.displayName}")
+        Log.d(TAG, " | currentConversation?.sessionId: ${currentConversation?.sessionId}")
+        Log.d(TAG, " | inConversation: $inConversation")
+        Log.d(TAG, " |-----------------------------------------------")
     }
 
     companion object {
