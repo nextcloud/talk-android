@@ -59,6 +59,10 @@
     <string name="nc_allow_guests">Gäste zulassen</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s entsperren</string>
+    <string name="nc_call_button_content_description_camera">Kamera umschalten</string>
+    <string name="nc_call_button_content_description_hangup">Auflegen</string>
+    <string name="nc_call_button_content_description_microphone">Mikrofon umschalten</string>
+    <string name="nc_call_button_content_description_pip">Bild-in-Bild-Modus öffnen</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
     <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>

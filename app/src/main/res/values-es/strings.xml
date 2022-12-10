@@ -59,6 +59,14 @@
     <string name="nc_allow_guests">Permitir invitados</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
+    <string name="nc_call_button_content_description_answer_video_call">Contestar como videollamada</string>
+    <string name="nc_call_button_content_description_answer_voice_only">Contestar como llamada de audio solamente</string>
+    <string name="nc_call_button_content_description_audio_output">Cambiar salida de audio</string>
+    <string name="nc_call_button_content_description_camera">Activar/Desactivar cámara</string>
+    <string name="nc_call_button_content_description_hangup">Colgar</string>
+    <string name="nc_call_button_content_description_microphone">Activar/Desactivar el micrófono</string>
+    <string name="nc_call_button_content_description_pip">Abrir modo picture in picture</string>
+    <string name="nc_call_button_content_description_switch_to_self_vide">Cambiar a video propio</string>
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nombre de la conversación</string>
     <string name="nc_call_name_is_same">El nombre que has introducido es el mismo que el existente</string>
