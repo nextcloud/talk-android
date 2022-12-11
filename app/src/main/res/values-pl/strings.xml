@@ -59,6 +59,14 @@
     <string name="nc_allow_guests">Zezwól gościom</string>
     <string name="nc_attendee_pin">Przypnij: %1$s</string>
     <string name="nc_biometric_unlock">Odblokuj %1$s</string>
+    <string name="nc_call_button_content_description_answer_video_call">Odbierz jako połączenie wideo</string>
+    <string name="nc_call_button_content_description_answer_voice_only">Odbierz tylko jako połączenie głosowe</string>
+    <string name="nc_call_button_content_description_audio_output">Zmień wyjście audio</string>
+    <string name="nc_call_button_content_description_camera">Przełącz kamerę</string>
+    <string name="nc_call_button_content_description_hangup">Rozłącz się</string>
+    <string name="nc_call_button_content_description_microphone">Przełącz mikrofon</string>
+    <string name="nc_call_button_content_description_pip">Otwórz zdjęcie w trybie obrazu</string>
+    <string name="nc_call_button_content_description_switch_to_self_vide">Przełącz na własne wideo</string>
     <string name="nc_call_incoming">PRZYCHODZĄCA</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
     <string name="nc_call_name_is_same">Wpisana nazwa jest taka sama jak dotychczasowa</string>
