@@ -103,7 +103,6 @@ import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
-import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
@@ -124,6 +123,7 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatu
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
+import com.nextcloud.talk.utils.remapchat.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -539,6 +539,7 @@ class ConversationsListController(bundle: Bundle) :
                 handleHttpExceptions(throwable)
                 withNullableControllerViewBinding {
                     binding.swipeRefreshLayoutView.isRefreshing = false
+                    showErrorDialog()
                 }
                 dispose(roomsQueryDisposable)
             }) {
@@ -598,6 +599,24 @@ class ConversationsListController(bundle: Bundle) :
             )
             conversationItemsWithHeader.add(conversationItemWithHeader)
         }
+    }
+
+    private fun showErrorDialog() {
+        val dialogBuilder = MaterialAlertDialogBuilder(binding.floatingActionButton.context)
+            .setIcon(
+                viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                    context,
+                    R.drawable.ic_baseline_error_outline_24dp,
+                )
+            )
+            .setTitle(R.string.error_loading_chats)
+            .setCancelable(false)
+            .setNegativeButton(R.string.close, null)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(binding.floatingActionButton.context, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun sortConversations(conversationItems: MutableList<AbstractFlexibleItem<*>>) {
@@ -737,12 +756,7 @@ class ConversationsListController(bundle: Bundle) :
             for (flexItem in conversationItems) {
                 val conversation: Conversation = (flexItem as ConversationItem).model
                 val position = adapter!!.getGlobalPositionOf(flexItem)
-                if ((
-                    conversation.unreadMention ||
-                        conversation.unreadMessages > 0 &&
-                        conversation.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-                    ) && position > lastVisibleItem
-                ) {
+                if (hasUnreadItems(conversation) && position > lastVisibleItem) {
                     nextUnreadConversationScrollPosition = position
                     if (!binding.newMentionPopupBubble.isShown) {
                         binding.newMentionPopupBubble.show()
@@ -761,6 +775,11 @@ class ConversationsListController(bundle: Bundle) :
             )
         }
     }
+
+    private fun hasUnreadItems(conversation: Conversation) =
+        conversation.unreadMention ||
+            conversation.unreadMessages > 0 &&
+            conversation.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun showNewConversationsScreen() {
         val bundle = Bundle()
@@ -1156,8 +1175,7 @@ class ConversationsListController(bundle: Bundle) :
         conversationMenuBundle = bundle
         if (activity != null &&
             conversationMenuBundle != null &&
-            currentUser != null &&
-            conversationMenuBundle!!.getLong(KEY_INTERNAL_USER_ID) == currentUser!!.id
+            isInternalUserEqualsCurrentUser(currentUser, conversationMenuBundle)
         ) {
             val conversation = Parcels.unwrap<Conversation>(conversationMenuBundle!!.getParcelable(KEY_ROOM))
             if (conversation != null) {
@@ -1190,6 +1208,10 @@ class ConversationsListController(bundle: Bundle) :
                 )
             }
         }
+    }
+
+    private fun isInternalUserEqualsCurrentUser(currentUser: User?, conversationMenuBundle: Bundle?): Boolean {
+        return currentUser != null && conversationMenuBundle!!.getLong(KEY_INTERNAL_USER_ID) == currentUser.id
     }
 
     private fun showUnauthorizedDialog() {
@@ -1317,6 +1339,7 @@ class ConversationsListController(bundle: Bundle) :
         handleHttpExceptions(throwable)
         withNullableControllerViewBinding {
             binding.swipeRefreshLayoutView.isRefreshing = false
+            showErrorDialog()
         }
     }
 

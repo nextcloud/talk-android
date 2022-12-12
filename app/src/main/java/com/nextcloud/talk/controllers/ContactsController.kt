@@ -66,9 +66,9 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.dialog.ContactsBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.remapchat.ConductorRemapping
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -285,8 +285,11 @@ class ContactsController(args: Bundle) :
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
                                 ConductorRemapping.remapChatController(
-                                    router, currentUser!!.id!!,
-                                    roomOverall.ocs!!.data!!.token!!, bundle, true
+                                    router,
+                                    currentUser!!.id!!,
+                                    roomOverall.ocs!!.data!!.token!!,
+                                    bundle,
+                                    true
                                 )
                             }
 
@@ -738,9 +741,11 @@ class ContactsController(args: Bundle) :
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(openConversationEvent: OpenConversationEvent) {
         ConductorRemapping.remapChatController(
-            router, currentUser!!.id!!,
+            router,
+            currentUser!!.id!!,
             openConversationEvent.conversation!!.token!!,
-            openConversationEvent.bundle!!, true
+            openConversationEvent.bundle!!,
+            true
         )
         contactsBottomDialog?.dismiss()
     }
