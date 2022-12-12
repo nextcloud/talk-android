@@ -96,6 +96,7 @@ import coil.load
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
+import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.google.android.flexbox.FlexboxLayout
@@ -2005,6 +2006,33 @@ class ChatController(args: Bundle) :
     }
 
     private fun leaveRoom() {
+        leaveRoom(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+        )
+    }
+
+    private fun leaveRoom(
+        router: Router?,
+        internalUserId: Long?,
+        roomTokenOrId: String?,
+        bundle: Bundle?,
+        replaceTop: Boolean?,
+        remapChatController:
+            (
+                (
+                    router: Router,
+                    internalUserId: Long,
+                    roomTokenOrId: String,
+                    bundle: Bundle,
+                    replaceTop: Boolean
+                ) -> Unit
+            )?
+    ) {
         logConversationInfos("leaveRoom")
 
         var apiVersion = 1
@@ -2057,6 +2085,19 @@ class ChatController(args: Bundle) :
                     }
 
                     currentConversation?.sessionId = "0"
+
+                    if (remapChatController != null) {
+                        Log.d(TAG, "remapChatController was set and is now executed after room was already left")
+                        remapChatController(
+                            router!!,
+                            internalUserId!!,
+                            roomTokenOrId!!,
+                            bundle!!,
+                            replaceTop!!,
+                        )
+                    } else {
+                        Log.d(TAG, "remapChatController was not set")
+                    }
                 }
 
                 override fun onError(e: Throwable) {
@@ -3353,12 +3394,13 @@ class ChatController(args: Bundle) :
                             )
                             conversationIntent.putExtras(bundle)
 
-                            ConductorRemapping.remapChatController(
+                            leaveRoom(
                                 router,
                                 conversationUser.id!!,
                                 roomOverall.ocs!!.data!!.token!!,
                                 bundle,
-                                false
+                                false,
+                                ConductorRemapping::remapChatController
                             )
                         } else {
                             conversationIntent.putExtras(bundle)
