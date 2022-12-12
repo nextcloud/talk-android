@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.utils
+package com.nextcloud.talk.utils.remapchat
 
 import android.os.Bundle
 import android.util.Log
@@ -62,40 +62,69 @@ object ConductorRemapping {
             } else {
                 HorizontalChangeHandler()
             }
-            if (!replaceTop) {
-                if (!router.hasRootController()) {
-                    Log.d(TAG, "router has no RootController. creating backstack with ConversationsListController")
-                    val newBackstack = listOf(
-                        RouterTransaction.with(ConversationsListController(Bundle()))
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler()),
-                        RouterTransaction.with(ChatController(bundle))
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler()).tag(chatControllerTag)
-                    )
-                    router.setBackstack(newBackstack, SimpleSwapChangeHandler())
+
+            if (router.hasRootController()) {
+                val backstack = router.backstack
+                val topController = backstack[router.backstackSize - 1].controller
+
+                val remapChatModel = RemapChatModel(
+                    router,
+                    pushChangeHandler,
+                    chatControllerTag,
+                    bundle
+                )
+
+                if (topController is ChatController) {
+                    if (replaceTop) {
+                        topController.leaveRoom(remapChatModel, this::replaceTopController)
+                    } else {
+                        topController.leaveRoom(remapChatModel, this::pushController)
+                    }
                 } else {
-                    Log.d(TAG, "router has RootController. pushing ChatController")
-                    router.pushController(
-                        RouterTransaction.with(ChatController(bundle))
-                            .pushChangeHandler(pushChangeHandler)
-                            .popChangeHandler(HorizontalChangeHandler()).tag(chatControllerTag)
-                    )
+                    if (replaceTop) {
+                        replaceTopController(remapChatModel)
+                    } else {
+                        pushController(remapChatModel)
+                    }
                 }
             } else {
-                Log.d(TAG, "ChatController replace topController")
-
-                router.replaceTopController(
+                Log.d(TAG, "router has no RootController. creating backstack with ConversationsListController")
+                val newBackstack = listOf(
+                    RouterTransaction.with(ConversationsListController(Bundle()))
+                        .pushChangeHandler(HorizontalChangeHandler())
+                        .popChangeHandler(HorizontalChangeHandler()),
                     RouterTransaction.with(ChatController(bundle))
-                        .pushChangeHandler(pushChangeHandler)
-                        .popChangeHandler(HorizontalChangeHandler()).tag(chatControllerTag)
+                        .pushChangeHandler(HorizontalChangeHandler())
+                        .popChangeHandler(HorizontalChangeHandler())
+                        .tag(chatControllerTag)
                 )
+                router.setBackstack(newBackstack, SimpleSwapChangeHandler())
             }
         }
 
         if (router.getControllerWithTag(LockedController.TAG) != null) {
             moveControllerToTop(router, LockedController.TAG)
         }
+    }
+
+    fun pushController(remapChatModel: RemapChatModel) {
+        Log.d(TAG, "pushController")
+        remapChatModel.router.pushController(
+            RouterTransaction.with(ChatController(remapChatModel.bundle))
+                .pushChangeHandler(remapChatModel.controllerChangeHandler)
+                .popChangeHandler(HorizontalChangeHandler())
+                .tag(remapChatModel.chatControllerTag)
+        )
+    }
+
+    private fun replaceTopController(remapChatModel: RemapChatModel) {
+        Log.d(TAG, "replaceTopController")
+        remapChatModel.router.replaceTopController(
+            RouterTransaction.with(ChatController(remapChatModel.bundle))
+                .pushChangeHandler(remapChatModel.controllerChangeHandler)
+                .popChangeHandler(HorizontalChangeHandler())
+                .tag(remapChatModel.chatControllerTag)
+        )
     }
 
     private fun moveControllerToTop(router: Router, controllerTag: String) {

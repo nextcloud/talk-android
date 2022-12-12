@@ -124,6 +124,7 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatu
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
+import com.nextcloud.talk.utils.remapchat.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager

@@ -41,8 +41,8 @@ import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.EMAIL
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.PROFILE
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.SPREED
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.remapchat.ConductorRemapping
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
