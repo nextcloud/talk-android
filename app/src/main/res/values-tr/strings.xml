@@ -59,6 +59,14 @@
     <string name="nc_allow_guests">Konuklar katılabilsin</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">%1$s kilidini aç</string>
+    <string name="nc_call_button_content_description_answer_video_call">Görüntülü çağrı olarak yanıtla</string>
+    <string name="nc_call_button_content_description_answer_voice_only">Yalnızca sesli çağrı olarak yanıtla</string>
+    <string name="nc_call_button_content_description_audio_output">Ses çıkışını değiştir</string>
+    <string name="nc_call_button_content_description_camera">Kamerayı aç/kapat</string>
+    <string name="nc_call_button_content_description_hangup">Çağrıyı sonlandır</string>
+    <string name="nc_call_button_content_description_microphone">Mikrofonu aç/kapat</string>
+    <string name="nc_call_button_content_description_pip">Resim içinde resim kipini aç</string>
+    <string name="nc_call_button_content_description_switch_to_self_vide">Benim görüntüme geç</string>
     <string name="nc_call_incoming">GELEN</string>
     <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_call_name_is_same">Yazdığınız ad var olan ad ile aynı</string>
