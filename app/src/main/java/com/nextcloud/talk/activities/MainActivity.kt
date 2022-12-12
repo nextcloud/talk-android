@@ -363,13 +363,10 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     override fun onBackPressed() {
-        Log.d(TAG, "onBackPressed")
         if (router!!.getControllerWithTag(LockedController.TAG) != null) {
             return
         }
-
         if (!router!!.handleBack()) {
-            Log.d(TAG, "back press was not handled by top controller. call onBackPressed...")
             super.onBackPressed()
         }
     }
