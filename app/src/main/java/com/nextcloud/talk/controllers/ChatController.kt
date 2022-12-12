@@ -5,9 +5,9 @@
  * @author Marcel Hibbe
  * @author Andy Scherzinger
  * @author Tim Krüger
- * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
- * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2021-2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -91,6 +91,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.load
+import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.common.executors.UiThreadImmediateExecutorService
@@ -2000,6 +2001,32 @@ class ChatController(args: Bundle) :
     }
 
     private fun leaveRoom() {
+        leaveRoom(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+        )
+    }
+
+    private fun leaveRoom(
+        router: Router?,
+        internalUserId: Long?,
+        roomTokenOrId: String?,
+        bundle: Bundle?,
+        replaceTop: Boolean?,
+        remapChatController: (
+            (
+                router: Router,
+                internalUserId: Long,
+                roomTokenOrId: String,
+                bundle: Bundle,
+                replaceTop: Boolean
+            ) -> Unit
+        )?
+    ) {
         logConversationInfos("leaveRoom")
 
         var apiVersion = 1
@@ -2052,6 +2079,19 @@ class ChatController(args: Bundle) :
                     }
 
                     currentConversation?.sessionId = "0"
+
+                    if (remapChatController != null) {
+                        Log.d(TAG, "remapChatController was set and is now executed after room was already left")
+                        remapChatController(
+                            router!!,
+                            internalUserId!!,
+                            roomTokenOrId!!,
+                            bundle!!,
+                            replaceTop!!,
+                        )
+                    } else {
+                        Log.d(TAG, "remapChatController was not set")
+                    }
                 }
 
                 override fun onError(e: Throwable) {
@@ -3166,6 +3206,24 @@ class ChatController(args: Bundle) :
         adapter?.update(message)
     }
 
+    fun updateUiToDeleteReaction(message: ChatMessage, emoji: String) {
+        if (message.reactions == null) {
+            message.reactions = LinkedHashMap()
+        }
+
+        if (message.reactionsSelf == null) {
+            message.reactionsSelf = ArrayList<String>()
+        }
+
+        var amount = message.reactions!![emoji]
+        if (amount == null) {
+            amount = 0
+        }
+        message.reactions!![emoji] = amount - 1
+        message.reactionsSelf!!.remove(emoji)
+        adapter?.update(message)
+    }
+
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
         if (conversationUser == null) return false
 
@@ -3270,12 +3328,13 @@ class ChatController(args: Bundle) :
                             )
                             conversationIntent.putExtras(bundle)
 
-                            ConductorRemapping.remapChatController(
+                            leaveRoom(
                                 router,
                                 conversationUser.id!!,
                                 roomOverall.ocs!!.data!!.token!!,
                                 bundle,
-                                false
+                                false,
+                                ConductorRemapping::remapChatController
                             )
                         } else {
                             conversationIntent.putExtras(bundle)
