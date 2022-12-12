@@ -1798,8 +1798,6 @@ class ChatController(args: Bundle) :
         if (inConversation) {
             Log.d(TAG, "execute joinRoomWithPassword in onAttach")
             joinRoomWithPassword()
-            // replace with getRoomInfo() ? otherwise getRoomInfo is not called periodically after coming
-            //  back to app when it was in background
         }
     }
 
@@ -1900,8 +1898,6 @@ class ChatController(args: Bundle) :
     }
 
     private fun joinRoomWithPassword() {
-        Log.d(TAG, "joinRoomWithPassword. currentConversation==null ?:" + (currentConversation == null).toString())
-
         if (!validSessionId()) {
             Log.d(TAG, "sessionID was not valid -> joinRoom")
             var apiVersion = 1
