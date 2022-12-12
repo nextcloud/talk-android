@@ -96,7 +96,6 @@ import coil.load
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
-import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.google.android.flexbox.FlexboxLayout
@@ -162,8 +161,6 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ConductorRemapping
-import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
@@ -182,6 +179,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
+import com.nextcloud.talk.utils.remapchat.ConductorRemapping
+import com.nextcloud.talk.utils.remapchat.RemapChatModel
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
@@ -1850,18 +1849,11 @@ class ChatController(args: Bundle) :
 
         if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
-            // sessionId is sometimes 0 here! this causes that leaveRoom is not executed and callbacks continue to
-            // live which causes bugs!!!
             if (inConversation && validSessionId()) {
-                leaveRoom()
+                leaveRoom(null, null)
             } else {
-                Log.e(TAG, "not leaving room (inConversation is false and/or validSessionId is false)")
-                if (BuildConfig.DEBUG) {
-                    Toast.makeText(
-                        context, "not leaving room (inConversation is false and/or validSessionId is false)",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+                Log.d(TAG, "not leaving room (inConversation is false and/or validSessionId is false)")
+                // room might have already been left...
             }
         } else {
             Log.e(TAG, "not leaving room...")
@@ -1908,7 +1900,7 @@ class ChatController(args: Bundle) :
         currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
 
         adapter = null
-        inConversation = false // move to onDetach??
+        inConversation = false
         Log.d(TAG, "inConversation was set to false!")
     }
 
@@ -2005,33 +1997,9 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun leaveRoom() {
-        leaveRoom(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-        )
-    }
-
-    private fun leaveRoom(
-        router: Router?,
-        internalUserId: Long?,
-        roomTokenOrId: String?,
-        bundle: Bundle?,
-        replaceTop: Boolean?,
-        remapChatController:
-            (
-                (
-                    router: Router,
-                    internalUserId: Long,
-                    roomTokenOrId: String,
-                    bundle: Bundle,
-                    replaceTop: Boolean
-                ) -> Unit
-            )?
+    fun leaveRoom(
+        remapChatModel: RemapChatModel?,
+        funToCallWhenLeaveSuccessful: ((RemapChatModel) -> Unit)?
     ) {
         logConversationInfos("leaveRoom")
 
@@ -2086,15 +2054,9 @@ class ChatController(args: Bundle) :
 
                     currentConversation?.sessionId = "0"
 
-                    if (remapChatController != null) {
-                        Log.d(TAG, "remapChatController was set and is now executed after room was already left")
-                        remapChatController(
-                            router!!,
-                            internalUserId!!,
-                            roomTokenOrId!!,
-                            bundle!!,
-                            replaceTop!!,
-                        )
+                    if (remapChatModel != null && funToCallWhenLeaveSuccessful != null) {
+                        Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
+                        funToCallWhenLeaveSuccessful(remapChatModel)
                     } else {
                         Log.d(TAG, "remapChatController was not set")
                     }
@@ -3069,7 +3031,8 @@ class ChatController(args: Bundle) :
                                     KEY_ACTIVE_CONVERSATION,
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
-                                remapChatController(
+
+                                ConductorRemapping.remapChatController(
                                     router,
                                     conversationUser!!.id!!,
                                     roomOverall.ocs!!.data!!.token!!,
@@ -3394,13 +3357,12 @@ class ChatController(args: Bundle) :
                             )
                             conversationIntent.putExtras(bundle)
 
-                            leaveRoom(
+                            ConductorRemapping.remapChatController(
                                 router,
                                 conversationUser.id!!,
                                 roomOverall.ocs!!.data!!.token!!,
                                 bundle,
-                                false,
-                                ConductorRemapping::remapChatController
+                                true
                             )
                         } else {
                             conversationIntent.putExtras(bundle)

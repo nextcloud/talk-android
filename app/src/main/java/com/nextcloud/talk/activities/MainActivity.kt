@@ -50,13 +50,13 @@ import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
+import com.nextcloud.talk.utils.remapchat.ConductorRemapping.remapChatController
 import io.reactivex.Observer
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers

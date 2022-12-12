@@ -99,7 +99,6 @@ import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
-import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -119,6 +118,7 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatu
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
+import com.nextcloud.talk.utils.remapchat.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
