@@ -75,7 +75,12 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     }
 
     override fun setUserAsActiveWithId(id: Long): Single<Boolean> {
-        return Single.just(usersDao.setUserAsActiveWithId(id))
+        val amountUpdated = usersDao.setUserAsActiveWithId(id)
+        return if (amountUpdated > 0) {
+            Single.just(true)
+        } else {
+            Single.just(false)
+        }
     }
 
     override fun deleteUser(user: User): Int {
