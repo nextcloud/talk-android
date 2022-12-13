@@ -22,13 +22,11 @@
 
 package com.nextcloud.talk.data.user
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
 import com.nextcloud.talk.data.user.model.UserEntity
 import io.reactivex.Maybe
@@ -83,27 +81,14 @@ abstract class UsersDao {
     @Query("SELECT * FROM User WHERE username = :username AND baseUrl = :server")
     abstract fun getUserWithUsernameAndServer(username: String, server: String): Maybe<UserEntity>
 
-    @Transaction
-    @Suppress("Detekt.TooGenericExceptionCaught") // blockingGet() only throws RuntimeExceptions per rx docs
-    open fun setUserAsActiveWithId(id: Long): Boolean {
-        return try {
-            getUsers().blockingGet().forEach { user ->
-                user.current = user.id == id
-
-                Log.d(TAG, "xxxxxxxxxxxx")
-                Log.d(TAG, "setUserAsActiveWithId. user.username: " + user.username)
-                Log.d(TAG, "setUserAsActiveWithId. user.id: " + user.id)
-                Log.d(TAG, "setUserAsActiveWithId. user.current: " + user.current)
-                Log.d(TAG, "xxxxxxxxxxxx")
-
-                updateUser(user)
-            }
-            true
-        } catch (e: RuntimeException) {
-            Log.e(TAG, "Error setting user active", e)
-            false
-        }
-    }
+    @Query(
+        "UPDATE User " +
+            "SET current = CASE " +
+            "WHEN id == :id THEN 1 " +
+            "WHEN userId != :id THEN 0 " +
+            "END"
+    )
+    abstract fun setUserAsActiveWithId(id: Long): Int
 
     companion object {
         const val TAG = "UsersDao"
