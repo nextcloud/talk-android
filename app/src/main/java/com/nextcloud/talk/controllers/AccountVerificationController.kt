@@ -324,9 +324,9 @@ class AccountVerificationController(args: Bundle? = null) :
                     }
                     if (!TextUtils.isEmpty(displayName)) {
                         storeProfile(
-                            displayName, userProfileOverall.ocs!!.data!!.userId!!,
-                            capabilities.ocs!!.data!!
-                                .capabilities!!
+                            displayName,
+                            userProfileOverall.ocs!!.data!!.userId!!,
+                            capabilities.ocs!!.data!!.capabilities!!
                         )
                     } else {
                         if (activity != null) {
