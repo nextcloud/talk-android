@@ -315,6 +315,9 @@ class ConversationsListController(bundle: Bundle) :
                     .colorMaterialTextButton((activity as MainActivity?)!!.binding.switchAccountButton)
             }
             fetchRooms()
+        } else {
+            Log.e(TAG, "currentUser was null in ConversationsListController.onAttach")
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
         }
     }
 
