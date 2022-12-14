@@ -311,7 +311,7 @@ public class PushUtils {
                 public void onNext(@NonNull Void aVoid) {
                     try {
                         Log.d(TAG, "pushToken successfully registered at pushproxy.");
-                        createOrUpdateUser(proxyMap, user);
+                        updatePushStateForUser(proxyMap, user);
                     } catch (IOException e) {
                         Log.e(TAG, "IOException while updating user", e);
                     }
@@ -330,7 +330,7 @@ public class PushUtils {
             });
     }
 
-    private void createOrUpdateUser(Map<String, String> proxyMap, User user) throws IOException {
+    private void updatePushStateForUser(Map<String, String> proxyMap, User user) throws IOException {
         PushConfigurationState pushConfigurationState = new PushConfigurationState();
         pushConfigurationState.setPushToken(proxyMap.get("pushToken"));
         pushConfigurationState.setDeviceIdentifier(proxyMap.get("deviceIdentifier"));
