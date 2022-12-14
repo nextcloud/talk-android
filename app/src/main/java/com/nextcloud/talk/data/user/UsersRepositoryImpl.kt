@@ -23,6 +23,7 @@
 package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.push.PushConfigurationState
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -85,5 +86,9 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
     override fun deleteUser(user: User): Int {
         return usersDao.deleteUser(UserMapper.toEntity(user))
+    }
+
+    override fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> {
+        return usersDao.updatePushState(id, state)
     }
 }

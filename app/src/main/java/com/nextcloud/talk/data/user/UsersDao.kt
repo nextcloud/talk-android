@@ -29,6 +29,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.models.json.push.PushConfigurationState
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -88,6 +89,9 @@ abstract class UsersDao {
             "END"
     )
     abstract fun setUserAsActiveWithId(id: Long): Int
+
+    @Query("Update User SET pushConfigurationState = :state WHERE id == :id")
+    abstract fun updatePushState(id: Long, state: PushConfigurationState): Single<Int>
 
     companion object {
         const val TAG = "UsersDao"
