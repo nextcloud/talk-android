@@ -295,7 +295,7 @@ class ConversationsListController(bundle: Bundle) :
             }
             fetchRooms()
         } else {
-            Log.e(TAG, "currentUser was null in ConversationsListController.onAttach")
+            Log.e(TAG, "userManager.currentUser.blockingGet() returned null")
             Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
         }
     }
