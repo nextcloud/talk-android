@@ -338,8 +338,7 @@ public class PushUtils {
         pushConfigurationState.setUserPublicKey(proxyMap.get("userPublicKey"));
         pushConfigurationState.setUsesRegularPass(Boolean.FALSE);
 
-        user.setPushConfigurationState(pushConfigurationState);
-        userManager.saveUser(user).subscribe(new SingleObserver<Integer>() {
+        userManager.updatePushState(user.getId(), pushConfigurationState).subscribe(new SingleObserver<Integer>() {
             @Override
             public void onSubscribe(Disposable d) {
                 // unused atm
