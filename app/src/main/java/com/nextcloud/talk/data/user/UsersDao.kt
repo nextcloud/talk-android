@@ -82,10 +82,9 @@ abstract class UsersDao {
     abstract fun getUserWithUsernameAndServer(username: String, server: String): Maybe<UserEntity>
 
     @Query(
-        "UPDATE User " +
-            "SET current = CASE " +
+        "UPDATE User SET current = CASE " +
             "WHEN id == :id THEN 1 " +
-            "WHEN userId != :id THEN 0 " +
+            "WHEN id != :id THEN 0 " +
             "END"
     )
     abstract fun setUserAsActiveWithId(id: Long): Int
