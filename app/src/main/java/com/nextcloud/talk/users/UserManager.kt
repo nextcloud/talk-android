@@ -230,6 +230,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return user
     }
 
+    fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> {
+        return userRepository.updatePushState(id, state)
+    }
+
     companion object {
         const val TAG = "UserManager"
     }
