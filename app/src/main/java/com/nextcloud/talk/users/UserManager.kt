@@ -43,6 +43,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     val currentUser: Maybe<User>
         get() {
             return userRepository.getActiveUser()
+                .switchIfEmpty(getAnyUserAndSetAsActive())
         }
 
     val currentUserObservable: Observable<User>
