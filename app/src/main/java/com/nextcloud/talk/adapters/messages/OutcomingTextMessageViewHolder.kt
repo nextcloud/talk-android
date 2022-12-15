@@ -44,6 +44,7 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
 import com.nextcloud.talk.utils.TextMatchers
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
@@ -59,6 +60,9 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var dateUtils: DateUtils
 
     lateinit var commonMessageInterface: CommonMessageInterface
 
@@ -87,6 +91,8 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         binding.messageTime.layoutParams = layoutParams
         binding.messageText.setTextColor(textColor)
         binding.messageText.text = messageString
+
+        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         // parent message handling
         if (!message.isDeleted && message.parentMessage != null) {

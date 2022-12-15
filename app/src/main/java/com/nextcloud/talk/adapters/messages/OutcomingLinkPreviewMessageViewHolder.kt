@@ -39,6 +39,7 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
@@ -57,6 +58,9 @@ class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
     lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
+    lateinit var dateUtils: DateUtils
+
+    @Inject
     lateinit var appPreferences: AppPreferences
 
     @Inject
@@ -73,6 +77,7 @@ class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
         sharedApplication!!.componentApplication.inject(this)
         val textColor = viewThemeUtils.getScheme(binding.messageTime.context).onSurfaceVariant
         binding.messageTime.setTextColor(textColor)
+        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         colorizeMessageBubble(message)
 

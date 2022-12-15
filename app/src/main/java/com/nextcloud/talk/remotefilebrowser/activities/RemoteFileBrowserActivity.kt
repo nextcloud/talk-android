@@ -46,6 +46,7 @@ import com.nextcloud.talk.remotefilebrowser.adapters.RemoteFileBrowserItemsAdapt
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileSortOrder
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
@@ -63,6 +64,9 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var dateUtils: DateUtils
 
     private lateinit var binding: ActivityRemoteFileBrowserBinding
     private lateinit var viewModel: RemoteFileBrowserItemsViewModel
@@ -169,6 +173,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
             user = currentUserProvider.currentUser.blockingGet(),
             selectionInterface = this,
             viewThemeUtils = viewThemeUtils,
+            dateUtils = dateUtils,
             onItemClicked = viewModel::onItemClicked
         )
         adapter.items = remoteFileBrowserItems

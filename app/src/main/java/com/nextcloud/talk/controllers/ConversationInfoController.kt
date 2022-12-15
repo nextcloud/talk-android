@@ -118,6 +118,9 @@ class ConversationInfoController(args: Bundle) :
     @Inject
     lateinit var eventBus: EventBus
 
+    @Inject
+    lateinit var dateUtils: DateUtils
+
     private val conversationToken: String?
     private val conversationUser: User?
     private val hasAvatarSpacing: Boolean
@@ -311,8 +314,8 @@ class ConversationInfoController(args: Bundle) :
             conversation!!.lobbyTimer != 0L
         ) {
             binding.webinarInfoView.startTimePreferences.setSummary(
-                DateUtils.getLocalDateStringFromTimestampForLobby(
-                    conversation!!.lobbyTimer!!
+                dateUtils.getLocalDateTimeStringFromTimestamp(
+                    conversation!!.lobbyTimer!! * DateConstants.SECOND_DIVIDER,
                 )
             )
         } else {

@@ -39,6 +39,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
@@ -60,6 +61,9 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
     lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
+    lateinit var dateUtils: DateUtils
+
+    @Inject
     lateinit var ncApi: NcApi
 
     lateinit var message: ChatMessage
@@ -71,6 +75,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
         super.onBind(message)
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
+        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         setAvatarAndAuthorOnMessageItem(message)
 

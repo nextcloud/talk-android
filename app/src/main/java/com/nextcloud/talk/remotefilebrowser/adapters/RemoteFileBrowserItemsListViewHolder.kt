@@ -23,9 +23,7 @@ package com.nextcloud.talk.remotefilebrowser.adapters
 import android.text.format.Formatter
 import android.view.View
 import android.widget.ImageView
-import autodagger.AutoInjector
 import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemBrowserFileBinding
 import com.nextcloud.talk.extensions.loadImage
@@ -33,16 +31,16 @@ import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DateUtils.getLocalDateTimeStringFromTimestamp
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.Mimetype.FOLDER
 
-@AutoInjector(NextcloudTalkApplication::class)
 class RemoteFileBrowserItemsListViewHolder(
     override val binding: RvItemBrowserFileBinding,
     mimeTypeSelectionFilter: String?,
     currentUser: User,
     selectionInterface: SelectionInterface,
     private val viewThemeUtils: ViewThemeUtils,
+    private val dateUtils: DateUtils,
     onItemClicked: (Int) -> Unit
 ) : RemoteFileBrowserItemsViewHolder(binding, mimeTypeSelectionFilter, currentUser, selectionInterface) {
 
@@ -111,7 +109,7 @@ class RemoteFileBrowserItemsListViewHolder(
         binding.fileModifiedInfo.text = String.format(
             binding.fileModifiedInfo.context.getString(R.string.nc_last_modified),
             Formatter.formatShortFileSize(binding.fileModifiedInfo.context, item.size),
-            getLocalDateTimeStringFromTimestamp(item.modifiedTimestamp)
+            dateUtils.getLocalDateTimeStringFromTimestamp(item.modifiedTimestamp)
         )
 
         binding.selectFileCheckbox.isChecked = selectionInterface.isPathSelected(item.path!!)

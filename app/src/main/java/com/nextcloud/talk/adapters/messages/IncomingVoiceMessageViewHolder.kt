@@ -47,6 +47,7 @@ import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.util.concurrent.ExecutionException
@@ -66,6 +67,9 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
+    @Inject
+    lateinit var dateUtils: DateUtils
+
     @JvmField
     @Inject
     var appPreferences: AppPreferences? = null
@@ -80,6 +84,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         super.onBind(message)
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
+
+        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         setAvatarAndAuthorOnMessageItem(message)
 

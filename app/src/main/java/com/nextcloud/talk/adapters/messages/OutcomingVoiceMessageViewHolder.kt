@@ -43,6 +43,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.util.concurrent.ExecutionException
@@ -62,6 +63,9 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
+    @Inject
+    lateinit var dateUtils: DateUtils
+
     @JvmField
     @Inject
     var appPreferences: AppPreferences? = null
@@ -80,6 +84,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         sharedApplication!!.componentApplication.inject(this)
         val textColor = viewThemeUtils.getScheme(binding.messageTime.context).onSurfaceVariant
         binding.messageTime.setTextColor(textColor)
+        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         colorizeMessageBubble(message)
 

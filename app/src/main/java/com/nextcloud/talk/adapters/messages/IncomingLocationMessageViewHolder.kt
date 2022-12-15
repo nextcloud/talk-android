@@ -49,6 +49,7 @@ import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -75,6 +76,9 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
+    @Inject
+    lateinit var dateUtils: DateUtils
+
     lateinit var commonMessageInterface: CommonMessageInterface
 
     @SuppressLint("SetTextI18n")
@@ -91,6 +95,8 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
         val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageText.text = message.text
+
+        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
