@@ -48,8 +48,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode 150000290
-        versionName "15.0.2"
+        versionCode 150000390
+        versionName "15.0.3"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
