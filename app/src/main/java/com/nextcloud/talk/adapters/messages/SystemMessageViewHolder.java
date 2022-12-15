@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.utils.DateUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.stfalcon.chatkit.messages.MessageHolders;
@@ -52,6 +53,9 @@ public class SystemMessageViewHolder extends MessageHolders.IncomingTextMessageV
 
     @Inject
     Context context;
+
+    @Inject
+    DateUtils dateUtils;
 
     protected ViewGroup background;
 
@@ -100,6 +104,10 @@ public class SystemMessageViewHolder extends MessageHolders.IncomingTextMessageV
         }
 
         text.setText(messageString);
+
+        if (time != null) {
+            time.setText(dateUtils.getLocalTimeStringFromTimestamp(message.getTimestamp()));
+        }
 
         itemView.setTag(REPLYABLE_VIEW_TAG, message.getReplyable());
     }
