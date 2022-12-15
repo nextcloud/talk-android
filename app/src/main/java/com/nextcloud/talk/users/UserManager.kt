@@ -43,6 +43,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     val currentUser: Maybe<User>
         get() {
             return userRepository.getActiveUser()
+                .switchIfEmpty(getAnyUserAndSetAsActive())
         }
 
     val currentUserObservable: Observable<User>
@@ -56,22 +57,6 @@ class UserManager internal constructor(private val userRepository: UsersReposito
 
     fun getUserWithId(id: Long): Maybe<User> {
         return userRepository.getUserWithId(id)
-    }
-
-    fun disableAllUsersWithoutId(id: Long): Single<Int> {
-        val results = userRepository.getUsersWithoutUserId(id)
-
-        return results.map { users ->
-            var count = 0
-            if (users.isNotEmpty()) {
-                for (entity in users) {
-                    entity.current = false
-                    userRepository.updateUser(entity)
-                    count++
-                }
-            }
-            count
-        }
     }
 
     fun checkIfUserIsScheduledForDeletion(username: String, server: String): Single<Boolean> {
@@ -165,7 +150,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
                     else -> {
                         user.token = userAttributes.token
                         user.baseUrl = userAttributes.serverUrl
-                        user.current = true
+                        user.current = userAttributes.currentUser
                         user.userId = userAttributes.userId
                         user.token = userAttributes.token
                         user.displayName = userAttributes.displayName
@@ -246,6 +231,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return user
     }
 
+    fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> {
+        return userRepository.updatePushState(id, state)
+    }
+
     companion object {
         const val TAG = "UserManager"
     }
@@ -253,7 +242,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     data class UserAttributes(
         val id: Long?,
         val serverUrl: String?,
-        val currentUser: Boolean?,
+        val currentUser: Boolean,
         val userId: String?,
         val token: String?,
         val displayName: String?,

@@ -64,8 +64,9 @@ public class MagicKeyManager implements X509KeyManager {
     @Override
     public String chooseClientAlias(String[] strings, Principal[] principals, Socket socket) {
         String alias;
-        if ((userManager.getCurrentUser().blockingGet() != null &&
-            !TextUtils.isEmpty(alias = userManager.getCurrentUser().blockingGet().getClientCertificate())) ||
+        User currentUser = userManager.getCurrentUser().blockingGet();
+        if ((currentUser != null &&
+            !TextUtils.isEmpty(alias = currentUser.getClientCertificate())) ||
             !TextUtils.isEmpty(alias = appPreferences.getTemporaryClientCertAlias())
                 && new ArrayList<>(Arrays.asList(getClientAliases())).contains(alias)) {
             return alias;

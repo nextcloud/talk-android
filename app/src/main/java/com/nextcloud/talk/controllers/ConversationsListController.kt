@@ -209,26 +209,30 @@ class ConversationsListController(bundle: Bundle) :
     private fun loadUserAvatar(
         target: Target
     ) {
-
         if (activity != null) {
-            val url = ApiUtils.getUrlForAvatar(
-                currentUser!!.baseUrl,
-                currentUser!!.userId,
-                true
-            )
+            if (currentUser != null) {
+                val url = ApiUtils.getUrlForAvatar(
+                    currentUser!!.baseUrl,
+                    currentUser!!.userId,
+                    true
+                )
 
-            val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+                val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
-            context.imageLoader.enqueue(
-                ImageRequest.Builder(context)
-                    .data(url)
-                    .addHeader("Authorization", credentials)
-                    .placeholder(R.drawable.ic_user)
-                    .transformations(CircleCropTransformation())
-                    .crossfade(true)
-                    .target(target)
-                    .build()
-            )
+                context.imageLoader.enqueue(
+                    ImageRequest.Builder(context)
+                        .data(url)
+                        .addHeader("Authorization", credentials)
+                        .placeholder(R.drawable.ic_user)
+                        .transformations(CircleCropTransformation())
+                        .crossfade(true)
+                        .target(target)
+                        .build()
+                )
+            } else {
+                Log.e(TAG, "currentUser was null in loadUserAvatar")
+                Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -238,6 +242,7 @@ class ConversationsListController(bundle: Bundle) :
             override fun onStart(placeholder: Drawable?) {
                 button.icon = placeholder
             }
+
             override fun onSuccess(result: Drawable) {
                 button.icon = result
             }
@@ -251,6 +256,7 @@ class ConversationsListController(bundle: Bundle) :
             override fun onStart(placeholder: Drawable?) {
                 menuItem.icon = placeholder
             }
+
             override fun onSuccess(result: Drawable) {
                 menuItem.icon = result
             }
@@ -288,6 +294,9 @@ class ConversationsListController(bundle: Bundle) :
                     .colorMaterialTextButton((activity as MainActivity?)!!.binding.switchAccountButton)
             }
             fetchRooms()
+        } else {
+            Log.e(TAG, "userManager.currentUser.blockingGet() returned null")
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
         }
     }
 

@@ -1661,7 +1661,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void processMessage(NCSignalingMessage ncSignalingMessage) {
-        if (ncSignalingMessage.getRoomType().equals("video") || ncSignalingMessage.getRoomType().equals("screen")) {
+        if ("video".equals(ncSignalingMessage.getRoomType()) || "screen".equals(ncSignalingMessage.getRoomType())) {
             String type = null;
             if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() != null) {
                 type = ncSignalingMessage.getPayload().getType();
