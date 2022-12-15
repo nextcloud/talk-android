@@ -28,6 +28,7 @@ import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -323,9 +324,9 @@ class AccountVerificationController(args: Bundle? = null) :
                     }
                     if (!TextUtils.isEmpty(displayName)) {
                         storeProfile(
-                            displayName, userProfileOverall.ocs!!.data!!.userId!!,
-                            capabilities.ocs!!.data!!
-                                .capabilities!!
+                            displayName,
+                            userProfileOverall.ocs!!.data!!.userId!!,
+                            capabilities.ocs!!.data!!.capabilities!!
                         )
                     } else {
                         if (activity != null) {
@@ -443,25 +444,33 @@ class AccountVerificationController(args: Bundle? = null) :
     }
 
     private fun proceedWithLogin() {
+        Log.d(TAG, "proceedWithLogin...")
         cookieManager.cookieStore.removeAll()
-        val userDisabledCount = userManager.disableAllUsersWithoutId(internalAccountId).blockingGet()
-        Log.d(TAG, "Disabled $userDisabledCount users that had no id")
-        if (activity != null) {
-            activity!!.runOnUiThread {
-                if (userManager.users.blockingGet().size == 1) {
-                    router.setRoot(
-                        RouterTransaction.with(ConversationsListController(Bundle()))
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler())
-                    )
-                } else {
-                    if (isAccountImport) {
-                        ApplicationWideMessageHolder.getInstance().messageType =
-                            ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
+
+        val userToSetAsActive = userManager.getUserWithId(internalAccountId).blockingGet()
+        Log.d(TAG, "userToSetAsActive: " + userToSetAsActive.username)
+
+        if (userManager.setUserAsActive(userToSetAsActive).blockingGet()) {
+            if (activity != null) {
+                activity!!.runOnUiThread {
+                    if (userManager.users.blockingGet().size == 1) {
+                        router.setRoot(
+                            RouterTransaction.with(ConversationsListController(Bundle()))
+                                .pushChangeHandler(HorizontalChangeHandler())
+                                .popChangeHandler(HorizontalChangeHandler())
+                        )
+                    } else {
+                        if (isAccountImport) {
+                            ApplicationWideMessageHolder.getInstance().messageType =
+                                ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
+                        }
+                        router.popToRoot()
                     }
-                    router.popToRoot()
                 }
             }
+        } else {
+            Log.e(TAG, "failed to set active user")
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
         }
     }
 

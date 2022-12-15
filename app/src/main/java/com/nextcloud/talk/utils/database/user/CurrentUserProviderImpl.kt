@@ -31,7 +31,12 @@ import javax.inject.Inject
  * Listens to changes in the database and provides the current user without needing to query the database everytime.
  */
 class CurrentUserProviderImpl @Inject constructor(private val userManager: UserManager) : CurrentUserProviderNew {
+
     private var _currentUser: User? = null
+
+    // synchronized to avoid multiple observers initialized from different threads
+    @get:Synchronized
+    @set:Synchronized
     private var currentUserObserver: Disposable? = null
 
     override val currentUser: Maybe<User>
@@ -40,8 +45,10 @@ class CurrentUserProviderImpl @Inject constructor(private val userManager: UserM
                 // immediately get a result synchronously
                 _currentUser = userManager.currentUser.blockingGet()
                 if (currentUserObserver == null) {
-                    // start observable for auto-updates
-                    currentUserObserver = userManager.currentUserObservable.subscribe { _currentUser = it }
+                    currentUserObserver = userManager.currentUserObservable
+                        .subscribe {
+                            _currentUser = it
+                        }
                 }
             }
             return _currentUser?.let { Maybe.just(it) } ?: Maybe.empty()

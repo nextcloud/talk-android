@@ -22,15 +22,14 @@
 
 package com.nextcloud.talk.data.user
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
 import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.models.json.push.PushConfigurationState
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -74,9 +73,6 @@ abstract class UsersDao {
     @Query("SELECT * FROM User where userId = :userId")
     abstract fun getUserWithUserId(userId: String): Maybe<UserEntity>
 
-    @Query("SELECT * FROM User where id != :id")
-    abstract fun getUsersWithoutId(id: Long): Single<List<UserEntity>>
-
     @Query("SELECT * FROM User where scheduledForDeletion = 1")
     abstract fun getUsersScheduledForDeletion(): Single<List<UserEntity>>
 
@@ -86,20 +82,16 @@ abstract class UsersDao {
     @Query("SELECT * FROM User WHERE username = :username AND baseUrl = :server")
     abstract fun getUserWithUsernameAndServer(username: String, server: String): Maybe<UserEntity>
 
-    @Transaction
-    @Suppress("Detekt.TooGenericExceptionCaught") // blockingGet() only throws RuntimeExceptions per rx docs
-    open fun setUserAsActiveWithId(id: Long): Boolean {
-        return try {
-            getUsers().blockingGet().forEach { user ->
-                user.current = user.id == id
-                updateUser(user)
-            }
-            true
-        } catch (e: RuntimeException) {
-            Log.e(TAG, "Error setting user active", e)
-            false
-        }
-    }
+    @Query(
+        "UPDATE User SET current = CASE " +
+            "WHEN id == :id THEN 1 " +
+            "WHEN id != :id THEN 0 " +
+            "END"
+    )
+    abstract fun setUserAsActiveWithId(id: Long): Int
+
+    @Query("Update User SET pushConfigurationState = :state WHERE id == :id")
+    abstract fun updatePushState(id: Long, state: PushConfigurationState): Single<Int>
 
     companion object {
         const val TAG = "UsersDao"

@@ -235,17 +235,17 @@ public class PushUtils {
 
                 List<User> users = userManager.getUsers().blockingGet();
 
-                    for (User user : users) {
-                        if (!user.getScheduledForDeletion()) {
-                            Map<String, String> nextcloudRegisterPushMap = new HashMap<>();
-                            nextcloudRegisterPushMap.put("format", "json");
-                            nextcloudRegisterPushMap.put("pushTokenHash", pushTokenHash);
-                            nextcloudRegisterPushMap.put("devicePublicKey", devicePublicKeyBase64);
-                            nextcloudRegisterPushMap.put("proxyServer", proxyServer);
+                for (User user : users) {
+                    if (!user.getScheduledForDeletion()) {
+                        Map<String, String> nextcloudRegisterPushMap = new HashMap<>();
+                        nextcloudRegisterPushMap.put("format", "json");
+                        nextcloudRegisterPushMap.put("pushTokenHash", pushTokenHash);
+                        nextcloudRegisterPushMap.put("devicePublicKey", devicePublicKeyBase64);
+                        nextcloudRegisterPushMap.put("proxyServer", proxyServer);
 
-                            registerDeviceWithNextcloud(ncApi, nextcloudRegisterPushMap, token, user);
-                        }
+                        registerDeviceWithNextcloud(ncApi, nextcloudRegisterPushMap, token, user);
                     }
+                }
 
             }
         } else {
@@ -260,9 +260,9 @@ public class PushUtils {
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
         ncApi.registerDeviceForNotificationsWithNextcloud(
-            credentials,
-            ApiUtils.getUrlNextcloudPush(user.getBaseUrl()),
-            nextcloudRegisterPushMap)
+                credentials,
+                ApiUtils.getUrlNextcloudPush(user.getBaseUrl()),
+                nextcloudRegisterPushMap)
             .subscribe(new Observer<PushRegistrationOverall>() {
                 @Override
                 public void onSubscribe(@NonNull Disposable d) {
@@ -311,7 +311,7 @@ public class PushUtils {
                 public void onNext(@NonNull Void aVoid) {
                     try {
                         Log.d(TAG, "pushToken successfully registered at pushproxy.");
-                        createOrUpdateUser(proxyMap, user);
+                        updatePushStateForUser(proxyMap, user);
                     } catch (IOException e) {
                         Log.e(TAG, "IOException while updating user", e);
                     }
@@ -330,7 +330,7 @@ public class PushUtils {
             });
     }
 
-    private void createOrUpdateUser(Map<String, String> proxyMap, User user) throws IOException {
+    private void updatePushStateForUser(Map<String, String> proxyMap, User user) throws IOException {
         PushConfigurationState pushConfigurationState = new PushConfigurationState();
         pushConfigurationState.setPushToken(proxyMap.get("pushToken"));
         pushConfigurationState.setDeviceIdentifier(proxyMap.get("deviceIdentifier"));
@@ -338,27 +338,31 @@ public class PushUtils {
         pushConfigurationState.setUserPublicKey(proxyMap.get("userPublicKey"));
         pushConfigurationState.setUsesRegularPass(Boolean.FALSE);
 
-        user.setPushConfigurationState(pushConfigurationState);
-        userManager.saveUser(user).subscribe(new SingleObserver<Integer>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                // unused atm
-            }
+        if (user.getId() != null) {
+            userManager.updatePushState(user.getId(), pushConfigurationState).subscribe(new SingleObserver<Integer>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+                    // unused atm
+                }
 
-            @Override
-            public void onSuccess(Integer integer) {
-                eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
-                                              EventStatus.EventType.PUSH_REGISTRATION,
-                                              true));
-            }
+                @Override
+                public void onSuccess(Integer integer) {
+                    eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                                  EventStatus.EventType.PUSH_REGISTRATION,
+                                                  true));
+                }
 
-            @Override
-            public void onError(Throwable e) {
-                eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
-                                              EventStatus.EventType.PUSH_REGISTRATION,
-                                              false));
-            }
-        });
+                @Override
+                public void onError(Throwable e) {
+                    eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                                  EventStatus.EventType.PUSH_REGISTRATION,
+                                                  false));
+                }
+            });
+        } else {
+            Log.e(TAG, "failed to update updatePushStateForUser. user.getId() was null");
+        }
+
     }
 
     private Key readKeyFromString(boolean readPublicKey, String keyString) {

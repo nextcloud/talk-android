@@ -23,6 +23,7 @@
 package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.push.PushConfigurationState
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -54,10 +55,6 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         return usersDao.getUserWithUserId(userId).map { UserMapper.toModel(it) }
     }
 
-    override fun getUsersWithoutUserId(id: Long): Single<List<User>> {
-        return usersDao.getUsersWithoutId(id).map { UserMapper.toModel(it) }
-    }
-
     override fun getUsersScheduledForDeletion(): Single<List<User>> {
         return usersDao.getUsersScheduledForDeletion().map { UserMapper.toModel(it) }
     }
@@ -79,10 +76,19 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     }
 
     override fun setUserAsActiveWithId(id: Long): Single<Boolean> {
-        return Single.just(usersDao.setUserAsActiveWithId(id))
+        val amountUpdated = usersDao.setUserAsActiveWithId(id)
+        return if (amountUpdated > 0) {
+            Single.just(true)
+        } else {
+            Single.just(false)
+        }
     }
 
     override fun deleteUser(user: User): Int {
         return usersDao.deleteUser(UserMapper.toEntity(user))
+    }
+
+    override fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> {
+        return usersDao.updatePushState(id, state)
     }
 }

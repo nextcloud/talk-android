@@ -23,6 +23,7 @@
 package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.push.PushConfigurationState
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -35,7 +36,6 @@ interface UsersRepository {
     fun getUserWithId(id: Long): Maybe<User>
     fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<User>
     fun getUserWithUserId(userId: String): Maybe<User>
-    fun getUsersWithoutUserId(id: Long): Single<List<User>>
     fun getUsersScheduledForDeletion(): Single<List<User>>
     fun getUsersNotScheduledForDeletion(): Single<List<User>>
     fun getUserWithUsernameAndServer(username: String, server: String): Maybe<User>
@@ -43,4 +43,5 @@ interface UsersRepository {
     fun insertUser(user: User): Long
     fun setUserAsActiveWithId(id: Long): Single<Boolean>
     fun deleteUser(user: User): Int
+    fun updatePushState(id: Long, state: PushConfigurationState): Single<Int>
 }
