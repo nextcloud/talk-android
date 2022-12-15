@@ -5,9 +5,9 @@
  * @author Marcel Hibbe
  * @author Andy Scherzinger
  * @author Tim Krüger
- * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
- * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2021-2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -158,8 +158,6 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ConductorRemapping
-import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -178,6 +176,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
+import com.nextcloud.talk.utils.remapchat.ConductorRemapping
+import com.nextcloud.talk.utils.remapchat.RemapChatModel
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
@@ -327,6 +327,8 @@ class ChatController(args: Bundle) :
     }
 
     private fun getRoomInfo() {
+        logConversationInfos("getRoomInfo")
+
         val shouldRepeat = CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "webinary-lobby")
         if (shouldRepeat) {
             checkingLobbyStatus = true
@@ -349,11 +351,9 @@ class ChatController(args: Bundle) :
                     override fun onNext(roomOverall: RoomOverall) {
                         Log.d(TAG, "getRoomInfo - getRoom - got response: $startNanoTime")
                         currentConversation = roomOverall.ocs!!.data
-                        Log.d(
-                            TAG,
-                            "getRoomInfo. token: " + currentConversation?.token +
-                                " sessionId: " + currentConversation?.sessionId
-                        )
+
+                        logConversationInfos("getRoomInfo#onNext")
+
                         loadAvatarForStatusBar()
                         setTitle()
                         participantPermissions = ParticipantPermissions(conversationUser, currentConversation!!)
@@ -367,6 +367,8 @@ class ChatController(args: Bundle) :
 
                             if (!inConversation) {
                                 joinRoomWithPassword()
+                            } else {
+                                Log.d(TAG, "already inConversation. joinRoomWithPassword is skipped")
                             }
                         } catch (npe: NullPointerException) {
                             // view binding can be null
@@ -901,7 +903,7 @@ class ChatController(args: Bundle) :
         }
 
         if (adapterWasNull) {
-            // we're starting
+            Log.d(TAG, "starting for the first time (because adapter was null)")
             if (TextUtils.isEmpty(roomToken)) {
                 handleFromNotification()
             } else {
@@ -1734,11 +1736,8 @@ class ChatController(args: Bundle) :
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onAttach(view: View) {
         super.onAttach(view)
-        Log.d(
-            TAG,
-            "onAttach: Controller: " + System.identityHashCode(this).toString() +
-                " Activity: " + System.identityHashCode(activity).toString()
-        )
+        logConversationInfos("onAttach")
+
         eventBus.register(this)
 
         if (conversationUser?.userId != "?" &&
@@ -1826,11 +1825,8 @@ class ChatController(args: Bundle) :
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-        Log.d(
-            TAG,
-            "onDetach: Controller: " + System.identityHashCode(this).toString() +
-                " Activity: " + System.identityHashCode(activity).toString()
-        )
+
+        logConversationInfos("onDetach")
 
         eventBus.unregister(this)
 
@@ -1847,8 +1843,13 @@ class ChatController(args: Bundle) :
         if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
             if (inConversation && validSessionId()) {
-                leaveRoom()
+                leaveRoom(null, null)
+            } else {
+                Log.d(TAG, "not leaving room (inConversation is false and/or validSessionId is false)")
+                // room might have already been left...
             }
+        } else {
+            Log.e(TAG, "not leaving room...")
         }
 
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
@@ -1879,6 +1880,7 @@ class ChatController(args: Bundle) :
 
     public override fun onDestroy() {
         super.onDestroy()
+        logConversationInfos("onDestroy")
 
         if (activity != null) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
@@ -1892,16 +1894,12 @@ class ChatController(args: Bundle) :
 
         adapter = null
         inConversation = false
+        Log.d(TAG, "inConversation was set to false!")
     }
 
     private fun joinRoomWithPassword() {
-        Log.d(
-            TAG,
-            "joinRoomWithPassword start: " + (currentConversation == null).toString() +
-                "  sessionId: " + currentConversation?.sessionId
-        )
-
         if (!validSessionId()) {
+            Log.d(TAG, "sessionID was not valid -> joinRoom")
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
@@ -1928,7 +1926,8 @@ class ChatController(args: Bundle) :
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: $startNanoTime")
                         inConversation = true
                         currentConversation?.sessionId = roomOverall.ocs!!.data!!.sessionId
-                        Log.d(TAG, "joinRoomWithPassword - sessionId: " + currentConversation?.sessionId)
+
+                        logConversationInfos("joinRoomWithPassword#onNext")
 
                         ApplicationWideCurrentRoomHolder.getInstance().session =
                             currentConversation?.sessionId
@@ -1970,6 +1969,8 @@ class ChatController(args: Bundle) :
                     }
                 })
         } else {
+            Log.d(TAG, "sessionID was valid -> skip joinRoom")
+
             inConversation = true
             ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation?.sessionId
             if (magicWebSocketInstance != null) {
@@ -1987,8 +1988,12 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun leaveRoom() {
-        Log.d(TAG, "leaveRoom")
+    fun leaveRoom(
+        remapChatModel: RemapChatModel?,
+        funToCallWhenLeaveSuccessful: ((RemapChatModel) -> Unit)?
+    ) {
+        logConversationInfos("leaveRoom")
+
         var apiVersion = 1
         // FIXME Fix API checking with guests?
         if (conversationUser != null) {
@@ -2014,6 +2019,8 @@ class ChatController(args: Bundle) :
 
                 override fun onNext(genericOverall: GenericOverall) {
                     Log.d(TAG, "leaveRoom - leaveRoom - got response: $startNanoTime")
+                    logConversationInfos("leaveRoom#onNext")
+
                     checkingLobbyStatus = false
 
                     if (lobbyTimerHandler != null) {
@@ -2027,9 +2034,23 @@ class ChatController(args: Bundle) :
                         )
                     } else {
                         Log.e(TAG, "magicWebSocketInstance or currentConversation were null! Failed to leave the room!")
+                        if (BuildConfig.DEBUG) {
+                            Toast.makeText(
+                                context,
+                                "magicWebSocketInstance or currentConversation were null! Failed to leave the room!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
 
                     currentConversation?.sessionId = "0"
+
+                    if (remapChatModel != null && funToCallWhenLeaveSuccessful != null) {
+                        Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
+                        funToCallWhenLeaveSuccessful(remapChatModel)
+                    } else {
+                        Log.d(TAG, "remapChatController was not set")
+                    }
                 }
 
                 override fun onError(e: Throwable) {
@@ -2941,7 +2962,8 @@ class ChatController(args: Bundle) :
                                     KEY_ACTIVE_CONVERSATION,
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
-                                remapChatController(
+
+                                ConductorRemapping.remapChatController(
                                     router,
                                     conversationUser!!.id!!,
                                     roomOverall.ocs!!.data!!.token!!,
@@ -3144,6 +3166,24 @@ class ChatController(args: Bundle) :
         adapter?.update(message)
     }
 
+    fun updateUiToDeleteReaction(message: ChatMessage, emoji: String) {
+        if (message.reactions == null) {
+            message.reactions = LinkedHashMap()
+        }
+
+        if (message.reactionsSelf == null) {
+            message.reactionsSelf = ArrayList<String>()
+        }
+
+        var amount = message.reactions!![emoji]
+        if (amount == null) {
+            amount = 0
+        }
+        message.reactions!![emoji] = amount - 1
+        message.reactionsSelf!!.remove(emoji)
+        adapter?.update(message)
+    }
+
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
         if (conversationUser == null) return false
 
@@ -3253,7 +3293,7 @@ class ChatController(args: Bundle) :
                                 conversationUser.id!!,
                                 roomOverall.ocs!!.data!!.token!!,
                                 bundle,
-                                false
+                                true
                             )
                         } else {
                             conversationIntent.putExtras(bundle)
@@ -3327,6 +3367,17 @@ class ChatController(args: Bundle) :
             (activity as MainActivity?)!!.supportFragmentManager,
             TAG
         )
+    }
+
+    private fun logConversationInfos(methodName: String) {
+        Log.d(TAG, " |-----------------------------------------------")
+        Log.d(TAG, " | method: $methodName")
+        Log.d(TAG, " | ChatController: " + System.identityHashCode(this).toString())
+        Log.d(TAG, " | roomToken: $roomToken")
+        Log.d(TAG, " | currentConversation?.displayName: ${currentConversation?.displayName}")
+        Log.d(TAG, " | currentConversation?.sessionId: ${currentConversation?.sessionId}")
+        Log.d(TAG, " | inConversation: $inConversation")
+        Log.d(TAG, " |-----------------------------------------------")
     }
 
     companion object {
