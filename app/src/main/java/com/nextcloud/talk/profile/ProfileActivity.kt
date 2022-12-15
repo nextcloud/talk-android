@@ -3,6 +3,8 @@
  *
  * @author Tobias Kaminsky
  * @author Andy Scherzinger
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  *
@@ -28,7 +30,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -46,8 +47,6 @@ import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getError
-import com.github.dhaval2404.imagepicker.ImagePicker.Companion.with
-import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.TakePhotoActivity
@@ -61,19 +60,16 @@ import com.nextcloud.talk.models.json.userprofile.Scope
 import com.nextcloud.talk.models.json.userprofile.UserProfileData
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
-import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.ui.dialog.ScopeDialog
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPG
-import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
+import com.nextcloud.talk.utils.PickImage
+import com.nextcloud.talk.utils.PickImage.Companion.REQUEST_PERMISSION_CAMERA
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
-import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -81,13 +77,7 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.util.LinkedList
 import javax.inject.Inject
 
@@ -102,14 +92,13 @@ class ProfileActivity : BaseActivity() {
     @Inject
     lateinit var userManager: UserManager
 
-    @Inject
-    lateinit var permissionUtil: PlatformPermissionUtil
-
     private var currentUser: User? = null
     private var edit = false
     private var adapter: UserInfoAdapter? = null
     private var userInfo: UserProfileData? = null
     private var editableFields = ArrayList<String>()
+
+    private lateinit var pickImage: PickImage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,9 +117,11 @@ class ProfileActivity : BaseActivity() {
         binding.userinfoList.setItemViewCacheSize(DEFAULT_CACHE_SIZE)
         currentUser = userManager.currentUser.blockingGet()
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
-        binding.avatarUpload.setOnClickListener { sendSelectLocalFileIntent() }
-        binding.avatarChoose.setOnClickListener { showBrowserScreen() }
-        binding.avatarCamera.setOnClickListener { checkPermissionAndTakePicture() }
+
+        pickImage = PickImage(this, currentUser)
+        binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
+        binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
+        binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
         binding.avatarDelete.setOnClickListener {
             ncApi.deleteAvatar(
                 credentials,
@@ -541,7 +532,7 @@ class ProfileActivity : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_PERMISSION_CAMERA) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                takePictureForAvatar()
+                pickImage.takePicture()
             } else {
                 Toast
                     .makeText(context, context.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
@@ -597,27 +588,37 @@ class ProfileActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_IMAGE_PICKER) {
-                val uri: Uri = data?.data!!
-                uploadAvatar(uri.toFile())
-            } else if (requestCode == REQUEST_CODE_SELECT_REMOTE_FILES) {
-                val pathList = data?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
-                if (pathList?.size!! >= 1) {
-                    handleAvatar(pathList[0])
-                }
-            } else if (requestCode == REQUEST_CODE_TAKE_PICTURE) {
-                data?.data?.path?.let {
-                    openImageWithPicker(File(it))
-                }
-            } else {
-                Log.w(TAG, "Unknown intent request code")
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                pickImage.handleActivityResult(
+                    requestCode,
+                    resultCode,
+                    data
+                ) { uploadAvatar(it.toFile()) }
             }
-        } else if (resultCode == ImagePicker.RESULT_ERROR) {
-            Toast.makeText(this, getError(data), Toast.LENGTH_SHORT).show()
-        } else {
-            Log.i(TAG, "Task Cancelled")
+            ImagePicker.RESULT_ERROR -> {
+                Toast.makeText(this, getError(data), Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                Log.i(TAG, "Task Cancelled")
+            }
         }
+
+        // if (requestCode == REQUEST_CODE_IMAGE_PICKER) {
+        //     val uri: Uri = data?.data!!
+        //     uploadAvatar(uri.toFile())
+        // } else if (requestCode == REQUEST_CODE_SELECT_REMOTE_FILES) {
+        //     val pathList = data?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
+        //     if (pathList?.size!! >= 1) {
+        //         handleAvatar(pathList[0])
+        //     }
+        // } else if (requestCode == REQUEST_CODE_TAKE_PICTURE) {
+        //     data?.data?.path?.let {
+        //         openImageWithPicker(File(it))
+        //     }
+        // } else {
+        //     Log.w(TAG, "Unknown intent request code")
+        // }
     }
 
     private fun uploadAvatar(file: File?) {
@@ -865,15 +866,8 @@ class ProfileActivity : BaseActivity() {
 
     companion object {
         private const val TAG: String = "ProfileController"
-        private const val AVATAR_PATH = "photos/avatar.png"
-        private const val REQUEST_CODE_SELECT_REMOTE_FILES = 22
         private const val DEFAULT_CACHE_SIZE: Int = 20
         private const val DEFAULT_RETRIES: Long = 3
-        private const val MAX_SIZE: Int = 1024
-        private const val REQUEST_CODE_IMAGE_PICKER: Int = 1
-        private const val REQUEST_CODE_TAKE_PICTURE: Int = 2
-        private const val REQUEST_PERMISSION_CAMERA: Int = 1
-        private const val FULL_QUALITY: Int = 100
         private const val HIGH_EMPHASIS_ALPHA: Float = 0.87f
         private const val MEDIUM_EMPHASIS_ALPHA: Float = 0.6f
     }
