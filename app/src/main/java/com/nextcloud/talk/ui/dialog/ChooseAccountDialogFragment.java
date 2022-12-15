@@ -159,8 +159,8 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             User userEntity;
             Participant participant;
 
-            for (Object userItem : userManager.getUsers().blockingGet()) {
-                userEntity = (User) userItem;
+            for (User userItem : userManager.getUsers().blockingGet()) {
+                userEntity = userItem;
                 Log.d(TAG, "---------------------");
                 Log.d(TAG, "userEntity.getUserId() " + userEntity.getUserId());
                 Log.d(TAG, "userEntity.getCurrent() " + userEntity.getCurrent());
