@@ -30,6 +30,7 @@ import com.nextcloud.talk.databinding.RvItemTitleHeaderBinding;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractHeaderItem;
@@ -61,6 +62,11 @@ public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderI
             return title.equals(inItem.getModel());
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title);
     }
 
     @Override
