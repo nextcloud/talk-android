@@ -361,7 +361,7 @@
     <string name="nc_upload_confirm_send_multiple">Envoyer ces fichiers à %1$s ?</string>
     <string name="nc_upload_confirm_send_single">Envoyer ce fichier à %1$s ?</string>
     <string name="nc_upload_failed">Désolé, l\'envoi a échoué</string>
-    <string name="nc_upload_failed_notification_text">Impossible de télécharger %1$s</string>
+    <string name="nc_upload_failed_notification_text">Impossible de téléverser %1$s</string>
     <string name="nc_upload_failed_notification_title">Échec</string>
     <string name="nc_upload_from_cloud">Partagé de %1$s</string>
     <string name="nc_upload_from_device">Téléverser depuis l\'appareil</string>
@@ -447,7 +447,7 @@
     <string name="thisWeek">Cette semaine</string>
     <string name="title_attachments">Pièces jointes</string>
     <string name="today">Aujourd\'hui</string>
-    <string name="upload_new_avatar_from_device">Envoyer un nouvel avatar depuis l\'appareil</string>
+    <string name="upload_new_avatar_from_device">Téléverser un nouvel avatar depuis l\'appareil</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Nom complet</string>
     <string name="user_info_email">E-mail</string>

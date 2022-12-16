@@ -66,7 +66,7 @@
     <string name="nc_call_button_content_description_hangup">Auflegen</string>
     <string name="nc_call_button_content_description_microphone">Mikrofon umschalten</string>
     <string name="nc_call_button_content_description_pip">Bild-in-Bild-Modus öffnen</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Wechseln Sie zu Selbstvideo</string>
+    <string name="nc_call_button_content_description_switch_to_self_vide">Wechseln Sie zum Eigenen Video</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
     <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>
