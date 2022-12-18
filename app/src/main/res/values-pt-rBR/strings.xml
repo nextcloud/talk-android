@@ -62,8 +62,9 @@
     <string name="nc_call_button_content_description_answer_video_call">Responder com uma chamada de vídeo</string>
     <string name="nc_call_button_content_description_answer_voice_only">Responder apenas com uma chamada de voz</string>
     <string name="nc_call_button_content_description_audio_output">Mude a saída de áudio</string>
-    <string name="nc_call_button_content_description_camera">Mostrar/Ocultar câmera</string>
+    <string name="nc_call_button_content_description_camera">Alternar a câmera</string>
     <string name="nc_call_button_content_description_hangup">Espere</string>
+    <string name="nc_call_button_content_description_microphone">Alternar o microfone</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para o próprio vídeo</string>
     <string name="nc_call_incoming">ENTRADA </string>
     <string name="nc_call_name">Nome de conversação</string>
@@ -440,7 +441,7 @@
     <string name="take_photo_switch_camera">Trocar câmera</string>
     <string name="take_photo_toggle_crop">Cortar foto</string>
     <string name="take_photo_toggle_lowres">Reduza o tamanho da imagem</string>
-    <string name="take_photo_toggle_torch">Alternar tocha</string>
+    <string name="take_photo_toggle_torch">Alternar a lanterna</string>
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Esta semana</string>
     <string name="title_attachments">Anexos</string>
