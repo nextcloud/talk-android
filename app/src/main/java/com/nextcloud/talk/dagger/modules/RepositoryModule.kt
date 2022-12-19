@@ -48,13 +48,9 @@ import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import javax.inject.Inject
 
 @Module
 class RepositoryModule {
-
-    @Inject
-    lateinit var dateUtils: DateUtils
 
     @Provides
     fun provideConversationsRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ConversationsRepository {
@@ -62,7 +58,7 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideSharedItemsRepository(ncApi: NcApi): SharedItemsRepository {
+    fun provideSharedItemsRepository(ncApi: NcApi, dateUtils: DateUtils): SharedItemsRepository {
         return SharedItemsRepositoryImpl(ncApi, dateUtils)
     }
 
