@@ -39,6 +39,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -106,6 +107,11 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(objectId, displayName);
     }
 
     @Override
