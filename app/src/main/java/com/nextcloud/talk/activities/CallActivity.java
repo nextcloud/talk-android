@@ -78,7 +78,6 @@ import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
-import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
@@ -86,6 +85,7 @@ import com.nextcloud.talk.models.json.signaling.Signaling;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -116,14 +116,12 @@ import org.webrtc.CameraVideoCapturer;
 import org.webrtc.DefaultVideoDecoderFactory;
 import org.webrtc.DefaultVideoEncoderFactory;
 import org.webrtc.EglBase;
-import org.webrtc.IceCandidate;
 import org.webrtc.Logging;
 import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon;
-import org.webrtc.SessionDescription;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.VideoCapturer;
 import org.webrtc.VideoSource;
@@ -175,11 +173,6 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISS
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
-import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
-import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
-import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_ALL;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_IN_CALL;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends CallBaseActivity {
@@ -265,6 +258,40 @@ public class CallActivity extends CallBaseActivity {
     private String roomId;
 
     private SpotlightView spotlightView;
+
+    private InternalSignalingMessageReceiver internalSignalingMessageReceiver = new InternalSignalingMessageReceiver();
+    private SignalingMessageReceiver signalingMessageReceiver;
+
+    private Map<String, SignalingMessageReceiver.CallParticipantMessageListener> callParticipantMessageListeners =
+        new HashMap<>();
+
+    private SignalingMessageReceiver.ParticipantListMessageListener participantListMessageListener = new SignalingMessageReceiver.ParticipantListMessageListener() {
+
+        @Override
+        public void onUsersInRoom(List<Participant> participants) {
+            processUsersInRoom(participants);
+        }
+
+        @Override
+        public void onParticipantsUpdate(List<Participant> participants) {
+            processUsersInRoom(participants);
+        }
+
+        @Override
+        public void onAllParticipantsUpdate(long inCall) {
+            if (inCall == Participant.InCallFlags.DISCONNECTED) {
+                Log.d(TAG, "A moderator ended the call for all.");
+                hangup(true);
+            }
+        }
+    };
+
+    private SignalingMessageReceiver.OfferMessageListener offerMessageListener = new SignalingMessageReceiver.OfferMessageListener() {
+        @Override
+        public void onOffer(String sessionId, String roomType, String sdp, String nick) {
+            getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, roomType, false);
+        }
+    };
 
     private ExternalSignalingServer externalSignalingServer;
     private MagicWebSocketInstance webSocketClient;
@@ -1206,6 +1233,9 @@ public class CallActivity extends CallBaseActivity {
 
     @Override
     public void onDestroy() {
+        signalingMessageReceiver.removeListener(participantListMessageListener);
+        signalingMessageReceiver.removeListener(offerMessageListener);
+
         if (localStream != null) {
             localStream.dispose();
             localStream = null;
@@ -1336,6 +1366,9 @@ public class CallActivity extends CallBaseActivity {
                     if (hasExternalSignalingServer) {
                         setupAndInitiateWebSocketsConnection();
                     } else {
+                        signalingMessageReceiver = internalSignalingMessageReceiver;
+                        signalingMessageReceiver.addListener(participantListMessageListener);
+                        signalingMessageReceiver.addListener(offerMessageListener);
                         joinRoomAndCall();
                     }
                 }
@@ -1534,6 +1567,11 @@ public class CallActivity extends CallBaseActivity {
                 externalSignalingServer.getExternalSignalingServer(),
                 conversationUser, externalSignalingServer.getExternalSignalingTicket(),
                 TextUtils.isEmpty(credentials));
+            // Although setupAndInitiateWebSocketsConnection could be called several times the web socket is
+            // initialized just once, so the message receiver is also initialized just once.
+            signalingMessageReceiver = webSocketClient.getSignalingMessageReceiver();
+            signalingMessageReceiver.addListener(participantListMessageListener);
+            signalingMessageReceiver.addListener(offerMessageListener);
         } else {
             if (webSocketClient.isConnected() && currentCallStatus == CallStatus.PUBLISHER_FAILED) {
                 webSocketClient.restartWebSocket();
@@ -1577,42 +1615,6 @@ public class CallActivity extends CallBaseActivity {
                     performCall();
                 }
                 break;
-            case PARTICIPANTS_UPDATE:
-                Log.d(TAG, "onMessageEvent 'participantsUpdate'");
-
-                // See MagicWebSocketInstance#onMessage in case "participants" how the 'updateParameters' are created
-                Map<String, String> updateParameters = webSocketCommunicationEvent.getHashMap();
-
-                if (updateParameters == null) {
-                    break;
-                }
-
-                String updateRoomToken = updateParameters.get(ROOM_TOKEN);
-                String updateAll = updateParameters.get(UPDATE_ALL);
-                String updateInCall = updateParameters.get(UPDATE_IN_CALL);
-                String jobId = updateParameters.get(JOB_ID);
-
-                if (roomToken.equals(updateRoomToken)) {
-                    if (updateAll != null && Boolean.parseBoolean(updateAll)) {
-                        if ("0".equals(updateInCall)) {
-                            Log.d(TAG, "Most probably a moderator ended the call for all.");
-                            hangup(true);
-                        }
-                    } else if (jobId != null) {
-                        // In that case a list of users for the room is passed.
-                        processUsersInRoom(
-                            (List<HashMap<String, Object>>) webSocketClient
-                                .getJobWithId(
-                                    Integer.valueOf(jobId)));
-                    }
-
-                }
-                break;
-            case "signalingMessage":
-                Log.d(TAG, "onMessageEvent 'signalingMessage'");
-                processMessage((NCSignalingMessage) webSocketClient.getJobWithId(
-                    Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
-                break;
             case "peerReadyForRequestingOffer":
                 Log.d(TAG, "onMessageEvent 'peerReadyForRequestingOffer'");
                 webSocketClient.requestOfferForSessionIdWithType(
@@ -1652,82 +1654,13 @@ public class CallActivity extends CallBaseActivity {
         }
 
         if ("usersInRoom".equals(messageType)) {
-            processUsersInRoom((List<HashMap<String, Object>>) signaling.getMessageWrapper());
+            internalSignalingMessageReceiver.process((List<Map<String, Object>>) signaling.getMessageWrapper());
         } else if ("message".equals(messageType)) {
             NCSignalingMessage ncSignalingMessage = LoganSquare.parse(signaling.getMessageWrapper().toString(),
                                                                       NCSignalingMessage.class);
-            processMessage(ncSignalingMessage);
+            internalSignalingMessageReceiver.process(ncSignalingMessage);
         } else {
             Log.e(TAG, "unexpected message type when receiving signaling message");
-        }
-    }
-
-    private void processMessage(NCSignalingMessage ncSignalingMessage) {
-        if ("video".equals(ncSignalingMessage.getRoomType()) || "screen".equals(ncSignalingMessage.getRoomType())) {
-            String type = null;
-            if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() != null) {
-                type = ncSignalingMessage.getPayload().getType();
-            } else if (ncSignalingMessage.getType() != null) {
-                type = ncSignalingMessage.getType();
-            }
-
-            PeerConnectionWrapper peerConnectionWrapper = null;
-
-            if ("offer".equals(type)) {
-                peerConnectionWrapper =
-                    getOrCreatePeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
-                                                                        ncSignalingMessage.getRoomType(), false);
-            } else {
-                peerConnectionWrapper =
-                    getPeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
-                                                                ncSignalingMessage.getRoomType());
-            }
-
-            if ("unshareScreen".equals(type) ||
-                (("offer".equals(type) ||
-                    "answer".equals(type) ||
-                    "candidate".equals(type) ||
-                    "endOfCandidates".equals(type)) &&
-                    peerConnectionWrapper != null)) {
-                switch (type) {
-                    case "unshareScreen":
-                        endPeerConnection(ncSignalingMessage.getFrom(), true);
-                        break;
-                    case "offer":
-                    case "answer":
-                        peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
-                        SessionDescription sessionDescriptionWithPreferredCodec;
-
-                        String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
-                            (ncSignalingMessage.getPayload().getSdp(),
-                             "H264", false);
-
-                        sessionDescriptionWithPreferredCodec = new SessionDescription(
-                            SessionDescription.Type.fromCanonicalForm(type),
-                            sessionDescriptionStringWithPreferredCodec);
-
-                        if (peerConnectionWrapper.getPeerConnection() != null) {
-                            peerConnectionWrapper.getPeerConnection().setRemoteDescription(
-                                peerConnectionWrapper.getMagicSdpObserver(),
-                                sessionDescriptionWithPreferredCodec);
-                        }
-                        break;
-                    case "candidate":
-                        NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
-                        IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
-                                                                     ncIceCandidate.getSdpMLineIndex(),
-                                                                     ncIceCandidate.getCandidate());
-                        peerConnectionWrapper.addCandidate(iceCandidate);
-                        break;
-                    case "endOfCandidates":
-                        peerConnectionWrapper.drainIceCandidates();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        } else {
-            Log.e(TAG, "unexpected RoomType while processing NCSignalingMessage");
         }
     }
 
@@ -1836,7 +1769,7 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private void processUsersInRoom(List<HashMap<String, Object>> users) {
+    private void processUsersInRoom(List<Participant> participants) {
         Log.d(TAG, "processUsersInRoom");
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSessions = new HashSet<>();
@@ -1855,27 +1788,20 @@ public class CallActivity extends CallBaseActivity {
 
         boolean isSelfInCall = false;
 
-        for (HashMap<String, Object> participant : users) {
-            long inCallFlag = (long) participant.get("inCall");
-            if (!participant.get("sessionId").equals(currentSessionId)) {
+        for (Participant participant : participants) {
+            long inCallFlag = participant.getInCall();
+            if (!participant.getSessionId().equals(currentSessionId)) {
                 Log.d(TAG, "   inCallFlag of participant "
-                    + participant.get("sessionId").toString().substring(0, 4)
+                    + participant.getSessionId().substring(0, 4)
                     + " : "
                     + inCallFlag);
 
                 boolean isInCall = inCallFlag != 0;
                 if (isInCall) {
-                    newSessions.add(participant.get("sessionId").toString());
+                    newSessions.add(participant.getSessionId());
                 }
 
-                // The property is "userId" when not using the external signaling server and "userid" when using it.
-                String userId = null;
-                if (participant.get("userId") != null) {
-                    userId = participant.get("userId").toString();
-                } else if (participant.get("userid") != null) {
-                    userId = participant.get("userid").toString();
-                }
-                userIdsBySessionId.put(participant.get("sessionId").toString(), userId);
+                userIdsBySessionId.put(participant.getSessionId(), participant.getUserId());
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
                 isSelfInCall = inCallFlag != 0;
@@ -2028,7 +1954,8 @@ public class CallActivity extends CallBaseActivity {
                                                                   localStream,
                                                                   true,
                                                                   true,
-                                                                  type);
+                                                                  type,
+                                                                  signalingMessageReceiver);
 
             } else if (hasMCU) {
                 peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
@@ -2039,7 +1966,8 @@ public class CallActivity extends CallBaseActivity {
                                                                   null,
                                                                   false,
                                                                   true,
-                                                                  type);
+                                                                  type,
+                                                                  signalingMessageReceiver);
             } else {
                 if (!"screen".equals(type)) {
                     peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
@@ -2050,7 +1978,8 @@ public class CallActivity extends CallBaseActivity {
                                                                       localStream,
                                                                       false,
                                                                       false,
-                                                                      type);
+                                                                      type,
+                                                                      signalingMessageReceiver);
                 } else {
                     peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
                                                                       iceServers,
@@ -2060,11 +1989,21 @@ public class CallActivity extends CallBaseActivity {
                                                                       null,
                                                                       false,
                                                                       false,
-                                                                      type);
+                                                                      type,
+                                                                      signalingMessageReceiver);
                 }
             }
 
             peerConnectionWrapperList.add(peerConnectionWrapper);
+
+            // Currently there is no separation between call participants and peer connections, so any video peer
+            // connection (except the own publisher connection) is treated as a call participant.
+            if (!publisher && "video".equals(type)) {
+                SignalingMessageReceiver.CallParticipantMessageListener callParticipantMessageListener =
+                    new CallActivityCallParticipantMessageListener(sessionId);
+                callParticipantMessageListeners.put(sessionId, callParticipantMessageListener);
+                signalingMessageReceiver.addListener(callParticipantMessageListener, sessionId);
+            }
 
             if (publisher) {
                 startSendingNick();
@@ -2097,6 +2036,11 @@ public class CallActivity extends CallBaseActivity {
                     }
                 }
             }
+        }
+
+        if (!justScreen) {
+            SignalingMessageReceiver.CallParticipantMessageListener listener = callParticipantMessageListeners.remove(sessionId);
+            signalingMessageReceiver.removeListener(listener);
         }
     }
 
@@ -2668,6 +2612,35 @@ public class CallActivity extends CallBaseActivity {
 
             mediaPlayer.release();
             mediaPlayer = null;
+        }
+    }
+
+    /**
+     * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted from CallActivity.
+     *
+     * All listeners are called in the main thread.
+     */
+    private static class InternalSignalingMessageReceiver extends SignalingMessageReceiver {
+        public void process(List<Map<String, Object>> users) {
+            processUsersInRoom(users);
+        }
+
+        public void process(NCSignalingMessage message) {
+            processSignalingMessage(message);
+        }
+    }
+
+    private class CallActivityCallParticipantMessageListener implements SignalingMessageReceiver.CallParticipantMessageListener {
+
+        private final String sessionId;
+
+        public CallActivityCallParticipantMessageListener(String sessionId) {
+            this.sessionId = sessionId;
+        }
+
+        @Override
+        public void onUnshareScreen() {
+            endPeerConnection(sessionId, true);
         }
     }
 
