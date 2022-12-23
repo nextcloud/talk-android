@@ -40,7 +40,7 @@ import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
-import com.nextcloud.talk.utils.MagicMap;
+import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import org.greenrobot.eventbus.EventBus;
@@ -65,16 +65,8 @@ import okio.ByteString;
 
 import static com.nextcloud.talk.models.json.participants.Participant.ActorType.GUESTS;
 import static com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS;
-import static com.nextcloud.talk.webrtc.Globals.EVENT_TYPE;
-import static com.nextcloud.talk.webrtc.Globals.EVENT_TYPE_UPDATE;
-import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
-import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
 import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
 import static com.nextcloud.talk.webrtc.Globals.TARGET_PARTICIPANTS;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_ALL;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_IN_CALL;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_ROOM_ID;
-import static com.nextcloud.talk.webrtc.Globals.UPDATE_USERS;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicWebSocketInstance extends WebSocketListener {
@@ -98,7 +90,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private boolean connected;
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private WebSocket internalWebSocket;
-    private MagicMap magicMap;
     private String connectionUrl;
 
     private String currentRoomToken;
@@ -109,6 +100,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     private List<String> messagesQueue = new ArrayList<>();
 
+    private final ExternalSignalingMessageReceiver signalingMessageReceiver = new ExternalSignalingMessageReceiver();
+
     MagicWebSocketInstance(User conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
@@ -117,7 +110,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         this.webSocketTicket = webSocketTicket;
         this.webSocketConnectionHelper = new WebSocketConnectionHelper();
         this.usersHashMap = new HashMap<>();
-        magicMap = new MagicMap();
 
         connected = false;
         eventBus.register(this);
@@ -276,45 +268,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                     }
                                     break;
                                 case TARGET_PARTICIPANTS:
-                                    if (EVENT_TYPE_UPDATE.equals(eventOverallWebSocketMessage.getEventMap().get(EVENT_TYPE))) {
-                                        HashMap<String, String> refreshChatHashMap = new HashMap<>();
-                                        HashMap<String, Object> updateEventMap = (HashMap<String, Object>) eventOverallWebSocketMessage.getEventMap().get(EVENT_TYPE_UPDATE);
-
-                                        if (updateEventMap == null) {
-                                            break;
-                                        }
-
-                                        if (updateEventMap.containsKey(UPDATE_ROOM_ID)) {
-                                            Object updateRoomId = updateEventMap.get(UPDATE_ROOM_ID);
-                                            if (updateRoomId != null) {
-                                                refreshChatHashMap.put(ROOM_TOKEN,
-                                                                       (String) updateEventMap.get(UPDATE_ROOM_ID));
-                                            }
-                                        }
-
-                                        if (updateEventMap.containsKey(UPDATE_USERS)) {
-                                            Object updateUsers = updateEventMap.get(UPDATE_USERS);
-                                            if (updateUsers != null) {
-                                                refreshChatHashMap.put(JOB_ID, Integer.toString(magicMap.add(updateUsers)));
-                                            }
-                                        }
-
-                                        if (updateEventMap.containsKey(UPDATE_IN_CALL)) {
-                                            Object inCall = updateEventMap.get(UPDATE_IN_CALL);
-                                            if (inCall != null) {
-                                                refreshChatHashMap.put(UPDATE_IN_CALL, Long.toString((Long) inCall));
-                                            }
-                                        }
-
-                                        if (updateEventMap.containsKey(UPDATE_ALL)) {
-                                            Object updateAll = updateEventMap.get(UPDATE_ALL);
-                                            if (updateAll != null) {
-                                                refreshChatHashMap.put(UPDATE_ALL, Boolean.toString((Boolean) updateAll));
-                                            }
-                                        }
-
-                                        eventBus.post(new WebSocketCommunicationEvent(PARTICIPANTS_UPDATE, refreshChatHashMap));
-                                    }
+                                    signalingMessageReceiver.process(eventOverallWebSocketMessage.getEventMap());
                                     break;
                             }
                         }
@@ -326,11 +280,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                             ncSignalingMessage.setFrom(callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage().getSessionId());
                         }
 
-                        if (!TextUtils.isEmpty(ncSignalingMessage.getFrom())) {
-                            HashMap<String, String> messageHashMap = new HashMap<>();
-                            messageHashMap.put(JOB_ID, Integer.toString(magicMap.add(ncSignalingMessage)));
-                            eventBus.post(new WebSocketCommunicationEvent("signalingMessage", messageHashMap));
-                        }
+                        signalingMessageReceiver.process(ncSignalingMessage);
                         break;
                     case "bye":
                         connected = false;
@@ -407,12 +357,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         }
     }
 
-    public Object getJobWithId(Integer id) {
-        Object copyJob = magicMap.get(id);
-        magicMap.remove(id);
-        return copyJob;
-    }
-
     public void requestOfferForSessionIdWithType(String sessionIdParam, String roomType) {
         try {
             String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledRequestOfferModel(sessionIdParam, roomType));
@@ -469,6 +413,27 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public void onMessageEvent(NetworkEvent networkEvent) {
         if (networkEvent.getNetworkConnectionEvent() == NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED && !isConnected()) {
             restartWebSocket();
+        }
+    }
+
+    public SignalingMessageReceiver getSignalingMessageReceiver() {
+        return signalingMessageReceiver;
+    }
+
+    /**
+     * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted to a Signaling
+     * class.
+     *
+     * All listeners are called in the WebSocket reader thread. This thread should be the same as long as the
+     * WebSocket stays connected, but it may change whenever it is connected again.
+     */
+    private static class ExternalSignalingMessageReceiver extends SignalingMessageReceiver {
+        public void process(Map<String, Object> eventMap) {
+            processEvent(eventMap);
+        }
+
+        public void process(NCSignalingMessage message) {
+            processSignalingMessage(message);
         }
     }
 }

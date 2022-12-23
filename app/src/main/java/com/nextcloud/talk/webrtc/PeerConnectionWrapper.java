@@ -37,6 +37,7 @@ import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
+import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 
 import org.greenrobot.eventbus.EventBus;
 import org.webrtc.AudioTrack;
@@ -74,6 +75,9 @@ public class PeerConnectionWrapper {
 
     private static final String TAG = PeerConnectionWrapper.class.getCanonicalName();
 
+    private final SignalingMessageReceiver signalingMessageReceiver;
+    private final WebRtcMessageListener webRtcMessageListener = new WebRtcMessageListener();
+
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
     private String sessionId;
@@ -96,7 +100,8 @@ public class PeerConnectionWrapper {
                                  List<PeerConnection.IceServer> iceServerList,
                                  MediaConstraints mediaConstraints,
                                  String sessionId, String localSession, @Nullable MediaStream localStream,
-                                 boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
+                                 boolean isMCUPublisher, boolean hasMCU, String videoStreamType,
+                                 SignalingMessageReceiver signalingMessageReceiver) {
 
         Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
 
@@ -113,6 +118,9 @@ public class PeerConnectionWrapper {
         PeerConnection.RTCConfiguration configuration = new PeerConnection.RTCConfiguration(iceServerList);
         configuration.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN;
         peerConnection = peerConnectionFactory.createPeerConnection(configuration, new MagicPeerConnectionObserver());
+
+        this.signalingMessageReceiver = signalingMessageReceiver;
+        this.signalingMessageReceiver.addListener(webRtcMessageListener, sessionId, videoStreamType);
 
         if (peerConnection != null) {
             if (this.localStream != null) {
@@ -150,6 +158,8 @@ public class PeerConnectionWrapper {
     }
 
     public void removePeerConnection() {
+        signalingMessageReceiver.removeListener(webRtcMessageListener);
+
         if (dataChannel != null) {
             dataChannel.dispose();
             dataChannel = null;
@@ -167,7 +177,7 @@ public class PeerConnectionWrapper {
         }
     }
 
-    public void drainIceCandidates() {
+    private void drainIceCandidates() {
 
         if (peerConnection != null) {
             for (IceCandidate iceCandidate : iceCandidates) {
@@ -178,11 +188,7 @@ public class PeerConnectionWrapper {
         }
     }
 
-    public MagicSdpObserver getMagicSdpObserver() {
-        return magicSdpObserver;
-    }
-
-    public void addCandidate(IceCandidate iceCandidate) {
+    private void addCandidate(IceCandidate iceCandidate) {
         if (peerConnection != null && peerConnection.getRemoteDescription() != null) {
             peerConnection.addIceCandidate(iceCandidate);
         } else {
@@ -222,10 +228,6 @@ public class PeerConnectionWrapper {
         return sessionId;
     }
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
-
     public String getNick() {
         if (!TextUtils.isEmpty(nick)) {
             return nick;
@@ -234,7 +236,7 @@ public class PeerConnectionWrapper {
         }
     }
 
-    public void setNick(String nick) {
+    private void setNick(String nick) {
         this.nick = nick;
     }
 
@@ -265,6 +267,43 @@ public class PeerConnectionWrapper {
             }
         }
         return false;
+    }
+
+    private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
+
+        public void onOffer(String sdp, String nick) {
+            onOfferOrAnswer("offer", sdp, nick);
+        }
+
+        public void onAnswer(String sdp, String nick) {
+            onOfferOrAnswer("answer", sdp, nick);
+        }
+
+        private void onOfferOrAnswer(String type, String sdp, String nick) {
+            setNick(nick);
+
+            SessionDescription sessionDescriptionWithPreferredCodec;
+
+            boolean isAudio = false;
+            String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec(sdp, "H264", isAudio);
+
+            sessionDescriptionWithPreferredCodec = new SessionDescription(
+                SessionDescription.Type.fromCanonicalForm(type),
+                sessionDescriptionStringWithPreferredCodec);
+
+            if (getPeerConnection() != null) {
+                getPeerConnection().setRemoteDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
+            }
+        }
+
+        public void onCandidate(String sdpMid, int sdpMLineIndex, String sdp) {
+            IceCandidate iceCandidate = new IceCandidate(sdpMid, sdpMLineIndex, sdp);
+            addCandidate(iceCandidate);
+        }
+
+        public void onEndOfCandidates() {
+            drainIceCandidates();
+        }
     }
 
     private class MagicDataChannelObserver implements DataChannel.Observer {
