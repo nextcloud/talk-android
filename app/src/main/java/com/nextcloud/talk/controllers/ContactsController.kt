@@ -130,13 +130,12 @@ class ContactsController(args: Bundle) :
         setHasOptionsMenu(true)
         sharedApplication!!.componentApplication.inject(this)
 
+        existingParticipants = ArrayList()
         if (args.containsKey(BundleKeys.KEY_NEW_CONVERSATION)) {
             isNewConversationView = true
-            existingParticipants = ArrayList()
         } else if (args.containsKey(BundleKeys.KEY_ADD_PARTICIPANTS)) {
             isAddingParticipantsView = true
             conversationToken = args.getString(BundleKeys.KEY_TOKEN)
-            existingParticipants = ArrayList()
             if (args.containsKey(BundleKeys.KEY_EXISTING_PARTICIPANTS)) {
                 existingParticipants = args.getStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS)
             }
@@ -497,8 +496,9 @@ class ContactsController(args: Bundle) :
         val actorTypeConverter = EnumActorTypeConverter()
         val newUserItemList: MutableList<AbstractFlexibleItem<*>> = ArrayList<AbstractFlexibleItem<*>>()
         for (autocompleteUser in autocompleteUsersList) {
-            if (autocompleteUser.id != currentUser!!.userId &&
-                !existingParticipants!!.contains(autocompleteUser.id!!)
+            if (autocompleteUser.id != null &&
+                autocompleteUser.id != currentUser!!.userId &&
+                !existingParticipants!!.contains(autocompleteUser.id)
             ) {
                 participant = createParticipant(autocompleteUser, actorTypeConverter)
                 val headerTitle = getHeaderTitle(participant)
