@@ -62,6 +62,8 @@
     <string name="nc_call_button_content_description_answer_video_call">영상 통화로 응답합니다</string>
     <string name="nc_call_button_content_description_answer_voice_only">영상 통화로만 응답합니다</string>
     <string name="nc_call_button_content_description_audio_output">오디오 출력을 바꾸다</string>
+    <string name="nc_call_button_content_description_camera">카메라 전환</string>
+    <string name="nc_call_button_content_description_microphone">마이크 전환</string>
     <string name="nc_call_button_content_description_pip">사진모드로 사진을 열기</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">셀프 비디오로 전환</string>
     <string name="nc_call_name">대화명</string>
@@ -402,6 +404,7 @@
     <string name="scope_private_title">비공개</string>
     <string name="scope_published_description">신뢰할 수 있는 서버와 전역 및 개인 연락처에 동기화</string>
     <string name="scope_published_title">발행됨</string>
+    <string name="scope_toggle">범위 전환</string>
     <string name="scope_toggle_description">%1$s의 프라이버시 수준에 대한 변경</string>
     <string name="secondsAgo">초 전</string>
     <string name="selected_list_item">선택</string>
