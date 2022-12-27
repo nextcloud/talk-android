@@ -31,7 +31,6 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.NetworkEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessage;
@@ -41,6 +40,7 @@ import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
+import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import org.greenrobot.eventbus.EventBus;
@@ -101,6 +101,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private List<String> messagesQueue = new ArrayList<>();
 
     private final ExternalSignalingMessageReceiver signalingMessageReceiver = new ExternalSignalingMessageReceiver();
+
+    private final ExternalSignalingMessageSender signalingMessageSender = new ExternalSignalingMessageSender();
 
     MagicWebSocketInstance(User conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
@@ -344,9 +346,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
         }
     }
 
-    public void sendCallMessage(NCMessageWrapper ncMessageWrapper) {
+    private void sendCallMessage(NCSignalingMessage ncSignalingMessage) {
         try {
-            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledCallMessageModel(ncMessageWrapper));
+            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage));
             if (!connected || reconnecting) {
                 messagesQueue.add(message);
             } else {
@@ -354,19 +356,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
             }
         } catch (IOException e) {
             Log.e(TAG, "Failed to serialize signaling message", e);
-        }
-    }
-
-    public void requestOfferForSessionIdWithType(String sessionIdParam, String roomType) {
-        try {
-            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledRequestOfferModel(sessionIdParam, roomType));
-            if (!connected || reconnecting) {
-                messagesQueue.add(message);
-            } else {
-                internalWebSocket.send(message);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to offer request. sessionIdParam: " + sessionIdParam + " roomType:" + roomType, e);
         }
     }
 
@@ -420,6 +409,10 @@ public class MagicWebSocketInstance extends WebSocketListener {
         return signalingMessageReceiver;
     }
 
+    public SignalingMessageSender getSignalingMessageSender() {
+        return signalingMessageSender;
+    }
+
     /**
      * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted to a Signaling
      * class.
@@ -434,6 +427,13 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
         public void process(NCSignalingMessage message) {
             processSignalingMessage(message);
+        }
+    }
+
+    private class ExternalSignalingMessageSender implements SignalingMessageSender {
+        @Override
+        public void send(NCSignalingMessage ncSignalingMessage) {
+            sendCallMessage(ncSignalingMessage);
         }
     }
 }
