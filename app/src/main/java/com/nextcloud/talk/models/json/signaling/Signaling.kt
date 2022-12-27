@@ -34,7 +34,7 @@ import kotlinx.android.parcel.TypeParceler
 data class Signaling(
     @JsonField(name = ["type"])
     var type: String? = null,
-    /** can be NCMessageWrapper or List<HashMap<String,String>> */
+    /** can be NCSignalingMessage (encoded as a String) or List<Map<String, Object>> */
     @JsonField(name = ["data"])
     var messageWrapper: Any? = null
 ) : Parcelable {
