@@ -19,7 +19,7 @@
     <string name="dontClear">Не очищати</string>
     <string name="edit">Редагувати</string>
     <string name="emoji_category_recent">Нещодавні</string>
-    <string name="emoji_search">Пошук емодзі</string>
+    <string name="emoji_search">Пошук емоційки</string>
     <string name="encrypted">Зашифровано</string>
     <string name="failed_to_save">Не вдалося зберегти %1$s</string>
     <string name="file_list_folder">каталог</string>
@@ -44,7 +44,7 @@
     <string name="nc_account_scheduled_for_deletion">Заплановано вилучення облікового запису, тому до нього неможливо внести зміни</string>
     <string name="nc_action_open_main_menu">Відкрити головне меню</string>
     <string name="nc_add_attachment">Додати вкладення</string>
-    <string name="nc_add_emojis">Додати емодзі</string>
+    <string name="nc_add_emojis">Додати емоційки</string>
     <string name="nc_add_file">Додати до розмови</string>
     <string name="nc_add_participants">Додати учасників</string>
     <string name="nc_add_to_favorites">Додати до улюбленого</string>
