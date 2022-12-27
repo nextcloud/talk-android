@@ -21,7 +21,7 @@ public abstract class CallBaseActivity extends BaseActivity {
     public static final String TAG = "CallBaseActivity";
 
     public PictureInPictureParams.Builder mPictureInPictureParamsBuilder;
-    public Boolean isInPipMode = false;
+    public Boolean isInPipMode = Boolean.FALSE;
     long onCreateTime;
 
     @SuppressLint("ClickableViewAccessibility")
