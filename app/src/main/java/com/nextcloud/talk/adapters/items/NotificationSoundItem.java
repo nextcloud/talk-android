@@ -28,6 +28,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.RvItemNotificationSoundBinding;
 
 import java.util.List;
+import java.util.Objects;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -54,7 +55,26 @@ public class NotificationSoundItem extends AbstractFlexibleItem<NotificationSoun
 
     @Override
     public boolean equals(Object o) {
-        return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        NotificationSoundItem that = (NotificationSoundItem) o;
+
+        if (!Objects.equals(notificationSoundName, that.notificationSoundName)) {
+            return false;
+        }
+        return Objects.equals(notificationSoundUri, that.notificationSoundUri);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = notificationSoundName != null ? notificationSoundName.hashCode() : 0;
+        result = 31 * result + (notificationSoundUri != null ? notificationSoundUri.hashCode() : 0);
+        return result;
     }
 
     @Override
