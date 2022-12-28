@@ -152,7 +152,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
         resumeId = "";
     }
 
-    public void restartWebSocket() {
+    public final void restartWebSocket() {
         reconnecting = true;
 
         // TODO when improving logging, keep in mind this issue: https://github.com/nextcloud/talk-android/issues/1013
