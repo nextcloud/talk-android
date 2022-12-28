@@ -98,8 +98,7 @@ public class ImportAccount {
         final Object $token = this.getToken();
         result = result * PRIME + ($token == null ? 43 : $token.hashCode());
         final Object $baseUrl = this.getBaseUrl();
-        result = result * PRIME + ($baseUrl == null ? 43 : $baseUrl.hashCode());
-        return result;
+        return result * PRIME + ($baseUrl == null ? 43 : $baseUrl.hashCode());
     }
 
     public String toString() {

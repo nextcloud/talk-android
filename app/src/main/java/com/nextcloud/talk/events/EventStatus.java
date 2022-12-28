@@ -89,8 +89,7 @@ public class EventStatus {
         result = result * PRIME + (int) ($userId >>> 32 ^ $userId);
         final Object $eventType = this.getEventType();
         result = result * PRIME + ($eventType == null ? 43 : $eventType.hashCode());
-        result = result * PRIME + (this.isAllGood() ? 79 : 97);
-        return result;
+        return result * PRIME + (this.isAllGood() ? 79 : 97);
     }
 
     public String toString() {
