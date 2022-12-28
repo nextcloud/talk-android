@@ -76,7 +76,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
-import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.signaling.Signaling;
@@ -264,8 +263,12 @@ public class CallActivity extends CallBaseActivity {
     private InternalSignalingMessageSender internalSignalingMessageSender = new InternalSignalingMessageSender();
     private SignalingMessageSender signalingMessageSender;
 
+    private Map<String, OfferAnswerNickProvider> offerAnswerNickProviders = new HashMap<>();
+
     private Map<String, SignalingMessageReceiver.CallParticipantMessageListener> callParticipantMessageListeners =
         new HashMap<>();
+
+    private Map<String, PeerConnectionWrapper.DataChannelMessageListener> dataChannelMessageListeners = new HashMap<>();
 
     private SignalingMessageReceiver.ParticipantListMessageListener participantListMessageListener = new SignalingMessageReceiver.ParticipantListMessageListener() {
 
@@ -2006,6 +2009,19 @@ public class CallActivity extends CallBaseActivity {
                     new CallActivityCallParticipantMessageListener(sessionId);
                 callParticipantMessageListeners.put(sessionId, callParticipantMessageListener);
                 signalingMessageReceiver.addListener(callParticipantMessageListener, sessionId);
+
+                // DataChannel messages are sent only in video peers; (sender) screen peers do not even open them.
+                PeerConnectionWrapper.DataChannelMessageListener dataChannelMessageListener =
+                    new CallActivityDataChannelMessageListener(sessionId);
+                dataChannelMessageListeners.put(sessionId, dataChannelMessageListener);
+                peerConnectionWrapper.addListener(dataChannelMessageListener);
+            }
+
+            if (!publisher && !hasExternalSignalingServer && offerAnswerNickProviders.get(sessionId) == null) {
+                OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider();
+                offerAnswerNickProviders.put(sessionId, offerAnswerNickProvider);
+                signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
+                signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
             }
 
             if (publisher) {
@@ -2032,6 +2048,10 @@ public class CallActivity extends CallBaseActivity {
         if (!(peerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()) {
             for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrappers) {
                 if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
+                    if (!justScreen && VIDEO_STREAM_TYPE_VIDEO.equals(peerConnectionWrapper.getVideoStreamType())) {
+                        PeerConnectionWrapper.DataChannelMessageListener dataChannelMessageListener = dataChannelMessageListeners.remove(sessionId);
+                        peerConnectionWrapper.removeListener(dataChannelMessageListener);
+                    }
                     String videoStreamType = peerConnectionWrapper.getVideoStreamType();
                     if (VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType) || !justScreen) {
                         runOnUiThread(() -> removeMediaStream(sessionId, videoStreamType));
@@ -2044,6 +2064,12 @@ public class CallActivity extends CallBaseActivity {
         if (!justScreen) {
             SignalingMessageReceiver.CallParticipantMessageListener listener = callParticipantMessageListeners.remove(sessionId);
             signalingMessageReceiver.removeListener(listener);
+
+            OfferAnswerNickProvider offerAnswerNickProvider = offerAnswerNickProviders.remove(sessionId);
+            if (offerAnswerNickProvider != null) {
+                signalingMessageReceiver.removeListener(offerAnswerNickProvider.getVideoWebRtcMessageListener());
+                signalingMessageReceiver.removeListener(offerAnswerNickProvider.getScreenWebRtcMessageListener());
+            }
         }
     }
 
@@ -2150,24 +2176,6 @@ public class CallActivity extends CallBaseActivity {
                 }
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE) {
-            if (participantDisplayItems.get(participantDisplayItemId) != null) {
-                participantDisplayItems.get(participantDisplayItemId).setNick(peerConnectionEvent.getNick());
-                participantsAdapter.notifyDataSetChanged();
-            }
-        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE && !isVoiceOnlyCall) {
-            if (participantDisplayItems.get(participantDisplayItemId) != null) {
-                participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(peerConnectionEvent.getChangeValue());
-                participantsAdapter.notifyDataSetChanged();
-            }
-        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.AUDIO_CHANGE) {
-            if (participantDisplayItems.get(participantDisplayItemId) != null) {
-                participantDisplayItems.get(participantDisplayItemId).setAudioEnabled(peerConnectionEvent.getChangeValue());
-                participantsAdapter.notifyDataSetChanged();
-            }
-        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
             PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED) {
             setCallState(CallStatus.PUBLISHER_FAILED);
             webSocketClient.clearResumeId();
@@ -2176,12 +2184,12 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void startSendingNick() {
-        DataChannelMessageNick dataChannelMessage = new DataChannelMessageNick();
+        DataChannelMessage dataChannelMessage = new DataChannelMessage();
         dataChannelMessage.setType("nickChanged");
-        HashMap<String, String> nickChangedPayload = new HashMap<>();
+        Map<String, String> nickChangedPayload = new HashMap<>();
         nickChangedPayload.put("userid", conversationUser.getUserId());
         nickChangedPayload.put("name", conversationUser.getDisplayName());
-        dataChannelMessage.setPayload(nickChangedPayload);
+        dataChannelMessage.setPayloadMap(nickChangedPayload);
         for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
             if (peerConnectionWrapper.isMCUPublisher()) {
                 Observable
@@ -2196,7 +2204,7 @@ public class CallActivity extends CallBaseActivity {
 
                         @Override
                         public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
-                            peerConnectionWrapper.sendNickChannelData(dataChannelMessage);
+                            peerConnectionWrapper.sendChannelData(dataChannelMessage);
                         }
 
                         @Override
@@ -2265,7 +2273,7 @@ public class CallActivity extends CallBaseActivity {
         if (hasExternalSignalingServer) {
             nick = webSocketClient.getDisplayNameForSession(session);
         } else {
-            nick = peerConnectionWrapper != null ? peerConnectionWrapper.getNick() : "";
+            nick = offerAnswerNickProviders.get(session) != null ? offerAnswerNickProviders.get(session).getNick() : "";
         }
 
         String userId4Usage = userId;
@@ -2278,11 +2286,14 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
+        String defaultGuestNick = getResources().getString(R.string.nc_nick_guest);
+
         ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(baseUrl,
                                                                                    userId4Usage,
                                                                                    session,
                                                                                    connected,
                                                                                    nick,
+                                                                                   defaultGuestNick,
                                                                                    mediaStream,
                                                                                    videoStreamType,
                                                                                    videoStreamEnabled,
@@ -2559,6 +2570,47 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
+    private static class OfferAnswerNickProvider {
+
+        private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
+
+            @Override
+            public void onOffer(String sdp, String nick) {
+                (OfferAnswerNickProvider.this).nick = nick;
+            }
+
+            @Override
+            public void onAnswer(String sdp, String nick) {
+                (OfferAnswerNickProvider.this).nick = nick;
+            }
+
+            @Override
+            public void onCandidate(String sdpMid, int sdpMLineIndex, String sdp) {
+            }
+
+            @Override
+            public void onEndOfCandidates() {
+            }
+        }
+
+        private final WebRtcMessageListener videoWebRtcMessageListener = new WebRtcMessageListener();
+        private final WebRtcMessageListener screenWebRtcMessageListener = new WebRtcMessageListener();
+
+        private String nick;
+
+        public WebRtcMessageListener getVideoWebRtcMessageListener() {
+            return videoWebRtcMessageListener;
+        }
+
+        public WebRtcMessageListener getScreenWebRtcMessageListener() {
+            return screenWebRtcMessageListener;
+        }
+
+        public String getNick() {
+            return nick;
+        }
+    }
+
     private class CallActivityCallParticipantMessageListener implements SignalingMessageReceiver.CallParticipantMessageListener {
 
         private final String sessionId;
@@ -2570,6 +2622,66 @@ public class CallActivity extends CallBaseActivity {
         @Override
         public void onUnshareScreen() {
             endPeerConnection(sessionId, true);
+        }
+    }
+
+    private class CallActivityDataChannelMessageListener implements PeerConnectionWrapper.DataChannelMessageListener {
+
+        private final String participantDisplayItemId;
+
+        private CallActivityDataChannelMessageListener(String sessionId) {
+            // DataChannel messages are sent only in video peers, so the listener only acts on the "video" items.
+            this.participantDisplayItemId = sessionId + "-video";
+        }
+
+        @Override
+        public void onAudioOn() {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setAudioEnabled(true);
+                    participantsAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onAudioOff() {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setAudioEnabled(false);
+                    participantsAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onVideoOn() {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(true);
+                    participantsAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onVideoOff() {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setStreamEnabled(false);
+                    participantsAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onNickChanged(String nick) {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) != null) {
+                    participantDisplayItems.get(participantDisplayItemId).setNick(nick);
+                    participantsAdapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 
