@@ -54,6 +54,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import autodagger.AutoInjector;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -163,136 +164,166 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     @Override
-    public void onMessage(WebSocket webSocket, String text) {
+    public void onMessage(@NonNull WebSocket webSocket, @NonNull String text) {
         if (webSocket == internalWebSocket) {
             Log.d(TAG, "Receiving : " + webSocket + " " + text);
 
             try {
                 BaseWebSocketMessage baseWebSocketMessage = LoganSquare.parse(text, BaseWebSocketMessage.class);
                 String messageType = baseWebSocketMessage.getType();
-                switch (messageType) {
-                    case "hello":
-                        connected = true;
-                        reconnecting = false;
-                        restartCount = 0;
-                        String oldResumeId = resumeId;
-                        HelloResponseOverallWebSocketMessage helloResponseWebSocketMessage = LoganSquare.parse(text, HelloResponseOverallWebSocketMessage.class);
-                        resumeId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getResumeId();
-                        sessionId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getSessionId();
-                        hasMCU = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().serverHasMCUSupport();
-
-                        for (int i = 0; i < messagesQueue.size(); i++) {
-                            webSocket.send(messagesQueue.get(i));
-                        }
-
-                        messagesQueue = new ArrayList<>();
-                        HashMap<String, String> helloHasHap = new HashMap<>();
-                        if (!TextUtils.isEmpty(oldResumeId)) {
-                            helloHasHap.put("oldResumeId", oldResumeId);
-                        } else {
-                            currentRoomToken = "";
-                        }
-
-                        if (!TextUtils.isEmpty(currentRoomToken)) {
-                            helloHasHap.put(ROOM_TOKEN, currentRoomToken);
-                        }
-                        eventBus.post(new WebSocketCommunicationEvent("hello", helloHasHap));
-                        break;
-                    case "error":
-                        Log.e(TAG, "Received error: " + text);
-                        ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
-                        if (("no_such_session").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
-                            Log.d(TAG, "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired");
+                if (messageType != null) {
+                    switch (messageType) {
+                        case "hello":
+                            processHelloMessage(webSocket, text);
+                            break;
+                        case "error":
+                            processErrorMessage(webSocket, text);
+                            break;
+                        case "room":
+                            processJoinedRoomMessage(text);
+                            break;
+                        case "event":
+                            processEventMessage(text);
+                            break;
+                        case "message":
+                            processMessage(text);
+                            break;
+                        case "bye":
+                            connected = false;
                             resumeId = "";
-                            currentRoomToken = "";
-                            restartWebSocket();
-                        } else if (("hello_expected").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
-                            restartWebSocket();
-                        }
-
-                        break;
-                    case "room":
-                        JoinedRoomOverallWebSocketMessage joinedRoomOverallWebSocketMessage = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage.class);
-                        currentRoomToken = joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId();
-                        if (joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomPropertiesWebSocketMessage() != null && !TextUtils.isEmpty(currentRoomToken)) {
-                            sendRoomJoinedEvent();
-                        }
-                        break;
-                    case "event":
-                        EventOverallWebSocketMessage eventOverallWebSocketMessage = LoganSquare.parse(text, EventOverallWebSocketMessage.class);
-                        if (eventOverallWebSocketMessage.getEventMap() != null) {
-                            String target = (String) eventOverallWebSocketMessage.getEventMap().get("target");
-                            switch (target) {
-                                case "room":
-                                    if (eventOverallWebSocketMessage.getEventMap().get("type").equals("message")) {
-                                        Map<String, Object> messageHashMap =
-                                            (Map<String, Object>) eventOverallWebSocketMessage.getEventMap().get("message");
-                                        if (messageHashMap.containsKey("data")) {
-                                            Map<String, Object> dataHashMap = (Map<String, Object>) messageHashMap.get(
-                                                "data");
-                                            if (dataHashMap.containsKey("chat")) {
-                                                boolean shouldRefreshChat;
-                                                Map<String, Object> chatMap = (Map<String, Object>) dataHashMap.get("chat");
-                                                if (chatMap.containsKey("refresh")) {
-                                                    shouldRefreshChat = (boolean) chatMap.get("refresh");
-                                                    if (shouldRefreshChat) {
-                                                        HashMap<String, String> refreshChatHashMap = new HashMap<>();
-                                                        refreshChatHashMap.put(BundleKeys.KEY_ROOM_TOKEN, (String) messageHashMap.get("roomid"));
-                                                        refreshChatHashMap.put(BundleKeys.KEY_INTERNAL_USER_ID, Long.toString(conversationUser.getId()));
-                                                        eventBus.post(new WebSocketCommunicationEvent("refreshChat", refreshChatHashMap));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } else if (eventOverallWebSocketMessage.getEventMap().get("type").equals("join")) {
-                                        List<HashMap<String, Object>> joinEventList = (List<HashMap<String, Object>>) eventOverallWebSocketMessage.getEventMap().get("join");
-                                        HashMap<String, Object> internalHashMap;
-                                        Participant participant;
-                                        for (int i = 0; i < joinEventList.size(); i++) {
-                                            internalHashMap = joinEventList.get(i);
-                                            HashMap<String, Object> userMap = (HashMap<String, Object>) internalHashMap.get("user");
-                                            participant = new Participant();
-                                            String userId = (String) internalHashMap.get("userid");
-                                            if (userId != null) {
-                                                participant.setActorType(USERS);
-                                                participant.setActorId(userId);
-                                            } else {
-                                                participant.setActorType(GUESTS);
-                                                // FIXME seems to be not given by the HPB: participant.setActorId();
-                                            }
-                                            if (userMap != null) {
-                                                // There is no "user" attribute for guest participants.
-                                                participant.setDisplayName((String) userMap.get("displayname"));
-                                            }
-                                            usersHashMap.put((String) internalHashMap.get("sessionid"), participant);
-                                        }
-                                    }
-                                    break;
-                                case TARGET_PARTICIPANTS:
-                                    signalingMessageReceiver.process(eventOverallWebSocketMessage.getEventMap());
-                                    break;
-                            }
-                        }
-                        break;
-                    case "message":
-                        CallOverallWebSocketMessage callOverallWebSocketMessage = LoganSquare.parse(text, CallOverallWebSocketMessage.class);
-                        NCSignalingMessage ncSignalingMessage = callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage();
-                        if (TextUtils.isEmpty(ncSignalingMessage.getFrom()) && callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage() != null) {
-                            ncSignalingMessage.setFrom(callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage().getSessionId());
-                        }
-
-                        signalingMessageReceiver.process(ncSignalingMessage);
-                        break;
-                    case "bye":
-                        connected = false;
-                        resumeId = "";
-                    default:
-                        break;
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    Log.e(TAG, "Received message with type: null");
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Failed to recognize WebSocket message", e);
             }
         }
+    }
+
+    private void processMessage(String text) throws IOException {
+        CallOverallWebSocketMessage callOverallWebSocketMessage = LoganSquare.parse(text, CallOverallWebSocketMessage.class);
+        NCSignalingMessage ncSignalingMessage = callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage();
+        if (TextUtils.isEmpty(ncSignalingMessage.getFrom()) && callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage() != null) {
+            ncSignalingMessage.setFrom(callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage().getSessionId());
+        }
+
+        signalingMessageReceiver.process(ncSignalingMessage);
+    }
+
+    private void processEventMessage(String text) throws IOException {
+        EventOverallWebSocketMessage eventOverallWebSocketMessage = LoganSquare.parse(text, EventOverallWebSocketMessage.class);
+        if (eventOverallWebSocketMessage.getEventMap() != null) {
+            String target = (String) eventOverallWebSocketMessage.getEventMap().get("target");
+            switch (target) {
+                case "room":
+                    if (eventOverallWebSocketMessage.getEventMap().get("type").equals("message")) {
+                        processRoomMessageMessage(eventOverallWebSocketMessage);
+                    } else if (eventOverallWebSocketMessage.getEventMap().get("type").equals("join")) {
+                        processRoomJoinMessage(eventOverallWebSocketMessage);
+                    }
+                    break;
+                case TARGET_PARTICIPANTS:
+                    signalingMessageReceiver.process(eventOverallWebSocketMessage.getEventMap());
+                    break;
+            }
+        }
+    }
+
+    private void processRoomMessageMessage(EventOverallWebSocketMessage eventOverallWebSocketMessage) {
+        Map<String, Object> messageHashMap = (Map<String, Object>) eventOverallWebSocketMessage
+            .getEventMap()
+            .get("message");
+        if (messageHashMap != null && messageHashMap.containsKey("data")) {
+            Map<String, Object> dataHashMap = (Map<String, Object>) messageHashMap.get("data");
+            if (dataHashMap != null && dataHashMap.containsKey("chat")) {
+                Map<String, Object> chatMap = (Map<String, Object>) dataHashMap.get("chat");
+                if (chatMap != null && chatMap.containsKey("refresh") && (boolean) chatMap.get("refresh")) {
+                    HashMap<String, String> refreshChatHashMap = new HashMap<>();
+                    refreshChatHashMap.put(BundleKeys.KEY_ROOM_TOKEN, (String) messageHashMap.get("roomid"));
+                    refreshChatHashMap.put(BundleKeys.KEY_INTERNAL_USER_ID, Long.toString(conversationUser.getId()));
+                    eventBus.post(new WebSocketCommunicationEvent("refreshChat", refreshChatHashMap));
+                }
+            }
+        }
+    }
+
+    private void processRoomJoinMessage(EventOverallWebSocketMessage eventOverallWebSocketMessage) {
+        List<HashMap<String, Object>> joinEventList = (List<HashMap<String, Object>>) eventOverallWebSocketMessage
+            .getEventMap()
+            .get("join");
+        HashMap<String, Object> internalHashMap;
+        Participant participant;
+        for (int i = 0; i < joinEventList.size(); i++) {
+            internalHashMap = joinEventList.get(i);
+            HashMap<String, Object> userMap = (HashMap<String, Object>) internalHashMap.get("user");
+            participant = new Participant();
+            String userId = (String) internalHashMap.get("userid");
+            if (userId != null) {
+                participant.setActorType(USERS);
+                participant.setActorId(userId);
+            } else {
+                participant.setActorType(GUESTS);
+                // FIXME seems to be not given by the HPB: participant.setActorId();
+            }
+            if (userMap != null) {
+                // There is no "user" attribute for guest participants.
+                participant.setDisplayName((String) userMap.get("displayname"));
+            }
+            usersHashMap.put((String) internalHashMap.get("sessionid"), participant);
+        }
+    }
+
+    private void processJoinedRoomMessage(String text) throws IOException {
+        JoinedRoomOverallWebSocketMessage joinedRoomOverallWebSocketMessage = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage.class);
+        currentRoomToken = joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId();
+        if (joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomPropertiesWebSocketMessage() != null && !TextUtils.isEmpty(currentRoomToken)) {
+            sendRoomJoinedEvent();
+        }
+    }
+
+    private void processErrorMessage(WebSocket webSocket, String text) throws IOException {
+        Log.e(TAG, "Received error: " + text);
+        ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
+        if ("no_such_session".equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
+            Log.d(TAG, "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired");
+            resumeId = "";
+            currentRoomToken = "";
+            restartWebSocket();
+        } else if ("hello_expected".equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
+            restartWebSocket();
+        }
+    }
+
+    private void processHelloMessage(WebSocket webSocket, String text) throws IOException {
+        connected = true;
+        reconnecting = false;
+        restartCount = 0;
+        String oldResumeId = resumeId;
+        HelloResponseOverallWebSocketMessage helloResponseWebSocketMessage = LoganSquare.parse(text, HelloResponseOverallWebSocketMessage.class);
+        resumeId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getResumeId();
+        sessionId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getSessionId();
+        hasMCU = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().serverHasMCUSupport();
+
+        for (int i = 0; i < messagesQueue.size(); i++) {
+            webSocket.send(messagesQueue.get(i));
+        }
+
+        messagesQueue = new ArrayList<>();
+        HashMap<String, String> helloHasHap = new HashMap<>();
+        if (!TextUtils.isEmpty(oldResumeId)) {
+            helloHasHap.put("oldResumeId", oldResumeId);
+        } else {
+            currentRoomToken = "";
+        }
+
+        if (!TextUtils.isEmpty(currentRoomToken)) {
+            helloHasHap.put(ROOM_TOKEN, currentRoomToken);
+        }
+        eventBus.post(new WebSocketCommunicationEvent("hello", helloHasHap));
     }
 
     private void sendRoomJoinedEvent() {
