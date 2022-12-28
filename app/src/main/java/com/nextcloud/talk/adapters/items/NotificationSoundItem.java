@@ -73,8 +73,7 @@ public class NotificationSoundItem extends AbstractFlexibleItem<NotificationSoun
     @Override
     public int hashCode() {
         int result = notificationSoundName != null ? notificationSoundName.hashCode() : 0;
-        result = 31 * result + (notificationSoundUri != null ? notificationSoundUri.hashCode() : 0);
-        return result;
+        return 31 * result + (notificationSoundUri != null ? notificationSoundUri.hashCode() : 0);
     }
 
     @Override

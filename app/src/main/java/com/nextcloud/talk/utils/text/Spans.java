@@ -87,13 +87,11 @@ public class Spans {
             final Object $id = this.getId();
             result = result * PRIME + ($id == null ? 43 : $id.hashCode());
             final Object $label = this.getLabel();
-            result = result * PRIME + ($label == null ? 43 : $label.hashCode());
-            return result;
+            return result * PRIME + ($label == null ? 43 : $label.hashCode());
         }
 
         public String toString() {
             return "Spans.MentionChipSpan(id=" + this.getId() + ", label=" + this.getLabel() + ")";
         }
     }
-
 }

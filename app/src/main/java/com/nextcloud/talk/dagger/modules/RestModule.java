@@ -249,9 +249,7 @@ public class RestModule {
                     .method(original.method(), original.body())
                     .build();
 
-            Response response = chain.proceed(request);
-
-            return response;
+            return chain.proceed(request);
         }
     }
 

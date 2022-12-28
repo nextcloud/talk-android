@@ -58,8 +58,7 @@ public class MoreMenuClickEvent {
         final int PRIME = 59;
         int result = 1;
         final Object $conversation = this.getConversation();
-        result = result * PRIME + ($conversation == null ? 43 : $conversation.hashCode());
-        return result;
+        return result * PRIME + ($conversation == null ? 43 : $conversation.hashCode());
     }
 
     public String toString() {

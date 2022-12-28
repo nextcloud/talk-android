@@ -75,8 +75,7 @@ public class WebSocketCommunicationEvent {
         final Object $type = this.getType();
         result = result * PRIME + ($type == null ? 43 : $type.hashCode());
         final Object $hashMap = this.getHashMap();
-        result = result * PRIME + ($hashMap == null ? 43 : $hashMap.hashCode());
-        return result;
+        return result * PRIME + ($hashMap == null ? 43 : $hashMap.hashCode());
     }
 
     public String toString() {
