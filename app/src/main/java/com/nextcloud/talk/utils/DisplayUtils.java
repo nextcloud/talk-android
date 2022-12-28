@@ -369,8 +369,6 @@ public class DisplayUtils {
                 decor.setSystemUiVisibility(0);
             }
             window.setStatusBarColor(color);
-        } else if (isLightTheme) {
-            window.setStatusBarColor(Color.BLACK);
         }
     }
 
@@ -455,10 +453,12 @@ public class DisplayUtils {
             avatarId = user.getUsername();
         }
 
-        if (deleteCache) {
-            ImageViewExtensionsKt.replaceAvatar(avatarImageView, user, avatarId, true);
-        } else {
-            ImageViewExtensionsKt.loadAvatar(avatarImageView, user, avatarId, true);
+        if (avatarId != null) {
+            if (deleteCache) {
+                ImageViewExtensionsKt.replaceAvatar(avatarImageView, user, avatarId, true);
+            } else {
+                ImageViewExtensionsKt.loadAvatar(avatarImageView, user, avatarId, true);
+            }
         }
     }
 
