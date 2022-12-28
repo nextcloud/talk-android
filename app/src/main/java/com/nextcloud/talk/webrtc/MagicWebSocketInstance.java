@@ -165,7 +165,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     @Override
     public void onMessage(WebSocket webSocket, String text) {
         if (webSocket == internalWebSocket) {
-            Log.d(TAG, "Receiving : " + webSocket.toString() + " " + text);
+            Log.d(TAG, "Receiving : " + webSocket + " " + text);
 
             try {
                 BaseWebSocketMessage baseWebSocketMessage = LoganSquare.parse(text, BaseWebSocketMessage.class);
