@@ -295,7 +295,7 @@ public class WebRtcBluetoothManager {
     /**
      * Stubs for test mocks.
      */
-    protected AudioManager getAudioManager(Context context) {
+    protected final AudioManager getAudioManager(Context context) {
         return (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
