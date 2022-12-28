@@ -24,16 +24,13 @@
 package com.nextcloud.talk.webrtc;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
-import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
@@ -59,8 +56,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -68,11 +65,25 @@ import javax.inject.Inject;
 import androidx.annotation.Nullable;
 import autodagger.AutoInjector;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
 @AutoInjector(NextcloudTalkApplication.class)
 public class PeerConnectionWrapper {
+
+    /**
+     * Listener for data channel messages.
+     *
+     * The messages are bound to a specific peer connection, so each listener is expected to handle messages only for
+     * a single peer connection.
+     *
+     * All methods are called on the so called "signaling" thread of WebRTC, which is an internal thread created by the
+     * WebRTC library and NOT the same thread where signaling messages are received.
+     */
+    public interface DataChannelMessageListener {
+        void onAudioOn();
+        void onAudioOff();
+        void onVideoOn();
+        void onVideoOff();
+        void onNickChanged(String nick);
+    }
 
     private static final String TAG = PeerConnectionWrapper.class.getCanonicalName();
 
@@ -81,10 +92,11 @@ public class PeerConnectionWrapper {
 
     private final SignalingMessageSender signalingMessageSender;
 
+    private final DataChannelMessageNotifier dataChannelMessageNotifier = new DataChannelMessageNotifier();
+
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
     private String sessionId;
-    private String nick;
     private final MediaConstraints mediaConstraints;
     private DataChannel dataChannel;
     private final MagicSdpObserver magicSdpObserver;
@@ -160,6 +172,21 @@ public class PeerConnectionWrapper {
         }
     }
 
+    /**
+     * Adds a listener for data channel messages.
+     *
+     * A listener is expected to be added only once. If the same listener is added again it will be notified just once.
+     *
+     * @param listener the DataChannelMessageListener
+     */
+    public void addListener(DataChannelMessageListener listener) {
+        dataChannelMessageNotifier.addListener(listener);
+    }
+
+    public void removeListener(DataChannelMessageListener listener) {
+        dataChannelMessageNotifier.removeListener(listener);
+    }
+
     public String getVideoStreamType() {
         return videoStreamType;
     }
@@ -203,18 +230,6 @@ public class PeerConnectionWrapper {
         }
     }
 
-    public void sendNickChannelData(DataChannelMessageNick dataChannelMessage) {
-        ByteBuffer buffer;
-        if (dataChannel != null) {
-            try {
-                buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
-                dataChannel.send(new DataChannel.Buffer(buffer, false));
-            } catch (IOException e) {
-                Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
-            }
-        }
-    }
-
     public void sendChannelData(DataChannelMessage dataChannelMessage) {
         ByteBuffer buffer;
         if (dataChannel != null) {
@@ -233,18 +248,6 @@ public class PeerConnectionWrapper {
 
     public String getSessionId() {
         return sessionId;
-    }
-
-    public String getNick() {
-        if (!TextUtils.isEmpty(nick)) {
-            return nick;
-        } else {
-            return Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getString(R.string.nc_nick_guest);
-        }
-    }
-
-    private void setNick(String nick) {
-        this.nick = nick;
     }
 
     private void sendInitialMediaStatus() {
@@ -288,16 +291,14 @@ public class PeerConnectionWrapper {
     private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
 
         public void onOffer(String sdp, String nick) {
-            onOfferOrAnswer("offer", sdp, nick);
+            onOfferOrAnswer("offer", sdp);
         }
 
         public void onAnswer(String sdp, String nick) {
-            onOfferOrAnswer("answer", sdp, nick);
+            onOfferOrAnswer("answer", sdp);
         }
 
-        private void onOfferOrAnswer(String type, String sdp, String nick) {
-            setNick(nick);
-
+        private void onOfferOrAnswer(String type, String sdp) {
             SessionDescription sessionDescriptionWithPreferredCodec;
 
             boolean isAudio = false;
@@ -350,40 +351,53 @@ public class PeerConnectionWrapper {
             String strData = new String(bytes);
             Log.d(TAG, "Got msg: " + strData + " over " + TAG + " " + sessionId);
 
+            DataChannelMessage dataChannelMessage;
             try {
-                DataChannelMessage dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
-
-                String internalNick;
-                if ("nickChanged".equals(dataChannelMessage.getType())) {
-                    if (dataChannelMessage.getPayload() instanceof String) {
-                        internalNick = (String) dataChannelMessage.getPayload();
-                        if (!internalNick.equals(nick)) {
-                            setNick(internalNick);
-                            EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                    .NICK_CHANGE, sessionId, getNick(), null, videoStreamType));
-                        }
-                    } else {
-                        if (dataChannelMessage.getPayload() != null) {
-                            HashMap<String, String> payloadHashMap = (HashMap<String, String>) dataChannelMessage.getPayload();
-                            EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                    .NICK_CHANGE, sessionId, payloadHashMap.get("name"), null, videoStreamType));
-                        }
-                    }
-                } else if ("audioOn".equals(dataChannelMessage.getType())) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .AUDIO_CHANGE, sessionId, null, TRUE, videoStreamType));
-                } else if ("audioOff".equals(dataChannelMessage.getType())) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .AUDIO_CHANGE, sessionId, null, FALSE, videoStreamType));
-                } else if ("videoOn".equals(dataChannelMessage.getType())) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .VIDEO_CHANGE, sessionId, null, TRUE, videoStreamType));
-                } else if ("videoOff".equals(dataChannelMessage.getType())) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .VIDEO_CHANGE, sessionId, null, FALSE, videoStreamType));
-                }
+                dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
             } catch (IOException e) {
                 Log.d(TAG, "Failed to parse data channel message");
+
+                return;
+            }
+
+            if ("nickChanged".equals(dataChannelMessage.getType())) {
+                String nick = null;
+                if (dataChannelMessage.getPayload() instanceof String) {
+                    nick = (String) dataChannelMessage.getPayload();
+                } else if (dataChannelMessage.getPayload() instanceof Map) {
+                    Map<String, String> payloadMap = (Map<String, String>) dataChannelMessage.getPayload();
+                    nick = payloadMap.get("name");
+                }
+
+                if (nick != null) {
+                    dataChannelMessageNotifier.notifyNickChanged(nick);
+                }
+
+                return;
+            }
+
+            if ("audioOn".equals(dataChannelMessage.getType())) {
+                dataChannelMessageNotifier.notifyAudioOn();
+
+                return;
+            }
+
+            if ("audioOff".equals(dataChannelMessage.getType())) {
+                dataChannelMessageNotifier.notifyAudioOff();
+
+                return;
+            }
+
+            if ("videoOn".equals(dataChannelMessage.getType())) {
+                dataChannelMessageNotifier.notifyVideoOn();
+
+                return;
+            }
+
+            if ("videoOff".equals(dataChannelMessage.getType())) {
+                dataChannelMessageNotifier.notifyVideoOff();
+
+                return;
             }
         }
     }

@@ -25,7 +25,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.NetworkEvent;
@@ -384,7 +383,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
             }
         }
 
-        return NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_nick_guest);
+        return "";
     }
 
     public String getUserIdForSession(String session) {
