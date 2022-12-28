@@ -37,31 +37,28 @@ public class MagicCharPolicy implements AutocompletePolicy {
     }
 
     @Nullable
-    public static int[] getQueryRange(Spannable text) {
+    public static TextSpan getQueryRange(Spannable text) {
         QuerySpan[] span = text.getSpans(0, text.length(), QuerySpan.class);
-        if (span == null || span.length == 0) return null;
-        if (span.length > 1) {
-            // Do absolutely nothing
+        if (span == null || span.length == 0) {
+            return null;
+        } else  {
+            QuerySpan sp = span[0];
+            return new TextSpan(text.getSpanStart(sp), text.getSpanEnd(sp));
         }
-        QuerySpan sp = span[0];
-        return new int[]{text.getSpanStart(sp), text.getSpanEnd(sp)};
     }
 
-    private int[] checkText(Spannable text, int cursorPos) {
+    private TextSpan checkText(Spannable text, int cursorPos) {
         if (text.length() == 0) {
             return null;
         }
 
-        int[] span = new int[2];
         Pattern pattern = Pattern.compile("@+\\S*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(text);
 
         while (matcher.find()) {
             if (cursorPos >= matcher.start() && cursorPos <= matcher.end()) {
-                span[0] = matcher.start();
-                span[1] = matcher.end();
                 if (text.subSequence(matcher.start(), matcher.end()).charAt(0) == character) {
-                    return span;
+                    return new TextSpan(matcher.start(), matcher.end());
                 }
             }
         }
@@ -69,11 +66,29 @@ public class MagicCharPolicy implements AutocompletePolicy {
         return null;
     }
 
+    public static class TextSpan {
+        int start;
+        int end;
+
+        public TextSpan(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        public int getStart() {
+            return start;
+        }
+
+        public int getEnd() {
+            return end;
+        }
+    }
+
     @Override
     public boolean shouldShowPopup(Spannable text, int cursorPos) {
-        int[] show = checkText(text, cursorPos);
+        TextSpan show = checkText(text, cursorPos);
         if (show != null) {
-            text.setSpan(new QuerySpan(), show[0], show[1], Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            text.setSpan(new QuerySpan(), show.getStart(), show.getEnd(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             return true;
         }
         return false;

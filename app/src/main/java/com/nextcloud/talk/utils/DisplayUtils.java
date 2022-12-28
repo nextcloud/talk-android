@@ -380,7 +380,7 @@ public class DisplayUtils {
      * @param color the color
      * @return true if primaryColor is lighter than MAX_LIGHTNESS
      */
-    @SuppressWarnings("correctness")
+    @SuppressWarnings("CLI_CONSTANT_LIST_INDEX")
     public static boolean lightTheme(int color) {
         float[] hsl = colorToHSL(color);
 
