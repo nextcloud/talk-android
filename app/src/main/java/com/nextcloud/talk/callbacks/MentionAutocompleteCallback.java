@@ -85,7 +85,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
                                       item.getId(), item.getLabel());
         editable.setSpan(mentionChipSpan,
                          range.getStart(),
-                         range.getStart() + replacementStringBuilder.toString().length(),
+                         range.getStart() + replacementStringBuilder.length(),
                          Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
 
