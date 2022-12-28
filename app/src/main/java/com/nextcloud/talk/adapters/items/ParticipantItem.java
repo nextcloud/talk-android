@@ -154,8 +154,11 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             participant.getType() == Participant.ParticipantType.GUEST ||
             participant.getType() == Participant.ParticipantType.GUEST_MODERATOR) {
 
-            String displayName = NextcloudTalkApplication.Companion.getSharedApplication()
-                .getResources().getString(R.string.nc_guest);
+            String displayName = NextcloudTalkApplication
+                .Companion
+                .getSharedApplication()
+                .getResources()
+                .getString(R.string.nc_guest);
 
             if (!TextUtils.isEmpty(participant.getDisplayName())) {
                 displayName = participant.getDisplayName();
@@ -164,8 +167,11 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             ImageViewExtensionsKt.loadGuestAvatar(holder.binding.avatarView, user, displayName, false);
 
         } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
-            participant.getSource().equals("users")) {
-            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, user, participant.getCalculatedActorId(), true);
+            "users".equals(participant.getSource())) {
+            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView,
+                                             user,
+                                             participant.getCalculatedActorId(),
+                                             true);
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();

@@ -171,7 +171,7 @@ public class PeerConnectionWrapper {
                 dataChannel.registerObserver(new MagicDataChannelObserver());
                 if (isMCUPublisher) {
                     peerConnection.createOffer(magicSdpObserver, mediaConstraints);
-                } else if (hasMCU && this.videoStreamType.equals("video")) {
+                } else if (hasMCU && "video".equals(this.videoStreamType)) {
                     // If the connection type is "screen" the client sharing the screen will send an
                     // offer; offers should be requested only for videos.
                     // "to" property is not actually needed in the "requestoffer" signaling message, but it is used to
@@ -360,8 +360,9 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onStateChange() {
-            if (dataChannel != null && dataChannel.state() == DataChannel.State.OPEN &&
-                    dataChannel.label().equals("status")) {
+            if (dataChannel != null &&
+                dataChannel.state() == DataChannel.State.OPEN &&
+                "status".equals(dataChannel.label())) {
                 sendInitialMediaStatus();
             }
         }
@@ -493,7 +494,7 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onDataChannel(DataChannel dataChannel) {
-            if (dataChannel.label().equals("status") || dataChannel.label().equals("JanusDataChannel")) {
+            if ("status".equals(dataChannel.label()) || "JanusDataChannel".equals(dataChannel.label())) {
                 PeerConnectionWrapper.this.dataChannel = dataChannel;
                 PeerConnectionWrapper.this.dataChannel.registerObserver(new MagicDataChannelObserver());
             }
