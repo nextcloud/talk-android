@@ -69,7 +69,6 @@ public class ReadFilesystemOperation {
         DavResponse davResponse = new DavResponse();
         final List<Response> memberElements = new ArrayList<>();
         final Response[] rootElement = new Response[1];
-        final List<BrowserFile> remoteFiles = new ArrayList<>();
 
         try {
             new DavResource(okHttpClient, HttpUrl.parse(url)).propfind(depth, DavUtils.getAllPropSet(),
@@ -94,6 +93,7 @@ public class ReadFilesystemOperation {
             Log.w(TAG, "Error reading remote path");
         }
 
+        final List<BrowserFile> remoteFiles = new ArrayList<>(1 + memberElements.size());
         remoteFiles.add(BrowserFile.Companion.getModelFromResponse(rootElement[0],
                 rootElement[0].getHref().toString().substring(basePath.length())));
         for (Response memberElement : memberElements) {

@@ -147,7 +147,8 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                         if (mentionsList.size() == 0) {
                             adapter.clear();
                         } else {
-                            List<AbstractFlexibleItem> internalAbstractFlexibleItemList = new ArrayList<>();
+                            List<AbstractFlexibleItem> internalAbstractFlexibleItemList =
+                                new ArrayList<>(mentionsList.size());
                             for (Mention mention : mentionsList) {
                                 internalAbstractFlexibleItemList.add(
                                         new MentionAutocompleteItem(
