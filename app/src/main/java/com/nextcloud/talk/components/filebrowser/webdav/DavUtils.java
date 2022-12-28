@@ -104,22 +104,12 @@ public class DavUtils {
 
     public static void registerCustomFactories() {
         PropertyRegistry propertyRegistry = PropertyRegistry.INSTANCE;
-        try {
-            Field factories = propertyRegistry.getClass().getDeclaredField("factories");
-            factories.setAccessible(true);
-            Map<Property.Name, PropertyFactory> reflectionMap = (HashMap<Property.Name,
-                    PropertyFactory>) factories.get(propertyRegistry);
 
-            reflectionMap.put(OCId.NAME, new OCId.Factory());
-            reflectionMap.put(NCPreview.NAME, new NCPreview.Factory());
-            reflectionMap.put(NCEncrypted.NAME, new NCEncrypted.Factory());
-            reflectionMap.put(OCFavorite.NAME, new OCFavorite.Factory());
-            reflectionMap.put(OCSize.NAME, new OCSize.Factory());
-            reflectionMap.put(NCPermission.NAME, new NCPermission.Factory());
-
-            factories.set(propertyRegistry, reflectionMap);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            Log.w(TAG, "Error registering custom factories", e);
-        }
+        propertyRegistry.register(new OCId.Factory());
+        propertyRegistry.register(new NCPreview.Factory());
+        propertyRegistry.register(new NCEncrypted.Factory());
+        propertyRegistry.register(new OCFavorite.Factory());
+        propertyRegistry.register(new OCSize.Factory());
+        propertyRegistry.register(new NCPermission.Factory());
     }
 }
