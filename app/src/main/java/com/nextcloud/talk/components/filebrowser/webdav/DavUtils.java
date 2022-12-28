@@ -74,7 +74,7 @@ public class DavUtils {
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
 
     static Property.Name[] getAllPropSet() {
-        List<Property.Name> props = new ArrayList<>();
+        List<Property.Name> props = new ArrayList<>(20);
 
         props.add(DisplayName.NAME);
         props.add(GetContentType.NAME);
