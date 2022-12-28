@@ -73,7 +73,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
             replacementStringBuilder.delete(emojiRange.range.getStart(), emojiRange.range.getEndInclusive());
         }
 
-        editable.replace(start, end, replacementStringBuilder.toString() + " ");
+        editable.replace(start, end, replacementStringBuilder + " ");
         Spans.MentionChipSpan mentionChipSpan =
             new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
                                                                                  item.getId(),
