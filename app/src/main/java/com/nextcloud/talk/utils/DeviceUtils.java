@@ -35,14 +35,17 @@ public class DeviceUtils {
     private static final String TAG = "DeviceUtils";
 
     public static void ignoreSpecialBatteryFeatures() {
-        if (Build.MANUFACTURER.equalsIgnoreCase("xiaomi") || Build.MANUFACTURER.equalsIgnoreCase("meizu")) {
+        if ("xiaomi".equalsIgnoreCase(Build.MANUFACTURER) || "meizu".equalsIgnoreCase(Build.MANUFACTURER)) {
             try {
                 @SuppressLint("PrivateApi") Class<?> appOpsUtilsClass = Class.forName("android.miui.AppOpsUtils");
                 if (appOpsUtilsClass != null) {
                     Method setApplicationAutoStartMethod = appOpsUtilsClass.getMethod("setApplicationAutoStart", Context
                             .class, String.class, Boolean.TYPE);
                     if (setApplicationAutoStartMethod != null) {
-                        Context applicationContext = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
+                        Context applicationContext = NextcloudTalkApplication
+                            .Companion
+                            .getSharedApplication()
+                            .getApplicationContext();
                         setApplicationAutoStartMethod.invoke(appOpsUtilsClass, applicationContext, applicationContext
                                 .getPackageName(), Boolean.TRUE);
                     }
@@ -56,10 +59,10 @@ public class DeviceUtils {
             } catch (InvocationTargetException e) {
                 Log.e(TAG, "InvocationTargetException");
             }
-        } else if (Build.MANUFACTURER.equalsIgnoreCase("huawei")) {
+        } else if ("huawei".equalsIgnoreCase(Build.MANUFACTURER)) {
             try {
-                @SuppressLint("PrivateApi") Class<?> protectAppControlClass = Class.forName("com.huawei.systemmanager.optimize.process" +
-                        ".ProtectAppControl");
+                @SuppressLint("PrivateApi") Class<?> protectAppControlClass = Class.forName(
+                    "com.huawei.systemmanager.optimize.process.ProtectAppControl");
                 if (protectAppControlClass != null) {
                     Context applicationContext = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
 

@@ -367,7 +367,7 @@ public class CallActivity extends CallBaseActivity {
 
         powerManagerUtils = new PowerManagerUtils();
 
-        if (extras.getString("state", "").equalsIgnoreCase("resume")) {
+        if ("resume".equalsIgnoreCase(extras.getString("state", ""))) {
             setCallState(CallStatus.IN_CONVERSATION);
         } else {
             setCallState(CallStatus.CONNECTING);
