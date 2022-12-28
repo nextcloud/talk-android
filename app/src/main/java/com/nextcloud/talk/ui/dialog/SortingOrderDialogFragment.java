@@ -177,7 +177,6 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
         binding.cancel.setOnClickListener(view -> dismiss());
 
         for (View view : taggedViews) {
-            Log.i("SortOrder", "view="+view.getTag().toString());
             view.setOnClickListener(this);
         }
     }
