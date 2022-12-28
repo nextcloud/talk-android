@@ -178,14 +178,13 @@ public class CallActivity extends CallBaseActivity {
 
     @Inject
     NcApi ncApi;
-    @Inject
-    EventBus eventBus;
+
     @Inject
     UserManager userManager;
-    @Inject
-    AppPreferences appPreferences;
+
     @Inject
     Cache cache;
+
     @Inject
     PlatformPermissionUtil permissionUtil;
 
