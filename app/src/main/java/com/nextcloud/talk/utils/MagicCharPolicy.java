@@ -56,10 +56,9 @@ public class MagicCharPolicy implements AutocompletePolicy {
         Matcher matcher = pattern.matcher(text);
 
         while (matcher.find()) {
-            if (cursorPos >= matcher.start() && cursorPos <= matcher.end()) {
-                if (text.subSequence(matcher.start(), matcher.end()).charAt(0) == character) {
-                    return new TextSpan(matcher.start(), matcher.end());
-                }
+            if (cursorPos >= matcher.start() && cursorPos <= matcher.end() &&
+                text.subSequence(matcher.start(), matcher.end()).charAt(0) == character) {
+                return new TextSpan(matcher.start(), matcher.end());
             }
         }
 
