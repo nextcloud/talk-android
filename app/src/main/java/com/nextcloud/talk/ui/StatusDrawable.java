@@ -42,9 +42,9 @@ import androidx.core.content.res.ResourcesCompat;
  */
 public class StatusDrawable extends Drawable {
     private String text;
-    private @DrawableRes int icon = -1;
+    private StatusDrawableType icon = StatusDrawableType.UNDEFINED;
     private Paint textPaint;
-    private int backgroundColor;
+    private final int backgroundColor;
     private final float radius;
     private Context context;
 
@@ -54,17 +54,17 @@ public class StatusDrawable extends Drawable {
 
 
         if ("dnd".equals(status)) {
-            icon = R.drawable.ic_user_status_dnd;
+            icon = StatusDrawableType.DND;
             this.context = context;
         } else if (TextUtils.isEmpty(statusIcon) && status != null) {
             switch (status) {
                 case "online":
-                    icon = R.drawable.online_status;
+                    icon = StatusDrawableType.ONLINE;
                     this.context = context;
                     break;
 
                 case "away":
-                    icon = R.drawable.ic_user_status_away;
+                    icon = StatusDrawableType.AWAY;
                     this.context = context;
                     break;
 
@@ -95,7 +95,7 @@ public class StatusDrawable extends Drawable {
             canvas.drawText(text, radius, radius - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
         }
 
-        if (icon != -1) {
+        if (icon != StatusDrawableType.UNDEFINED) {
 
             Paint backgroundPaint = new Paint();
             backgroundPaint.setStyle(Paint.Style.FILL);
@@ -104,7 +104,7 @@ public class StatusDrawable extends Drawable {
 
             canvas.drawCircle(radius, radius, radius, backgroundPaint);
 
-            Drawable drawable = ResourcesCompat.getDrawable(context.getResources(), icon, null);
+            Drawable drawable = ResourcesCompat.getDrawable(context.getResources(), icon.drawableId, null);
 
             if (drawable != null) {
                 drawable.setBounds(0,
@@ -129,5 +129,19 @@ public class StatusDrawable extends Drawable {
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
+    }
+
+    private enum StatusDrawableType {
+        DND(R.drawable.ic_user_status_dnd),
+        ONLINE(R.drawable.online_status),
+        AWAY(R.drawable.ic_user_status_away),
+        UNDEFINED(-1);
+
+        @DrawableRes
+        private final int drawableId;
+
+        StatusDrawableType(int drawableId) {
+            this.drawableId = drawableId;
+        }
     }
 }
