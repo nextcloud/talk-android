@@ -20,7 +20,7 @@
 package com.nextcloud.talk.activities
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class CallStatus : Parcelable {
