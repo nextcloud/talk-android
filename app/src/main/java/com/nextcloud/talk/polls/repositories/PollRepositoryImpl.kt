@@ -120,8 +120,8 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
 
         private fun convertVotes(votes: Map<String, Int>?): Map<String, Int> {
             val resultMap: MutableMap<String, Int> = HashMap()
-            votes?.forEach {
-                resultMap[it.key.replace("option-", "")] = it.value
+            votes?.forEach { (key, value) ->
+                resultMap[key.replace("option-", "")] = value
             }
             return resultMap
         }
