@@ -38,6 +38,7 @@ import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import androidx.core.content.res.ResourcesCompat;
@@ -171,8 +172,13 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
             if (!TextUtils.isEmpty(participant.getDisplayName())) {
                 displayName = participant.getDisplayName();
             } else {
-                displayName = NextcloudTalkApplication.Companion.getSharedApplication()
+                displayName = Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication())
                     .getResources().getString(R.string.nc_guest);
+            }
+
+            // absolute fallback to prevent NPE deference
+            if (displayName == null) {
+                displayName = "Guest";
             }
 
             ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, user, displayName, true);

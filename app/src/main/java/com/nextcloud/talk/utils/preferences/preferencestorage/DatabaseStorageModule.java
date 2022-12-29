@@ -78,7 +78,7 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public void saveBoolean(String key, boolean value) {
-        if (key.equals("call_notifications")) {
+        if ("call_notifications".equals(key)) {
             int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{4});
             ncApi.notificationCalls(ApiUtils.getCredentials(conversationUser.getUsername(),
                                                             conversationUser.getToken()),
@@ -112,7 +112,7 @@ public class DatabaseStorageModule implements StorageModule {
                           );
         }
 
-        if (!key.equals("conversation_lobby")) {
+        if (!"conversation_lobby".equals(key)) {
             arbitraryStorageManager.storeStorageSetting(accountIdentifier,
                                                         key,
                                                         Boolean.toString(value),
@@ -124,7 +124,7 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public void saveString(String key, String value) {
-        if (key.equals("message_expire_key")) {
+        if ("message_expire_key".equals(key)) {
             int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{4});
 
             String trimmedValue = value.replace("expire_", "");
@@ -163,7 +163,7 @@ public class DatabaseStorageModule implements StorageModule {
                     }
                 });
 
-        } else if (key.equals("message_notification_level")) {
+        } else if ("message_notification_level".equals(key)) {
             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
                 if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(value)) {
                     int intValue;
@@ -232,7 +232,7 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public boolean getBoolean(String key, boolean defaultVal) {
-        if (key.equals("conversation_lobby")) {
+        if ("conversation_lobby".equals(key)) {
             return lobbyValue;
         } else {
             return arbitraryStorageManager
@@ -244,7 +244,7 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public String getString(String key, String defaultVal) {
-        if (key.equals("message_expire_key")) {
+        if ("message_expire_key".equals(key)) {
             switch (messageExpiration) {
                 case 2419200:
                     return "expire_2419200";
@@ -259,7 +259,7 @@ public class DatabaseStorageModule implements StorageModule {
                 default:
                     return "expire_0";
             }
-        } else if (key.equals("message_notification_level")) {
+        } else if ("message_notification_level".equals(key)) {
             return messageNotificationLevel;
         } else {
             return arbitraryStorageManager

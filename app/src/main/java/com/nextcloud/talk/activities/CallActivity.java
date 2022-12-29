@@ -90,7 +90,6 @@ import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
-import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
@@ -100,7 +99,6 @@ import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 import com.wooplr.spotlight.SpotlightView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.webrtc.AudioSource;
@@ -178,14 +176,13 @@ public class CallActivity extends CallBaseActivity {
 
     @Inject
     NcApi ncApi;
-    @Inject
-    EventBus eventBus;
+
     @Inject
     UserManager userManager;
-    @Inject
-    AppPreferences appPreferences;
+
     @Inject
     Cache cache;
+
     @Inject
     PlatformPermissionUtil permissionUtil;
 
@@ -367,7 +364,7 @@ public class CallActivity extends CallBaseActivity {
 
         powerManagerUtils = new PowerManagerUtils();
 
-        if (extras.getString("state", "").equalsIgnoreCase("resume")) {
+        if ("resume".equalsIgnoreCase(extras.getString("state", ""))) {
             setCallState(CallStatus.IN_CONVERSATION);
         } else {
             setCallState(CallStatus.CONNECTING);
@@ -592,7 +589,7 @@ public class CallActivity extends CallBaseActivity {
     private void handleFromNotification() {
         int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
-        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, baseUrl), false)
+        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, baseUrl), Boolean.FALSE)
             .retry(3)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

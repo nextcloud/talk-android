@@ -62,8 +62,7 @@ public class AuthenticatorService extends Service {
         }
 
         @Override
-        public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options)
-                throws NetworkErrorException {
+        public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
             return null;
         }
 
@@ -73,8 +72,7 @@ public class AuthenticatorService extends Service {
         }
 
         @Override
-        public Bundle hasFeatures(AccountAuthenticatorResponse response,
-                                  Account account, String[] features) {
+        public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account, String[] features) {
             return null;
         }
 
@@ -82,7 +80,6 @@ public class AuthenticatorService extends Service {
         public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) {
             return null;
         }
-
     }
 
     protected Authenticator getAuthenticator() {
@@ -95,7 +92,7 @@ public class AuthenticatorService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        if (intent.getAction().equals(AccountManager.ACTION_AUTHENTICATOR_INTENT)) {
+        if (AccountManager.ACTION_AUTHENTICATOR_INTENT.equals(intent.getAction())) {
             return getAuthenticator().getIBinder();
         } else {
             return null;

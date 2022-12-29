@@ -399,7 +399,7 @@ public class WebRtcAudioManager {
         return false;
     }
 
-    public void updateAudioDeviceState() {
+    public final void updateAudioDeviceState() {
         ThreadUtils.checkIsOnMainThread();
         Log.d(TAG, "--- updateAudioDeviceState: "
             + "wired headset=" + hasWiredHeadset + ", "
