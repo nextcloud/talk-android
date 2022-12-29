@@ -60,11 +60,13 @@ public class WebSocketConnectionHelper {
 
     @SuppressLint("LongLogTag")
     public static synchronized MagicWebSocketInstance getMagicWebSocketInstanceForUserId(long userId) {
-        if (userId != -1 && magicWebSocketInstanceMap.containsKey(userId)) {
-            return magicWebSocketInstanceMap.get(userId);
+        MagicWebSocketInstance webSocketInstance = magicWebSocketInstanceMap.get(userId);
+
+        if (webSocketInstance == null) {
+            Log.d(TAG, "No magicWebSocketInstance found for user " + userId);
         }
-        Log.d(TAG, "no magicWebSocketInstance found");
-        return null;
+
+        return webSocketInstance;
     }
 
     public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url,
