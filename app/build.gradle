@@ -37,7 +37,7 @@ apply plugin: 'kotlinx-serialization'
 
 android {
     compileSdkVersion 32
-    buildToolsVersion '33.0.0'
+    buildToolsVersion '33.0.1'
 
     namespace 'com.nextcloud.talk'
 
