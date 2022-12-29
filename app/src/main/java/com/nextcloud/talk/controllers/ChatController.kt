@@ -516,6 +516,7 @@ class ChatController(args: Bundle) :
         currentConversation?.type == Conversation.ConversationType
         .ROOM_TYPE_ONE_TO_ONE_CALL
 
+    @SuppressLint("ClickableViewAccessibility")
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onViewBound(view: View) {
         Log.d(TAG, "onViewBound: " + System.identityHashCode(this).toString())
