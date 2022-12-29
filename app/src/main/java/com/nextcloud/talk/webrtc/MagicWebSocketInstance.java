@@ -35,6 +35,7 @@ import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.ErrorWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
@@ -314,13 +315,17 @@ public class MagicWebSocketInstance extends WebSocketListener {
         Log.e(TAG, "Received error: " + text);
         ErrorOverallWebSocketMessage errorOverallWebSocketMessage =
             LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
-        if ("no_such_session".equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
-            Log.d(TAG, "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired");
-            resumeId = "";
-            currentRoomToken = "";
-            restartWebSocket();
-        } else if ("hello_expected".equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
-            restartWebSocket();
+        ErrorWebSocketMessage message = errorOverallWebSocketMessage.getErrorWebSocketMessage();
+
+        if(message != null) {
+            if ("no_such_session".equals(message.getCode())) {
+                Log.d(TAG, "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired");
+                resumeId = "";
+                currentRoomToken = "";
+                restartWebSocket();
+            } else if ("hello_expected".equals(message.getCode())) {
+                restartWebSocket();
+            }
         }
     }
 
