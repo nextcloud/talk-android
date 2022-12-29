@@ -20,7 +20,7 @@
 package com.nextcloud.talk.models.json
 
 import android.os.Parcel
-import kotlinx.android.parcel.Parceler
+import kotlinx.parcelize.Parceler
 
 class AnyParceler : Parceler<Any?> {
     override fun create(parcel: Parcel): Any? {

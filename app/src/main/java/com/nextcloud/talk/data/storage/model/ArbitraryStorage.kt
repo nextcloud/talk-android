@@ -21,7 +21,7 @@
 package com.nextcloud.talk.data.storage.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ArbitraryStorage(

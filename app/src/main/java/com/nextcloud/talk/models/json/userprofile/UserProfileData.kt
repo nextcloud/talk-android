@@ -26,7 +26,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.controllers.ProfileController
 import com.nextcloud.talk.models.json.converters.ScopeConverter
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject

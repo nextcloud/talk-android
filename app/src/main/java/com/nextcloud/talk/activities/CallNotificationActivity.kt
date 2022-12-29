@@ -57,7 +57,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.call_item.*
 import okhttp3.Cache
 import org.parceler.Parcels
 import java.io.IOException
@@ -234,7 +233,7 @@ class CallNotificationActivity : CallBaseActivity() {
     private fun setUpAfterConversationIsKnown() {
         binding!!.conversationNameTextView.text = currentConversation!!.displayName
         if (currentConversation!!.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            avatarImageView.loadAvatar(userBeingCalled!!, currentConversation!!.name!!)
+            binding!!.avatarImageView.loadAvatar(userBeingCalled!!, currentConversation!!.name!!)
         } else {
             binding!!.avatarImageView.setImageResource(R.drawable.ic_circular_group)
         }
