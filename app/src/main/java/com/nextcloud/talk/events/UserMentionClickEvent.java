@@ -56,8 +56,7 @@ public class UserMentionClickEvent {
         final int PRIME = 59;
         int result = 1;
         final Object $userId = this.getUserId();
-        result = result * PRIME + ($userId == null ? 43 : $userId.hashCode());
-        return result;
+        return result * PRIME + ($userId == null ? 43 : $userId.hashCode());
     }
 
     public String toString() {

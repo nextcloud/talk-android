@@ -60,12 +60,10 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
     @OptIn(markerClass = kotlin.ExperimentalStdlibApi.class)
     @Override
     public boolean onPopupItemClicked(Editable editable, Mention item) {
-        int[] range = MagicCharPolicy.getQueryRange(editable);
+        MagicCharPolicy.TextSpan range = MagicCharPolicy.getQueryRange(editable);
         if (range == null) {
             return false;
         }
-        int start = range[0];
-        int end = range[1];
         String replacement = item.getLabel();
 
         StringBuilder replacementStringBuilder = new StringBuilder(item.getLabel());
@@ -73,7 +71,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
             replacementStringBuilder.delete(emojiRange.range.getStart(), emojiRange.range.getEndInclusive());
         }
 
-        editable.replace(start, end, replacementStringBuilder.toString() + " ");
+        editable.replace(range.getStart(), range.getEnd(), replacementStringBuilder + " ");
         Spans.MentionChipSpan mentionChipSpan =
             new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
                                                                                  item.getId(),
@@ -85,7 +83,9 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
                                                                                  viewThemeUtils),
                                       BetterImageSpan.ALIGN_CENTER,
                                       item.getId(), item.getLabel());
-        editable.setSpan(mentionChipSpan, start, start + replacementStringBuilder.toString().length(),
+        editable.setSpan(mentionChipSpan,
+                         range.getStart(),
+                         range.getStart() + replacementStringBuilder.length(),
                          Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
 

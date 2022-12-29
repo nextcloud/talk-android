@@ -74,8 +74,7 @@ public class DavResponse {
         final Object $response = this.getResponse();
         result = result * PRIME + ($response == null ? 43 : $response.hashCode());
         final Object $data = this.getData();
-        result = result * PRIME + ($data == null ? 43 : $data.hashCode());
-        return result;
+        return result * PRIME + ($data == null ? 43 : $data.hashCode());
     }
 
     public String toString() {

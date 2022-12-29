@@ -22,8 +22,6 @@
 
 package com.nextcloud.talk.components.filebrowser.webdav;
 
-import android.util.Log;
-
 import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted;
 import com.nextcloud.talk.components.filebrowser.models.properties.NCPermission;
 import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview;
@@ -31,14 +29,10 @@ import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite;
 import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
 import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import at.bitfire.dav4jvm.Property;
-import at.bitfire.dav4jvm.PropertyFactory;
 import at.bitfire.dav4jvm.PropertyRegistry;
 import at.bitfire.dav4jvm.property.CreationDate;
 import at.bitfire.dav4jvm.property.DisplayName;
@@ -49,7 +43,6 @@ import at.bitfire.dav4jvm.property.GetLastModified;
 import at.bitfire.dav4jvm.property.ResourceType;
 
 public class DavUtils {
-    private static final String TAG = "DavUtils";
 
     public static final String OC_NAMESPACE = "http://owncloud.org/ns";
     public static final String NC_NAMESPACE = "http://nextcloud.org/ns";
@@ -66,15 +59,16 @@ public class DavUtils {
     public static final String EXTENDED_PROPERTY_UNREAD_COMMENTS = "comments-unread";
     public static final String EXTENDED_PROPERTY_HAS_PREVIEW = "has-preview";
     public static final String EXTENDED_PROPERTY_NOTE = "note";
-    public static final String TRASHBIN_FILENAME = "trashbin-filename";
-    public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
-    public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
 
-    public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
-    public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
+    // public static final String TRASHBIN_FILENAME = "trashbin-filename";
+    // public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
+    // public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
+
+    // public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
+    // public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
 
     static Property.Name[] getAllPropSet() {
-        List<Property.Name> props = new ArrayList<>();
+        List<Property.Name> props = new ArrayList<>(20);
 
         props.add(DisplayName.NAME);
         props.add(GetContentType.NAME);
@@ -104,22 +98,12 @@ public class DavUtils {
 
     public static void registerCustomFactories() {
         PropertyRegistry propertyRegistry = PropertyRegistry.INSTANCE;
-        try {
-            Field factories = propertyRegistry.getClass().getDeclaredField("factories");
-            factories.setAccessible(true);
-            Map<Property.Name, PropertyFactory> reflectionMap = (HashMap<Property.Name,
-                    PropertyFactory>) factories.get(propertyRegistry);
 
-            reflectionMap.put(OCId.NAME, new OCId.Factory());
-            reflectionMap.put(NCPreview.NAME, new NCPreview.Factory());
-            reflectionMap.put(NCEncrypted.NAME, new NCEncrypted.Factory());
-            reflectionMap.put(OCFavorite.NAME, new OCFavorite.Factory());
-            reflectionMap.put(OCSize.NAME, new OCSize.Factory());
-            reflectionMap.put(NCPermission.NAME, new NCPermission.Factory());
-
-            factories.set(propertyRegistry, reflectionMap);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            Log.w(TAG, "Error registering custom factories", e);
-        }
+        propertyRegistry.register(new OCId.Factory());
+        propertyRegistry.register(new NCPreview.Factory());
+        propertyRegistry.register(new NCEncrypted.Factory());
+        propertyRegistry.register(new OCFavorite.Factory());
+        propertyRegistry.register(new OCSize.Factory());
+        propertyRegistry.register(new NCPermission.Factory());
     }
 }

@@ -56,8 +56,7 @@ public class NetworkEvent {
         final int PRIME = 59;
         int result = 1;
         final Object $networkConnectionEvent = this.getNetworkConnectionEvent();
-        result = result * PRIME + ($networkConnectionEvent == null ? 43 : $networkConnectionEvent.hashCode());
-        return result;
+        return result * PRIME + ($networkConnectionEvent == null ? 43 : $networkConnectionEvent.hashCode());
     }
 
     public String toString() {

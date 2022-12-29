@@ -154,8 +154,11 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             participant.getType() == Participant.ParticipantType.GUEST ||
             participant.getType() == Participant.ParticipantType.GUEST_MODERATOR) {
 
-            String displayName = NextcloudTalkApplication.Companion.getSharedApplication()
-                .getResources().getString(R.string.nc_guest);
+            String displayName = NextcloudTalkApplication
+                .Companion
+                .getSharedApplication()
+                .getResources()
+                .getString(R.string.nc_guest);
 
             if (!TextUtils.isEmpty(participant.getDisplayName())) {
                 displayName = participant.getDisplayName();
@@ -164,8 +167,11 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             ImageViewExtensionsKt.loadGuestAvatar(holder.binding.avatarView, user, displayName, false);
 
         } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
-            participant.getSource().equals("users")) {
-            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, user, participant.getCalculatedActorId(), true);
+            "users".equals(participant.getSource())) {
+            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView,
+                                             user,
+                                             participant.getCalculatedActorId(),
+                                             true);
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
@@ -190,63 +196,61 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             holder.binding.videoCallIcon.setVisibility(View.GONE);
         }
 
-        if (holder.binding.secondaryText != null) {
-            String userType = "";
+        String userType = "";
 
-            switch (new EnumParticipantTypeConverter().convertToInt(participant.getType())) {
-                case 1:
-                    //userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_owner);
-                    //break;
-                case 2:
-                case 6: // Guest moderator
+        switch (new EnumParticipantTypeConverter().convertToInt(participant.getType())) {
+            case 1:
+                //userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_owner);
+                //break;
+            case 2:
+            case 6: // Guest moderator
+                userType = NextcloudTalkApplication
+                    .Companion
+                    .getSharedApplication()
+                    .getString(R.string.nc_moderator);
+                break;
+            case 3:
+                userType = NextcloudTalkApplication
+                    .Companion
+                    .getSharedApplication()
+                    .getString(R.string.nc_user);
+                if (participant.getCalculatedActorType() == Participant.ActorType.GROUPS) {
                     userType = NextcloudTalkApplication
                         .Companion
                         .getSharedApplication()
-                        .getString(R.string.nc_moderator);
-                    break;
-                case 3:
+                        .getString(R.string.nc_group);
+                }
+                if (participant.getCalculatedActorType() == Participant.ActorType.CIRCLES) {
                     userType = NextcloudTalkApplication
                         .Companion
                         .getSharedApplication()
-                        .getString(R.string.nc_user);
-                    if (participant.getCalculatedActorType() == Participant.ActorType.GROUPS) {
-                        userType = NextcloudTalkApplication
-                            .Companion
-                            .getSharedApplication()
-                            .getString(R.string.nc_group);
-                    }
-                    if (participant.getCalculatedActorType() == Participant.ActorType.CIRCLES) {
-                        userType = NextcloudTalkApplication
-                            .Companion
-                            .getSharedApplication()
-                            .getString(R.string.nc_circle);
-                    }
-                    break;
-                case 4:
-                    userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
-                    if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
-                        userType = NextcloudTalkApplication
-                            .Companion
-                            .getSharedApplication()
-                            .getString(R.string.nc_email);
-                    }
-                    break;
-                case 5:
+                        .getString(R.string.nc_circle);
+                }
+                break;
+            case 4:
+                userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
+                if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
                     userType = NextcloudTalkApplication
                         .Companion
                         .getSharedApplication()
-                        .getString(R.string.nc_following_link);
-                    break;
-                default:
-                    break;
-            }
+                        .getString(R.string.nc_email);
+                }
+                break;
+            case 5:
+                userType = NextcloudTalkApplication
+                    .Companion
+                    .getSharedApplication()
+                    .getString(R.string.nc_following_link);
+                break;
+            default:
+                break;
+        }
 
-            if (!userType.equals(NextcloudTalkApplication
-                                     .Companion
-                                     .getSharedApplication()
-                                     .getString(R.string.nc_user))) {
-                holder.binding.secondaryText.setText("(" + userType + ")");
-            }
+        if (!userType.equals(NextcloudTalkApplication
+                                 .Companion
+                                 .getSharedApplication()
+                                 .getString(R.string.nc_user))) {
+            holder.binding.secondaryText.setText("(" + userType + ")");
         }
     }
 

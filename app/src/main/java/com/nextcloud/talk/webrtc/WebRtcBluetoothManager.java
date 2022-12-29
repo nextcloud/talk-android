@@ -109,8 +109,6 @@ public class WebRtcBluetoothManager {
         return bluetoothState;
     }
 
-    ;
-
     /**
      * Activates components required to detect Bluetooth devices and to enable
      * BT SCO (audio is routed via BT SCO) for the headset profile. The end
@@ -297,7 +295,7 @@ public class WebRtcBluetoothManager {
     /**
      * Stubs for test mocks.
      */
-    protected AudioManager getAudioManager(Context context) {
+    protected final AudioManager getAudioManager(Context context) {
         return (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
@@ -502,8 +500,10 @@ public class WebRtcBluetoothManager {
             Log.d(TAG, "onServiceConnected done: BT state=" + bluetoothState);
         }
 
+        /**
+         * Notifies the client when the proxy object has been disconnected from the service.
+         */
         @Override
-        /** Notifies the client when the proxy object has been disconnected from the service. */
         public void onServiceDisconnected(int profile) {
             if (profile != BluetoothProfile.HEADSET || bluetoothState == State.UNINITIALIZED) {
                 return;
@@ -531,7 +531,7 @@ public class WebRtcBluetoothManager {
             // change does not tell us anything about whether we're streaming
             // audio to BT over SCO. Typically received when user turns on a BT
             // headset while audio is active using another audio device.
-            if (action.equals(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)) {
+            if (BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED.equals(action)) {
                 final int state =
                         intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_DISCONNECTED);
                 Log.d(TAG, "BluetoothHeadsetBroadcastReceiver.onReceive: "
@@ -543,8 +543,10 @@ public class WebRtcBluetoothManager {
                     scoConnectionAttempts = 0;
                     updateAudioDeviceState();
                 } else if (state == BluetoothHeadset.STATE_CONNECTING) {
+                    Log.d(TAG, "+++ Bluetooth is connecting...");
                     // No action needed.
                 } else if (state == BluetoothHeadset.STATE_DISCONNECTING) {
+                    Log.d(TAG, "+++ Bluetooth is disconnecting...");
                     // No action needed.
                 } else if (state == BluetoothHeadset.STATE_DISCONNECTED) {
                     // Bluetooth is probably powered off during the call.
@@ -553,7 +555,7 @@ public class WebRtcBluetoothManager {
                 }
                 // Change in the audio (SCO) connection state of the Headset profile.
                 // Typically received after call to startScoAudio() has finalized.
-            } else if (action.equals(BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED)) {
+            } else if (BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED.equals(action)) {
                 final int state = intent.getIntExtra(
                         BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_AUDIO_DISCONNECTED);
                 Log.d(TAG, "BluetoothHeadsetBroadcastReceiver.onReceive: "
