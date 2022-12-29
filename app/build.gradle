@@ -153,6 +153,7 @@ ext {
     workVersion = "2.7.1"
     markwonVersion = "4.6.2"
     espressoVersion = "3.5.0"
+    espressoVersion = "3.4.0"
 }
 
 def webRtcVersion = "106.5249.0"
@@ -291,9 +292,13 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:4.11.0'
 
-    androidTestImplementation "androidx.test:core:1.5.0"
-
     // Espresso core
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-web:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-accessibility:$espressoVersion"
+    androidTestImplementation('com.android.support.test.espresso:espresso-intents:3.0.2')
+
     androidTestImplementation ("androidx.test.espresso:espresso-core:$espressoVersion", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
