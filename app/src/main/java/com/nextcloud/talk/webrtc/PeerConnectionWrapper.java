@@ -28,8 +28,6 @@ import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.events.MediaStreamEvent;
-import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
@@ -37,7 +35,6 @@ import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.signaling.SignalingMessageSender;
 
-import org.greenrobot.eventbus.EventBus;
 import org.webrtc.AudioTrack;
 import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
@@ -85,6 +82,21 @@ public class PeerConnectionWrapper {
         void onNickChanged(String nick);
     }
 
+    /**
+     * Observer for changes on the peer connection.
+     *
+     * The changes are bound to a specific peer connection, so each observer is expected to handle messages only for
+     * a single peer connection.
+     *
+     * All methods are called on the so called "signaling" thread of WebRTC, which is an internal thread created by the
+     * WebRTC library and NOT the same thread where signaling messages are received.
+     */
+    public interface PeerConnectionObserver {
+        void onStreamAdded(MediaStream mediaStream);
+        void onStreamRemoved(MediaStream mediaStream);
+        void onIceConnectionStateChanged(PeerConnection.IceConnectionState iceConnectionState);
+    }
+
     private static final String TAG = PeerConnectionWrapper.class.getCanonicalName();
 
     private final SignalingMessageReceiver signalingMessageReceiver;
@@ -94,13 +106,14 @@ public class PeerConnectionWrapper {
 
     private final DataChannelMessageNotifier dataChannelMessageNotifier = new DataChannelMessageNotifier();
 
+    private final PeerConnectionNotifier peerConnectionNotifier = new PeerConnectionNotifier();
+
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
     private String sessionId;
     private final MediaConstraints mediaConstraints;
     private DataChannel dataChannel;
     private final MagicSdpObserver magicSdpObserver;
-    private MediaStream remoteStream;
 
     private final boolean hasInitiated;
 
@@ -185,6 +198,21 @@ public class PeerConnectionWrapper {
 
     public void removeListener(DataChannelMessageListener listener) {
         dataChannelMessageNotifier.removeListener(listener);
+    }
+
+    /**
+     * Adds an observer for peer connection changes.
+     *
+     * An observer is expected to be added only once. If the same observer is added again it will be notified just once.
+     *
+     * @param observer the PeerConnectionObserver
+     */
+    public void addObserver(PeerConnectionObserver observer) {
+        peerConnectionNotifier.addObserver(observer);
+    }
+
+    public void removeObserver(PeerConnectionObserver observer) {
+        peerConnectionNotifier.removeObserver(observer);
     }
 
     public String getVideoStreamType() {
@@ -413,34 +441,12 @@ public class PeerConnectionWrapper {
 
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
             if (iceConnectionState == PeerConnection.IceConnectionState.CONNECTED) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED,
-                                                                   sessionId, null, null, videoStreamType));
-
-                if (!isMCUPublisher) {
-                    EventBus.getDefault().post(new MediaStreamEvent(remoteStream, sessionId, videoStreamType));
-                }
-
                 if (hasInitiated) {
                     sendInitialMediaStatus();
                 }
-            } else if (iceConnectionState == PeerConnection.IceConnectionState.COMPLETED) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED,
-                                                                   sessionId, null, null, videoStreamType));
-            } else if (iceConnectionState == PeerConnection.IceConnectionState.CLOSED) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .PEER_CLOSED, sessionId, null, null, videoStreamType));
-            } else if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED ||
-                    iceConnectionState == PeerConnection.IceConnectionState.NEW ||
-                    iceConnectionState == PeerConnection.IceConnectionState.CHECKING) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
-                                                                   sessionId, null, null, videoStreamType));
-            } else if (iceConnectionState == PeerConnection.IceConnectionState.FAILED) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED,
-                                                                   sessionId, null, null, videoStreamType));
-                if (isMCUPublisher) {
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED, sessionId, null, null, videoStreamType));
-                }
             }
+
+            peerConnectionNotifier.notifyIceConnectionStateChanged(iceConnectionState);
         }
 
         @Override
@@ -477,14 +483,12 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onAddStream(MediaStream mediaStream) {
-            remoteStream = mediaStream;
+            peerConnectionNotifier.notifyStreamAdded(mediaStream);
         }
 
         @Override
         public void onRemoveStream(MediaStream mediaStream) {
-            if (!isMCUPublisher) {
-                EventBus.getDefault().post(new MediaStreamEvent(null, sessionId, videoStreamType));
-            }
+            peerConnectionNotifier.notifyStreamRemoved(mediaStream);
         }
 
         @Override
