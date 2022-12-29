@@ -67,11 +67,11 @@ import static com.nextcloud.talk.models.json.participants.Participant.ActorType.
 import static com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS;
 import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
 import static com.nextcloud.talk.webrtc.Globals.TARGET_PARTICIPANTS;
+import static com.nextcloud.talk.webrtc.Globals.TARGET_ROOM;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicWebSocketInstance extends WebSocketListener {
     private static final String TAG = "MagicWebSocketInstance";
-
 
     @Inject
     OkHttpClient okHttpClient;
@@ -82,18 +82,17 @@ public class MagicWebSocketInstance extends WebSocketListener {
     @Inject
     Context context;
 
-    private User conversationUser;
-    private String webSocketTicket;
+    private final User conversationUser;
+    private final String webSocketTicket;
     private String resumeId;
     private String sessionId;
     private boolean hasMCU;
     private boolean connected;
-    private WebSocketConnectionHelper webSocketConnectionHelper;
+    private final WebSocketConnectionHelper webSocketConnectionHelper;
     private WebSocket internalWebSocket;
-    private String connectionUrl;
+    private final String connectionUrl;
 
     private String currentRoomToken;
-    private int restartCount = 0;
     private boolean reconnecting = false;
 
     private HashMap<String, Participant> usersHashMap;
@@ -122,9 +121,13 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private void sendHello() {
         try {
             if (TextUtils.isEmpty(resumeId)) {
-                internalWebSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModel(conversationUser, webSocketTicket)));
+                internalWebSocket.send(
+                    LoganSquare.serialize(webSocketConnectionHelper
+                                              .getAssembledHelloModel(conversationUser, webSocketTicket)));
             } else {
-                internalWebSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModelForResume(resumeId)));
+                internalWebSocket.send(
+                    LoganSquare.serialize(webSocketConnectionHelper
+                                              .getAssembledHelloModelForResume(resumeId)));
             }
         } catch (IOException e) {
             Log.e(TAG, "Failed to serialize hello model");
@@ -160,7 +163,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         Log.d(TAG, "restartWebSocket: " + connectionUrl);
         Request request = new Request.Builder().url(connectionUrl).build();
         okHttpClient.newWebSocket(request, this);
-        restartCount++;
     }
 
     @Override
@@ -205,30 +207,43 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     private void processMessage(String text) throws IOException {
-        CallOverallWebSocketMessage callOverallWebSocketMessage = LoganSquare.parse(text, CallOverallWebSocketMessage.class);
-        NCSignalingMessage ncSignalingMessage = callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage();
-        if (TextUtils.isEmpty(ncSignalingMessage.getFrom()) && callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage() != null) {
-            ncSignalingMessage.setFrom(callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage().getSessionId());
+        CallOverallWebSocketMessage callOverallWebSocketMessage =
+            LoganSquare.parse(text, CallOverallWebSocketMessage.class);
+        NCSignalingMessage ncSignalingMessage = callOverallWebSocketMessage
+            .getCallWebSocketMessage()
+            .getNcSignalingMessage();
+        if (TextUtils.isEmpty(ncSignalingMessage.getFrom()) &&
+            callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage() != null) {
+            ncSignalingMessage.setFrom(
+                callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage().getSessionId());
         }
 
         signalingMessageReceiver.process(ncSignalingMessage);
     }
 
     private void processEventMessage(String text) throws IOException {
-        EventOverallWebSocketMessage eventOverallWebSocketMessage = LoganSquare.parse(text, EventOverallWebSocketMessage.class);
+        EventOverallWebSocketMessage eventOverallWebSocketMessage =
+            LoganSquare.parse(text, EventOverallWebSocketMessage.class);
         if (eventOverallWebSocketMessage.getEventMap() != null) {
             String target = (String) eventOverallWebSocketMessage.getEventMap().get("target");
-            switch (target) {
-                case "room":
-                    if (eventOverallWebSocketMessage.getEventMap().get("type").equals("message")) {
-                        processRoomMessageMessage(eventOverallWebSocketMessage);
-                    } else if (eventOverallWebSocketMessage.getEventMap().get("type").equals("join")) {
-                        processRoomJoinMessage(eventOverallWebSocketMessage);
-                    }
-                    break;
-                case TARGET_PARTICIPANTS:
-                    signalingMessageReceiver.process(eventOverallWebSocketMessage.getEventMap());
-                    break;
+            if (target != null) {
+                switch (target) {
+                    case TARGET_ROOM:
+                        if ("message".equals(eventOverallWebSocketMessage.getEventMap().get("type"))) {
+                            processRoomMessageMessage(eventOverallWebSocketMessage);
+                        } else if ("join".equals(eventOverallWebSocketMessage.getEventMap().get("type"))) {
+                            processRoomJoinMessage(eventOverallWebSocketMessage);
+                        }
+                        break;
+                    case TARGET_PARTICIPANTS:
+                        signalingMessageReceiver.process(eventOverallWebSocketMessage.getEventMap());
+                        break;
+                    default:
+                        Log.i(TAG, "Received unknown/ignored event target: " + target);
+                        break;
+                }
+            } else {
+                Log.w(TAG, "Received message with event target: null");
             }
         }
     }
@@ -278,16 +293,24 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     private void processJoinedRoomMessage(String text) throws IOException {
-        JoinedRoomOverallWebSocketMessage joinedRoomOverallWebSocketMessage = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage.class);
-        currentRoomToken = joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId();
-        if (joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomPropertiesWebSocketMessage() != null && !TextUtils.isEmpty(currentRoomToken)) {
-            sendRoomJoinedEvent();
+        JoinedRoomOverallWebSocketMessage joinedRoomOverallWebSocketMessage =
+            LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage.class);
+        if (joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage() != null) {
+            currentRoomToken = joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId();
+
+            if (joinedRoomOverallWebSocketMessage
+                .getRoomWebSocketMessage()
+                .getRoomPropertiesWebSocketMessage() != null &&
+                !TextUtils.isEmpty(currentRoomToken)) {
+                sendRoomJoinedEvent();
+            }
         }
     }
 
     private void processErrorMessage(WebSocket webSocket, String text) throws IOException {
         Log.e(TAG, "Received error: " + text);
-        ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
+        ErrorOverallWebSocketMessage errorOverallWebSocketMessage =
+            LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
         if ("no_such_session".equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
             Log.d(TAG, "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired");
             resumeId = "";
@@ -301,12 +324,14 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private void processHelloMessage(WebSocket webSocket, String text) throws IOException {
         connected = true;
         reconnecting = false;
-        restartCount = 0;
         String oldResumeId = resumeId;
-        HelloResponseOverallWebSocketMessage helloResponseWebSocketMessage = LoganSquare.parse(text, HelloResponseOverallWebSocketMessage.class);
-        resumeId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getResumeId();
-        sessionId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getSessionId();
-        hasMCU = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().serverHasMCUSupport();
+        HelloResponseOverallWebSocketMessage helloResponseWebSocketMessage =
+            LoganSquare.parse(text, HelloResponseOverallWebSocketMessage.class);
+        if (helloResponseWebSocketMessage.getHelloResponseWebSocketMessage() != null) {
+            resumeId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getResumeId();
+            sessionId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getSessionId();
+            hasMCU = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().serverHasMCUSupport();
+        }
 
         for (int i = 0; i < messagesQueue.size(); i++) {
             webSocket.send(messagesQueue.get(i));
@@ -333,12 +358,12 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     @Override
-    public void onMessage(WebSocket webSocket, ByteString bytes) {
+    public void onMessage(@NonNull WebSocket webSocket, ByteString bytes) {
         Log.d(TAG, "Receiving bytes : " + bytes.hex());
     }
 
     @Override
-    public void onClosing(WebSocket webSocket, int code, String reason) {
+    public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
         Log.d(TAG, "Closing : " + code + " / " + reason);
     }
 
@@ -361,7 +386,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
         Log.d(TAG, "   roomToken: " + roomToken);
         Log.d(TAG, "   session: " + normalBackendSession);
         try {
-            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession));
+            String message = LoganSquare.serialize(
+                webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession));
             if (!connected || reconnecting) {
                 messagesQueue.add(message);
             } else {
@@ -378,7 +404,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     private void sendCallMessage(NCSignalingMessage ncSignalingMessage) {
         try {
-            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage));
+            String message = LoganSquare.serialize(
+                webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage));
             if (!connected || reconnecting) {
                 messagesQueue.add(message);
             } else {
@@ -419,7 +446,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(NetworkEvent networkEvent) {
-        if (networkEvent.getNetworkConnectionEvent() == NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED && !isConnected()) {
+        if (networkEvent.getNetworkConnectionEvent() == NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED &&
+            !isConnected()) {
             restartWebSocket();
         }
     }
@@ -435,9 +463,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
     /**
      * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted to a Signaling
      * class.
-     *
-     * All listeners are called in the WebSocket reader thread. This thread should be the same as long as the
-     * WebSocket stays connected, but it may change whenever it is connected again.
+     * <p>
+     * All listeners are called in the WebSocket reader thread. This thread should be the same as long as the WebSocket
+     * stays connected, but it may change whenever it is connected again.
      */
     private static class ExternalSignalingMessageReceiver extends SignalingMessageReceiver {
         public void process(Map<String, Object> eventMap) {
