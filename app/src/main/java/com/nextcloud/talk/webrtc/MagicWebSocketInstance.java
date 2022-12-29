@@ -209,16 +209,19 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private void processMessage(String text) throws IOException {
         CallOverallWebSocketMessage callOverallWebSocketMessage =
             LoganSquare.parse(text, CallOverallWebSocketMessage.class);
-        NCSignalingMessage ncSignalingMessage = callOverallWebSocketMessage
-            .getCallWebSocketMessage()
-            .getNcSignalingMessage();
-        if (TextUtils.isEmpty(ncSignalingMessage.getFrom()) &&
-            callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage() != null) {
-            ncSignalingMessage.setFrom(
-                callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage().getSessionId());
-        }
 
-        signalingMessageReceiver.process(ncSignalingMessage);
+        if (callOverallWebSocketMessage.getCallWebSocketMessage() != null) {
+            NCSignalingMessage ncSignalingMessage = callOverallWebSocketMessage
+                .getCallWebSocketMessage()
+                .getNcSignalingMessage();
+            if (ncSignalingMessage != null && TextUtils.isEmpty(ncSignalingMessage.getFrom()) &&
+                callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage() != null) {
+                ncSignalingMessage.setFrom(
+                    callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage().getSessionId());
+            }
+
+            signalingMessageReceiver.process(ncSignalingMessage);
+        }
     }
 
     private void processEventMessage(String text) throws IOException {
