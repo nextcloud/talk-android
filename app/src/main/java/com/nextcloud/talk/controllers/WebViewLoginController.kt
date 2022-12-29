@@ -167,6 +167,7 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                 webViewFidoBridge?.delegateOnPageStarted(view, url, favicon)
             }
 
+            @Deprecated("Use shouldOverrideUrlLoading(WebView view, WebResourceRequest request)")
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 if (url.startsWith(assembledPrefix!!)) {
                     parseAndLoginFromWebView(url)
@@ -302,6 +303,7 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                 }
             }
 
+            @Deprecated("Deprecated in super implementation")
             override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
                 super.onReceivedError(view, errorCode, description, failingUrl)
             }

@@ -213,6 +213,23 @@ import java.util.Locale
 import java.util.Objects
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.chunked
+import kotlin.collections.indexOfFirst
+import kotlin.collections.indices
+import kotlin.collections.isNotEmpty
+import kotlin.collections.iterator
+import kotlin.collections.map
+import kotlin.collections.set
+import kotlin.collections.toList
+import kotlin.collections.toMap
+import kotlin.collections.toMutableMap
+import kotlin.collections.toTypedArray
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
