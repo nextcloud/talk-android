@@ -63,9 +63,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.CallActivityBinding;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
-import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.NetworkEvent;
-import com.nextcloud.talk.events.PeerConnectionEvent;
+import com.nextcloud.talk.events.ProximitySensorEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
@@ -74,7 +73,6 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
@@ -236,7 +234,7 @@ public class CallActivity extends CallBaseActivity {
     private MediaStream localStream;
     private String credentials;
     private List<PeerConnectionWrapper> peerConnectionWrapperList = new ArrayList<>();
-    private Map<String, Participant> participantMap = new HashMap<>();
+    private Map<String, String> userIdsBySessionId = new HashMap<>();
 
     private boolean videoOn = false;
     private boolean microphoneOn = false;
@@ -269,6 +267,8 @@ public class CallActivity extends CallBaseActivity {
         new HashMap<>();
 
     private Map<String, PeerConnectionWrapper.DataChannelMessageListener> dataChannelMessageListeners = new HashMap<>();
+
+    private Map<String, PeerConnectionWrapper.PeerConnectionObserver> peerConnectionObservers = new HashMap<>();
 
     private SignalingMessageReceiver.ParticipantListMessageListener participantListMessageListener = new SignalingMessageReceiver.ParticipantListMessageListener() {
 
@@ -1775,7 +1775,7 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "processUsersInRoom");
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSessions = new HashSet<>();
-        Map<String, String> userIdsBySessionId = new HashMap<>();
+        userIdsBySessionId = new HashMap<>();
 
         hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
         Log.d(TAG, "   hasMCU is " + hasMCU);
@@ -1844,10 +1844,6 @@ public class CallActivity extends CallBaseActivity {
             return;
         }
 
-        if (newSessions.size() > 0 && !hasMCU) {
-            getPeersForCall();
-        }
-
         if (hasMCU) {
             // Ensure that own publishing peer is set up.
             getOrCreatePeerConnectionWrapperForSessionIdAndType(webSocketClient.getSessionId(), VIDEO_STREAM_TYPE_VIDEO, true);
@@ -1858,15 +1854,22 @@ public class CallActivity extends CallBaseActivity {
             getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
 
             String userId = userIdsBySessionId.get(sessionId);
-
-            runOnUiThread(() -> {
-                setupVideoStreamForLayout(
-                    null,
-                    sessionId,
-                    userId,
-                    false,
-                    VIDEO_STREAM_TYPE_VIDEO);
-            });
+            if (userId != null) {
+                runOnUiThread(() -> {
+                    boolean notifyDataSetChanged = false;
+                    if (participantDisplayItems.get(sessionId + "-video") != null) {
+                        participantDisplayItems.get(sessionId + "-video").setUserId(userId);
+                        notifyDataSetChanged = true;
+                    }
+                    if (participantDisplayItems.get(sessionId + "-screen") != null) {
+                        participantDisplayItems.get(sessionId + "-screen").setUserId(userId);
+                        notifyDataSetChanged = true;
+                    }
+                    if (notifyDataSetChanged) {
+                        participantsAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
         }
 
         if (newSessions.size() > 0 && currentCallStatus != CallStatus.IN_CONVERSATION) {
@@ -1877,43 +1880,6 @@ public class CallActivity extends CallBaseActivity {
             Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
             endPeerConnection(sessionId, false);
         }
-    }
-
-    private void getPeersForCall() {
-        Log.d(TAG, "getPeersForCall");
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
-
-        ncApi.getPeersForCall(
-                credentials,
-                ApiUtils.getUrlForCall(
-                    apiVersion,
-                    baseUrl,
-                    roomToken))
-            .subscribeOn(Schedulers.io())
-            .subscribe(new Observer<ParticipantsOverall>() {
-                @Override
-                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                    // unused atm
-                }
-
-                @Override
-                public void onNext(@io.reactivex.annotations.NonNull ParticipantsOverall participantsOverall) {
-                    participantMap = new HashMap<>();
-                    for (Participant participant : participantsOverall.getOcs().getData()) {
-                        participantMap.put(participant.getSessionId(), participant);
-                    }
-                }
-
-                @Override
-                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                    Log.e(TAG, "error while executing getPeersForCall", e);
-                }
-
-                @Override
-                public void onComplete() {
-                    // unused atm
-                }
-            });
     }
 
     private void deletePeerConnection(PeerConnectionWrapper peerConnectionWrapper) {
@@ -2018,10 +1984,27 @@ public class CallActivity extends CallBaseActivity {
             }
 
             if (!publisher && !hasExternalSignalingServer && offerAnswerNickProviders.get(sessionId) == null) {
-                OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider();
+                OfferAnswerNickProvider offerAnswerNickProvider = new OfferAnswerNickProvider(sessionId);
                 offerAnswerNickProviders.put(sessionId, offerAnswerNickProvider);
                 signalingMessageReceiver.addListener(offerAnswerNickProvider.getVideoWebRtcMessageListener(), sessionId, "video");
                 signalingMessageReceiver.addListener(offerAnswerNickProvider.getScreenWebRtcMessageListener(), sessionId, "screen");
+            }
+
+            PeerConnectionWrapper.PeerConnectionObserver peerConnectionObserver =
+                new CallActivityPeerConnectionObserver(sessionId, type);
+            peerConnectionObservers.put(sessionId + "-" + type, peerConnectionObserver);
+            peerConnectionWrapper.addObserver(peerConnectionObserver);
+
+            if (!publisher) {
+                runOnUiThread(() -> {
+                    // userId is unknown here, but it will be got based on the session id, and the stream will be
+                    // updated once it is added to the connection.
+                    setupVideoStreamForLayout(
+                        null,
+                        sessionId,
+                        false,
+                        type);
+                });
             }
 
             if (publisher) {
@@ -2054,6 +2037,9 @@ public class CallActivity extends CallBaseActivity {
                     }
                     String videoStreamType = peerConnectionWrapper.getVideoStreamType();
                     if (VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType) || !justScreen) {
+                        PeerConnectionWrapper.PeerConnectionObserver peerConnectionObserver = peerConnectionObservers.remove(sessionId + "-" + videoStreamType);
+                        peerConnectionWrapper.removeObserver(peerConnectionObserver);
+
                         runOnUiThread(() -> removeMediaStream(sessionId, videoStreamType));
                         deletePeerConnection(peerConnectionWrapper);
                     }
@@ -2138,48 +2124,37 @@ public class CallActivity extends CallBaseActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
-        String sessionId = peerConnectionEvent.getSessionId();
-        String participantDisplayItemId = sessionId + "-" + peerConnectionEvent.getVideoStreamType();
+    public void onMessageEvent(ProximitySensorEvent proximitySensorEvent) {
+        if (!isVoiceOnlyCall) {
+            boolean enableVideo = proximitySensorEvent.getProximitySensorEventType() ==
+                ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR && videoOn;
+            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) &&
+                (currentCallStatus == CallStatus.CONNECTING || isConnectionEstablished()) && videoOn
+                && enableVideo != localVideoTrack.enabled()) {
+                toggleMedia(enableVideo, true);
+            }
+        }
+    }
 
-        if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.PEER_CONNECTED) {
-            if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
-                updateSelfVideoViewConnected(true);
-            } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
-                participantDisplayItems.get(participantDisplayItemId).setConnected(true);
-                participantsAdapter.notifyDataSetChanged();
-            }
-        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.PEER_DISCONNECTED) {
-            if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
-                updateSelfVideoViewConnected(false);
-            } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
-                participantDisplayItems.get(participantDisplayItemId).setConnected(false);
-                participantsAdapter.notifyDataSetChanged();
-            }
-        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.PEER_CLOSED) {
-            endPeerConnection(sessionId, VIDEO_STREAM_TYPE_SCREEN.equals(peerConnectionEvent.getVideoStreamType()));
-        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.SENSOR_FAR ||
-            peerConnectionEvent.getPeerConnectionEventType() ==
-                PeerConnectionEvent.PeerConnectionEventType.SENSOR_NEAR) {
+    private void handlePeerConnected(String sessionId, String videoStreamType) {
+        String participantDisplayItemId = sessionId + "-" + videoStreamType;
 
-            if (!isVoiceOnlyCall) {
-                boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType() ==
-                    PeerConnectionEvent.PeerConnectionEventType.SENSOR_FAR && videoOn;
-                if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) &&
-                    (currentCallStatus == CallStatus.CONNECTING || isConnectionEstablished()) && videoOn
-                    && enableVideo != localVideoTrack.enabled()) {
-                    toggleMedia(enableVideo, true);
-                }
-            }
-        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
-            PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED) {
-            setCallState(CallStatus.PUBLISHER_FAILED);
-            webSocketClient.clearResumeId();
-            hangup(false);
+        if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
+            updateSelfVideoViewConnected(true);
+        } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
+            participantDisplayItems.get(participantDisplayItemId).setConnected(true);
+            participantsAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void handlePeerDisconnected(String sessionId, String videoStreamType) {
+        String participantDisplayItemId = sessionId + "-" + videoStreamType;
+
+        if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
+            updateSelfVideoViewConnected(false);
+        } else if (participantDisplayItems.get(participantDisplayItemId) != null) {
+            participantDisplayItems.get(participantDisplayItemId).setConnected(false);
+            participantsAdapter.notifyDataSetChanged();
         }
     }
 
@@ -2223,28 +2198,6 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
-        if (mediaStreamEvent.getMediaStream() != null) {
-            boolean hasAtLeastOneVideoStream = mediaStreamEvent.getMediaStream().videoTracks != null
-                && mediaStreamEvent.getMediaStream().videoTracks.size() > 0;
-
-            setupVideoStreamForLayout(
-                mediaStreamEvent.getMediaStream(),
-                mediaStreamEvent.getSession(),
-                null,
-                hasAtLeastOneVideoStream,
-                mediaStreamEvent.getVideoStreamType());
-        } else {
-            setupVideoStreamForLayout(
-                null,
-                mediaStreamEvent.getSession(),
-                null,
-                false,
-                mediaStreamEvent.getVideoStreamType());
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -2256,7 +2209,6 @@ public class CallActivity extends CallBaseActivity {
 
     private void setupVideoStreamForLayout(@Nullable MediaStream mediaStream,
                                            String session,
-                                           String userId,
                                            boolean videoStreamEnabled,
                                            String videoStreamType) {
         PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(session,
@@ -2276,20 +2228,12 @@ public class CallActivity extends CallBaseActivity {
             nick = offerAnswerNickProviders.get(session) != null ? offerAnswerNickProviders.get(session).getNick() : "";
         }
 
-        String userId4Usage = userId;
-
-        if (userId4Usage == null) {
-            if (hasMCU) {
-                userId4Usage = webSocketClient.getUserIdForSession(session);
-            } else if (participantMap.get(session) != null && participantMap.get(session).getCalculatedActorType() == Participant.ActorType.USERS) {
-                userId4Usage = participantMap.get(session).getCalculatedActorId();
-            }
-        }
+        String userId = userIdsBySessionId.get(session);
 
         String defaultGuestNick = getResources().getString(R.string.nc_nick_guest);
 
         ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(baseUrl,
-                                                                                   userId4Usage,
+                                                                                   userId,
                                                                                    session,
                                                                                    connected,
                                                                                    nick,
@@ -2570,18 +2514,18 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    private static class OfferAnswerNickProvider {
+    private class OfferAnswerNickProvider {
 
         private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
 
             @Override
             public void onOffer(String sdp, String nick) {
-                (OfferAnswerNickProvider.this).nick = nick;
+                onOfferOrAnswer(nick);
             }
 
             @Override
             public void onAnswer(String sdp, String nick) {
-                (OfferAnswerNickProvider.this).nick = nick;
+                onOfferOrAnswer(nick);
             }
 
             @Override
@@ -2596,7 +2540,30 @@ public class CallActivity extends CallBaseActivity {
         private final WebRtcMessageListener videoWebRtcMessageListener = new WebRtcMessageListener();
         private final WebRtcMessageListener screenWebRtcMessageListener = new WebRtcMessageListener();
 
+        private final String sessionId;
+
         private String nick;
+
+        private OfferAnswerNickProvider(String sessionId) {
+            this.sessionId = sessionId;
+        }
+
+        private void onOfferOrAnswer(String nick) {
+            this.nick = nick;
+
+            boolean notifyDataSetChanged = false;
+            if (participantDisplayItems.get(sessionId + "-video") != null) {
+                participantDisplayItems.get(sessionId + "-video").setNick(nick);
+                notifyDataSetChanged = true;
+            }
+            if (participantDisplayItems.get(sessionId + "-screen") != null) {
+                participantDisplayItems.get(sessionId + "-screen").setNick(nick);
+                notifyDataSetChanged = true;
+            }
+            if (notifyDataSetChanged) {
+                participantsAdapter.notifyDataSetChanged();
+            }
+        }
 
         public WebRtcMessageListener getVideoWebRtcMessageListener() {
             return videoWebRtcMessageListener;
@@ -2680,6 +2647,85 @@ public class CallActivity extends CallBaseActivity {
                 if (participantDisplayItems.get(participantDisplayItemId) != null) {
                     participantDisplayItems.get(participantDisplayItemId).setNick(nick);
                     participantsAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
+    private class CallActivityPeerConnectionObserver implements PeerConnectionWrapper.PeerConnectionObserver {
+
+        private final String sessionId;
+        private final String videoStreamType;
+        private final String participantDisplayItemId;
+
+        private CallActivityPeerConnectionObserver(String sessionId, String videoStreamType) {
+            this.sessionId = sessionId;
+            this.videoStreamType = videoStreamType;
+            this.participantDisplayItemId = sessionId + "-" + videoStreamType;
+        }
+
+        @Override
+        public void onStreamAdded(MediaStream mediaStream) {
+            handleStream(mediaStream);
+        }
+
+        @Override
+        public void onStreamRemoved(MediaStream mediaStream) {
+            handleStream(null);
+        }
+
+        private void handleStream(MediaStream mediaStream) {
+            runOnUiThread(() -> {
+                if (participantDisplayItems.get(participantDisplayItemId) == null) {
+                    return;
+                }
+
+                boolean hasAtLeastOneVideoStream = false;
+                if (mediaStream != null) {
+                    hasAtLeastOneVideoStream = mediaStream.videoTracks != null && mediaStream.videoTracks.size() > 0;
+                }
+
+                ParticipantDisplayItem participantDisplayItem = participantDisplayItems.get(participantDisplayItemId);
+                participantDisplayItem.setMediaStream(mediaStream);
+                participantDisplayItem.setStreamEnabled(hasAtLeastOneVideoStream);
+                participantsAdapter.notifyDataSetChanged();
+            });
+        }
+
+        @Override
+        public void onIceConnectionStateChanged(PeerConnection.IceConnectionState iceConnectionState) {
+            runOnUiThread(() -> {
+                if (iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
+                        iceConnectionState == PeerConnection.IceConnectionState.COMPLETED) {
+                    handlePeerConnected(sessionId, videoStreamType);
+
+                    return;
+                }
+
+                if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED ||
+                        iceConnectionState == PeerConnection.IceConnectionState.NEW ||
+                        iceConnectionState == PeerConnection.IceConnectionState.CHECKING) {
+                    handlePeerDisconnected(sessionId, videoStreamType);
+
+                    return;
+                }
+
+                if (iceConnectionState == PeerConnection.IceConnectionState.CLOSED) {
+                    endPeerConnection(sessionId, VIDEO_STREAM_TYPE_SCREEN.equals(videoStreamType));
+
+                    return;
+                }
+
+                if (iceConnectionState == PeerConnection.IceConnectionState.FAILED) {
+                    if (webSocketClient != null && webSocketClient.getSessionId() != null && webSocketClient.getSessionId().equals(sessionId)) {
+                        setCallState(CallStatus.PUBLISHER_FAILED);
+                        webSocketClient.clearResumeId();
+                        hangup(false);
+                    } else {
+                        handlePeerDisconnected(sessionId, videoStreamType);
+                    }
+
+                    return;
                 }
             });
         }

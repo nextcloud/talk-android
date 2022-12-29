@@ -43,7 +43,7 @@ import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.util.Log;
 
-import com.nextcloud.talk.events.PeerConnectionEvent;
+import com.nextcloud.talk.events.ProximitySensorEvent;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -136,15 +136,13 @@ public class WebRtcAudioManager {
                 setAudioDeviceInternal(AudioDevice.EARPIECE);
                 Log.d(TAG, "switched to EARPIECE because userSelectedAudioDevice was SPEAKER_PHONE and proximity=near");
 
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                                                       .SENSOR_NEAR, null, null, null, null));
+                EventBus.getDefault().post(new ProximitySensorEvent(ProximitySensorEvent.ProximitySensorEventType.SENSOR_NEAR));
 
             } else {
                 setAudioDeviceInternal(WebRtcAudioManager.AudioDevice.SPEAKER_PHONE);
                 Log.d(TAG, "switched to SPEAKER_PHONE because userSelectedAudioDevice was SPEAKER_PHONE and proximity=far");
 
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                                                       .SENSOR_FAR, null, null, null, null));
+                EventBus.getDefault().post(new ProximitySensorEvent(ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR));
             }
         }
     }

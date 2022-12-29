@@ -386,17 +386,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         return "";
     }
 
-    public String getUserIdForSession(String session) {
-        Participant participant = usersHashMap.get(session);
-        if (participant != null) {
-            if (participant.getCalculatedActorType() == USERS) {
-                return participant.getCalculatedActorId();
-            }
-        }
-
-        return "";
-    }
-
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(NetworkEvent networkEvent) {
         if (networkEvent.getNetworkConnectionEvent() == NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED && !isConnected()) {
