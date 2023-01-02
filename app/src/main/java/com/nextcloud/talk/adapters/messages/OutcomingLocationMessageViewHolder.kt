@@ -161,6 +161,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         binding.webview.settings?.javaScriptEnabled = true
 
         binding.webview.webViewClient = object : WebViewClient() {
+            @Deprecated("Use shouldOverrideUrlLoading(WebView view, WebResourceRequest request)")
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 return if (url != null && UriUtils.hasHttpProtocollPrefixed(url)
                 ) {

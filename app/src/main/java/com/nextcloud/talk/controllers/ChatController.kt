@@ -198,7 +198,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.view_message_input.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -214,6 +213,23 @@ import java.util.Locale
 import java.util.Objects
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.chunked
+import kotlin.collections.indexOfFirst
+import kotlin.collections.indices
+import kotlin.collections.isNotEmpty
+import kotlin.collections.iterator
+import kotlin.collections.map
+import kotlin.collections.set
+import kotlin.collections.toList
+import kotlin.collections.toMap
+import kotlin.collections.toMutableMap
+import kotlin.collections.toTypedArray
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -517,6 +533,7 @@ class ChatController(args: Bundle) :
         currentConversation?.type == Conversation.ConversationType
         .ROOM_TYPE_ONE_TO_ONE_CALL
 
+    @SuppressLint("ClickableViewAccessibility")
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onViewBound(view: View) {
         Log.d(TAG, "onViewBound: " + System.identityHashCode(this).toString())

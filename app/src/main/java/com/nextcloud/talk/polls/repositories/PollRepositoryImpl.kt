@@ -31,6 +31,7 @@ import com.nextcloud.talk.polls.repositories.model.PollResponse
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
+import kotlin.collections.forEach as kForEach
 
 class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvider: CurrentUserProviderNew) :
     PollRepository {
@@ -120,8 +121,8 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
 
         private fun convertVotes(votes: Map<String, Int>?): Map<String, Int> {
             val resultMap: MutableMap<String, Int> = HashMap()
-            votes?.forEach {
-                resultMap[it.key.replace("option-", "")] = it.value
+            votes?.kForEach { (key, value) ->
+                resultMap[key.replace("option-", "")] = value
             }
             return resultMap
         }

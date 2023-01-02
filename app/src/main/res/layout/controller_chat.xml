@@ -121,7 +121,7 @@
             android:layout_height="1dp"
             android:background="@color/controller_chat_separator" />
 
-        <com.stfalcon.chatkit.messages.MessageInput
+        <com.nextcloud.talk.ui.MessageInput
             android:id="@+id/messageInputView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
