@@ -29,7 +29,7 @@ import androidx.room.PrimaryKey
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.lang.Boolean.FALSE
 
 @Parcelize

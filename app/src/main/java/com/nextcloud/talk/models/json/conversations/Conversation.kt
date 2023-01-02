@@ -37,7 +37,7 @@ import com.nextcloud.talk.models.json.converters.EnumReadOnlyConversationConvert
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject

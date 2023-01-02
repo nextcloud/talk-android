@@ -26,7 +26,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject

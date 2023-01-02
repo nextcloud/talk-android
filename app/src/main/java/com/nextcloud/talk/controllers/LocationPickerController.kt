@@ -529,6 +529,7 @@ class LocationPickerController(args: Bundle) :
         myLocation = GeoPoint(location)
     }
 
+    @Deprecated("Deprecated. This callback will never be invoked on Android Q and above.")
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
         // empty
     }

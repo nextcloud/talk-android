@@ -37,7 +37,7 @@ import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite
 import com.nextcloud.talk.components.filebrowser.models.properties.OCId
 import com.nextcloud.talk.components.filebrowser.models.properties.OCSize
 import com.nextcloud.talk.utils.Mimetype.FOLDER
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.io.File
 
 @Parcelize

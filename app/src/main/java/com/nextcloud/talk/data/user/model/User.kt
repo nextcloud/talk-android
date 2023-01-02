@@ -24,7 +24,7 @@ import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.ApiUtils
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.lang.Boolean.FALSE
 
 @Parcelize

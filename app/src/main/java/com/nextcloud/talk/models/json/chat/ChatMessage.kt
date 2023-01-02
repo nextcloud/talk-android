@@ -40,7 +40,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.security.MessageDigest
 import java.util.Arrays
 import java.util.Date
