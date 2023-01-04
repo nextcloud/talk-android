@@ -44,7 +44,6 @@ import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.components.filebrowser.models.BrowserFile
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
@@ -56,6 +55,7 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.FileViewerUtils.ProgressUi
+import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.stfalcon.chatkit.messages.MessageHolders.IncomingImageMessageViewHolder
 import io.reactivex.Single
 import io.reactivex.SingleObserver
@@ -287,7 +287,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                 override fun onSuccess(readFilesystemOperation: ReadFilesystemOperation) {
                     val davResponse = readFilesystemOperation.readRemotePath()
                     if (davResponse.data != null) {
-                        val browserFileList = davResponse.data as List<BrowserFile>
+                        val browserFileList = davResponse.data as List<RemoteFile>
                         if (browserFileList.isNotEmpty()) {
                             Handler(context!!.mainLooper).post {
                                 val resourceId = getDrawableResourceIdForMimeType(browserFileList[0].mimeType)

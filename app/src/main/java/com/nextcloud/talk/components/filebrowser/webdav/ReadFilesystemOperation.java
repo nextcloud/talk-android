@@ -23,7 +23,6 @@ package com.nextcloud.talk.components.filebrowser.webdav;
 import android.net.Uri;
 import android.util.Log;
 
-import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.dagger.modules.RestModule;
 import com.nextcloud.talk.data.user.model.User;
@@ -73,8 +72,6 @@ public class ReadFilesystemOperation {
         DavResponse davResponse = new DavResponse();
         final List<Response> memberElements = new ArrayList<>();
         final Response[] rootElement = new Response[1];
-        final List<BrowserFile> browserFiles = new ArrayList<>();
-        final List<RemoteFile> remoteFiles = new ArrayList<>();
 
         try {
             new DavResource(okHttpClient, HttpUrl.parse(url)).propfind(depth,
@@ -101,16 +98,12 @@ public class ReadFilesystemOperation {
 
         WebDavFileUtils webDavFileUtils = new WebDavFileUtils();
 
-        browserFiles.add(BrowserFile.Companion.getModelFromResponse(rootElement[0],
-                                                                    rootElement[0].getHref().toString().substring(basePath.length())));
+        final List<RemoteFile> remoteFiles = new ArrayList<>(1 + memberElements.size());
 
         remoteFiles.add(webDavFileUtils.parseResponse(rootElement[0],
                                                       Uri.parse(basePath)));
 
         for (Response memberElement : memberElements) {
-            browserFiles.add(BrowserFile.Companion.getModelFromResponse(memberElement,
-                                                                        memberElement.getHref().toString().substring(basePath.length())));
-
             remoteFiles.add(webDavFileUtils.parseResponse(memberElement,
                                                           Uri.parse(basePath)));
         }
