@@ -144,7 +144,7 @@
     <string name="nc_formatted_message_you">Sie: %1$s</string>
     <string name="nc_forward_message">Weiterleiten</string>
     <string name="nc_forward_to_three_dots">Weiterleiten an …</string>
-    <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier um Anbieter zu finden</string>
+    <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier, um Anbieter zu finden</string>
     <string name="nc_get_source_code">Zum Programmcode</string>
     <string name="nc_group">Gruppe</string>
     <string name="nc_groups">Gruppen</string>
