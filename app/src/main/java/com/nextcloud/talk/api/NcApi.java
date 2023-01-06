@@ -574,11 +574,13 @@ public interface NcApi {
                                               @Url String url,
                                               @Query("reference") String urlToFindPreviewFor);
 
+    @FormUrlEncoded
     @POST
     Observable<GenericOverall> startRecording(@Header("Authorization") String authorization,
-                                                    @Url String url);
+                                                    @Url String url,
+                                                    @Field("status") Integer status);
 
-    @POST
+    @DELETE
     Observable<GenericOverall> stopRecording(@Header("Authorization") String authorization,
                                               @Url String url);
 }

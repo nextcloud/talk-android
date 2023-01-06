@@ -409,6 +409,9 @@ public class CallActivity extends CallBaseActivity {
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                                                         );
 
+            } else if (viewState instanceof CallRecordingViewModel.RecordingErrorState) {
+                Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
+                               Toast.LENGTH_LONG).show();
             } else {
                 hideCallRecordingIndicator();
             }
@@ -462,15 +465,12 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void initFeaturesVisibility() {
-        // TODO: check for isAllowedToRecordCall once api is ready
-//       boolean showMoreCallActionsItem = isAllowedToRecordCall();
-//        if (showMoreCallActionsItem) {
-//            binding.moreCallActions.setVisibility(View.VISIBLE);
-//        } else {
-//          binding.moreCallActions.setVisibility(View.GONE);
-//        }
-
-        binding.moreCallActions.setVisibility(View.VISIBLE);
+       boolean showMoreCallActionsItem = isAllowedToRecordCall();
+        if (showMoreCallActionsItem) {
+            binding.moreCallActions.setVisibility(View.VISIBLE);
+        } else {
+          binding.moreCallActions.setVisibility(View.GONE);
+        }
     }
 
     private void initClickListeners() {

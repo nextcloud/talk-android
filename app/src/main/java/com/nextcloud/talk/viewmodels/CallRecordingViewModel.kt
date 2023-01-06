@@ -47,6 +47,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     object RecordingStartLoadingState : ViewState
     object RecordingStopLoadingState : ViewState
     object RecordingConfirmStopState : ViewState
+    object RecordingErrorState : ViewState
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(RecordingStoppedState)
     val viewState: LiveData<ViewState>
@@ -60,19 +61,26 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
                 _viewState.value = RecordingConfirmStopState
             }
             RecordingStoppedState -> {
-                _viewState.value = RecordingStartLoadingState
-                repository.startRecording(roomToken)
-                    .subscribeOn(Schedulers.io())
-                    ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.subscribe(CallStartRecordingObserver())
+                startRecording()
             }
             RecordingConfirmStopState -> {
                 // confirm dialog to stop recording might have been dismissed without to click an action.
                 // just show it again.
                 _viewState.value = RecordingConfirmStopState
             }
+            RecordingErrorState -> {
+                stopRecording()
+            }
             else -> {}
         }
+    }
+
+    private fun startRecording() {
+        _viewState.value = RecordingStartLoadingState
+        repository.startRecording(roomToken)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(CallStartRecordingObserver())
     }
 
     fun stopRecording() {
@@ -109,6 +117,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
 
         override fun onError(e: Throwable) {
             Log.e(TAG, "failure in CallStartRecordingObserver", e)
+            _viewState.value = RecordingErrorState
         }
 
         override fun onComplete() {
@@ -122,11 +131,14 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
         }
 
         override fun onNext(stopCallRecordingModel: StopCallRecordingModel) {
-            _viewState.value = RecordingStoppedState
+            if (stopCallRecordingModel.success) {
+                _viewState.value = RecordingStoppedState
+            }
         }
 
         override fun onError(e: Throwable) {
             Log.e(TAG, "failure in CallStopRecordingObserver", e)
+            _viewState.value = RecordingErrorState
         }
 
         override fun onComplete() {

@@ -496,6 +496,6 @@ public class ApiUtils {
     }
 
     public static String getUrlForRecording(int version, String baseUrl, String token) {
-        return getUrlForCall(version, baseUrl, token) + "/recording";
+        return getUrlForApi(version, baseUrl) + "/recording/" + token;
     }
 }

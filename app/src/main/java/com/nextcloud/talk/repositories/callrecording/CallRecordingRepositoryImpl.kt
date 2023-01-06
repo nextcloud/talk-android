@@ -35,45 +35,46 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
     val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
 
-    var apiVersion = ApiUtils.getCallApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
-
-    override fun startRecording(
-        roomToken: String
-    ): Observable<StartCallRecordingModel> {
-        return Observable.just<StartCallRecordingModel>(StartCallRecordingModel(true))
-    }
+    var apiVersion = 1
 
     // override fun startRecording(
     //     roomToken: String
     // ): Observable<StartCallRecordingModel> {
-    //         return ncApi.startRecording(
-    //             credentials,
-    //             ApiUtils.getUrlForRecording(
-    //                 apiVersion,
-    //                 currentUser.baseUrl,
-    //                 roomToken
-    //             )
-    //         ).map { mapToStartCallRecordingModel(it.ocs?.meta!!) }
+    //     return Observable.just<StartCallRecordingModel>(StartCallRecordingModel(true))
     // }
 
-    override fun stopRecording(
+    override fun startRecording(
         roomToken: String
-    ): Observable<StopCallRecordingModel> {
-        return Observable.just<StopCallRecordingModel>(StopCallRecordingModel(true))
+    ): Observable<StartCallRecordingModel> {
+        return ncApi.startRecording(
+            credentials,
+            ApiUtils.getUrlForRecording(
+                apiVersion,
+                currentUser.baseUrl,
+                roomToken
+            ),
+            1
+        ).map { mapToStartCallRecordingModel(it.ocs?.meta!!) }
     }
 
     // override fun stopRecording(
     //     roomToken: String
     // ): Observable<StopCallRecordingModel> {
-    //     return ncApi.stopRecording(
-    //         credentials,
-    //         ApiUtils.getUrlForRecording(
-    //             apiVersion,
-    //             currentUser.baseUrl,
-    //             roomToken
-    //         )
-    //     ).map { mapToStopCallRecordingModel(it.ocs?.meta!!) }
+    //     return Observable.just<StopCallRecordingModel>(StopCallRecordingModel(true))
     // }
+
+    override fun stopRecording(
+        roomToken: String
+    ): Observable<StopCallRecordingModel> {
+        return ncApi.stopRecording(
+            credentials,
+            ApiUtils.getUrlForRecording(
+                apiVersion,
+                currentUser.baseUrl,
+                roomToken
+            )
+        ).map { mapToStopCallRecordingModel(it.ocs?.meta!!) }
+    }
 
     private fun mapToStartCallRecordingModel(
         response: GenericMeta
