@@ -177,6 +177,7 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_S
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
@@ -389,6 +390,7 @@ public class CallActivity extends CallBaseActivity {
 
         callRecordingViewModel = new ViewModelProvider(this, viewModelFactory).get((CallRecordingViewModel.class));
         callRecordingViewModel.setData(roomToken);
+        callRecordingViewModel.setRecordingState(extras.getInt(KEY_RECORDING_STATE));
 
         callRecordingViewModel.getViewState().observe(this, viewState -> {
             if (viewState instanceof CallRecordingViewModel.RecordingStartedState) {
@@ -1482,7 +1484,10 @@ public class CallActivity extends CallBaseActivity {
 
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
-                        callSession = roomOverall.getOcs().getData().getSessionId();
+                        Conversation conversation = roomOverall.getOcs().getData();
+                        callRecordingViewModel.setRecordingState(conversation.getCallRecording());
+
+                        callSession = conversation.getSessionId();
                         Log.d(TAG, " new callSession by joinRoom= " + callSession);
 
                         ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);

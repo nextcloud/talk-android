@@ -104,6 +104,14 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
         this.roomToken = roomToken
     }
 
+    fun setRecordingState(state: Int) {
+        when (state) {
+            0 -> _viewState.value = RecordingStoppedState
+            1 -> _viewState.value = RecordingStartedState
+            else -> {}
+        }
+    }
+
     inner class CallStartRecordingObserver : Observer<StartCallRecordingModel> {
         override fun onSubscribe(d: Disposable) {
             // unused atm
