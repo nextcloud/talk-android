@@ -54,13 +54,22 @@ public class MagicTrustManager implements X509TrustManager {
     private KeyStore trustedKeyStore = null;
 
     public MagicTrustManager() {
-        keystoreFile = new File(NextcloudTalkApplication.Companion.getSharedApplication().getDir("CertsKeystore",
-                Context.MODE_PRIVATE), "keystore.bks");
-
-        try (FileInputStream fileInputStream = new FileInputStream(keystoreFile)) {
+        keystoreFile = new File(NextcloudTalkApplication.Companion.getSharedApplication()
+                                    .getDir("CertsKeystore", Context.MODE_PRIVATE),
+                                "keystore.bks");
+        try {
             trustedKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            trustedKeyStore.load(fileInputStream, null);
-        } catch (Exception exception) {
+        } catch (KeyStoreException e) {
+            Log.e(TAG, "Trusted key store can't be created.", e);
+        }
+
+        if (keystoreFile.exists()) {
+            try (FileInputStream fileInputStream = new FileInputStream(keystoreFile)) {
+                trustedKeyStore.load(fileInputStream, null);
+            } catch (Exception exception) {
+                Log.e(TAG, "Error during opening the trusted key store.", exception);
+            }
+        } else {
             try {
                 trustedKeyStore.load(null, null);
             } catch (Exception e) {
@@ -71,7 +80,7 @@ public class MagicTrustManager implements X509TrustManager {
         TrustManagerFactory trustManagerFactory = null;
         try {
             trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.
-                    getDefaultAlgorithm());
+                                                                      getDefaultAlgorithm());
 
             trustManagerFactory.init((KeyStore) null);
 
@@ -101,10 +110,10 @@ public class MagicTrustManager implements X509TrustManager {
             } catch (CertificateException e) {
                 if (!isCertInMagicTrustStore(x509Certificate)) {
                     EventBus.getDefault().post(new CertificateEvent(x509Certificate, this,
-                            null));
+                                                                    null));
                     long startTime = System.currentTimeMillis();
                     while (!isCertInMagicTrustStore(x509Certificate) && System.currentTimeMillis() <=
-                            startTime + 15000) {
+                        startTime + 15000) {
                         //do nothing
                     }
                     return isCertInMagicTrustStore(x509Certificate);
