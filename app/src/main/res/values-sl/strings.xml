@@ -182,6 +182,7 @@
     <string name="nc_new_mention">Neprebrane omembe</string>
     <string name="nc_new_messages">Neprebrana sporočila</string>
     <string name="nc_new_password">Novo geslo</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s ni na voljo (ni nameščen ali pa je dostop skrbniško omejen)</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_no">Ne</string>
     <string name="nc_no_messages_yet">Ni še sporočil</string>
