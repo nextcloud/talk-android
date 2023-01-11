@@ -65,6 +65,7 @@
     <string name="nc_call_button_content_description_camera">Alternar a câmera</string>
     <string name="nc_call_button_content_description_hangup">Espere</string>
     <string name="nc_call_button_content_description_microphone">Alternar o microfone</string>
+    <string name="nc_call_button_content_description_pip">Abrir imagem no modo de imagem</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para o próprio vídeo</string>
     <string name="nc_call_incoming">ENTRADA </string>
     <string name="nc_call_name">Nome de conversação</string>
@@ -194,6 +195,7 @@
     <string name="nc_message_read">Leitura de mensagem</string>
     <string name="nc_message_sent">Mensagem enviada</string>
     <string name="nc_microphone_permission_permanently_denied">Para ativar a comunicação por voz, conceda a permissão \"Microfone\" nas configurações do sistema.</string>
+    <string name="nc_missed_call">Você perdeu uma chamada de %s</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Nunca juntado</string>
     <string name="nc_new_conversation">Nova conversa</string>
