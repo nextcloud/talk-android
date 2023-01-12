@@ -181,7 +181,9 @@ public class PeerConnectionWrapper {
                     // set the recipient session ID in the assembled call message.
                     NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage("requestoffer");
                     signalingMessageSender.send(ncSignalingMessage);
-                } else if (!hasMCU && hasInitiated) {
+                } else if (!hasMCU && hasInitiated && "video".equals(this.videoStreamType)) {
+                    // If the connection type is "screen" the client sharing the screen will send an
+                    // offer; offers should be created only for videos.
                     peerConnection.createOffer(magicSdpObserver, mediaConstraints);
                 }
             }
