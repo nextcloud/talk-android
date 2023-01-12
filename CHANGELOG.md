@@ -5,6 +5,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [15.1.0] - 2023-01-12
+
+## Added
+- Support latest emojis
+- Localize time formatting
+
+## Changed
+- Android 6 required
+- Improvements to calls
+
+## Fixed
+- Crash on startup because of Unknown color
+- The video of the first remote participant is eventually disabled
+- Show notifications for missed calls and improve duration for ringing
+- Too hard to react with already given reactions
+- Crash when joining call when ringtone is set to silent
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/61?closed=1
+
 ## [15.0.3] - 2022-12-15
 
 ### Fixed
