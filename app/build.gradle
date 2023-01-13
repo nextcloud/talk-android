@@ -257,7 +257,7 @@ dependencies {
     implementation "io.coil-kt:coil-svg:${coilKtVersion}"
     implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
-    implementation 'com.github.cotechde.hwsecurity:hwsecurity-fido:2.4.5'
+    implementation 'com.github.cotechde.hwsecurity:hwsecurity-fido:4.4.0'
 
     implementation 'com.novoda:merlin:1.2.1'
 
