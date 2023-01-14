@@ -64,13 +64,11 @@
     <string name="nc_certificate_dialog_title">Tarkista varmenne</string>
     <string name="nc_certificate_error">SSL-asetukset esti yhteyden</string>
     <string name="nc_change_cert_auth">Vaihda tunnistautumisvarmenne</string>
-    <string name="nc_change_password">Vaihda salasana</string>
     <string name="nc_circle">Piiri</string>
     <string name="nc_circles">Piirit</string>
     <string name="nc_clear_history">Poista kaikki viestit</string>
     <string name="nc_clear_history_success">Kaikki viestit poistettiin</string>
     <string name="nc_clear_history_warning">Haluatko varmasti poistaa kaikki viestit tästä keskustelusta?</string>
-    <string name="nc_clear_password">Tyhjennä salasana</string>
     <string name="nc_client_cert_change">Vaihda asiakasvarmenne</string>
     <string name="nc_client_cert_setup">Aseta asiakasvarmenne</string>
     <string name="nc_common_dismiss">Hylkää</string>
@@ -149,8 +147,6 @@
     <string name="nc_location_unknown">Tuntematon sijainti</string>
     <string name="nc_locked">Lukittu</string>
     <string name="nc_locked_tap_to_unlock">Napauta avataksesi lukituksen</string>
-    <string name="nc_make_call_private">Tee keskustelusta yksityinen</string>
-    <string name="nc_make_call_public">Tee keskustelusta julkinen</string>
     <string name="nc_manual">Ei asetettu</string>
     <string name="nc_mark_as_read">Merkitse luetuksi</string>
     <string name="nc_mark_as_unread">Merkitse lukemattomaksi</string>
@@ -242,7 +238,6 @@
     <string name="nc_server_testing_connection">Testataan yhteyttä</string>
     <string name="nc_server_unsupported">Tuettua Talk-sovellusta ei ole asennettu palvelimelle</string>
     <string name="nc_server_url">Palvelimen osoite https://…</string>
-    <string name="nc_set_password">Aseta salasana</string>
     <string name="nc_settings">Asetukset</string>
     <string name="nc_settings_account_updated">Olemassa oleva tilisi päivitettiin sen sijaan, että olisi lisätty tili</string>
     <string name="nc_settings_advanced_title">Lisäasetukset</string>
@@ -286,7 +281,6 @@
     <string name="nc_settings_wrong_account">Vain nykyinen tili voidaan valtuuttaa uudelleen</string>
     <string name="nc_share_contact_permission">Oikeus lukea yhteystiedot vaaditaan</string>
     <string name="nc_share_current_location">Jaa nykyinen sijainti</string>
-    <string name="nc_share_link">Jaa linkki</string>
     <string name="nc_share_location">Jaa sijainti</string>
     <string name="nc_share_subject">%1$s kutsu</string>
     <string name="nc_share_text">Liity keskusteluun osoitteessa %1$s/index.php/call/%2$s</string>

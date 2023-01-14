@@ -49,10 +49,8 @@
     <string name="nc_certificate_dialog_title">חקירת האישור</string>
     <string name="nc_certificate_error">הגדרות ה־SSL שלך מנעו חיבור</string>
     <string name="nc_change_cert_auth">החלפת אישור לאימות</string>
-    <string name="nc_change_password">החלפת ססמה</string>
     <string name="nc_circle">מעגל</string>
     <string name="nc_circles">מעגלים</string>
-    <string name="nc_clear_password">מחיקת ססמה</string>
     <string name="nc_client_cert_change">החלפת אישור לקוח</string>
     <string name="nc_client_cert_setup">הגדרת אישור לקוח</string>
     <string name="nc_common_dismiss">התעלמות</string>
@@ -115,8 +113,6 @@
     <string name="nc_lobby">לובי</string>
     <string name="nc_lobby_waiting">כרגע מיקומך הוא בהמתנה בלובי.</string>
     <string name="nc_locked_tap_to_unlock">יש לגעת כדי לשחרר</string>
-    <string name="nc_make_call_private">להפוך את הדיון לפרטי</string>
-    <string name="nc_make_call_public">להפוך את הדיון לציבורי</string>
     <string name="nc_manual">לא מוגדר</string>
     <string name="nc_mark_as_read">סימון כנקרא</string>
     <string name="nc_mark_as_unread">סימון כלא נקרא</string>
@@ -197,7 +193,6 @@
     <string name="nc_server_unsupported">השרת אין לו התקנה של אפליקציית ה-Talk הנתמכת</string>
     <string name="nc_server_url">כתובת שרת https://…</string>
     <string name="nc_server_version">%1$s עובד רק עם %2$s 13 ומעלה</string>
-    <string name="nc_set_password">הגדרת ססמה</string>
     <string name="nc_settings">הגדרות</string>
     <string name="nc_settings_account_updated">החשבון הקיים שלך עודכן, במקום הוספת חדש</string>
     <string name="nc_settings_advanced_title">מתקדם</string>
@@ -235,7 +230,6 @@
     <string name="nc_settings_warning">אזהרה</string>
     <string name="nc_settings_wrong_account">ניתן לאמת רק את החשבון הנוכחי</string>
     <string name="nc_share_contact_permission">נדרשת הרשאה לקריאת רשימת אנשי הקשר</string>
-    <string name="nc_share_link">לשתף קישור</string>
     <string name="nc_share_subject">הזמנה אל %1$s</string>
     <string name="nc_share_text">כדאי להצטרף לדיון תחת %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nססמה: %1$s</string>

@@ -43,10 +43,8 @@
     <string name="nc_certificate_dialog_title">Провери сертификат</string>
     <string name="nc_certificate_error">Ваша ССЛ постава је онемогућила повезивање</string>
     <string name="nc_change_cert_auth">Измени сертификат за пријаву</string>
-    <string name="nc_change_password">Измени лозинку</string>
     <string name="nc_circle">Круг</string>
     <string name="nc_circles">Кругови</string>
-    <string name="nc_clear_password">Очисти лозинку</string>
     <string name="nc_client_cert_change">Измени клијентски сертификат</string>
     <string name="nc_client_cert_setup">Подесите клијентски сертификат</string>
     <string name="nc_common_dismiss">Уклони</string>
@@ -109,8 +107,6 @@
     <string name="nc_lobby">Лоби</string>
     <string name="nc_lobby_waiting">Тренутно чекате у лобију.</string>
     <string name="nc_locked_tap_to_unlock">Тапни за откључавање</string>
-    <string name="nc_make_call_private">Учини разговор приватним</string>
-    <string name="nc_make_call_public">Учини разговор јавним</string>
     <string name="nc_manual">Није постављено</string>
     <string name="nc_mark_as_read">Означи као прочитано</string>
     <string name="nc_mark_as_unread">Означи као непрочитано</string>
@@ -190,7 +186,6 @@
     <string name="nc_server_unsupported">Сервер нема инсталирану подржану Talk апликацију</string>
     <string name="nc_server_url">Адреса сервера https://…</string>
     <string name="nc_server_version">%1$s ради само са%2$s верзије 13 и већом</string>
-    <string name="nc_set_password">Постави лозинку</string>
     <string name="nc_settings">Поставке</string>
     <string name="nc_settings_account_updated">Ваш постојећи налог је ажуриран, уместо што је додат нови налог</string>
     <string name="nc_settings_advanced_title">Напредно</string>
@@ -224,7 +219,6 @@
     <string name="nc_settings_theme_title">Тема</string>
     <string name="nc_settings_warning">Упозорење</string>
     <string name="nc_settings_wrong_account">Само тренутни налог се може поново ауторизовати</string>
-    <string name="nc_share_link">Подели везу</string>
     <string name="nc_share_subject">%1$s позивница</string>
     <string name="nc_share_text">Придружи се разговору на%1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nЛозинка: %1$s</string>

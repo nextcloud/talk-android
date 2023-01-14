@@ -87,13 +87,11 @@
     <string name="nc_certificate_dialog_title">Провери сертификата</string>
     <string name="nc_certificate_error">Вашата настройка на SSL, предотврати връзката </string>
     <string name="nc_change_cert_auth">Променете сертификата за удостоверяване</string>
-    <string name="nc_change_password">Промени паролата</string>
     <string name="nc_circle">Кръг</string>
     <string name="nc_circles">Кръгове</string>
     <string name="nc_clear_history">Изтриване на всички съобщения</string>
     <string name="nc_clear_history_success">Всички съобщения бяха изтрити </string>
     <string name="nc_clear_history_warning">Сигурни ли сте, че искате да изтриете всички съобщения в този разговор?</string>
-    <string name="nc_clear_password">Изчистване на паролата</string>
     <string name="nc_client_cert_change">Промяна на сертификата на клиент</string>
     <string name="nc_client_cert_setup">Задаване/настройки на сертификат на клиент</string>
     <string name="nc_common_dismiss">Отхвърляне</string>
@@ -185,8 +183,6 @@
     <string name="nc_location_unknown">Неизвестна позиция</string>
     <string name="nc_locked">Заключено</string>
     <string name="nc_locked_tap_to_unlock">Докоснете, за да отключите</string>
-    <string name="nc_make_call_private">Направете разговора частен</string>
-    <string name="nc_make_call_public">Направете разговора публичен</string>
     <string name="nc_manual">Не е зададено</string>
     <string name="nc_mark_as_read">Маркирай като прочетено</string>
     <string name="nc_mark_as_unread">Маркирай като непрочетена</string>
@@ -292,7 +288,6 @@
     <string name="nc_server_unsupported">Сървърът не поддържа инсталираното приложение Talk/разговор/</string>
     <string name="nc_server_url">Адрес на сървъра https://…</string>
     <string name="nc_server_version">%1$s работи само с %2$s 13 и нагоре</string>
-    <string name="nc_set_password">Задаване на парола</string>
     <string name="nc_settings">Настройки</string>
     <string name="nc_settings_account_updated">Вашият, вече съществуващ профил е актуализиран, вместо да добавите нов</string>
     <string name="nc_settings_advanced_title">Допълнителни</string>
@@ -343,7 +338,6 @@
     <string name="nc_share_contact">Споделяне на контакт</string>
     <string name="nc_share_contact_permission">Нужно е право за четене на контактите</string>
     <string name="nc_share_current_location">Споделяне на текущо местоположение</string>
-    <string name="nc_share_link">Връзка за споделяне</string>
     <string name="nc_share_location">Споделяне на местоположение</string>
     <string name="nc_share_subject">%1$s покана</string>
     <string name="nc_share_text">Присъединяване  към разговора на %1$s/index.php/разговор/%2$s</string>

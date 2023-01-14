@@ -70,13 +70,11 @@
     <string name="nc_certificate_dialog_title">Pogledaj vjerodajnicu</string>
     <string name="nc_certificate_error">Vezu je onemogućila vaša postavka SSL-a</string>
     <string name="nc_change_cert_auth">Promijeni vjerodajnicu za autentifikaciju</string>
-    <string name="nc_change_password">Promijeni zaporku</string>
     <string name="nc_circle">Krug</string>
     <string name="nc_circles">Krugovi</string>
     <string name="nc_clear_history">Izbriši sve poruke</string>
     <string name="nc_clear_history_success">Izbrisane su sve poruke</string>
     <string name="nc_clear_history_warning">Želite li zaista izbrisati sve poruke u ovom razgovoru?</string>
-    <string name="nc_clear_password">Izbriši zaporku</string>
     <string name="nc_client_cert_change">Promijeni klijentsku vjerodajnicu</string>
     <string name="nc_client_cert_setup">Postavi klijentsku vjerodajnicu</string>
     <string name="nc_common_dismiss">Zanemari</string>
@@ -156,8 +154,6 @@
     <string name="nc_location_unknown">Nepoznat položaj</string>
     <string name="nc_locked">Zaključano</string>
     <string name="nc_locked_tap_to_unlock">Dodirni za otključavanje</string>
-    <string name="nc_make_call_private">Učini razgovor privatnim</string>
-    <string name="nc_make_call_public">Učini razgovor javnim</string>
     <string name="nc_manual">Nije postavljeno</string>
     <string name="nc_mark_as_read">Označi kao pročitano</string>
     <string name="nc_mark_as_unread">Označi kao nepročitano</string>
@@ -253,7 +249,6 @@
     <string name="nc_server_unsupported">Na poslužitelju nije instalirana podržana aplikacija Talk</string>
     <string name="nc_server_url">Adresa poslužitelja https://…</string>
     <string name="nc_server_version">%1$s radi samo s %2$s 13 i novijom inačicom</string>
-    <string name="nc_set_password">Postavi zaporku</string>
     <string name="nc_settings">Postavke</string>
     <string name="nc_settings_account_updated">Vaš postojeći račun je ažuriran, umjesto dodavanja novog</string>
     <string name="nc_settings_advanced_title">Napredno</string>
@@ -303,7 +298,6 @@
     <string name="nc_settings_wrong_account">Samo se predmetni račun može ponovno autorizirati</string>
     <string name="nc_share_contact">Dijeli kontakt</string>
     <string name="nc_share_current_location">Dijeli trenutačnu lokaciju</string>
-    <string name="nc_share_link">Dijeli poveznicu</string>
     <string name="nc_share_location">Dijeli lokaciju</string>
     <string name="nc_share_subject">%1$s pozivnica</string>
     <string name="nc_share_text">Pridruži se razgovoru na adresi %1$s/index.php/call/%2$s</string>

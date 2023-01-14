@@ -55,11 +55,9 @@
     <string name="nc_certificate_dialog_title">Kontrollera certifikatet</string>
     <string name="nc_certificate_error">Dina SSL-inställningar förhindrade anslutning</string>
     <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
-    <string name="nc_change_password">Ändra lösenord</string>
     <string name="nc_circle">Cirkel</string>
     <string name="nc_circles">Cirklar</string>
     <string name="nc_clear_history">Radera alla meddelanden</string>
-    <string name="nc_clear_password">Rensa lösenord</string>
     <string name="nc_client_cert_change">Ändra klientcertifikat</string>
     <string name="nc_client_cert_setup">Konfigurera klientcertifikat</string>
     <string name="nc_common_dismiss">Avfärda</string>
@@ -129,8 +127,6 @@
     <string name="nc_lobby_waiting">Du väntar för närvarande i lobbyn.</string>
     <string name="nc_locked">Låst</string>
     <string name="nc_locked_tap_to_unlock">Tryck för att låsa upp</string>
-    <string name="nc_make_call_private">Gör samtalet privat</string>
-    <string name="nc_make_call_public">Gör konversationen offentlig</string>
     <string name="nc_manual">Inte inställd</string>
     <string name="nc_mark_as_read">Markera som läst</string>
     <string name="nc_mark_as_unread">Markera som oläst</string>
@@ -214,7 +210,6 @@
     <string name="nc_server_unsupported">Servern har inte korrekt Talk-app installerad</string>
     <string name="nc_server_url">Serveradress https://…</string>
     <string name="nc_server_version">%1$s fungerar bara med %2$s 13 och uppåt</string>
-    <string name="nc_set_password">Sätt ett lösenord</string>
     <string name="nc_settings">Inställningar</string>
     <string name="nc_settings_account_updated">Ditt redan befintliga konto uppdaterades, istället för att lägga till ett nytt</string>
     <string name="nc_settings_advanced_title">Avancerat</string>
@@ -259,7 +254,6 @@
     <string name="nc_share_contact">Dela kontakt</string>
     <string name="nc_share_contact_permission">Tillstånd att läsa kontakter behövs</string>
     <string name="nc_share_current_location">Dela aktuell plats</string>
-    <string name="nc_share_link">Dela länk</string>
     <string name="nc_share_location">Dela plats</string>
     <string name="nc_share_subject">%1$s inbjudan</string>
     <string name="nc_share_text">Gå med i konversationen på %1$s/index.php/call/%2$s</string>

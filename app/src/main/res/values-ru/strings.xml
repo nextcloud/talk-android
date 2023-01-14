@@ -79,13 +79,11 @@
     <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
     <string name="nc_certificate_error">Заданные параметры SSL не позволяют подключиться</string>
     <string name="nc_change_cert_auth">Изменить сертификат для подтверждения подлинности</string>
-    <string name="nc_change_password">Изменить пароль</string>
     <string name="nc_circle">Круг</string>
     <string name="nc_circles">Круги</string>
     <string name="nc_clear_history">Удалить все сообщения</string>
     <string name="nc_clear_history_success">Все сообщения были удалены</string>
     <string name="nc_clear_history_warning">Вы действительно хотите удалить все сообщения в этой беседе?</string>
-    <string name="nc_clear_password">Очистить пароль</string>
     <string name="nc_client_cert_change">Изменение клиентского сертификата</string>
     <string name="nc_client_cert_setup">Установка клиентского сертификата</string>
     <string name="nc_common_dismiss">Отклонить</string>
@@ -177,8 +175,6 @@
     <string name="nc_location_unknown">Положение неизвестно</string>
     <string name="nc_locked">Заблокировано</string>
     <string name="nc_locked_tap_to_unlock">Коснитесь для разблокирования</string>
-    <string name="nc_make_call_private">Сделать беседу личной</string>
-    <string name="nc_make_call_public">Сделать беседу открытой</string>
     <string name="nc_manual">Не задано</string>
     <string name="nc_mark_as_read">Отметить прочитанным</string>
     <string name="nc_mark_as_unread">Отметить не прочитанным</string>
@@ -283,7 +279,6 @@
     <string name="nc_server_unsupported">На сервере не установлено приложение «Конференции»</string>
     <string name="nc_server_url">Адрес сервера https://…</string>
     <string name="nc_server_version">Работа приложения %1$s возможна только с серверами %2$s версии 13 или старше</string>
-    <string name="nc_set_password">Задать пароль</string>
     <string name="nc_settings">Параметры</string>
     <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>
     <string name="nc_settings_advanced_title">Дополнительно</string>
@@ -334,7 +329,6 @@
     <string name="nc_share_contact">Поделиться контактом</string>
     <string name="nc_share_contact_permission">Требуется разрешение на чтение контактов</string>
     <string name="nc_share_current_location">Поделиться текущим местоположением</string>
-    <string name="nc_share_link">Поделиться ссылкой</string>
     <string name="nc_share_location">Поделиться местоположением</string>
     <string name="nc_share_subject">%1$s приглашение</string>
     <string name="nc_share_text">Присоединиться к беседе в %1$s/index.php/call/%2$s</string>

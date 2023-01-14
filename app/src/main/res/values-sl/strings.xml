@@ -76,13 +76,11 @@
     <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
     <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
-    <string name="nc_change_password">Spremeni geslo</string>
     <string name="nc_circle">Krog</string>
     <string name="nc_circles">Krogi</string>
     <string name="nc_clear_history">Izbriši vsa sporočila</string>
     <string name="nc_clear_history_success">Vsa sporočilo so izbrisana</string>
     <string name="nc_clear_history_warning">Ali res želite izbrisati vsa sporočila tega pogovora?</string>
-    <string name="nc_clear_password">Počisti geslo</string>
     <string name="nc_client_cert_change">Spremeni potrdilo odjemalca</string>
     <string name="nc_client_cert_setup">Nastavi potrdilo odjemalca</string>
     <string name="nc_common_dismiss">Opusti</string>
@@ -166,8 +164,6 @@
     <string name="nc_location_unknown">Položaj ni znan</string>
     <string name="nc_locked">Zaklenjeno</string>
     <string name="nc_locked_tap_to_unlock">Pritisnite za odklep</string>
-    <string name="nc_make_call_private">Nastavi pogovor kot zaseben</string>
-    <string name="nc_make_call_public">Nastavi pogovor kot javen</string>
     <string name="nc_manual">Ni nastavljeno</string>
     <string name="nc_mark_as_read">Označi kot prebrano</string>
     <string name="nc_mark_as_unread">Označi kot neprebrano</string>
@@ -267,7 +263,6 @@
     <string name="nc_server_unsupported">Na strežniku ni nameščenega ustreznega programa Talk</string>
     <string name="nc_server_url">Naslov strežnika: https://</string>
     <string name="nc_server_version">Program %1$s je podprt le na različicah %2$s 13 in novejših.</string>
-    <string name="nc_set_password">Nastavi geslo</string>
     <string name="nc_settings">Nastavitve</string>
     <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>
     <string name="nc_settings_advanced_title">Napredno</string>
@@ -318,7 +313,6 @@
     <string name="nc_share_contact">Posreduj podatke stika</string>
     <string name="nc_share_contact_permission">Zahtevano je dovoljenje za branje seznama stikov</string>
     <string name="nc_share_current_location">Objavi trenutno mesto</string>
-    <string name="nc_share_link">Objavi povezavo</string>
     <string name="nc_share_location">Objavi trenutno mesto</string>
     <string name="nc_share_subject"> povabilo %1$s</string>
     <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>

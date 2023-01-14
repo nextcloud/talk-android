@@ -87,13 +87,11 @@
     <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
     <string name="nc_certificate_error">Ihre SSL-Konfiguration hat die Verbindung verhindert</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
-    <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_circle">Kreis</string>
     <string name="nc_circles">Kreise</string>
     <string name="nc_clear_history">Alle Nachrichten löschen</string>
     <string name="nc_clear_history_success">Alle Nachrichten wurden gelöscht</string>
     <string name="nc_clear_history_warning">Möchten Sie wirklich alle Nachrichten dieser Unterhaltung löschen?</string>
-    <string name="nc_clear_password">Passwort leeren</string>
     <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
     <string name="nc_client_cert_setup">Client-Zertifikat einrichten</string>
     <string name="nc_common_dismiss">Ablehnen</string>
@@ -185,8 +183,6 @@
     <string name="nc_location_unknown">Position unbekannt</string>
     <string name="nc_locked">Gesperrt</string>
     <string name="nc_locked_tap_to_unlock">Zum Entsperren antippen</string>
-    <string name="nc_make_call_private">Unterhaltung privat machen</string>
-    <string name="nc_make_call_public">Unterhaltung öffentlich machen</string>
     <string name="nc_manual">Nicht eingestellt</string>
     <string name="nc_mark_as_read">Als gelesen markieren</string>
     <string name="nc_mark_as_unread">Als ungelesen markieren</string>
@@ -292,7 +288,6 @@
     <string name="nc_server_unsupported">Auf dem Server ist keine unterstützte Talk-App installiert</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
-    <string name="nc_set_password">Passwort setzen</string>
     <string name="nc_settings">Einstellungen</string>
     <string name="nc_settings_account_updated">Statt ein neues Konto hinzuzufügen, wurde Ihr aktuelles Konto aktualisiert.</string>
     <string name="nc_settings_advanced_title">Erweitert</string>
@@ -343,7 +338,6 @@
     <string name="nc_share_contact">Kontakt teilen</string>
     <string name="nc_share_contact_permission">Leseberechtigung für Kontakte erforderlich</string>
     <string name="nc_share_current_location">Aktuelle Position teilen</string>
-    <string name="nc_share_link">Link teilen</string>
     <string name="nc_share_location">Ort teilen</string>
     <string name="nc_share_subject">%1$s Einladung </string>
     <string name="nc_share_text">Treten Sie der Unterhaltung %1$s/index.php/call/%2$s bei</string>

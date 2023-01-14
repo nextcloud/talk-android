@@ -87,13 +87,11 @@
     <string name="nc_certificate_dialog_title">Sprawdź certyfikat</string>
     <string name="nc_certificate_error">Twoje ustawienia SSL uniemożliwiają połaczenie</string>
     <string name="nc_change_cert_auth">Zmień certyfikat uwierzytelnienia</string>
-    <string name="nc_change_password">Zmień hasło</string>
     <string name="nc_circle">Krąg</string>
     <string name="nc_circles">Kręgi</string>
     <string name="nc_clear_history">Usuń wszystkie wiadomości</string>
     <string name="nc_clear_history_success">Wszystkie wiadomości zostały usunięte</string>
     <string name="nc_clear_history_warning">Czy na pewno chcesz usunąć wszystkie wiadomości z tej rozmowy?</string>
-    <string name="nc_clear_password">Wyczyść hasło</string>
     <string name="nc_client_cert_change">Zmień certyfikat klienta</string>
     <string name="nc_client_cert_setup">Skonfiguruj certyfikat klienta</string>
     <string name="nc_common_dismiss">Odrzuć</string>
@@ -185,8 +183,6 @@
     <string name="nc_location_unknown">Pozycja nieznana</string>
     <string name="nc_locked">Zablokowany</string>
     <string name="nc_locked_tap_to_unlock">Dotknij, aby odblokować</string>
-    <string name="nc_make_call_private">Ustaw rozmowę jako prywatną</string>
-    <string name="nc_make_call_public">Ustaw rozmowę jako publiczną</string>
     <string name="nc_manual">Nie ustawiony</string>
     <string name="nc_mark_as_read">Oznacz jako przeczytane</string>
     <string name="nc_mark_as_unread">Oznacz jako nieprzeczytane</string>
@@ -292,7 +288,6 @@
     <string name="nc_server_unsupported">Serwer nie obsługuje zainstalowanej aplikacji Talk</string>
     <string name="nc_server_url">Adres serwera https://…</string>
     <string name="nc_server_version">%1$s działa tylko z %2$s 13 i nowszym</string>
-    <string name="nc_set_password">Ustaw hasło</string>
     <string name="nc_settings">Ustawienia</string>
     <string name="nc_settings_account_updated">Zamiast dodawać nowe, zaktualizowano Twoje istniejące konto</string>
     <string name="nc_settings_advanced_title">Zaawansowane</string>
@@ -343,7 +338,6 @@
     <string name="nc_share_contact">Udostępnij kontakt</string>
     <string name="nc_share_contact_permission">Wymagane uprawnienie do odczytu kontaktów</string>
     <string name="nc_share_current_location">Udostępnij obecną lokalizację</string>
-    <string name="nc_share_link">Udostępnij link</string>
     <string name="nc_share_location">Udostępnij lokalizację</string>
     <string name="nc_share_subject">zaproszenie %1$s</string>
     <string name="nc_share_text">Dołącz do rozmowy %1$s/index.php/call/%2$s</string>

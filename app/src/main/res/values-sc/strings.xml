@@ -65,13 +65,11 @@
     <string name="nc_certificate_dialog_title">Controlla su tzertificadu</string>
     <string name="nc_certificate_error">Sa cunfiguratzione SSL at refudadu sa connessione</string>
     <string name="nc_change_cert_auth">Càmbia tzertificadu autenticatzione</string>
-    <string name="nc_change_password">Càmbia crae</string>
     <string name="nc_circle">Giru</string>
     <string name="nc_circles">Giros</string>
     <string name="nc_clear_history">Cantzella totu is messàgios</string>
     <string name="nc_clear_history_success">Cantzellados totu is messàgios</string>
     <string name="nc_clear_history_warning">A beru boles cantzellare totu is messàgios in custa resonada?</string>
-    <string name="nc_clear_password">Isbòida crae</string>
     <string name="nc_client_cert_change">Càmbia tzertificadu cliente</string>
     <string name="nc_client_cert_setup">Imposta tzertificadu cliente</string>
     <string name="nc_common_dismiss">Iscarta</string>
@@ -147,8 +145,6 @@
     <string name="nc_location_unknown">Positzione disconnota</string>
     <string name="nc_locked">Blocadu</string>
     <string name="nc_locked_tap_to_unlock">Toca pro isblocare</string>
-    <string name="nc_make_call_private">Faghe privada sa resonada</string>
-    <string name="nc_make_call_public">Faghe pùblica sa resonada</string>
     <string name="nc_manual">No impostadu</string>
     <string name="nc_mark_as_read">Marca comente lèghidu</string>
     <string name="nc_mark_as_unread">Marca comente non lèghidu</string>
@@ -241,7 +237,6 @@
     <string name="nc_server_unsupported">Su serbidore no at suportadu s\'aplicatzione Talk installada</string>
     <string name="nc_server_url">Indiritzu de su serbidore https://…</string>
     <string name="nc_server_version">%1$s funtzionat isceti cun %2$s 13 e prus</string>
-    <string name="nc_set_password">Imposta una crae</string>
     <string name="nc_settings">Impostatziones</string>
     <string name="nc_settings_account_updated">Su contu chi tenias giai est istadu agiornadu, imbetzes de nd\'agiùnghere unu nou</string>
     <string name="nc_settings_advanced_title">Avantzadu</string>
@@ -290,7 +285,6 @@
     <string name="nc_settings_warning">Avisu</string>
     <string name="nc_settings_wrong_account">Isceti su contu atuale si podet torrare a autorizare</string>
     <string name="nc_share_current_location">Cumpartzi sa positzione atuale</string>
-    <string name="nc_share_link">Cumpartzi ligòngiu</string>
     <string name="nc_share_location">Cumpartzi positzione</string>
     <string name="nc_share_subject">%1$s invitu</string>
     <string name="nc_share_text">Intra in sa tzarrada in %1$s/index.php/call/%2$s</string>

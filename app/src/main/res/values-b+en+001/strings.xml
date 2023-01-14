@@ -87,13 +87,11 @@
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
-    <string name="nc_change_password">Change password</string>
     <string name="nc_circle">Circle</string>
     <string name="nc_circles">Circles</string>
     <string name="nc_clear_history">Delete all messages</string>
     <string name="nc_clear_history_success">All messages were deleted</string>
     <string name="nc_clear_history_warning">Do you really want to delete all messages in this conversation?</string>
-    <string name="nc_clear_password">Clear password</string>
     <string name="nc_client_cert_change">Change client certificate</string>
     <string name="nc_client_cert_setup">Set up client certificate</string>
     <string name="nc_common_dismiss">Dismiss</string>
@@ -185,8 +183,6 @@
     <string name="nc_location_unknown">Position unknown</string>
     <string name="nc_locked">Locked</string>
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
-    <string name="nc_make_call_private">Make conversation private</string>
-    <string name="nc_make_call_public">Make conversation public</string>
     <string name="nc_manual">Not set</string>
     <string name="nc_mark_as_read">Mark as read</string>
     <string name="nc_mark_as_unread">Mark as unread</string>
@@ -292,7 +288,6 @@
     <string name="nc_server_unsupported">Server does not have supported Talk app installed</string>
     <string name="nc_server_url">Server address https://…</string>
     <string name="nc_server_version">%1$s only works with %2$s 13 and up</string>
-    <string name="nc_set_password">Set a password</string>
     <string name="nc_settings">Settings</string>
     <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
     <string name="nc_settings_advanced_title">Advanced</string>
@@ -343,7 +338,6 @@
     <string name="nc_share_contact">Share contact</string>
     <string name="nc_share_contact_permission">Permission to read contacts is required</string>
     <string name="nc_share_current_location">Share current location</string>
-    <string name="nc_share_link">Share link</string>
     <string name="nc_share_location">Share location</string>
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text">Join the conversation at %1$s/index.php/call/%2$s</string>

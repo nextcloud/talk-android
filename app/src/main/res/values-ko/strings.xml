@@ -81,13 +81,11 @@
     <string name="nc_certificate_dialog_title">인증서 확인</string>
     <string name="nc_certificate_error">SSL 설정에서 연결을 거부함</string>
     <string name="nc_change_cert_auth">인증서 변경</string>
-    <string name="nc_change_password">암호 변경</string>
     <string name="nc_circle">서클</string>
     <string name="nc_circles">서클</string>
     <string name="nc_clear_history">모든 메시지 삭제</string>
     <string name="nc_clear_history_success">모든 메시지가 삭제되었습니다</string>
     <string name="nc_clear_history_warning">이 대화에서 모든 메시지를 삭제하시겠습니까?</string>
-    <string name="nc_clear_password">암호 삭제</string>
     <string name="nc_client_cert_change">클라이언트 인증서 병경</string>
     <string name="nc_client_cert_setup">클라이언트 인증서 설정</string>
     <string name="nc_common_dismiss">무시</string>
@@ -178,8 +176,6 @@
     <string name="nc_location_unknown">위치를 알 수 없음</string>
     <string name="nc_locked">잠긴</string>
     <string name="nc_locked_tap_to_unlock">탭하여 잠금해제</string>
-    <string name="nc_make_call_private">비공개 대화로 전환</string>
-    <string name="nc_make_call_public">공개 대화로 전환</string>
     <string name="nc_manual">설정되지 않음</string>
     <string name="nc_mark_as_read">읽은 것으로 표시</string>
     <string name="nc_mark_as_unread">읽지 않은 것으로 표시</string>
@@ -285,7 +281,6 @@
     <string name="nc_server_unsupported">서버에 지원되는 Talk 앱이 설치되어 있지 않습니다.</string>
     <string name="nc_server_url">서버 주소 https://…</string>
     <string name="nc_server_version">%1$s은(는) %2$s 13 이상에서만 작동합니다</string>
-    <string name="nc_set_password">암호 설정</string>
     <string name="nc_settings">설정</string>
     <string name="nc_settings_account_updated">새 계정을 추가하는 대신 기존 계정이 업데이트됨</string>
     <string name="nc_settings_advanced_title">고급</string>
@@ -335,7 +330,6 @@
     <string name="nc_share_contact">연락처 공유</string>
     <string name="nc_share_contact_permission">주소록을 읽기 위하여 권한이 필요합니다</string>
     <string name="nc_share_current_location">현재 위치 공유</string>
-    <string name="nc_share_link">링크 공유</string>
     <string name="nc_share_location">위치 공유</string>
     <string name="nc_share_subject">%1$s 초대</string>
     <string name="nc_share_text">%1$s/index.php/call/%2$s 대화에 참여</string>

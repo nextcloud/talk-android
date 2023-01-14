@@ -74,13 +74,11 @@
     <string name="nc_certificate_dialog_title">Controlla il certificato</string>
     <string name="nc_certificate_error">La tua configurazione SSL ha impedito la connessione</string>
     <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
-    <string name="nc_change_password">Modifica password</string>
     <string name="nc_circle">Cerchia</string>
     <string name="nc_circles">Cerchie</string>
     <string name="nc_clear_history">Elimina tutti i messaggi</string>
     <string name="nc_clear_history_success">Tutti i messaggi sono stati eliminati</string>
     <string name="nc_clear_history_warning">Vuoi davvero eliminare tutti i messaggi in questa conversazione?</string>
-    <string name="nc_clear_password">Cancella la password</string>
     <string name="nc_client_cert_change">Cambia certificato client</string>
     <string name="nc_client_cert_setup">Configura certificato client</string>
     <string name="nc_common_dismiss">Annulla</string>
@@ -162,8 +160,6 @@
     <string name="nc_location_unknown">Posizione sconosciuta</string>
     <string name="nc_locked">Bloccato</string>
     <string name="nc_locked_tap_to_unlock">Tocca per sbloccare</string>
-    <string name="nc_make_call_private">Rendi privata la conversazione</string>
-    <string name="nc_make_call_public">Rendi pubblica la conversazione</string>
     <string name="nc_manual">Non impostato</string>
     <string name="nc_mark_as_read">Segna come letto</string>
     <string name="nc_mark_as_unread">Segna come non letto</string>
@@ -262,7 +258,6 @@
     <string name="nc_server_unsupported">Sul server non è installata un\'applicazione Talk supportata </string>
     <string name="nc_server_url">Indirizzo server https://…</string>
     <string name="nc_server_version">%1$s funziona solo con %2$s 13 e successivi</string>
-    <string name="nc_set_password">Imposta una password</string>
     <string name="nc_settings">Impostazioni</string>
     <string name="nc_settings_account_updated">Il tuo account preesistente è stato aggiornato, invece di aggiungerne un nuovo</string>
     <string name="nc_settings_advanced_title">Avanzate</string>
@@ -313,7 +308,6 @@
     <string name="nc_share_contact">Condividi il contatto</string>
     <string name="nc_share_contact_permission">Necessaria l\'autorizzazione per leggere i contatti</string>
     <string name="nc_share_current_location">Condividi la posizione attuale</string>
-    <string name="nc_share_link">Condividi collegamento</string>
     <string name="nc_share_location">Condividi posizione</string>
     <string name="nc_share_subject">%1$s invito</string>
     <string name="nc_share_text">Partecipa alla conversazione su %1$s/index.php/call/%2$s</string>

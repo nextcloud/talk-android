@@ -71,13 +71,11 @@
     <string name="nc_certificate_dialog_title">Перевірка сертифікату</string>
     <string name="nc_certificate_error">Ваші налаштування SSL завадили з’єднанню</string>
     <string name="nc_change_cert_auth">Змінити сертифікат авторизації</string>
-    <string name="nc_change_password">Змінити пароль</string>
     <string name="nc_circle">Коло</string>
     <string name="nc_circles">Кола</string>
     <string name="nc_clear_history">Видалити всі повідомлення</string>
     <string name="nc_clear_history_success">Всі повідомлення видалено</string>
     <string name="nc_clear_history_warning">Ви дійсно бажаєте видалити всі повідомлення у цій розмові?</string>
-    <string name="nc_clear_password">Очистити пароль</string>
     <string name="nc_client_cert_change">Змінити сертифікат клієнта</string>
     <string name="nc_client_cert_setup">Встановити сертифікат клієнта</string>
     <string name="nc_common_dismiss">Припинити</string>
@@ -151,8 +149,6 @@
     <string name="nc_location_unknown">Місцезнаходження не визначено</string>
     <string name="nc_locked">Заблоковано</string>
     <string name="nc_locked_tap_to_unlock">Торкніться щоб розблокувати</string>
-    <string name="nc_make_call_private">Зробити розмову приватною</string>
-    <string name="nc_make_call_public">Зробити розмову публічною</string>
     <string name="nc_manual">Не встановлено</string>
     <string name="nc_mark_as_read">Позначити прочитаним</string>
     <string name="nc_mark_as_unread">Позначити не прочитаним</string>
@@ -250,7 +246,6 @@
     <string name="nc_server_testing_connection">Перевірка з\'єднання</string>
     <string name="nc_server_unsupported">На сервері не встановлено застосунок \"Talk\", який може підтримуватися</string>
     <string name="nc_server_url">Адреса сервера https://…</string>
-    <string name="nc_set_password">Встановити пароль</string>
     <string name="nc_settings">Налаштування</string>
     <string name="nc_settings_advanced_title">Додатково</string>
     <string name="nc_settings_appearance">Вигляд</string>
@@ -282,7 +277,6 @@
     <string name="nc_settings_warning">Увага</string>
     <string name="nc_share_contact">Поділіться контактом</string>
     <string name="nc_share_current_location">Поділіться поточним місцезнаходженням</string>
-    <string name="nc_share_link">Поділитися посиланням</string>
     <string name="nc_share_location">Поділіться місцезнаходженням</string>
     <string name="nc_share_text_pass">\nПароль: %1$s</string>
     <string name="nc_share_this_location">Поділіться цим розташуванням</string>

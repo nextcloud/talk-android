@@ -87,13 +87,11 @@
     <string name="nc_certificate_dialog_title">Zkontrolovat certifikát</string>
     <string name="nc_certificate_error">Vaše nastavení SSL zabránilo připojení</string>
     <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování se</string>
-    <string name="nc_change_password">Změnit heslo</string>
     <string name="nc_circle">Okruh</string>
     <string name="nc_circles">Okruhy</string>
     <string name="nc_clear_history">Smazat všechny zprávy</string>
     <string name="nc_clear_history_success">Všechny zprávy byly vymazány</string>
     <string name="nc_clear_history_warning">Opravdu chcete všechny zprávy v této konverzaci smazat?</string>
-    <string name="nc_clear_password">Vyčistit heslo</string>
     <string name="nc_client_cert_change">Změnit klientský certifikát</string>
     <string name="nc_client_cert_setup">Nastavit klientský certifikát</string>
     <string name="nc_common_dismiss">Zavřít</string>
@@ -185,8 +183,6 @@
     <string name="nc_location_unknown">Pozice neznámá</string>
     <string name="nc_locked">Uzamčeno</string>
     <string name="nc_locked_tap_to_unlock">Odemkněte klepnutím</string>
-    <string name="nc_make_call_private">Udělat konverzaci neveřejnou</string>
-    <string name="nc_make_call_public">Zveřejnit konverzaci</string>
     <string name="nc_manual">Nenastaveno</string>
     <string name="nc_mark_as_read">Označit jako přečtené</string>
     <string name="nc_mark_as_unread">Označit jako nepřečtené</string>
@@ -292,7 +288,6 @@
     <string name="nc_server_unsupported">Na serveru není nainstalovaná podporovaná verze aplikace Talk</string>
     <string name="nc_server_url">Adresa serveru https://…</string>
     <string name="nc_server_version">%1$s funguje pouze s %2$s 13 a novějším</string>
-    <string name="nc_set_password">Nastavit heslo</string>
     <string name="nc_settings">Nastavení</string>
     <string name="nc_settings_account_updated">Namísto přidání nového byl zaktualizován váš stávající účet</string>
     <string name="nc_settings_advanced_title">Pokročilé</string>
@@ -343,7 +338,6 @@
     <string name="nc_share_contact">Sdílet kontakt</string>
     <string name="nc_share_contact_permission">Je třeba oprávnění ke čtení kontaktů</string>
     <string name="nc_share_current_location">Sdílet stávající umístění</string>
-    <string name="nc_share_link">Nasdílet odkaz</string>
     <string name="nc_share_location">Sdílet umístění</string>
     <string name="nc_share_subject">%1$s pozvání</string>
     <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>

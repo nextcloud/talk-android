@@ -76,13 +76,11 @@
     <string name="nc_certificate_dialog_title">証明書をチェックアウトする</string>
     <string name="nc_certificate_error">SSL設定で接続が妨げられました</string>
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
-    <string name="nc_change_password">パスワードを変更</string>
     <string name="nc_circle">サークル</string>
     <string name="nc_circles">サークル</string>
     <string name="nc_clear_history">すべてのメッセージを削除</string>
     <string name="nc_clear_history_success">すべてのメッセージが削除されたました。</string>
     <string name="nc_clear_history_warning">本当にこの会話の全てのメッセージを削除してもよろしいですか？</string>
-    <string name="nc_clear_password">パスワードを削除</string>
     <string name="nc_client_cert_change">クライアント証明書を変更する</string>
     <string name="nc_client_cert_setup">クライアント証明書を設定する</string>
     <string name="nc_common_dismiss">閉じる</string>
@@ -163,8 +161,6 @@
     <string name="nc_location_unknown">位置が不明</string>
     <string name="nc_locked">ロック</string>
     <string name="nc_locked_tap_to_unlock">タップしてロック解除</string>
-    <string name="nc_make_call_private">会話を非公開にする</string>
-    <string name="nc_make_call_public">会話を公開する</string>
     <string name="nc_manual">未設定</string>
     <string name="nc_mark_as_read">既読にする</string>
     <string name="nc_mark_as_unread">未読にする</string>
@@ -263,7 +259,6 @@
     <string name="nc_server_unsupported">サーバーにサポートされているトークアプリがインストールされていません</string>
     <string name="nc_server_url">サーバーのアドレス https://…</string>
     <string name="nc_server_version">%1$sは%2$s 13以降でのみ動作します</string>
-    <string name="nc_set_password">パスワードを設定</string>
     <string name="nc_settings">設定</string>
     <string name="nc_settings_account_updated">新しいアカウントを追加する代わりに、既存のアカウントが更新されました</string>
     <string name="nc_settings_advanced_title">高度な</string>
@@ -314,7 +309,6 @@
     <string name="nc_share_contact">連絡先を共有</string>
     <string name="nc_share_contact_permission">連絡先を読み取る権限が必要です</string>
     <string name="nc_share_current_location">現在の位置を共有</string>
-    <string name="nc_share_link">リンクの共有</string>
     <string name="nc_share_location">位置を共有</string>
     <string name="nc_share_subject">%1$s を招待</string>
     <string name="nc_share_text">%1$s/index.php/call/%2$s での会話に参加する</string>

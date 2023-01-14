@@ -71,13 +71,11 @@
     <string name="nc_certificate_dialog_title">Controleer het certificaat</string>
     <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
-    <string name="nc_change_password">Wachtwoord wijzigen</string>
     <string name="nc_circle">Kring</string>
     <string name="nc_circles">Kringen</string>
     <string name="nc_clear_history">Alle berichten verwijderen</string>
     <string name="nc_clear_history_success">Alle berichten zijn verwijderd</string>
     <string name="nc_clear_history_warning">Wil je echt dit alle andere berichten in dit gesprek echt verwijderen?</string>
-    <string name="nc_clear_password">Wachtwoord legen</string>
     <string name="nc_client_cert_change">Wijzig clientcertificaat</string>
     <string name="nc_client_cert_setup">Instellen clientcertificaat</string>
     <string name="nc_common_dismiss">Wissen</string>
@@ -161,8 +159,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_location_unknown">Positie onbekend</string>
     <string name="nc_locked">Vergrendeld</string>
     <string name="nc_locked_tap_to_unlock">Tikken om te ontgrendelen</string>
-    <string name="nc_make_call_private">Maak gesprek besloten</string>
-    <string name="nc_make_call_public">Maak gesprek openbaar</string>
     <string name="nc_manual">Niet ingesteld</string>
     <string name="nc_mark_as_read">Markeren als gelezen</string>
     <string name="nc_mark_as_unread">Markeren als ongelezen</string>
@@ -260,7 +256,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_server_unsupported">De server heeft geen ondersteunde Talk app geïnstalleerd</string>
     <string name="nc_server_url">Serveradres https://…</string>
     <string name="nc_server_version">%1$s werkt alleen met %2$s 13 en hoger</string>
-    <string name="nc_set_password">Instellen wachtwoord</string>
     <string name="nc_settings">Instellingen</string>
     <string name="nc_settings_account_updated">Je al bestaande account werd bijgewerkt, in plaats van een nieuwe aan te maken</string>
     <string name="nc_settings_advanced_title">Geavanceerd</string>
@@ -311,7 +306,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_share_contact">Deel contact</string>
     <string name="nc_share_contact_permission">Machtiging om contacten te lezen is vereist</string>
     <string name="nc_share_current_location">Deel huidige locatie</string>
-    <string name="nc_share_link">Deel link</string>
     <string name="nc_share_location">Deel locatie</string>
     <string name="nc_share_subject">%1$s uitnodiging</string>
     <string name="nc_share_text">Neem deel aan het gesprek %1$s/index.php/call/%2$s</string>

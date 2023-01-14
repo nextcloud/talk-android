@@ -86,13 +86,11 @@
     <string name="nc_certificate_dialog_title">Verifica el certificat</string>
     <string name="nc_certificate_error">La vostra configuració SSL ha impedit la connexió</string>
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
-    <string name="nc_change_password">Canvia la contrasenya</string>
     <string name="nc_circle">Cercle</string>
     <string name="nc_circles">Cercles</string>
     <string name="nc_clear_history">Suprimeix tots els missatges</string>
     <string name="nc_clear_history_success">S\'han suprimit tots els missatges</string>
     <string name="nc_clear_history_warning">Segur que voleu suprimir tots els missatges d\'aquesta conversa?</string>
-    <string name="nc_clear_password">Suprimeix la contrasenya</string>
     <string name="nc_client_cert_change">Canvia el certificat del client</string>
     <string name="nc_client_cert_setup">Configureu el certificat del client</string>
     <string name="nc_common_dismiss">Descarta</string>
@@ -184,8 +182,6 @@
     <string name="nc_location_unknown">Posició desconeguda</string>
     <string name="nc_locked">Bloquejat</string>
     <string name="nc_locked_tap_to_unlock">Toca per desblocar</string>
-    <string name="nc_make_call_private">Fes que la conversa sigui privada</string>
-    <string name="nc_make_call_public">Fes que la conversa sigui pública</string>
     <string name="nc_manual">No establert</string>
     <string name="nc_mark_as_read">Marca com a llegit</string>
     <string name="nc_mark_as_unread">Marca com a sense llegir</string>
@@ -291,7 +287,6 @@
     <string name="nc_server_unsupported">El servidor no té instal·lada l\'aplicació Talk</string>
     <string name="nc_server_url">Adreça del servidor https://…</string>
     <string name="nc_server_version">%1$s només funciona amb %2$s 13 i endavant</string>
-    <string name="nc_set_password">Configura una contrasenya</string>
     <string name="nc_settings">Paràmetres</string>
     <string name="nc_settings_account_updated">S\'ha actualitzat el vostre compte ja existent enlloc d’afegir-ne un de nou</string>
     <string name="nc_settings_advanced_title">Avançat</string>
@@ -342,7 +337,6 @@
     <string name="nc_share_contact">Comparteix el contacte</string>
     <string name="nc_share_contact_permission">Es necessita permís per llegir els contactes</string>
     <string name="nc_share_current_location">Comparteix la ubicació actual</string>
-    <string name="nc_share_link">Comparteix un enllaç</string>
     <string name="nc_share_location">Comparteix la ubicació</string>
     <string name="nc_share_subject">%1$s invitació</string>
     <string name="nc_share_text">Afegiu-vos a la conversa a %1$s/index.php/call/%2$s</string>

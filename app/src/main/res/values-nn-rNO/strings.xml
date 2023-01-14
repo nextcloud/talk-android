@@ -57,10 +57,8 @@
     <string name="nc_certificate_dialog_title">Undersøk sertifikatet</string>
     <string name="nc_certificate_error">Ditt SSL oppsett hindre tilkopling</string>
     <string name="nc_change_cert_auth">Endre godkjenningssertifikat</string>
-    <string name="nc_change_password">Endra passord</string>
     <string name="nc_circle">Sirkel</string>
     <string name="nc_circles">Sirklar</string>
-    <string name="nc_clear_password">Fjern passord</string>
     <string name="nc_client_cert_change">Skift klient sertifikat</string>
     <string name="nc_client_cert_setup">Sett opp klient sertifikat</string>
     <string name="nc_common_dismiss">Forkast</string>
@@ -125,8 +123,6 @@
     <string name="nc_location_unknown">Ukjend posisjon</string>
     <string name="nc_locked">Låst</string>
     <string name="nc_locked_tap_to_unlock">Trykk for å opne</string>
-    <string name="nc_make_call_private">Gjer samtalen privat</string>
-    <string name="nc_make_call_public">Gjer samtalen offentleg</string>
     <string name="nc_manual">Ikkje satt</string>
     <string name="nc_message_quote_cancel_reply">Avbryt svar</string>
     <string name="nc_message_read">Melding lest</string>
@@ -217,7 +213,6 @@
     <string name="nc_server_unsupported">Server har ikkje støtta Samtale applikasjon installert</string>
     <string name="nc_server_url">Server adresse https://…</string>
     <string name="nc_server_version">%1$s virker berre saman med %2$s 13 og oppover</string>
-    <string name="nc_set_password">Lag eit passord</string>
     <string name="nc_settings">Instillingar</string>
     <string name="nc_settings_account_updated">Din allereie eksisterande konto vart oppdatert, istaden for ein ny  </string>
     <string name="nc_settings_advanced_title">Avansert</string>
@@ -232,7 +227,6 @@
     <string name="nc_settings_privacy">Personvern</string>
     <string name="nc_settings_remove">Fjern</string>
     <string name="nc_settings_warning">Åtvaring</string>
-    <string name="nc_share_link">Del lenkje</string>
     <string name="nc_share_to_choose_account">Vel konto</string>
     <string name="nc_shared_items_location">Stad</string>
     <string name="nc_sort_by">Sorter på</string>

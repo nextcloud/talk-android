@@ -49,10 +49,8 @@
     <string name="nc_certificate_dialog_title">Sannreyna skilríkið</string>
     <string name="nc_certificate_error">SSL-uppsetningin þín kom í veg fyrir tengingu</string>
     <string name="nc_change_cert_auth">Skipta um skilríki fyrir auðkenningu</string>
-    <string name="nc_change_password">Breyta lykilorði</string>
     <string name="nc_circle">Hringur</string>
     <string name="nc_circles">Hringir</string>
-    <string name="nc_clear_password">Hreinsa lykilorð</string>
     <string name="nc_client_cert_change">Skipta um skilríki biðlara</string>
     <string name="nc_client_cert_setup">Setja upp skilríki biðlara</string>
     <string name="nc_common_dismiss">Dismiss</string>
@@ -115,8 +113,6 @@
     <string name="nc_license_title">Notkunarleyfi</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_locked_tap_to_unlock">Ýttu til að aflæsa</string>
-    <string name="nc_make_call_private">Gera samtal að einka</string>
-    <string name="nc_make_call_public">Gera samtal opinbert</string>
     <string name="nc_mark_as_read">Merkja sem lesið</string>
     <string name="nc_mark_as_unread">Merkja allt sem ólesið</string>
     <string name="nc_message_read">Skilaboðin hafa verið lesið</string>
@@ -194,7 +190,6 @@
     <string name="nc_server_testing_connection">Prófa tengingu</string>
     <string name="nc_server_url">Vistfang þjóns https://…</string>
     <string name="nc_server_version">%1$s virkar bara með %2$s 13 og upp</string>
-    <string name="nc_set_password">Setja lykilorð</string>
     <string name="nc_settings">Stillingar</string>
     <string name="nc_settings_account_updated">Fyrirliggjandi notandaaðgangur þinn var uppfærður í stað þess að bæta við nýjum</string>
     <string name="nc_settings_advanced_title">Ítarlegt</string>
@@ -223,7 +218,6 @@
     <string name="nc_settings_theme_title">Þema</string>
     <string name="nc_settings_warning">Aðvörun</string>
     <string name="nc_settings_wrong_account">Aðeins er hægt að endurauðkenna núverandi notandaaðgang</string>
-    <string name="nc_share_link">Deila tengli</string>
     <string name="nc_share_subject">%1$s boðskort</string>
     <string name="nc_share_text">Taktu þátt í samtalinu á %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nLykilorð: %1$s</string>

@@ -62,10 +62,8 @@
     <string name="nc_certificate_dialog_title">Kiểm tra chứng chỉ</string>
     <string name="nc_certificate_error">Thiết lập SSL của bạn đã ngăn chặn kết nối</string>
     <string name="nc_change_cert_auth">Thay đổi chứng thực bảo mật</string>
-    <string name="nc_change_password">Đổi mật khẩu</string>
     <string name="nc_circle">Vòng kết nối</string>
     <string name="nc_circles">Vòng kết nối</string>
-    <string name="nc_clear_password">Xóa mật khẩu</string>
     <string name="nc_client_cert_change">Thay đổi chứng thực client</string>
     <string name="nc_client_cert_setup">Thiết đặt chứng thực client</string>
     <string name="nc_common_dismiss">Bỏ qua</string>
@@ -115,8 +113,6 @@
     <string name="nc_license_summary">Giấy phép bản quyền GNU, Phiên bản 3</string>
     <string name="nc_license_title">Giấy phép</string>
     <string name="nc_locked_tap_to_unlock">Nhấn để mở khoá</string>
-    <string name="nc_make_call_private">Tạo một cuộc đàm thoại riêng tư</string>
-    <string name="nc_make_call_public">Tạo một cuộc đàm thoại công khai</string>
     <string name="nc_mark_as_read">Đánh dấu đã đọc</string>
     <string name="nc_mark_as_unread">Đánh dấu là chưa đọc</string>
     <string name="nc_message_sent">Tin nhắn đã gửi</string>
@@ -175,7 +171,6 @@
     <string name="nc_server_testing_connection">Đang thử kết nối</string>
     <string name="nc_server_url">Địa chỉ máy chủ https://…</string>
     <string name="nc_server_version">%1$s chỉ làm việc với %2$s 13 hoặc lớn hơn</string>
-    <string name="nc_set_password">Đặt mật khẩu</string>
     <string name="nc_settings">Cài đặt</string>
     <string name="nc_settings_account_updated">Bạn đã cập nhật tài khoản đã có, hãy thêm tài khoản mới</string>
     <string name="nc_settings_advanced_title">Nâng cao</string>
@@ -203,7 +198,6 @@
     <string name="nc_settings_theme_title">Chủ đề</string>
     <string name="nc_settings_warning">Cảnh báo</string>
     <string name="nc_settings_wrong_account">Chỉ tài khoản hiện tại có thể chứng thực lại</string>
-    <string name="nc_share_link">Chia sẽ liên kết</string>
     <string name="nc_share_subject">%1$s lời mời</string>
     <string name="nc_share_text">Tham gia cuộc Đàm thoại tại %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nMật khẩu: %1$s</string>

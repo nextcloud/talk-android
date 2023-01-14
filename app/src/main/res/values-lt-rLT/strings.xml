@@ -51,10 +51,8 @@
     <string name="nc_certificate_dialog_text">Ar pasitikite iki šiol nežinomu SSL liudijimu, kurį išdavė %1$s, kuris skirtas %2$s ir galioja nuo %3$s iki %4$s?</string>
     <string name="nc_certificate_error">Jūsų SSL sąranka neleido ryšio</string>
     <string name="nc_change_cert_auth">Keisti tapatybės nustatymo liudijimą</string>
-    <string name="nc_change_password">Pakeisti slaptažodį</string>
     <string name="nc_circle">Ratas</string>
     <string name="nc_circles">Ratai</string>
-    <string name="nc_clear_password">Išvalyti slaptažodį</string>
     <string name="nc_client_cert_change">Keisti kliento programėlės liudijimą</string>
     <string name="nc_client_cert_setup">Nustatyti kliento programėlės liudijimą</string>
     <string name="nc_common_dismiss">Atmesti</string>
@@ -195,7 +193,6 @@
     <string name="nc_server_unsupported">Serveryje nėra įdiegta palaikoma Pokalbių programėlė</string>
     <string name="nc_server_url">Serverio adresas https://…</string>
     <string name="nc_server_version">%1$s veikia tik naudojant %2$s 13 ar naujesnę versiją</string>
-    <string name="nc_set_password">Nustatyti slaptažodį</string>
     <string name="nc_settings">Nustatymai</string>
     <string name="nc_settings_account_updated">Vietoj naujos paskyros pridėjimo, buvo atnaujinta jūsų esama paskyra</string>
     <string name="nc_settings_advanced_title">Išplėstiniai</string>
@@ -227,7 +224,6 @@
     <string name="nc_settings_theme_title">Apipavidalinimas</string>
     <string name="nc_settings_warning">Įspėjimas</string>
     <string name="nc_settings_wrong_account">Iš naujo įgaliota gali būti tik esama paskyra</string>
-    <string name="nc_share_link">Bendrinimo nuoroda</string>
     <string name="nc_share_subject">%1$s pakvietimas</string>
     <string name="nc_share_text">Prisijunkite prie pokalbio, adresu %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nSlaptažodis: %1$s</string>

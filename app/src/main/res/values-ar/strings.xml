@@ -73,13 +73,11 @@
     <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
     <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
     <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
-    <string name="nc_change_password">تعديل الكلمة السرية</string>
     <string name="nc_circle">دائرة </string>
     <string name="nc_circles">جماعة</string>
     <string name="nc_clear_history">مسح جميع الرسائل</string>
     <string name="nc_clear_history_success">تم مسح جميع الرسائل</string>
     <string name="nc_clear_history_warning">هل تريد مسح جميع الرسائل في هذه المحادثة؟</string>
-    <string name="nc_clear_password">مسح كلمة المرور</string>
     <string name="nc_client_cert_change">تغيير شهادة العميل</string>
     <string name="nc_client_cert_setup">تعيين شهادة العميل</string>
     <string name="nc_common_dismiss">تجاهل</string>
@@ -157,8 +155,6 @@
     <string name="nc_location_unknown">الموضع مجهول</string>
     <string name="nc_locked">مقفل</string>
     <string name="nc_locked_tap_to_unlock">انقر لفك القفل</string>
-    <string name="nc_make_call_private">اجعل المحادثة خاصة </string>
-    <string name="nc_make_call_public">اجعل المحادثة عامة</string>
     <string name="nc_manual">غير معيّن</string>
     <string name="nc_mark_as_read">تمييز كمقروء</string>
     <string name="nc_mark_as_unread">تمييز كغير مقروء</string>
@@ -253,7 +249,6 @@
     <string name="nc_server_unsupported">الخادم لا يحتوي على تطبيق Talk المدعوم </string>
     <string name="nc_server_url">عنوان الخادم https://…</string>
     <string name="nc_server_version">%1$s يعمل فقط مع %2$s 13 وأكثر</string>
-    <string name="nc_set_password">تعيين كلمة المرور</string>
     <string name="nc_settings">الإعدادات</string>
     <string name="nc_settings_account_updated">تم تحديث حسابك الموجود بالفعل، بدلاً من إضافة حساب جديد</string>
     <string name="nc_settings_advanced_title">تعديلات متقدمه</string>
@@ -303,7 +298,6 @@
     <string name="nc_settings_wrong_account">يمكن إعادة تفويض الحساب الجاري فقط </string>
     <string name="nc_share_contact">شارك جهة اتصال</string>
     <string name="nc_share_current_location">أرسل الموقع الحالي</string>
-    <string name="nc_share_link">مشاركة الرابط</string>
     <string name="nc_share_location">مشاركة الموقع</string>
     <string name="nc_share_subject">%1$s دعوة</string>
     <string name="nc_share_text">انضم للمحادثة في %1$s /index.php/call/ %2$s</string>

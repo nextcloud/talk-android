@@ -86,13 +86,11 @@
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">更改驗證證書</string>
-    <string name="nc_change_password">更改密碼</string>
     <string name="nc_circle">社交圈子</string>
     <string name="nc_circles">圈子</string>
     <string name="nc_clear_history">刪除所有訊息</string>
     <string name="nc_clear_history_success">已刪除所有訊息</string>
     <string name="nc_clear_history_warning">您確定要刪除對話內所有的訊息嗎？</string>
-    <string name="nc_clear_password">清除密碼</string>
     <string name="nc_client_cert_change">更改客戶端證書</string>
     <string name="nc_client_cert_setup">設置客戶端證書</string>
     <string name="nc_common_dismiss">撤銷</string>
@@ -184,8 +182,6 @@
     <string name="nc_location_unknown">位置不明</string>
     <string name="nc_locked">上鎖</string>
     <string name="nc_locked_tap_to_unlock">點擊可解除鎖定</string>
-    <string name="nc_make_call_private">設成私密對話</string>
-    <string name="nc_make_call_public">公開對話</string>
     <string name="nc_manual">未定</string>
     <string name="nc_mark_as_read">標為已讀</string>
     <string name="nc_mark_as_unread">標為未讀</string>
@@ -291,7 +287,6 @@
     <string name="nc_server_unsupported">伺服器未安裝受支持的 Talk 應用程式</string>
     <string name="nc_server_url">伺服器網址 https://…</string>
     <string name="nc_server_version">%1$s!只能在%2$s13版以上運作</string>
-    <string name="nc_set_password">設定密碼</string>
     <string name="nc_settings">設定</string>
     <string name="nc_settings_account_updated">已經更新了您現有的賬戶，而不是添加新的賬戶</string>
     <string name="nc_settings_advanced_title">進階</string>
@@ -342,7 +337,6 @@
     <string name="nc_share_contact">分享聯絡人</string>
     <string name="nc_share_contact_permission">需要讀取聯絡人的權限</string>
     <string name="nc_share_current_location">分享目前位置</string>
-    <string name="nc_share_link">分享連結</string>
     <string name="nc_share_location">分享位置</string>
     <string name="nc_share_subject">%1$s 邀請</string>
     <string name="nc_share_text">加入於 %1$s/index.php/call/%2$s 的對話</string>

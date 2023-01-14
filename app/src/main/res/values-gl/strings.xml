@@ -87,13 +87,11 @@
     <string name="nc_certificate_dialog_title">Verificar o certificado</string>
     <string name="nc_certificate_error">A súa configuración SSL impediu a conexión</string>
     <string name="nc_change_cert_auth">Cambiar o certificado de autenticación</string>
-    <string name="nc_change_password">Cambiar o contrasinal</string>
     <string name="nc_circle">Círculo</string>
     <string name="nc_circles">Círculos</string>
     <string name="nc_clear_history">Elimina todas as mensaxes</string>
     <string name="nc_clear_history_success">Elimináronse todas as mensaxes</string>
     <string name="nc_clear_history_warning">Realmente queres eliminar todas as mensaxes desta conversa?</string>
-    <string name="nc_clear_password">Limpar o contrasinal</string>
     <string name="nc_client_cert_change">Cambiar o certificado do cliente</string>
     <string name="nc_client_cert_setup">Estabelecer o certificado do cliente</string>
     <string name="nc_common_dismiss">Rexeitar</string>
@@ -180,8 +178,6 @@
     <string name="nc_lobby_waiting">Actualmente está agardando no ástrago.</string>
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
-    <string name="nc_make_call_private">Facer privada a conversa</string>
-    <string name="nc_make_call_public">Facer pública a conversa</string>
     <string name="nc_manual">Sen estabelecer</string>
     <string name="nc_mark_as_read">Marcar como lido</string>
     <string name="nc_mark_as_unread">Marcar como sen ler</string>
@@ -267,7 +263,6 @@
     <string name="nc_server_unsupported">O servidor non ten instalada a aplicación Talk</string>
     <string name="nc_server_url">Enderezo do servidor https://…</string>
     <string name="nc_server_version">%1$s só funciona con %2$s 13 ou superior</string>
-    <string name="nc_set_password">Estabelecer un contrasinal</string>
     <string name="nc_settings">Axustes</string>
     <string name="nc_settings_account_updated">Actualizouse a súa conta xa existente no canto de crear unha nova</string>
     <string name="nc_settings_advanced_title">Avanzado</string>
@@ -307,7 +302,6 @@
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_warning">Aviso</string>
     <string name="nc_settings_wrong_account">Só pode volver autorizarse a conta actual</string>
-    <string name="nc_share_link">Compartir a ligazón</string>
     <string name="nc_share_subject">%1$s convite</string>
     <string name="nc_share_text">Únase á conversa en %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nContrasinal: %1$s</string>

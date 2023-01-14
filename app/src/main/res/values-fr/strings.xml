@@ -86,13 +86,11 @@
     <string name="nc_certificate_dialog_title">Vérifier le certificat</string>
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
-    <string name="nc_change_password">Changer de mot de passe</string>
     <string name="nc_circle">Cercle</string>
     <string name="nc_circles">Cercles</string>
     <string name="nc_clear_history">Supprimer tous les messages</string>
     <string name="nc_clear_history_success">Tous les messages vont être supprimés</string>
     <string name="nc_clear_history_warning">Voulez-vous vraiment supprimer tous les messages de cette conversation ?</string>
-    <string name="nc_clear_password">Effacer le mot de passe</string>
     <string name="nc_client_cert_change">Modifier le certificat du client</string>
     <string name="nc_client_cert_setup">Configurer le certificat du client</string>
     <string name="nc_common_dismiss">Ignorer</string>
@@ -184,8 +182,6 @@
     <string name="nc_location_unknown">Position inconnue</string>
     <string name="nc_locked">Verrouillé</string>
     <string name="nc_locked_tap_to_unlock">Appuyer pour déverrouiller</string>
-    <string name="nc_make_call_private">Effectuer une conversation privée</string>
-    <string name="nc_make_call_public">Effectuer une conversation privée</string>
     <string name="nc_manual">Non défini</string>
     <string name="nc_mark_as_read">Marquer comme lu</string>
     <string name="nc_mark_as_unread">Marquer comme non lu</string>
@@ -291,7 +287,6 @@
     <string name="nc_server_unsupported">Le serveur n\'a pas d\'application Talk prise en charge installée.</string>
     <string name="nc_server_url">Adresse du serveur https://…</string>
     <string name="nc_server_version">%1$s ne fonctionne qu\'avec %2$s 13 et supérieur</string>
-    <string name="nc_set_password">Saisissez un mot de passe</string>
     <string name="nc_settings">Paramètres</string>
     <string name="nc_settings_account_updated">Nous avons mis à jour votre compte existant au lieu d’en ajouter un nouveau</string>
     <string name="nc_settings_advanced_title">Avancé</string>
@@ -342,7 +337,6 @@
     <string name="nc_share_contact">Partager le contact</string>
     <string name="nc_share_contact_permission">Permission de lire les contacts requise</string>
     <string name="nc_share_current_location">Partager la position actuelle</string>
-    <string name="nc_share_link">Partager par lien public</string>
     <string name="nc_share_location">Partager la position</string>
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text">Rejoins la conversation à %1$s/index.php/call/%2$s</string>

@@ -75,13 +75,11 @@
     <string name="nc_certificate_dialog_title">检查证书</string>
     <string name="nc_certificate_error">您的 SSL 设置阻止了连接</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
-    <string name="nc_change_password">修改密码</string>
     <string name="nc_circle">圈子 </string>
     <string name="nc_circles">圈子</string>
     <string name="nc_clear_history">删除所有消息</string>
     <string name="nc_clear_history_success">已删除所有消息</string>
     <string name="nc_clear_history_warning">你真想删除对话中的所有信息吗?</string>
-    <string name="nc_clear_password">清除密码</string>
     <string name="nc_client_cert_change">修改客户端证书</string>
     <string name="nc_client_cert_setup">设置客户端证书</string>
     <string name="nc_common_dismiss">不予理会</string>
@@ -166,8 +164,6 @@
     <string name="nc_location_unknown">位置未知</string>
     <string name="nc_locked">已锁定</string>
     <string name="nc_locked_tap_to_unlock">轻按解锁</string>
-    <string name="nc_make_call_private">设置会话为私有</string>
-    <string name="nc_make_call_public">设置会话为公开</string>
     <string name="nc_manual">未设置</string>
     <string name="nc_mark_as_read">标为已读</string>
     <string name="nc_mark_as_unread">标为未读</string>
@@ -267,7 +263,6 @@
     <string name="nc_server_unsupported">服务器没有安装受支持的 Talk 应用程序</string>
     <string name="nc_server_url">服务器地址 https://…</string>
     <string name="nc_server_version">%1$s 仅支持 %2$s 13 及更高版本</string>
-    <string name="nc_set_password">设置一个密码</string>
     <string name="nc_settings">设置</string>
     <string name="nc_settings_account_updated">已经更新了您现有的账号，而不是添加新的账号</string>
     <string name="nc_settings_advanced_title">高级</string>
@@ -318,7 +313,6 @@
     <string name="nc_share_contact">共享联系人</string>
     <string name="nc_share_contact_permission">读取联系人权限是必需的</string>
     <string name="nc_share_current_location">分享当前位置</string>
-    <string name="nc_share_link">共享链接</string>
     <string name="nc_share_location">分享位置</string>
     <string name="nc_share_subject">%1$s邀请</string>
     <string name="nc_share_text">加入在 %1$s/index.php/call/%2$s 中的会话</string>

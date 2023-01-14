@@ -54,11 +54,9 @@
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
     <string name="nc_certificate_error">Ditt SSL-oppsett forhindret tilkobling</string>
     <string name="nc_change_cert_auth">Endre sertifikat for autentisering</string>
-    <string name="nc_change_password">Endre passord</string>
     <string name="nc_circle">Sirkel</string>
     <string name="nc_circles">Sirkler</string>
     <string name="nc_clear_history">Slett alle meldinger</string>
-    <string name="nc_clear_password">Tøm passord</string>
     <string name="nc_client_cert_change">Endre klient sertifikat</string>
     <string name="nc_client_cert_setup">Sett opp klient sertifikat</string>
     <string name="nc_common_dismiss">Forkast</string>
@@ -126,8 +124,6 @@
     <string name="nc_lobby_waiting">Du venter for øyeblikket i lobbyen.</string>
     <string name="nc_location_current_position_description">Dine nåværende posisjon</string>
     <string name="nc_locked_tap_to_unlock">Trykk for å låse opp</string>
-    <string name="nc_make_call_private">Gjør samtale privat</string>
-    <string name="nc_make_call_public">Gjør samtale offentlig</string>
     <string name="nc_manual">Ikke satt</string>
     <string name="nc_mark_as_read">Merk som lest</string>
     <string name="nc_mark_as_unread">Merk som ulest</string>
@@ -211,7 +207,6 @@
     <string name="nc_server_unsupported">Serveren har ikke en støttet Talk app installert</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$s fungerer bare med %2$s 13 og høyere</string>
-    <string name="nc_set_password">Sett et passord</string>
     <string name="nc_settings">Instillinger</string>
     <string name="nc_settings_account_updated">Din allerede eksisterende konto ble oppdatert, istedenfor å legge til en ny</string>
     <string name="nc_settings_advanced_title">Avansert</string>
@@ -249,7 +244,6 @@
     <string name="nc_settings_warning">Advarsel</string>
     <string name="nc_settings_wrong_account">Bare gjeldende konto kan reautoriseres</string>
     <string name="nc_share_contact">Del kontakt</string>
-    <string name="nc_share_link">Del lenke</string>
     <string name="nc_share_subject">%1$s invitasjon</string>
     <string name="nc_share_text">Delta i samtalen via %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nPassord: %1$s</string>

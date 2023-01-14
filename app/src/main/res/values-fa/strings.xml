@@ -53,13 +53,11 @@
     <string name="nc_certificate_dialog_title">گواهی را بررسی کنید</string>
     <string name="nc_certificate_error">راه اندازی SSL شما مانع از اتصال شد</string>
     <string name="nc_change_cert_auth">گواهی تأیید اعتبار را تغییر دهید</string>
-    <string name="nc_change_password">تغییر گذر واژه</string>
     <string name="nc_circle">حلقه</string>
     <string name="nc_circles">حلقه ها</string>
     <string name="nc_clear_history">حذف تمام پیام‌ها</string>
     <string name="nc_clear_history_success">تمام پیام‌ها حذف شدند</string>
     <string name="nc_clear_history_warning">آیا واقعا می‌خواهید تمام پیام‌ها را در این مکالمه حذف کنید؟</string>
-    <string name="nc_clear_password">رمز عبور را پاک کنید</string>
     <string name="nc_client_cert_change">تغییر گواهی مشتری</string>
     <string name="nc_client_cert_setup">گواهی مشتری تنظیم کنید</string>
     <string name="nc_common_dismiss">پنهان کن</string>
@@ -120,8 +118,6 @@
     <string name="nc_lobby">لابی</string>
     <string name="nc_lobby_waiting">شما در حال حاضر در لابی منتظر هستید.</string>
     <string name="nc_locked_tap_to_unlock">برای باز کردن قفل ضربه بزنید</string>
-    <string name="nc_make_call_private">مکالمه را خصوصی کنید</string>
-    <string name="nc_make_call_public">گفتگو را عمومی کنید</string>
     <string name="nc_manual">تنظیم نشده</string>
     <string name="nc_mark_as_read">علامت به عنوان خوانده‌شده</string>
     <string name="nc_mark_as_unread">علامت به عنوان خوانده‌نشده</string>
@@ -201,7 +197,6 @@
     <string name="nc_server_unsupported"> کارگزار  برنامه  صحبت  را پشتیبانی  نمی‌کند</string>
     <string name="nc_server_url">آدرس سرور https://…</string>
     <string name="nc_server_version">سرور %1$s فقط با %2$s  و بالاتر کار می‌کند</string>
-    <string name="nc_set_password">رمزعبور تنظیم کنید</string>
     <string name="nc_settings">تنظیمات</string>
     <string name="nc_settings_account_updated">به جای اضافه کردن حساب جدید، حساب از قبل موجود شما بروز شد</string>
     <string name="nc_settings_advanced_title">پیشرفته</string>
@@ -234,7 +229,6 @@
     <string name="nc_settings_theme_title">تم</string>
     <string name="nc_settings_warning">هشدار</string>
     <string name="nc_settings_wrong_account">فقط حساب کاربری فعلی قابل گرفتن مجوز مجدد است</string>
-    <string name="nc_share_link">لینک را به اشتراک بگذارید</string>
     <string name="nc_share_subject">دعوت %1$s</string>
     <string name="nc_share_text">به مکالمه %1$s/index.php/call/%2$s ملحق شوید</string>
     <string name="nc_share_text_pass">رمز عبور: %1$s</string>

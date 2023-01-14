@@ -77,13 +77,11 @@
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">變更驗證憑證</string>
-    <string name="nc_change_password">變更密碼</string>
     <string name="nc_circle">圈子</string>
     <string name="nc_circles">圈子</string>
     <string name="nc_clear_history">刪除所有訊息</string>
     <string name="nc_clear_history_success">已刪除所有訊息</string>
     <string name="nc_clear_history_warning">您確定要刪除對話內所有的訊息嗎？</string>
-    <string name="nc_clear_password">清除密碼</string>
     <string name="nc_client_cert_change">變更客戶端憑證</string>
     <string name="nc_client_cert_setup">設定客戶端憑證</string>
     <string name="nc_common_dismiss">取消</string>
@@ -160,8 +158,6 @@
     <string name="nc_location_unknown">位置不明</string>
     <string name="nc_locked">已鎖定</string>
     <string name="nc_locked_tap_to_unlock">點擊可解除鎖定</string>
-    <string name="nc_make_call_private">設成私密對話</string>
-    <string name="nc_make_call_public">公開對話</string>
     <string name="nc_manual">未設定</string>
     <string name="nc_mark_as_read">標為已讀</string>
     <string name="nc_mark_as_unread">標為未讀</string>
@@ -236,7 +232,6 @@
     <string name="nc_server_testing_connection">測試連線中</string>
     <string name="nc_server_url">伺服器地址 https://…</string>
     <string name="nc_server_version">%1$s!只能在%2$s13版以上運作</string>
-    <string name="nc_set_password">設定密碼</string>
     <string name="nc_settings">設定</string>
     <string name="nc_settings_advanced_title">進階</string>
     <string name="nc_settings_appearance">外觀</string>
@@ -260,7 +255,6 @@
     <string name="nc_settings_theme_title">佈景主題</string>
     <string name="nc_settings_warning">警告</string>
     <string name="nc_settings_wrong_account">只有特定帳號可以被重新授權</string>
-    <string name="nc_share_link">分享連結</string>
     <string name="nc_share_this_location">分享地點</string>
     <string name="nc_share_to_choose_account">選擇帳號</string>
     <string name="nc_shared_items">已分享項目</string>

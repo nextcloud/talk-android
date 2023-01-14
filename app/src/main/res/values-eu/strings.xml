@@ -87,13 +87,11 @@
     <string name="nc_certificate_dialog_title">Egiaztatu ziurtagiria</string>
     <string name="nc_certificate_error">Zure SSL konfigurazioak konexioa eragotzi du</string>
     <string name="nc_change_cert_auth">Aldatu autentifikazio ziurtagiria</string>
-    <string name="nc_change_password">Aldatu pasahitza</string>
     <string name="nc_circle">Zirkulua</string>
     <string name="nc_circles">Zirkuluak</string>
     <string name="nc_clear_history">Ezabatu mezu guztiak</string>
     <string name="nc_clear_history_success">Mezu guztiak ezabatu dira</string>
     <string name="nc_clear_history_warning">Ziur zaude elkarrizketa honen mezu guztiak ezabatu nahi dituzula?</string>
-    <string name="nc_clear_password">Garbitu pasahitza</string>
     <string name="nc_client_cert_change">Aldatu bezeroaren ziurtagiria</string>
     <string name="nc_client_cert_setup">Konfiguratu bezeroaren ziurtagiria</string>
     <string name="nc_common_dismiss">Baztertu</string>
@@ -185,8 +183,6 @@
     <string name="nc_location_unknown">Kokapen ezezaguna</string>
     <string name="nc_locked">Blokeatuta</string>
     <string name="nc_locked_tap_to_unlock">Sakatu desblokeatzeko</string>
-    <string name="nc_make_call_private">Egin elkarrizketa pribatua</string>
-    <string name="nc_make_call_public">Egin elkarrizketa publikoa</string>
     <string name="nc_manual">Ezarri gabe</string>
     <string name="nc_mark_as_read">Markatu irakurri gisa</string>
     <string name="nc_mark_as_unread">Markatu ez irakurri gisa</string>
@@ -292,7 +288,6 @@
     <string name="nc_server_unsupported">Zerbitzariak ez du Talk aplikazio bateragarririk instalatuta</string>
     <string name="nc_server_url">Zerbitzariaren helbidea https://…</string>
     <string name="nc_server_version">%1$s (e)k %2$s 13rekin eta goragokoarekin bakarrik egiten du lan</string>
-    <string name="nc_set_password">Ezarri pasahitz bat</string>
     <string name="nc_settings">Ezarpenak</string>
     <string name="nc_settings_account_updated">Zure kontua eguneratu egin da, beste kontu bat gehitu beharrean</string>
     <string name="nc_settings_advanced_title">Aurreratua</string>
@@ -343,7 +338,6 @@
     <string name="nc_share_contact">Partekatu kontaktua</string>
     <string name="nc_share_contact_permission">Kontaktuak irakurtzeko baimena behar da</string>
     <string name="nc_share_current_location">Partekatu uneko kokapena</string>
-    <string name="nc_share_link">Partekatu esteka</string>
     <string name="nc_share_location">Partekatu kokapena</string>
     <string name="nc_share_subject">Gonbidapen %1$s</string>
     <string name="nc_share_text">Elkartu elkarrizketara hemen %1$s/index.php/call/%2$s</string>

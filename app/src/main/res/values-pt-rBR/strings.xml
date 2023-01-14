@@ -87,13 +87,11 @@
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
-    <string name="nc_change_password">Alterar a senha</string>
     <string name="nc_circle">Círculo</string>
     <string name="nc_circles">Círculos</string>
     <string name="nc_clear_history">Excluir todas as mensagens </string>
     <string name="nc_clear_history_success">Todas as mensagens foram apagadas </string>
     <string name="nc_clear_history_warning">Tem certeza de que deseja excluir todas as mensagens desta conversa? </string>
-    <string name="nc_clear_password">Excluir a senha</string>
     <string name="nc_client_cert_change">Alterar certificado do cliente</string>
     <string name="nc_client_cert_setup">Configurar certificado do cliente</string>
     <string name="nc_common_dismiss">Dispensar</string>
@@ -185,8 +183,6 @@
     <string name="nc_location_unknown">Posição desconhecida </string>
     <string name="nc_locked">Indisponível</string>
     <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
-    <string name="nc_make_call_private">Fazer esta conversa privada</string>
-    <string name="nc_make_call_public">Fazer esta conversa pública</string>
     <string name="nc_manual">Não definido</string>
     <string name="nc_mark_as_read">Marcar como Lido</string>
     <string name="nc_mark_as_unread">Marcar como não lido</string>
@@ -292,7 +288,6 @@
     <string name="nc_server_unsupported">O servidor não tem o aplicativo Talk suportado instalado</string>
     <string name="nc_server_url">Endereço do servidor https://…</string>
     <string name="nc_server_version">%1$s somente funciona com%2$s 13 e posterior</string>
-    <string name="nc_set_password">Definir uma senha</string>
     <string name="nc_settings">Configurações</string>
     <string name="nc_settings_account_updated">Sua conta atual foi atualizada, em vez de adicionar uma nova</string>
     <string name="nc_settings_advanced_title">Avançada</string>
@@ -343,7 +338,6 @@
     <string name="nc_share_contact">Compartilhar contato</string>
     <string name="nc_share_contact_permission">A permissão para ler os contatos é necessária</string>
     <string name="nc_share_current_location">Compartilhe a localização atual</string>
-    <string name="nc_share_link">Compartilhar um link</string>
     <string name="nc_share_location">Compartilhar localização</string>
     <string name="nc_share_subject">Convite do %1$s</string>
     <string name="nc_share_text">Junte-se à conversa em %1$s/index.php/call/%2$s</string>

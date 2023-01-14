@@ -65,13 +65,11 @@
     <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
     <string name="nc_certificate_error">Η ρύθμιση SSL απέτρεψε την σύνδεση</string>
     <string name="nc_change_cert_auth">Αλλαγή πιστοποιητικού πιστοποίησης</string>
-    <string name="nc_change_password">Αλλαγή συνθηματικού</string>
     <string name="nc_circle">Κύκλος</string>
     <string name="nc_circles">Κύκλοι</string>
     <string name="nc_clear_history">Διαγραφή όλων των μηνυμάτων</string>
     <string name="nc_clear_history_success">Όλα τα μηνύματα διαγράφηκαν</string>
     <string name="nc_clear_history_warning">Θέλετε πραγματικά να διαγράψετε όλα τα μηνύματα σε αυτήν τη συνομιλία;</string>
-    <string name="nc_clear_password">Εκκαθάριση συνθηματικού</string>
     <string name="nc_client_cert_change">Αλλαγή πιστοποιητικού πελάτη</string>
     <string name="nc_client_cert_setup">Ρύθμιση πιστοποιητικού πελάτη</string>
     <string name="nc_common_dismiss">Τους ζυγούς λύσατε!</string>
@@ -151,8 +149,6 @@
     <string name="nc_location_unknown">Άγνωστη θέση</string>
     <string name="nc_locked">Κλειδώθηκε</string>
     <string name="nc_locked_tap_to_unlock">Αγγίξτε για ξεκλείδωμα</string>
-    <string name="nc_make_call_private">Ιδιωτική συνομιλία</string>
-    <string name="nc_make_call_public">Δημόσια συνομιλία</string>
     <string name="nc_manual">Δεν ορίστηκε</string>
     <string name="nc_mark_as_read">Σήμανση ως αναγνωσμένο</string>
     <string name="nc_mark_as_unread">επισήμανση ως μή-αναγνωσμένο</string>
@@ -245,7 +241,6 @@
     <string name="nc_server_unsupported">Ο διακομιστής δεν έχει εγκατεστημένη την υποστήριξη εφαρμογής Talk</string>
     <string name="nc_server_url">Διεύθυνση διακομιστή https://…</string>
     <string name="nc_server_version">%1$s δουλεύει μόνο με %2$s 13 και πάνω</string>
-    <string name="nc_set_password">Ορισμός συνθηματικού</string>
     <string name="nc_settings">Ρυθμίσεις</string>
     <string name="nc_settings_account_updated">Ο υπάρχων λογαριασμός ενημερώθηκε, χωρίς την εισαγωγή νέου</string>
     <string name="nc_settings_advanced_title">Για προχωρημένους</string>
@@ -295,7 +290,6 @@
     <string name="nc_settings_wrong_account">Μόνο ο παρόν λογαριασμός μπορεί να επαναεγκριθεί</string>
     <string name="nc_share_contact_permission">Απαιτείτούνται δικαιώματα ανάγνωσης για τις επαφές</string>
     <string name="nc_share_current_location">Διαμοιρασμός τρέχουσας τοποθεσίας</string>
-    <string name="nc_share_link">Διαμοιρασμός συνδέσμου</string>
     <string name="nc_share_location">Διαμοιρασμός τοποθεσίας</string>
     <string name="nc_share_subject">%1$s πρόσκληση</string>
     <string name="nc_share_text">Συμμετοχή στην συνομιλία από %1$s/index.php/call/%2$s</string>

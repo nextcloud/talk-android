@@ -50,11 +50,9 @@
     <string name="nc_certificate_dialog_title">Tjek certifikatet</string>
     <string name="nc_certificate_error">Din SSL indstilling forhindrede forbindelse</string>
     <string name="nc_change_cert_auth">Skift godkendelsescertifikat</string>
-    <string name="nc_change_password">Skift adgangskode</string>
     <string name="nc_circle">Cirkel</string>
     <string name="nc_circles">Cirkler</string>
     <string name="nc_clear_history_success">Alle beskeder blev slettet</string>
-    <string name="nc_clear_password">Fjern adgangskode</string>
     <string name="nc_client_cert_change">Skift kliencertifikat</string>
     <string name="nc_client_cert_setup">Indstil klientcertifikat</string>
     <string name="nc_common_dismiss">Afvis</string>
@@ -119,8 +117,6 @@
     <string name="nc_lobby">Lobby</string>
     <string name="nc_lobby_waiting">Du venter nu i lobbyen.</string>
     <string name="nc_locked_tap_to_unlock">Tryk for at låse op</string>
-    <string name="nc_make_call_private">Gør samtalen privat</string>
-    <string name="nc_make_call_public">Gør samtalen offentlig</string>
     <string name="nc_manual">Ikke indstillet</string>
     <string name="nc_mark_as_read">Marker som læst</string>
     <string name="nc_mark_as_unread">Marker som ulæst</string>
@@ -201,7 +197,6 @@
     <string name="nc_server_testing_connection">Tester forbindelsen</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$svirker kun med %2$s 13 og nyere</string>
-    <string name="nc_set_password">Indstil en adgangskode</string>
     <string name="nc_settings">Indstillinger</string>
     <string name="nc_settings_account_updated">Vi har opdateret din eksisterende konto i stedet for at tilføje en ny</string>
     <string name="nc_settings_advanced_title">Avanceret</string>
@@ -235,7 +230,6 @@
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_warning">Advarsler</string>
     <string name="nc_settings_wrong_account">Kun nuværende konto kan gen autoriseres</string>
-    <string name="nc_share_link">Del link</string>
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text">Deltag i samtalen på %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nAdgangskode: %1$s</string>

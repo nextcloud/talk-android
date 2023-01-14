@@ -79,13 +79,11 @@
     <string name="nc_certificate_dialog_title">Ellenőrizze a tanúsítványt</string>
     <string name="nc_certificate_error">Az SSL beállítás megakadályozta a kapcsolódást</string>
     <string name="nc_change_cert_auth">Hitelesítési tanúsítvány módosítása</string>
-    <string name="nc_change_password">Jelszó megváltoztatása</string>
     <string name="nc_circle">Kör</string>
     <string name="nc_circles">Körök</string>
     <string name="nc_clear_history">Összes üzenet törlése</string>
     <string name="nc_clear_history_success">Az összes üzenet törölve lett</string>
     <string name="nc_clear_history_warning">Biztos, hogy törli a beszélgetés összes üzenetét?</string>
-    <string name="nc_clear_password">Jelszó törlése</string>
     <string name="nc_client_cert_change">Klienstanúsítvány módosítása</string>
     <string name="nc_client_cert_setup">Klienstanúsítvány beállítása</string>
     <string name="nc_common_dismiss">Elutasítás</string>
@@ -177,8 +175,6 @@
     <string name="nc_location_unknown">Ismeretlen pozíci</string>
     <string name="nc_locked">Zárolt</string>
     <string name="nc_locked_tap_to_unlock">Koppintson a feloldáshoz</string>
-    <string name="nc_make_call_private">Beszélgetés priváttá tétele</string>
-    <string name="nc_make_call_public">Beszélgetés nyilvánossá tétele</string>
     <string name="nc_manual">Nincs megadva</string>
     <string name="nc_mark_as_read">Megjelölés olvasottként</string>
     <string name="nc_mark_as_unread">Megjelölés olvasatlanként</string>
@@ -284,7 +280,6 @@
     <string name="nc_server_unsupported">A kiszolgálón nincs támogatott Beszélgetés alkalmazás telepítve</string>
     <string name="nc_server_url">Kiszolgálócím https://…</string>
     <string name="nc_server_version">A(z) %1$s csak %2$s 13 vagy újabb verzióval működik</string>
-    <string name="nc_set_password">Jelszó beállítása</string>
     <string name="nc_settings">Beállítások</string>
     <string name="nc_settings_account_updated">Új fiók hozzáadása helyett, a már létező fiókja lett frissítve</string>
     <string name="nc_settings_advanced_title">Speciális</string>
@@ -335,7 +330,6 @@
     <string name="nc_share_contact">Névjegy megosztása</string>
     <string name="nc_share_contact_permission">A névjegyek olvasási engedélye szükséges</string>
     <string name="nc_share_current_location">Jelenlegi hely megosztása</string>
-    <string name="nc_share_link">Hivatkozás megosztása</string>
     <string name="nc_share_location">Hely megosztása</string>
     <string name="nc_share_subject">%1$s meghívás</string>
     <string name="nc_share_text">Csatlakozzon a beszélgetéshez itt: %1$s/index.php/call/%2$s</string>
