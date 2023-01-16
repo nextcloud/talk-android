@@ -1,83 +1,88 @@
 package com.nextcloud.talk.adapters;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
+import com.nextcloud.talk.call.CallParticipantModel;
 import com.nextcloud.talk.utils.ApiUtils;
 
 import org.webrtc.EglBase;
 import org.webrtc.MediaStream;
+import org.webrtc.PeerConnection;
 
 public class ParticipantDisplayItem {
-    private String baseUrl;
-    private String userId;
-    private String session;
-    private boolean connected;
-    private String nick;
+
+    public interface Observer {
+        void onChange();
+    }
+
+    /**
+     * Shared handler to receive change notifications from the model on the main thread.
+     */
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+
+    private final ParticipantDisplayItemNotifier participantDisplayItemNotifier = new ParticipantDisplayItemNotifier();
+
+    private final String baseUrl;
     private final String defaultGuestNick;
+    private final EglBase rootEglBase;
+
+    private final String session;
+    private final String streamType;
+
+    private final CallParticipantModel callParticipantModel;
+
+    private final CallParticipantModel.Observer callParticipantModelObserver = this::updateFromModel;
+
+    private String userId;
+    private PeerConnection.IceConnectionState iceConnectionState;
+    private String nick;
     private String urlForAvatar;
     private MediaStream mediaStream;
-    private String streamType;
     private boolean streamEnabled;
-    private EglBase rootEglBase;
     private boolean isAudioEnabled;
 
-    public ParticipantDisplayItem(String baseUrl, String userId, String session, boolean connected, String nick, String defaultGuestNick, MediaStream mediaStream, String streamType, boolean streamEnabled, EglBase rootEglBase) {
+    public ParticipantDisplayItem(String baseUrl, String defaultGuestNick, EglBase rootEglBase, String streamType,
+                                  CallParticipantModel callParticipantModel) {
         this.baseUrl = baseUrl;
-        this.userId = userId;
-        this.session = session;
-        this.connected = connected;
-        this.nick = nick;
         this.defaultGuestNick = defaultGuestNick;
-        this.mediaStream = mediaStream;
-        this.streamType = streamType;
-        this.streamEnabled = streamEnabled;
         this.rootEglBase = rootEglBase;
 
+        this.session = callParticipantModel.getSessionId();
+        this.streamType = streamType;
+
+        this.callParticipantModel = callParticipantModel;
+        this.callParticipantModel.addObserver(callParticipantModelObserver, handler);
+
+        updateFromModel();
+    }
+
+    public void destroy() {
+        this.callParticipantModel.removeObserver(callParticipantModelObserver);
+    }
+
+    private void updateFromModel() {
+        userId = callParticipantModel.getUserId();
+        nick = callParticipantModel.getNick();
+
         this.updateUrlForAvatar();
-    }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-
-        this.updateUrlForAvatar();
-    }
-
-    public String getSession() {
-        return session;
-    }
-
-    public void setSession(String session) {
-        this.session = session;
-    }
-
-    public boolean isConnected() {
-        return connected;
-    }
-
-    public void setConnected(boolean connected) {
-        this.connected = connected;
-    }
-
-    public String getNick() {
-        if (TextUtils.isEmpty(userId) && TextUtils.isEmpty(nick)) {
-            return defaultGuestNick;
+        if ("screen".equals(streamType)) {
+            iceConnectionState = callParticipantModel.getScreenIceConnectionState();
+            mediaStream = callParticipantModel.getScreenMediaStream();
+            isAudioEnabled = true;
+            streamEnabled = true;
+        } else {
+            iceConnectionState = callParticipantModel.getIceConnectionState();
+            mediaStream = callParticipantModel.getMediaStream();
+            isAudioEnabled = callParticipantModel.isAudioAvailable() != null ?
+                callParticipantModel.isAudioAvailable() : false;
+            streamEnabled = callParticipantModel.isVideoAvailable() != null ?
+                callParticipantModel.isVideoAvailable() : false;
         }
 
-        return nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
-
-        this.updateUrlForAvatar();
-    }
-
-    public String getUrlForAvatar() {
-        return urlForAvatar;
+        participantDisplayItemNotifier.notifyChange();
     }
 
     private void updateUrlForAvatar() {
@@ -88,44 +93,48 @@ public class ParticipantDisplayItem {
         }
     }
 
+    public boolean isConnected() {
+        return iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
+            iceConnectionState == PeerConnection.IceConnectionState.COMPLETED ||
+            // If there is no connection state that means that no connection is needed, so it is a special case that is
+            // also seen as "connected".
+            iceConnectionState == null;
+    }
+
+    public String getNick() {
+        if (TextUtils.isEmpty(userId) && TextUtils.isEmpty(nick)) {
+            return defaultGuestNick;
+        }
+
+        return nick;
+    }
+
+    public String getUrlForAvatar() {
+        return urlForAvatar;
+    }
+
     public MediaStream getMediaStream() {
         return mediaStream;
-    }
-
-    public void setMediaStream(MediaStream mediaStream) {
-        this.mediaStream = mediaStream;
-    }
-
-    public String getStreamType() {
-        return streamType;
-    }
-
-    public void setStreamType(String streamType) {
-        this.streamType = streamType;
     }
 
     public boolean isStreamEnabled() {
         return streamEnabled;
     }
 
-    public void setStreamEnabled(boolean streamEnabled) {
-        this.streamEnabled = streamEnabled;
-    }
-
     public EglBase getRootEglBase() {
         return rootEglBase;
-    }
-
-    public void setRootEglBase(EglBase rootEglBase) {
-        this.rootEglBase = rootEglBase;
     }
 
     public boolean isAudioEnabled() {
         return isAudioEnabled;
     }
 
-    public void setAudioEnabled(boolean audioEnabled) {
-        isAudioEnabled = audioEnabled;
+    public void addObserver(Observer observer) {
+        participantDisplayItemNotifier.addObserver(observer);
+    }
+
+    public void removeObserver(Observer observer) {
+        participantDisplayItemNotifier.removeObserver(observer);
     }
 
     @Override
