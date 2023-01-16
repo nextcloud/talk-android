@@ -59,6 +59,14 @@
     <string name="nc_allow_guests">Vendégek engedélyezése</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s feloldása</string>
+    <string name="nc_call_button_content_description_answer_video_call">Válasz videóhívásként</string>
+    <string name="nc_call_button_content_description_answer_voice_only">Válasz csak hanghívásként</string>
+    <string name="nc_call_button_content_description_audio_output">Hangkimenet módosítása</string>
+    <string name="nc_call_button_content_description_camera">Kamera be/ki</string>
+    <string name="nc_call_button_content_description_hangup">Bontás</string>
+    <string name="nc_call_button_content_description_microphone">Mikrofon be/ki</string>
+    <string name="nc_call_button_content_description_pip">Megnyitás kép a képben módban</string>
+    <string name="nc_call_button_content_description_switch_to_self_vide">Váltás a saját videóra</string>
     <string name="nc_call_incoming">BEJÖVŐ</string>
     <string name="nc_call_name">Beszélgetésnév</string>
     <string name="nc_call_name_is_same">A megadott név egyezik egy már meglévővel</string>
