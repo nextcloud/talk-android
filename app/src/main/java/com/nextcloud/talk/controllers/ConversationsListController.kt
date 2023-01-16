@@ -409,9 +409,7 @@ class ConversationsListController(bundle: Bundle) :
                     adapter!!.setHeadersShown(true)
                     adapter!!.updateDataSet(searchableConversationItems, false)
                     adapter!!.showAllHeaders()
-                    withNullableControllerViewBinding {
-                        binding?.swipeRefreshLayoutView?.isEnabled = false
-                    }
+                    binding?.swipeRefreshLayoutView?.isEnabled = false
                     return true
                 }
 
@@ -424,9 +422,7 @@ class ConversationsListController(bundle: Bundle) :
                         searchHelper!!.cancelSearch()
                         binding?.swipeRefreshLayoutView?.isRefreshing = false
                     }
-                    withNullableControllerViewBinding {
-                        binding?.swipeRefreshLayoutView?.isEnabled = true
-                    }
+                    binding?.swipeRefreshLayoutView?.isEnabled = true
                     searchView!!.onActionViewCollapsed()
                     val mainActivity = getActivity() as MainActivity?
                     if (mainActivity != null) {
@@ -514,21 +510,15 @@ class ConversationsListController(bundle: Bundle) :
                 adapter!!.updateDataSet(conversationItems, false)
                 Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
                 fetchOpenConversations(apiVersion)
-                withNullableControllerViewBinding {
-                    binding?.swipeRefreshLayoutView?.isRefreshing = false
-                }
+                binding?.swipeRefreshLayoutView?.isRefreshing = false
             }, { throwable: Throwable ->
                 handleHttpExceptions(throwable)
-                withNullableControllerViewBinding {
-                    binding?.swipeRefreshLayoutView?.isRefreshing = false
-                    showErrorDialog()
-                }
+                binding?.swipeRefreshLayoutView?.isRefreshing = false
+                showErrorDialog()
                 dispose(roomsQueryDisposable)
             }) {
                 dispose(roomsQueryDisposable)
-                withNullableControllerViewBinding {
-                    binding?.swipeRefreshLayoutView?.isRefreshing = false
-                }
+                binding?.swipeRefreshLayoutView?.isRefreshing = false
                 isRefreshing = false
             }
     }
@@ -854,9 +844,7 @@ class ConversationsListController(bundle: Bundle) :
 
     @SuppressLint("CheckResult") // handled by helper
     private fun startMessageSearch(search: String?) {
-        withNullableControllerViewBinding {
-            binding?.swipeRefreshLayoutView?.isRefreshing = true
-        }
+        binding?.swipeRefreshLayoutView?.isRefreshing = true
         searchHelper?.startMessageSearch(search!!)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -1331,17 +1319,13 @@ class ConversationsListController(bundle: Bundle) :
                 binding?.recyclerView?.scrollToPosition(0)
             }
         }
-        withNullableControllerViewBinding {
-            binding?.swipeRefreshLayoutView?.isRefreshing = false
-        }
+        binding?.swipeRefreshLayoutView?.isRefreshing = false
     }
 
     private fun onMessageSearchError(throwable: Throwable) {
         handleHttpExceptions(throwable)
-        withNullableControllerViewBinding {
-            binding?.swipeRefreshLayoutView?.isRefreshing = false
-            showErrorDialog()
-        }
+        binding?.swipeRefreshLayoutView?.isRefreshing = false
+        showErrorDialog()
     }
 
     companion object {

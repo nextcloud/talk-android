@@ -419,10 +419,8 @@ class ChatController(args: Bundle) :
                 }
             )
 
-            withNullableControllerViewBinding {
-                val itemTouchHelper = ItemTouchHelper(messageSwipeController)
-                itemTouchHelper.attachToRecyclerView(binding?.messagesListView)
-            }
+            val itemTouchHelper = ItemTouchHelper(messageSwipeController)
+            itemTouchHelper.attachToRecyclerView(binding?.messagesListView)
         }
     }
 
