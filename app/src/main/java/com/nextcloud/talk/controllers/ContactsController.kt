@@ -452,22 +452,16 @@ class ContactsController(args: Bundle) :
                         adapter?.filterItems()
                     }
 
-                    withNullableControllerViewBinding {
-                        binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
-                    }
+                    binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
                 }
 
                 override fun onError(e: Throwable) {
-                    withNullableControllerViewBinding {
-                        binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
-                    }
+                    binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
                     dispose(contactsQueryDisposable)
                 }
 
                 override fun onComplete() {
-                    withNullableControllerViewBinding {
-                        binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
-                    }
+                    binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
                     dispose(contactsQueryDisposable)
                     alreadyFetching = false
                     disengageProgressBar()
@@ -699,9 +693,7 @@ class ContactsController(args: Bundle) :
             adapter?.updateDataSet(contactItems as List<Nothing>?)
         }
 
-        withNullableControllerViewBinding {
-            binding?.controllerGenericRv?.swipeRefreshLayout?.isEnabled = !adapter!!.hasFilter()
-        }
+        binding?.controllerGenericRv?.swipeRefreshLayout?.isEnabled = !adapter!!.hasFilter()
 
         return true
     }
@@ -929,25 +921,21 @@ class ContactsController(args: Bundle) :
     }
 
     private fun toggleConversationPrivacyLayout(showInitialLayout: Boolean) {
-        withNullableControllerViewBinding {
-            if (showInitialLayout) {
-                binding?.conversationPrivacyToggle?.initialRelativeLayout?.visibility = View.VISIBLE
-                binding?.conversationPrivacyToggle?.secondaryRelativeLayout?.visibility = View.GONE
-            } else {
-                binding?.conversationPrivacyToggle?.initialRelativeLayout?.visibility = View.GONE
-                binding?.conversationPrivacyToggle?.secondaryRelativeLayout?.visibility = View.VISIBLE
-            }
+        if (showInitialLayout) {
+            binding?.conversationPrivacyToggle?.initialRelativeLayout?.visibility = View.VISIBLE
+            binding?.conversationPrivacyToggle?.secondaryRelativeLayout?.visibility = View.GONE
+        } else {
+            binding?.conversationPrivacyToggle?.initialRelativeLayout?.visibility = View.GONE
+            binding?.conversationPrivacyToggle?.secondaryRelativeLayout?.visibility = View.VISIBLE
         }
     }
 
     private fun toggleConversationViaLinkVisibility(isPublicCall: Boolean) {
-        withNullableControllerViewBinding {
-            if (isPublicCall) {
-                binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.GONE
-                updateGroupParticipantSelection()
-            } else {
-                binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.VISIBLE
-            }
+        if (isPublicCall) {
+            binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.GONE
+            updateGroupParticipantSelection()
+        } else {
+            binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.VISIBLE
         }
     }
 
