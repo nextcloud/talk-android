@@ -62,7 +62,7 @@ class EntryMenuController(args: Bundle) :
         R.layout.controller_entry_menu,
         args
     ) {
-    private val binding: ControllerEntryMenuBinding by viewBinding(ControllerEntryMenuBinding::bind)
+    private val binding: ControllerEntryMenuBinding? by viewBinding(ControllerEntryMenuBinding::bind)
 
     @Inject
     lateinit var eventBus: EventBus
@@ -87,11 +87,11 @@ class EntryMenuController(args: Bundle) :
         if (ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG ==
             ApplicationWideMessageHolder.getInstance().messageType
         ) {
-            binding.textInputLayout.error = resources?.getString(R.string.nc_wrong_password)
-            ApplicationWideMessageHolder.getInstance().setMessageType(null)
-            if (binding.okButton.isEnabled) {
-                binding.okButton.isEnabled = false
-                binding.okButton.alpha = OPACITY_BUTTON_DISABLED
+            binding?.textInputLayout?.error = resources?.getString(R.string.nc_wrong_password)
+            ApplicationWideMessageHolder.getInstance().messageType = null
+            if (binding?.okButton?.isEnabled == true) {
+                binding?.okButton?.isEnabled = false
+                binding?.okButton?.alpha = OPACITY_BUTTON_DISABLED
             }
         }
     }
@@ -100,13 +100,13 @@ class EntryMenuController(args: Bundle) :
         super.onViewBound(view)
 
         if (conversation != null && operation === ConversationOperationEnum.OPS_CODE_RENAME_ROOM) {
-            binding.textEdit.setText(conversation!!.name)
+            binding?.textEdit?.setText(conversation!!.name)
         }
 
-        binding.textEdit.setOnEditorActionListener { v, actionId, event ->
+        binding?.textEdit?.setOnEditorActionListener { v, actionId, event ->
             @Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS")
-            if (actionId === EditorInfo.IME_ACTION_DONE && binding.okButton.isEnabled) {
-                binding.okButton.callOnClick()
+            if (actionId === EditorInfo.IME_ACTION_DONE && binding?.okButton?.isEnabled == true) {
+                binding?.okButton?.callOnClick()
                 return@setOnEditorActionListener true
             }
             false
@@ -118,57 +118,59 @@ class EntryMenuController(args: Bundle) :
         when (operation) {
             ConversationOperationEnum.OPS_CODE_INVITE_USERS, ConversationOperationEnum.OPS_CODE_RENAME_ROOM -> {
                 labelText = resources!!.getString(R.string.nc_call_name)
-                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT
-                binding.smileyButton.visibility = View.VISIBLE
-                emojiPopup = EmojiPopup(
-                    rootView = view,
-                    editText = binding.textEdit,
-                    onEmojiPopupShownListener = {
-                        viewThemeUtils.platform.colorImageView(binding.smileyButton)
-                    },
-                    onEmojiPopupDismissListener = {
-                        binding.smileyButton.imageTintList = ColorStateList.valueOf(
-                            ResourcesCompat.getColor(resources!!, R.color.medium_emphasis_text, context.theme)
-                        )
-                    },
-                    onEmojiClickListener = {
-                        binding.textEdit.editableText.append(" ")
-                    }
-                )
+                binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT
+                binding?.smileyButton?.visibility = View.VISIBLE
+                emojiPopup = binding?.let {
+                    EmojiPopup(
+                        rootView = view,
+                        editText = it.textEdit,
+                        onEmojiPopupShownListener = {
+                            viewThemeUtils.platform.colorImageView(it.smileyButton)
+                        },
+                        onEmojiPopupDismissListener = {
+                            it.smileyButton.imageTintList = ColorStateList.valueOf(
+                                ResourcesCompat.getColor(resources!!, R.color.medium_emphasis_text, context.theme)
+                            )
+                        },
+                        onEmojiClickListener = {
+                            binding?.textEdit?.editableText?.append(" ")
+                        }
+                    )
+                }
             }
 
             ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> {
                 // 99 is joining a conversation via password
                 labelText = resources!!.getString(R.string.nc_password)
-                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
 
             ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM -> {
                 labelText = resources!!.getString(R.string.nc_conversation_link)
-                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+                binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
             }
 
             else -> {
             }
         }
         if (PASSWORD_ENTRY_OPERATIONS.contains(operation)) {
-            binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+            binding?.textInputLayout?.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
         } else {
-            binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_NONE
+            binding?.textInputLayout?.endIconMode = TextInputLayout.END_ICON_NONE
         }
 
-        viewThemeUtils.material.colorTextInputLayout(binding.textInputLayout)
-        viewThemeUtils.material.colorMaterialButtonText(binding.okButton)
+        binding?.textInputLayout?.let { viewThemeUtils.material.colorTextInputLayout(it) }
+        binding?.okButton?.let { viewThemeUtils.material.colorMaterialButtonText(it) }
 
-        binding.textInputLayout.hint = labelText
-        binding.textInputLayout.requestFocus()
+        binding?.textInputLayout?.hint = labelText
+        binding?.textInputLayout?.requestFocus()
 
-        binding.smileyButton.setOnClickListener { onSmileyClick() }
-        binding.okButton.setOnClickListener { onOkButtonClick() }
+        binding?.smileyButton?.setOnClickListener { onSmileyClick() }
+        binding?.okButton?.setOnClickListener { onOkButtonClick() }
     }
 
     private fun textEditAddChangedListener() {
-        binding.textEdit.addTextChangedListener(object : TextWatcher {
+        binding?.textEdit?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // unused atm
             }
@@ -181,46 +183,46 @@ class EntryMenuController(args: Bundle) :
                 if (!TextUtils.isEmpty(s)) {
                     if (operation === ConversationOperationEnum.OPS_CODE_RENAME_ROOM) {
                         if (conversation!!.name == null || !conversation!!.name.equals(s.toString())) {
-                            if (!binding.okButton.isEnabled) {
-                                binding.okButton.isEnabled = true
-                                binding.okButton.alpha = OPACITY_ENABLED
+                            if (!binding?.okButton?.isEnabled!!) {
+                                binding?.okButton?.isEnabled = true
+                                binding?.okButton?.alpha = OPACITY_ENABLED
                             }
-                            binding.textInputLayout.isErrorEnabled = false
+                            binding?.textInputLayout?.isErrorEnabled = false
                         } else {
-                            if (binding.okButton.isEnabled) {
-                                binding.okButton.isEnabled = false
-                                binding.okButton.alpha = OPACITY_DISABLED
+                            if (binding?.okButton?.isEnabled == true) {
+                                binding?.okButton?.isEnabled = false
+                                binding?.okButton?.alpha = OPACITY_DISABLED
                             }
-                            binding.textInputLayout.error = resources?.getString(R.string.nc_call_name_is_same)
+                            binding?.textInputLayout?.error = resources?.getString(R.string.nc_call_name_is_same)
                         }
                     } else if (operation !== ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM) {
-                        if (!binding.okButton.isEnabled) {
-                            binding.okButton.isEnabled = true
-                            binding.okButton.alpha = OPACITY_ENABLED
+                        if (!binding?.okButton?.isEnabled!!) {
+                            binding?.okButton?.isEnabled = true
+                            binding?.okButton?.alpha = OPACITY_ENABLED
                         }
-                        binding.textInputLayout.isErrorEnabled = false
+                        binding?.textInputLayout?.isErrorEnabled = false
                     } else if (
-                        UriUtils.hasHttpProtocollPrefixed(binding.textEdit.text.toString()) &&
-                        binding.textEdit.text.toString().contains("/call/")
+                        UriUtils.hasHttpProtocollPrefixed(binding?.textEdit?.text.toString()) &&
+                        binding?.textEdit?.text.toString().contains("/call/")
                     ) {
-                        if (!binding.okButton.isEnabled) {
-                            binding.okButton.isEnabled = true
-                            binding.okButton.alpha = OPACITY_ENABLED
+                        if (!binding?.okButton?.isEnabled!!) {
+                            binding?.okButton?.isEnabled = true
+                            binding?.okButton?.alpha = OPACITY_ENABLED
                         }
-                        binding.textInputLayout.isErrorEnabled = false
+                        binding?.textInputLayout?.isErrorEnabled = false
                     } else {
-                        if (binding.okButton.isEnabled) {
-                            binding.okButton.isEnabled = false
-                            binding.okButton.alpha = OPACITY_DISABLED
+                        if (binding?.okButton?.isEnabled == true) {
+                            binding?.okButton?.isEnabled = false
+                            binding?.okButton?.alpha = OPACITY_DISABLED
                         }
-                        binding.textInputLayout.error = resources?.getString(R.string.nc_wrong_link)
+                        binding?.textInputLayout?.error = resources?.getString(R.string.nc_wrong_link)
                     }
                 } else {
-                    if (binding.okButton.isEnabled) {
-                        binding.okButton.isEnabled = false
-                        binding.okButton.alpha = OPACITY_DISABLED
+                    if (binding?.okButton?.isEnabled == true) {
+                        binding?.okButton?.isEnabled = false
+                        binding?.okButton?.alpha = OPACITY_DISABLED
                     }
-                    binding.textInputLayout.isErrorEnabled = false
+                    binding?.textInputLayout?.isErrorEnabled = false
                 }
             }
         })
@@ -238,7 +240,7 @@ class EntryMenuController(args: Bundle) :
             operation !== ConversationOperationEnum.OPS_CODE_INVITE_USERS
         ) {
             val bundle = Bundle()
-            conversation!!.name = binding.textEdit.text.toString()
+            conversation!!.name = binding?.textEdit?.text.toString()
             bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap<Any>(conversation))
             bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)
             router.pushController(
@@ -249,14 +251,14 @@ class EntryMenuController(args: Bundle) :
         } else if (operation !== ConversationOperationEnum.OPS_CODE_INVITE_USERS) {
             val bundle = Bundle()
             bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)
-            bundle.putString(BundleKeys.KEY_CALL_URL, binding.textEdit.text.toString())
+            bundle.putString(BundleKeys.KEY_CALL_URL, binding?.textEdit?.text.toString())
             router.pushController(
                 RouterTransaction.with(OperationsMenuController(bundle))
                     .pushChangeHandler(HorizontalChangeHandler())
                     .popChangeHandler(HorizontalChangeHandler())
             )
         } else if (operation === ConversationOperationEnum.OPS_CODE_INVITE_USERS) {
-            originalBundle.putString(BundleKeys.KEY_CONVERSATION_NAME, binding.textEdit.text.toString())
+            originalBundle.putString(BundleKeys.KEY_CONVERSATION_NAME, binding?.textEdit?.text.toString())
             router.pushController(
                 RouterTransaction.with(
                     OperationsMenuController(
@@ -273,12 +275,12 @@ class EntryMenuController(args: Bundle) :
         val bundle = Bundle()
         bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap<Any>(conversation))
         bundle.putString(BundleKeys.KEY_CALL_URL, callUrl)
-        bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, binding.textEdit.text.toString())
+        bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, binding?.textEdit?.text.toString())
         bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)
         if (originalBundle.containsKey(BundleKeys.KEY_SERVER_CAPABILITIES)) {
             bundle.putParcelable(
                 BundleKeys.KEY_SERVER_CAPABILITIES,
-                originalBundle.getParcelable<Parcelable>(BundleKeys.KEY_SERVER_CAPABILITIES)
+                originalBundle.getParcelable(BundleKeys.KEY_SERVER_CAPABILITIES)
             )
         }
         router.pushController(

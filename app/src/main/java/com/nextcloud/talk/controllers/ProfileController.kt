@@ -96,7 +96,7 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("Detekt.TooManyFunctions")
 class ProfileController : BaseController(R.layout.controller_profile) {
-    private val binding: ControllerProfileBinding by viewBinding(ControllerProfileBinding::bind)
+    private val binding: ControllerProfileBinding? by viewBinding(ControllerProfileBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
@@ -146,11 +146,11 @@ class ProfileController : BaseController(R.layout.controller_profile) {
             edit = !edit
             if (edit) {
                 item.setTitle(R.string.save)
-                binding.emptyList.root.visibility = View.GONE
-                binding.userinfoList.visibility = View.VISIBLE
+                binding?.emptyList?.root?.visibility = View.GONE
+                binding?.userinfoList?.visibility = View.VISIBLE
                 if (CapabilitiesUtilNew.isAvatarEndpointAvailable(currentUser!!)) {
                     // TODO later avatar can also be checked via user fields, for now it is in Talk capability
-                    binding.avatarButtons.visibility = View.VISIBLE
+                    binding?.avatarButtons?.visibility = View.VISIBLE
                 }
                 ncApi.getEditableUserProfileFields(
                     ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
@@ -179,10 +179,10 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                     })
             } else {
                 item.setTitle(R.string.edit)
-                binding.avatarButtons.visibility = View.INVISIBLE
+                binding?.avatarButtons?.visibility = View.INVISIBLE
                 if (adapter!!.filteredDisplayList.isEmpty()) {
-                    binding.emptyList.root.visibility = View.VISIBLE
-                    binding.userinfoList.visibility = View.GONE
+                    binding?.emptyList?.root?.visibility = View.VISIBLE
+                    binding?.userinfoList?.visibility = View.GONE
                 }
             }
             adapter!!.notifyDataSetChanged()
@@ -194,14 +194,14 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     override fun onAttach(view: View) {
         super.onAttach(view)
         adapter = UserInfoAdapter(null, viewThemeUtils, this)
-        binding.userinfoList.adapter = adapter
-        binding.userinfoList.setItemViewCacheSize(DEFAULT_CACHE_SIZE)
+        binding?.userinfoList?.adapter = adapter
+        binding?.userinfoList?.setItemViewCacheSize(DEFAULT_CACHE_SIZE)
         currentUser = userManager.currentUser.blockingGet()
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
-        binding.avatarUpload.setOnClickListener { sendSelectLocalFileIntent() }
-        binding.avatarChoose.setOnClickListener { showBrowserScreen() }
-        binding.avatarCamera.setOnClickListener { checkPermissionAndTakePicture() }
-        binding.avatarDelete.setOnClickListener {
+        binding?.avatarUpload?.setOnClickListener { sendSelectLocalFileIntent() }
+        binding?.avatarChoose?.setOnClickListener { showBrowserScreen() }
+        binding?.avatarCamera?.setOnClickListener { checkPermissionAndTakePicture() }
+        binding?.avatarDelete?.setOnClickListener {
             ncApi.deleteAvatar(
                 credentials,
                 ApiUtils.getUrlForTempAvatar(currentUser!!.baseUrl)
@@ -216,7 +216,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                     override fun onNext(genericOverall: GenericOverall) {
                         DisplayUtils.loadAvatarImage(
                             currentUser,
-                            binding.avatarImage,
+                            binding?.avatarImage,
                             true
                         )
                     }
@@ -230,7 +230,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                     }
                 })
         }
-        ViewCompat.setTransitionName(binding.avatarImage, "userAvatar.transitionTag")
+        binding?.avatarImage?.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
         ncApi.getUserProfile(credentials, ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl))
             .retry(DEFAULT_RETRIES)
             .subscribeOn(Schedulers.io())
@@ -262,10 +262,12 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     }
 
     private fun colorIcons() {
-        viewThemeUtils.material.themeFAB(binding.avatarChoose)
-        viewThemeUtils.material.themeFAB(binding.avatarCamera)
-        viewThemeUtils.material.themeFAB(binding.avatarUpload)
-        viewThemeUtils.material.themeFAB(binding.avatarDelete)
+        binding?.let {
+            viewThemeUtils.material.themeFAB(it.avatarChoose)
+            viewThemeUtils.material.themeFAB(it.avatarCamera)
+            viewThemeUtils.material.themeFAB(it.avatarUpload)
+            viewThemeUtils.material.themeFAB(it.avatarDelete)
+        }
     }
 
     private fun isAllEmpty(items: Array<String?>): Boolean {
@@ -283,13 +285,13 @@ class ProfileController : BaseController(R.layout.controller_profile) {
             return
         }
         if (currentUser!!.baseUrl != null) {
-            binding.userinfoBaseurl.text = Uri.parse(currentUser!!.baseUrl).host
+            binding?.userinfoBaseurl?.text = Uri.parse(currentUser!!.baseUrl).host
         }
-        DisplayUtils.loadAvatarImage(currentUser, binding.avatarImage, false)
+        DisplayUtils.loadAvatarImage(currentUser, binding?.avatarImage, false)
         if (!TextUtils.isEmpty(userInfo?.displayName)) {
-            binding.userinfoFullName.text = userInfo?.displayName
+            binding?.userinfoFullName?.text = userInfo?.displayName
         }
-        binding.loadingContent.visibility = View.VISIBLE
+        binding?.loadingContent?.visibility = View.VISIBLE
         adapter!!.setData(createUserInfoDetails(userInfo))
         if (isAllEmpty(
                 arrayOf(
@@ -302,18 +304,18 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                     )
             )
         ) {
-            binding.userinfoList.visibility = View.GONE
-            binding.loadingContent.visibility = View.GONE
-            binding.emptyList.root.visibility = View.VISIBLE
+            binding?.userinfoList?.visibility = View.GONE
+            binding?.loadingContent?.visibility = View.GONE
+            binding?.emptyList?.root?.visibility = View.VISIBLE
             setErrorMessageForMultiList(
                 activity!!.getString(R.string.userinfo_no_info_headline),
                 activity!!.getString(R.string.userinfo_no_info_text),
                 R.drawable.ic_user
             )
         } else {
-            binding.emptyList.root.visibility = View.GONE
-            binding.loadingContent.visibility = View.GONE
-            binding.userinfoList.visibility = View.VISIBLE
+            binding?.emptyList?.root?.visibility = View.GONE
+            binding?.loadingContent?.visibility = View.GONE
+            binding?.userinfoList?.visibility = View.VISIBLE
         }
 
         // show edit button
@@ -354,13 +356,13 @@ class ProfileController : BaseController(R.layout.controller_profile) {
         }
 
         try {
-            binding.emptyList.emptyListViewHeadline.text = headline
-            binding.emptyList.emptyListViewText.text = message
-            binding.emptyList.emptyListIcon.setImageResource(errorResource)
-            binding.emptyList.emptyListIcon.visibility = View.VISIBLE
-            binding.emptyList.emptyListViewText.visibility = View.VISIBLE
-            binding.userinfoList.visibility = View.GONE
-            binding.loadingContent.visibility = View.GONE
+            binding?.emptyList?.emptyListViewHeadline?.text = headline
+            binding?.emptyList?.emptyListViewText?.text = message
+            binding?.emptyList?.emptyListIcon?.setImageResource(errorResource)
+            binding?.emptyList?.emptyListIcon?.visibility = View.VISIBLE
+            binding?.emptyList?.emptyListViewText?.visibility = View.VISIBLE
+            binding?.userinfoList?.visibility = View.GONE
+            binding?.loadingContent?.visibility = View.GONE
         } catch (npe: NullPointerException) {
             // view binding can be null
             // since this is called asynchronously and UI might have been destroyed in the meantime
@@ -453,7 +455,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                         override fun onNext(userProfileOverall: GenericOverall) {
                             Log.d(TAG, "Successfully saved: " + item.text + " as " + item.field)
                             if (item.field == Field.DISPLAYNAME) {
-                                binding.userinfoFullName.text = item.text
+                                binding?.userinfoFullName?.text = item.text
                             }
                         }
 
@@ -646,7 +648,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    DisplayUtils.loadAvatarImage(currentUser, binding.avatarImage, true)
+                    DisplayUtils.loadAvatarImage(currentUser, binding?.avatarImage, true)
                 }
 
                 override fun onError(e: Throwable) {

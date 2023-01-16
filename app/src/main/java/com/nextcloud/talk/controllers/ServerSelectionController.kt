@@ -63,7 +63,7 @@ import javax.inject.Inject
 class ServerSelectionController :
     BaseController(R.layout.controller_server_selection) {
 
-    private val binding: ControllerServerSelectionBinding by viewBinding(ControllerServerSelectionBinding::bind)
+    private val binding: ControllerServerSelectionBinding? by viewBinding(ControllerServerSelectionBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
@@ -99,14 +99,14 @@ class ServerSelectionController :
 
         actionBar?.hide()
 
-        binding.hostUrlInputHelperText.text = String.format(
+        binding?.hostUrlInputHelperText?.text = String.format(
             resources!!.getString(R.string.nc_server_helper_text),
             resources!!.getString(R.string.nc_server_product_name)
         )
-        binding.serverEntryTextInputLayout.setEndIconOnClickListener { checkServerAndProceed() }
+        binding?.serverEntryTextInputLayout?.setEndIconOnClickListener { checkServerAndProceed() }
 
         if (resources!!.getBoolean(R.bool.hide_auth_cert)) {
-            binding.certTextView.visibility = View.GONE
+            binding?.certTextView?.visibility = View.GONE
         }
 
         val loggedInUsers = userManager.users.blockingGet()
@@ -117,21 +117,21 @@ class ServerSelectionController :
         } else if (isAbleToShowProviderLink() && loggedInUsers.isEmpty()) {
             showVisitProvidersInfo()
         } else {
-            binding.importOrChooseProviderText.visibility = View.INVISIBLE
+            binding?.importOrChooseProviderText?.visibility = View.INVISIBLE
         }
 
-        binding.serverEntryTextInputEditText.requestFocus()
+        binding?.serverEntryTextInputEditText?.requestFocus()
         if (!TextUtils.isEmpty(resources!!.getString(R.string.weblogin_url))) {
-            binding.serverEntryTextInputEditText.setText(resources!!.getString(R.string.weblogin_url))
+            binding?.serverEntryTextInputEditText?.setText(resources!!.getString(R.string.weblogin_url))
             checkServerAndProceed()
         }
-        binding.serverEntryTextInputEditText.setOnEditorActionListener { _: TextView?, i: Int, _: KeyEvent? ->
+        binding?.serverEntryTextInputEditText?.setOnEditorActionListener { _: TextView?, i: Int, _: KeyEvent? ->
             if (i == EditorInfo.IME_ACTION_DONE) {
                 checkServerAndProceed()
             }
             false
         }
-        binding.certTextView.setOnClickListener { onCertClick() }
+        binding?.certTextView?.setOnClickListener { onCertClick() }
     }
 
     private fun isAbleToShowProviderLink(): Boolean {
@@ -145,25 +145,26 @@ class ServerSelectionController :
             )
         ) {
             if (availableAccounts.size > 1) {
-                binding.importOrChooseProviderText.text = String.format(
+                binding?.importOrChooseProviderText?.text = String.format(
                     resources!!.getString(R.string.nc_server_import_accounts),
                     AccountUtils.getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
                 )
             } else {
-                binding.importOrChooseProviderText.text = String.format(
+                binding?.importOrChooseProviderText?.text = String.format(
                     resources!!.getString(R.string.nc_server_import_account),
                     AccountUtils.getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
                 )
             }
         } else {
             if (availableAccounts.size > 1) {
-                binding.importOrChooseProviderText.text =
+                binding?.importOrChooseProviderText?.text =
                     resources!!.getString(R.string.nc_server_import_accounts_plain)
             } else {
-                binding.importOrChooseProviderText.text = resources!!.getString(R.string.nc_server_import_account_plain)
+                binding?.importOrChooseProviderText?.text =
+                    resources!!.getString(R.string.nc_server_import_account_plain)
             }
         }
-        binding.importOrChooseProviderText.setOnClickListener {
+        binding?.importOrChooseProviderText?.setOnClickListener {
             val bundle = Bundle()
             bundle.putBoolean(KEY_IS_ACCOUNT_IMPORT, true)
             router.pushController(
@@ -177,8 +178,8 @@ class ServerSelectionController :
     }
 
     private fun showVisitProvidersInfo() {
-        binding.importOrChooseProviderText.setText(R.string.nc_get_from_provider)
-        binding.importOrChooseProviderText.setOnClickListener {
+        binding?.importOrChooseProviderText?.setText(R.string.nc_get_from_provider)
+        binding?.importOrChooseProviderText?.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
                 Uri.parse(
@@ -199,12 +200,12 @@ class ServerSelectionController :
     private fun checkServerAndProceed() {
         dispose()
         try {
-            var url: String = binding.serverEntryTextInputEditText.text.toString().trim { it <= ' ' }
-            binding.serverEntryTextInputEditText.isEnabled = false
+            var url: String = binding?.serverEntryTextInputEditText?.text.toString().trim { it <= ' ' }
+            binding?.serverEntryTextInputEditText?.isEnabled = false
             showserverEntryProgressBar()
-            if (binding.importOrChooseProviderText.visibility != View.INVISIBLE) {
-                binding.importOrChooseProviderText.visibility = View.INVISIBLE
-                binding.certTextView.visibility = View.INVISIBLE
+            if (binding?.importOrChooseProviderText?.visibility != View.INVISIBLE) {
+                binding?.importOrChooseProviderText?.visibility = View.INVISIBLE
+                binding?.certTextView?.visibility = View.INVISIBLE
             }
             if (url.endsWith("/")) {
                 url = url.substring(0, url.length - 1)
@@ -282,19 +283,19 @@ class ServerSelectionController :
                         hideserverEntryProgressBar()
                     }
 
-                    binding.serverEntryTextInputEditText.isEnabled = true
+                    binding?.serverEntryTextInputEditText?.isEnabled = true
 
-                    if (binding.importOrChooseProviderText.visibility != View.INVISIBLE) {
-                        binding.importOrChooseProviderText.visibility = View.VISIBLE
-                        binding.certTextView.visibility = View.VISIBLE
+                    if (binding?.importOrChooseProviderText?.visibility != View.INVISIBLE) {
+                        binding?.importOrChooseProviderText?.visibility = View.VISIBLE
+                        binding?.certTextView?.visibility = View.VISIBLE
                     }
                     dispose()
                 }
             }) {
                 hideserverEntryProgressBar()
-                if (binding.importOrChooseProviderText.visibility != View.INVISIBLE) {
-                    binding.importOrChooseProviderText.visibility = View.VISIBLE
-                    binding.certTextView.visibility = View.VISIBLE
+                if (binding?.importOrChooseProviderText?.visibility != View.INVISIBLE) {
+                    binding?.importOrChooseProviderText?.visibility = View.VISIBLE
+                    binding?.certTextView?.visibility = View.VISIBLE
                 }
                 dispose()
             }
@@ -305,19 +306,19 @@ class ServerSelectionController :
     }
 
     private fun setErrorText(text: String) {
-        binding.errorText.text = text
-        binding.errorText.visibility = View.VISIBLE
-        binding.serverEntryProgressBar.visibility = View.GONE
+        binding?.errorText?.text = text
+        binding?.errorText?.visibility = View.VISIBLE
+        binding?.serverEntryProgressBar?.visibility = View.GONE
     }
 
     private fun showserverEntryProgressBar() {
-        binding.errorText.visibility = View.GONE
-        binding.serverEntryProgressBar.visibility = View.VISIBLE
+        binding?.errorText?.visibility = View.GONE
+        binding?.serverEntryProgressBar?.visibility = View.VISIBLE
     }
 
     private fun hideserverEntryProgressBar() {
-        binding.errorText.visibility = View.GONE
-        binding.serverEntryProgressBar.visibility = View.INVISIBLE
+        binding?.errorText?.visibility = View.GONE
+        binding?.serverEntryProgressBar?.visibility = View.INVISIBLE
     }
 
     override fun onAttach(view: View) {
@@ -358,9 +359,9 @@ class ServerSelectionController :
             activity!!.runOnUiThread {
                 try {
                     if (!TextUtils.isEmpty(appPreferences!!.temporaryClientCertAlias)) {
-                        binding.certTextView.setText(R.string.nc_change_cert_auth)
+                        binding?.certTextView?.setText(R.string.nc_change_cert_auth)
                     } else {
-                        binding.certTextView.setText(R.string.nc_configure_cert_auth)
+                        binding?.certTextView?.setText(R.string.nc_configure_cert_auth)
                     }
                     hideserverEntryProgressBar()
                 } catch (npe: java.lang.NullPointerException) {

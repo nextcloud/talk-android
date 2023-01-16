@@ -63,7 +63,7 @@ class SwitchAccountController(args: Bundle? = null) :
         R.layout.controller_generic_rv,
         args
     ) {
-    private val binding: ControllerGenericRvBinding by viewBinding(ControllerGenericRvBinding::bind)
+    private val binding: ControllerGenericRvBinding? by viewBinding(ControllerGenericRvBinding::bind)
 
     @Inject
     lateinit var userManager: UserManager
@@ -118,7 +118,7 @@ class SwitchAccountController(args: Bundle? = null) :
 
     override fun onViewBound(view: View) {
         super.onViewBound(view)
-        binding.swipeRefreshLayout.isEnabled = false
+        binding?.swipeRefreshLayout?.isEnabled = false
 
         actionBar?.show()
 
@@ -167,10 +167,10 @@ class SwitchAccountController(args: Bundle? = null) :
 
     private fun prepareViews() {
         val layoutManager: LinearLayoutManager = SmoothScrollLinearLayoutManager(activity)
-        binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.setHasFixedSize(true)
-        binding.recyclerView.adapter = adapter
-        binding.swipeRefreshLayout.isEnabled = false
+        binding?.recyclerView?.layoutManager = layoutManager
+        binding?.recyclerView?.setHasFixedSize(true)
+        binding?.recyclerView?.adapter = adapter
+        binding?.swipeRefreshLayout?.isEnabled = false
     }
 
     private fun reauthorizeFromImport(account: Account?) {

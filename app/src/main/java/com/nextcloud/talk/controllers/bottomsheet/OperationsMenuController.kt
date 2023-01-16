@@ -83,7 +83,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
     R.layout.controller_operations_menu,
     args
 ) {
-    private val binding: ControllerOperationsMenuBinding by viewBinding(ControllerOperationsMenuBinding::bind)
+    private val binding: ControllerOperationsMenuBinding? by viewBinding(ControllerOperationsMenuBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
@@ -117,7 +117,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
         sharedApplication!!.componentApplication.inject(this)
         currentUser = userManager.currentUser.blockingGet()
 
-        viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar)
+        binding?.progressBar?.let { viewThemeUtils.platform.colorCircularProgressBar(it) }
 
         if (!TextUtils.isEmpty(callUrl) && callUrl.contains("/call")) {
             conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1)
@@ -476,10 +476,10 @@ class OperationsMenuController(args: Bundle) : BaseController(
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun showResultImage(everythingOK: Boolean, isGuestSupportError: Boolean) {
         try {
-            binding.progressBar.visibility = View.GONE
+            binding?.progressBar?.visibility = View.GONE
             if (resources != null) {
                 if (everythingOK) {
-                    binding.resultImageView.setImageDrawable(
+                    binding?.resultImageView?.setImageDrawable(
                         DisplayUtils.getTintedDrawable(
                             resources,
                             R.drawable.ic_check_circle_black_24dp,
@@ -487,7 +487,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
                         )
                     )
                 } else {
-                    binding.resultImageView.setImageDrawable(
+                    binding?.resultImageView?.setImageDrawable(
                         DisplayUtils.getTintedDrawable(
                             resources,
                             R.drawable.ic_cancel_black_24dp,
@@ -496,35 +496,35 @@ class OperationsMenuController(args: Bundle) : BaseController(
                     )
                 }
             }
-            binding.resultImageView.visibility = View.VISIBLE
+            binding?.resultImageView?.visibility = View.VISIBLE
             if (everythingOK) {
-                binding.resultTextView.setText(R.string.nc_all_ok_operation)
+                binding?.resultTextView?.setText(R.string.nc_all_ok_operation)
             } else {
-                binding.resultTextView.setTextColor(resources!!.getColor(R.color.nc_darkRed))
+                binding?.resultTextView?.setTextColor(resources!!.getColor(R.color.nc_darkRed))
                 if (!isGuestSupportError) {
-                    binding.resultTextView.setText(R.string.nc_failed_to_perform_operation)
+                    binding?.resultTextView?.setText(R.string.nc_failed_to_perform_operation)
                 } else {
-                    binding.resultTextView.setText(R.string.nc_failed_signaling_settings)
-                    binding.webButton.setOnClickListener {
+                    binding?.resultTextView?.setText(R.string.nc_failed_signaling_settings)
+                    binding?.webButton?.setOnClickListener {
                         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(callUrl))
                         startActivity(browserIntent)
                     }
-                    binding.webButton.visibility = View.VISIBLE
+                    binding?.webButton?.visibility = View.VISIBLE
                 }
             }
-            binding.resultTextView.visibility = View.VISIBLE
+            binding?.resultTextView?.visibility = View.VISIBLE
             if (everythingOK) {
-                eventBus!!.post(ConversationsListFetchDataEvent())
+                eventBus.post(ConversationsListFetchDataEvent())
             } else {
-                binding.resultImageView.setImageDrawable(
+                binding?.resultImageView?.setImageDrawable(
                     DisplayUtils.getTintedDrawable(
                         resources,
                         R.drawable.ic_cancel_black_24dp,
                         R.color.nc_darkRed
                     )
                 )
-                binding.okButton.setOnClickListener { v: View? -> eventBus!!.post(ConversationsListFetchDataEvent()) }
-                binding.okButton.visibility = View.VISIBLE
+                binding?.okButton?.setOnClickListener { v: View? -> eventBus.post(ConversationsListFetchDataEvent()) }
+                binding?.okButton?.visibility = View.VISIBLE
             }
         } catch (npe: NullPointerException) {
             Log.i(TAG, "Controller already closed", npe)

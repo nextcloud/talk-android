@@ -90,7 +90,7 @@ class LocationPickerController(args: Bundle) :
     SearchView.OnQueryTextListener,
     LocationListener,
     GeocodingController.GeocodingResultListener {
-    private val binding: ControllerLocationBinding by viewBinding(ControllerLocationBinding::bind)
+    private val binding: ControllerLocationBinding? by viewBinding(ControllerLocationBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
@@ -164,13 +164,13 @@ class LocationPickerController(args: Bundle) :
 
     override fun onViewBound(view: View) {
         setLocationDescription(false, receivedChosenGeocodingResult)
-        binding.shareLocation.isClickable = false
-        binding.shareLocation.setOnClickListener {
+        binding?.shareLocation?.isClickable = false
+        binding?.shareLocation?.setOnClickListener {
             if (readyToShareLocation) {
                 shareLocation(
-                    binding.map.mapCenter?.latitude,
-                    binding.map.mapCenter?.longitude,
-                    binding.placeName.text.toString()
+                    binding?.map?.mapCenter?.latitude,
+                    binding?.map?.mapCenter?.longitude,
+                    binding?.placeName?.text.toString()
                 )
             } else {
                 Log.w(TAG, "readyToShareLocation was false while user tried to share location.")
@@ -217,8 +217,8 @@ class LocationPickerController(args: Bundle) :
 
     @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.ComplexMethod")
     private fun initMap() {
-        binding.map.setTileSource(TileSourceFactory.MAPNIK)
-        binding.map.onResume()
+        binding?.map?.setTileSource(TileSourceFactory.MAPNIK)
+        binding?.map?.onResume()
 
         locationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
@@ -229,12 +229,12 @@ class LocationPickerController(args: Bundle) :
         }
 
         val copyrightOverlay = CopyrightOverlay(context)
-        binding.map.overlays?.add(copyrightOverlay)
+        binding?.map?.overlays?.add(copyrightOverlay)
 
-        binding.map.setMultiTouchControls(true)
-        binding.map.isTilesScaledToDpi = true
+        binding?.map?.setMultiTouchControls(true)
+        binding?.map?.isTilesScaledToDpi = true
 
-        locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), binding.map)
+        locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), binding?.map)
         locationOverlay.enableMyLocation()
         locationOverlay.setPersonHotspot(PERSON_HOT_SPOT_X, PERSON_HOT_SPOT_Y)
         locationOverlay.setPersonIcon(
@@ -242,9 +242,9 @@ class LocationPickerController(args: Bundle) :
                 ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)
             )
         )
-        binding.map.overlays?.add(locationOverlay)
+        binding?.map?.overlays?.add(locationOverlay)
 
-        val mapController = binding.map.controller
+        val mapController = binding?.map?.controller
 
         if (receivedChosenGeocodingResult) {
             mapController?.setZoom(ZOOM_LEVEL_RECEIVED_RESULT)
@@ -273,16 +273,16 @@ class LocationPickerController(args: Bundle) :
             mapController?.setCenter(GeoPoint(geocodedLat, geocodedLon))
         }
 
-        binding.centerMapButton.setOnClickListener {
+        binding?.centerMapButton?.setOnClickListener {
             if (myLocation.latitude == COORDINATE_ZERO && myLocation.longitude == COORDINATE_ZERO) {
-                Toast.makeText(context, context?.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
+                Toast.makeText(context, context.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
             } else {
                 mapController?.animateTo(myLocation)
                 moveToCurrentLocationWasClicked = true
             }
         }
 
-        binding.map.addMapListener(
+        binding?.map?.addMapListener(
             delayedMapListener()
         )
     }
@@ -298,12 +298,12 @@ class LocationPickerController(args: Bundle) :
                             moveToCurrentLocationWasClicked = false
                         }
                         receivedChosenGeocodingResult -> {
-                            binding.shareLocation.isClickable = true
+                            binding?.shareLocation?.isClickable = true
                             setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
                             receivedChosenGeocodingResult = false
                         }
                         else -> {
-                            binding.shareLocation.isClickable = true
+                            binding?.shareLocation?.isClickable = true
                             setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
                         }
                     }
@@ -364,19 +364,19 @@ class LocationPickerController(args: Bundle) :
     private fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
         when {
             isGpsLocation -> {
-                binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_current_location)
-                binding.placeName.visibility = View.GONE
-                binding.placeName.text = ""
+                binding?.shareLocationDescription?.text = context!!.getText(R.string.nc_share_current_location)
+                binding?.placeName?.visibility = View.GONE
+                binding?.placeName?.text = ""
             }
             isGeocodedResult -> {
-                binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_this_location)
-                binding.placeName.visibility = View.VISIBLE
-                binding.placeName.text = geocodedName
+                binding?.shareLocationDescription?.text = context!!.getText(R.string.nc_share_this_location)
+                binding?.placeName?.visibility = View.VISIBLE
+                binding?.placeName?.text = geocodedName
             }
             else -> {
-                binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_this_location)
-                binding.placeName.visibility = View.GONE
-                binding.placeName.text = ""
+                binding?.shareLocationDescription?.text = context!!.getText(R.string.nc_share_this_location)
+                binding?.placeName?.visibility = View.GONE
+                binding?.placeName?.text = ""
             }
         }
     }
