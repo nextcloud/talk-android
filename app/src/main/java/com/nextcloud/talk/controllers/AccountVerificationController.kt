@@ -378,17 +378,11 @@ class AccountVerificationController(args: Bundle? = null) :
         if (eventStatus.eventType == EventStatus.EventType.PUSH_REGISTRATION) {
             if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood && activity != null) {
                 activity!!.runOnUiThread {
-                    // try {
                     binding?.progressText?.text =
                         """
                             ${binding?.progressText?.text}
                             ${resources!!.getString(R.string.nc_push_disabled)}
                         """.trimIndent()
-                    // } catch (npe: NullPointerException) {
-                    //     // view binding can be null
-                    //     // since this is called asynchronously and UI might have been destroyed in the meantime
-                    //     Log.i(TAG, "UI destroyed - view binding already gone")
-                    // }
                 }
             }
             fetchAndStoreCapabilities()
