@@ -63,9 +63,9 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.extensions.loadAvatar
-import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadGroupCallAvatar
 import com.nextcloud.talk.extensions.loadPublicCallAvatar
+import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -107,7 +107,7 @@ class ConversationInfoController(args: Bundle) :
     ),
     FlexibleAdapter.OnItemClickListener {
 
-    private val binding: ControllerConversationInfoBinding by viewBinding(ControllerConversationInfoBinding::bind)
+    private val binding: ControllerConversationInfoBinding? by viewBinding(ControllerConversationInfoBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
@@ -173,19 +173,19 @@ class ConversationInfoController(args: Bundle) :
             databaseStorageModule = DatabaseStorageModule(conversationUser!!, conversationToken)
         }
 
-        binding.notificationSettingsView.notificationSettings.setStorageModule(databaseStorageModule)
-        binding.webinarInfoView.webinarSettings.setStorageModule(databaseStorageModule)
-        binding.guestAccessView.guestAccessSettings.setStorageModule(databaseStorageModule)
+        binding?.notificationSettingsView?.notificationSettings?.setStorageModule(databaseStorageModule)
+        binding?.webinarInfoView?.webinarSettings?.setStorageModule(databaseStorageModule)
+        binding?.guestAccessView?.guestAccessSettings?.setStorageModule(databaseStorageModule)
 
-        binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
-        binding.leaveConversationAction.setOnClickListener { leaveConversation() }
-        binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
-        binding.addParticipantsAction.setOnClickListener { addParticipants() }
+        binding?.deleteConversationAction?.setOnClickListener { showDeleteConversationDialog() }
+        binding?.leaveConversationAction?.setOnClickListener { leaveConversation() }
+        binding?.clearConversationHistory?.setOnClickListener { showClearHistoryDialog() }
+        binding?.addParticipantsAction?.setOnClickListener { addParticipants() }
 
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
-            binding.showSharedItemsAction.setOnClickListener { showSharedItems() }
+            binding?.showSharedItemsAction?.setOnClickListener { showSharedItems() }
         } else {
-            binding.categorySharedItems.visibility = GONE
+            binding?.categorySharedItems?.visibility = GONE
         }
 
         fetchRoomInfo()
@@ -195,19 +195,19 @@ class ConversationInfoController(args: Bundle) :
     }
 
     private fun themeSwitchPreferences() {
-        binding.run {
+        binding?.run {
             listOf(
-                binding.webinarInfoView.conversationInfoLobby,
-                binding.notificationSettingsView.callNotifications,
-                binding.notificationSettingsView.conversationInfoPriorityConversation,
-                binding.guestAccessView.guestAccessAllowSwitch,
-                binding.guestAccessView.guestAccessPasswordSwitch
+                binding?.webinarInfoView?.conversationInfoLobby!!,
+                binding?.notificationSettingsView?.callNotifications!!,
+                binding?.notificationSettingsView?.conversationInfoPriorityConversation!!,
+                binding?.guestAccessView?.guestAccessAllowSwitch!!,
+                binding?.guestAccessView?.guestAccessPasswordSwitch!!
             ).forEach(viewThemeUtils.talk::colorSwitchPreference)
         }
     }
 
     private fun themeCategories() {
-        binding.run {
+        binding?.run {
             listOf(
                 conversationInfoName,
                 conversationDescription,
@@ -216,9 +216,9 @@ class ConversationInfoController(args: Bundle) :
                 ownOptions,
                 categorySharedItems,
                 categoryConversationSettings,
-                binding.guestAccessView.guestAccessCategory,
-                binding.webinarInfoView.conversationInfoWebinar,
-                binding.notificationSettingsView.notificationSettingsCategory
+                binding?.guestAccessView?.guestAccessCategory!!,
+                binding?.webinarInfoView?.conversationInfoWebinar!!,
+                binding?.notificationSettingsView?.notificationSettingsCategory!!
             ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
         }
     }
@@ -237,9 +237,9 @@ class ConversationInfoController(args: Bundle) :
     override fun onViewBound(view: View) {
         super.onViewBound(view)
 
-        binding.addParticipantsAction.visibility = GONE
+        binding?.addParticipantsAction?.visibility = GONE
 
-        viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar)
+        binding?.progressBar?.let { viewThemeUtils.platform.colorCircularProgressBar(it) }
     }
 
     private fun setupWebinaryView() {
@@ -247,16 +247,16 @@ class ConversationInfoController(args: Bundle) :
             webinaryRoomType(conversation!!) &&
             conversation!!.canModerate(conversationUser!!)
         ) {
-            binding.webinarInfoView.webinarSettings.visibility = VISIBLE
+            binding?.webinarInfoView?.webinarSettings?.visibility = VISIBLE
 
             val isLobbyOpenToModeratorsOnly =
                 conversation!!.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY
-            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+            (binding?.webinarInfoView?.conversationInfoLobby?.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
                 .isChecked = isLobbyOpenToModeratorsOnly
 
             reconfigureLobbyTimerView()
 
-            binding.webinarInfoView.startTimePreferences.setOnClickListener {
+            binding?.webinarInfoView?.startTimePreferences?.setOnClickListener {
                 MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
                     val currentTimeCalendar = Calendar.getInstance()
                     if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
@@ -277,13 +277,13 @@ class ConversationInfoController(args: Bundle) :
                 }
             }
 
-            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+            (binding?.webinarInfoView?.conversationInfoLobby?.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
                 .setOnCheckedChangeListener { _, _ ->
                     reconfigureLobbyTimerView()
                     submitLobbyChanges()
                 }
         } else {
-            binding.webinarInfoView.webinarSettings.visibility = GONE
+            binding?.webinarInfoView?.webinarSettings?.visibility = GONE
         }
     }
 
@@ -294,7 +294,7 @@ class ConversationInfoController(args: Bundle) :
 
     private fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
         val isChecked =
-            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+            (binding?.webinarInfoView?.conversationInfoLobby?.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
                 .isChecked
 
         if (dateTime != null && isChecked) {
@@ -313,25 +313,25 @@ class ConversationInfoController(args: Bundle) :
             conversation!!.lobbyTimer != java.lang.Long.MIN_VALUE &&
             conversation!!.lobbyTimer != 0L
         ) {
-            binding.webinarInfoView.startTimePreferences.setSummary(
+            binding?.webinarInfoView?.startTimePreferences?.setSummary(
                 dateUtils.getLocalDateTimeStringFromTimestamp(
                     conversation!!.lobbyTimer!! * DateConstants.SECOND_DIVIDER,
                 )
             )
         } else {
-            binding.webinarInfoView.startTimePreferences.setSummary(R.string.nc_manual)
+            binding?.webinarInfoView?.startTimePreferences?.setSummary(R.string.nc_manual)
         }
 
         if (isChecked) {
-            binding.webinarInfoView.startTimePreferences.visibility = VISIBLE
+            binding?.webinarInfoView?.startTimePreferences?.visibility = VISIBLE
         } else {
-            binding.webinarInfoView.startTimePreferences.visibility = GONE
+            binding?.webinarInfoView?.startTimePreferences?.visibility = GONE
         }
     }
 
     fun submitLobbyChanges() {
         val state = if (
-            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+            (binding?.webinarInfoView?.conversationInfoLobby?.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
                 .isChecked
         ) 1 else 0
 
@@ -376,23 +376,30 @@ class ConversationInfoController(args: Bundle) :
 
     private fun showDeleteConversationDialog() {
         if (activity != null) {
-            val dialogBuilder = MaterialAlertDialogBuilder(binding.conversationInfoName.context)
-                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
-                .setTitle(R.string.nc_delete_call)
-                .setMessage(R.string.nc_delete_conversation_more)
-                .setPositiveButton(R.string.nc_delete) { _, _ ->
-                    deleteConversation()
-                }
-                .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                    // unused atm
-                }
-            viewThemeUtils.dialog
-                .colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            )
+            binding?.conversationInfoName?.let {
+                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
+                    .setIcon(
+                        viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                            context, R.drawable.ic_delete_black_24dp
+                        )
+                    )
+                    .setTitle(R.string.nc_delete_call)
+                    .setMessage(R.string.nc_delete_conversation_more)
+                    .setPositiveButton(R.string.nc_delete) { _, _ ->
+                        deleteConversation()
+                    }
+                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                        // unused atm
+                    }
+
+                viewThemeUtils.dialog
+                    .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
+                val dialog = dialogBuilder.show()
+                viewThemeUtils.platform.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                )
+            }
         }
     }
 
@@ -403,9 +410,9 @@ class ConversationInfoController(args: Bundle) :
             }
 
             val layoutManager = SmoothScrollLinearLayoutManager(activity)
-            binding.recyclerView.layoutManager = layoutManager
-            binding.recyclerView.setHasFixedSize(true)
-            binding.recyclerView.adapter = adapter
+            binding?.recyclerView?.layoutManager = layoutManager
+            binding?.recyclerView?.setHasFixedSize(true)
+            binding?.recyclerView?.adapter = adapter
 
             adapter!!.addListener(this)
         }
@@ -446,7 +453,7 @@ class ConversationInfoController(args: Bundle) :
 
         setupAdapter()
 
-        binding.participantsListCategory.visibility = VISIBLE
+        binding?.participantsListCategory?.visibility = VISIBLE
         adapter!!.updateDataSet(userItems)
     }
 
@@ -548,23 +555,30 @@ class ConversationInfoController(args: Bundle) :
 
     private fun showClearHistoryDialog() {
         if (activity != null) {
-            val dialogBuilder = MaterialAlertDialogBuilder(binding.conversationInfoName.context)
-                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp))
-                .setTitle(R.string.nc_clear_history)
-                .setMessage(R.string.nc_clear_history_warning)
-                .setPositiveButton(R.string.nc_delete_all) { _, _ ->
-                    clearHistory()
-                }
-                .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                    // unused atm
-                }
-            viewThemeUtils.dialog
-                .colorMaterialAlertDialogBackground(binding.conversationInfoName.context, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            )
+            binding?.conversationInfoName?.context?.let {
+                val dialogBuilder = MaterialAlertDialogBuilder(it)
+                    .setIcon(
+                        viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                            context, R.drawable.ic_delete_black_24dp
+                        )
+                    )
+                    .setTitle(R.string.nc_clear_history)
+                    .setMessage(R.string.nc_clear_history_warning)
+                    .setPositiveButton(R.string.nc_delete_all) { _, _ ->
+                        clearHistory()
+                    }
+                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                        // unused atm
+                    }
+
+                viewThemeUtils.dialog
+                    .colorMaterialAlertDialogBackground(it, dialogBuilder)
+                val dialog = dialogBuilder.show()
+                viewThemeUtils.platform.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                )
+            }
         }
     }
 
@@ -638,70 +652,72 @@ class ConversationInfoController(args: Bundle) :
                         val conversationCopy = conversation
 
                         if (conversationCopy!!.canModerate(conversationUser)) {
-                            binding.addParticipantsAction.visibility = VISIBLE
+                            binding?.addParticipantsAction?.visibility = VISIBLE
                             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "clear-history")) {
-                                binding.clearConversationHistory.visibility = VISIBLE
+                                binding?.clearConversationHistory?.visibility = VISIBLE
                             } else {
-                                binding.clearConversationHistory.visibility = GONE
+                                binding?.clearConversationHistory?.visibility = GONE
                             }
                         } else {
-                            binding.addParticipantsAction.visibility = GONE
-                            binding.clearConversationHistory.visibility = GONE
+                            binding?.addParticipantsAction?.visibility = GONE
+                            binding?.clearConversationHistory?.visibility = GONE
                         }
 
                         if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
-                            binding.ownOptions.visibility = VISIBLE
+                            binding?.ownOptions?.visibility = VISIBLE
 
                             setupWebinaryView()
 
                             if (!conversation!!.canLeave()) {
-                                binding.leaveConversationAction.visibility = GONE
+                                binding?.leaveConversationAction?.visibility = GONE
                             } else {
-                                binding.leaveConversationAction.visibility = VISIBLE
+                                binding?.leaveConversationAction?.visibility = VISIBLE
                             }
 
                             if (!conversation!!.canDelete(conversationUser)) {
-                                binding.deleteConversationAction.visibility = GONE
+                                binding?.deleteConversationAction?.visibility = GONE
                             } else {
-                                binding.deleteConversationAction.visibility = VISIBLE
+                                binding?.deleteConversationAction?.visibility = VISIBLE
                             }
 
                             if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
-                                binding.notificationSettingsView.callNotifications.visibility = GONE
+                                binding?.notificationSettingsView?.callNotifications?.visibility = GONE
                             }
 
                             if (conversation!!.notificationCalls === null) {
-                                binding.notificationSettingsView.callNotifications.visibility = GONE
+                                binding?.notificationSettingsView?.callNotifications?.visibility = GONE
                             } else {
-                                binding.notificationSettingsView.callNotifications.value =
+                                binding?.notificationSettingsView?.callNotifications?.value =
                                     conversationCopy.notificationCalls == 1
                             }
 
                             getListOfParticipants()
 
-                            binding.progressBar.visibility = GONE
+                            binding?.progressBar?.visibility = GONE
 
-                            binding.conversationInfoName.visibility = VISIBLE
+                            binding?.conversationInfoName?.visibility = VISIBLE
 
-                            binding.displayNameText.text = conversation!!.displayName
+                            binding?.displayNameText?.text = conversation!!.displayName
 
                             if (conversation!!.description != null && !conversation!!.description!!.isEmpty()) {
-                                binding.descriptionText.text = conversation!!.description
-                                binding.conversationDescription.visibility = VISIBLE
+                                binding?.descriptionText?.text = conversation!!.description
+                                binding?.conversationDescription?.visibility = VISIBLE
                             }
 
                             loadConversationAvatar()
                             adjustNotificationLevelUI()
                             initExpiringMessageOption()
 
-                            GuestAccessHelper(
-                                this@ConversationInfoController,
-                                binding,
-                                conversation!!,
-                                conversationUser
-                            ).setupGuestAccess()
+                            binding?.let {
+                                GuestAccessHelper(
+                                    this@ConversationInfoController,
+                                    it,
+                                    conversation!!,
+                                    conversationUser
+                                ).setupGuestAccess()
+                            }
 
-                            binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
+                            binding?.notificationSettingsView?.notificationSettings?.visibility = VISIBLE
                         }
                     } catch (npe: NullPointerException) {
                         // view binding can be null
@@ -725,11 +741,11 @@ class ConversationInfoController(args: Bundle) :
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")
         ) {
             databaseStorageModule?.setMessageExpiration(conversation!!.messageExpiration)
-            binding.conversationInfoExpireMessages.setStorageModule(databaseStorageModule)
-            binding.conversationInfoExpireMessages.visibility = View.VISIBLE
-            binding.conversationInfoExpireMessagesExplanation.visibility = View.VISIBLE
+            binding?.conversationInfoExpireMessages?.setStorageModule(databaseStorageModule)
+            binding?.conversationInfoExpireMessages?.visibility = VISIBLE
+            binding?.conversationInfoExpireMessagesExplanation?.visibility = VISIBLE
         } else {
-            binding.categoryConversationSettings.visibility = View.GONE
+            binding?.categoryConversationSettings?.visibility = GONE
         }
     }
 
@@ -739,8 +755,8 @@ class ConversationInfoController(args: Bundle) :
                 conversationUser != null &&
                 CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")
             ) {
-                binding.notificationSettingsView.conversationInfoMessageNotifications.isEnabled = true
-                binding.notificationSettingsView.conversationInfoMessageNotifications.alpha = 1.0f
+                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.isEnabled = true
+                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.alpha = 1.0f
 
                 if (conversation!!.notificationLevel != Conversation.NotificationLevel.DEFAULT) {
                     val stringValue: String =
@@ -751,13 +767,13 @@ class ConversationInfoController(args: Bundle) :
                             else -> "mention"
                         }
 
-                    binding.notificationSettingsView.conversationInfoMessageNotifications.value = stringValue
+                    binding?.notificationSettingsView?.conversationInfoMessageNotifications?.value = stringValue
                 } else {
                     setProperNotificationValue(conversation)
                 }
             } else {
-                binding.notificationSettingsView.conversationInfoMessageNotifications.isEnabled = false
-                binding.notificationSettingsView.conversationInfoMessageNotifications.alpha = LOW_EMPHASIS_OPACITY
+                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.isEnabled = false
+                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.alpha = LOW_EMPHASIS_OPACITY
                 setProperNotificationValue(conversation)
             }
         }
@@ -767,28 +783,28 @@ class ConversationInfoController(args: Bundle) :
         if (conversation!!.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             // hack to see if we get mentioned always or just on mention
             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag")) {
-                binding.notificationSettingsView.conversationInfoMessageNotifications.value = "always"
+                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.value = "always"
             } else {
-                binding.notificationSettingsView.conversationInfoMessageNotifications.value = "mention"
+                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.value = "mention"
             }
         } else {
-            binding.notificationSettingsView.conversationInfoMessageNotifications.value = "mention"
+            binding?.notificationSettingsView?.conversationInfoMessageNotifications?.value = "mention"
         }
     }
 
     private fun loadConversationAvatar() {
         when (conversation!!.type) {
             Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
-                conversation!!.name?.let { binding.avatarImage.loadAvatar(conversationUser!!, it) }
+                conversation!!.name?.let { binding?.avatarImage?.loadAvatar(conversationUser!!, it) }
             }
             Conversation.ConversationType.ROOM_GROUP_CALL -> {
-                binding.avatarImage.loadGroupCallAvatar(viewThemeUtils)
+                binding?.avatarImage?.loadGroupCallAvatar(viewThemeUtils)
             }
             Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                binding.avatarImage.loadPublicCallAvatar(viewThemeUtils)
+                binding?.avatarImage?.loadPublicCallAvatar(viewThemeUtils)
             }
             Conversation.ConversationType.ROOM_SYSTEM -> {
-                binding.avatarImage.loadSystemAvatar()
+                binding?.avatarImage?.loadSystemAvatar()
             }
 
             else -> {

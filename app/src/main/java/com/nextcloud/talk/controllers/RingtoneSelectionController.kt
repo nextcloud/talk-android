@@ -57,7 +57,7 @@ class RingtoneSelectionController(args: Bundle) :
         args
     ),
     FlexibleAdapter.OnItemClickListener {
-    private val binding: ControllerGenericRvBinding by viewBinding(ControllerGenericRvBinding::bind)
+    private val binding: ControllerGenericRvBinding? by viewBinding(ControllerGenericRvBinding::bind)
 
     private var adapter: FlexibleAdapter<*>? = null
     private var adapterDataObserver: RecyclerView.AdapterDataObserver? = null
@@ -89,9 +89,9 @@ class RingtoneSelectionController(args: Bundle) :
 
     private fun prepareViews() {
         val layoutManager: RecyclerView.LayoutManager = SmoothScrollLinearLayoutManager(activity)
-        binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.setHasFixedSize(true)
-        binding.recyclerView.adapter = adapter
+        binding?.recyclerView?.layoutManager = layoutManager
+        binding?.recyclerView?.setHasFixedSize(true)
+        binding?.recyclerView?.adapter = adapter
         adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
@@ -99,7 +99,7 @@ class RingtoneSelectionController(args: Bundle) :
             }
         }
         adapter!!.registerAdapterDataObserver(adapterDataObserver!!)
-        binding.swipeRefreshLayout.isEnabled = false
+        binding?.swipeRefreshLayout?.isEnabled = false
     }
 
     @SuppressLint("LongLogTag")
