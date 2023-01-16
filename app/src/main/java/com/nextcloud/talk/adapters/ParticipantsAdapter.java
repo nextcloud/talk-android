@@ -29,6 +29,8 @@ public class ParticipantsAdapter extends BaseAdapter {
 
     private static final String TAG = "ParticipantsAdapter";
 
+    private final ParticipantDisplayItem.Observer participantDisplayItemObserver = this::notifyDataSetChanged;
+
     private final Context mContext;
     private final ArrayList<ParticipantDisplayItem> participantDisplayItems;
     private final RelativeLayout gridViewWrapper;
@@ -50,8 +52,17 @@ public class ParticipantsAdapter extends BaseAdapter {
 
         this.participantDisplayItems = new ArrayList<>();
         this.participantDisplayItems.addAll(participantDisplayItems.values());
+
+        for (ParticipantDisplayItem participantDisplayItem : this.participantDisplayItems) {
+            participantDisplayItem.addObserver(participantDisplayItemObserver);
+        }
     }
 
+    public void destroy() {
+        for (ParticipantDisplayItem participantDisplayItem : participantDisplayItems) {
+            participantDisplayItem.removeObserver(participantDisplayItemObserver);
+        }
+    }
 
     @Override
     public int getCount() {

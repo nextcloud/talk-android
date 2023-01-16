@@ -121,6 +121,9 @@ public class PeerConnectionWrapper {
     private final boolean isMCUPublisher;
     private final String videoStreamType;
 
+    // It is assumed that there will be at most one remote stream at each time.
+    private MediaStream stream;
+
     @Inject
     Context context;
 
@@ -217,6 +220,10 @@ public class PeerConnectionWrapper {
 
     public String getVideoStreamType() {
         return videoStreamType;
+    }
+
+    public MediaStream getStream() {
+        return stream;
     }
 
     public void removePeerConnection() {
@@ -484,11 +491,15 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onAddStream(MediaStream mediaStream) {
+            stream = mediaStream;
+
             peerConnectionNotifier.notifyStreamAdded(mediaStream);
         }
 
         @Override
         public void onRemoveStream(MediaStream mediaStream) {
+            stream = null;
+
             peerConnectionNotifier.notifyStreamRemoved(mediaStream);
         }
 
