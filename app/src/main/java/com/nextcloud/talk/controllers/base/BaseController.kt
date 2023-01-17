@@ -54,7 +54,6 @@ import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SwitchAccountController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
-import com.nextcloud.talk.controllers.util.ControllerViewBindingDelegate
 import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -300,27 +299,6 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
                 editText.imeOptions = editText.imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
             } else if (view is ViewGroup) {
                 disableKeyboardPersonalisedLearning(view)
-            }
-        }
-    }
-
-    /**
-     * Mainly intended to be used in async listeners that may be called after the controller has been destroyed.
-     *
-     * If you need to use this function to patch a NPE crash, something is wrong in the way that the async calls are
-     * handled, they should have been cancelled when the controller UI was destroyed (if their only purpose was
-     * updating UI).
-     */
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    inline fun withNullableControllerViewBinding(block: () -> Unit) {
-        try {
-            block()
-        } catch (e: NullPointerException) {
-            // Handle only the exceptions we know about, let everything else pass through
-            if (e.stackTrace.firstOrNull()?.className == ControllerViewBindingDelegate::class.qualifiedName) {
-                Log.w("ControllerViewBinding", "Trying to update UI on a null ViewBinding.", e)
-            } else {
-                throw e
             }
         }
     }

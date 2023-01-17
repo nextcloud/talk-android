@@ -213,23 +213,7 @@ import java.util.Locale
 import java.util.Objects
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.LinkedHashMap
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.MutableMap
-import kotlin.collections.chunked
-import kotlin.collections.indexOfFirst
-import kotlin.collections.indices
-import kotlin.collections.isNotEmpty
-import kotlin.collections.iterator
-import kotlin.collections.map
 import kotlin.collections.set
-import kotlin.collections.toList
-import kotlin.collections.toMap
-import kotlin.collections.toMutableMap
-import kotlin.collections.toTypedArray
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -246,7 +230,7 @@ class ChatController(args: Bundle) :
     CommonMessageInterface,
     PreviewMessageInterface {
 
-    private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
+    private val binding: ControllerChatBinding? by viewBinding(ControllerChatBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
@@ -435,10 +419,8 @@ class ChatController(args: Bundle) :
                 }
             )
 
-            withNullableControllerViewBinding {
-                val itemTouchHelper = ItemTouchHelper(messageSwipeController)
-                itemTouchHelper.attachToRecyclerView(binding.messagesListView)
-            }
+            val itemTouchHelper = ItemTouchHelper(messageSwipeController)
+            itemTouchHelper.attachToRecyclerView(binding?.messagesListView)
         }
     }
 
@@ -541,7 +523,7 @@ class ChatController(args: Bundle) :
         var adapterWasNull = false
 
         if (adapter == null) {
-            binding.progressBar.visibility = View.VISIBLE
+            binding?.progressBar?.visibility = View.VISIBLE
 
             adapterWasNull = true
 
@@ -651,10 +633,10 @@ class ChatController(args: Bundle) :
                 this
             )
         } else {
-            binding.messagesListView.visibility = View.VISIBLE
+            binding?.messagesListView?.visibility = View.VISIBLE
         }
 
-        binding.messagesListView.setAdapter(adapter)
+        binding?.messagesListView?.setAdapter(adapter)
         adapter?.setLoadMoreListener(this)
         adapter?.setDateHeadersFormatter { format(it) }
         adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
@@ -677,11 +659,11 @@ class ChatController(args: Bundle) :
 
         setupSwipeToReply()
 
-        layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
+        layoutManager = binding?.messagesListView?.layoutManager as LinearLayoutManager?
 
-        binding.popupBubbleView.setRecyclerView(binding.messagesListView)
+        binding?.popupBubbleView?.setRecyclerView(binding?.messagesListView)
 
-        binding.popupBubbleView.setPopupBubbleListener { context ->
+        binding?.popupBubbleView?.setPopupBubbleListener { context ->
             if (newMessagesCount != 0) {
                 val scrollPosition = if (newMessagesCount - 1 < 0) {
                     0
@@ -690,18 +672,18 @@ class ChatController(args: Bundle) :
                 }
                 Handler().postDelayed(
                     {
-                        binding.messagesListView.smoothScrollToPosition(scrollPosition)
+                        binding?.messagesListView?.smoothScrollToPosition(scrollPosition)
                     },
                     NEW_MESSAGES_POPUP_BUBBLE_DELAY
                 )
             }
         }
 
-        viewThemeUtils.material.colorMaterialButtonPrimaryFilled(binding.popupBubbleView)
+        binding?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it.popupBubbleView) }
 
-        binding.messageInputView.setPadding(0, 0, 0, 0)
+        binding?.messageInputView?.setPadding(0, 0, 0, 0)
 
-        binding.messagesListView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding?.messagesListView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
@@ -710,8 +692,8 @@ class ChatController(args: Bundle) :
                         if (layoutManager!!.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
                             newMessagesCount = 0
 
-                            if (binding.popupBubbleView.isShown) {
-                                binding.popupBubbleView.hide()
+                            if (binding?.popupBubbleView?.isShown == true) {
+                                binding?.popupBubbleView?.hide()
                             }
                         }
                     }
@@ -723,9 +705,9 @@ class ChatController(args: Bundle) :
         val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
-        binding.messageInputView.inputEditText?.filters = filters
+        binding?.messageInputView?.inputEditText?.filters = filters
 
-        binding.messageInputView.inputEditText?.addTextChangedListener(object : TextWatcher {
+        binding?.messageInputView?.inputEditText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // unused atm
             }
@@ -734,19 +716,19 @@ class ChatController(args: Bundle) :
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 try {
                     if (s.length >= lengthFilter) {
-                        binding.messageInputView.inputEditText?.error = String.format(
+                        binding?.messageInputView?.inputEditText?.error = String.format(
                             Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
                             lengthFilter.toString()
                         )
                     } else {
-                        binding.messageInputView.inputEditText?.error = null
+                        binding?.messageInputView?.inputEditText?.error = null
                     }
 
-                    val editable = binding.messageInputView.inputEditText?.editableText
-                    if (editable != null && binding.messageInputView.inputEditText != null) {
+                    val editable = binding?.messageInputView?.inputEditText?.editableText
+                    if (editable != null && binding?.messageInputView?.inputEditText != null) {
                         val mentionSpans = editable.getSpans(
                             0,
-                            binding.messageInputView.inputEditText!!.length(),
+                            binding?.messageInputView?.inputEditText!!.length(),
                             Spans.MentionChipSpan::class.java
                         )
                         var mentionSpan: Spans.MentionChipSpan
@@ -779,15 +761,15 @@ class ChatController(args: Bundle) :
 
         // Image keyboard support
         // See: https://developer.android.com/guide/topics/text/image-keyboard
-        (binding.messageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
+        (binding?.messageInputView?.inputEditText as ImageEmojiEditText).onCommitContentListener = {
             uploadFile(it.toString(), false)
         }
 
         showMicrophoneButton(true)
 
-        binding.messageInputView.messageInput.doAfterTextChanged {
+        binding?.messageInputView?.messageInput?.doAfterTextChanged {
             try {
-                if (binding.messageInputView.messageInput.text.isEmpty()) {
+                if (binding?.messageInputView?.messageInput?.text?.isEmpty() == true) {
                     showMicrophoneButton(true)
                 } else {
                     showMicrophoneButton(false)
@@ -806,7 +788,7 @@ class ChatController(args: Bundle) :
         var voiceRecordStartTime = 0L
         var voiceRecordEndTime = 0L
 
-        binding.messageInputView.recordAudioButton.setOnTouchListener(object : View.OnTouchListener {
+        binding?.messageInputView?.recordAudioButton?.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 view.performClick()
                 when (event?.action) {
@@ -835,7 +817,7 @@ class ChatController(args: Bundle) :
 
                         stopAndDiscardAudioRecording()
                         showRecordAudioUi(false)
-                        binding.messageInputView.slideToCancelDescription.x = sliderInitX
+                        binding?.messageInputView?.slideToCancelDescription?.x = sliderInitX
                     }
                     MotionEvent.ACTION_UP -> {
                         Log.d(TAG, "ACTION_UP. stop recording??")
@@ -861,7 +843,7 @@ class ChatController(args: Bundle) :
                             stopAndSendAudioRecording()
                         }
 
-                        binding.messageInputView.slideToCancelDescription.x = sliderInitX
+                        binding?.messageInputView?.slideToCancelDescription?.x = sliderInitX
                     }
                     MotionEvent.ACTION_MOVE -> {
                         Log.d(TAG, "ACTION_MOVE.")
@@ -873,26 +855,26 @@ class ChatController(args: Bundle) :
                         showRecordAudioUi(true)
 
                         if (sliderInitX == 0.0F) {
-                            sliderInitX = binding.messageInputView.slideToCancelDescription.x
+                            sliderInitX = binding?.messageInputView?.slideToCancelDescription?.x!!
                         }
 
                         val movedX: Float = event.x
                         deltaX = movedX - downX
 
                         // only allow slide to left
-                        if (binding.messageInputView.slideToCancelDescription.x > sliderInitX) {
-                            binding.messageInputView.slideToCancelDescription.x = sliderInitX
+                        if (binding?.messageInputView?.slideToCancelDescription?.x!! > sliderInitX) {
+                            binding?.messageInputView?.slideToCancelDescription?.x = sliderInitX
                         }
 
-                        if (binding.messageInputView.slideToCancelDescription.x < VOICE_RECORD_CANCEL_SLIDER_X) {
+                        if (binding?.messageInputView?.slideToCancelDescription?.x!! < VOICE_RECORD_CANCEL_SLIDER_X) {
                             Log.d(TAG, "stopping recording because slider was moved to left")
                             stopAndDiscardAudioRecording()
                             showRecordAudioUi(false)
-                            binding.messageInputView.slideToCancelDescription.x = sliderInitX
+                            binding?.messageInputView?.slideToCancelDescription?.x = sliderInitX
                             return true
                         } else {
-                            binding.messageInputView.slideToCancelDescription.x = binding.messageInputView
-                                .slideToCancelDescription.x + deltaX
+                            binding?.messageInputView?.slideToCancelDescription?.x =
+                                binding?.messageInputView?.slideToCancelDescription?.x!! + deltaX
                             downX = movedX
                         }
                     }
@@ -902,26 +884,24 @@ class ChatController(args: Bundle) :
             }
         })
 
-        binding.messageInputView.inputEditText?.setText(sharedText)
-        binding.messageInputView.setAttachmentsListener {
+        binding?.messageInputView?.inputEditText?.setText(sharedText)
+        binding?.messageInputView?.setAttachmentsListener {
             activity?.let { AttachmentDialog(it, this).show() }
         }
 
-        binding.messageInputView.button.setOnClickListener { submitMessage(false) }
+        binding?.messageInputView?.button?.setOnClickListener { submitMessage(false) }
 
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
-            binding.messageInputView.button.setOnLongClickListener {
+            binding?.messageInputView?.button?.setOnLongClickListener {
                 showSendButtonMenu()
                 true
             }
         }
 
-        binding.messageInputView.button.contentDescription = resources?.getString(
-            R.string
-                .nc_description_send_message_button
-        )
+        binding?.messageInputView?.button?.contentDescription =
+            resources?.getString(R.string.nc_description_send_message_button)
 
-        viewThemeUtils.platform.colorImageView(binding.messageInputView.button)
+        binding?.messageInputView?.button?.let { viewThemeUtils.platform.colorImageView(it) }
 
         if (currentConversation != null && currentConversation?.roomId != null) {
             loadAvatarForStatusBar()
@@ -942,7 +922,7 @@ class ChatController(args: Bundle) :
     private fun showSendButtonMenu() {
         val popupMenu = PopupMenu(
             ContextThemeWrapper(view?.context, R.style.ChatSendButtonMenu),
-            binding.messageInputView.button,
+            binding?.messageInputView?.button,
             Gravity.END
         )
         popupMenu.inflate(R.menu.chat_send_menu)
@@ -1150,23 +1130,23 @@ class ChatController(args: Bundle) :
 
     private fun showRecordAudioUi(show: Boolean) {
         if (show) {
-            binding.messageInputView.microphoneEnabledInfo.visibility = View.VISIBLE
-            binding.messageInputView.microphoneEnabledInfoBackground.visibility = View.VISIBLE
-            binding.messageInputView.audioRecordDuration.visibility = View.VISIBLE
-            binding.messageInputView.slideToCancelDescription.visibility = View.VISIBLE
-            binding.messageInputView.attachmentButton.visibility = View.GONE
-            binding.messageInputView.smileyButton.visibility = View.GONE
-            binding.messageInputView.messageInput.visibility = View.GONE
-            binding.messageInputView.messageInput.hint = ""
+            binding?.messageInputView?.microphoneEnabledInfo?.visibility = View.VISIBLE
+            binding?.messageInputView?.microphoneEnabledInfoBackground?.visibility = View.VISIBLE
+            binding?.messageInputView?.audioRecordDuration?.visibility = View.VISIBLE
+            binding?.messageInputView?.slideToCancelDescription?.visibility = View.VISIBLE
+            binding?.messageInputView?.attachmentButton?.visibility = View.GONE
+            binding?.messageInputView?.smileyButton?.visibility = View.GONE
+            binding?.messageInputView?.messageInput?.visibility = View.GONE
+            binding?.messageInputView?.messageInput?.hint = ""
         } else {
-            binding.messageInputView.microphoneEnabledInfo.visibility = View.GONE
-            binding.messageInputView.microphoneEnabledInfoBackground.visibility = View.GONE
-            binding.messageInputView.audioRecordDuration.visibility = View.GONE
-            binding.messageInputView.slideToCancelDescription.visibility = View.GONE
-            binding.messageInputView.attachmentButton.visibility = View.VISIBLE
-            binding.messageInputView.smileyButton.visibility = View.VISIBLE
-            binding.messageInputView.messageInput.visibility = View.VISIBLE
-            binding.messageInputView.messageInput.hint =
+            binding?.messageInputView?.microphoneEnabledInfo?.visibility = View.GONE
+            binding?.messageInputView?.microphoneEnabledInfoBackground?.visibility = View.GONE
+            binding?.messageInputView?.audioRecordDuration?.visibility = View.GONE
+            binding?.messageInputView?.slideToCancelDescription?.visibility = View.GONE
+            binding?.messageInputView?.attachmentButton?.visibility = View.VISIBLE
+            binding?.messageInputView?.smileyButton?.visibility = View.VISIBLE
+            binding?.messageInputView?.messageInput?.visibility = View.VISIBLE
+            binding?.messageInputView?.messageInput?.hint =
                 context.resources?.getString(R.string.nc_hint_enter_a_message)
         }
     }
@@ -1179,15 +1159,15 @@ class ChatController(args: Bundle) :
     }
 
     private fun startAudioRecording(file: String) {
-        binding.messageInputView.audioRecordDuration.base = SystemClock.elapsedRealtime()
-        binding.messageInputView.audioRecordDuration.start()
+        binding?.messageInputView?.audioRecordDuration?.base = SystemClock.elapsedRealtime()
+        binding?.messageInputView?.audioRecordDuration?.start()
 
         val animation: Animation = AlphaAnimation(1.0f, 0.0f)
         animation.duration = ANIMATION_DURATION
         animation.interpolator = LinearInterpolator()
         animation.repeatCount = Animation.INFINITE
         animation.repeatMode = Animation.REVERSE
-        binding.messageInputView.microphoneEnabledInfo.startAnimation(animation)
+        binding?.messageInputView?.microphoneEnabledInfo?.startAnimation(animation)
 
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -1227,8 +1207,8 @@ class ChatController(args: Bundle) :
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun stopAudioRecording() {
-        binding.messageInputView.audioRecordDuration.stop()
-        binding.messageInputView.microphoneEnabledInfo.clearAnimation()
+        binding?.messageInputView?.audioRecordDuration?.stop()
+        binding?.messageInputView?.microphoneEnabledInfo?.clearAnimation()
 
         if (isVoiceRecordingInProgress) {
             recorder?.apply {
@@ -1301,9 +1281,9 @@ class ChatController(args: Bundle) :
                 shouldShowLobby() ||
                 !participantPermissions.hasChatPermission()
             ) {
-                binding.messageInputView.visibility = View.GONE
+                binding?.messageInputView?.visibility = View.GONE
             } else {
-                binding.messageInputView.visibility = View.VISIBLE
+                binding?.messageInputView?.visibility = View.VISIBLE
             }
         }
     }
@@ -1359,10 +1339,10 @@ class ChatController(args: Bundle) :
             }
 
             if (shouldShowLobby()) {
-                binding.lobby.lobbyView.visibility = View.VISIBLE
-                binding.messagesListView.visibility = View.GONE
-                binding.messageInputView.visibility = View.GONE
-                binding.progressBar.visibility = View.GONE
+                binding?.lobby?.lobbyView?.visibility = View.VISIBLE
+                binding?.messagesListView?.visibility = View.GONE
+                binding?.messageInputView?.visibility = View.GONE
+                binding?.progressBar?.visibility = View.GONE
 
                 val sb = StringBuilder()
                 sb.append(resources!!.getText(R.string.nc_lobby_waiting))
@@ -1383,11 +1363,11 @@ class ChatController(args: Bundle) :
                 }
 
                 sb.append(currentConversation!!.description)
-                binding.lobby.lobbyTextView.text = sb.toString()
+                binding?.lobby?.lobbyTextView?.text = sb.toString()
             } else {
-                binding.lobby.lobbyView.visibility = View.GONE
-                binding.messagesListView.visibility = View.VISIBLE
-                binding.messageInputView.inputEditText?.visibility = View.VISIBLE
+                binding?.lobby?.lobbyView?.visibility = View.GONE
+                binding?.messagesListView?.visibility = View.VISIBLE
+                binding?.messageInputView?.inputEditText?.visibility = View.VISIBLE
                 if (isFirstMessagesProcessing && pastPreconditionFailed) {
                     pastPreconditionFailed = false
                     pullChatMessages(0)
@@ -1397,9 +1377,9 @@ class ChatController(args: Bundle) :
                 }
             }
         } else {
-            binding.lobby.lobbyView.visibility = View.GONE
-            binding.messagesListView.visibility = View.VISIBLE
-            binding.messageInputView.inputEditText?.visibility = View.VISIBLE
+            binding?.lobby?.lobbyView?.visibility = View.GONE
+            binding?.messagesListView?.visibility = View.VISIBLE
+            binding?.messageInputView?.inputEditText?.visibility = View.VISIBLE
         }
     }
 
@@ -1461,31 +1441,30 @@ class ChatController(args: Bundle) :
                         }
                     }
 
-                    val materialAlertDialogBuilder = MaterialAlertDialogBuilder(binding.messageInputView.context)
-                        .setTitle(confirmationQuestion)
-                        .setMessage(filenamesWithLineBreaks.toString())
-                        .setPositiveButton(R.string.nc_yes) { _, _ ->
-                            if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
-                                uploadFiles(filesToUpload)
-                            } else {
-                                UploadAndShareFilesWorker.requestStoragePermission(this)
+                    binding?.messageInputView?.context?.let {
+                        val materialAlertDialogBuilder = MaterialAlertDialogBuilder(it)
+                            .setTitle(confirmationQuestion)
+                            .setMessage(filenamesWithLineBreaks.toString())
+                            .setPositiveButton(R.string.nc_yes) { _, _ ->
+                                if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
+                                    uploadFiles(filesToUpload)
+                                } else {
+                                    UploadAndShareFilesWorker.requestStoragePermission(this)
+                                }
                             }
-                        }
-                        .setNegativeButton(R.string.nc_no) { _, _ ->
-                            // unused atm
-                        }
+                            .setNegativeButton(R.string.nc_no) { _, _ ->
+                                // unused atm
+                            }
 
-                    viewThemeUtils.dialog.colorMaterialAlertDialogBackground(
-                        binding.messageInputView.context,
-                        materialAlertDialogBuilder
-                    )
+                        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it, materialAlertDialogBuilder)
 
-                    val dialog = materialAlertDialogBuilder.show()
+                        val dialog = materialAlertDialogBuilder.show()
 
-                    viewThemeUtils.platform.colorTextButtons(
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                    )
+                        viewThemeUtils.platform.colorTextButtons(
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                        )
+                    }
                 } catch (e: IllegalStateException) {
                     Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
                         .show()
@@ -1572,7 +1551,7 @@ class ChatController(args: Bundle) :
             it.item is ChatMessage && (it.item as ChatMessage).id == messageId
         }
         if (position != null && position >= 0) {
-            binding.messagesListView.smoothScrollToPosition(position)
+            binding?.messagesListView?.smoothScrollToPosition(position)
         } else {
             // TODO show error that we don't have that message?
         }
@@ -1732,12 +1711,12 @@ class ChatController(args: Bundle) :
                 val callback = MentionAutocompleteCallback(
                     activity,
                     conversationUser!!,
-                    binding.messageInputView.inputEditText,
+                    binding?.messageInputView?.inputEditText,
                     viewThemeUtils
                 )
 
-                if (mentionAutocomplete == null && binding.messageInputView.inputEditText != null) {
-                    mentionAutocomplete = Autocomplete.on<Mention>(binding.messageInputView.inputEditText)
+                if (mentionAutocomplete == null && binding?.messageInputView?.inputEditText != null) {
+                    mentionAutocomplete = Autocomplete.on<Mention>(binding?.messageInputView?.inputEditText)
                         .with(elevation)
                         .with(backgroundDrawable)
                         .with(MagicCharPolicy('@'))
@@ -1773,9 +1752,9 @@ class ChatController(args: Bundle) :
         ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomToken
         ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
-        val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
+        val smileyButton = binding?.messageInputView?.findViewById<ImageButton>(R.id.smileyButton)
 
-        emojiPopup = binding.messageInputView.inputEditText?.let {
+        emojiPopup = binding?.messageInputView?.inputEditText?.let {
             EmojiPopup(
                 rootView = view,
                 editText = it,
@@ -1793,7 +1772,7 @@ class ChatController(args: Bundle) :
                 },
                 onEmojiClickListener = {
                     try {
-                        binding.messageInputView.inputEditText?.editableText?.append(" ")
+                        binding?.messageInputView?.inputEditText?.editableText?.append(" ")
                     } catch (npe: NullPointerException) {
                         // view binding can be null
                         // since this is called asynchronously and UI might have been destroyed in the meantime
@@ -1807,12 +1786,14 @@ class ChatController(args: Bundle) :
             emojiPopup?.toggle()
         }
 
-        binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
+        binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
             cancelReply()
         }
 
-        viewThemeUtils.platform
-            .themeImageButton(binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton))
+        binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {
+            viewThemeUtils.platform
+                .themeImageButton(it)
+        }
 
         cancelNotificationsForCurrentConversation()
 
@@ -1824,8 +1805,8 @@ class ChatController(args: Bundle) :
     }
 
     private fun cancelReply() {
-        binding.messageInputView.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility = View.GONE
-        binding.messageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
+        binding?.messageInputView?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility = View.GONE
+        binding?.messageInputView?.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -2087,8 +2068,8 @@ class ChatController(args: Bundle) :
     }
 
     private fun submitMessage(sendWithoutNotification: Boolean) {
-        if (binding.messageInputView.inputEditText != null) {
-            val editable = binding.messageInputView.inputEditText!!.editableText
+        if (binding?.messageInputView?.inputEditText != null) {
+            val editable = binding?.messageInputView?.inputEditText!!.editableText
             val mentionSpans = editable.getSpans(
                 0,
                 editable.length,
@@ -2104,7 +2085,7 @@ class ChatController(args: Bundle) :
                 editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@$mentionId")
             }
 
-            binding.messageInputView.inputEditText?.setText("")
+            binding?.messageInputView?.inputEditText?.setText("")
             val replyMessageId: Int? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int?
             sendMessage(
                 editable,
@@ -2143,11 +2124,11 @@ class ChatController(args: Bundle) :
                         myFirstMessage = message
 
                         try {
-                            if (binding.popupBubbleView.isShown) {
-                                binding.popupBubbleView.hide()
+                            if (binding?.popupBubbleView?.isShown == true) {
+                                binding?.popupBubbleView?.hide()
                             }
 
-                            binding.messagesListView.smoothScrollToPosition(0)
+                            binding?.messagesListView?.smoothScrollToPosition(0)
                         } catch (npe: NullPointerException) {
                             // view binding can be null
                             // since this is called asynchronously and UI might have been destroyed in the meantime
@@ -2161,11 +2142,11 @@ class ChatController(args: Bundle) :
                             if (code.toString().startsWith("2")) {
                                 myFirstMessage = message
 
-                                if (binding.popupBubbleView.isShown) {
-                                    binding.popupBubbleView.hide()
+                                if (binding?.popupBubbleView?.isShown == true) {
+                                    binding?.popupBubbleView?.hide()
                                 }
 
-                                binding.messagesListView.smoothScrollToPosition(0)
+                                binding?.messagesListView?.smoothScrollToPosition(0)
                             }
                         }
                     }
@@ -2379,7 +2360,7 @@ class ChatController(args: Bundle) :
                 cancelNotificationsForCurrentConversation()
 
                 isFirstMessagesProcessing = false
-                binding.progressBar.visibility = View.GONE
+                binding?.progressBar?.visibility = View.GONE
             }
 
             historyRead = true
@@ -2406,9 +2387,9 @@ class ChatController(args: Bundle) :
             cancelNotificationsForCurrentConversation()
 
             isFirstMessagesProcessing = false
-            binding.progressBar.visibility = View.GONE
+            binding?.progressBar?.visibility = View.GONE
 
-            binding.messagesListView.visibility = View.VISIBLE
+            binding?.messagesListView?.visibility = View.VISIBLE
         }
 
         if (isFromTheFuture) {
@@ -2468,7 +2449,7 @@ class ChatController(args: Bundle) :
         if (shouldAddNewMessagesNotice && adapter != null) {
             layoutManager?.scrollToPositionWithOffset(
                 adapter!!.getMessagePositionByIdInReverse("-1"),
-                binding.messagesListView.height / 2
+                binding?.messagesListView?.height!! / 2
             )
         }
     }
@@ -2508,10 +2489,10 @@ class ChatController(args: Bundle) :
 
     private fun modifyMessageCount(shouldAddNewMessagesNotice: Boolean, shouldScroll: Boolean) {
         if (!shouldAddNewMessagesNotice && !shouldScroll) {
-            if (!binding.popupBubbleView.isShown) {
+            if (!binding?.popupBubbleView?.isShown!!) {
                 newMessagesCount = 1
-                binding.popupBubbleView.show()
-            } else if (binding.popupBubbleView.isShown) {
+                binding?.popupBubbleView?.show()
+            } else if (binding?.popupBubbleView?.isShown!!) {
                 newMessagesCount++
             }
         } else {
@@ -2622,15 +2603,15 @@ class ChatController(args: Bundle) :
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_conversation, menu)
 
-        viewThemeUtils.platform.colorToolbarMenuIcon(
-            binding.messageInputView.context,
-            menu.findItem(R.id.conversation_voice_call)
-        )
+        binding?.messageInputView?.context?.let {
+            viewThemeUtils.platform.colorToolbarMenuIcon(
+                it, menu.findItem(R.id.conversation_voice_call)
+            )
 
-        viewThemeUtils.platform.colorToolbarMenuIcon(
-            binding.messageInputView.context,
-            menu.findItem(R.id.conversation_video_call)
-        )
+            viewThemeUtils.platform.colorToolbarMenuIcon(
+                it, menu.findItem(R.id.conversation_video_call)
+            )
+        }
 
         if (conversationUser?.userId == "?") {
             menu.removeItem(R.id.conversation_info)
@@ -3148,25 +3129,21 @@ class ChatController(args: Bundle) :
     fun replyToMessage(message: IMessage?) {
         val chatMessage = message as ChatMessage?
         chatMessage?.let {
-            binding.messageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
+            binding?.messageInputView?.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
                 View.GONE
-            binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
+            binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
                 View.VISIBLE
 
-            val quotedMessage = binding
-                .messageInputView
-                .findViewById<EmojiTextView>(R.id.quotedMessage)
+            val quotedMessage = binding?.messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)
 
             quotedMessage?.maxLines = 2
             quotedMessage?.ellipsize = TextUtils.TruncateAt.END
             quotedMessage?.text = it.text
-            binding.messageInputView.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
+            binding?.messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
                 it.actorDisplayName ?: context.getText(R.string.nc_nick_guest)
 
-            conversationUser?.let { currentUser ->
-                val quotedMessageImage = binding
-                    .messageInputView
-                    .findViewById<ImageView>(R.id.quotedMessageImage)
+            conversationUser?.let {
+                val quotedMessageImage = binding?.messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)
                 chatMessage.imageUrl?.let { previewImageUrl ->
                     quotedMessageImage?.visibility = View.VISIBLE
 
@@ -3184,16 +3161,12 @@ class ChatController(args: Bundle) :
                         addHeader("Authorization", credentials!!)
                     }
                 } ?: run {
-                    binding
-                        .messageInputView
-                        .findViewById<ImageView>(R.id.quotedMessageImage)
-                        ?.visibility = View.GONE
+                    binding?.messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility = View.GONE
                 }
             }
 
-            val quotedChatMessageView = binding
-                .messageInputView
-                .findViewById<RelativeLayout>(R.id.quotedChatMessageView)
+            val quotedChatMessageView =
+                binding?.messageInputView?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
             quotedChatMessageView?.tag = message?.jsonMessageId
             quotedChatMessageView?.visibility = View.VISIBLE
         }
@@ -3201,11 +3174,11 @@ class ChatController(args: Bundle) :
 
     private fun showMicrophoneButton(show: Boolean) {
         if (show && CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "voice-message-sharing")) {
-            binding.messageInputView.messageSendButton.visibility = View.GONE
-            binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
+            binding?.messageInputView?.messageSendButton?.visibility = View.GONE
+            binding?.messageInputView?.recordAudioButton?.visibility = View.VISIBLE
         } else {
-            binding.messageInputView.messageSendButton.visibility = View.VISIBLE
-            binding.messageInputView.recordAudioButton.visibility = View.GONE
+            binding?.messageInputView?.messageSendButton?.visibility = View.VISIBLE
+            binding?.messageInputView?.recordAudioButton?.visibility = View.GONE
         }
     }
 
@@ -3236,7 +3209,7 @@ class ChatController(args: Bundle) :
         }
 
         if (message.reactionsSelf == null) {
-            message.reactionsSelf = ArrayList<String>()
+            message.reactionsSelf = ArrayList()
         }
 
         var amount = message.reactions!![emoji]
@@ -3254,7 +3227,7 @@ class ChatController(args: Bundle) :
         }
 
         if (message.reactionsSelf == null) {
-            message.reactionsSelf = ArrayList<String>()
+            message.reactionsSelf = ArrayList()
         }
 
         var amount = message.reactions!![emoji]
