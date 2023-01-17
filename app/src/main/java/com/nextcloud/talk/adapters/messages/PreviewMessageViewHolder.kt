@@ -139,6 +139,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             messageText.text = fileName
             if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_NAME)) {
                 previewContainer.visibility = View.GONE
+                previewContactContainer.visibility = View.VISIBLE
                 previewContactName.text = message.selectedIndividualHashMap!![KEY_CONTACT_NAME]
                 progressBar = previewContactProgressBar
                 messageText.visibility = View.INVISIBLE
@@ -146,17 +147,23 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                 viewThemeUtils!!.talk.colorContactChatItemBackground(previewContactContainer)
                 viewThemeUtils!!.talk.colorContactChatItemName(previewContactName)
                 viewThemeUtils!!.platform.colorCircularProgressBarOnPrimaryContainer(previewContactProgressBar!!)
+
+                if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_PHOTO)) {
+                    image = previewContactPhoto
+                    placeholder = getDrawableFromContactDetails(
+                        context,
+                        message.selectedIndividualHashMap!![KEY_CONTACT_PHOTO]
+                    )
+                } else {
+                    image = previewContactPhoto
+                    placeholder = ContextCompat.getDrawable(context!!, R.drawable.ic_mimetype_text_vcard)
+                }
             } else {
                 previewContainer.visibility = View.VISIBLE
                 previewContactContainer.visibility = View.GONE
             }
-            if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_PHOTO)) {
-                image = previewContactPhoto
-                placeholder = getDrawableFromContactDetails(
-                    context,
-                    message.selectedIndividualHashMap!![KEY_CONTACT_PHOTO]
-                )
-            } else if (message.selectedIndividualHashMap!!.containsKey(KEY_MIMETYPE)) {
+
+            if (message.selectedIndividualHashMap!!.containsKey(KEY_MIMETYPE)) {
                 val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
                 val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
                 val drawable = ContextCompat.getDrawable(context!!, drawableResourceId)
@@ -258,9 +265,11 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             try {
                 inputStream.close()
             } catch (e: IOException) {
-                val drawableResourceId = getDrawableResourceIdForMimeType("text/vcard")
-                drawable = ContextCompat.getDrawable(context, drawableResourceId)
+                Log.e(TAG, "failed to close stream in getDrawableFromContactDetails", e)
             }
+        }
+        if (drawable == null) {
+            drawable = ContextCompat.getDrawable(context!!, R.drawable.ic_mimetype_text_vcard)
         }
         return drawable
     }
