@@ -105,7 +105,8 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     @SuppressLint("SetTextI18n")
     @Suppress("NestedBlockDepth", "ComplexMethod", "LongMethod")
     override fun onBind(message: ChatMessage) {
-        super.onBind(message)
+        image.minimumHeight = DisplayUtils.convertDpToPixel(MIN_IMAGE_HEIGHT, context).toInt()
+
         time.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         if (userAvatar != null) {
             if (message.isGrouped || message.isOneToOneConversation) {
@@ -228,6 +229,8 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             true,
             viewThemeUtils!!
         )
+
+        super.onBind(message)
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
@@ -341,5 +344,6 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         const val ACTOR_TYPE_BOTS = "bots"
         const val ACTOR_ID_CHANGELOG = "changelog"
         const val KEY_NAME = "name"
+        const val MIN_IMAGE_HEIGHT = 100F
     }
 }
