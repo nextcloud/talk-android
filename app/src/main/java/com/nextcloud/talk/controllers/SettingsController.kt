@@ -848,26 +848,20 @@ class SettingsController : BaseController(R.layout.controller_settings) {
     private inner class ProxyTypeChangeListener : OnPreferenceValueChangedListener<String> {
         @Suppress("Detekt.TooGenericExceptionCaught")
         override fun onChanged(newValue: String) {
-            try {
-                if (("No proxy" == newValue)) {
-                    hideProxySettings()
-                } else {
-                    when (newValue) {
-                        "HTTP" ->
-                            binding?.settingsProxyPortEdit?.value = "3128"
-                        "DIRECT" ->
-                            binding?.settingsProxyPortEdit?.value = "8080"
-                        "SOCKS" ->
-                            binding?.settingsProxyPortEdit?.value = "1080"
-                        else -> {
-                        }
+            if (("No proxy" == newValue)) {
+                hideProxySettings()
+            } else {
+                when (newValue) {
+                    "HTTP" ->
+                        binding?.settingsProxyPortEdit?.value = "3128"
+                    "DIRECT" ->
+                        binding?.settingsProxyPortEdit?.value = "8080"
+                    "SOCKS" ->
+                        binding?.settingsProxyPortEdit?.value = "1080"
+                    else -> {
                     }
-                    showProxySettings()
                 }
-            } catch (npe: NullPointerException) {
-                // view binding can be null
-                // since this is called asynchronously and UI might have been destroyed in the meantime
-                Log.i(TAG, "UI destroyed - view binding already gone")
+                showProxySettings()
             }
         }
     }

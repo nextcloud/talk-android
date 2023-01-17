@@ -355,19 +355,13 @@ class ProfileController : BaseController(R.layout.controller_profile) {
             return
         }
 
-        try {
-            binding?.emptyList?.emptyListViewHeadline?.text = headline
-            binding?.emptyList?.emptyListViewText?.text = message
-            binding?.emptyList?.emptyListIcon?.setImageResource(errorResource)
-            binding?.emptyList?.emptyListIcon?.visibility = View.VISIBLE
-            binding?.emptyList?.emptyListViewText?.visibility = View.VISIBLE
-            binding?.userinfoList?.visibility = View.GONE
-            binding?.loadingContent?.visibility = View.GONE
-        } catch (npe: NullPointerException) {
-            // view binding can be null
-            // since this is called asynchronously and UI might have been destroyed in the meantime
-            Log.i(TAG, "UI destroyed - view binding already gone")
-        }
+        binding?.emptyList?.emptyListViewHeadline?.text = headline
+        binding?.emptyList?.emptyListViewText?.text = message
+        binding?.emptyList?.emptyListIcon?.setImageResource(errorResource)
+        binding?.emptyList?.emptyListIcon?.visibility = View.VISIBLE
+        binding?.emptyList?.emptyListViewText?.visibility = View.VISIBLE
+        binding?.userinfoList?.visibility = View.GONE
+        binding?.loadingContent?.visibility = View.GONE
     }
 
     @Suppress("Detekt.LongMethod")

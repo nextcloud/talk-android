@@ -367,22 +367,16 @@ class ChatController(args: Bundle) :
                         setTitle()
                         participantPermissions = ParticipantPermissions(conversationUser, currentConversation!!)
 
-                        try {
-                            setupSwipeToReply()
-                            setupMentionAutocomplete()
-                            checkShowCallButtons()
-                            checkShowMessageInputView()
-                            checkLobbyState()
+                        setupSwipeToReply()
+                        setupMentionAutocomplete()
+                        checkShowCallButtons()
+                        checkShowMessageInputView()
+                        checkLobbyState()
 
-                            if (!inConversation) {
-                                joinRoomWithPassword()
-                            } else {
-                                Log.d(TAG, "already inConversation. joinRoomWithPassword is skipped")
-                            }
-                        } catch (npe: NullPointerException) {
-                            // view binding can be null
-                            // since this is called asynchronously and UI might have been destroyed in the meantime
-                            Log.i(TAG, "UI destroyed - view binding already gone")
+                        if (!inConversation) {
+                            joinRoomWithPassword()
+                        } else {
+                            Log.d(TAG, "already inConversation. joinRoomWithPassword is skipped")
                         }
                     }
 
@@ -714,43 +708,37 @@ class ChatController(args: Bundle) :
 
             @Suppress("Detekt.TooGenericExceptionCaught")
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                try {
-                    if (s.length >= lengthFilter) {
-                        binding?.messageInputView?.inputEditText?.error = String.format(
-                            Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
-                            lengthFilter.toString()
-                        )
-                    } else {
-                        binding?.messageInputView?.inputEditText?.error = null
-                    }
+                if (s.length >= lengthFilter) {
+                    binding?.messageInputView?.inputEditText?.error = String.format(
+                        Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
+                        lengthFilter.toString()
+                    )
+                } else {
+                    binding?.messageInputView?.inputEditText?.error = null
+                }
 
-                    val editable = binding?.messageInputView?.inputEditText?.editableText
-                    if (editable != null && binding?.messageInputView?.inputEditText != null) {
-                        val mentionSpans = editable.getSpans(
-                            0,
-                            binding?.messageInputView?.inputEditText!!.length(),
-                            Spans.MentionChipSpan::class.java
-                        )
-                        var mentionSpan: Spans.MentionChipSpan
-                        for (i in mentionSpans.indices) {
-                            mentionSpan = mentionSpans[i]
-                            if (start >= editable.getSpanStart(mentionSpan) &&
-                                start < editable.getSpanEnd(mentionSpan)
+                val editable = binding?.messageInputView?.inputEditText?.editableText
+                if (editable != null && binding?.messageInputView?.inputEditText != null) {
+                    val mentionSpans = editable.getSpans(
+                        0,
+                        binding?.messageInputView?.inputEditText!!.length(),
+                        Spans.MentionChipSpan::class.java
+                    )
+                    var mentionSpan: Spans.MentionChipSpan
+                    for (i in mentionSpans.indices) {
+                        mentionSpan = mentionSpans[i]
+                        if (start >= editable.getSpanStart(mentionSpan) &&
+                            start < editable.getSpanEnd(mentionSpan)
+                        ) {
+                            if (editable.subSequence(
+                                    editable.getSpanStart(mentionSpan),
+                                    editable.getSpanEnd(mentionSpan)
+                                ).toString().trim { it <= ' ' } != mentionSpan.label
                             ) {
-                                if (editable.subSequence(
-                                        editable.getSpanStart(mentionSpan),
-                                        editable.getSpanEnd(mentionSpan)
-                                    ).toString().trim { it <= ' ' } != mentionSpan.label
-                                ) {
-                                    editable.removeSpan(mentionSpan)
-                                }
+                                editable.removeSpan(mentionSpan)
                             }
                         }
                     }
-                } catch (npe: NullPointerException) {
-                    // view binding can be null
-                    // since this is called asynchronously and UI might have been destroyed in the meantime
-                    Log.i(TAG, "UI destroyed - view binding already gone")
                 }
             }
 
@@ -768,16 +756,10 @@ class ChatController(args: Bundle) :
         showMicrophoneButton(true)
 
         binding?.messageInputView?.messageInput?.doAfterTextChanged {
-            try {
-                if (binding?.messageInputView?.messageInput?.text?.isEmpty() == true) {
-                    showMicrophoneButton(true)
-                } else {
-                    showMicrophoneButton(false)
-                }
-            } catch (npe: NullPointerException) {
-                // view binding can be null
-                // since this is called asynchronously and UI might have been destroyed in the meantime
-                Log.i(TAG, "UI destroyed - view binding already gone")
+            if (binding?.messageInputView?.messageInput?.text?.isEmpty() == true) {
+                showMicrophoneButton(true)
+            } else {
+                showMicrophoneButton(false)
             }
         }
 
@@ -1771,13 +1753,7 @@ class ChatController(args: Bundle) :
                     )
                 },
                 onEmojiClickListener = {
-                    try {
-                        binding?.messageInputView?.inputEditText?.editableText?.append(" ")
-                    } catch (npe: NullPointerException) {
-                        // view binding can be null
-                        // since this is called asynchronously and UI might have been destroyed in the meantime
-                        Log.i(WebViewLoginController.TAG, "UI destroyed - view binding already gone")
-                    }
+                    binding?.messageInputView?.inputEditText?.editableText?.append(" ")
                 }
             )
         }
@@ -1937,13 +1913,7 @@ class ChatController(args: Bundle) :
 
                         setupWebsocket()
 
-                        try {
-                            checkLobbyState()
-                        } catch (npe: NullPointerException) {
-                            // view binding can be null
-                            // since this is called asynchronously and UI might have been destroyed in the meantime
-                            Log.i(TAG, "UI destroyed - view binding already gone")
-                        }
+                        checkLobbyState()
 
                         if (isFirstMessagesProcessing) {
                             pullChatMessages(0)
@@ -2123,17 +2093,10 @@ class ChatController(args: Bundle) :
                     override fun onNext(genericOverall: GenericOverall) {
                         myFirstMessage = message
 
-                        try {
-                            if (binding?.popupBubbleView?.isShown == true) {
-                                binding?.popupBubbleView?.hide()
-                            }
-
-                            binding?.messagesListView?.smoothScrollToPosition(0)
-                        } catch (npe: NullPointerException) {
-                            // view binding can be null
-                            // since this is called asynchronously and UI might have been destroyed in the meantime
-                            Log.i(TAG, "UI destroyed - view binding already gone")
+                        if (binding?.popupBubbleView?.isShown == true) {
+                            binding?.popupBubbleView?.hide()
                         }
+                        binding?.messagesListView?.smoothScrollToPosition(0)
                     }
 
                     override fun onError(e: Throwable) {
@@ -2246,19 +2209,13 @@ class ChatController(args: Bundle) :
                     override fun onNext(response: Response<*>) {
                         Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - got response")
                         pullChatMessagesPending = false
-                        try {
-                            if (response.code() == HTTP_CODE_NOT_MODIFIED) {
-                                Log.d(TAG, "pullChatMessages - quasi recursive call to pullChatMessages")
-                                pullChatMessages(1, setReadMarker, xChatLastCommonRead)
-                            } else if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
-                                futurePreconditionFailed = true
-                            } else {
-                                processMessagesResponse(response, true)
-                            }
-                        } catch (npe: NullPointerException) {
-                            // view binding can be null
-                            // since this is called asynchronously and UI might have been destroyed in the meantime
-                            Log.i(TAG, "UI destroyed - view binding already gone")
+                        if (response.code() == HTTP_CODE_NOT_MODIFIED) {
+                            Log.d(TAG, "pullChatMessages - quasi recursive call to pullChatMessages")
+                            pullChatMessages(1, setReadMarker, xChatLastCommonRead)
+                        } else if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
+                            futurePreconditionFailed = true
+                        } else {
+                            processMessagesResponse(response, true)
                         }
 
                         processExpiredMessages()
@@ -2291,16 +2248,10 @@ class ChatController(args: Bundle) :
                     override fun onNext(response: Response<*>) {
                         Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - got response")
                         pullChatMessagesPending = false
-                        try {
-                            if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
-                                pastPreconditionFailed = true
-                            } else {
-                                processMessagesResponse(response, false)
-                            }
-                        } catch (e: NullPointerException) {
-                            // view binding can be null
-                            // since this is called asynchronously and UI might have been destroyed in the meantime
-                            Log.i(TAG, "UI destroyed - view binding already gone", e)
+                        if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
+                            pastPreconditionFailed = true
+                        } else {
+                            processMessagesResponse(response, false)
                         }
 
                         processExpiredMessages()

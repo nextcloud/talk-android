@@ -493,13 +493,7 @@ class ConversationInfoController(args: Bundle) :
 
                 @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(participantsOverall: ParticipantsOverall) {
-                    try {
-                        handleParticipants(participantsOverall.ocs!!.data!!)
-                    } catch (npe: NullPointerException) {
-                        // view binding can be null
-                        // since this is called asynchronously and UI might have been destroyed in the meantime
-                        Log.i(TAG, "UI destroyed - view binding already gone")
-                    }
+                    handleParticipants(participantsOverall.ocs!!.data!!)
                 }
 
                 override fun onError(e: Throwable) {
@@ -646,83 +640,77 @@ class ConversationInfoController(args: Bundle) :
 
                 @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(roomOverall: RoomOverall) {
-                    try {
-                        conversation = roomOverall.ocs!!.data
+                    conversation = roomOverall.ocs!!.data
 
-                        val conversationCopy = conversation
+                    val conversationCopy = conversation
 
-                        if (conversationCopy!!.canModerate(conversationUser)) {
-                            binding?.addParticipantsAction?.visibility = VISIBLE
-                            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "clear-history")) {
-                                binding?.clearConversationHistory?.visibility = VISIBLE
-                            } else {
-                                binding?.clearConversationHistory?.visibility = GONE
-                            }
+                    if (conversationCopy!!.canModerate(conversationUser)) {
+                        binding?.addParticipantsAction?.visibility = VISIBLE
+                        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "clear-history")) {
+                            binding?.clearConversationHistory?.visibility = VISIBLE
                         } else {
-                            binding?.addParticipantsAction?.visibility = GONE
                             binding?.clearConversationHistory?.visibility = GONE
                         }
+                    } else {
+                        binding?.addParticipantsAction?.visibility = GONE
+                        binding?.clearConversationHistory?.visibility = GONE
+                    }
 
-                        if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
-                            binding?.ownOptions?.visibility = VISIBLE
+                    if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
+                        binding?.ownOptions?.visibility = VISIBLE
 
-                            setupWebinaryView()
+                        setupWebinaryView()
 
-                            if (!conversation!!.canLeave()) {
-                                binding?.leaveConversationAction?.visibility = GONE
-                            } else {
-                                binding?.leaveConversationAction?.visibility = VISIBLE
-                            }
-
-                            if (!conversation!!.canDelete(conversationUser)) {
-                                binding?.deleteConversationAction?.visibility = GONE
-                            } else {
-                                binding?.deleteConversationAction?.visibility = VISIBLE
-                            }
-
-                            if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
-                                binding?.notificationSettingsView?.callNotifications?.visibility = GONE
-                            }
-
-                            if (conversation!!.notificationCalls === null) {
-                                binding?.notificationSettingsView?.callNotifications?.visibility = GONE
-                            } else {
-                                binding?.notificationSettingsView?.callNotifications?.value =
-                                    conversationCopy.notificationCalls == 1
-                            }
-
-                            getListOfParticipants()
-
-                            binding?.progressBar?.visibility = GONE
-
-                            binding?.conversationInfoName?.visibility = VISIBLE
-
-                            binding?.displayNameText?.text = conversation!!.displayName
-
-                            if (conversation!!.description != null && !conversation!!.description!!.isEmpty()) {
-                                binding?.descriptionText?.text = conversation!!.description
-                                binding?.conversationDescription?.visibility = VISIBLE
-                            }
-
-                            loadConversationAvatar()
-                            adjustNotificationLevelUI()
-                            initExpiringMessageOption()
-
-                            binding?.let {
-                                GuestAccessHelper(
-                                    this@ConversationInfoController,
-                                    it,
-                                    conversation!!,
-                                    conversationUser
-                                ).setupGuestAccess()
-                            }
-
-                            binding?.notificationSettingsView?.notificationSettings?.visibility = VISIBLE
+                        if (!conversation!!.canLeave()) {
+                            binding?.leaveConversationAction?.visibility = GONE
+                        } else {
+                            binding?.leaveConversationAction?.visibility = VISIBLE
                         }
-                    } catch (npe: NullPointerException) {
-                        // view binding can be null
-                        // since this is called asynchronously and UI might have been destroyed in the meantime
-                        Log.i(TAG, "UI destroyed - view binding already gone")
+
+                        if (!conversation!!.canDelete(conversationUser)) {
+                            binding?.deleteConversationAction?.visibility = GONE
+                        } else {
+                            binding?.deleteConversationAction?.visibility = VISIBLE
+                        }
+
+                        if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
+                            binding?.notificationSettingsView?.callNotifications?.visibility = GONE
+                        }
+
+                        if (conversation!!.notificationCalls === null) {
+                            binding?.notificationSettingsView?.callNotifications?.visibility = GONE
+                        } else {
+                            binding?.notificationSettingsView?.callNotifications?.value =
+                                conversationCopy.notificationCalls == 1
+                        }
+
+                        getListOfParticipants()
+
+                        binding?.progressBar?.visibility = GONE
+
+                        binding?.conversationInfoName?.visibility = VISIBLE
+
+                        binding?.displayNameText?.text = conversation!!.displayName
+
+                        if (conversation!!.description != null && !conversation!!.description!!.isEmpty()) {
+                            binding?.descriptionText?.text = conversation!!.description
+                            binding?.conversationDescription?.visibility = VISIBLE
+                        }
+
+                        loadConversationAvatar()
+                        adjustNotificationLevelUI()
+                        initExpiringMessageOption()
+
+                        binding?.let {
+                            GuestAccessHelper(
+                                this@ConversationInfoController,
+                                it,
+                                conversation!!,
+                                conversationUser
+                            ).setupGuestAccess()
+                        }
+
+                        binding?.notificationSettingsView?.notificationSettings?.visibility = VISIBLE
                     }
                 }
 

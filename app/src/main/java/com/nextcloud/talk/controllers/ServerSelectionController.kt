@@ -29,7 +29,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.security.KeyChain
 import android.text.TextUtils
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -199,27 +198,21 @@ class ServerSelectionController :
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkServerAndProceed() {
         dispose()
-        try {
-            var url: String = binding?.serverEntryTextInputEditText?.text.toString().trim { it <= ' ' }
-            binding?.serverEntryTextInputEditText?.isEnabled = false
-            showserverEntryProgressBar()
-            if (binding?.importOrChooseProviderText?.visibility != View.INVISIBLE) {
-                binding?.importOrChooseProviderText?.visibility = View.INVISIBLE
-                binding?.certTextView?.visibility = View.INVISIBLE
-            }
-            if (url.endsWith("/")) {
-                url = url.substring(0, url.length - 1)
-            }
-            val queryUrl = url + ApiUtils.getUrlPostfixForStatus()
-            if (UriUtils.hasHttpProtocollPrefixed(url)) {
-                checkServer(queryUrl, false)
-            } else {
-                checkServer("https://$queryUrl", true)
-            }
-        } catch (npe: NullPointerException) {
-            // view binding can be null
-            // since this is called asynchronously and UI might have been destroyed in the meantime
-            Log.i(TAG, "UI destroyed - view binding already gone")
+        var url: String = binding?.serverEntryTextInputEditText?.text.toString().trim { it <= ' ' }
+        binding?.serverEntryTextInputEditText?.isEnabled = false
+        showserverEntryProgressBar()
+        if (binding?.importOrChooseProviderText?.visibility != View.INVISIBLE) {
+            binding?.importOrChooseProviderText?.visibility = View.INVISIBLE
+            binding?.certTextView?.visibility = View.INVISIBLE
+        }
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length - 1)
+        }
+        val queryUrl = url + ApiUtils.getUrlPostfixForStatus()
+        if (UriUtils.hasHttpProtocollPrefixed(url)) {
+            checkServer(queryUrl, false)
+        } else {
+            checkServer("https://$queryUrl", true)
         }
     }
 
@@ -357,18 +350,12 @@ class ServerSelectionController :
     private fun setCertTextView() {
         if (activity != null) {
             activity!!.runOnUiThread {
-                try {
-                    if (!TextUtils.isEmpty(appPreferences!!.temporaryClientCertAlias)) {
-                        binding?.certTextView?.setText(R.string.nc_change_cert_auth)
-                    } else {
-                        binding?.certTextView?.setText(R.string.nc_configure_cert_auth)
-                    }
-                    hideserverEntryProgressBar()
-                } catch (npe: java.lang.NullPointerException) {
-                    // view binding can be null
-                    // since this is called asynchronously and UI might have been destroyed in the meantime
-                    Log.i(TAG, "UI destroyed - view binding already gone")
+                if (!TextUtils.isEmpty(appPreferences!!.temporaryClientCertAlias)) {
+                    binding?.certTextView?.setText(R.string.nc_change_cert_auth)
+                } else {
+                    binding?.certTextView?.setText(R.string.nc_configure_cert_auth)
                 }
+                hideserverEntryProgressBar()
             }
         }
     }
