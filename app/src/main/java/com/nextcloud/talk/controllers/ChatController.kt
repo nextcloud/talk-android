@@ -627,8 +627,8 @@ class ChatController(args: Bundle) :
             adapter = TalkMessagesListAdapter(
                 senderId,
                 messageHolders,
-                ImageLoader { imageView, url, _ ->
-                    imageView.loadAvatarOrImagePreview(url!!, conversationUser, placeholder = payload as? Drawable)
+                ImageLoader { imageView, url, placeholder ->
+                    imageView.loadAvatarOrImagePreview(url!!, conversationUser, placeholder as Drawable?)
                 },
                 this
             )
