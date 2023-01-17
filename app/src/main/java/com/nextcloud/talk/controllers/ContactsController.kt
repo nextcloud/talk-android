@@ -92,7 +92,7 @@ class ContactsController(args: Bundle) :
     BaseController(R.layout.controller_contacts_rv),
     SearchView.OnQueryTextListener,
     FlexibleAdapter.OnItemClickListener {
-    private val binding: ControllerContactsRvBinding by viewBinding(ControllerContactsRvBinding::bind)
+    private val binding: ControllerContactsRvBinding? by viewBinding(ControllerContactsRvBinding::bind)
 
     @Inject
     lateinit var userManager: UserManager
@@ -153,13 +153,13 @@ class ContactsController(args: Bundle) :
             toggleConversationPrivacyLayout(!isPublicCall)
         }
         if (isAddingParticipantsView) {
-            binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.GONE
-            binding.conversationPrivacyToggle.callHeaderLayout.visibility = View.GONE
+            binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.GONE
+            binding?.conversationPrivacyToggle?.callHeaderLayout?.visibility = View.GONE
         } else {
-            binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.setOnClickListener {
+            binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.setOnClickListener {
                 joinConversationViaLink()
             }
-            binding.conversationPrivacyToggle.callHeaderLayout.setOnClickListener {
+            binding?.conversationPrivacyToggle?.callHeaderLayout?.setOnClickListener {
                 toggleCallHeader()
             }
         }
@@ -382,10 +382,12 @@ class ContactsController(args: Bundle) :
         super.onPrepareOptionsMenu(menu)
 
         if (searchItem != null) {
-            viewThemeUtils.platform.colorToolbarMenuIcon(
-                binding.titleTextView.context,
-                searchItem!!
-            )
+            binding?.titleTextView?.let {
+                viewThemeUtils.platform.colorToolbarMenuIcon(
+                    it.context,
+                    searchItem!!
+                )
+            }
         }
 
         checkAndHandleDoneMenuItem()
@@ -450,22 +452,16 @@ class ContactsController(args: Bundle) :
                         adapter?.filterItems()
                     }
 
-                    withNullableControllerViewBinding {
-                        binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
-                    }
+                    binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
                 }
 
                 override fun onError(e: Throwable) {
-                    withNullableControllerViewBinding {
-                        binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
-                    }
+                    binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
                     dispose(contactsQueryDisposable)
                 }
 
                 override fun onComplete() {
-                    withNullableControllerViewBinding {
-                        binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
-                    }
+                    binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
                     dispose(contactsQueryDisposable)
                     alreadyFetching = false
                     disengageProgressBar()
@@ -627,31 +623,31 @@ class ContactsController(args: Bundle) :
 
     private fun prepareViews() {
         layoutManager = SmoothScrollLinearLayoutManager(activity)
-        binding.controllerGenericRv.recyclerView.layoutManager = layoutManager
-        binding.controllerGenericRv.recyclerView.setHasFixedSize(true)
-        binding.controllerGenericRv.recyclerView.adapter = adapter
-        binding.controllerGenericRv.swipeRefreshLayout.setOnRefreshListener { fetchData() }
+        binding?.controllerGenericRv?.recyclerView?.layoutManager = layoutManager
+        binding?.controllerGenericRv?.recyclerView?.setHasFixedSize(true)
+        binding?.controllerGenericRv?.recyclerView?.adapter = adapter
+        binding?.controllerGenericRv?.swipeRefreshLayout?.setOnRefreshListener { fetchData() }
 
-        viewThemeUtils.androidx.themeSwipeRefreshLayout(binding.controllerGenericRv.swipeRefreshLayout)
+        binding?.controllerGenericRv?.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it.swipeRefreshLayout) }
 
-        binding.joinConversationViaLink.joinConversationViaLinkImageView
-            .background
-            .setColorFilter(
+        binding?.joinConversationViaLink?.joinConversationViaLinkImageView
+            ?.background
+            ?.setColorFilter(
                 ResourcesCompat.getColor(resources!!, R.color.colorBackgroundDarker, null),
                 PorterDuff.Mode.SRC_IN
             )
 
-        viewThemeUtils.platform.colorImageViewButton(binding.conversationPrivacyToggle.publicCallLink)
+        binding?.conversationPrivacyToggle?.let { viewThemeUtils.platform.colorImageViewButton(it.publicCallLink) }
         disengageProgressBar()
     }
 
     private fun disengageProgressBar() {
         if (!alreadyFetching) {
-            binding.loadingContent.visibility = View.GONE
-            binding.controllerGenericRv.root.visibility = View.VISIBLE
+            binding?.loadingContent?.visibility = View.GONE
+            binding?.controllerGenericRv?.root?.visibility = View.VISIBLE
             if (isNewConversationView) {
-                binding.conversationPrivacyToggle.callHeaderLayout.visibility = View.VISIBLE
-                binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.VISIBLE
+                binding?.conversationPrivacyToggle?.callHeaderLayout?.visibility = View.VISIBLE
+                binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.VISIBLE
             }
         }
     }
@@ -697,9 +693,7 @@ class ContactsController(args: Bundle) :
             adapter?.updateDataSet(contactItems as List<Nothing>?)
         }
 
-        withNullableControllerViewBinding {
-            binding.controllerGenericRv.swipeRefreshLayout.isEnabled = !adapter!!.hasFilter()
-        }
+        binding?.controllerGenericRv?.swipeRefreshLayout?.isEnabled = !adapter!!.hasFilter()
 
         return true
     }
@@ -927,25 +921,21 @@ class ContactsController(args: Bundle) :
     }
 
     private fun toggleConversationPrivacyLayout(showInitialLayout: Boolean) {
-        withNullableControllerViewBinding {
-            if (showInitialLayout) {
-                binding.conversationPrivacyToggle.initialRelativeLayout.visibility = View.VISIBLE
-                binding.conversationPrivacyToggle.secondaryRelativeLayout.visibility = View.GONE
-            } else {
-                binding.conversationPrivacyToggle.initialRelativeLayout.visibility = View.GONE
-                binding.conversationPrivacyToggle.secondaryRelativeLayout.visibility = View.VISIBLE
-            }
+        if (showInitialLayout) {
+            binding?.conversationPrivacyToggle?.initialRelativeLayout?.visibility = View.VISIBLE
+            binding?.conversationPrivacyToggle?.secondaryRelativeLayout?.visibility = View.GONE
+        } else {
+            binding?.conversationPrivacyToggle?.initialRelativeLayout?.visibility = View.GONE
+            binding?.conversationPrivacyToggle?.secondaryRelativeLayout?.visibility = View.VISIBLE
         }
     }
 
     private fun toggleConversationViaLinkVisibility(isPublicCall: Boolean) {
-        withNullableControllerViewBinding {
-            if (isPublicCall) {
-                binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.GONE
-                updateGroupParticipantSelection()
-            } else {
-                binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.VISIBLE
-            }
+        if (isPublicCall) {
+            binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.GONE
+            updateGroupParticipantSelection()
+        } else {
+            binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.VISIBLE
         }
     }
 

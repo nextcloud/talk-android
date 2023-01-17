@@ -63,7 +63,7 @@ class GeocodingController(args: Bundle) :
         args
     ),
     SearchView.OnQueryTextListener {
-    private val binding: ControllerGeocodingBinding by viewBinding(ControllerGeocodingBinding::bind)
+    private val binding: ControllerGeocodingBinding? by viewBinding(ControllerGeocodingBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
@@ -94,8 +94,8 @@ class GeocodingController(args: Bundle) :
     }
 
     private fun initAdapter(addresses: List<Address>) {
-        adapter = GeocodingAdapter(binding.geocodingResults.context!!, addresses)
-        binding.geocodingResults.adapter = adapter
+        adapter = GeocodingAdapter(binding?.geocodingResults?.context!!, addresses)
+        binding?.geocodingResults?.adapter = adapter
     }
 
     override fun onAttach(view: View) {
@@ -110,7 +110,7 @@ class GeocodingController(args: Bundle) :
             Log.e(TAG, "search string that was passed to GeocodingController was null or empty")
         }
 
-        binding.geocodingResults.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        binding?.geocodingResults?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val address: Address = adapter.getItem(position) as Address
             val listener: GeocodingResultListener? = targetController as GeocodingResultListener?
             listener?.receiveChosenGeocodingResult(address.latitude, address.longitude, address.displayName)

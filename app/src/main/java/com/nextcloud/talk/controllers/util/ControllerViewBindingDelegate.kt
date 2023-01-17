@@ -31,7 +31,7 @@ fun <T : ViewBinding> Controller.viewBinding(bindingFactory: (View) -> T) =
 class ControllerViewBindingDelegate<T : ViewBinding>(
     controller: Controller,
     private val viewBinder: (View) -> T
-) : ReadOnlyProperty<Controller, T>, LifecycleObserver {
+) : ReadOnlyProperty<Controller, T?>, LifecycleObserver {
 
     private var binding: T? = null
 
@@ -43,7 +43,10 @@ class ControllerViewBindingDelegate<T : ViewBinding>(
         })
     }
 
-    override fun getValue(thisRef: Controller, property: KProperty<*>): T {
-        return binding ?: viewBinder(thisRef.view!!).also { binding = it }
+    override fun getValue(thisRef: Controller, property: KProperty<*>): T? {
+        if (binding == null) {
+            binding = thisRef.view?.let { viewBinder(it) }
+        }
+        return binding
     }
 }

@@ -47,7 +47,7 @@ import java.util.concurrent.Executors
 
 @AutoInjector(NextcloudTalkApplication::class)
 class LockedController : BaseController(R.layout.controller_locked) {
-    private val binding: ControllerLockedBinding by viewBinding(ControllerLockedBinding::bind)
+    private val binding: ControllerLockedBinding? by viewBinding(ControllerLockedBinding::bind)
 
     override val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.EMPTY
@@ -60,7 +60,7 @@ class LockedController : BaseController(R.layout.controller_locked) {
     override fun onViewBound(view: View) {
         super.onViewBound(view)
         sharedApplication!!.componentApplication.inject(this)
-        binding.unlockContainer.setOnClickListener {
+        binding?.unlockContainer?.setOnClickListener {
             unlock()
         }
     }

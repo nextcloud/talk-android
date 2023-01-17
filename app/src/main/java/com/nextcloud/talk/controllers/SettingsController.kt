@@ -106,7 +106,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class SettingsController : BaseController(R.layout.controller_settings) {
-    private val binding: ControllerSettingsBinding by viewBinding(ControllerSettingsBinding::bind)
+    private val binding: ControllerSettingsBinding? by viewBinding(ControllerSettingsBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
@@ -144,7 +144,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
         setHasOptionsMenu(true)
         sharedApplication!!.componentApplication.inject(this)
 
-        ViewCompat.setTransitionName((binding.avatarImage), "userAvatar.transitionTag")
+        binding?.avatarImage?.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
 
         getCurrentUser()
 
@@ -154,10 +154,10 @@ class SettingsController : BaseController(R.layout.controller_settings) {
         setupLicenceSetting()
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            binding.settingsIncognitoKeyboard.visibility = View.GONE
+            binding?.settingsIncognitoKeyboard?.visibility = View.GONE
         }
 
-        binding.settingsScreenLock.setSummary(
+        binding?.settingsScreenLock?.setSummary(
             String.format(
                 Locale.getDefault(),
                 resources!!.getString(R.string.nc_settings_screen_lock_desc),
@@ -167,7 +167,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
         setupPrivacyUrl()
         setupSourceCodeUrl()
-        binding.settingsVersion.setSummary("v" + BuildConfig.VERSION_NAME)
+        binding?.settingsVersion?.setSummary("v" + BuildConfig.VERSION_NAME)
 
         setupSoundSettings()
 
@@ -178,15 +178,15 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
     private fun setupPhoneBookIntegration() {
         if (CapabilitiesUtilNew.isPhoneBookIntegrationAvailable(currentUser!!)) {
-            binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
+            binding?.settingsPhoneBookIntegration?.visibility = View.VISIBLE
         } else {
-            binding.settingsPhoneBookIntegration.visibility = View.GONE
+            binding?.settingsPhoneBookIntegration?.visibility = View.GONE
         }
     }
 
     private fun setupSoundSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            binding.settingsCallSound.setOnClickListener {
+            binding?.settingsCallSound?.setOnClickListener {
                 val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
                 intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
                 intent.putExtra(
@@ -196,7 +196,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
                 startActivity(intent)
             }
-            binding.settingsMessageSound.setOnClickListener {
+            binding?.settingsMessageSound?.setOnClickListener {
                 val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
                 intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
                 intent.putExtra(
@@ -206,7 +206,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 startActivity(intent)
             }
         } else {
-            binding.settingsCallSound.setOnClickListener {
+            binding?.settingsCallSound?.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putBoolean(KEY_ARE_CALL_SOUNDS, true)
 
@@ -216,7 +216,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                         .popChangeHandler(HorizontalChangeHandler())
                 )
             }
-            binding.settingsMessageSound.setOnClickListener {
+            binding?.settingsMessageSound?.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putBoolean(KEY_ARE_CALL_SOUNDS, false)
 
@@ -231,7 +231,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
     private fun setupSourceCodeUrl() {
         if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_source_code_url))) {
-            binding.settingsSourceCode.addPreferenceClickListener {
+            binding?.settingsSourceCode?.addPreferenceClickListener {
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
@@ -240,13 +240,13 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 )
             }
         } else {
-            binding.settingsSourceCode.visibility = View.GONE
+            binding?.settingsSourceCode?.visibility = View.GONE
         }
     }
 
     private fun setupPrivacyUrl() {
         if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_privacy_url))) {
-            binding.settingsPrivacy.addPreferenceClickListener {
+            binding?.settingsPrivacy?.addPreferenceClickListener {
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
@@ -255,13 +255,13 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 )
             }
         } else {
-            binding.settingsPrivacy.visibility = View.GONE
+            binding?.settingsPrivacy?.visibility = View.GONE
         }
     }
 
     private fun setupLicenceSetting() {
         if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_gpl3_url))) {
-            binding.settingsLicence.addPreferenceClickListener {
+            binding?.settingsLicence?.addPreferenceClickListener {
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
@@ -270,15 +270,15 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 )
             }
         } else {
-            binding.settingsLicence.visibility = View.GONE
+            binding?.settingsLicence?.visibility = View.GONE
         }
     }
 
     private fun setupSettingsScreen() {
         val listWithIntFields: MutableList<String> = ArrayList()
         listWithIntFields.add("proxy_port")
-        binding.settingsScreen.setUserInputModule(MagicUserInputModule(activity, listWithIntFields))
-        binding.settingsScreen.setVisibilityController(
+        binding?.settingsScreen?.setUserInputModule(MagicUserInputModule(activity, listWithIntFields))
+        binding?.settingsScreen?.setVisibilityController(
             R.id.settings_proxy_use_credentials,
             Arrays.asList(R.id.settings_proxy_username_edit, R.id.settings_proxy_password_edit),
             true
@@ -297,7 +297,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
             Log.e(TAG, "Failed to create uri")
         }
 
-        binding.settingsClientCert.addPreferenceClickListener {
+        binding?.settingsClientCert?.addPreferenceClickListener {
             KeyChain.choosePrivateKeyAlias(
                 activity!!,
                 { alias: String? ->
@@ -305,9 +305,9 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
                     activity!!.runOnUiThread {
                         if (finalAlias != null) {
-                            binding.settingsClientCert.setTitle(R.string.nc_client_cert_change)
+                            binding?.settingsClientCert?.setTitle(R.string.nc_client_cert_change)
                         } else {
-                            binding.settingsClientCert.setTitle(R.string.nc_client_cert_setup)
+                            binding?.settingsClientCert?.setTitle(R.string.nc_client_cert_setup)
                         }
                     }
 
@@ -370,27 +370,29 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
     private fun showRemoveAccountWarning() {
         if (activity != null) {
-            val materialAlertDialogBuilder = MaterialAlertDialogBuilder(binding.messageText.context)
-                .setTitle(R.string.nc_settings_remove_account)
-                .setMessage(R.string.nc_settings_remove_confirmation)
-                .setPositiveButton(R.string.nc_settings_remove) { _, _ ->
-                    removeCurrentAccount()
-                }
-                .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                    // unused atm
-                }
+            binding?.messageText?.context?.let {
+                val materialAlertDialogBuilder = MaterialAlertDialogBuilder(it)
+                    .setTitle(R.string.nc_settings_remove_account)
+                    .setMessage(R.string.nc_settings_remove_confirmation)
+                    .setPositiveButton(R.string.nc_settings_remove) { _, _ ->
+                        removeCurrentAccount()
+                    }
+                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                        // unused atm
+                    }
 
-            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(
-                binding.messageText.context,
-                materialAlertDialogBuilder
-            )
+                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(
+                    it,
+                    materialAlertDialogBuilder
+                )
 
-            val dialog = materialAlertDialogBuilder.show()
+                val dialog = materialAlertDialogBuilder.show()
 
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            )
+                viewThemeUtils.platform.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                )
+            }
         }
     }
 
@@ -428,38 +430,38 @@ class SettingsController : BaseController(R.layout.controller_settings) {
         actionBar?.show()
         dispose(null)
 
-        binding.settingsVersion.setOnClickListener {
+        binding?.settingsVersion?.setOnClickListener {
             sendLogs()
         }
 
         if (!TextUtils.isEmpty(currentUser!!.clientCertificate)) {
-            binding.settingsClientCert.setTitle(R.string.nc_client_cert_change)
+            binding?.settingsClientCert?.setTitle(R.string.nc_client_cert_change)
         } else {
-            binding.settingsClientCert.setTitle(R.string.nc_client_cert_setup)
+            binding?.settingsClientCert?.setTitle(R.string.nc_client_cert_setup)
         }
 
         setupCheckables()
         setupScreenLockSetting()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            binding.settingsNotificationsCategory.setTitle(
+            binding?.settingsNotificationsCategory?.setTitle(
                 resources!!.getString(R.string.nc_settings_notification_sounds_post_oreo)
             )
         }
 
         val callRingtoneUri = getCallRingtoneUri(view.context, (appPreferences)!!)
-        binding.settingsCallSound.setSummary(getRingtoneName(view.context, callRingtoneUri))
+        binding?.settingsCallSound?.setSummary(getRingtoneName(view.context, callRingtoneUri))
         val messageRingtoneUri = getMessageRingtoneUri(view.context, (appPreferences)!!)
-        binding.settingsMessageSound.setSummary(getRingtoneName(view.context, messageRingtoneUri))
+        binding?.settingsMessageSound?.setSummary(getRingtoneName(view.context, messageRingtoneUri))
 
         setupProxyTypeSettings()
         setupProxyCredentialSettings()
 
         if (currentUser != null) {
-            binding.baseUrlText.text = Uri.parse(currentUser!!.baseUrl).host
+            binding?.baseUrlText?.text = Uri.parse(currentUser!!.baseUrl).host
             setupServerAgeWarning()
 
-            binding.settingsReauthorize.addPreferenceClickListener {
+            binding?.settingsReauthorize?.addPreferenceClickListener {
                 router.pushController(
                     RouterTransaction.with(WebViewLoginController(currentUser!!.baseUrl, true))
                         .pushChangeHandler(VerticalChangeHandler())
@@ -468,19 +470,19 @@ class SettingsController : BaseController(R.layout.controller_settings) {
             }
 
             if (currentUser!!.displayName != null) {
-                binding.displayNameText.text = currentUser!!.displayName
+                binding?.displayNameText?.text = currentUser!!.displayName
             }
-            DisplayUtils.loadAvatarImage(currentUser, binding.avatarImage, false)
+            DisplayUtils.loadAvatarImage(currentUser, binding?.avatarImage, false)
 
             setupProfileQueryDisposable()
 
-            binding.settingsRemoveAccount.addPreferenceClickListener {
+            binding?.settingsRemoveAccount?.addPreferenceClickListener {
                 showRemoveAccountWarning()
             }
         }
         setupMessageView()
 
-        binding.avatarContainer.setOnClickListener {
+        binding?.avatarContainer?.setOnClickListener {
             router
                 .pushController(
                     RouterTransaction.with(ProfileController())
@@ -495,7 +497,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
     }
 
     private fun themeSwitchPreferences() {
-        binding.run {
+        binding?.run {
             listOf(
                 settingsScreenLock,
                 settingsScreenSecurity,
@@ -508,7 +510,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
     }
 
     private fun themeCategories() {
-        binding.run {
+        binding?.run {
             listOf(
                 settingsNotificationsCategory,
                 settingsAboutCategory,
@@ -539,54 +541,62 @@ class SettingsController : BaseController(R.layout.controller_settings) {
         if (ApplicationWideMessageHolder.getInstance().messageType != null) {
             when (ApplicationWideMessageHolder.getInstance().messageType) {
                 ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED -> {
-                    binding.messageText.setTextColor(
-                        viewThemeUtils.getScheme(binding.messageText.context).primary
-                    )
-                    binding.messageText.text = resources!!.getString(R.string.nc_settings_account_updated)
-                    binding.messageView.visibility = View.VISIBLE
+                    binding?.messageText?.let {
+                        it.setTextColor(
+                            viewThemeUtils.getScheme(it.context).primary
+                        )
+                        it.text = resources!!.getString(R.string.nc_settings_account_updated)
+                        binding?.messageView?.visibility = View.VISIBLE
+                    }
                 }
 
                 ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK -> {
-                    binding.messageText.setTextColor(resources!!.getColor(R.color.nc_darkRed))
-                    binding.messageText.text = resources!!.getString(R.string.nc_settings_wrong_account)
-                    binding.messageView.visibility = View.VISIBLE
-                    binding.messageText.setTextColor(
-                        viewThemeUtils.getScheme(binding.messageText.context).primary
-                    )
-                    binding.messageText.text = resources!!.getString(R.string.nc_Server_account_imported)
-                    binding.messageView.visibility = View.VISIBLE
+                    binding?.messageText?.let {
+                        it.setTextColor(resources!!.getColor(R.color.nc_darkRed))
+                        it.text = resources!!.getString(R.string.nc_settings_wrong_account)
+                        binding?.messageView?.visibility = View.VISIBLE
+                        it.setTextColor(
+                            viewThemeUtils.getScheme(it.context).primary
+                        )
+                        it.text = resources!!.getString(R.string.nc_Server_account_imported)
+                        binding?.messageView?.visibility = View.VISIBLE
+                    }
                 }
 
                 ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED -> {
-                    binding.messageText.setTextColor(
-                        viewThemeUtils.getScheme(binding.messageText.context).primary
-                    )
-                    binding.messageText.text = resources!!.getString(R.string.nc_Server_account_imported)
-                    binding.messageView.visibility = View.VISIBLE
+                    binding?.messageText?.let {
+                        it.setTextColor(
+                            viewThemeUtils.getScheme(it.context).primary
+                        )
+                        it.text = resources!!.getString(R.string.nc_Server_account_imported)
+                        binding?.messageView?.visibility = View.VISIBLE
+                    }
                 }
 
                 ApplicationWideMessageHolder.MessageType.FAILED_TO_IMPORT_ACCOUNT -> {
-                    binding.messageText.setTextColor(resources!!.getColor(R.color.nc_darkRed))
-                    binding.messageText.text = resources!!.getString(R.string.nc_server_failed_to_import_account)
-                    binding.messageView.visibility = View.VISIBLE
+                    binding?.messageText?.let {
+                        it.setTextColor(resources!!.getColor(R.color.nc_darkRed))
+                        it.text = resources!!.getString(R.string.nc_server_failed_to_import_account)
+                        binding?.messageView?.visibility = View.VISIBLE
+                    }
                 }
 
-                else -> binding.messageView.visibility = View.GONE
+                else -> binding?.messageView?.visibility = View.GONE
             }
-            ApplicationWideMessageHolder.getInstance().setMessageType(null)
-            binding.messageView.animate()
-                .translationY(0f)
-                .alpha(0.0f)
-                .setDuration(DURATION)
-                .setStartDelay(START_DELAY)
-                .setListener(object : AnimatorListenerAdapter() {
+            ApplicationWideMessageHolder.getInstance().messageType = null
+            binding?.messageView?.animate()
+                ?.translationY(0f)
+                ?.alpha(0.0f)
+                ?.setDuration(DURATION)
+                ?.setStartDelay(START_DELAY)
+                ?.setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
                         super.onAnimationEnd(animation)
-                        binding.messageView.visibility = View.GONE
+                        binding?.messageView?.visibility = View.GONE
                     }
                 })
         } else {
-            binding.messageView.visibility = View.GONE
+            binding?.messageView?.visibility = View.GONE
         }
     }
 
@@ -614,7 +624,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                     if ((!TextUtils.isEmpty(displayName) && !(displayName == currentUser!!.displayName))) {
                         currentUser!!.displayName = displayName
                         userManager.updateOrCreateUser(currentUser!!)
-                        binding.displayNameText.text = currentUser!!.displayName
+                        binding?.displayNameText?.text = currentUser!!.displayName
                     }
                 },
                 { dispose(profileQueryDisposable) },
@@ -625,74 +635,74 @@ class SettingsController : BaseController(R.layout.controller_settings) {
     private fun setupServerAgeWarning() {
         when {
             CapabilitiesUtilNew.isServerEOL(currentUser!!) -> {
-                binding.serverAgeWarningText.setTextColor(ContextCompat.getColor((context)!!, R.color.nc_darkRed))
-                binding.serverAgeWarningText.setText(R.string.nc_settings_server_eol)
-                binding.serverAgeWarningIcon.setColorFilter(
-                    ContextCompat.getColor((context)!!, R.color.nc_darkRed),
+                binding?.serverAgeWarningText?.setTextColor(ContextCompat.getColor((context)!!, R.color.nc_darkRed))
+                binding?.serverAgeWarningText?.setText(R.string.nc_settings_server_eol)
+                binding?.serverAgeWarningIcon?.setColorFilter(
+                    ContextCompat.getColor((context), R.color.nc_darkRed),
                     PorterDuff.Mode.SRC_IN
                 )
             }
             CapabilitiesUtilNew.isServerAlmostEOL(currentUser!!) -> {
-                binding.serverAgeWarningText.setTextColor(
-                    ContextCompat.getColor((context)!!, R.color.nc_darkYellow)
+                binding?.serverAgeWarningText?.setTextColor(
+                    ContextCompat.getColor((context), R.color.nc_darkYellow)
                 )
-                binding.serverAgeWarningText.setText(R.string.nc_settings_server_almost_eol)
-                binding.serverAgeWarningIcon.setColorFilter(
-                    ContextCompat.getColor((context)!!, R.color.nc_darkYellow),
+                binding?.serverAgeWarningText?.setText(R.string.nc_settings_server_almost_eol)
+                binding?.serverAgeWarningIcon?.setColorFilter(
+                    ContextCompat.getColor((context), R.color.nc_darkYellow),
                     PorterDuff.Mode.SRC_IN
                 )
             }
             else -> {
-                binding.serverAgeWarningTextCard.visibility = View.GONE
+                binding?.serverAgeWarningTextCard?.visibility = View.GONE
             }
         }
     }
 
     private fun setupCheckables() {
-        (binding.settingsScreenSecurity.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+        (binding?.settingsScreenSecurity?.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
             appPreferences.isScreenSecured
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            (binding.settingsIncognitoKeyboard.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+            (binding?.settingsIncognitoKeyboard?.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
                 appPreferences.isKeyboardIncognito
         }
 
-        (binding.settingsIncognitoKeyboard.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+        (binding?.settingsIncognitoKeyboard?.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
             appPreferences.isKeyboardIncognito
 
         if (CapabilitiesUtilNew.isReadStatusAvailable(userManager.currentUser.blockingGet())) {
-            (binding.settingsReadPrivacy.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+            (binding?.settingsReadPrivacy?.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
                 !CapabilitiesUtilNew.isReadStatusPrivate(currentUser!!)
         } else {
-            binding.settingsReadPrivacy.visibility = View.GONE
+            binding?.settingsReadPrivacy?.visibility = View.GONE
         }
 
-        (binding.settingsPhoneBookIntegration.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+        (binding?.settingsPhoneBookIntegration?.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
             appPreferences.isPhoneBookIntegrationEnabled
     }
 
     private fun setupScreenLockSetting() {
         val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         if (keyguardManager.isKeyguardSecure) {
-            binding.settingsScreenLock.isEnabled = true
-            binding.settingsScreenLockTimeout.isEnabled = true
-            (binding.settingsScreenLock.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+            binding?.settingsScreenLock?.isEnabled = true
+            binding?.settingsScreenLockTimeout?.isEnabled = true
+            (binding?.settingsScreenLock?.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
                 appPreferences.isScreenLocked
-            binding.settingsScreenLockTimeout.isEnabled = appPreferences.isScreenLocked
+            binding?.settingsScreenLockTimeout?.isEnabled = appPreferences.isScreenLocked
             if (appPreferences.isScreenLocked) {
-                binding.settingsScreenLockTimeout.alpha = ENABLED_ALPHA
+                binding?.settingsScreenLockTimeout?.alpha = ENABLED_ALPHA
             } else {
-                binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
+                binding?.settingsScreenLockTimeout?.alpha = DISABLED_ALPHA
             }
-            binding.settingsScreenLock.alpha = ENABLED_ALPHA
+            binding?.settingsScreenLock?.alpha = ENABLED_ALPHA
         } else {
-            binding.settingsScreenLock.isEnabled = false
-            binding.settingsScreenLockTimeout.isEnabled = false
+            binding?.settingsScreenLock?.isEnabled = false
+            binding?.settingsScreenLockTimeout?.isEnabled = false
             appPreferences.removeScreenLock()
             appPreferences.removeScreenLockTimeout()
-            (binding.settingsScreenLock.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked = false
-            binding.settingsScreenLock.alpha = DISABLED_ALPHA
-            binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
+            (binding?.settingsScreenLock?.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked = false
+            binding?.settingsScreenLock?.alpha = DISABLED_ALPHA
+            binding?.settingsScreenLockTimeout?.alpha = DISABLED_ALPHA
         }
     }
 
@@ -710,40 +720,40 @@ class SettingsController : BaseController(R.layout.controller_settings) {
     }
 
     private fun hideProxySettings() {
-        appPreferences?.removeProxyHost()
-        appPreferences?.removeProxyPort()
-        appPreferences?.removeProxyCredentials()
-        appPreferences?.removeProxyUsername()
-        appPreferences?.removeProxyPassword()
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_host_edit).visibility = View.GONE
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_port_edit).visibility = View.GONE
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_use_credentials).visibility =
+        appPreferences.removeProxyHost()
+        appPreferences.removeProxyPort()
+        appPreferences.removeProxyCredentials()
+        appPreferences.removeProxyUsername()
+        appPreferences.removeProxyPassword()
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_host_edit)?.visibility = View.GONE
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_port_edit)?.visibility = View.GONE
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_use_credentials)?.visibility =
             View.GONE
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_username_edit).visibility = View.GONE
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_password_edit).visibility = View.GONE
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_username_edit)?.visibility = View.GONE
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_password_edit)?.visibility = View.GONE
     }
 
     private fun showProxySettings() {
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_host_edit).visibility =
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_host_edit)?.visibility =
             View.VISIBLE
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_port_edit).visibility =
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_port_edit)?.visibility =
             View.VISIBLE
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_use_credentials).visibility =
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_use_credentials)?.visibility =
             View.VISIBLE
     }
 
     private fun showProxyCredentials() {
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_username_edit).visibility =
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_username_edit)?.visibility =
             View.VISIBLE
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_password_edit).visibility =
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_password_edit)?.visibility =
             View.VISIBLE
     }
 
     private fun hideProxyCredentials() {
-        appPreferences?.removeProxyUsername()
-        appPreferences?.removeProxyPassword()
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_username_edit).visibility = View.GONE
-        binding.settingsScreen.findViewById<View>(R.id.settings_proxy_password_edit).visibility = View.GONE
+        appPreferences.removeProxyUsername()
+        appPreferences.removeProxyPassword()
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_username_edit)?.visibility = View.GONE
+        binding?.settingsScreen?.findViewById<View>(R.id.settings_proxy_password_edit)?.visibility = View.GONE
     }
 
     private fun dispose(disposable: Disposable?) {
@@ -784,7 +794,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
             checkForPhoneNumber()
         } else {
             appPreferences.setPhoneBookIntegration(false)
-            (binding.settingsPhoneBookIntegration.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+            (binding?.settingsPhoneBookIntegration?.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
                 appPreferences.isPhoneBookIntegrationEnabled
             Toast.makeText(
                 context,
@@ -802,11 +812,11 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
     private inner class ScreenLockListener : OnPreferenceValueChangedListener<Boolean> {
         override fun onChanged(newValue: Boolean) {
-            binding.settingsScreenLockTimeout.isEnabled = newValue
+            binding?.settingsScreenLockTimeout?.isEnabled = newValue
             if (newValue) {
-                binding.settingsScreenLockTimeout.alpha = ENABLED_ALPHA
+                binding?.settingsScreenLockTimeout?.alpha = ENABLED_ALPHA
             } else {
-                binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
+                binding?.settingsScreenLockTimeout?.alpha = DISABLED_ALPHA
             }
         }
     }
@@ -844,11 +854,11 @@ class SettingsController : BaseController(R.layout.controller_settings) {
                 } else {
                     when (newValue) {
                         "HTTP" ->
-                            binding.settingsProxyPortEdit.value = "3128"
+                            binding?.settingsProxyPortEdit?.value = "3128"
                         "DIRECT" ->
-                            binding.settingsProxyPortEdit.value = "8080"
+                            binding?.settingsProxyPortEdit?.value = "8080"
                         "SOCKS" ->
-                            binding.settingsProxyPortEdit.value = "1080"
+                            binding?.settingsProxyPortEdit?.value = "1080"
                         else -> {
                         }
                     }
@@ -1031,7 +1041,7 @@ class SettingsController : BaseController(R.layout.controller_settings) {
 
                     override fun onError(e: Throwable) {
                         appPreferences.setReadPrivacy(!newValue)
-                        (binding.settingsReadPrivacy.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+                        (binding?.settingsReadPrivacy?.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
                             !newValue
                     }
 

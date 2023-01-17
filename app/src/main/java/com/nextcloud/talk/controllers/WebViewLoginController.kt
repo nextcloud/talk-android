@@ -82,7 +82,7 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
     R.layout.controller_web_view_login,
     args
 ) {
-    private val binding: ControllerWebViewLoginBinding by viewBinding(ControllerWebViewLoginBinding::bind)
+    private val binding: ControllerWebViewLoginBinding? by viewBinding(ControllerWebViewLoginBinding::bind)
 
     @Inject
     lateinit var userManager: UserManager
@@ -137,25 +137,25 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
         actionBar?.hide()
 
         assembledPrefix = resources!!.getString(R.string.nc_talk_login_scheme) + PROTOCOL_SUFFIX + "login/"
-        binding.webview.settings.allowFileAccess = false
-        binding.webview.settings.allowFileAccessFromFileURLs = false
-        binding.webview.settings.javaScriptEnabled = true
-        binding.webview.settings.javaScriptCanOpenWindowsAutomatically = false
-        binding.webview.settings.domStorageEnabled = true
-        binding.webview.settings.setUserAgentString(webLoginUserAgent)
-        binding.webview.settings.saveFormData = false
-        binding.webview.settings.savePassword = false
-        binding.webview.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
-        binding.webview.clearCache(true)
-        binding.webview.clearFormData()
-        binding.webview.clearHistory()
+        binding?.webview?.settings?.allowFileAccess = false
+        binding?.webview?.settings?.allowFileAccessFromFileURLs = false
+        binding?.webview?.settings?.javaScriptEnabled = true
+        binding?.webview?.settings?.javaScriptCanOpenWindowsAutomatically = false
+        binding?.webview?.settings?.domStorageEnabled = true
+        binding?.webview?.settings?.setUserAgentString(webLoginUserAgent)
+        binding?.webview?.settings?.saveFormData = false
+        binding?.webview?.settings?.savePassword = false
+        binding?.webview?.settings?.setRenderPriority(WebSettings.RenderPriority.HIGH)
+        binding?.webview?.clearCache(true)
+        binding?.webview?.clearFormData()
+        binding?.webview?.clearHistory()
         WebView.clearClientCertPreferences(null)
-        webViewFidoBridge = WebViewFidoBridge.createInstanceForWebView(activity as AppCompatActivity?, binding.webview)
+        webViewFidoBridge = WebViewFidoBridge.createInstanceForWebView(activity as AppCompatActivity?, binding?.webview)
         CookieSyncManager.createInstance(activity)
         android.webkit.CookieManager.getInstance().removeAllCookies(null)
         val headers: MutableMap<String, String> = HashMap()
         headers.put("OCS-APIRequest", "true")
-        binding.webview.webViewClient = object : WebViewClient() {
+        binding?.webview?.webViewClient = object : WebViewClient() {
             private var basePageLoaded = false
             override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
                 webViewFidoBridge?.delegateShouldInterceptRequest(view, request)
@@ -181,24 +181,24 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                 try {
                     loginStep++
                     if (!basePageLoaded) {
-                        binding.progressBar.visibility = View.GONE
-                        binding.webview.visibility = View.VISIBLE
+                        binding?.progressBar?.visibility = View.GONE
+                        binding?.webview?.visibility = View.VISIBLE
 
                         basePageLoaded = true
                     }
                     if (!TextUtils.isEmpty(username)) {
                         if (loginStep == 1) {
-                            binding.webview.loadUrl(
+                            binding?.webview?.loadUrl(
                                 "javascript: {document.getElementsByClassName('login')[0].click(); };"
                             )
                         } else if (!automatedLoginAttempted) {
                             automatedLoginAttempted = true
                             if (TextUtils.isEmpty(password)) {
-                                binding.webview.loadUrl(
+                                binding?.webview?.loadUrl(
                                     "javascript:var justStore = document.getElementById('user').value = '$username';"
                                 )
                             } else {
-                                binding.webview.loadUrl(
+                                binding?.webview?.loadUrl(
                                     "javascript: {" +
                                         "document.getElementById('user').value = '" + username + "';" +
                                         "document.getElementById('password').value = '" + password + "';" +
@@ -308,7 +308,7 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                 super.onReceivedError(view, errorCode, description, failingUrl)
             }
         }
-        binding.webview.loadUrl("$baseUrl/index.php/login/flow", headers)
+        binding?.webview?.loadUrl("$baseUrl/index.php/login/flow", headers)
     }
 
     private fun dispose() {
