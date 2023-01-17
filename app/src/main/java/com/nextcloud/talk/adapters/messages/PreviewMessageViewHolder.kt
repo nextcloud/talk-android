@@ -108,28 +108,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         image.minimumHeight = DisplayUtils.convertDpToPixel(MIN_IMAGE_HEIGHT, context).toInt()
 
         time.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
-        if (userAvatar != null) {
-            if (message.isGrouped || message.isOneToOneConversation) {
-                if (message.isOneToOneConversation) {
-                    userAvatar.visibility = View.GONE
-                } else {
-                    userAvatar.visibility = View.INVISIBLE
-                }
-            } else {
-                userAvatar.visibility = View.VISIBLE
-                userAvatar.setOnClickListener { v: View ->
-                    if (payload is MessagePayload) {
-                        (payload as MessagePayload).profileBottomSheet.showFor(
-                            message.actorId!!,
-                            v.context
-                        )
-                    }
-                }
-                if (ACTOR_TYPE_BOTS == message.actorType && ACTOR_ID_CHANGELOG == message.actorId) {
-                    userAvatar.loadChangelogBotAvatar()
-                }
-            }
-        }
+
         viewThemeUtils!!.platform.colorCircularProgressBar(progressBar!!)
         clickView = image
         messageText.visibility = View.VISIBLE
@@ -139,7 +118,6 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             messageText.text = fileName
             if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_NAME)) {
                 previewContainer.visibility = View.GONE
-                previewContactContainer.visibility = View.VISIBLE
                 previewContactName.text = message.selectedIndividualHashMap!![KEY_CONTACT_NAME]
                 progressBar = previewContactProgressBar
                 messageText.visibility = View.INVISIBLE
@@ -237,7 +215,34 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             viewThemeUtils!!
         )
 
+        // super.onBind is at this position, because:
+        // - it needs to be called after "placeholder" is set (otherwise placeholders are initially not loaded)
+        // - it needs to be before the show/hide logic is set (because super methods also have logic for this, which
+        // needs to be overwritten again)
         super.onBind(message)
+
+        if (userAvatar != null) {
+            if (message.isGrouped || message.isOneToOneConversation) {
+                if (message.isOneToOneConversation) {
+                    userAvatar.visibility = View.GONE
+                } else {
+                    userAvatar.visibility = View.INVISIBLE
+                }
+            } else {
+                userAvatar.visibility = View.VISIBLE
+                userAvatar.setOnClickListener { v: View ->
+                    if (payload is MessagePayload) {
+                        (payload as MessagePayload).profileBottomSheet.showFor(
+                            message.actorId!!,
+                            v.context
+                        )
+                    }
+                }
+                if (ACTOR_TYPE_BOTS == message.actorType && ACTOR_ID_CHANGELOG == message.actorId) {
+                    userAvatar.loadChangelogBotAvatar()
+                }
+            }
+        }
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
