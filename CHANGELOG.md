@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [15.1.1] - 2023-01-18
+
+## Fixed
+
+- Missing file icons in chat
+- "Random" crashes
+- Call connections
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/66?closed=1
+
 ## [15.1.0] - 2023-01-12
 
 ## Added
