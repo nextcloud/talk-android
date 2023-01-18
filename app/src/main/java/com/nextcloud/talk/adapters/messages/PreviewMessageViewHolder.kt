@@ -105,6 +105,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     @SuppressLint("SetTextI18n")
     @Suppress("NestedBlockDepth", "ComplexMethod", "LongMethod")
     override fun onBind(message: ChatMessage) {
+        super.onBind(message)
         image.minimumHeight = DisplayUtils.convertDpToPixel(MIN_IMAGE_HEIGHT, context).toInt()
 
         time.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
@@ -116,53 +117,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             fileViewerUtils = FileViewerUtils(context!!, message.activeUser!!)
             val fileName = message.selectedIndividualHashMap!![KEY_NAME]
             messageText.text = fileName
-            if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_NAME)) {
-                previewContainer.visibility = View.GONE
-                previewContactName.text = message.selectedIndividualHashMap!![KEY_CONTACT_NAME]
-                progressBar = previewContactProgressBar
-                messageText.visibility = View.INVISIBLE
-                clickView = previewContactContainer
-                viewThemeUtils!!.talk.colorContactChatItemBackground(previewContactContainer)
-                viewThemeUtils!!.talk.colorContactChatItemName(previewContactName)
-                viewThemeUtils!!.platform.colorCircularProgressBarOnPrimaryContainer(previewContactProgressBar!!)
 
-                if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_PHOTO)) {
-                    image = previewContactPhoto
-                    placeholder = getDrawableFromContactDetails(
-                        context,
-                        message.selectedIndividualHashMap!![KEY_CONTACT_PHOTO]
-                    )
-                } else {
-                    image = previewContactPhoto
-                    placeholder = ContextCompat.getDrawable(context!!, R.drawable.ic_mimetype_text_vcard)
-                }
-            } else {
-                previewContainer.visibility = View.VISIBLE
-                previewContactContainer.visibility = View.GONE
-            }
-
-            if (message.selectedIndividualHashMap!!.containsKey(KEY_MIMETYPE)) {
-                val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
-                val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
-                val drawable = ContextCompat.getDrawable(context!!, drawableResourceId)
-                if (drawable != null &&
-                    (
-                        drawableResourceId == R.drawable.ic_mimetype_folder ||
-                            drawableResourceId == R.drawable.ic_mimetype_package_x_generic
-                        )
-                ) {
-                    drawable.setColorFilter(
-                        viewThemeUtils!!.getScheme(image.context).primary,
-                        PorterDuff.Mode.SRC_ATOP
-                    )
-                }
-                placeholder = drawable
-            } else {
-                fetchFileInformation(
-                    "/" + message.selectedIndividualHashMap!![KEY_PATH],
-                    message.activeUser
-                )
-            }
             if (message.activeUser != null &&
                 message.activeUser!!.username != null &&
                 message.activeUser!!.baseUrl != null
@@ -215,12 +170,6 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             viewThemeUtils!!
         )
 
-        // super.onBind is at this position, because:
-        // - it needs to be called after "placeholder" is set (otherwise placeholders are initially not loaded)
-        // - it needs to be before the show/hide logic is set (because super methods also have logic for this, which
-        // needs to be overwritten again)
-        super.onBind(message)
-
         if (userAvatar != null) {
             if (message.isGrouped || message.isOneToOneConversation) {
                 if (message.isOneToOneConversation) {
@@ -254,6 +203,55 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     }
 
     override fun getPayloadForImageLoader(message: ChatMessage?): Any? {
+        if (message!!.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_NAME)) {
+            previewContainer.visibility = View.GONE
+            previewContactContainer.visibility = View.VISIBLE
+            previewContactName.text = message.selectedIndividualHashMap!![KEY_CONTACT_NAME]
+            progressBar = previewContactProgressBar
+            messageText.visibility = View.INVISIBLE
+            clickView = previewContactContainer
+            viewThemeUtils!!.talk.colorContactChatItemBackground(previewContactContainer)
+            viewThemeUtils!!.talk.colorContactChatItemName(previewContactName)
+            viewThemeUtils!!.platform.colorCircularProgressBarOnPrimaryContainer(previewContactProgressBar!!)
+
+            if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_PHOTO)) {
+                image = previewContactPhoto
+                placeholder = getDrawableFromContactDetails(
+                    context,
+                    message.selectedIndividualHashMap!![KEY_CONTACT_PHOTO]
+                )
+            } else {
+                image = previewContactPhoto
+                image.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.ic_mimetype_text_vcard))
+            }
+        } else {
+            previewContainer.visibility = View.VISIBLE
+            previewContactContainer.visibility = View.GONE
+        }
+
+        if (message.selectedIndividualHashMap!!.containsKey(KEY_MIMETYPE)) {
+            val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
+            val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
+            val drawable = ContextCompat.getDrawable(context!!, drawableResourceId)
+            if (drawable != null &&
+                (
+                    drawableResourceId == R.drawable.ic_mimetype_folder ||
+                        drawableResourceId == R.drawable.ic_mimetype_package_x_generic
+                    )
+            ) {
+                drawable.setColorFilter(
+                    viewThemeUtils!!.getScheme(image.context).primary,
+                    PorterDuff.Mode.SRC_ATOP
+                )
+            }
+            placeholder = drawable
+        } else {
+            fetchFileInformation(
+                "/" + message.selectedIndividualHashMap!![KEY_PATH],
+                message.activeUser
+            )
+        }
+
         return placeholder
     }
 
