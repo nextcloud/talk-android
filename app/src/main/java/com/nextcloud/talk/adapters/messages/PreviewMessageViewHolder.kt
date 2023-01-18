@@ -106,29 +106,10 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     @Suppress("NestedBlockDepth", "ComplexMethod", "LongMethod")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
+        image.minimumHeight = DisplayUtils.convertDpToPixel(MIN_IMAGE_HEIGHT, context).toInt()
+
         time.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
-        if (userAvatar != null) {
-            if (message.isGrouped || message.isOneToOneConversation) {
-                if (message.isOneToOneConversation) {
-                    userAvatar.visibility = View.GONE
-                } else {
-                    userAvatar.visibility = View.INVISIBLE
-                }
-            } else {
-                userAvatar.visibility = View.VISIBLE
-                userAvatar.setOnClickListener { v: View ->
-                    if (payload is MessagePayload) {
-                        (payload as MessagePayload).profileBottomSheet.showFor(
-                            message.actorId!!,
-                            v.context
-                        )
-                    }
-                }
-                if (ACTOR_TYPE_BOTS == message.actorType && ACTOR_ID_CHANGELOG == message.actorId) {
-                    userAvatar.loadChangelogBotAvatar()
-                }
-            }
-        }
+
         viewThemeUtils!!.platform.colorCircularProgressBar(progressBar!!)
         clickView = image
         messageText.visibility = View.VISIBLE
@@ -136,47 +117,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             fileViewerUtils = FileViewerUtils(context!!, message.activeUser!!)
             val fileName = message.selectedIndividualHashMap!![KEY_NAME]
             messageText.text = fileName
-            if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_NAME)) {
-                previewContainer.visibility = View.GONE
-                previewContactName.text = message.selectedIndividualHashMap!![KEY_CONTACT_NAME]
-                progressBar = previewContactProgressBar
-                messageText.visibility = View.INVISIBLE
-                clickView = previewContactContainer
-                viewThemeUtils!!.talk.colorContactChatItemBackground(previewContactContainer)
-                viewThemeUtils!!.talk.colorContactChatItemName(previewContactName)
-                viewThemeUtils!!.platform.colorCircularProgressBarOnPrimaryContainer(previewContactProgressBar!!)
-            } else {
-                previewContainer.visibility = View.VISIBLE
-                previewContactContainer.visibility = View.GONE
-            }
-            if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_PHOTO)) {
-                image = previewContactPhoto
-                placeholder = getDrawableFromContactDetails(
-                    context,
-                    message.selectedIndividualHashMap!![KEY_CONTACT_PHOTO]
-                )
-            } else if (message.selectedIndividualHashMap!!.containsKey(KEY_MIMETYPE)) {
-                val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
-                val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
-                val drawable = ContextCompat.getDrawable(context!!, drawableResourceId)
-                if (drawable != null &&
-                    (
-                        drawableResourceId == R.drawable.ic_mimetype_folder ||
-                            drawableResourceId == R.drawable.ic_mimetype_package_x_generic
-                        )
-                ) {
-                    drawable.setColorFilter(
-                        viewThemeUtils!!.getScheme(image.context).primary,
-                        PorterDuff.Mode.SRC_ATOP
-                    )
-                }
-                placeholder = drawable
-            } else {
-                fetchFileInformation(
-                    "/" + message.selectedIndividualHashMap!![KEY_PATH],
-                    message.activeUser
-                )
-            }
+
             if (message.activeUser != null &&
                 message.activeUser!!.username != null &&
                 message.activeUser!!.baseUrl != null
@@ -228,6 +169,29 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             true,
             viewThemeUtils!!
         )
+
+        if (userAvatar != null) {
+            if (message.isGrouped || message.isOneToOneConversation) {
+                if (message.isOneToOneConversation) {
+                    userAvatar.visibility = View.GONE
+                } else {
+                    userAvatar.visibility = View.INVISIBLE
+                }
+            } else {
+                userAvatar.visibility = View.VISIBLE
+                userAvatar.setOnClickListener { v: View ->
+                    if (payload is MessagePayload) {
+                        (payload as MessagePayload).profileBottomSheet.showFor(
+                            message.actorId!!,
+                            v.context
+                        )
+                    }
+                }
+                if (ACTOR_TYPE_BOTS == message.actorType && ACTOR_ID_CHANGELOG == message.actorId) {
+                    userAvatar.loadChangelogBotAvatar()
+                }
+            }
+        }
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
@@ -239,6 +203,55 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     }
 
     override fun getPayloadForImageLoader(message: ChatMessage?): Any? {
+        if (message!!.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_NAME)) {
+            previewContainer.visibility = View.GONE
+            previewContactContainer.visibility = View.VISIBLE
+            previewContactName.text = message.selectedIndividualHashMap!![KEY_CONTACT_NAME]
+            progressBar = previewContactProgressBar
+            messageText.visibility = View.INVISIBLE
+            clickView = previewContactContainer
+            viewThemeUtils!!.talk.colorContactChatItemBackground(previewContactContainer)
+            viewThemeUtils!!.talk.colorContactChatItemName(previewContactName)
+            viewThemeUtils!!.platform.colorCircularProgressBarOnPrimaryContainer(previewContactProgressBar!!)
+
+            if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_PHOTO)) {
+                image = previewContactPhoto
+                placeholder = getDrawableFromContactDetails(
+                    context,
+                    message.selectedIndividualHashMap!![KEY_CONTACT_PHOTO]
+                )
+            } else {
+                image = previewContactPhoto
+                image.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.ic_mimetype_text_vcard))
+            }
+        } else {
+            previewContainer.visibility = View.VISIBLE
+            previewContactContainer.visibility = View.GONE
+        }
+
+        if (message.selectedIndividualHashMap!!.containsKey(KEY_MIMETYPE)) {
+            val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
+            val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
+            val drawable = ContextCompat.getDrawable(context!!, drawableResourceId)
+            if (drawable != null &&
+                (
+                    drawableResourceId == R.drawable.ic_mimetype_folder ||
+                        drawableResourceId == R.drawable.ic_mimetype_package_x_generic
+                    )
+            ) {
+                drawable.setColorFilter(
+                    viewThemeUtils!!.getScheme(image.context).primary,
+                    PorterDuff.Mode.SRC_ATOP
+                )
+            }
+            placeholder = drawable
+        } else {
+            fetchFileInformation(
+                "/" + message.selectedIndividualHashMap!![KEY_PATH],
+                message.activeUser
+            )
+        }
+
         return placeholder
     }
 
@@ -255,9 +268,11 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             try {
                 inputStream.close()
             } catch (e: IOException) {
-                val drawableResourceId = getDrawableResourceIdForMimeType("text/vcard")
-                drawable = ContextCompat.getDrawable(context, drawableResourceId)
+                Log.e(TAG, "failed to close stream in getDrawableFromContactDetails", e)
             }
+        }
+        if (drawable == null) {
+            drawable = ContextCompat.getDrawable(context!!, R.drawable.ic_mimetype_text_vcard)
         }
         return drawable
     }
@@ -341,5 +356,6 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         const val ACTOR_TYPE_BOTS = "bots"
         const val ACTOR_ID_CHANGELOG = "changelog"
         const val KEY_NAME = "name"
+        const val MIN_IMAGE_HEIGHT = 100F
     }
 }

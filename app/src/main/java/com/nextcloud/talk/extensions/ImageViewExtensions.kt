@@ -149,13 +149,17 @@ fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.D
 }
 
 fun ImageView.loadImage(url: String, user: User, placeholder: Drawable? = null): io.reactivex.disposables.Disposable {
+    var finalPlaceholder = placeholder
+    if (finalPlaceholder == null) {
+        finalPlaceholder = ContextCompat.getDrawable(context!!, R.drawable.ic_mimetype_file)
+    }
 
     val requestBuilder = ImageRequest.Builder(context)
         .data(url)
         .crossfade(true)
         .target(this)
-        .placeholder(placeholder)
-        .error(placeholder)
+        .placeholder(finalPlaceholder)
+        .error(finalPlaceholder)
         .transformations(RoundedCornersTransformation(ROUNDING_PIXEL, ROUNDING_PIXEL, ROUNDING_PIXEL, ROUNDING_PIXEL))
 
     if (url.startsWith(user.baseUrl!!) &&
