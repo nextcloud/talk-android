@@ -3,6 +3,8 @@
  *
  * @author Andy Scherzinger
  * @author Tim Krüger
+ * @author Marcel Hibbe
+ * Copyright (C) 2022-2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  *
