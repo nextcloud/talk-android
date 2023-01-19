@@ -122,6 +122,7 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) : M
     private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
         val author: String = message.actorDisplayName!!
         if (!TextUtils.isEmpty(author)) {
+            binding.messageAuthor.visibility = View.VISIBLE
             binding.messageAuthor.text = author
             binding.messageUserAvatar.setOnClickListener {
                 (payload as? MessagePayload)?.profileBottomSheet?.showFor(message.actorId!!, itemView.context)
