@@ -4,6 +4,8 @@
  * @author Mario Danic
  * @author Andy Scherzinger
  * @author Tim Krüger
+ * @author Marcel Hibbe
+ * Copyright (C) 2022-2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -75,20 +77,10 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
-        processAuthor(message)
 
-        if (!message.isGrouped && !message.isOneToOneConversation) {
-            showAvatarOnChatMessage(message)
-        } else {
-            if (message.isOneToOneConversation) {
-                binding.messageUserAvatar.visibility = View.GONE
-            } else {
-                binding.messageUserAvatar.visibility = View.INVISIBLE
-            }
-            binding.messageAuthor.visibility = View.GONE
-        }
+        setAvatarAndAuthorOnMessageItem(message)
 
-        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        colorizeMessageBubble(message)
 
         itemView.isSelected = false
 
@@ -139,15 +131,43 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
         commonMessageInterface.onClickReaction(chatMessage, emoji)
     }
 
-    private fun processAuthor(message: ChatMessage) {
-        if (!TextUtils.isEmpty(message.actorDisplayName)) {
-            binding.messageAuthor.text = message.actorDisplayName
+    private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
+        val author: String = message.actorDisplayName!!
+        if (!TextUtils.isEmpty(author)) {
+            binding.messageAuthor.visibility = View.VISIBLE
+            binding.messageAuthor.text = author
             binding.messageUserAvatar.setOnClickListener {
                 (payload as? MessagePayload)?.profileBottomSheet?.showFor(message.actorId!!, itemView.context)
             }
         } else {
             binding.messageAuthor.setText(R.string.nc_nick_guest)
         }
+
+        if (!message.isGrouped && !message.isOneToOneConversation) {
+            setAvatarOnMessage(message)
+        } else {
+            if (message.isOneToOneConversation) {
+                binding.messageUserAvatar.visibility = View.GONE
+            } else {
+                binding.messageUserAvatar.visibility = View.INVISIBLE
+            }
+            binding.messageAuthor.visibility = View.GONE
+        }
+    }
+
+    private fun setAvatarOnMessage(message: ChatMessage) {
+        binding.messageUserAvatar.visibility = View.VISIBLE
+        if (message.actorType == "guests") {
+            // do nothing, avatar is set
+        } else if (message.actorType == "bots" && message.actorId == "changelog") {
+            binding.messageUserAvatar.loadChangelogBotAvatar()
+        } else if (message.actorType == "bots") {
+            binding.messageUserAvatar.loadBotsAvatar()
+        }
+    }
+
+    private fun colorizeMessageBubble(message: ChatMessage) {
+        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
     private fun processParentMessage(message: ChatMessage) {
