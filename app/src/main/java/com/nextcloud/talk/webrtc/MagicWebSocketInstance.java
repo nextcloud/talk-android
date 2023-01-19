@@ -266,13 +266,15 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     refreshChatHashMap.put(BundleKeys.KEY_INTERNAL_USER_ID, Long.toString(conversationUser.getId()));
                     eventBus.post(new WebSocketCommunicationEvent("refreshChat", refreshChatHashMap));
                 }
-            } else if (dataHashMap.containsKey("recording")) {
+            } else if (dataHashMap != null && dataHashMap.containsKey("recording")) {
                 Map<String, Object> recordingMap = (Map<String, Object>) dataHashMap.get("recording");
                 if (recordingMap != null && recordingMap.containsKey("status")) {
                     int status = ((Long) recordingMap.get("status")).intValue();
                     Log.d(TAG, "status is " + status);
 
-                    // TODO: inform ChatController about state (after Daniels PRs are merged..)
+                    HashMap<String, String> recordingHashMap = new HashMap<>();
+                    recordingHashMap.put(BundleKeys.KEY_RECORDING_STATE, Integer.toString(status));
+                    eventBus.post(new WebSocketCommunicationEvent("recordingStatus", recordingHashMap));
                 }
             }
         }

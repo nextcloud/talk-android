@@ -98,6 +98,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
@@ -1674,26 +1675,42 @@ public class CallActivity extends CallBaseActivity {
             return;
         }
 
-        switch (webSocketCommunicationEvent.getType()) {
-            case "hello":
-                Log.d(TAG, "onMessageEvent 'hello'");
-                if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
-                    if (currentCallStatus == CallStatus.RECONNECTING) {
-                        hangup(false);
-                    } else {
-                        setCallState(CallStatus.RECONNECTING);
-                        runOnUiThread(this::initiateCall);
+        if (webSocketCommunicationEvent.getHashMap() != null) {
+            switch (webSocketCommunicationEvent.getType()) {
+                case "hello":
+                    Log.d(TAG, "onMessageEvent 'hello'");
+                    if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
+                        if (currentCallStatus == CallStatus.RECONNECTING) {
+                            hangup(false);
+                        } else {
+                            setCallState(CallStatus.RECONNECTING);
+                            runOnUiThread(this::initiateCall);
+                        }
                     }
-                }
-                break;
-            case "roomJoined":
-                Log.d(TAG, "onMessageEvent 'roomJoined'");
-                startSendingNick();
+                    break;
+                case "roomJoined":
+                    Log.d(TAG, "onMessageEvent 'roomJoined'");
+                    startSendingNick();
 
-                if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
-                    performCall();
-                }
-                break;
+                    if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
+                        performCall();
+                    }
+                    break;
+                case "recordingStatus":
+                    Log.d(TAG, "onMessageEvent 'recordingStatus'");
+
+                    if (webSocketCommunicationEvent.getHashMap().containsKey(BundleKeys.KEY_RECORDING_STATE)) {
+                        String recordingStateString =
+                            webSocketCommunicationEvent.getHashMap().get(BundleKeys.KEY_RECORDING_STATE);
+
+                        if (recordingStateString != null) {
+                            runOnUiThread(() -> {
+                                callRecordingViewModel.setRecordingState(Integer.parseInt(recordingStateString));
+                            });
+                        }
+                    }
+                    break;
+            }
         }
     }
 

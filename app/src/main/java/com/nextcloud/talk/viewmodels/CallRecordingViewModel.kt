@@ -108,6 +108,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
         when (state) {
             0 -> _viewState.value = RecordingStoppedState
             1 -> _viewState.value = RecordingStartedState
+            2 -> _viewState.value = RecordingStartedState
             else -> {}
         }
     }
