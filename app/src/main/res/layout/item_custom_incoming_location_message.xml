@@ -56,11 +56,6 @@
             layout="@layout/item_message_quote"
             android:visibility="gone" />
 
-        <WebView
-            android:id="@+id/webview"
-            android:layout_width="400dp"
-            android:layout_height="200dp" />
-
         <androidx.emoji2.widget.EmojiTextView
             android:id="@+id/messageAuthor"
             android:layout_width="match_parent"
@@ -69,6 +64,11 @@
             android:textAlignment="viewStart"
             android:textColor="@color/textColorMaxContrast"
             android:textSize="12sp" />
+
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="400dp"
+            android:layout_height="200dp" />
 
         <androidx.emoji2.widget.EmojiTextView
             android:id="@id/messageText"
