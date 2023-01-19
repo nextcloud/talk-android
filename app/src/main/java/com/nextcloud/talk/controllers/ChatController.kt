@@ -174,6 +174,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -2740,6 +2741,7 @@ class ChatController(args: Bundle) :
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl)
             bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
             bundle.putInt(KEY_RECORDING_STATE, it.callRecording)
+            bundle.putBoolean(KEY_IS_MODERATOR, it.isParticipantOwnerOrModerator)
             bundle.putBoolean(
                 BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
                 participantPermissions.canPublishAudio()
@@ -3291,6 +3293,7 @@ class ChatController(args: Bundle) :
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
                         bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
                         bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
+                        bundle.putBoolean(KEY_IS_MODERATOR, roomOverall.ocs!!.data!!.isParticipantOwnerOrModerator)
 
                         if (conversationUser != null) {
                             bundle.putParcelable(

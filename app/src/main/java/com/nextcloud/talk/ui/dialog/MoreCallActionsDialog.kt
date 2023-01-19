@@ -67,7 +67,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
     }
 
     private fun initItemsVisibility() {
-        if (callActivity.isAllowedToRecordCall) {
+        if (callActivity.isAllowedToStartOrStopRecording) {
             binding.recordCall.visibility = View.VISIBLE
         } else {
             binding.recordCall.visibility = View.GONE

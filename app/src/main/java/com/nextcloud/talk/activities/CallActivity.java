@@ -175,6 +175,7 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_WITHOUT_NOTIFI
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO;
@@ -346,6 +347,8 @@ public class CallActivity extends CallBaseActivity {
     private boolean canPublishAudioStream;
     private boolean canPublishVideoStream;
 
+    private boolean isModerator;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -369,6 +372,7 @@ public class CallActivity extends CallBaseActivity {
         isCallWithoutNotification = extras.getBoolean(KEY_CALL_WITHOUT_NOTIFICATION, false);
         canPublishAudioStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO);
         canPublishVideoStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO);
+        isModerator = extras.getBoolean(KEY_IS_MODERATOR, false);
 
         if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
             isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL);
@@ -468,11 +472,11 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void initFeaturesVisibility() {
-       boolean showMoreCallActionsItem = isAllowedToRecordCall();
+        boolean showMoreCallActionsItem = isAllowedToStartOrStopRecording();
         if (showMoreCallActionsItem) {
             binding.moreCallActions.setVisibility(View.VISIBLE);
         } else {
-          binding.moreCallActions.setVisibility(View.GONE);
+            binding.moreCallActions.setVisibility(View.GONE);
         }
     }
 
@@ -541,7 +545,9 @@ public class CallActivity extends CallBaseActivity {
         });
 
         binding.callRecordingIndicator.setOnClickListener(l -> {
-            callRecordingViewModel.clickRecordButton();
+            if (isAllowedToStartOrStopRecording()) {
+                callRecordingViewModel.clickRecordButton();
+            }
         });
     }
 
@@ -638,7 +644,7 @@ public class CallActivity extends CallBaseActivity {
     private void updateAudioOutputButton(WebRtcAudioManager.AudioDevice activeAudioDevice) {
         switch (activeAudioDevice) {
             case BLUETOOTH:
-                binding.audioOutputButton.setImageResource ( R.drawable.ic_baseline_bluetooth_audio_24);
+                binding.audioOutputButton.setImageResource(R.drawable.ic_baseline_bluetooth_audio_24);
                 break;
             case SPEAKER_PHONE:
                 binding.audioOutputButton.setImageResource(R.drawable.ic_volume_up_white_24dp);
@@ -2974,9 +2980,10 @@ public class CallActivity extends CallBaseActivity {
         binding.callRecordingIndicator.setVisibility(View.GONE);
     }
 
-    public boolean isAllowedToRecordCall() {
+    public boolean isAllowedToStartOrStopRecording() {
         return CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "recording-v1") &&
-            CapabilitiesUtilNew.isCallRecordingAvailable(conversationUser);
+            CapabilitiesUtilNew.isCallRecordingAvailable(conversationUser)
+            && isModerator;
     }
 
     private class SelfVideoTouchListener implements View.OnTouchListener {
