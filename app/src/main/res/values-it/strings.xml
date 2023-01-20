@@ -174,6 +174,7 @@
     <string name="nc_new_mention">Menzioni non lette</string>
     <string name="nc_new_messages">Messaggi non letti</string>
     <string name="nc_new_password">Nuova password</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$snon disponibile (non installato o limitato dall\'amministratore)</string>
     <string name="nc_nick_guest">Ospite</string>
     <string name="nc_no">No</string>
     <string name="nc_no_messages_yet">Ancora nessun messaggio</string>
