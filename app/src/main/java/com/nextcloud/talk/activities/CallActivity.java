@@ -1746,8 +1746,10 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "hangupNetworkCalls. shutDownView=" + shutDownView);
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
-        callParticipantList.removeObserver(callParticipantListObserver);
-        callParticipantList.destroy();
+        if (callParticipantList != null) {
+            callParticipantList.removeObserver(callParticipantListObserver);
+            callParticipantList.destroy();
+        }
 
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
             .subscribeOn(Schedulers.io())
