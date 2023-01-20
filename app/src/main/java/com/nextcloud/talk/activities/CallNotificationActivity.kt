@@ -153,25 +153,29 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun proceedToCall() {
-        originalBundle!!.putString(KEY_ROOM_TOKEN, currentConversation!!.token)
-        originalBundle!!.putString(KEY_CONVERSATION_NAME, currentConversation!!.displayName)
+        if (currentConversation != null) {
+            originalBundle!!.putString(KEY_ROOM_TOKEN, currentConversation!!.token)
+            originalBundle!!.putString(KEY_CONVERSATION_NAME, currentConversation!!.displayName)
 
-        val participantPermission = ParticipantPermissions(
-            userBeingCalled!!,
-            currentConversation!!
-        )
-        originalBundle!!.putBoolean(
-            BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
-            participantPermission.canPublishAudio()
-        )
-        originalBundle!!.putBoolean(
-            BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
-            participantPermission.canPublishVideo()
-        )
+            val participantPermission = ParticipantPermissions(
+                userBeingCalled!!,
+                currentConversation!!
+            )
+            originalBundle!!.putBoolean(
+                BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
+                participantPermission.canPublishAudio()
+            )
+            originalBundle!!.putBoolean(
+                BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
+                participantPermission.canPublishVideo()
+            )
 
-        val intent = Intent(this, CallActivity::class.java)
-        intent.putExtras(originalBundle!!)
-        startActivity(intent)
+            val intent = Intent(this, CallActivity::class.java)
+            intent.putExtras(originalBundle!!)
+            startActivity(intent)
+        } else {
+            Log.w(TAG, "conversation was still null when clicked to answer call. User has to click another time.")
+        }
     }
 
     @Suppress("MagicNumber")
