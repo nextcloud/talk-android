@@ -186,8 +186,8 @@ import com.nextcloud.talk.utils.remapchat.RemapChatModel
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
-import com.nextcloud.talk.webrtc.MagicWebSocketInstance
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
+import com.nextcloud.talk.webrtc.WebSocketInstance
 import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.commons.models.IMessage
@@ -280,7 +280,7 @@ class ChatController(args: Bundle) :
     private var conversationVideoMenuItem: MenuItem? = null
     private var conversationSharedItemsItem: MenuItem? = null
 
-    var magicWebSocketInstance: MagicWebSocketInstance? = null
+    var webSocketInstance: WebSocketInstance? = null
 
     var lobbyTimerHandler: Handler? = null
     var pastPreconditionFailed = false
@@ -1926,9 +1926,9 @@ class ChatController(args: Bundle) :
                             pullChatMessages(1, 0)
                         }
 
-                        if (magicWebSocketInstance != null) {
-                            magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
-                                roomToken,
+                        if (webSocketInstance != null) {
+                            webSocketInstance?.joinRoomWithRoomTokenAndSession(
+                                roomToken!!,
                                 currentConversation?.sessionId
                             )
                         }
@@ -1951,9 +1951,9 @@ class ChatController(args: Bundle) :
 
             inConversation = true
             ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation?.sessionId
-            if (magicWebSocketInstance != null) {
-                magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
-                    roomToken,
+            if (webSocketInstance != null) {
+                webSocketInstance?.joinRoomWithRoomTokenAndSession(
+                    roomToken!!,
                     currentConversation?.sessionId
                 )
             }
@@ -2005,8 +2005,8 @@ class ChatController(args: Bundle) :
                         lobbyTimerHandler?.removeCallbacksAndMessages(null)
                     }
 
-                    if (magicWebSocketInstance != null && currentConversation != null) {
-                        magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
+                    if (webSocketInstance != null && currentConversation != null) {
+                        webSocketInstance?.joinRoomWithRoomTokenAndSession(
                             "",
                             currentConversation?.sessionId
                         )
@@ -2129,7 +2129,7 @@ class ChatController(args: Bundle) :
 
     private fun setupWebsocket() {
         if (conversationUser != null) {
-            magicWebSocketInstance =
+            webSocketInstance =
                 if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
                     WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
                 } else {

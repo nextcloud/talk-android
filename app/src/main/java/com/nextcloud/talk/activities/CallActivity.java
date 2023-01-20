@@ -105,10 +105,10 @@ import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
-import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.WebRtcAudioManager;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
+import com.nextcloud.talk.webrtc.WebSocketInstance;
 import com.wooplr.spotlight.SpotlightView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -315,7 +315,7 @@ public class CallActivity extends CallBaseActivity {
     };
 
     private ExternalSignalingServer externalSignalingServer;
-    private MagicWebSocketInstance webSocketClient;
+    private WebSocketInstance webSocketClient;
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private boolean hasMCU;
     private boolean hasExternalSignalingServer;
