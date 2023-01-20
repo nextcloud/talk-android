@@ -156,6 +156,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.lifecycle.ViewModelProvider;
 import autodagger.AutoInjector;
 import io.reactivex.Observable;
@@ -659,6 +660,7 @@ public class CallActivity extends CallBaseActivity {
                 Log.e(TAG, "Icon for audio output not available");
                 break;
         }
+        DrawableCompat.setTint(binding.audioOutputButton.getDrawable(), Color.WHITE);
     }
 
     private void handleFromNotification() {
