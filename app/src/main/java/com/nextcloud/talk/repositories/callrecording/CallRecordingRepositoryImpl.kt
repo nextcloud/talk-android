@@ -37,12 +37,6 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
 
     var apiVersion = 1
 
-    // override fun startRecording(
-    //     roomToken: String
-    // ): Observable<StartCallRecordingModel> {
-    //     return Observable.just<StartCallRecordingModel>(StartCallRecordingModel(true))
-    // }
-
     override fun startRecording(
         roomToken: String
     ): Observable<StartCallRecordingModel> {
@@ -56,12 +50,6 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
             1
         ).map { mapToStartCallRecordingModel(it.ocs?.meta!!) }
     }
-
-    // override fun stopRecording(
-    //     roomToken: String
-    // ): Observable<StopCallRecordingModel> {
-    //     return Observable.just<StopCallRecordingModel>(StopCallRecordingModel(true))
-    // }
 
     override fun stopRecording(
         roomToken: String
@@ -96,6 +84,5 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
 
     companion object {
         private const val HTTP_OK: Int = 200
-        private const val HTTP_CREATED: Int = 201
     }
 }
