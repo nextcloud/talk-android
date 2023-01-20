@@ -106,7 +106,6 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/nc_app_name"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
