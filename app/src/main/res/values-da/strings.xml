@@ -161,6 +161,7 @@
     <string name="nc_remove_participant">Fjern deltager</string>
     <string name="nc_rename">Omdøb samtale</string>
     <string name="nc_reply">Besvar</string>
+    <string name="nc_reply_privately">Svar privat</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_300">5 minutter</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
@@ -214,6 +215,7 @@
     <string name="nc_settings_proxy_host_title">Proxy host</string>
     <string name="nc_settings_proxy_port_title">Proxy port</string>
     <string name="nc_settings_proxy_type_title">Proxy type</string>
+    <string name="nc_settings_read_privacy_desc">Del min læsestatus og vis andres læsestatus</string>
     <string name="nc_settings_remove">Fjern</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
     <string name="nc_settings_remove_confirmation">Bekræft venligst din hensigt til at fjerne den aktuelle konto.</string>
@@ -237,6 +239,7 @@
     <string name="nc_shared_items_location">Sted</string>
     <string name="nc_sort_by">Sortér efter</string>
     <string name="nc_start_time">Start tid</string>
+    <string name="nc_upload_from_device">Upload fra enhed</string>
     <string name="nc_upload_in_progess">Uploader</string>
     <string name="nc_upload_picture_from_cam">Tag et billede</string>
     <string name="nc_user">ruger</string>
