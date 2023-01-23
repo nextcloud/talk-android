@@ -1174,6 +1174,9 @@ class ChatController(args: Bundle) :
             setOutputFile(file)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            setAudioSamplingRate(VOICE_MESSAGE_SAMPLING_RATE)
+            setAudioEncodingBitRate(VOICE_MESSAGE_ENCODING_BIT_RATE)
+            setAudioChannels(VOICE_MESSAGE_CHANNELS)
 
             try {
                 prepare()
@@ -3461,6 +3464,11 @@ class ChatController(args: Bundle) :
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
+        // Samplingrate 22050 was chosen because somehow 44100 failed to playback on safari when recorded on android.
+        // Please test with firefox, chrome, safari and mobile clients if changing anything regarding the sound.
+        private const val VOICE_MESSAGE_SAMPLING_RATE = 22050
+        private const val VOICE_MESSAGE_ENCODING_BIT_RATE = 32000
+        private const val VOICE_MESSAGE_CHANNELS = 1
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
         private const val SHORT_VIBRATE: Long = 20
