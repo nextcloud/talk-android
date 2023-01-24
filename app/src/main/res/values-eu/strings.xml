@@ -136,7 +136,7 @@
     <string name="nc_expire_messages_explanation">Txat-mezuak denbora jakin baten ondoren iraungi daitezke. Oharra: txatean partekatutako fitxategiak ez dira jabearentzat ezabatuko, baina ez dira gehiago elkarrizketan partekatuko.</string>
     <string name="nc_external_server_failed">Akatsa seinaleen konfigurazioa berreskuratzean</string>
     <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du telefono mugikorraren bidez elkarrizketa publikoetara sartzerik onartzen. Elkarrizketara web nabigatzaile baten bidez sartzen saiatu.</string>
-    <string name="nc_failed_to_perform_operation">Barkatu, zerbait txarto joan da!</string>
+    <string name="nc_failed_to_perform_operation">Barkatu, zerbait gaizki joan da!</string>
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_following_link">Erabiltzailea esteka publiko bat jarraitzen ari da</string>
     <string name="nc_formatted_message_you">Zu: %1$s</string>
