@@ -176,7 +176,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.vanniktech:emoji-google:0.15.0"
     implementation "androidx.emoji2:emoji2:${emojiVersion}"
