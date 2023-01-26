@@ -2147,15 +2147,17 @@ class ChatController(args: Bundle) :
     }
 
     private fun setupWebsocket() {
-        if (conversationUser != null) {
-            webSocketInstance =
-                if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
-                    WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
-                } else {
-                    Log.d(TAG, "magicWebSocketInstance became null")
-                    null
-                }
+        if (conversationUser == null) {
+            return
         }
+
+        webSocketInstance =
+            if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
+                WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
+            } else {
+                Log.d(TAG, "magicWebSocketInstance became null")
+                null
+            }
     }
 
     fun pullChatMessages(lookIntoFuture: Int, setReadMarker: Int = 1, xChatLastCommonRead: Int? = null) {
