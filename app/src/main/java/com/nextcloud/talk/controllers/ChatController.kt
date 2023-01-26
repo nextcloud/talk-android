@@ -2151,13 +2151,11 @@ class ChatController(args: Bundle) :
             return
         }
 
-        webSocketInstance =
-            if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
-                WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
-            } else {
-                Log.d(TAG, "magicWebSocketInstance became null")
-                null
-            }
+        webSocketInstance = WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
+
+        if (webSocketInstance == null) {
+            Log.d(TAG, "magicWebSocketInstance became null")
+        }
     }
 
     fun pullChatMessages(lookIntoFuture: Int, setReadMarker: Int = 1, xChatLastCommonRead: Int? = null) {
