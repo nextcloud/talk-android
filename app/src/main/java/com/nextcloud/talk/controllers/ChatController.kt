@@ -266,6 +266,7 @@ class ChatController(args: Bundle) :
     private var lookingIntoFuture = false
     var newMessagesCount = 0
     var startCallFromNotification: Boolean? = null
+    var startCallFromRoomSwitch: Boolean = false
     val roomId: String
     val voiceOnly: Boolean
     var isFirstMessagesProcessing = true
@@ -302,6 +303,9 @@ class ChatController(args: Bundle) :
 
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
+            if (token != null) {
+                switchToRoom(token)
+            }
         }
     }
 
@@ -336,6 +340,10 @@ class ChatController(args: Bundle) :
 
         if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)
+        }
+
+        if (args.containsKey(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)) {
+            this.startCallFromRoomSwitch = args.getBoolean(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)
         }
 
         this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)
@@ -918,6 +926,30 @@ class ChatController(args: Bundle) :
             }
         }
         super.onViewBound(view)
+    }
+
+    private fun switchToRoom(token: String) {
+        if (CallActivity.active) {
+            Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatController...")
+            return
+        }
+
+        val conversationIntent = Intent(activity, CallActivity::class.java)
+        val bundle = Bundle()
+        bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
+        bundle.putString(KEY_ROOM_TOKEN, token)
+
+        if (conversationUser != null) {
+            conversationIntent.putExtras(bundle)
+
+            ConductorRemapping.remapChatController(
+                router,
+                conversationUser.id!!,
+                token,
+                bundle,
+                true
+            )
+        }
     }
 
     private fun showSendButtonMenu() {
@@ -1972,6 +2004,10 @@ class ChatController(args: Bundle) :
                             startCallFromNotification = false
                             startACall(voiceOnly, false)
                         }
+
+                        if (startCallFromRoomSwitch) {
+                            startACall(voiceOnly, true)
+                        }
                     }
 
                     override fun onError(e: Throwable) {
@@ -2398,9 +2434,11 @@ class ChatController(args: Bundle) :
     }
 
     private fun updateReadStatusOfAllMessages(xChatLastCommonRead: Int?) {
-        for (message in adapter!!.items) {
-            xChatLastCommonRead?.let {
-                updateReadStatusOfMessage(message, it)
+        if (adapter != null) {
+            for (message in adapter!!.items) {
+                xChatLastCommonRead?.let {
+                    updateReadStatusOfMessage(message, it)
+                }
             }
         }
     }

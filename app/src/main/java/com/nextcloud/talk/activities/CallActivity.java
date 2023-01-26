@@ -180,10 +180,13 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISS
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends CallBaseActivity {
+
+    public static boolean active = false;
 
     public static final String VIDEO_STREAM_TYPE_SCREEN = "screen";
     public static final String VIDEO_STREAM_TYPE_VIDEO = "video";
@@ -304,10 +307,14 @@ public class CallActivity extends CallBaseActivity {
 
     private CallParticipantList callParticipantList;
 
+    private String switchToRoomToken = "";
+
     private SignalingMessageReceiver.LocalParticipantMessageListener localParticipantMessageListener =
         new SignalingMessageReceiver.LocalParticipantMessageListener() {
             @Override
             public void onSwitchTo(String token) {
+                switchToRoomToken = token;
+                hangup(true);
             }
         };
 
@@ -456,6 +463,7 @@ public class CallActivity extends CallBaseActivity {
     @Override
     public void onStart() {
         super.onStart();
+        active = true;
         initFeaturesVisibility();
 
         try {
@@ -463,6 +471,12 @@ public class CallActivity extends CallBaseActivity {
         } catch (IOException e) {
             Log.e(TAG, "Failed to evict cache");
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
@@ -1870,7 +1884,29 @@ public class CallActivity extends CallBaseActivity {
 
                 @Override
                 public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-                    if (shutDownView) {
+                    if (!switchToRoomToken.isEmpty()) {
+                        Intent intent = new Intent(context, MainActivity.class);
+
+                        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean(KEY_SWITCH_TO_ROOM_AND_START_CALL, true);
+                        bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken);
+
+//                        bundle.putString(KEY_ROOM_ID, roomId);
+                        bundle.putParcelable(KEY_USER_ENTITY, conversationUser);
+//                        conversationName = extras.getString(KEY_CONVERSATION_NAME, "");
+                        bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall);
+                        bundle.putBoolean(KEY_CALL_WITHOUT_NOTIFICATION, true);
+                        bundle.putBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO, canPublishAudioStream);
+                        bundle.putBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO, canPublishVideoStream);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+
+                        Toast.makeText(context, "going to breakout room...", Toast.LENGTH_LONG).show();
+
+                        finish();
+                    } else if (shutDownView) {
                         finish();
                     } else if (currentCallStatus == CallStatus.RECONNECTING
                         || currentCallStatus == CallStatus.PUBLISHER_FAILED) {
