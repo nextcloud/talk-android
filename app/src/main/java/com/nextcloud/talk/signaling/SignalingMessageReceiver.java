@@ -232,10 +232,18 @@ public abstract class SignalingMessageReceiver {
     }
 
     protected void processEvent(Map<String, Object> eventMap) {
-        if (!"update".equals(eventMap.get("type")) || !"participants".equals(eventMap.get("target"))) {
+        if (!"participants".equals(eventMap.get("target"))) {
             return;
         }
 
+        if ("update".equals(eventMap.get("type"))) {
+            processUpdateEvent(eventMap);
+
+            return;
+        }
+    }
+
+    private void processUpdateEvent(Map<String, Object> eventMap) {
         Map<String, Object> updateMap;
         try {
             updateMap = (Map<String, Object>) eventMap.get("update");
