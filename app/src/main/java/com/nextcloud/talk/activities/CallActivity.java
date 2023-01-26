@@ -304,6 +304,13 @@ public class CallActivity extends CallBaseActivity {
 
     private CallParticipantList callParticipantList;
 
+    private SignalingMessageReceiver.LocalParticipantMessageListener localParticipantMessageListener =
+        new SignalingMessageReceiver.LocalParticipantMessageListener() {
+            @Override
+            public void onSwitchTo(String token) {
+            }
+        };
+
     private SignalingMessageReceiver.OfferMessageListener offerMessageListener = new SignalingMessageReceiver.OfferMessageListener() {
         @Override
         public void onOffer(String sessionId, String roomType, String sdp, String nick) {
@@ -1319,6 +1326,7 @@ public class CallActivity extends CallBaseActivity {
     @Override
     public void onDestroy() {
         if (signalingMessageReceiver != null) {
+            signalingMessageReceiver.removeListener(localParticipantMessageListener);
             signalingMessageReceiver.removeListener(offerMessageListener);
         }
 
@@ -1453,6 +1461,7 @@ public class CallActivity extends CallBaseActivity {
                         setupAndInitiateWebSocketsConnection();
                     } else {
                         signalingMessageReceiver = internalSignalingMessageReceiver;
+                        signalingMessageReceiver.addListener(localParticipantMessageListener);
                         signalingMessageReceiver.addListener(offerMessageListener);
                         signalingMessageSender = internalSignalingMessageSender;
                         joinRoomAndCall();
@@ -1662,6 +1671,7 @@ public class CallActivity extends CallBaseActivity {
             // Although setupAndInitiateWebSocketsConnection could be called several times the web socket is
             // initialized just once, so the message receiver is also initialized just once.
             signalingMessageReceiver = webSocketClient.getSignalingMessageReceiver();
+            signalingMessageReceiver.addListener(localParticipantMessageListener);
             signalingMessageReceiver.addListener(offerMessageListener);
             signalingMessageSender = webSocketClient.getSignalingMessageSender();
         } else {

@@ -151,6 +151,7 @@ import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
+import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
@@ -298,6 +299,11 @@ class ChatController(args: Bundle) :
     private lateinit var participantPermissions: ParticipantPermissions
 
     private var videoURI: Uri? = null
+
+    private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
+        override fun onSwitchTo(token: String?) {
+        }
+    }
 
     init {
         Log.d(TAG, "init ChatController: " + System.identityHashCode(this).toString())
@@ -1747,6 +1753,8 @@ class ChatController(args: Bundle) :
 
         eventBus.register(this)
 
+        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
+
         if (conversationUser?.userId != "?" &&
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag") &&
             activity != null
@@ -1832,6 +1840,8 @@ class ChatController(args: Bundle) :
         logConversationInfos("onDetach")
 
         eventBus.unregister(this)
+
+        webSocketInstance?.getSignalingMessageReceiver()?.removeListener(localParticipantMessageListener)
 
         if (activity != null) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
@@ -1935,7 +1945,14 @@ class ChatController(args: Bundle) :
                         ApplicationWideCurrentRoomHolder.getInstance().session =
                             currentConversation?.sessionId
 
+                        // FIXME The web socket should be set up in onAttach(). It is currently setup after joining the
+                        // room to "ensure" (rather, increase the chances) that the WebsocketConnectionsWorker job
+                        // was able to finish and, therefore, that the web socket instance can be got.
                         setupWebsocket()
+
+                        // Ensure that the listener is added if the web socket instance was not set up yet when
+                        // onAttach() was called.
+                        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
 
                         checkLobbyState()
 
