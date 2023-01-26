@@ -2028,7 +2028,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private CallParticipant addCallParticipant(String sessionId) {
-        CallParticipant callParticipant = new CallParticipant(sessionId);
+        CallParticipant callParticipant = new CallParticipant(sessionId, signalingMessageReceiver);
         callParticipants.put(sessionId, callParticipant);
 
         SignalingMessageReceiver.CallParticipantMessageListener callParticipantMessageListener =

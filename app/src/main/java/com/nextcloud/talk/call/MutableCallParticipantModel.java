@@ -41,6 +41,10 @@ public class MutableCallParticipantModel extends CallParticipantModel {
         this.nick.setValue(nick);
     }
 
+    public void setRaisedHand(boolean state, long timestamp) {
+        this.raisedHand.setValue(new RaisedHand(state, timestamp));
+    }
+
     public void setIceConnectionState(PeerConnection.IceConnectionState iceConnectionState) {
         this.iceConnectionState.setValue(iceConnectionState);
     }

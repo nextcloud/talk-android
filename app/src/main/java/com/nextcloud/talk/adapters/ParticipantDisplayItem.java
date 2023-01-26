@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.nextcloud.talk.call.CallParticipantModel;
+import com.nextcloud.talk.call.RaisedHand;
 import com.nextcloud.talk.utils.ApiUtils;
 
 import org.webrtc.EglBase;
@@ -42,6 +43,7 @@ public class ParticipantDisplayItem {
     private MediaStream mediaStream;
     private boolean streamEnabled;
     private boolean isAudioEnabled;
+    private RaisedHand raisedHand;
 
     public ParticipantDisplayItem(String baseUrl, String defaultGuestNick, EglBase rootEglBase, String streamType,
                                   CallParticipantModel callParticipantModel) {
@@ -81,6 +83,8 @@ public class ParticipantDisplayItem {
             streamEnabled = callParticipantModel.isVideoAvailable() != null ?
                 callParticipantModel.isVideoAvailable() : false;
         }
+
+        raisedHand = callParticipantModel.getRaisedHand();
 
         participantDisplayItemNotifier.notifyChange();
     }
@@ -129,6 +133,10 @@ public class ParticipantDisplayItem {
         return isAudioEnabled;
     }
 
+    public RaisedHand getRaisedHand() {
+        return raisedHand;
+    }
+
     public void addObserver(Observer observer) {
         participantDisplayItemNotifier.addObserver(observer);
     }
@@ -148,6 +156,7 @@ public class ParticipantDisplayItem {
                 ", streamType='" + streamType + '\'' +
                 ", streamEnabled=" + streamEnabled +
                 ", rootEglBase=" + rootEglBase +
+                ", raisedHand=" + raisedHand +
                 '}';
     }
 }

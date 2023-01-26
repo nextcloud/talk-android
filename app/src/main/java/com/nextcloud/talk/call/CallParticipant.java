@@ -19,6 +19,7 @@
  */
 package com.nextcloud.talk.call;
 
+import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
 import org.webrtc.MediaStream;
@@ -31,6 +32,18 @@ import org.webrtc.PeerConnection;
  * are expected to directly use the read-only data model.
  */
 public class CallParticipant {
+
+    private final SignalingMessageReceiver.CallParticipantMessageListener callParticipantMessageListener =
+            new SignalingMessageReceiver.CallParticipantMessageListener() {
+        @Override
+        public void onRaiseHand(boolean state, long timestamp) {
+            callParticipantModel.setRaisedHand(state, timestamp);
+        }
+
+        @Override
+        public void onUnshareScreen() {
+        }
+    };
 
     private final PeerConnectionWrapper.PeerConnectionObserver peerConnectionObserver =
             new PeerConnectionWrapper.PeerConnectionObserver() {
@@ -99,14 +112,21 @@ public class CallParticipant {
 
     private final MutableCallParticipantModel callParticipantModel;
 
+    private final SignalingMessageReceiver signalingMessageReceiver;
+
     private PeerConnectionWrapper peerConnectionWrapper;
     private PeerConnectionWrapper screenPeerConnectionWrapper;
 
-    public CallParticipant(String sessionId) {
+    public CallParticipant(String sessionId, SignalingMessageReceiver signalingMessageReceiver) {
         callParticipantModel = new MutableCallParticipantModel(sessionId);
+
+        this.signalingMessageReceiver = signalingMessageReceiver;
+        signalingMessageReceiver.addListener(callParticipantMessageListener, sessionId);
     }
 
     public void destroy() {
+        signalingMessageReceiver.removeListener(callParticipantMessageListener);
+
         if (peerConnectionWrapper != null) {
             peerConnectionWrapper.removeObserver(peerConnectionObserver);
             peerConnectionWrapper.removeListener(dataChannelMessageListener);
