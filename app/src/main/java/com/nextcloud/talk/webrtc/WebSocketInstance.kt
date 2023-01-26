@@ -201,12 +201,14 @@ class WebSocketInstance internal constructor(
             val target = eventOverallWebSocketMessage.eventMap!!["target"] as String?
             if (target != null) {
                 when (target) {
-                    Globals.TARGET_ROOM ->
+                    Globals.TARGET_ROOM -> {
                         if ("message" == eventOverallWebSocketMessage.eventMap!!["type"]) {
                             processRoomMessageMessage(eventOverallWebSocketMessage)
                         } else if ("join" == eventOverallWebSocketMessage.eventMap!!["type"]) {
                             processRoomJoinMessage(eventOverallWebSocketMessage)
                         }
+                        signalingMessageReceiver.process(eventOverallWebSocketMessage.eventMap)
+                    }
                     Globals.TARGET_PARTICIPANTS ->
                         signalingMessageReceiver.process(eventOverallWebSocketMessage.eventMap)
                     else ->

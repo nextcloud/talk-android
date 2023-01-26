@@ -119,6 +119,26 @@ public abstract class SignalingMessageReceiver {
     }
 
     /**
+     * Listener for local participant messages.
+     *
+     * The messages are implicitly bound to the local participant (or, rather, its session); listeners are expected
+     * to know the local participant.
+     *
+     * The messages are related to the conversation, so the local participant may or may not be in a call when they
+     * are received.
+     */
+    public interface LocalParticipantMessageListener {
+        /**
+         * Request for the client to switch to the given conversation.
+         *
+         * This message is received only when the external signaling server is used.
+         *
+         * @param token the token of the conversation to switch to.
+         */
+        void onSwitchTo(String token);
+    }
+
+    /**
      * Listener for call participant messages.
      *
      * The messages are bound to a specific call participant (or, rather, session), so each listener is expected to
@@ -160,6 +180,8 @@ public abstract class SignalingMessageReceiver {
 
     private final ParticipantListMessageNotifier participantListMessageNotifier = new ParticipantListMessageNotifier();
 
+    private final LocalParticipantMessageNotifier localParticipantMessageNotifier = new LocalParticipantMessageNotifier();
+
     private final CallParticipantMessageNotifier callParticipantMessageNotifier = new CallParticipantMessageNotifier();
 
     private final OfferMessageNotifier offerMessageNotifier = new OfferMessageNotifier();
@@ -179,6 +201,21 @@ public abstract class SignalingMessageReceiver {
 
     public void removeListener(ParticipantListMessageListener listener) {
         participantListMessageNotifier.removeListener(listener);
+    }
+
+    /**
+     * Adds a listener for local participant messages.
+     *
+     * A listener is expected to be added only once. If the same listener is added again it will be notified just once.
+     *
+     * @param listener the LocalParticipantMessageListener
+     */
+    public void addListener(LocalParticipantMessageListener listener) {
+        localParticipantMessageNotifier.addListener(listener);
+    }
+
+    public void removeListener(LocalParticipantMessageListener listener) {
+        localParticipantMessageNotifier.removeListener(listener);
     }
 
     /**
@@ -232,15 +269,54 @@ public abstract class SignalingMessageReceiver {
     }
 
     protected void processEvent(Map<String, Object> eventMap) {
-        if (!"participants".equals(eventMap.get("target"))) {
+        if ("room".equals(eventMap.get("target")) && "switchto".equals(eventMap.get("type"))) {
+            processSwitchToEvent(eventMap);
+
             return;
         }
 
-        if ("update".equals(eventMap.get("type"))) {
+        if ("participants".equals(eventMap.get("target")) && "update".equals(eventMap.get("type"))) {
             processUpdateEvent(eventMap);
 
             return;
         }
+    }
+
+    private void processSwitchToEvent(Map<String, Object> eventMap) {
+        // Message schema:
+        // {
+        //     "type": "event",
+        //     "event": {
+        //         "target": "room",
+        //         "type": "switchto",
+        //         "switchto": {
+        //             "roomid": #STRING#,
+        //         },
+        //     },
+        // }
+
+        Map<String, Object> switchToMap;
+        try {
+            switchToMap = (Map<String, Object>) eventMap.get("switchto");
+        } catch (RuntimeException e) {
+            // Broken message, this should not happen.
+            return;
+        }
+
+        if (switchToMap == null) {
+            // Broken message, this should not happen.
+            return;
+        }
+
+        String token;
+        try {
+            token = switchToMap.get("roomid").toString();
+        } catch (RuntimeException e) {
+            // Broken message, this should not happen.
+            return;
+        }
+
+        localParticipantMessageNotifier.notifySwitchTo(token);
     }
 
     private void processUpdateEvent(Map<String, Object> eventMap) {
