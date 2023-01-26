@@ -29,6 +29,9 @@ import java.util.Objects;
 /**
  * Read-only data model for (remote) call participants.
  *
+ * If the hand was never raised null is returned by "getRaisedHand()". Otherwise a RaisedHand object is returned with
+ * the current state (raised or not) and the timestamp when the raised hand state last changed.
+ *
  * The received audio and video are available only if the participant is sending them and also has them enabled.
  * Before a connection is established it is not known whether audio and video are available or not, so null is returned
  * in that case (therefore it should not be autoboxed to a plain boolean without checking that).
@@ -72,6 +75,8 @@ public class CallParticipantModel {
     protected Data<String> userId;
     protected Data<String> nick;
 
+    protected Data<RaisedHand> raisedHand;
+
     protected Data<PeerConnection.IceConnectionState> iceConnectionState;
     protected Data<MediaStream> mediaStream;
     protected Data<Boolean> audioAvailable;
@@ -85,6 +90,8 @@ public class CallParticipantModel {
 
         this.userId = new Data<>();
         this.nick = new Data<>();
+
+        this.raisedHand = new Data<>();
 
         this.iceConnectionState = new Data<>();
         this.mediaStream = new Data<>();
@@ -105,6 +112,10 @@ public class CallParticipantModel {
 
     public String getNick() {
         return nick.getValue();
+    }
+
+    public RaisedHand getRaisedHand() {
+        return raisedHand.getValue();
     }
 
     public PeerConnection.IceConnectionState getIceConnectionState() {
