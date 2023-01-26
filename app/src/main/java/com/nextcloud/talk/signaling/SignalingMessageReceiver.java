@@ -128,6 +128,7 @@ public abstract class SignalingMessageReceiver {
      * message on the call participant.
      */
     public interface CallParticipantMessageListener {
+        void onRaiseHand(boolean state, long timestamp);
         void onUnshareScreen();
     }
 
@@ -414,6 +415,63 @@ public abstract class SignalingMessageReceiver {
 
         String sessionId = signalingMessage.getFrom();
         String roomType = signalingMessage.getRoomType();
+
+        if ("raiseHand".equals(type)) {
+            // Message schema (external signaling server):
+            // {
+            //     "type": "message",
+            //     "message": {
+            //         "sender": {
+            //             ...
+            //         },
+            //         "data": {
+            //             "to": #STRING#,
+            //             "sid": #STRING#,
+            //             "roomType": "video",
+            //             "type": "raiseHand",
+            //             "payload": {
+            //                 "state": #BOOLEAN#,
+            //                 "timestamp": #LONG#,
+            //             },
+            //             "from": #STRING#,
+            //         },
+            //     },
+            // }
+            //
+            // Message schema (internal signaling server):
+            // {
+            //     "type": "message",
+            //     "data": {
+            //         "to": #STRING#,
+            //         "sid": #STRING#,
+            //         "roomType": "video",
+            //         "type": "raiseHand",
+            //         "payload": {
+            //             "state": #BOOLEAN#,
+            //             "timestamp": #LONG#,
+            //         },
+            //         "from": #STRING#,
+            //     },
+            // }
+
+            NCMessagePayload payload = signalingMessage.getPayload();
+            if (payload == null) {
+                // Broken message, this should not happen.
+                return;
+            }
+
+            Boolean state = payload.getState();
+            Long timestamp = payload.getTimestamp();
+
+            if (state == null || timestamp == null) {
+                // Broken message, this should not happen.
+                return;
+            }
+
+            callParticipantMessageNotifier.notifyRaiseHand(sessionId, state, timestamp);
+
+            return;
+        }
 
         // "unshareScreen" messages are directly sent to the screen peer connection when the internal signaling
         // server is used, and to the room when the external signaling server is used. However, the (relevant) data

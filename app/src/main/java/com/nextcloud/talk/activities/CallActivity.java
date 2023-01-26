@@ -2680,6 +2680,10 @@ public class CallActivity extends CallBaseActivity {
         }
 
         @Override
+        public void onRaiseHand(boolean state, long timestamp) {
+        }
+
+        @Override
         public void onUnshareScreen() {
             endPeerConnection(sessionId, "screen");
         }

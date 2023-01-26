@@ -87,6 +87,12 @@ class CallParticipantMessageNotifier {
         return callParticipantMessageListeners;
     }
 
+    public synchronized void notifyRaiseHand(String sessionId, boolean state, long timestamp) {
+        for (SignalingMessageReceiver.CallParticipantMessageListener listener : getListenersFor(sessionId)) {
+            listener.onRaiseHand(state, timestamp);
+        }
+    }
+
     public synchronized void notifyUnshareScreen(String sessionId) {
         for (SignalingMessageReceiver.CallParticipantMessageListener listener : getListenersFor(sessionId)) {
             listener.onUnshareScreen();
