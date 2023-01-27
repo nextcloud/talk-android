@@ -95,7 +95,6 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
-import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
@@ -469,8 +468,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void initFeaturesVisibility() {
-        boolean showMoreCallActionsItem = isAllowedToStartOrStopRecording();
-        if (showMoreCallActionsItem) {
+        if (isAllowedToStartOrStopRecording()) {
             binding.moreCallActions.setVisibility(View.VISIBLE);
         } else {
             binding.moreCallActions.setVisibility(View.GONE);
@@ -1705,9 +1703,9 @@ public class CallActivity extends CallBaseActivity {
                 case "recordingStatus":
                     Log.d(TAG, "onMessageEvent 'recordingStatus'");
 
-                    if (webSocketCommunicationEvent.getHashMap().containsKey(BundleKeys.KEY_RECORDING_STATE)) {
+                    if (webSocketCommunicationEvent.getHashMap().containsKey(KEY_RECORDING_STATE)) {
                         String recordingStateString =
-                            webSocketCommunicationEvent.getHashMap().get(BundleKeys.KEY_RECORDING_STATE);
+                            webSocketCommunicationEvent.getHashMap().get(KEY_RECORDING_STATE);
 
                         if (recordingStateString != null) {
                             runOnUiThread(() -> {
