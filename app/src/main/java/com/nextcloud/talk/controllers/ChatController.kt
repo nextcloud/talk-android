@@ -44,13 +44,10 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION_CODES.O
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
 import android.os.SystemClock
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.Editable
@@ -169,6 +166,7 @@ import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.VibrationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
@@ -1175,7 +1173,7 @@ class ChatController(args: Bundle) :
                 Log.e(TAG, "start for audio recording failed")
             }
 
-            vibrate()
+            VibrationUtils.vibrateShort(context)
         }
     }
 
@@ -1208,20 +1206,11 @@ class ChatController(args: Bundle) :
                     Log.w(TAG, "error while stopping recorder!")
                 }
 
-                vibrate()
+                VibrationUtils.vibrateShort(context)
             }
             recorder = null
         } else {
             Log.e(TAG, "tried to stop audio recorder but it was not recording")
-        }
-    }
-
-    private fun vibrate() {
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrator.vibrate(SHORT_VIBRATE)
         }
     }
 
@@ -2771,7 +2760,7 @@ class ChatController(args: Bundle) :
     }
 
     override fun onClickReaction(chatMessage: ChatMessage, emoji: String) {
-        vibrate()
+        VibrationUtils.vibrateShort(context)
         if (chatMessage.reactionsSelf?.contains(emoji) == true) {
             reactionsRepository.deleteReaction(currentConversation!!, chatMessage, emoji)
                 .subscribeOn(Schedulers.io())
@@ -3427,7 +3416,6 @@ class ChatController(args: Bundle) :
         private const val VOICE_MESSAGE_CHANNELS = 1
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
-        private const val SHORT_VIBRATE: Long = 20
         private const val FULLY_OPAQUE_INT: Int = 255
         private const val SEMI_TRANSPARENT_INT: Int = 99
         private const val VOICE_MESSAGE_SEEKBAR_BASE: Int = 1000

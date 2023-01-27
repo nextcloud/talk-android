@@ -94,6 +94,7 @@ import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
+import com.nextcloud.talk.utils.VibrationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
@@ -396,6 +397,8 @@ public class CallActivity extends CallBaseActivity {
         callRecordingViewModel.getViewState().observe(this, viewState -> {
             if (viewState instanceof CallRecordingViewModel.RecordingStartedState) {
                 binding.callRecordingIndicator.setVisibility(View.VISIBLE);
+                VibrationUtils.INSTANCE.vibrateShort(context);
+                Toast.makeText(context, context.getResources().getString(R.string.record_active_info), Toast.LENGTH_LONG).show();
             } else if (viewState instanceof CallRecordingViewModel.RecordingConfirmStopState) {
                 MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.record_stop_confirm_title)
