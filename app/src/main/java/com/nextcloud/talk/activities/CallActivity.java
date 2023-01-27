@@ -52,9 +52,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -190,7 +187,6 @@ public class CallActivity extends CallBaseActivity {
 
     public static final String VIDEO_STREAM_TYPE_SCREEN = "screen";
     public static final String VIDEO_STREAM_TYPE_VIDEO = "video";
-    private static final Long RECORDING_ANIMATION_DURATION = 1000L;
 
     @Inject
     NcApi ncApi;
@@ -400,7 +396,7 @@ public class CallActivity extends CallBaseActivity {
 
         callRecordingViewModel.getViewState().observe(this, viewState -> {
             if (viewState instanceof CallRecordingViewModel.RecordingStartedState) {
-                showCallRecordingIndicator();
+                binding.callRecordingIndicator.setVisibility(View.VISIBLE);
             } else if (viewState instanceof CallRecordingViewModel.RecordingConfirmStopState) {
                 MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.record_stop_confirm_title)
@@ -421,7 +417,7 @@ public class CallActivity extends CallBaseActivity {
                 Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
                                Toast.LENGTH_LONG).show();
             } else {
-                hideCallRecordingIndicator();
+                binding.callRecordingIndicator.setVisibility(View.GONE);
             }
         });
 
@@ -2964,22 +2960,6 @@ public class CallActivity extends CallBaseActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         eventBus.post(new ConfigurationChangeEvent());
-    }
-
-    public void showCallRecordingIndicator() {
-        binding.callRecordingIndicator.setVisibility(View.VISIBLE);
-
-        Animation animation = new AlphaAnimation(1.0f, 0.0f);
-        animation.setDuration(RECORDING_ANIMATION_DURATION);
-        animation.setInterpolator(new LinearInterpolator());
-        animation.setRepeatCount(Animation.INFINITE);
-        animation.setRepeatMode(Animation.REVERSE);
-        binding.callRecordingIndicator.startAnimation(animation);
-    }
-
-    public void hideCallRecordingIndicator() {
-        binding.callRecordingIndicator.clearAnimation();
-        binding.callRecordingIndicator.setVisibility(View.GONE);
     }
 
     public boolean isAllowedToStartOrStopRecording() {
