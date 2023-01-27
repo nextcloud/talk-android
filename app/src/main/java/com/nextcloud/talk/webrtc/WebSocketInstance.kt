@@ -129,7 +129,7 @@ class WebSocketInstance internal constructor(
     }
 
     private fun closeWebSocket(webSocket: WebSocket) {
-        webSocket.close(1000, null)
+        webSocket.close(NORMAL_CLOSURE, null)
         webSocket.cancel()
         if (webSocket === internalWebSocket) {
             isConnected = false
@@ -451,5 +451,6 @@ class WebSocketInstance internal constructor(
 
     companion object {
         private const val TAG = "MagicWebSocketInstance"
+        private const val NORMAL_CLOSURE = 1000
     }
 }
