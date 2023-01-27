@@ -119,9 +119,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
         }
 
         override fun onNext(startCallRecordingModel: StartCallRecordingModel) {
-            if (startCallRecordingModel.success) {
-                _viewState.value = RecordingStartedState
-            }
+            // unused atm. RecordingStartedState is set via setRecordingState which is triggered by signaling message.
         }
 
         override fun onError(e: Throwable) {
