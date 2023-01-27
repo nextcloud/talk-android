@@ -568,6 +568,7 @@
     <string name="record_stop_loading">stopping…</string>
     <string name="record_stop_confirm_title">Stop Call recording</string>
     <string name="record_stop_confirm_message">"Do you really want to stop the recording?"</string>
+    <string name="record_active_info">"This call is being recorded"</string>
 
     <!-- Shared items -->
     <string name="shared_items_media">Media</string>

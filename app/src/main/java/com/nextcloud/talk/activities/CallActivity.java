@@ -544,6 +544,8 @@ public class CallActivity extends CallBaseActivity {
         binding.callRecordingIndicator.setOnClickListener(l -> {
             if (isAllowedToStartOrStopRecording()) {
                 callRecordingViewModel.clickRecordButton();
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.record_active_info), Toast.LENGTH_LONG).show();
             }
         });
     }
