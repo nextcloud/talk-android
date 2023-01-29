@@ -673,6 +673,8 @@ class ChatController(args: Bundle) :
             }
         }
 
+        binding?.scrollDownButton?.setOnClickListener { binding?.messagesListView?.smoothScrollToPosition(0) }
+
         binding?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it.popupBubbleView) }
 
         binding?.messageInputView?.setPadding(0, 0, 0, 0)
@@ -682,6 +684,21 @@ class ChatController(args: Bundle) :
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+
+                    val offset = recyclerView.computeVerticalScrollOffset()
+                    val extent = recyclerView.computeVerticalScrollExtent()
+                    val range = recyclerView.computeVerticalScrollRange()
+
+                    // 0.0 is the top of the chat, 100.0 is the bottom of the chat
+                    val scrollPercentage = 100.0f * offset / (range - extent).toFloat()
+
+                    if (scrollPercentage <= 90) {
+                        binding?.scrollDownButton?.visibility = View.VISIBLE
+
+                    } else {
+                        binding?.scrollDownButton?.visibility = View.INVISIBLE
+                    }
+
                     if (newMessagesCount != 0 && layoutManager != null) {
                         if (layoutManager!!.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
                             newMessagesCount = 0
