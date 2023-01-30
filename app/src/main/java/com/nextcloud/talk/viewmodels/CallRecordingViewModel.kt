@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -103,11 +104,12 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
         this.roomToken = roomToken
     }
 
+    // https://nextcloud-talk.readthedocs.io/en/latest/constants/#call-recording-status
     fun setRecordingState(state: Int) {
         when (state) {
-            0 -> _viewState.value = RecordingStoppedState
-            1 -> _viewState.value = RecordingStartedState
-            2 -> _viewState.value = RecordingStartedState
+            RECORDING_STOPPED_CODE -> _viewState.value = RecordingStoppedState
+            RECORDING_STARTED_VIDEO_CODE -> _viewState.value = RecordingStartedState
+            RECORDING_STARTED_AUDIO_CODE -> _viewState.value = RecordingStartedState
             else -> {}
         }
     }
@@ -122,7 +124,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
         }
 
         override fun onError(e: Throwable) {
-            // Log.e(TAG, "failure in CallStartRecordingObserver", e)
+            Log.e(TAG, "failure in CallStartRecordingObserver", e)
             _viewState.value = RecordingErrorState
         }
 
@@ -143,7 +145,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
         }
 
         override fun onError(e: Throwable) {
-            // Log.e(TAG, "failure in CallStopRecordingObserver", e)
+            Log.e(TAG, "failure in CallStopRecordingObserver", e)
             _viewState.value = RecordingErrorState
         }
 
@@ -154,5 +156,8 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
 
     companion object {
         private val TAG = CallRecordingViewModel::class.java.simpleName
+        const val RECORDING_STOPPED_CODE = 0
+        const val RECORDING_STARTED_VIDEO_CODE = 1
+        const val RECORDING_STARTED_AUDIO_CODE = 2
     }
 }
