@@ -51,6 +51,7 @@
     <string name="nc_call_name">Όνομα συνομιλίας</string>
     <string name="nc_call_name_is_same">Το όνομα που εισάγατε είναι το ίδιο με ένα υπάρχον</string>
     <string name="nc_call_reconnecting">Επανασύνδεση ...</string>
+    <string name="nc_call_ringing">ΚΛΗΣΗ</string>
     <string name="nc_call_state_in_call">%1$s σε κλήση</string>
     <string name="nc_call_state_with_phone">%1$s με τηλέφωνο</string>
     <string name="nc_call_state_with_video">%1$s με βίντεο</string>
