@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -123,7 +122,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
         }
 
         override fun onError(e: Throwable) {
-            Log.e(TAG, "failure in CallStartRecordingObserver", e)
+            // Log.e(TAG, "failure in CallStartRecordingObserver", e)
             _viewState.value = RecordingErrorState
         }
 
@@ -144,7 +143,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
         }
 
         override fun onError(e: Throwable) {
-            Log.e(TAG, "failure in CallStopRecordingObserver", e)
+            // Log.e(TAG, "failure in CallStopRecordingObserver", e)
             _viewState.value = RecordingErrorState
         }
 
