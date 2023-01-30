@@ -42,7 +42,8 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     lateinit var roomToken: String
 
     sealed interface ViewState
-    object RecordingStartedState : ViewState
+    open class RecordingStartedState(val showStartedInfo: Boolean) : ViewState
+
     object RecordingStoppedState : ViewState
     object RecordingStartLoadingState : ViewState
     object RecordingStopLoadingState : ViewState
@@ -57,7 +58,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
 
     fun clickRecordButton() {
         when (viewState.value) {
-            RecordingStartedState -> {
+            is RecordingStartedState -> {
                 _viewState.value = RecordingConfirmStopState
             }
             RecordingStoppedState -> {
@@ -92,7 +93,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     }
 
     fun dismissStopRecording() {
-        _viewState.value = RecordingStartedState
+        _viewState.value = RecordingStartedState(false)
     }
 
     override fun onCleared() {
@@ -108,8 +109,8 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     fun setRecordingState(state: Int) {
         when (state) {
             RECORDING_STOPPED_CODE -> _viewState.value = RecordingStoppedState
-            RECORDING_STARTED_VIDEO_CODE -> _viewState.value = RecordingStartedState
-            RECORDING_STARTED_AUDIO_CODE -> _viewState.value = RecordingStartedState
+            RECORDING_STARTED_VIDEO_CODE -> _viewState.value = RecordingStartedState(true)
+            RECORDING_STARTED_AUDIO_CODE -> _viewState.value = RecordingStartedState(true)
             else -> {}
         }
     }

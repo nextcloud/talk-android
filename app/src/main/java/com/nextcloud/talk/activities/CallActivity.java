@@ -397,8 +397,10 @@ public class CallActivity extends CallBaseActivity {
         callRecordingViewModel.getViewState().observe(this, viewState -> {
             if (viewState instanceof CallRecordingViewModel.RecordingStartedState) {
                 binding.callRecordingIndicator.setVisibility(View.VISIBLE);
-                VibrationUtils.INSTANCE.vibrateShort(context);
-                Toast.makeText(context, context.getResources().getString(R.string.record_active_info), Toast.LENGTH_LONG).show();
+                if (((CallRecordingViewModel.RecordingStartedState) viewState).getShowStartedInfo()) {
+                    VibrationUtils.INSTANCE.vibrateShort(context);
+                    Toast.makeText(context, context.getResources().getString(R.string.record_active_info), Toast.LENGTH_LONG).show();
+                }
             } else if (viewState instanceof CallRecordingViewModel.RecordingConfirmStopState) {
                 MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.record_stop_confirm_title)
@@ -1614,7 +1616,7 @@ public class CallActivity extends CallBaseActivity {
                                     @Override
                                     public void onNext(
                                         @io.reactivex.annotations.NonNull
-                                            SignalingOverall signalingOverall) {
+                                        SignalingOverall signalingOverall) {
                                         receivedSignalingMessages(signalingOverall.getOcs().getSignalings());
                                     }
 
@@ -1988,7 +1990,7 @@ public class CallActivity extends CallBaseActivity {
             // will not send an offer, so no connection is actually established when the remote participant has a
             // higher session ID but is not publishing media.
             if ((hasMCU && participantHasAudioOrVideo) ||
-                    (!hasMCU && selfParticipantHasAudioOrVideo && (!participantHasAudioOrVideo || sessionId.compareTo(currentSessionId) < 0))) {
+                (!hasMCU && selfParticipantHasAudioOrVideo && (!participantHasAudioOrVideo || sessionId.compareTo(currentSessionId) < 0))) {
                 getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
             }
         }
@@ -2220,7 +2222,7 @@ public class CallActivity extends CallBaseActivity {
 
     private void updateSelfVideoViewIceConnectionState(PeerConnection.IceConnectionState iceConnectionState) {
         boolean connected = iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
-                                iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
+            iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
 
         // FIXME In voice only calls there is no video view, so the progress bar would appear floating in the middle of
         // nowhere. However, a way to signal that the local participant is not connected to the HPB is still need in
@@ -2598,8 +2600,9 @@ public class CallActivity extends CallBaseActivity {
     }
 
     /**
-     * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted from CallActivity.
-     *
+     * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted from
+     * CallActivity.
+     * <p>
      * All listeners are called in the main thread.
      */
     private static class InternalSignalingMessageReceiver extends SignalingMessageReceiver {
@@ -2794,7 +2797,7 @@ public class CallActivity extends CallBaseActivity {
 
         /**
          * Adds the local participant nick to offers and answers.
-         *
+         * <p>
          * For legacy reasons the offers and answers sent when the internal signaling server is used are expected to
          * provide the nick of the local participant.
          *

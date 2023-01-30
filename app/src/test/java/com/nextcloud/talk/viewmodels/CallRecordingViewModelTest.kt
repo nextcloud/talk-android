@@ -29,6 +29,9 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
         val viewModel = CallRecordingViewModel(repository)
         viewModel.setData("foo")
         viewModel.setRecordingState(CallRecordingViewModel.RECORDING_STARTED_VIDEO_CODE)
+
+        Assert.equals(true, (viewModel.viewState.value as CallRecordingViewModel.RecordingStartedState).showStartedInfo)
+
         viewModel.clickRecordButton()
 
         Assert.equals(CallRecordingViewModel.RecordingConfirmStopState, viewModel.viewState.value)
@@ -43,6 +46,9 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
         val viewModel = CallRecordingViewModel(repository)
         viewModel.setData("foo")
         viewModel.setRecordingState(CallRecordingViewModel.RECORDING_STARTED_VIDEO_CODE)
+
+        Assert.equals(true, (viewModel.viewState.value as CallRecordingViewModel.RecordingStartedState).showStartedInfo)
+
         viewModel.clickRecordButton()
 
         Assert.equals(CallRecordingViewModel.RecordingConfirmStopState, viewModel.viewState.value)
@@ -63,6 +69,13 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
 
         viewModel.dismissStopRecording()
 
-        Assert.equals(CallRecordingViewModel.RecordingStartedState, viewModel.viewState.value)
+        Assert.equals(
+            CallRecordingViewModel.RecordingStartedState(false).javaClass,
+            viewModel.viewState.value?.javaClass
+        )
+        Assert.equals(
+            false,
+            (viewModel.viewState.value as CallRecordingViewModel.RecordingStartedState).showStartedInfo
+        )
     }
 }
