@@ -38,19 +38,22 @@ class WebRtcMessageNotifier {
         public final SignalingMessageReceiver.WebRtcMessageListener listener;
         public final String sessionId;
         public final String roomType;
+        public final String sid;
 
         private WebRtcMessageListenerFrom(SignalingMessageReceiver.WebRtcMessageListener listener,
                                           String sessionId,
-                                          String roomType) {
+                                          String roomType,
+                                          String sid) {
             this.listener = listener;
             this.sessionId = sessionId;
             this.roomType = roomType;
+            this.sid = sid;
         }
     }
 
     private final List<WebRtcMessageListenerFrom> webRtcMessageListenersFrom = new ArrayList<>();
 
-    public synchronized void addListener(SignalingMessageReceiver.WebRtcMessageListener listener, String sessionId, String roomType) {
+    public synchronized void addListener(SignalingMessageReceiver.WebRtcMessageListener listener, String sessionId, String roomType, String sid) {
         if (listener == null) {
             throw new IllegalArgumentException("WebRtcMessageListener can not be null");
         }
@@ -63,9 +66,13 @@ class WebRtcMessageNotifier {
             throw new IllegalArgumentException("roomType can not be null");
         }
 
+        if (sid == null) {
+            throw new IllegalArgumentException("sid can not be null");
+        }
+
         removeListener(listener);
 
-        webRtcMessageListenersFrom.add(new WebRtcMessageListenerFrom(listener, sessionId, roomType));
+        webRtcMessageListenersFrom.add(new WebRtcMessageListenerFrom(listener, sessionId, roomType, sid));
     }
 
     public synchronized void removeListener(SignalingMessageReceiver.WebRtcMessageListener listener) {
@@ -81,12 +88,13 @@ class WebRtcMessageNotifier {
         }
     }
 
-    private List<SignalingMessageReceiver.WebRtcMessageListener> getListenersFor(String sessionId, String roomType) {
+    private List<SignalingMessageReceiver.WebRtcMessageListener> getListenersFor(String sessionId, String roomType, String sid) {
         List<SignalingMessageReceiver.WebRtcMessageListener> webRtcMessageListeners =
             new ArrayList<>(webRtcMessageListenersFrom.size());
 
         for (WebRtcMessageListenerFrom listenerFrom : webRtcMessageListenersFrom) {
-            if (listenerFrom.sessionId.equals(sessionId) && listenerFrom.roomType.equals(roomType)) {
+            if (listenerFrom.sessionId.equals(sessionId) && listenerFrom.roomType.equals(roomType) &&
+                    (sid == null || listenerFrom.sid.equals(sid))) {
                 webRtcMessageListeners.add(listenerFrom.listener);
             }
         }
@@ -94,26 +102,26 @@ class WebRtcMessageNotifier {
         return webRtcMessageListeners;
     }
 
-    public synchronized void notifyOffer(String sessionId, String roomType, String sdp, String nick) {
-        for (SignalingMessageReceiver.WebRtcMessageListener listener : getListenersFor(sessionId, roomType)) {
+    public synchronized void notifyOffer(String sessionId, String roomType, String sid, String sdp, String nick) {
+        for (SignalingMessageReceiver.WebRtcMessageListener listener : getListenersFor(sessionId, roomType, sid)) {
             listener.onOffer(sdp, nick);
         }
     }
 
-    public synchronized void notifyAnswer(String sessionId, String roomType, String sdp, String nick) {
-        for (SignalingMessageReceiver.WebRtcMessageListener listener : getListenersFor(sessionId, roomType)) {
+    public synchronized void notifyAnswer(String sessionId, String roomType, String sid, String sdp, String nick) {
+        for (SignalingMessageReceiver.WebRtcMessageListener listener : getListenersFor(sessionId, roomType, sid)) {
             listener.onAnswer(sdp, nick);
         }
     }
 
-    public synchronized void notifyCandidate(String sessionId, String roomType, String sdpMid, int sdpMLineIndex, String sdp) {
-        for (SignalingMessageReceiver.WebRtcMessageListener listener : getListenersFor(sessionId, roomType)) {
+    public synchronized void notifyCandidate(String sessionId, String roomType, String sid, String sdpMid, int sdpMLineIndex, String sdp) {
+        for (SignalingMessageReceiver.WebRtcMessageListener listener : getListenersFor(sessionId, roomType, sid)) {
             listener.onCandidate(sdpMid, sdpMLineIndex, sdp);
         }
     }
 
-    public synchronized void notifyEndOfCandidates(String sessionId, String roomType) {
-        for (SignalingMessageReceiver.WebRtcMessageListener listener : getListenersFor(sessionId, roomType)) {
+    public synchronized void notifyEndOfCandidates(String sessionId, String roomType, String sid) {
+        for (SignalingMessageReceiver.WebRtcMessageListener listener : getListenersFor(sessionId, roomType, sid)) {
             listener.onEndOfCandidates();
         }
     }
