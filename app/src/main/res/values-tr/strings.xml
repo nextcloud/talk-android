@@ -275,7 +275,7 @@
     <string name="nc_sent_voice" formatted="true">%1$s bir sesli ileti gönderdi.</string>
     <string name="nc_sent_voice_you">Bir sesli ileti gönderdiniz.</string>
     <string name="nc_server_connect">Sunucu bağlantısını sına</string>
-    <string name="nc_server_db_upgrade_needed">Lütfen %1$s veritabanınızı güncelleyin</string>
+    <string name="nc_server_db_upgrade_needed">Lütfen %1$s veri tabanınızı güncelleyin</string>
     <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
     <string name="nc_server_helper_text">%1$s web arayüzü için web tarayıcıda açacağınız bağlantı.</string>
     <string name="nc_server_import_account">%1$s uygulamasındaki hesabı içe aktar</string>

@@ -323,6 +323,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_upload_confirm_send_single">Bestand versturen naar %1$s?</string>
     <string name="nc_upload_failed">Sorry, uploaden mislukt</string>
     <string name="nc_upload_from_cloud">Delen van %1$s</string>
+    <string name="nc_upload_from_device">Uploaden vanaf apparaat</string>
     <string name="nc_upload_in_progess">Uploaden</string>
     <string name="nc_upload_picture_from_cam">Neem foto</string>
     <string name="nc_user">Gebruiker</string>
@@ -388,7 +389,7 @@ Kies er eentje van een provider.</string>
     <string name="thisWeek">Deze week</string>
     <string name="title_attachments">Bijlagen</string>
     <string name="today">Vandaag</string>
-    <string name="upload_new_avatar_from_device">Upload een nieuwe avatar van toestel</string>
+    <string name="upload_new_avatar_from_device">Upload nieuwe avatar van apparaat</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Volledige naam</string>
     <string name="user_info_email">E-mailadres</string>
