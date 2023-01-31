@@ -26,6 +26,8 @@ package com.nextcloud.talk.models.json.converters
 
 import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.AUDIO_RECORDING_STARTED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.AUDIO_RECORDING_STOPPED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_JOINED
@@ -74,54 +76,14 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTIO
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTION_REVOKED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.READ_ONLY
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.READ_ONLY_OFF
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.RECORDING_STARTED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.RECORDING_STOPPED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_ADDED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_REMOVED
 
 /*
 * see https://nextcloud-talk.readthedocs.io/en/latest/chat/#system-messages
 *
-* `conversation_created` - {actor} created the conversation
-* `conversation_renamed` - {actor} renamed the conversation from "foo" to "bar"
-* `description_set` - {actor} set the description to "Hello world"
-* `description_removed` - {actor} removed the description
-* `call_started` - {actor} started a call
-* `call_joined` - {actor} joined the call
-* `call_left` - {actor} left the call
-* `call_ended` - Call with {user1}, {user2}, {user3}, {user4} and {user5} (Duration 30:23)
-* `call_ended_everyone` - {user1} ended the call with {user2}, {user3}, {user4} and {user5} (Duration 30:23)
-* `call_missed` - You missed a call from {user}
-* `call_tried` - You tried to call {user}
-* `read_only_off` - {actor} unlocked the conversation
-* `read_only` - {actor} locked the conversation
-* `listable_none` - {actor} limited the conversation to the current participants
-* `listable_users` - {actor} opened the conversation accessible to registered users
-* `listable_all` - {actor} opened the conversation accessible to registered and guest app users
-* `lobby_timer_reached` - The conversation is now open to everyone
-* `lobby_none` - {actor} opened the conversation to everyone
-* `lobby_non_moderators` - {actor} restricted the conversation to moderators
-* `guests_allowed` - {actor} allowed guests in the conversation
-* `guests_disallowed` - {actor} disallowed guests in the conversation
-* `password_set` - {actor} set a password for the conversation
-* `password_removed` - {actor} removed the password for the conversation
-* `user_added` - {actor} added {user} to the conversation
-* `user_removed` - {actor} removed {user} from the conversation
-* `group_added` - {actor} added group {group} to the conversation
-* `group_removed` - {actor} removed group {group} from the conversation
-* `circle_added` - {actor} added circle {circle} to the conversation
-* `circle_removed` - {actor} removed circle {circle} from the conversation
-* `moderator_promoted` - {actor} promoted {user} to moderator
-* `moderator_demoted` - {actor} demoted {user} from moderator
-* `guest_moderator_promoted` - {actor} promoted {user} to moderator
-* `guest_moderator_demoted` - {actor} demoted {user} from moderator
-* `message_deleted` - Message deleted by {actor} (Should not be shown to the user)
-* `history_cleared` - {actor} cleared the history of the conversation
-* `file_shared` - {file}
-* `object_shared` - {object}
-* `matterbridge_config_added` - {actor} set up Matterbridge to synchronize this conversation with other chats
-* `matterbridge_config_edited` - {actor} updated the Matterbridge configuration
-* `matterbridge_config_removed` - {actor} removed the Matterbridge configuration
-* `matterbridge_config_enabled` - {actor} started Matterbridge
-* `matterbridge_config_disabled` - {actor} stopped Matterbridge
 */
 class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.SystemMessageType>() {
     override fun getFromString(string: String): ChatMessage.SystemMessageType {
@@ -175,6 +137,10 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "poll_closed" -> POLL_CLOSED
             "message_expiration_enabled" -> MESSAGE_EXPIRATION_ENABLED
             "message_expiration_disabled" -> MESSAGE_EXPIRATION_DISABLED
+            "recording_started" -> RECORDING_STARTED
+            "recording_stopped" -> RECORDING_STOPPED
+            "audio_recording_started" -> AUDIO_RECORDING_STARTED
+            "audio_recording_stopped" -> AUDIO_RECORDING_STOPPED
             else -> DUMMY
         }
     }
@@ -232,6 +198,10 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             POLL_CLOSED -> "poll_closed"
             MESSAGE_EXPIRATION_ENABLED -> "message_expiration_enabled"
             MESSAGE_EXPIRATION_DISABLED -> "message_expiration_disabled"
+            RECORDING_STARTED -> "recording_started"
+            RECORDING_STOPPED -> "recording_stopped"
+            AUDIO_RECORDING_STARTED -> "audio_recording_started"
+            AUDIO_RECORDING_STOPPED -> "audio_recording_stopped"
             else -> ""
         }
     }

@@ -99,6 +99,19 @@ object CapabilitiesUtilNew {
     }
 
     @JvmStatic
+    fun isCallRecordingAvailable(user: User): Boolean {
+        if (hasSpreedFeatureCapability(user, "recording-v1") &&
+            user.capabilities?.spreedCapability?.config?.containsKey("call") == true
+        ) {
+            val map: Map<String, String>? = user.capabilities!!.spreedCapability!!.config!!["call"]
+            if (map != null && map.containsKey("recording")) {
+                return map["recording"].toBoolean()
+            }
+        }
+        return false
+    }
+
+    @JvmStatic
     fun isUserStatusAvailable(user: User): Boolean {
         return user.capabilities?.userStatusCapability?.enabled == true &&
             user.capabilities?.userStatusCapability?.supportsEmoji == true

@@ -48,7 +48,7 @@ import okhttp3.OkHttpClient;
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebSocketConnectionHelper {
     public static final String TAG = "WebSocketConnectionHelper";
-    private static Map<Long, MagicWebSocketInstance> magicWebSocketInstanceMap = new HashMap<>();
+    private static Map<Long, WebSocketInstance> magicWebSocketInstanceMap = new HashMap<>();
 
     @Inject
     OkHttpClient okHttpClient;
@@ -59,8 +59,8 @@ public class WebSocketConnectionHelper {
     }
 
     @SuppressLint("LongLogTag")
-    public static synchronized MagicWebSocketInstance getMagicWebSocketInstanceForUserId(long userId) {
-        MagicWebSocketInstance webSocketInstance = magicWebSocketInstanceMap.get(userId);
+    public static synchronized WebSocketInstance getMagicWebSocketInstanceForUserId(long userId) {
+        WebSocketInstance webSocketInstance = magicWebSocketInstanceMap.get(userId);
 
         if (webSocketInstance == null) {
             Log.d(TAG, "No magicWebSocketInstance found for user " + userId);
@@ -69,9 +69,9 @@ public class WebSocketConnectionHelper {
         return webSocketInstance;
     }
 
-    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url,
-                                                                                            User user,
-                                                                                            String webSocketTicket, boolean isGuest) {
+    public static synchronized WebSocketInstance getExternalSignalingInstanceForServer(String url,
+                                                                                       User user,
+                                                                                       String webSocketTicket, boolean isGuest) {
         String generatedURL = url.replace("https://", "wss://").replace("http://", "ws://");
 
         if (generatedURL.endsWith("/")) {
@@ -82,24 +82,24 @@ public class WebSocketConnectionHelper {
 
         long userId = isGuest ? -1 : user.getId();
 
-        MagicWebSocketInstance magicWebSocketInstance;
-        if (userId != -1 && magicWebSocketInstanceMap.containsKey(user.getId()) && (magicWebSocketInstance = magicWebSocketInstanceMap.get(user.getId())) != null) {
-            return magicWebSocketInstance;
+        WebSocketInstance webSocketInstance;
+        if (userId != -1 && magicWebSocketInstanceMap.containsKey(user.getId()) && (webSocketInstance = magicWebSocketInstanceMap.get(user.getId())) != null) {
+            return webSocketInstance;
         } else {
             if (userId == -1) {
                 deleteExternalSignalingInstanceForUserEntity(userId);
             }
-            magicWebSocketInstance = new MagicWebSocketInstance(user, generatedURL, webSocketTicket);
-            magicWebSocketInstanceMap.put(user.getId(), magicWebSocketInstance);
-            return magicWebSocketInstance;
+            webSocketInstance = new WebSocketInstance(user, generatedURL, webSocketTicket);
+            magicWebSocketInstanceMap.put(user.getId(), webSocketInstance);
+            return webSocketInstance;
         }
     }
 
     public static synchronized void deleteExternalSignalingInstanceForUserEntity(long id) {
-        MagicWebSocketInstance magicWebSocketInstance;
-        if ((magicWebSocketInstance = magicWebSocketInstanceMap.get(id)) != null) {
-            if (magicWebSocketInstance.isConnected()) {
-                magicWebSocketInstance.sendBye();
+        WebSocketInstance webSocketInstance;
+        if ((webSocketInstance = magicWebSocketInstanceMap.get(id)) != null) {
+            if (webSocketInstance.isConnected()) {
+                webSocketInstance.sendBye();
                 magicWebSocketInstanceMap.remove(id);
             }
         }

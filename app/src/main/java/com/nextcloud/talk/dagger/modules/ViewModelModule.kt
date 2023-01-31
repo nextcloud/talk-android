@@ -23,13 +23,14 @@ package com.nextcloud.talk.dagger.modules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.messagesearch.MessageSearchViewModel
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
 import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
+import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
+import com.nextcloud.talk.viewmodels.CallRecordingViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -89,4 +90,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(RemoteFileBrowserItemsViewModel::class)
     abstract fun remoteFileBrowserItemsViewModel(viewModel: RemoteFileBrowserItemsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CallRecordingViewModel::class)
+    abstract fun callRecordingViewModel(viewModel: CallRecordingViewModel): ViewModel
 }

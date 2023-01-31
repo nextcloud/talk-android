@@ -28,7 +28,6 @@
     android:paddingBottom="@dimen/standard_half_padding">
 
     <TextView
-        android:id="@+id/upload"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/bottom_sheet_item_height"
         android:gravity="start|center_vertical"

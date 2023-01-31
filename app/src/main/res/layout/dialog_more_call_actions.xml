@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Marcel Hibbe
+  ~ Copyright (C) 2022 Marcel Hibbe <marcel.hibbe@nextcloud.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_call_screen_dialog"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/standard_half_padding">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="start|center_vertical"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
+        android:text="@string/call_more_actions_dialog_headline"
+        android:textColor="@color/medium_emphasis_text_dark_background"
+        android:textSize="@dimen/bottom_sheet_text_size" />
+
+    <LinearLayout
+        android:id="@+id/record_call"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/record_call_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/record_start"
+            app:tint="@color/high_emphasis_menu_icon_inverse" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/record_call_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/record_start_description"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+
+    </LinearLayout>
+
+</LinearLayout>

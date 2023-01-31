@@ -44,13 +44,10 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION_CODES.O
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
 import android.os.SystemClock
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.Editable
@@ -169,11 +166,14 @@ import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.VibrationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
@@ -184,8 +184,8 @@ import com.nextcloud.talk.utils.remapchat.RemapChatModel
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
-import com.nextcloud.talk.webrtc.MagicWebSocketInstance
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
+import com.nextcloud.talk.webrtc.WebSocketInstance
 import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.commons.models.IMessage
@@ -278,7 +278,7 @@ class ChatController(args: Bundle) :
     private var conversationVideoMenuItem: MenuItem? = null
     private var conversationSharedItemsItem: MenuItem? = null
 
-    var magicWebSocketInstance: MagicWebSocketInstance? = null
+    var webSocketInstance: WebSocketInstance? = null
 
     var lobbyTimerHandler: Handler? = null
     var pastPreconditionFailed = false
@@ -1173,7 +1173,7 @@ class ChatController(args: Bundle) :
                 Log.e(TAG, "start for audio recording failed")
             }
 
-            vibrate()
+            VibrationUtils.vibrateShort(context)
         }
     }
 
@@ -1206,20 +1206,11 @@ class ChatController(args: Bundle) :
                     Log.w(TAG, "error while stopping recorder!")
                 }
 
-                vibrate()
+                VibrationUtils.vibrateShort(context)
             }
             recorder = null
         } else {
             Log.e(TAG, "tried to stop audio recorder but it was not recording")
-        }
-    }
-
-    private fun vibrate() {
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrator.vibrate(SHORT_VIBRATE)
         }
     }
 
@@ -1924,9 +1915,9 @@ class ChatController(args: Bundle) :
                             pullChatMessages(1, 0)
                         }
 
-                        if (magicWebSocketInstance != null) {
-                            magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
-                                roomToken,
+                        if (webSocketInstance != null) {
+                            webSocketInstance?.joinRoomWithRoomTokenAndSession(
+                                roomToken!!,
                                 currentConversation?.sessionId
                             )
                         }
@@ -1949,9 +1940,9 @@ class ChatController(args: Bundle) :
 
             inConversation = true
             ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation?.sessionId
-            if (magicWebSocketInstance != null) {
-                magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
-                    roomToken,
+            if (webSocketInstance != null) {
+                webSocketInstance?.joinRoomWithRoomTokenAndSession(
+                    roomToken!!,
                     currentConversation?.sessionId
                 )
             }
@@ -2003,8 +1994,8 @@ class ChatController(args: Bundle) :
                         lobbyTimerHandler?.removeCallbacksAndMessages(null)
                     }
 
-                    if (magicWebSocketInstance != null && currentConversation != null) {
-                        magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
+                    if (webSocketInstance != null && currentConversation != null) {
+                        webSocketInstance?.joinRoomWithRoomTokenAndSession(
                             "",
                             currentConversation?.sessionId
                         )
@@ -2127,7 +2118,7 @@ class ChatController(args: Bundle) :
 
     private fun setupWebsocket() {
         if (conversationUser != null) {
-            magicWebSocketInstance =
+            webSocketInstance =
                 if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
                     WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
                 } else {
@@ -2738,6 +2729,8 @@ class ChatController(args: Bundle) :
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl)
             bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
+            bundle.putInt(KEY_RECORDING_STATE, it.callRecording)
+            bundle.putBoolean(KEY_IS_MODERATOR, it.isParticipantOwnerOrModerator)
             bundle.putBoolean(
                 BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
                 participantPermissions.canPublishAudio()
@@ -2767,7 +2760,7 @@ class ChatController(args: Bundle) :
     }
 
     override fun onClickReaction(chatMessage: ChatMessage, emoji: String) {
-        vibrate()
+        VibrationUtils.vibrateShort(context)
         if (chatMessage.reactionsSelf?.contains(emoji) == true) {
             reactionsRepository.deleteReaction(currentConversation!!, chatMessage, emoji)
                 .subscribeOn(Schedulers.io())
@@ -3289,6 +3282,7 @@ class ChatController(args: Bundle) :
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
                         bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
                         bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
+                        bundle.putBoolean(KEY_IS_MODERATOR, roomOverall.ocs!!.data!!.isParticipantOwnerOrModerator)
 
                         if (conversationUser != null) {
                             bundle.putParcelable(
@@ -3422,7 +3416,6 @@ class ChatController(args: Bundle) :
         private const val VOICE_MESSAGE_CHANNELS = 1
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
-        private const val SHORT_VIBRATE: Long = 20
         private const val FULLY_OPAQUE_INT: Int = 255
         private const val SEMI_TRANSPARENT_INT: Int = 99
         private const val VOICE_MESSAGE_SEEKBAR_BASE: Int = 1000

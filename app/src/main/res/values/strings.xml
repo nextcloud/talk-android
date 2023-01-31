@@ -217,6 +217,7 @@
     <string name="nc_call_button_content_description_audio_output">Change audio output</string>
     <string name="nc_call_button_content_description_camera">Toggle camera</string>
     <string name="nc_call_button_content_description_microphone">Toggle microphone</string>
+    <string name="nc_call_button_content_description_advanced">Advanced call options</string>
     <string name="nc_call_button_content_description_hangup">Hangup</string>
     <string name="nc_call_button_content_description_answer_voice_only">Answer as voice call only</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
@@ -556,6 +557,18 @@
     <string name="audio_output_phone">Phone</string>
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_wired_headset">Wired headset</string>
+
+    <!-- Advanced call options -->
+    <string name="call_more_actions_dialog_headline">Advanced call options</string>
+
+    <!-- Call recording -->
+    <string name="record_start_description">Start recording</string>
+    <string name="record_start_loading">Starting …</string>
+    <string name="record_stop_description">Stop recording</string>
+    <string name="record_stop_loading">Stopping …</string>
+    <string name="record_stop_confirm_title">Stop Call recording</string>
+    <string name="record_stop_confirm_message">Do you really want to stop the recording?</string>
+    <string name="record_active_info">The call is being recorded</string>
 
     <!-- Shared items -->
     <string name="shared_items_media">Media</string>

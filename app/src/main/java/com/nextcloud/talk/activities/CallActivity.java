@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Tim Krüger
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
@@ -55,6 +57,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.ParticipantDisplayItem;
 import com.nextcloud.talk.adapters.ParticipantsAdapter;
@@ -86,19 +89,23 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOveral
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
+import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
+import com.nextcloud.talk.utils.VibrationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
+import com.nextcloud.talk.viewmodels.CallRecordingViewModel;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
-import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.WebRtcAudioManager;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
+import com.nextcloud.talk.webrtc.WebSocketInstance;
 import com.wooplr.spotlight.SpotlightView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -143,9 +150,11 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProvider;
 import autodagger.AutoInjector;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -164,9 +173,11 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_WITHOUT_NOTIFI
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
@@ -188,10 +199,14 @@ public class CallActivity extends CallBaseActivity {
 
     @Inject
     PlatformPermissionUtil permissionUtil;
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     public static final String TAG = "CallActivity";
 
     public WebRtcAudioManager audioManager;
+
+    public CallRecordingViewModel callRecordingViewModel;
 
     private static final String[] PERMISSIONS_CALL = {
         Manifest.permission.CAMERA,
@@ -297,7 +312,7 @@ public class CallActivity extends CallBaseActivity {
     };
 
     private ExternalSignalingServer externalSignalingServer;
-    private MagicWebSocketInstance webSocketClient;
+    private WebSocketInstance webSocketClient;
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private boolean hasMCU;
     private boolean hasExternalSignalingServer;
@@ -317,6 +332,7 @@ public class CallActivity extends CallBaseActivity {
     private CallActivityBinding binding;
 
     private AudioOutputDialog audioOutputDialog;
+    private MoreCallActionsDialog moreCallActionsDialog;
 
     private final ActivityResultLauncher<String> requestBluetoothPermissionLauncher =
         registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -327,6 +343,8 @@ public class CallActivity extends CallBaseActivity {
 
     private boolean canPublishAudioStream;
     private boolean canPublishVideoStream;
+
+    private boolean isModerator;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -351,6 +369,7 @@ public class CallActivity extends CallBaseActivity {
         isCallWithoutNotification = extras.getBoolean(KEY_CALL_WITHOUT_NOTIFICATION, false);
         canPublishAudioStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO);
         canPublishVideoStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO);
+        isModerator = extras.getBoolean(KEY_IS_MODERATOR, false);
 
         if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
             isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL);
@@ -370,6 +389,41 @@ public class CallActivity extends CallBaseActivity {
         } else {
             setCallState(CallStatus.CONNECTING);
         }
+
+        callRecordingViewModel = new ViewModelProvider(this, viewModelFactory).get((CallRecordingViewModel.class));
+        callRecordingViewModel.setData(roomToken);
+        callRecordingViewModel.setRecordingState(extras.getInt(KEY_RECORDING_STATE));
+
+        callRecordingViewModel.getViewState().observe(this, viewState -> {
+            if (viewState instanceof CallRecordingViewModel.RecordingStartedState) {
+                binding.callRecordingIndicator.setVisibility(View.VISIBLE);
+                if (((CallRecordingViewModel.RecordingStartedState) viewState).getShowStartedInfo()) {
+                    VibrationUtils.INSTANCE.vibrateShort(context);
+                    Toast.makeText(context, context.getResources().getString(R.string.record_active_info), Toast.LENGTH_LONG).show();
+                }
+            } else if (viewState instanceof CallRecordingViewModel.RecordingConfirmStopState) {
+                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.record_stop_confirm_title)
+                    .setMessage(R.string.record_stop_confirm_message)
+                    .setPositiveButton(R.string.record_stop_description,
+                                       (dialog, which) -> callRecordingViewModel.stopRecording())
+                    .setNegativeButton(R.string.nc_common_dismiss,
+                                       (dialog, which) -> callRecordingViewModel.dismissStopRecording());
+                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder);
+                AlertDialog dialog = dialogBuilder.show();
+
+                viewThemeUtils.platform.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                                                        );
+
+            } else if (viewState instanceof CallRecordingViewModel.RecordingErrorState) {
+                Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
+                               Toast.LENGTH_LONG).show();
+            } else {
+                binding.callRecordingIndicator.setVisibility(View.GONE);
+            }
+        });
 
         initClickListeners();
         binding.microphoneButton.setOnTouchListener(new MicrophoneButtonTouchListener());
@@ -392,6 +446,18 @@ public class CallActivity extends CallBaseActivity {
         updateSelfVideoViewPosition();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        initFeaturesVisibility();
+
+        try {
+            cache.evictAll();
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to evict cache");
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.S)
     private void requestBluetoothPermission() {
         if (ContextCompat.checkSelfPermission(
@@ -407,13 +473,11 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        try {
-            cache.evictAll();
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to evict cache");
+    private void initFeaturesVisibility() {
+        if (isAllowedToStartOrStopRecording()) {
+            binding.moreCallActions.setVisibility(View.VISIBLE);
+        } else {
+            binding.moreCallActions.setVisibility(View.GONE);
         }
     }
 
@@ -423,6 +487,11 @@ public class CallActivity extends CallBaseActivity {
         binding.audioOutputButton.setOnClickListener(v -> {
             audioOutputDialog = new AudioOutputDialog(this);
             audioOutputDialog.show();
+        });
+
+        binding.moreCallActions.setOnClickListener(v -> {
+            moreCallActionsDialog = new MoreCallActionsDialog(this);
+            moreCallActionsDialog.show();
         });
 
         if (canPublishAudioStream) {
@@ -473,6 +542,14 @@ public class CallActivity extends CallBaseActivity {
             if (currentCallStatus == CallStatus.CALLING_TIMEOUT) {
                 setCallState(CallStatus.RECONNECTING);
                 hangupNetworkCalls(false);
+            }
+        });
+
+        binding.callRecordingIndicator.setOnClickListener(l -> {
+            if (isAllowedToStartOrStopRecording()) {
+                callRecordingViewModel.clickRecordButton();
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.record_active_info), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -570,7 +647,7 @@ public class CallActivity extends CallBaseActivity {
     private void updateAudioOutputButton(WebRtcAudioManager.AudioDevice activeAudioDevice) {
         switch (activeAudioDevice) {
             case BLUETOOTH:
-                binding.audioOutputButton.setImageResource ( R.drawable.ic_baseline_bluetooth_audio_24);
+                binding.audioOutputButton.setImageResource(R.drawable.ic_baseline_bluetooth_audio_24);
                 break;
             case SPEAKER_PHONE:
                 binding.audioOutputButton.setImageResource(R.drawable.ic_volume_up_white_24dp);
@@ -1418,7 +1495,10 @@ public class CallActivity extends CallBaseActivity {
 
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
-                        callSession = roomOverall.getOcs().getData().getSessionId();
+                        Conversation conversation = roomOverall.getOcs().getData();
+                        callRecordingViewModel.setRecordingState(conversation.getCallRecording());
+
+                        callSession = conversation.getSessionId();
                         Log.d(TAG, " new callSession by joinRoom= " + callSession);
 
                         ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
@@ -1537,7 +1617,7 @@ public class CallActivity extends CallBaseActivity {
                                     @Override
                                     public void onNext(
                                         @io.reactivex.annotations.NonNull
-                                            SignalingOverall signalingOverall) {
+                                        SignalingOverall signalingOverall) {
                                         receivedSignalingMessages(signalingOverall.getOcs().getSignalings());
                                     }
 
@@ -1605,26 +1685,42 @@ public class CallActivity extends CallBaseActivity {
             return;
         }
 
-        switch (webSocketCommunicationEvent.getType()) {
-            case "hello":
-                Log.d(TAG, "onMessageEvent 'hello'");
-                if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
-                    if (currentCallStatus == CallStatus.RECONNECTING) {
-                        hangup(false);
-                    } else {
-                        setCallState(CallStatus.RECONNECTING);
-                        runOnUiThread(this::initiateCall);
+        if (webSocketCommunicationEvent.getHashMap() != null) {
+            switch (webSocketCommunicationEvent.getType()) {
+                case "hello":
+                    Log.d(TAG, "onMessageEvent 'hello'");
+                    if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
+                        if (currentCallStatus == CallStatus.RECONNECTING) {
+                            hangup(false);
+                        } else {
+                            setCallState(CallStatus.RECONNECTING);
+                            runOnUiThread(this::initiateCall);
+                        }
                     }
-                }
-                break;
-            case "roomJoined":
-                Log.d(TAG, "onMessageEvent 'roomJoined'");
-                startSendingNick();
+                    break;
+                case "roomJoined":
+                    Log.d(TAG, "onMessageEvent 'roomJoined'");
+                    startSendingNick();
 
-                if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
-                    performCall();
-                }
-                break;
+                    if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
+                        performCall();
+                    }
+                    break;
+                case "recordingStatus":
+                    Log.d(TAG, "onMessageEvent 'recordingStatus'");
+
+                    if (webSocketCommunicationEvent.getHashMap().containsKey(KEY_RECORDING_STATE)) {
+                        String recordingStateString =
+                            webSocketCommunicationEvent.getHashMap().get(KEY_RECORDING_STATE);
+
+                        if (recordingStateString != null) {
+                            runOnUiThread(() -> {
+                                callRecordingViewModel.setRecordingState(Integer.parseInt(recordingStateString));
+                            });
+                        }
+                    }
+                    break;
+            }
         }
     }
 
@@ -1895,7 +1991,7 @@ public class CallActivity extends CallBaseActivity {
             // will not send an offer, so no connection is actually established when the remote participant has a
             // higher session ID but is not publishing media.
             if ((hasMCU && participantHasAudioOrVideo) ||
-                    (!hasMCU && selfParticipantHasAudioOrVideo && (!participantHasAudioOrVideo || sessionId.compareTo(currentSessionId) < 0))) {
+                (!hasMCU && selfParticipantHasAudioOrVideo && (!participantHasAudioOrVideo || sessionId.compareTo(currentSessionId) < 0))) {
                 getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
             }
         }
@@ -2127,7 +2223,7 @@ public class CallActivity extends CallBaseActivity {
 
     private void updateSelfVideoViewIceConnectionState(PeerConnection.IceConnectionState iceConnectionState) {
         boolean connected = iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
-                                iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
+            iceConnectionState == PeerConnection.IceConnectionState.COMPLETED;
 
         // FIXME In voice only calls there is no video view, so the progress bar would appear floating in the middle of
         // nowhere. However, a way to signal that the local participant is not connected to the HPB is still need in
@@ -2505,8 +2601,9 @@ public class CallActivity extends CallBaseActivity {
     }
 
     /**
-     * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted from CallActivity.
-     *
+     * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted from
+     * CallActivity.
+     * <p>
      * All listeners are called in the main thread.
      */
     private static class InternalSignalingMessageReceiver extends SignalingMessageReceiver {
@@ -2701,7 +2798,7 @@ public class CallActivity extends CallBaseActivity {
 
         /**
          * Adds the local participant nick to offers and answers.
-         *
+         * <p>
          * For legacy reasons the offers and answers sent when the internal signaling server is used are expected to
          * provide the nick of the local participant.
          *
@@ -2870,6 +2967,11 @@ public class CallActivity extends CallBaseActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         eventBus.post(new ConfigurationChangeEvent());
+    }
+
+    public boolean isAllowedToStartOrStopRecording() {
+        return CapabilitiesUtilNew.isCallRecordingAvailable(conversationUser)
+            && isModerator;
     }
 
     private class SelfVideoTouchListener implements View.OnTouchListener {

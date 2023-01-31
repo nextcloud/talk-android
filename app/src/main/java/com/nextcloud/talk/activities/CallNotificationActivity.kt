@@ -169,6 +169,10 @@ class CallNotificationActivity : CallBaseActivity() {
                 BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
                 participantPermission.canPublishVideo()
             )
+            originalBundle!!.putBoolean(
+                BundleKeys.KEY_IS_MODERATOR,
+                currentConversation!!.isParticipantOwnerOrModerator
+            )
 
             val intent = Intent(this, CallActivity::class.java)
             intent.putExtras(originalBundle!!)

@@ -573,4 +573,14 @@ public interface NcApi {
     Observable<OpenGraphOverall> getOpenGraph(@Header("Authorization") String authorization,
                                               @Url String url,
                                               @Query("reference") String urlToFindPreviewFor);
+
+    @FormUrlEncoded
+    @POST
+    Observable<GenericOverall> startRecording(@Header("Authorization") String authorization,
+                                                    @Url String url,
+                                                    @Field("status") Integer status);
+
+    @DELETE
+    Observable<GenericOverall> stopRecording(@Header("Authorization") String authorization,
+                                              @Url String url);
 }

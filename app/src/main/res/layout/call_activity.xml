@@ -90,6 +90,27 @@
             </FrameLayout>
 
             <LinearLayout
+                android:id="@+id/call_indicator_controls"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_margin="20dp"
+                android:animateLayoutChanges="true"
+                android:background="@android:color/transparent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+                <ImageView
+                    android:id="@+id/call_recording_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/record_stop"
+                    android:contentDescription="@null"
+                    android:visibility="gone"
+                    android:translationZ="2dp"
+                    tools:visibility="visible">
+                </ImageView>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/callInfosLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,7 +173,7 @@
         android:background="@android:color/transparent"
         android:gravity="center"
         android:orientation="horizontal"
-        android:weightSum="5">
+        android:weightSum="6">
 
         <ImageButton
             android:id="@+id/pictureInPictureButton"
@@ -202,6 +223,18 @@
             android:background="@drawable/shape_oval"
             android:backgroundTint="@color/call_buttons_background"
             app:srcCompat="@drawable/ic_mic_off_white_24px"
+            android:contentDescription="@string/nc_call_button_content_description_microphone" />
+
+        <ImageButton
+            android:id="@+id/more_call_actions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_marginHorizontal="@dimen/call_controls_margin_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/shape_oval"
+            android:backgroundTint="@color/call_buttons_background"
+            app:srcCompat="@drawable/ic_dots_horizontal_white"
             android:contentDescription="@string/nc_call_button_content_description_microphone" />
 
         <ImageButton
