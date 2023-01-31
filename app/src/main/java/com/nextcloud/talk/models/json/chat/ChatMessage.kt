@@ -520,6 +520,8 @@ data class ChatMessage(
         MESSAGE_EXPIRATION_DISABLED,
         RECORDING_STARTED,
         RECORDING_STOPPED,
+        AUDIO_RECORDING_STARTED,
+        AUDIO_RECORDING_STOPPED,
     }
 
     companion object {
