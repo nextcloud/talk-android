@@ -2969,8 +2969,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     public boolean isAllowedToStartOrStopRecording() {
-        return CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "recording-v1") &&
-            CapabilitiesUtilNew.isCallRecordingAvailable(conversationUser)
+        return CapabilitiesUtilNew.isCallRecordingAvailable(conversationUser)
             && isModerator;
     }
 
