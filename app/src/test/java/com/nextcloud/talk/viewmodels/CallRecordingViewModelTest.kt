@@ -8,7 +8,7 @@ import org.mockito.MockitoAnnotations
 
 class CallRecordingViewModelTest : AbstractViewModelTest() {
 
-    val repository = FakeCallRecordingRepository()
+    private val repository = FakeCallRecordingRepository()
 
     @Before
     fun setUp() {
@@ -38,7 +38,7 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
 
         viewModel.stopRecording()
 
-        Assert.equals(CallRecordingViewModel.RecordingStopLoadingState, viewModel.viewState.value)
+        Assert.equals(CallRecordingViewModel.RecordingStoppedState, viewModel.viewState.value)
     }
 
     @Test

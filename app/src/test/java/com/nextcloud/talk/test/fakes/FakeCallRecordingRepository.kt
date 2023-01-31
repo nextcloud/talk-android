@@ -31,12 +31,12 @@ class FakeCallRecordingRepository : CallRecordingRepository {
     override fun startRecording(
         roomToken: String
     ): Observable<StartCallRecordingModel> {
-        return Observable.just<StartCallRecordingModel>(StartCallRecordingModel(true))
+        return Observable.just(StartCallRecordingModel(true))
     }
 
     override fun stopRecording(
         roomToken: String
     ): Observable<StopCallRecordingModel> {
-        return Observable.just<StopCallRecordingModel>(StopCallRecordingModel(true))
+        return Observable.just(StopCallRecordingModel(true))
     }
 }
