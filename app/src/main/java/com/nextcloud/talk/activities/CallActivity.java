@@ -425,7 +425,6 @@ public class CallActivity extends CallBaseActivity {
             }
         });
 
-        initFeaturesVisibility();
         initClickListeners();
         binding.microphoneButton.setOnTouchListener(new MicrophoneButtonTouchListener());
 
@@ -447,6 +446,18 @@ public class CallActivity extends CallBaseActivity {
         updateSelfVideoViewPosition();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        initFeaturesVisibility();
+
+        try {
+            cache.evictAll();
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to evict cache");
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.S)
     private void requestBluetoothPermission() {
         if (ContextCompat.checkSelfPermission(
@@ -459,16 +470,6 @@ public class CallActivity extends CallBaseActivity {
     private void enableBluetoothManager() {
         if (audioManager != null) {
             audioManager.startBluetoothManager();
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        try {
-            cache.evictAll();
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to evict cache");
         }
     }
 
