@@ -563,12 +563,12 @@
 
     <!-- Call recording -->
     <string name="record_start_description">Start recording</string>
-    <string name="record_start_loading">starting…</string>
+    <string name="record_start_loading">Starting …</string>
     <string name="record_stop_description">Stop recording</string>
-    <string name="record_stop_loading">stopping…</string>
+    <string name="record_stop_loading">Stopping …</string>
     <string name="record_stop_confirm_title">Stop Call recording</string>
-    <string name="record_stop_confirm_message">"Do you really want to stop the recording?"</string>
-    <string name="record_active_info">"The call is being recorded"</string>
+    <string name="record_stop_confirm_message">Do you really want to stop the recording?</string>
+    <string name="record_active_info">The call is being recorded</string>
 
     <!-- Shared items -->
     <string name="shared_items_media">Media</string>
