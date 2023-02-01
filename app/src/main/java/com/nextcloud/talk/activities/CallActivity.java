@@ -2681,6 +2681,16 @@ public class CallActivity extends CallBaseActivity {
 
         @Override
         public void onRaiseHand(boolean state, long timestamp) {
+            if (state) {
+                CallParticipant participant = callParticipants.get(sessionId);
+                if (participant != null) {
+                    String nick = participant.getCallParticipantModel().getNick();
+                    runOnUiThread(() -> Toast.makeText(
+                        context,
+                        String.format(context.getResources().getString(R.string.nc_call_raised_hand), nick),
+                        Toast.LENGTH_LONG).show());
+                }
+            }
         }
 
         @Override
