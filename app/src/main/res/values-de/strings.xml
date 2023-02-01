@@ -399,6 +399,8 @@
     <string name="polls_voted_hidden_success">Stimme abgegeben</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Dateien können nicht ohne Berechtigung geteilt werden</string>
+    <string name="record_start_description">Aufnahme beginnen</string>
+    <string name="record_stop_description">Aufnahme stoppen</string>
     <string name="save">Speichern</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>
     <string name="scope_federated_title">Federated</string>

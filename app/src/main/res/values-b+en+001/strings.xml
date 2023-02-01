@@ -399,6 +399,8 @@
     <string name="polls_voted_hidden_success">Vote submitted</string>
     <string name="reactions_tab_all">All</string>
     <string name="read_storage_no_permission">Sharing files from storage is not possible without permissions</string>
+    <string name="record_start_description">Start recording</string>
+    <string name="record_stop_description">Stop recording</string>
     <string name="save">Save</string>
     <string name="scope_federated_description">Only synchronize to trusted servers</string>
     <string name="scope_federated_title">Federated</string>

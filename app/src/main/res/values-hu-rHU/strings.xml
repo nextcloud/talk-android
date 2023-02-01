@@ -399,6 +399,8 @@
     <string name="polls_voted_hidden_success">Szavazat leadva</string>
     <string name="reactions_tab_all">Összes</string>
     <string name="read_storage_no_permission">A fájlok megosztása a tárhelyről engedély nélkül nem lehetséges</string>
+    <string name="record_start_description">Felvétel indítása</string>
+    <string name="record_stop_description">Felvétel leállítása</string>
     <string name="save">Mentés</string>
     <string name="scope_federated_description">Szinkronizálás csak a megbízható kiszolgálókkal</string>
     <string name="scope_federated_title">Föderált</string>

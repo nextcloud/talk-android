@@ -324,6 +324,8 @@
     <string name="polls_settings">Asetukset</string>
     <string name="polls_submit_vote">Äänestä</string>
     <string name="reactions_tab_all">Kaikki</string>
+    <string name="record_start_description">Käynnistä tallennus</string>
+    <string name="record_stop_description">Lopeta tallennus</string>
     <string name="save">Tallenna</string>
     <string name="scope_federated_description">Synkronoi vain luotetuille palveluille</string>
     <string name="scope_federated_title">Federoitu</string>

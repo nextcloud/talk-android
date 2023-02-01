@@ -398,6 +398,8 @@
     <string name="polls_voted_hidden_success">Vote enregistré</string>
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
+    <string name="record_start_description">Commencer l\'enregistrement</string>
+    <string name="record_stop_description">Arrêter l\'enregistrement</string>
     <string name="save">Sauvegarder</string>
     <string name="scope_federated_description">Synchronisation avec les serveurs de confiance uniquement</string>
     <string name="scope_federated_title">Fédéré</string>

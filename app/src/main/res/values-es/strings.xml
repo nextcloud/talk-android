@@ -400,6 +400,8 @@
     <string name="polls_voted_hidden_success">Voto enviado</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="read_storage_no_permission">Compartir archivos desde el almacenamiento no es posible sin permisos</string>
+    <string name="record_start_description">Empezar a grabar</string>
+    <string name="record_stop_description">Detener grabación</string>
     <string name="save">Guardar</string>
     <string name="scope_federated_description">Sincronizar solo con servidores de confianza</string>
     <string name="scope_federated_title">Federado</string>

@@ -399,6 +399,8 @@
     <string name="polls_voted_hidden_success">Hlas odeslán</string>
     <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
+    <string name="record_start_description">Zahájit nahrávání</string>
+    <string name="record_stop_description">Zastavit nahrávání</string>
     <string name="save">Uložit</string>
     <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>
     <string name="scope_federated_title">Propojené</string>

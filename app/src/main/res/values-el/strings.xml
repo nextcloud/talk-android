@@ -332,6 +332,7 @@
     <string name="polls_submit_vote">Ψήφος</string>
     <string name="reactions_tab_all">\'Ολα</string>
     <string name="read_storage_no_permission">Η κοινή χρήση αρχείων από τον χώρο αποθήκευσης δεν είναι δυνατή χωρίς δικαιώματα</string>
+    <string name="record_start_description">Έναρξη εγγραφής</string>
     <string name="save">Αποθήκευση</string>
     <string name="scope_federated_description">Συγχρονισμός μόνο με έμπιστους διακομιστές.</string>
     <string name="scope_federated_title">Federated</string>

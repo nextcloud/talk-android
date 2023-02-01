@@ -399,6 +399,8 @@
     <string name="polls_voted_hidden_success">Voto enviado</string>
     <string name="reactions_tab_all">Tudos</string>
     <string name="read_storage_no_permission">O compartilhamento de arquivos do armazenamento não é possível sem permissões </string>
+    <string name="record_start_description">Comece a gravar</string>
+    <string name="record_stop_description">Pare de gravar</string>
     <string name="save">Salvar</string>
     <string name="scope_federated_description">Sincronizar apenas com servidores confiáveis </string>
     <string name="scope_federated_title">Federada</string>

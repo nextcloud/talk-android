@@ -399,6 +399,8 @@
     <string name="polls_voted_hidden_success">Botoa eman da</string>
     <string name="reactions_tab_all">Denak</string>
     <string name="read_storage_no_permission">Ezin dira fitxategiak biltegitik partekatu baimenik gabe</string>
+    <string name="record_start_description">Hasi grabatzen</string>
+    <string name="record_stop_description">Utzi grabaketa</string>
     <string name="save">Gorde</string>
     <string name="scope_federated_description">Sinkronizatu zerbitzari fidagarriekin soilik</string>
     <string name="scope_federated_title">Federatua</string>

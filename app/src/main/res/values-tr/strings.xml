@@ -399,6 +399,8 @@
     <string name="polls_voted_hidden_success">Oy verildi</string>
     <string name="reactions_tab_all">Tümü</string>
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
+    <string name="record_start_description">Kaydı başlat</string>
+    <string name="record_stop_description">Kaydı durdur</string>
     <string name="save">Kaydet</string>
     <string name="scope_federated_description">Yalnızca güvenilen sunucular ile eşitlensin</string>
     <string name="scope_federated_title">Birleşik</string>
