@@ -19,5 +19,4 @@
  */
 package com.nextcloud.talk.call
 
-data class RaisedHand(val state: Boolean, val timestamp: Long) {
-}
+data class RaisedHand(val state: Boolean, val timestamp: Long)
