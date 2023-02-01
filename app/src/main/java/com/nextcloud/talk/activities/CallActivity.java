@@ -207,6 +207,7 @@ public class CallActivity extends CallBaseActivity {
     public WebRtcAudioManager audioManager;
 
     public CallRecordingViewModel callRecordingViewModel;
+//    public RaiseHandViewModel raiseHandViewModel;
 
     private static final String[] PERMISSIONS_CALL = {
         Manifest.permission.CAMERA,
@@ -1195,6 +1196,25 @@ public class CallActivity extends CallBaseActivity {
                 for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
                     if (peerConnectionWrapper.getSessionId().equals(webSocketClient.getSessionId())) {
                         peerConnectionWrapper.sendChannelData(new DataChannelMessage(message));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void clickHand(Boolean raise) {
+        // TODO: fix how to build&send the message
+
+        if (isConnectionEstablished() && peerConnectionWrapperList != null) {
+            if (!hasMCU) {
+                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+                    peerConnectionWrapper.raiseHand(raise);
+                }
+            } else {
+                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+                    if (peerConnectionWrapper.getSessionId().equals(webSocketClient.getSessionId())) {
+                        peerConnectionWrapper.raiseHand(raise);
                         break;
                     }
                 }
@@ -2994,6 +3014,10 @@ public class CallActivity extends CallBaseActivity {
     public boolean isAllowedToStartOrStopRecording() {
         return CapabilitiesUtilNew.isCallRecordingAvailable(conversationUser)
             && isModerator;
+    }
+
+    public boolean isAllowedToRaiseHand() {
+        return CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "raise-hand");
     }
 
     private class SelfVideoTouchListener implements View.OnTouchListener {

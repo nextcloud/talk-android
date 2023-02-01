@@ -72,11 +72,22 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         } else {
             binding.recordCall.visibility = View.GONE
         }
+
+        if (callActivity.isAllowedToRaiseHand) {
+            binding.raiseHand.visibility = View.VISIBLE
+        } else {
+            binding.raiseHand.visibility = View.GONE
+        }
     }
 
     private fun initClickListeners() {
         binding.recordCall.setOnClickListener {
             callActivity.callRecordingViewModel.clickRecordButton()
+        }
+
+        binding.raiseHand.setOnClickListener {
+            // TODO: save raised hand state & toggle...
+            callActivity.clickHand(true)
         }
     }
 
