@@ -79,7 +79,7 @@
             android:layout_height="16dp"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="6dp"
-            android:contentDescription="@string/nc_remote_audio_off"
+            android:contentDescription="@string/nc_call_raise_hand_description"
             android:src="@drawable/ic_hand_back_left"
             android:visibility="invisible"
             tools:visibility="visible" />
