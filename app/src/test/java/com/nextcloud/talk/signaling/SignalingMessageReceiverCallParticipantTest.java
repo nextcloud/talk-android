@@ -19,6 +19,7 @@
  */
 package com.nextcloud.talk.signaling;
 
+import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 
 import org.junit.Assert;
@@ -60,6 +61,27 @@ public class SignalingMessageReceiverCallParticipantTest {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
             signalingMessageReceiver.addListener(mockedCallParticipantMessageListener, null);
         });
+    }
+
+    @Test
+    public void testCallParticipantMessageRaiseHand() {
+        SignalingMessageReceiver.CallParticipantMessageListener mockedCallParticipantMessageListener =
+            mock(SignalingMessageReceiver.CallParticipantMessageListener.class);
+
+        signalingMessageReceiver.addListener(mockedCallParticipantMessageListener, "theSessionId");
+
+        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        signalingMessage.setFrom("theSessionId");
+        signalingMessage.setType("raiseHand");
+        signalingMessage.setRoomType("theRoomType");
+        NCMessagePayload messagePayload = new NCMessagePayload();
+        messagePayload.setType("raiseHand");
+        messagePayload.setState(Boolean.TRUE);
+        messagePayload.setTimestamp(4815162342L);
+        signalingMessage.setPayload(messagePayload);
+        signalingMessageReceiver.processSignalingMessage(signalingMessage);
+
+        verify(mockedCallParticipantMessageListener, only()).onRaiseHand(true, 4815162342L);
     }
 
     @Test

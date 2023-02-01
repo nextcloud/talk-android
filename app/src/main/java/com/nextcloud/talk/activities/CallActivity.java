@@ -2028,7 +2028,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private CallParticipant addCallParticipant(String sessionId) {
-        CallParticipant callParticipant = new CallParticipant(sessionId);
+        CallParticipant callParticipant = new CallParticipant(sessionId, signalingMessageReceiver);
         callParticipants.put(sessionId, callParticipant);
 
         SignalingMessageReceiver.CallParticipantMessageListener callParticipantMessageListener =
@@ -2580,6 +2580,20 @@ public class CallActivity extends CallBaseActivity {
 
         public CallActivityCallParticipantMessageListener(String sessionId) {
             this.sessionId = sessionId;
+        }
+
+        @Override
+        public void onRaiseHand(boolean state, long timestamp) {
+            if (state) {
+                CallParticipant participant = callParticipants.get(sessionId);
+                if (participant != null) {
+                    String nick = participant.getCallParticipantModel().getNick();
+                    runOnUiThread(() -> Toast.makeText(
+                        context,
+                        String.format(context.getResources().getString(R.string.nc_call_raised_hand), nick),
+                        Toast.LENGTH_LONG).show());
+                }
+            }
         }
 
         @Override

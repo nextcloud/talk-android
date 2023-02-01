@@ -221,6 +221,7 @@
     <string name="nc_call_button_content_description_answer_voice_only">Answer as voice call only</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
+    <string name="nc_call_raised_hand">%1$s raised the hand</string>
 
     <!-- Picture in Picture -->
     <string name="nc_pip_microphone_mute">Mute microphone</string>

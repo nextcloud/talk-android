@@ -38,8 +38,12 @@ data class NCMessagePayload(
     @JsonField(name = ["candidate"])
     var iceCandidate: NCIceCandidate? = null,
     @JsonField(name = ["name"])
-    var name: String? = null
+    var name: String? = null,
+    @JsonField(name = ["state"])
+    var state: Boolean? = null,
+    @JsonField(name = ["timestamp"])
+    var timestamp: Long? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null)
 }

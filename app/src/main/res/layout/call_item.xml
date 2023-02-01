@@ -23,7 +23,6 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relative_layout"
     android:layout_width="match_parent"
@@ -44,32 +43,47 @@
         android:layout_height="match_parent"
         android:visibility="invisible" />
 
-    <TextView
-        android:id="@+id/peer_nick_text_view"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="6dp"
-        android:ellipsize="end"
-        android:maxEms="8"
-        android:maxLines="1"
-        android:textAlignment="viewStart"
-        android:textColor="@color/white"
-        tools:text="Bill Murray 12345678901234567890" />
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
 
-    <ImageView
-        android:id="@+id/remote_audio_off"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="6dp"
-        android:layout_toEndOf="@id/peer_nick_text_view"
-        android:contentDescription="@string/nc_remote_audio_off"
-        android:src="@drawable/ic_mic_off_white_24px"
-        android:visibility="invisible"
-        tools:visibility="visible" />
+        <TextView
+            android:id="@+id/peer_nick_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="6dp"
+            android:ellipsize="end"
+            android:maxEms="8"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textColor="@color/white"
+            tools:text="Bill Murray 12345678901234567890" />
+
+        <ImageView
+            android:id="@+id/remote_audio_off"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/nc_remote_audio_off"
+            android:src="@drawable/ic_mic_off_white_24px"
+            android:visibility="invisible"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/raised_hand"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/nc_remote_audio_off"
+            android:src="@drawable/ic_hand_back_left"
+            android:visibility="invisible"
+            tools:visibility="visible" />
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/participant_progress_bar"
