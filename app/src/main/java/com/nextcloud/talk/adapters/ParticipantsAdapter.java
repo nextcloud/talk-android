@@ -143,11 +143,17 @@ public class ParticipantsAdapter extends BaseAdapter {
         if (!participantDisplayItem.isAudioEnabled()) {
             audioOffView.setVisibility(View.VISIBLE);
         } else {
-            audioOffView.setVisibility(View.INVISIBLE);
+            audioOffView.setVisibility(View.GONE);
+        }
+
+        ImageView raisedHandView = convertView.findViewById(R.id.raised_hand);
+        if (participantDisplayItem.getRaisedHand() != null && participantDisplayItem.getRaisedHand().getState()) {
+            raisedHandView.setVisibility(View.VISIBLE);
+        } else {
+            raisedHandView.setVisibility(View.GONE);
         }
 
         return convertView;
-
     }
 
     private boolean hasVideoStream(ParticipantDisplayItem participantDisplayItem, MediaStream mediaStream) {
