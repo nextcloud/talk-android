@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">有線耳機</string>
     <string name="avatar">虛擬化身大頭照</string>
     <string name="away">不在</string>
+    <string name="call_more_actions_dialog_headline">進階通話選項</string>
     <string name="call_without_notification">通話而不通知</string>
     <string name="camera_permission_granted">已授予相機權限。請重新選擇相機。</string>
     <string name="choose_avatar_from_cloud">從雲中選擇虛擬化身大頭照</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">允許訪客</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
+    <string name="nc_call_button_content_description_advanced">進階通話選項</string>
     <string name="nc_call_button_content_description_answer_video_call">以視像通話方式接聽</string>
     <string name="nc_call_button_content_description_answer_voice_only">僅以語音通話方式接聽</string>
     <string name="nc_call_button_content_description_audio_output">更改語音輸出</string>
@@ -398,8 +400,13 @@
     <string name="polls_voted_hidden_success">已提交投票</string>
     <string name="reactions_tab_all">全部</string>
     <string name="read_storage_no_permission">沒有權限就無法從存儲分享檔案</string>
+    <string name="record_active_info">通話正在錄音中</string>
     <string name="record_start_description">開始錄音</string>
+    <string name="record_start_loading">開始 ...</string>
+    <string name="record_stop_confirm_message">你想停止錄音嗎？</string>
+    <string name="record_stop_confirm_title">停止通話錄音</string>
     <string name="record_stop_description">停止錄音</string>
+    <string name="record_stop_loading">停止 ...</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>
     <string name="scope_federated_title">已聯盟</string>

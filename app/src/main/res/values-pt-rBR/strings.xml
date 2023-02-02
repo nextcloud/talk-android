@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Fone de ouvido</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="call_more_actions_dialog_headline">Opções avançadas de chamada</string>
     <string name="call_without_notification">Ligue sem notificação</string>
     <string name="camera_permission_granted">Permissão da câmera concedida. Por favor, escolha a câmera novamente.</string>
     <string name="choose_avatar_from_cloud">Escolha o avatar da nuvem</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">Permitir convidados</string>
     <string name="nc_attendee_pin">Pino: %1$s</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
+    <string name="nc_call_button_content_description_advanced">Opções avançadas de chamada</string>
     <string name="nc_call_button_content_description_answer_video_call">Responder com uma chamada de vídeo</string>
     <string name="nc_call_button_content_description_answer_voice_only">Responder apenas com uma chamada de voz</string>
     <string name="nc_call_button_content_description_audio_output">Mude a saída de áudio</string>
@@ -399,8 +401,13 @@
     <string name="polls_voted_hidden_success">Voto enviado</string>
     <string name="reactions_tab_all">Tudos</string>
     <string name="read_storage_no_permission">O compartilhamento de arquivos do armazenamento não é possível sem permissões </string>
+    <string name="record_active_info">A chamada está sendo gravada</string>
     <string name="record_start_description">Comece a gravar</string>
+    <string name="record_start_loading">Iniciando …</string>
+    <string name="record_stop_confirm_message">Você realmente quer parar a gravação?</string>
+    <string name="record_stop_confirm_title">Parar gravação de chamada</string>
     <string name="record_stop_description">Pare de gravar</string>
+    <string name="record_stop_loading">Parando …</string>
     <string name="save">Salvar</string>
     <string name="scope_federated_description">Sincronizar apenas com servidores confiáveis </string>
     <string name="scope_federated_title">Federada</string>

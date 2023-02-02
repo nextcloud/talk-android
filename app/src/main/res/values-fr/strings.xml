@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Écouteurs sans fil</string>
     <string name="avatar">Avatar</string>
     <string name="away">Non présent</string>
+    <string name="call_more_actions_dialog_headline">Options d\'appel avancées</string>
     <string name="call_without_notification">Appeler sans notification</string>
     <string name="camera_permission_granted">Caméra autorisée. Merci de choisir à nouveau la caméra .</string>
     <string name="choose_avatar_from_cloud">Sélectionner l\'avatar depuis le cloud</string>
@@ -59,12 +60,14 @@
     <string name="nc_allow_guests">Autoriser les invités</string>
     <string name="nc_attendee_pin">Épingler : %1$s</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
+    <string name="nc_call_button_content_description_advanced">Options d\'appel avancées</string>
     <string name="nc_call_button_content_description_answer_video_call">Répondre par appel vidéo</string>
     <string name="nc_call_button_content_description_answer_voice_only">Répondre par appel vocal uniquement</string>
     <string name="nc_call_button_content_description_audio_output">Changer de sortie audio</string>
     <string name="nc_call_button_content_description_camera">Activer / Désactiver la caméra</string>
     <string name="nc_call_button_content_description_hangup">Raccrocher</string>
     <string name="nc_call_button_content_description_microphone">Activer / Désactiver le micro</string>
+    <string name="nc_call_button_content_description_pip">Lancer le mode Picture in Picture</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_name">Nom de la conversation</string>
@@ -398,8 +401,13 @@
     <string name="polls_voted_hidden_success">Vote enregistré</string>
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
+    <string name="record_active_info">L\'appel est enregistré</string>
     <string name="record_start_description">Commencer l\'enregistrement</string>
+    <string name="record_start_loading">Démarrage…</string>
+    <string name="record_stop_confirm_message">Voulez-vous vraiment arrêter l\'enregistrement ?</string>
+    <string name="record_stop_confirm_title">Arrêter l\'enregistrement de l\'appel</string>
     <string name="record_stop_description">Arrêter l\'enregistrement</string>
+    <string name="record_stop_loading">Arrêt…</string>
     <string name="save">Sauvegarder</string>
     <string name="scope_federated_description">Synchronisation avec les serveurs de confiance uniquement</string>
     <string name="scope_federated_title">Fédéré</string>

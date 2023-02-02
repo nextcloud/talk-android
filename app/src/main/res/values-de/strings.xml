@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Kabelgebundener Kopfhörer</string>
     <string name="avatar">Avatar</string>
     <string name="away">Abwesend</string>
+    <string name="call_more_actions_dialog_headline">Erweiterte Anrufoptionen</string>
     <string name="call_without_notification">Anruf ohne Benachrichtigung</string>
     <string name="camera_permission_granted">Kameraerlaubnis erteilt. Bitte wählen Sie die Kamera erneut.</string>
     <string name="choose_avatar_from_cloud">Avatar aus der Cloud auswählen</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">Gäste zulassen</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s entsperren</string>
+    <string name="nc_call_button_content_description_advanced">Erweiterte Anrufoptionen</string>
     <string name="nc_call_button_content_description_answer_video_call">Als Videoanruf annehmen</string>
     <string name="nc_call_button_content_description_answer_voice_only">Nur als Sprachanruf annehmen</string>
     <string name="nc_call_button_content_description_audio_output">Audioausgabe ändern</string>
@@ -399,8 +401,13 @@
     <string name="polls_voted_hidden_success">Stimme abgegeben</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Dateien können nicht ohne Berechtigung geteilt werden</string>
+    <string name="record_active_info">Der Anruf wird aufgezeichnet</string>
     <string name="record_start_description">Aufnahme beginnen</string>
+    <string name="record_start_loading">Starte…</string>
+    <string name="record_stop_confirm_message">Möchten Sie die Aufnahme wirklich beenden?</string>
+    <string name="record_stop_confirm_title">Anrufaufnahme beenden</string>
     <string name="record_stop_description">Aufnahme stoppen</string>
+    <string name="record_stop_loading">Beende…</string>
     <string name="save">Speichern</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>
     <string name="scope_federated_title">Federated</string>

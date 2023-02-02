@@ -208,7 +208,7 @@
     <string name="nc_privacy">Zasebnost</string>
     <string name="nc_proceed">Nadaljuj</string>
     <string name="nc_profile_personal_info_title">Osebni podatki</string>
-    <string name="nc_promote">Povišaj v moderatorja</string>
+    <string name="nc_promote">Povišaj v vlogo moderatorja</string>
     <string name="nc_public_call">Nov javni pogovor</string>
     <string name="nc_public_call_explanation">Javni pogovori omogočajo pogovor z vsemi, ki poznajo ustvarjeno enkratno povezavo.</string>
     <string name="nc_push_disabled">Potisno obveščanje je onemogočeno</string>

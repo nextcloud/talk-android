@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Kabledun entzungailua</string>
     <string name="avatar">Avatarra</string>
     <string name="away">Kanpoan</string>
+    <string name="call_more_actions_dialog_headline">Dei-ezarpen aurreratuak</string>
     <string name="call_without_notification">Deitu jakinarazpenik gabe</string>
     <string name="camera_permission_granted">Kameraren baimena eman da. Aukeratu kamera berriro.</string>
     <string name="choose_avatar_from_cloud">Aukeratu avatarra cloudetik</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">Gonbidatuak baimendu</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Desblokeatu %1$s</string>
+    <string name="nc_call_button_content_description_advanced">Dei-ezarpen aurreratuak</string>
     <string name="nc_call_button_content_description_answer_video_call">Erantzun bideo-dei gisa</string>
     <string name="nc_call_button_content_description_answer_voice_only">Erantzun ahots-dei gisa soilik</string>
     <string name="nc_call_button_content_description_audio_output">Aldatu audio irteera</string>
