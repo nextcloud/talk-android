@@ -73,6 +73,7 @@
     <string name="nc_call_name">Nombre de la conversación</string>
     <string name="nc_call_name_is_same">El nombre que has introducido es el mismo que el existente</string>
     <string name="nc_call_notifications">Notificaciones de llamadas</string>
+    <string name="nc_call_raised_hand">%1$s levantó la mano</string>
     <string name="nc_call_reconnecting">Volviendo a conectar…</string>
     <string name="nc_call_ringing">LLAMANDO</string>
     <string name="nc_call_state_in_call">%1$s en una llamada</string>

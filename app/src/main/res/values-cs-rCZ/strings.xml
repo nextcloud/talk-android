@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Drátová náhlavní souprava</string>
     <string name="avatar">Profilový obrázek</string>
     <string name="away">Pryč</string>
+    <string name="call_more_actions_dialog_headline">Pokročilé předvolby pro hovor</string>
     <string name="call_without_notification">Zavolat bez upozornění</string>
     <string name="camera_permission_granted">Oprávnění pro přístup ke kameře uděleno. Prosím vyberte kameru znovu.</string>
     <string name="choose_avatar_from_cloud">Vybrat profilový obrázek z cloudu</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">Povolit hosty</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Odemknout %1$s</string>
+    <string name="nc_call_button_content_description_advanced">Pokročilé předvolby pro hovor</string>
     <string name="nc_call_button_content_description_answer_video_call">Zvednou videohovor</string>
     <string name="nc_call_button_content_description_answer_voice_only">Zvednout pouze jako hlasový</string>
     <string name="nc_call_button_content_description_audio_output">Změnit zvukový výstup</string>
@@ -71,6 +73,7 @@
     <string name="nc_call_name">Název konverzace</string>
     <string name="nc_call_name_is_same">Zadaný název je stejný jako ten stávající</string>
     <string name="nc_call_notifications">Upozornění na hovor</string>
+    <string name="nc_call_raised_hand">%1$s se hlásí</string>
     <string name="nc_call_reconnecting">Znovunavazování spojení…</string>
     <string name="nc_call_ringing">ZVONĚNÍ</string>
     <string name="nc_call_state_in_call">%1$s má hovor</string>
@@ -399,8 +402,13 @@
     <string name="polls_voted_hidden_success">Hlas odeslán</string>
     <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
+    <string name="record_active_info">Hovor je nahráván</string>
     <string name="record_start_description">Zahájit nahrávání</string>
+    <string name="record_start_loading">Spouštění…</string>
+    <string name="record_stop_confirm_message">Opravdu chcete přestat nahrávat?</string>
+    <string name="record_stop_confirm_title">Zastavit nahrávání hovoru</string>
     <string name="record_stop_description">Zastavit nahrávání</string>
+    <string name="record_stop_loading">Zastavování…</string>
     <string name="save">Uložit</string>
     <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>
     <string name="scope_federated_title">Propojené</string>
