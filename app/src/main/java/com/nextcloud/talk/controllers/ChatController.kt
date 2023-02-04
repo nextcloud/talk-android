@@ -685,16 +685,8 @@ class ChatController(args: Bundle) :
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
 
-                    val offset = recyclerView.computeVerticalScrollOffset()
-                    val extent = recyclerView.computeVerticalScrollExtent()
-                    val range = recyclerView.computeVerticalScrollRange()
-
-                    // 0.0 is the top of the chat, 100.0 is the bottom of the chat
-                    val scrollPercentage = 100.0f * offset / (range - extent).toFloat()
-
-                    if (scrollPercentage <= 90) {
+                    if (layoutManager!!.findFirstCompletelyVisibleItemPosition() > 0) {
                         binding?.scrollDownButton?.visibility = View.VISIBLE
-
                     } else {
                         binding?.scrollDownButton?.visibility = View.INVISIBLE
                     }
