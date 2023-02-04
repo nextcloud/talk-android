@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Kablolu kulaklık</string>
     <string name="avatar">Avatar</string>
     <string name="away">Uzakta</string>
+    <string name="call_more_actions_dialog_headline">Gelişmiş çağrı seçenekleri</string>
     <string name="call_without_notification">Bildirim olmadan çağrı</string>
     <string name="camera_permission_granted">Kamera izinleri verildi. Lütfen kamerayı yeniden seçin.</string>
     <string name="choose_avatar_from_cloud">Buluttan avatar seç</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">Konuklar katılabilsin</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">%1$s kilidini aç</string>
+    <string name="nc_call_button_content_description_advanced">Gelişmiş çağrı seçenekleri</string>
     <string name="nc_call_button_content_description_answer_video_call">Görüntülü çağrı olarak yanıtla</string>
     <string name="nc_call_button_content_description_answer_voice_only">Yalnızca sesli çağrı olarak yanıtla</string>
     <string name="nc_call_button_content_description_audio_output">Ses çıkışını değiştir</string>
@@ -71,6 +73,7 @@
     <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_call_name_is_same">Yazdığınız ad var olan ad ile aynı</string>
     <string name="nc_call_notifications">Çağrı bildirimleri</string>
+    <string name="nc_call_raised_hand">%1$s elini kaldırdı</string>
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor…</string>
     <string name="nc_call_ringing">ÇALIYOR</string>
     <string name="nc_call_state_in_call">Çağrıda %1$s kişi var</string>
@@ -399,8 +402,13 @@
     <string name="polls_voted_hidden_success">Oy verildi</string>
     <string name="reactions_tab_all">Tümü</string>
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
+    <string name="record_active_info">Çağrı kaydediliyor</string>
     <string name="record_start_description">Kaydı başlat</string>
+    <string name="record_start_loading">Başlatılıyor…</string>
+    <string name="record_stop_confirm_message">Kaydı durdurmak istediğinize emin misiniz?</string>
+    <string name="record_stop_confirm_title">Çağrı kaydını durdur</string>
     <string name="record_stop_description">Kaydı durdur</string>
+    <string name="record_stop_loading">Durduruluyor…</string>
     <string name="save">Kaydet</string>
     <string name="scope_federated_description">Yalnızca güvenilen sunucular ile eşitlensin</string>
     <string name="scope_federated_title">Birleşik</string>
