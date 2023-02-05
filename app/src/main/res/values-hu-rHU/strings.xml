@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Vezetékes fejhallgató</string>
     <string name="avatar">Profilkép</string>
     <string name="away">Távol</string>
+    <string name="call_more_actions_dialog_headline">Speciális hívásbeállítások</string>
     <string name="call_without_notification">Hívás értesítés nélkül</string>
     <string name="camera_permission_granted">Kamera engedély megadva. Válassza újra a kamerát.</string>
     <string name="choose_avatar_from_cloud">Profilkép választása a felhőből</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">Vendégek engedélyezése</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s feloldása</string>
+    <string name="nc_call_button_content_description_advanced">Speciális hívásbeállítások</string>
     <string name="nc_call_button_content_description_answer_video_call">Válasz videóhívásként</string>
     <string name="nc_call_button_content_description_answer_voice_only">Válasz csak hanghívásként</string>
     <string name="nc_call_button_content_description_audio_output">Hangkimenet módosítása</string>
@@ -71,6 +73,7 @@
     <string name="nc_call_name">Beszélgetésnév</string>
     <string name="nc_call_name_is_same">A megadott név egyezik egy már meglévővel</string>
     <string name="nc_call_notifications">Hívásértesítések</string>
+    <string name="nc_call_raised_hand">%1$s felemelte a kezét</string>
     <string name="nc_call_reconnecting">Újrakapcsolódás…</string>
     <string name="nc_call_ringing">CSENGETÉS</string>
     <string name="nc_call_state_in_call">%1$s hívásban</string>
@@ -399,8 +402,13 @@
     <string name="polls_voted_hidden_success">Szavazat leadva</string>
     <string name="reactions_tab_all">Összes</string>
     <string name="read_storage_no_permission">A fájlok megosztása a tárhelyről engedély nélkül nem lehetséges</string>
+    <string name="record_active_info">A hívásról felvétel készül</string>
     <string name="record_start_description">Felvétel indítása</string>
+    <string name="record_start_loading">Indítás…</string>
+    <string name="record_stop_confirm_message">Biztos, hogy le akarja állítani a felvételt?</string>
+    <string name="record_stop_confirm_title">Hívásfelvétel leállítása</string>
     <string name="record_stop_description">Felvétel leállítása</string>
+    <string name="record_stop_loading">Leállítás…</string>
     <string name="save">Mentés</string>
     <string name="scope_federated_description">Szinkronizálás csak a megbízható kiszolgálókkal</string>
     <string name="scope_federated_title">Föderált</string>
