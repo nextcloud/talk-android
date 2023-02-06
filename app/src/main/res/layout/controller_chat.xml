@@ -3,6 +3,8 @@
   ~
   ~ @author Mario Danic
   ~ @author Andy Scherzinger
+  ~ @author Julius Linus
+  ~ Copyright (C) 2023 Julius Linus <juliuslinus1@gmail.com>
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
@@ -107,6 +109,21 @@
             app:background="@color/colorPrimary"
             app:cornerRadius="@dimen/button_corner_radius"
             app:icon="@drawable/ic_baseline_arrow_downward_24px" />
+
+        <ImageButton
+            android:id="@+id/scrollDownButton"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/shape_oval"
+            android:backgroundTint="@color/scroll_down_chat_button"
+            android:contentDescription="@string/scroll_to_bottom"
+            android:src="@drawable/ic_baseline_keyboard_double_arrow_down_24"
+            android:visibility="invisible"
+            app:tint="@color/scroll_down_chat_button_icon" />
 
     </RelativeLayout>
 

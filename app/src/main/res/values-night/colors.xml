@@ -76,4 +76,8 @@
 
     <color name="dialog_background">#353535</color>
 
+    <!-- scroll down chat button  -->
+    <color name="scroll_down_chat_button">#141F25</color>
+    <color name="scroll_down_chat_button_icon">#99C3DA</color>
+
 </resources>

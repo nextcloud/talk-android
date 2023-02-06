@@ -630,5 +630,6 @@
 
     <string name="nc_not_allowed_to_activate_audio">You are not allowed to activate audio!</string>
     <string name="nc_not_allowed_to_activate_video">You are not allowed to activate video!</string>
+    <string name="scroll_to_bottom">Scroll to bottom</string>
 
 </resources>
