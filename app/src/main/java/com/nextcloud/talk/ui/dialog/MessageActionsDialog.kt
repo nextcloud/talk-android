@@ -35,7 +35,6 @@ import android.view.inputmethod.InputMethodManager
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ChatController
@@ -103,8 +102,7 @@ class MessageActionsDialog(
         )
         initMenuMarkAsUnread(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
-                ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType() &&
-                BuildConfig.DEBUG
+                ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType()
         )
     }
 
