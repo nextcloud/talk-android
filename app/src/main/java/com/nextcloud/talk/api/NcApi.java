@@ -477,6 +477,10 @@ public interface NcApi {
                                                  @Url String url,
                                                  @Field("lastReadMessage") int lastReadMessage);
 
+    // Url is: /api/{apiVersion}/chat/{token}/read
+    @DELETE
+    Observable<GenericOverall> markRoomAsUnread(@Header("Authorization") String authorization, @Url String url);
+
     /*
     Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /listed-room
     */

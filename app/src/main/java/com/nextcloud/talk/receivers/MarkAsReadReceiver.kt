@@ -83,7 +83,7 @@ class MarkAsReadReceiver : BroadcastReceiver() {
     private fun markAsRead() {
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val apiVersion = ApiUtils.getChatApiVersion(currentUser, intArrayOf(1))
-        val url = ApiUtils.getUrlForSetChatReadMarker(
+        val url = ApiUtils.getUrlForChatReadMarker(
             apiVersion,
             currentUser.baseUrl,
             roomToken

@@ -214,6 +214,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
             ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM -> operationGetAndJoinRoom()
             ConversationOperationEnum.OPS_CODE_INVITE_USERS -> operationInviteUsers()
             ConversationOperationEnum.OPS_CODE_MARK_AS_READ -> operationMarkAsRead()
+            ConversationOperationEnum.OPS_CODE_MARK_AS_UNREAD -> operationMarkAsUnread()
             ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE,
             ConversationOperationEnum.OPS_CODE_ADD_FAVORITE -> operationToggleFavorite()
             ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> operationJoinRoom()
@@ -249,12 +250,27 @@ class OperationsMenuController(args: Bundle) : BaseController(
     private fun operationMarkAsRead() {
         ncApi.setChatReadMarker(
             credentials,
-            ApiUtils.getUrlForSetChatReadMarker(
+            ApiUtils.getUrlForChatReadMarker(
                 chatApiVersion(),
                 currentUser!!.baseUrl,
                 conversation!!.token
             ),
             conversation!!.lastMessage!!.jsonMessageId
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(GenericOperationsObserver())
+    }
+
+    private fun operationMarkAsUnread() {
+        ncApi.markRoomAsUnread(
+            credentials,
+            ApiUtils.getUrlForChatReadMarker(
+                chatApiVersion(),
+                currentUser!!.baseUrl,
+                conversation!!.token
+            )
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

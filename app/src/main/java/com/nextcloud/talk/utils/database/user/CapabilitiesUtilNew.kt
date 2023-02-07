@@ -51,6 +51,10 @@ object CapabilitiesUtilNew {
         return hasSpreedFeatureCapability(user, "chat-read-marker")
     }
 
+    fun canMarkRoomAsUnread(user: User): Boolean {
+        return hasSpreedFeatureCapability(user, "chat-unread")
+    }
+
     @JvmStatic
     fun hasSpreedFeatureCapability(user: User?, capabilityName: String): Boolean {
         if (user?.capabilities?.spreedCapability?.features != null) {
