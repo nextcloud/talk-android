@@ -349,6 +349,7 @@
     <string name="scope_published_title">Objavljeno</string>
     <string name="scope_toggle">Uključi/isključi opseg</string>
     <string name="scope_toggle_description">Promijeni razinu privatnosti za %1$s</string>
+    <string name="scroll_to_bottom">Pomakni se na dno</string>
     <string name="secondsAgo">prije par sekundi</string>
     <string name="selected_list_item">Odabrano</string>
     <string name="send_to">Pošalji na</string>

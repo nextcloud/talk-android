@@ -420,6 +420,7 @@
     <string name="scope_published_title">Yayınlanmış</string>
     <string name="scope_toggle">Ölçeği değiştir</string>
     <string name="scope_toggle_description">%1$s gizlilik düzeyini değiştir</string>
+    <string name="scroll_to_bottom">Aşağıya kaydır</string>
     <string name="secondsAgo">saniye önce</string>
     <string name="selected_list_item">Seçilmiş</string>
     <string name="send_to">Şuraya gönder</string>

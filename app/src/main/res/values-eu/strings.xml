@@ -414,6 +414,7 @@
     <string name="scope_published_title">Argitaratuta</string>
     <string name="scope_toggle">Irismen etengailua</string>
     <string name="scope_toggle_description">Aldatu %1$s(r)en pribatutasun maila</string>
+    <string name="scroll_to_bottom">Korritu beherantz</string>
     <string name="secondsAgo">segundu lehenago</string>
     <string name="selected_list_item">Hautatua</string>
     <string name="send_to">Bidali honi:</string>

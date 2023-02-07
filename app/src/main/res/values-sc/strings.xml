@@ -335,6 +335,7 @@
     <string name="scope_published_title">Publicadu</string>
     <string name="scope_toggle">Càmbiu de àmbitu</string>
     <string name="scope_toggle_description">Càmbia su livellu de riservadesa de %1$s</string>
+    <string name="scroll_to_bottom">Iscurre a bàsciu</string>
     <string name="secondsAgo">segundos a immoe</string>
     <string name="selected_list_item">Seletzionadu</string>
     <string name="send_to">Imbia a</string>

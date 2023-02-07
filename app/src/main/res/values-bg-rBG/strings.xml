@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Слушалки с кабел</string>
     <string name="avatar">Аватар</string>
     <string name="away">Винаги</string>
+    <string name="call_more_actions_dialog_headline">Разширени опции за повикване</string>
     <string name="call_without_notification">Обаждане без известие</string>
     <string name="camera_permission_granted">Дадено е право на камера. Моля, изберете камера отново. </string>
     <string name="choose_avatar_from_cloud">Избор на аватар от облака</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">Позволи гости</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Отключване %1$s</string>
+    <string name="nc_call_button_content_description_advanced">Разширени опции за повикване</string>
     <string name="nc_call_button_content_description_answer_video_call">Отговор с видео обаждане</string>
     <string name="nc_call_button_content_description_answer_voice_only">Отговор само с гласово повикване</string>
     <string name="nc_call_button_content_description_audio_output">Промяна на аудиоизхода</string>
@@ -71,6 +73,7 @@
     <string name="nc_call_name">Име на разговор</string>
     <string name="nc_call_name_is_same">Името, което сте въвели, е същото като съществуващото</string>
     <string name="nc_call_notifications">Известия за обаждане</string>
+    <string name="nc_call_raised_hand">%1$s вдигна ръка</string>
     <string name="nc_call_reconnecting">Повторно свързване …</string>
     <string name="nc_call_ringing">ПОЗВЪНЯВАНЕ</string>
     <string name="nc_call_state_in_call">%1$sв разговор</string>
@@ -399,8 +402,13 @@
     <string name="polls_voted_hidden_success">Гласуването е изпратено</string>
     <string name="reactions_tab_all">Всички</string>
     <string name="read_storage_no_permission">Споделянето на файлове от хранилище не е възможно без права</string>
+    <string name="record_active_info">Разговорът се записва</string>
     <string name="record_start_description">Започване на запис</string>
+    <string name="record_start_loading">Начало ...</string>
+    <string name="record_stop_confirm_message">Наистина ли искате да спрете записа?</string>
+    <string name="record_stop_confirm_title">Спиране на записа на повикването</string>
     <string name="record_stop_description">Спиране на записването</string>
+    <string name="record_stop_loading">Спиране ...</string>
     <string name="save">Записване</string>
     <string name="scope_federated_description">Синхронизиране само с доверени сървъри</string>
     <string name="scope_federated_title">Федериран</string>

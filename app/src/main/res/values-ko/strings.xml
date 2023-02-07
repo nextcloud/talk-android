@@ -400,6 +400,7 @@
     <string name="scope_published_title">발행됨</string>
     <string name="scope_toggle">범위 전환</string>
     <string name="scope_toggle_description">%1$s의 프라이버시 수준에 대한 변경</string>
+    <string name="scroll_to_bottom">맨 아래로 스크롤</string>
     <string name="secondsAgo">초 전</string>
     <string name="selected_list_item">선택</string>
     <string name="send_to">에게 전송</string>

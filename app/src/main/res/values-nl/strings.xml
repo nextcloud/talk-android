@@ -361,6 +361,7 @@ Kies er eentje van een provider.</string>
     <string name="scope_published_title">Gepubliceerd</string>
     <string name="scope_toggle">Scope omschakelen</string>
     <string name="scope_toggle_description">Wijzigen privacyniveau van %1$s</string>
+    <string name="scroll_to_bottom">Scroll naar beneden</string>
     <string name="secondsAgo">seconden geleden</string>
     <string name="selected_list_item">Geselecteerd</string>
     <string name="send_to">Versturen naar</string>

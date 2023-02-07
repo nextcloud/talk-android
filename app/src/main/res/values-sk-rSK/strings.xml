@@ -402,6 +402,7 @@
     <string name="scope_published_title">Publikované</string>
     <string name="scope_toggle">Prepnúť prehľad</string>
     <string name="scope_toggle_description">Zmeniť úroveň súkromia pre %1$s</string>
+    <string name="scroll_to_bottom">Posuňte sa nadol</string>
     <string name="secondsAgo">sekúnd dozadu</string>
     <string name="selected_list_item">Vybrané</string>
     <string name="send_to">Odoslať do</string>

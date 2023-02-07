@@ -221,6 +221,7 @@
     <string name="save">Lưu</string>
     <string name="scope_federated_title">Federated</string>
     <string name="scope_private_title">Riêng tư</string>
+    <string name="scroll_to_bottom">Cuộn xuống dưới cùng</string>
     <string name="secondsAgo">vài giây trước</string>
     <string name="selected_list_item">Selected</string>
     <string name="set_status">Đặt trạng thái</string>

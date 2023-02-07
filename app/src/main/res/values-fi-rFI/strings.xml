@@ -333,6 +333,7 @@
     <string name="scope_local_title">Paikallinen</string>
     <string name="scope_private_title">Yksityinen</string>
     <string name="scope_published_title">Julkaistu</string>
+    <string name="scroll_to_bottom">Vieritä alas</string>
     <string name="secondsAgo">sekunteja sitten</string>
     <string name="selected_list_item">Valittu</string>
     <string name="send_to_forbidden">Sinulla ei ole oikeutta jakaa sisältöä tähän keskusteluun</string>

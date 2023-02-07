@@ -420,6 +420,7 @@
     <string name="scope_published_title">Közzétett</string>
     <string name="scope_toggle">Hatókör váltása</string>
     <string name="scope_toggle_description">A(z) %1$s adatvédelmi szintjének módosítása</string>
+    <string name="scroll_to_bottom">Görgetés az aljára</string>
     <string name="secondsAgo">pár másodperce</string>
     <string name="selected_list_item">Kiválasztott</string>
     <string name="send_to">Küldés</string>

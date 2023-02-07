@@ -381,6 +381,7 @@
     <string name="scope_published_title">已发布</string>
     <string name="scope_toggle">范围切换</string>
     <string name="scope_toggle_description">更改 %1$s 的隐私级别</string>
+    <string name="scroll_to_bottom">滚动到底部</string>
     <string name="secondsAgo">数秒前</string>
     <string name="selected_list_item">已选中</string>
     <string name="send_to">发送到</string>

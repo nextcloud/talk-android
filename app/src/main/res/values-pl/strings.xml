@@ -412,6 +412,7 @@
     <string name="scope_published_title">Opublikowane</string>
     <string name="scope_toggle">Przełącz zakres</string>
     <string name="scope_toggle_description">Zmień poziom prywatności %1$s</string>
+    <string name="scroll_to_bottom">Przewiń do dołu</string>
     <string name="secondsAgo">przed chwilą</string>
     <string name="selected_list_item">Wybrany</string>
     <string name="send_to">Wyślij do</string>

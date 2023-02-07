@@ -421,6 +421,7 @@
     <string name="scope_published_title">Publicado</string>
     <string name="scope_toggle">Alternar vista</string>
     <string name="scope_toggle_description">Cambiar el nivel de privacidad de %1$s</string>
+    <string name="scroll_to_bottom">Ir al final</string>
     <string name="secondsAgo">hace segundos</string>
     <string name="selected_list_item">Seleccionado</string>
     <string name="send_to">Enviar a</string>

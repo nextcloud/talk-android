@@ -369,6 +369,7 @@
     <string name="scope_published_title">Pubblicato</string>
     <string name="scope_toggle">Cambio di ambito</string>
     <string name="scope_toggle_description">Cambia livello di privacy di %1$s</string>
+    <string name="scroll_to_bottom">Scorri in fondo</string>
     <string name="secondsAgo">secondi fa</string>
     <string name="selected_list_item">Selezionato</string>
     <string name="send_to">Invia a</string>

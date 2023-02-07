@@ -364,6 +364,7 @@
     <string name="scope_published_title">公開されました</string>
     <string name="scope_toggle">公開範囲を切替</string>
     <string name="scope_toggle_description">プライバシーレベルを%1$sに変更</string>
+    <string name="scroll_to_bottom">下にスクロール</string>
     <string name="secondsAgo">秒前</string>
     <string name="selected_list_item">選択済み</string>
     <string name="send_to">送信</string>

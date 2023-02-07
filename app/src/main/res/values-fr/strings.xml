@@ -420,6 +420,7 @@
     <string name="scope_published_title">Publier</string>
     <string name="scope_toggle">Basculer la visibilité</string>
     <string name="scope_toggle_description">Changer le niveau de confidentialité de %1$s</string>
+    <string name="scroll_to_bottom">Défiler jusqu\'en bas</string>
     <string name="secondsAgo">secondes</string>
     <string name="selected_list_item">Sélectionné</string>
     <string name="send_to">Envoyer a</string>

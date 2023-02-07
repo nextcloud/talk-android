@@ -343,6 +343,7 @@
     <string name="scope_published_description">Συγχρονισμός με έμπιστους διακομιστές και το παγκόσμιο και δημόσιο βιβλίο διευθύνσεων</string>
     <string name="scope_published_title">Δημοσιεύτηκε</string>
     <string name="scope_toggle_description">Αλλαγή επιπέδου ασφαλείας του %1$s</string>
+    <string name="scroll_to_bottom">Μετακινηθείτε προς τα κάτω</string>
     <string name="secondsAgo">δευτερόλεπτα πριν</string>
     <string name="selected_list_item">Επιλέχθηκαν</string>
     <string name="send_to">Αποστολή σε</string>

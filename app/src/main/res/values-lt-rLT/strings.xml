@@ -267,6 +267,7 @@
     <string name="scope_private_title">Privatus</string>
     <string name="scope_published_description">Sinchronizuoti į patikimus serverius ir į visuotinę bei viešą adresų knygą</string>
     <string name="scope_published_title">Paskelbtas</string>
+    <string name="scroll_to_bottom">Slinkti į apačią</string>
     <string name="secondsAgo">prieš keletą sekundžių</string>
     <string name="selected_list_item">Pasirinkta</string>
     <string name="set_status">Nustatyti būseną</string>

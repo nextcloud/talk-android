@@ -340,6 +340,7 @@
     <string name="scope_private_title">Privado</string>
     <string name="scope_published_description">Sincronizar con servidores de confianza e co caderno de enderezos global e público</string>
     <string name="scope_published_title">Publicado</string>
+    <string name="scroll_to_bottom">Desprazarse ata o final</string>
     <string name="secondsAgo">segundos atrás</string>
     <string name="selected_list_item">Seleccionado</string>
     <string name="send_to">Enviar a</string>

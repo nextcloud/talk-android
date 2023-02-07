@@ -420,6 +420,7 @@
     <string name="scope_published_title">Published</string>
     <string name="scope_toggle">Scope toggle</string>
     <string name="scope_toggle_description">Change privacy level of %1$s</string>
+    <string name="scroll_to_bottom">Scroll to bottom</string>
     <string name="secondsAgo">seconds ago</string>
     <string name="selected_list_item">Selected</string>
     <string name="send_to">Send to</string>

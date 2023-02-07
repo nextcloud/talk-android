@@ -420,6 +420,7 @@
     <string name="scope_published_title">Publicado</string>
     <string name="scope_toggle">Alternância de escopo</string>
     <string name="scope_toggle_description">Alterar o nível de privacidade %1$s</string>
+    <string name="scroll_to_bottom">Rolar para baixo</string>
     <string name="secondsAgo">segundos atrás</string>
     <string name="selected_list_item">Selecionado</string>
     <string name="send_to">Enviar para</string>

@@ -420,6 +420,7 @@
     <string name="scope_published_title">Veröffentlicht</string>
     <string name="scope_toggle">Bereich umschalten</string>
     <string name="scope_toggle_description">Ändere Datenschutzstufe von %1$s</string>
+    <string name="scroll_to_bottom">Nach unten blättern</string>
     <string name="secondsAgo">Gerade eben</string>
     <string name="selected_list_item">Ausgewählt</string>
     <string name="send_to">Senden an</string>

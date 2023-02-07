@@ -372,6 +372,7 @@
     <string name="scope_published_title">Objavljeno</string>
     <string name="scope_toggle">Preklop obsega</string>
     <string name="scope_toggle_description">Spremeni pravila zasebnosti za %1$s</string>
+    <string name="scroll_to_bottom">Podrsajte do dna</string>
     <string name="secondsAgo">pred nekaj sekundami</string>
     <string name="selected_list_item">Izbrano</string>
     <string name="send_to">Pošlji</string>
