@@ -149,7 +149,7 @@ ext {
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
     retrofit2Version = "2.9.0"
-    roomVersion = "2.4.3"
+    roomVersion = "2.5.0"
     workVersion = "2.7.1"
     markwonVersion = "4.6.2"
     espressoVersion = "3.5.1"
