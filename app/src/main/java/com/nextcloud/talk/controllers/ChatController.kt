@@ -3028,7 +3028,7 @@ class ChatController(args: Bundle) :
         if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
             ncApi.setChatReadMarker(
                 credentials,
-                ApiUtils.getUrlForSetChatReadMarker(
+                ApiUtils.getUrlForChatReadMarker(
                     ApiUtils.getChatApiVersion(conversationUser, intArrayOf(ApiUtils.APIv1)),
                     conversationUser?.baseUrl,
                     roomToken

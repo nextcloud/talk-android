@@ -42,6 +42,7 @@ import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_ADD_FAVORITE
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MARK_AS_READ
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MARK_AS_UNREAD
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_RENAME_ROOM
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
@@ -118,6 +119,10 @@ class ConversationsListBottomDialog(
             conversation.unreadMessages > 0 && CapabilitiesUtilNew.canSetChatReadMarker(currentUser)
         )
 
+        binding.conversationOperationMarkAsUnread.visibility = setVisibleIf(
+            conversation.unreadMessages <= 0 && CapabilitiesUtilNew.canMarkRoomAsUnread(currentUser)
+        )
+
         binding.conversationOperationRename.visibility = setVisibleIf(
             conversation.isNameEditable(currentUser)
         )
@@ -184,6 +189,10 @@ class ConversationsListBottomDialog(
 
         binding.conversationOperationMarkAsRead.setOnClickListener {
             executeOperationsMenuController(OPS_CODE_MARK_AS_READ)
+        }
+
+        binding.conversationOperationMarkAsUnread.setOnClickListener {
+            executeOperationsMenuController(OPS_CODE_MARK_AS_UNREAD)
         }
     }
 

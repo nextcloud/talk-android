@@ -429,7 +429,7 @@ public class ApiUtils {
             "/hovercard/v1/" + userId;
     }
 
-    public static String getUrlForSetChatReadMarker(int version, String baseUrl, String roomToken) {
+    public static String getUrlForChatReadMarker(int version, String baseUrl, String roomToken) {
         return getUrlForChat(version, baseUrl, roomToken) + "/read";
     }
 
