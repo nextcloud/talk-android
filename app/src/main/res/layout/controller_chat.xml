@@ -76,8 +76,8 @@
             app:incomingImageTimeTextSize="12sp"
             app:incomingTextColor="@color/nc_incoming_text_default"
             app:incomingTextLinkColor="@color/nc_incoming_text_default"
-            app:incomingTimeTextColor="@color/no_emphasis_text"
             app:incomingTextSize="@dimen/chat_text_size"
+            app:incomingTimeTextColor="@color/no_emphasis_text"
             app:incomingTimeTextSize="12sp"
             app:outcomingBubblePaddingBottom="@dimen/message_bubble_corners_vertical_padding"
             app:outcomingBubblePaddingLeft="@dimen/message_bubble_corners_horizontal_padding"
@@ -100,30 +100,36 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginStart="@dimen/dialog_padding"
+            android:layout_marginStart="64dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="@dimen/dialog_padding"
+            android:layout_marginEnd="64dp"
             android:layout_marginBottom="16dp"
             android:minHeight="@dimen/min_size_clickable_area"
+            android:layout_toStartOf="@+id/scrollDownButton"
             android:text="@string/nc_new_messages"
             app:background="@color/colorPrimary"
+            android:ellipsize="middle"
             app:cornerRadius="@dimen/button_corner_radius"
             app:icon="@drawable/ic_baseline_arrow_downward_24px" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/scrollDownButton"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            style="@style/Widget.AppTheme.Button.ElevatedButton"
+            android:layout_width="@dimen/min_size_clickable_area"
+            android:layout_height="@dimen/min_size_clickable_area"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="6dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/shape_oval"
-            android:backgroundTint="@color/scroll_down_chat_button"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"
             android:contentDescription="@string/scroll_to_bottom"
-            android:src="@drawable/ic_baseline_keyboard_double_arrow_down_24"
-            android:visibility="invisible"
-            app:tint="@color/scroll_down_chat_button_icon" />
+            android:paddingStart="@dimen/standard_padding"
+            android:paddingEnd="@dimen/standard_padding"
+            android:visibility="gone"
+            app:cornerRadius="@dimen/button_corner_radius"
+            app:icon="@drawable/ic_keyboard_double_arrow_down"
+            app:iconPadding="0dp"
+            app:iconSize="24dp" />
 
     </RelativeLayout>
 
