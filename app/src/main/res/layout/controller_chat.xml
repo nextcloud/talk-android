@@ -105,8 +105,10 @@
             android:layout_marginEnd="64dp"
             android:layout_marginBottom="16dp"
             android:minHeight="@dimen/min_size_clickable_area"
+            android:layout_toStartOf="@+id/scrollDownButton"
             android:text="@string/nc_new_messages"
             app:background="@color/colorPrimary"
+            android:ellipsize="middle"
             app:cornerRadius="@dimen/button_corner_radius"
             app:icon="@drawable/ic_baseline_arrow_downward_24px" />
 
@@ -123,7 +125,7 @@
             android:contentDescription="@string/scroll_to_bottom"
             android:paddingStart="@dimen/standard_padding"
             android:paddingEnd="@dimen/standard_padding"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cornerRadius="@dimen/button_corner_radius"
             app:icon="@drawable/ic_keyboard_double_arrow_down"
             app:iconPadding="0dp"

@@ -689,7 +689,7 @@ class ChatController(args: Bundle) :
                     if (layoutManager!!.findFirstCompletelyVisibleItemPosition() > 0) {
                         binding?.scrollDownButton?.visibility = View.VISIBLE
                     } else {
-                        binding?.scrollDownButton?.visibility = View.INVISIBLE
+                        binding?.scrollDownButton?.visibility = View.GONE
                     }
 
                     if (newMessagesCount != 0 && layoutManager != null) {
@@ -2446,6 +2446,7 @@ class ChatController(args: Bundle) :
         if (!shouldAddNewMessagesNotice && !shouldScroll) {
             if (!binding?.popupBubbleView?.isShown!!) {
                 newMessagesCount = 1
+                binding?.scrollDownButton?.visibility = View.GONE
                 binding?.popupBubbleView?.show()
             } else if (binding?.popupBubbleView?.isShown!!) {
                 newMessagesCount++
