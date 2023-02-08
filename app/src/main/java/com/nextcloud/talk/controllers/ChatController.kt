@@ -2541,11 +2541,15 @@ class ChatController(args: Bundle) :
 
             if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
                 chatMessage.previousMessageId = previousMessageId
-            } else if (adapter?.isEmpty != true) {
-                if (adapter!!.items[0].item is ChatMessage) {
-                    chatMessage.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
-                } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
-                    chatMessage.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
+            } else {
+                adapter?.let {
+                    if (!it.isEmpty) {
+                        if (it.items[0].item is ChatMessage) {
+                            chatMessage.previousMessageId = (it.items[0].item as ChatMessage).jsonMessageId
+                        } else if (it.items.size > 1 && it.items[1].item is ChatMessage) {
+                            chatMessage.previousMessageId = (it.items[1].item as ChatMessage).jsonMessageId
+                        }
+                    }
                 }
             }
 
