@@ -1241,7 +1241,9 @@ public class CallActivity extends CallBaseActivity {
 
     @Override
     public void onDestroy() {
-        signalingMessageReceiver.removeListener(offerMessageListener);
+        if (signalingMessageReceiver != null) {
+            signalingMessageReceiver.removeListener(offerMessageListener);
+        }
 
         if (localStream != null) {
             localStream.dispose();
