@@ -846,8 +846,10 @@ class ChatController(args: Bundle) :
 
                         showRecordAudioUi(true)
 
-                        if (sliderInitX == 0.0F) {
-                            sliderInitX = binding?.messageInputView?.slideToCancelDescription?.x!!
+                        binding?.messageInputView?.slideToCancelDescription?.x?.let {
+                            if (sliderInitX == 0.0F) {
+                                sliderInitX = it
+                            }
                         }
 
                         val movedX: Float = event.x
