@@ -549,7 +549,7 @@ class ConversationInfoController(args: Bundle) :
                         .java
                 ).setInputData(it).build()
             )
-            popTwoLastControllers()
+            router.popToRoot()
         }
     }
 
@@ -619,14 +619,8 @@ class ConversationInfoController(args: Bundle) :
                     DeleteConversationWorker::class.java
                 ).setInputData(it).build()
             )
-            popTwoLastControllers()
+            router.popToRoot()
         }
-    }
-
-    private fun popTwoLastControllers() {
-        var backstack = router.backstack
-        backstack = backstack.subList(0, backstack.size - 2)
-        router.setBackstack(backstack, HorizontalChangeHandler())
     }
 
     private fun fetchRoomInfo() {
