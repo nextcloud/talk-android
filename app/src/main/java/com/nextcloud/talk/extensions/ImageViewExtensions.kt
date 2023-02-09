@@ -137,7 +137,7 @@ fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.D
     }
 
     if (url.startsWith(user.baseUrl!!) &&
-        (url.contains("index.php/core/preview?fileId=") || url.contains("/avatar/"))
+        (url.contains("index.php/core/preview") || url.contains("/avatar/"))
     ) {
         requestBuilder.addHeader(
             "Authorization",
@@ -163,7 +163,7 @@ fun ImageView.loadImage(url: String, user: User, placeholder: Drawable? = null):
         .transformations(RoundedCornersTransformation(ROUNDING_PIXEL, ROUNDING_PIXEL, ROUNDING_PIXEL, ROUNDING_PIXEL))
 
     if (url.startsWith(user.baseUrl!!) &&
-        (url.contains("index.php/core/preview?fileId=") || url.contains("/avatar/"))
+        (url.contains("index.php/core/preview") || url.contains("/avatar/"))
     ) {
         requestBuilder.addHeader(
             "Authorization",
