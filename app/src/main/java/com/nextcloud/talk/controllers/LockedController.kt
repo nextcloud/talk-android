@@ -144,7 +144,7 @@ class LockedController : BaseController(R.layout.controller_locked) {
                     "popCurrentController because 'we are authenticated'. backstacksize= " +
                         router.backstack.size
                 )
-                router.popCurrentController()
+                router.popToRoot()
             }
         }
     }
