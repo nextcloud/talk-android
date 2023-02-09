@@ -150,7 +150,7 @@ ext {
     parcelerVersion = "1.1.13"
     retrofit2Version = "2.9.0"
     roomVersion = "2.4.3"
-    workVersion = "2.7.1"
+    workVersion = "2.8.0"
     markwonVersion = "4.6.2"
     espressoVersion = "3.5.1"
 }
