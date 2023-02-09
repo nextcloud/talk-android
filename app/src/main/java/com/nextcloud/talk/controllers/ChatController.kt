@@ -1044,9 +1044,18 @@ class ChatController(args: Bundle) :
 
         mediaPlayerHandler.removeCallbacksAndMessages(null)
 
-        mediaPlayer?.stop()
-        mediaPlayer?.release()
-        mediaPlayer = null
+        try {
+            mediaPlayer?.let {
+                if (it.isPlaying) {
+                    it.stop()
+                }
+            }
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "mediaPlayer was not initialized", e)
+        } finally {
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }
     }
 
     override fun updateMediaPlayerProgressBySlider(messageWithSlidedProgress: ChatMessage, progress: Int) {
@@ -3470,6 +3479,7 @@ class ChatController(args: Bundle) :
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
+
         // Samplingrate 22050 was chosen because somehow 44100 failed to playback on safari when recorded on android.
         // Please test with firefox, chrome, safari and mobile clients if changing anything regarding the sound.
         private const val VOICE_MESSAGE_SAMPLING_RATE = 22050
