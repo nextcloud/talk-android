@@ -1004,6 +1004,7 @@ class ChatController(args: Bundle) :
         adapter?.update(message)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun initMediaPlayer(message: ChatMessage) {
         if (message != currentlyPlayedVoiceMessage) {
             currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
@@ -1012,15 +1013,22 @@ class ChatController(args: Bundle) :
         if (mediaPlayer == null) {
             val fileName = message.selectedIndividualHashMap!!["name"]
             val absolutePath = context.cacheDir.absolutePath + "/" + fileName
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(absolutePath)
-                prepare()
-            }
-            currentlyPlayedVoiceMessage = message
-            message.voiceMessageDuration = mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE
 
-            mediaPlayer!!.setOnCompletionListener {
-                stopMediaPlayer(message)
+            try {
+                mediaPlayer = MediaPlayer().apply {
+                    setDataSource(absolutePath)
+                    prepare()
+                }
+
+                currentlyPlayedVoiceMessage = message
+                message.voiceMessageDuration = mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE
+
+                mediaPlayer!!.setOnCompletionListener {
+                    stopMediaPlayer(message)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "failed to initialize mediaPlayer", e)
+                Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
             }
         } else {
             Log.e(TAG, "mediaPlayer was not null. This should not happen!")
