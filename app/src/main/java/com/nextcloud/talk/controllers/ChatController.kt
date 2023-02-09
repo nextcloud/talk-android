@@ -673,7 +673,11 @@ class ChatController(args: Bundle) :
             }
         }
 
-        binding?.scrollDownButton?.setOnClickListener { binding?.messagesListView?.scrollToPosition(0) }
+        binding?.scrollDownButton?.setOnClickListener {
+            binding?.messagesListView?.scrollToPosition(0)
+            it.visibility = View.GONE
+        }
+
         binding?.let { viewThemeUtils.material.colorMaterialButtonPrimaryTonal(it.scrollDownButton) }
 
         binding?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it.popupBubbleView) }
