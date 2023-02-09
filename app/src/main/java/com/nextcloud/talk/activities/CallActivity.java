@@ -1318,7 +1318,9 @@ public class CallActivity extends CallBaseActivity {
 
     @Override
     public void onDestroy() {
-        signalingMessageReceiver.removeListener(offerMessageListener);
+        if (signalingMessageReceiver != null) {
+            signalingMessageReceiver.removeListener(offerMessageListener);
+        }
 
         if (localStream != null) {
             localStream.dispose();
@@ -2591,12 +2593,18 @@ public class CallActivity extends CallBaseActivity {
 
     private void stopCallingSound() {
         if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
+            try {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "mediaPlayer was not initialized", e);
+            } finally {
+                if (mediaPlayer != null) {
+                    mediaPlayer.release();
+                }
+                mediaPlayer = null;
             }
-
-            mediaPlayer.release();
-            mediaPlayer = null;
         }
     }
 

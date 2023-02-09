@@ -846,8 +846,10 @@ class ChatController(args: Bundle) :
 
                         showRecordAudioUi(true)
 
-                        if (sliderInitX == 0.0F) {
-                            sliderInitX = binding?.messageInputView?.slideToCancelDescription?.x!!
+                        binding?.messageInputView?.slideToCancelDescription?.x?.let {
+                            if (sliderInitX == 0.0F) {
+                                sliderInitX = it
+                            }
                         }
 
                         val movedX: Float = event.x
@@ -1002,6 +1004,7 @@ class ChatController(args: Bundle) :
         adapter?.update(message)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun initMediaPlayer(message: ChatMessage) {
         if (message != currentlyPlayedVoiceMessage) {
             currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
@@ -1010,15 +1013,22 @@ class ChatController(args: Bundle) :
         if (mediaPlayer == null) {
             val fileName = message.selectedIndividualHashMap!!["name"]
             val absolutePath = context.cacheDir.absolutePath + "/" + fileName
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(absolutePath)
-                prepare()
-            }
-            currentlyPlayedVoiceMessage = message
-            message.voiceMessageDuration = mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE
 
-            mediaPlayer!!.setOnCompletionListener {
-                stopMediaPlayer(message)
+            try {
+                mediaPlayer = MediaPlayer().apply {
+                    setDataSource(absolutePath)
+                    prepare()
+                }
+
+                currentlyPlayedVoiceMessage = message
+                message.voiceMessageDuration = mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE
+
+                mediaPlayer!!.setOnCompletionListener {
+                    stopMediaPlayer(message)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "failed to initialize mediaPlayer", e)
+                Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
             }
         } else {
             Log.e(TAG, "mediaPlayer was not null. This should not happen!")
@@ -1034,9 +1044,18 @@ class ChatController(args: Bundle) :
 
         mediaPlayerHandler.removeCallbacksAndMessages(null)
 
-        mediaPlayer?.stop()
-        mediaPlayer?.release()
-        mediaPlayer = null
+        try {
+            mediaPlayer?.let {
+                if (it.isPlaying) {
+                    it.stop()
+                }
+            }
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "mediaPlayer was not initialized", e)
+        } finally {
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }
     }
 
     override fun updateMediaPlayerProgressBySlider(messageWithSlidedProgress: ChatMessage, progress: Int) {
@@ -2492,11 +2511,15 @@ class ChatController(args: Bundle) :
 
             if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
                 chatMessage.previousMessageId = previousMessageId
-            } else if (adapter?.isEmpty != true) {
-                if (adapter!!.items[0].item is ChatMessage) {
-                    chatMessage.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
-                } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
-                    chatMessage.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
+            } else {
+                adapter?.let {
+                    if (!it.isEmpty) {
+                        if (it.items[0].item is ChatMessage) {
+                            chatMessage.previousMessageId = (it.items[0].item as ChatMessage).jsonMessageId
+                        } else if (it.items.size > 1 && it.items[1].item is ChatMessage) {
+                            chatMessage.previousMessageId = (it.items[1].item as ChatMessage).jsonMessageId
+                        }
+                    }
                 }
             }
 
@@ -3420,6 +3443,7 @@ class ChatController(args: Bundle) :
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
+
         // Samplingrate 22050 was chosen because somehow 44100 failed to playback on safari when recorded on android.
         // Please test with firefox, chrome, safari and mobile clients if changing anything regarding the sound.
         private const val VOICE_MESSAGE_SAMPLING_RATE = 22050
