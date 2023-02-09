@@ -269,7 +269,7 @@ public class PeerConnectionWrapper {
 
     public void sendChannelData(DataChannelMessage dataChannelMessage) {
         ByteBuffer buffer;
-        if (dataChannel != null) {
+        if (dataChannel != null && dataChannelMessage != null) {
             try {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
                 dataChannel.send(new DataChannel.Buffer(buffer, false));
