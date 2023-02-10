@@ -338,6 +338,14 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
+
+        val user = intent.getParcelableExtra<User>(KEY_USER_ENTITY)
+        if (user != null && userManager.setUserAsActive(user).blockingGet()) {
+            handleIntent(intent)
+        }
+    }
+
+    private fun handleIntent(intent: Intent) {
         handleActionFromContact(intent)
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
