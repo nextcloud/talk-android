@@ -96,13 +96,13 @@ class RemoteFileBrowserItemsListViewHolder(
             val path = ApiUtils.getUrlForFilePreviewWithRemotePath(
                 currentUser.baseUrl,
                 item.path,
-                binding.fileIcon.context.resources.getDimensionPixelSize(R.dimen.small_item_height)
+                fileIcon.context.resources.getDimensionPixelSize(R.dimen.small_item_height)
             )
             if (path.isNotEmpty()) {
-                binding.fileIcon.loadImage(path, currentUser, placeholder)
+                fileIcon.loadImage(path, currentUser, placeholder)
             }
         } else {
-            binding.fileIcon.setImageDrawable(placeholder)
+            fileIcon.setImageDrawable(placeholder)
         }
 
         binding.filenameTextView.text = item.displayName
