@@ -73,9 +73,9 @@
     <string name="nc_change_cert_auth">Змінити сертифікат авторизації</string>
     <string name="nc_circle">Коло</string>
     <string name="nc_circles">Кола</string>
-    <string name="nc_clear_history">Видалити всі повідомлення</string>
+    <string name="nc_clear_history">Вилучити усі повідомлення</string>
     <string name="nc_clear_history_success">Всі повідомлення видалено</string>
-    <string name="nc_clear_history_warning">Ви дійсно бажаєте видалити всі повідомлення у цій розмові?</string>
+    <string name="nc_clear_history_warning">Ви дійсно бажаєте вилучити усі повідомлення у цій розмові?</string>
     <string name="nc_client_cert_change">Змінити сертифікат клієнта</string>
     <string name="nc_client_cert_setup">Встановити сертифікат клієнта</string>
     <string name="nc_common_dismiss">Припинити</string>
@@ -95,7 +95,7 @@
     <string name="nc_date_header_today">Сьогодні</string>
     <string name="nc_date_header_yesterday">Вчора</string>
     <string name="nc_delete">Вилучити</string>
-    <string name="nc_delete_all">Видалити все</string>
+    <string name="nc_delete_all">Вилучити все</string>
     <string name="nc_delete_call">Вилучити розмову</string>
     <string name="nc_delete_conversation_more">Якщо ви вилучите розмову, її буде вилучено у всіх інших учасників цієї розмови.</string>
     <string name="nc_delete_message">Вилучити</string>
