@@ -147,7 +147,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
         viewModel.selectedPaths.observe(this) { selectedPaths ->
             filesSelectionDoneMenuItem?.isVisible = !selectedPaths.isNullOrEmpty()
-            binding.recyclerView.adapter?.notifyDataSetChanged()
         }
     }
 
