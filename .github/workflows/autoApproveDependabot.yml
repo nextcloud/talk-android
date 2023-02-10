@@ -1,5 +1,5 @@
 # synced from @nextcloud/android-config
-name: Dependabot
+name: Auto approve dependabot
 
 on:
   pull_request_target:
@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   auto-approve:
-    name: Auto approve
+    name: Auto approve dependabot
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     permissions:
