@@ -43,6 +43,7 @@ import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -73,6 +74,9 @@ class CallNotificationActivity : CallBaseActivity() {
     @Inject
     var cache: Cache? = null
 
+    @Inject
+    lateinit var userManager: UserManager
+
     private val disposablesList: MutableList<Disposable> = ArrayList()
     private var originalBundle: Bundle? = null
     private var roomToken: String? = null
@@ -98,13 +102,16 @@ class CallNotificationActivity : CallBaseActivity() {
         userBeingCalled = extras.getParcelable(KEY_USER_ENTITY)
         originalBundle = extras
         credentials = ApiUtils.getCredentials(userBeingCalled!!.username, userBeingCalled!!.token)
-        setCallDescriptionText()
-        if (currentConversation == null) {
-            handleFromNotification()
-        } else {
-            setUpAfterConversationIsKnown()
+
+        if (userManager.setUserAsActive(userBeingCalled!!).blockingGet()) {
+            setCallDescriptionText()
+            if (currentConversation == null) {
+                handleFromNotification()
+            } else {
+                setUpAfterConversationIsKnown()
+            }
+            initClickListeners()
         }
-        initClickListeners()
     }
 
     override fun onStart() {
