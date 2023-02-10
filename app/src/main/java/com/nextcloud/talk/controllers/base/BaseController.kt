@@ -139,7 +139,7 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
         showSearchOrToolbar()
         setTitle()
         if (actionBar != null) {
-            actionBar!!.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize > 1)
+            actionBar!!.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize >= 1)
         }
         super.onAttach(view)
     }
