@@ -73,6 +73,7 @@
     <string name="nc_call_name">Elkarrizketaren izena</string>
     <string name="nc_call_name_is_same">Sartu duzun izena dagoenaren berdina da</string>
     <string name="nc_call_notifications">Dei jakinarazpenak</string>
+    <string name="nc_call_raised_hand">%1$s-k eskua altxatu du</string>
     <string name="nc_call_reconnecting">Berriro konektatzen …</string>
     <string name="nc_call_ringing">DEITZEN</string>
     <string name="nc_call_state_in_call">%1$s deian</string>
@@ -401,8 +402,11 @@
     <string name="polls_voted_hidden_success">Botoa eman da</string>
     <string name="reactions_tab_all">Denak</string>
     <string name="read_storage_no_permission">Ezin dira fitxategiak biltegitik partekatu baimenik gabe</string>
+    <string name="record_active_info">Deia grabatzen ari da</string>
     <string name="record_start_description">Hasi grabatzen</string>
     <string name="record_start_loading">Hasten ...</string>
+    <string name="record_stop_confirm_message">Ziur zaude gelditu nahi duzula grabaketa?</string>
+    <string name="record_stop_confirm_title">Gelditu grabaketa</string>
     <string name="record_stop_description">Utzi grabaketa</string>
     <string name="record_stop_loading">Gelditzen ...</string>
     <string name="save">Gorde</string>
