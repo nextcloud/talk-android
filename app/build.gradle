@@ -155,7 +155,7 @@ ext {
     espressoVersion = "3.5.1"
 }
 
-def webRtcVersion = "108.5359.0"
+def webRtcVersion = "110.5481.0"
 tasks.register('downloadWebRtc', DownloadWebRtcTask){
     version = webRtcVersion
 }
