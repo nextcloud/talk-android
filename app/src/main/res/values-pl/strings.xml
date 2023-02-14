@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Słuchawki przewodowe</string>
     <string name="avatar">Awatar</string>
     <string name="away">Bezczynny</string>
+    <string name="call_more_actions_dialog_headline">Zaawansowane opcje połączeń</string>
     <string name="call_without_notification">Połącz bez powiadomienia</string>
     <string name="camera_permission_granted">Udzielono dostępu do kamery. Proszę ponownie wybrać kamerę.</string>
     <string name="choose_avatar_from_cloud">Wybierz awatar z chmury</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">Zezwól gościom</string>
     <string name="nc_attendee_pin">Przypnij: %1$s</string>
     <string name="nc_biometric_unlock">Odblokuj %1$s</string>
+    <string name="nc_call_button_content_description_advanced">Zaawansowane opcje połączeń</string>
     <string name="nc_call_button_content_description_answer_video_call">Odbierz jako połączenie wideo</string>
     <string name="nc_call_button_content_description_answer_voice_only">Odbierz tylko jako połączenie głosowe</string>
     <string name="nc_call_button_content_description_audio_output">Zmień wyjście audio</string>
@@ -71,6 +73,7 @@
     <string name="nc_call_name">Nazwa rozmowy</string>
     <string name="nc_call_name_is_same">Wpisana nazwa jest taka sama jak dotychczasowa</string>
     <string name="nc_call_notifications">Powiadomienia połączenia</string>
+    <string name="nc_call_raised_hand">%1$s podniósł rękę</string>
     <string name="nc_call_reconnecting">Ponowne łączenie…</string>
     <string name="nc_call_ringing">DZWONIENIE</string>
     <string name="nc_call_state_in_call">%1$s w trakcie połączenia</string>
@@ -399,8 +402,13 @@
     <string name="polls_voted_hidden_success">Oddano głos</string>
     <string name="reactions_tab_all">Wszystkie</string>
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
+    <string name="record_active_info">Rozmowa jest nagrywana</string>
     <string name="record_start_description">Rozpocznij nagrywanie</string>
+    <string name="record_start_loading">Uruchamianie…</string>
+    <string name="record_stop_confirm_message">Czy na pewno chcesz zatrzymać nagrywanie?</string>
+    <string name="record_stop_confirm_title">Zatrzymaj nagrywanie rozmowy</string>
     <string name="record_stop_description">Zatrzymaj nagrywanie</string>
+    <string name="record_stop_loading">Zatrzymywanie…</string>
     <string name="save">Zapisz</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>
     <string name="scope_federated_title">Sfederowane</string>
