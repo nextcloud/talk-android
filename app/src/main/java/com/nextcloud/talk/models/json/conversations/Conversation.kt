@@ -167,7 +167,9 @@ data class Conversation(
     }
 
     fun canModerate(conversationUser: User): Boolean {
-        return isParticipantOwnerOrModerator && !isLockedOneToOne(conversationUser)
+        return isParticipantOwnerOrModerator &&
+            !isLockedOneToOne(conversationUser) &&
+            type != ConversationType.FORMER_ONE_TO_ONE
     }
 
     fun isLobbyViewApplicable(conversationUser: User): Boolean {
@@ -210,6 +212,11 @@ data class Conversation(
 
     @Parcelize
     enum class ConversationType : Parcelable {
-        DUMMY, ROOM_TYPE_ONE_TO_ONE_CALL, ROOM_GROUP_CALL, ROOM_PUBLIC_CALL, ROOM_SYSTEM
+        DUMMY,
+        ROOM_TYPE_ONE_TO_ONE_CALL,
+        ROOM_GROUP_CALL,
+        ROOM_PUBLIC_CALL,
+        ROOM_SYSTEM,
+        FORMER_ONE_TO_ONE
     }
 }

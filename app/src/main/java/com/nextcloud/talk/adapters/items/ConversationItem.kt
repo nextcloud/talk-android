@@ -175,6 +175,8 @@ class ConversationItem(
                 }
                 ConversationType.ROOM_GROUP_CALL ->
                     holder.binding.dialogAvatar.loadGroupCallAvatar(viewThemeUtils)
+                ConversationType.FORMER_ONE_TO_ONE ->
+                    holder.binding.dialogAvatar.loadGroupCallAvatar(viewThemeUtils)
                 ConversationType.ROOM_PUBLIC_CALL ->
                     holder.binding.dialogAvatar.loadPublicCallAvatar(viewThemeUtils)
                 else -> holder.binding.dialogAvatar.visibility = View.GONE

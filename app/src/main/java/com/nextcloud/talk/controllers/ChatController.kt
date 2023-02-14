@@ -2460,6 +2460,8 @@ class ChatController(args: Bundle) :
                     )
                 chatMessage.isOneToOneConversation =
                     (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
+                chatMessage.isFormerOneToOneConversation =
+                    (currentConversation?.type == Conversation.ConversationType.FORMER_ONE_TO_ONE)
                 it.addToStart(chatMessage, shouldScroll)
             }
         }
@@ -2499,6 +2501,8 @@ class ChatController(args: Bundle) :
             val chatMessage = chatMessageList[i]
             chatMessage.isOneToOneConversation =
                 currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            chatMessage.isFormerOneToOneConversation =
+                (currentConversation?.type == Conversation.ConversationType.FORMER_ONE_TO_ONE)
             chatMessage.activeUser = conversationUser
         }
 

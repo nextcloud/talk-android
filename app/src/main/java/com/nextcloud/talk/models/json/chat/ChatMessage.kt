@@ -55,6 +55,9 @@ data class ChatMessage(
     var isOneToOneConversation: Boolean = false,
 
     @JsonIgnore
+    var isFormerOneToOneConversation: Boolean = false,
+
+    @JsonIgnore
     var activeUser: User? = null,
 
     @JsonIgnore

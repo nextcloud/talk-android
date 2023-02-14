@@ -232,10 +232,10 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
             binding.messageAuthor.setText(R.string.nc_nick_guest)
         }
 
-        if (!message.isGrouped && !message.isOneToOneConversation) {
+        if (!message.isGrouped && !message.isOneToOneConversation && !message.isFormerOneToOneConversation) {
             setAvatarOnMessage(message)
         } else {
-            if (message.isOneToOneConversation) {
+            if (message.isOneToOneConversation || message.isFormerOneToOneConversation) {
                 binding.messageUserAvatar.visibility = View.GONE
             } else {
                 binding.messageUserAvatar.visibility = View.INVISIBLE
