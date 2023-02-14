@@ -1040,8 +1040,6 @@ class ChatController(args: Bundle) :
                 Log.e(TAG, "failed to initialize mediaPlayer", e)
                 Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
             }
-        } else {
-            Log.e(TAG, "mediaPlayer was not null. This should not happen!")
         }
     }
 
