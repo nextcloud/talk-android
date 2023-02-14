@@ -1226,21 +1226,20 @@ public class CallActivity extends CallBaseActivity {
 
     public void clickHand(Boolean raise) {
         // TODO: fix how to build&send the message
-
-        if (isConnectionEstablished() && peerConnectionWrapperList != null) {
-            if (!hasMCU) {
-                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-                    peerConnectionWrapper.raiseHand(raise);
-                }
-            } else {
-                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-                    if (peerConnectionWrapper.getSessionId().equals(webSocketClient.getSessionId())) {
-                        peerConnectionWrapper.raiseHand(raise);
-                        break;
-                    }
-                }
-            }
-        }
+//        if (isConnectionEstablished() && peerConnectionWrapperList != null) {
+//            if (!hasMCU) {
+//                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+//                    peerConnectionWrapper.raiseHand(raise);
+//                }
+//            } else {
+//                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+//                    if (peerConnectionWrapper.getSessionId().equals(webSocketClient.getSessionId())) {
+//                        peerConnectionWrapper.raiseHand(raise);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
     }
 
 

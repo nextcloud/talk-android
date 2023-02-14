@@ -193,21 +193,20 @@ public class PeerConnectionWrapper {
     public void raiseHand(Boolean raise) {
 
         // TODO: fix how to build&send the message
-
-        NCMessagePayload ncMessagePayload = new NCMessagePayload();
-        ncMessagePayload.setState(raise);
-        ncMessagePayload.setTimestamp(System.currentTimeMillis());
-
-
-        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
-//        ncSignalingMessage.setFrom();
-        ncSignalingMessage.setTo(sessionId);
-//        ncSignalingMessage.setSid();
-        ncSignalingMessage.setType("raiseHand");
-        ncSignalingMessage.setPayload(ncMessagePayload);
-        ncSignalingMessage.setRoomType(videoStreamType);
-
-        signalingMessageSender.send(ncSignalingMessage);
+//        NCMessagePayload ncMessagePayload = new NCMessagePayload();
+//        ncMessagePayload.setState(raise);
+//        ncMessagePayload.setTimestamp(System.currentTimeMillis());
+//
+//
+//        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+////        ncSignalingMessage.setFrom();
+//        ncSignalingMessage.setTo(sessionId);
+////        ncSignalingMessage.setSid();
+//        ncSignalingMessage.setType("raiseHand");
+//        ncSignalingMessage.setPayload(ncMessagePayload);
+//        ncSignalingMessage.setRoomType(videoStreamType);
+//
+//        signalingMessageSender.send(ncSignalingMessage);
     }
 
     /**
