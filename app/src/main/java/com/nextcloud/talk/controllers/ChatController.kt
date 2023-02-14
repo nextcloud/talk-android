@@ -975,25 +975,27 @@ class ChatController(args: Bundle) :
 
         initMediaPlayer(message)
 
-        if (!mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.start()
-        }
-
-        mediaPlayerHandler = Handler()
-        activity?.runOnUiThread(object : Runnable {
-            override fun run() {
-                if (mediaPlayer != null) {
-                    val currentPosition: Int = mediaPlayer!!.currentPosition / VOICE_MESSAGE_SEEKBAR_BASE
-                    message.voiceMessagePlayedSeconds = currentPosition
-                    adapter?.update(message)
-                }
-                mediaPlayerHandler.postDelayed(this, SECOND)
+        mediaPlayer?.let {
+            if (!it.isPlaying) {
+                it.start()
             }
-        })
 
-        message.isDownloadingVoiceMessage = false
-        message.isPlayingVoiceMessage = true
-        adapter?.update(message)
+            mediaPlayerHandler = Handler()
+            activity?.runOnUiThread(object : Runnable {
+                override fun run() {
+                    if (mediaPlayer != null) {
+                        val currentPosition: Int = mediaPlayer!!.currentPosition / VOICE_MESSAGE_SEEKBAR_BASE
+                        message.voiceMessagePlayedSeconds = currentPosition
+                        adapter?.update(message)
+                    }
+                    mediaPlayerHandler.postDelayed(this, SECOND)
+                }
+            })
+
+            message.isDownloadingVoiceMessage = false
+            message.isPlayingVoiceMessage = true
+            adapter?.update(message)
+        }
     }
 
     private fun pausePlayback(message: ChatMessage) {
