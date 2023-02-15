@@ -415,6 +415,14 @@ public class CallActivity extends CallBaseActivity {
         raiseHandViewModel = new ViewModelProvider(this, viewModelFactory).get((RaiseHandViewModel.class));
         raiseHandViewModel.setData(roomToken, isBreakoutRoom);
 
+        raiseHandViewModel.getViewState().observe(this, viewState -> {
+            if (viewState instanceof RaiseHandViewModel.RaisedHandState) {
+                binding.lowerHandButton.setVisibility(View.VISIBLE);
+            } else if (viewState instanceof RaiseHandViewModel.LoweredHandState) {
+                binding.lowerHandButton.setVisibility(View.GONE);
+            }
+        });
+
         callRecordingViewModel = new ViewModelProvider(this, viewModelFactory).get((CallRecordingViewModel.class));
         callRecordingViewModel.setData(roomToken);
         callRecordingViewModel.setRecordingState(extras.getInt(KEY_RECORDING_STATE));
@@ -583,6 +591,10 @@ public class CallActivity extends CallBaseActivity {
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.record_active_info), Toast.LENGTH_LONG).show();
             }
+        });
+
+        binding.lowerHandButton.setOnClickListener(l -> {
+            raiseHandViewModel.lowerHand();
         });
     }
 

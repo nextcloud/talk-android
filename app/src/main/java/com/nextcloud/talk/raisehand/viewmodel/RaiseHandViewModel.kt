@@ -54,7 +54,7 @@ class RaiseHandViewModel @Inject constructor(private val repository: RequestAssi
         }
     }
 
-    private fun lowerHand() {
+    fun lowerHand() {
         _viewState.value = LoweredHandState
         if (isBreakoutRoom) {
             repository.withdrawRequestAssistance(roomToken)

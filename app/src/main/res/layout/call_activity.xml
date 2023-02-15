@@ -159,6 +159,22 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/verticalCenter"
                 android:layout_marginTop="-50dp" />
+
+            <ImageButton
+                android:id="@+id/lower_hand_button"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="150dp"
+                android:layout_marginEnd="20dp"
+                android:contentDescription="@string/lower_hand"
+                android:background="@drawable/shape_oval"
+                android:backgroundTint="@color/call_buttons_background"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:srcCompat="@drawable/ic_baseline_do_not_touch_24" />
+
         </RelativeLayout>
 
     </LinearLayout>
