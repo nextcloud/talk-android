@@ -1246,8 +1246,7 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    public void clickHand(Boolean raise) {
-
+    public void clickRaiseOrLowerHandButton() {
         raiseHandViewModel.clickHandButton();
 
         // TODO: fix how to build&send the message

@@ -87,8 +87,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         }
 
         binding.raiseHand.setOnClickListener {
-            // TODO: save raised hand state & toggle...
-            callActivity.clickHand(true)
+            callActivity.clickRaiseOrLowerHandButton()
         }
     }
 
