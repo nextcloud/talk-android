@@ -28,6 +28,7 @@ import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
 import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
+import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
@@ -95,4 +96,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(CallRecordingViewModel::class)
     abstract fun callRecordingViewModel(viewModel: CallRecordingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RaiseHandViewModel::class)
+    abstract fun raiseHandViewModel(viewModel: RaiseHandViewModel): ViewModel
 }

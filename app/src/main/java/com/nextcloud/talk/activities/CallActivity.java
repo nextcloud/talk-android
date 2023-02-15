@@ -86,6 +86,7 @@ import com.nextcloud.talk.models.json.signaling.Signaling;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
@@ -211,7 +212,7 @@ public class CallActivity extends CallBaseActivity {
     public WebRtcAudioManager audioManager;
 
     public CallRecordingViewModel callRecordingViewModel;
-//    public RaiseHandViewModel raiseHandViewModel;
+    public RaiseHandViewModel raiseHandViewModel;
 
     private static final String[] PERMISSIONS_CALL = {
         Manifest.permission.CAMERA,
@@ -410,6 +411,9 @@ public class CallActivity extends CallBaseActivity {
         } else {
             setCallState(CallStatus.CONNECTING);
         }
+
+        raiseHandViewModel = new ViewModelProvider(this, viewModelFactory).get((RaiseHandViewModel.class));
+        raiseHandViewModel.setData(roomToken, isBreakoutRoom);
 
         callRecordingViewModel = new ViewModelProvider(this, viewModelFactory).get((CallRecordingViewModel.class));
         callRecordingViewModel.setData(roomToken);
@@ -1232,10 +1236,7 @@ public class CallActivity extends CallBaseActivity {
 
     public void clickHand(Boolean raise) {
 
-        if (isBreakoutRoom) {
-            Log.d(TAG, "send request to request help for breakout rooms.");
-        }
-//
+        raiseHandViewModel.clickHandButton();
 
         // TODO: fix how to build&send the message
 //        if (isConnectionEstablished() && peerConnectionWrapperList != null) {

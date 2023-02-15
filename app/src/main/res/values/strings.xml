@@ -573,6 +573,9 @@
     <string name="record_stop_confirm_message">Do you really want to stop the recording?</string>
     <string name="record_active_info">The call is being recorded</string>
 
+    <string name="raise_hand">Raise hand</string>
+    <string name="lower_hand">Lower hand</string>
+
     <!-- Shared items -->
     <string name="shared_items_media">Media</string>
     <string name="shared_items_file">File</string>

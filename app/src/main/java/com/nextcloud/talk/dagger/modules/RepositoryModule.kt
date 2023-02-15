@@ -33,6 +33,8 @@ import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
 import com.nextcloud.talk.polls.repositories.PollRepository
 import com.nextcloud.talk.polls.repositories.PollRepositoryImpl
+import com.nextcloud.talk.raisehand.RequestAssistanceRepository
+import com.nextcloud.talk.raisehand.RequestAssistanceRepositoryImpl
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepositoryImpl
 import com.nextcloud.talk.repositories.callrecording.CallRecordingRepository
@@ -98,5 +100,11 @@ class RepositoryModule {
     @Provides
     fun provideCallRecordingRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): CallRecordingRepository {
         return CallRecordingRepositoryImpl(ncApi, userProvider)
+    }
+
+    @Provides
+    fun provideRequestAssistanceRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew):
+        RequestAssistanceRepository {
+        return RequestAssistanceRepositoryImpl(ncApi, userProvider)
     }
 }
