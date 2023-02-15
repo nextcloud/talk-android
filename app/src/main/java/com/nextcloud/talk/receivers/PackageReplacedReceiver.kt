@@ -28,7 +28,6 @@ import com.nextcloud.talk.utils.NotificationUtils
 class PackageReplacedReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
-
         if (intent != null && intent.action != null &&
             intent.action == "android.intent.action.MY_PACKAGE_REPLACED"
         ) {

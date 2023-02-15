@@ -41,7 +41,6 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val userProvid
         get() = ApiUtils.getCredentials(user.username, user.token)
 
     override fun allowGuests(token: String, allow: Boolean): Observable<AllowGuestsResult> {
-
         val url = ApiUtils.getUrlForRoomPublic(
             apiVersion(),
             user.baseUrl,
@@ -74,7 +73,6 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val userProvid
             password
         )
         return apiObservable.map {
-
             val passwordPolicyMessage = if (it.code() == STATUS_CODE_BAD_REQUEST) {
                 LoganSquare.parse(it.errorBody()!!.string(), PasswordOverall::class.java).ocs!!.data!!
                     .message!!
@@ -87,7 +85,6 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val userProvid
     }
 
     override fun resendInvitations(token: String): Observable<ResendInvitationsResult> {
-
         val apiObservable = api.resendParticipantInvitations(
             credentials,
             ApiUtils.getUrlForParticipantsResendInvitations(

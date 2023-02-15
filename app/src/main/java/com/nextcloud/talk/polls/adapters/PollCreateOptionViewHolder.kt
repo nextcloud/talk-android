@@ -44,7 +44,6 @@ class PollCreateOptionViewHolder(
         position: Int,
         focus: Boolean
     ) {
-
         textListener?.let {
             binding.pollOptionTextEdit.removeTextChangedListener(it)
         }

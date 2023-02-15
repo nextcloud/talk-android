@@ -40,7 +40,7 @@ data class User(
     var clientCertificate: String? = null,
     var externalSignalingServer: ExternalSignalingServer? = null,
     var current: Boolean = FALSE,
-    var scheduledForDeletion: Boolean = FALSE,
+    var scheduledForDeletion: Boolean = FALSE
 ) : Parcelable {
 
     fun getMaxMessageLength(): Int {

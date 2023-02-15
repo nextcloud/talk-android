@@ -40,7 +40,7 @@ object RemoteFileUtils {
         val fileExists = doesFileExist(
             ncApi,
             currentUser,
-            remotePath,
+            remotePath
         ).blockingFirst()
 
         if (fileExists) {

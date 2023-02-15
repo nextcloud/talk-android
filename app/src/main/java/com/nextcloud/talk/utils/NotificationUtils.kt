@@ -74,7 +74,6 @@ object NotificationUtils {
         sound: Uri?,
         audioAttributes: AudioAttributes?
     ) {
-
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (
@@ -278,7 +277,6 @@ object NotificationUtils {
         context: Context?,
         notificationId: Int
     ): Boolean {
-
         var isVisible = false
 
         val notificationManager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -326,7 +324,8 @@ object NotificationUtils {
         return getRingtoneUri(
             context,
             appPreferences.callRingtoneUri,
-            DEFAULT_CALL_RINGTONE_URI, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
+            DEFAULT_CALL_RINGTONE_URI,
+            NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
         )
     }
 
@@ -337,7 +336,8 @@ object NotificationUtils {
         return getRingtoneUri(
             context,
             appPreferences.messageRingtoneUri,
-            DEFAULT_MESSAGE_RINGTONE_URI, NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+            DEFAULT_MESSAGE_RINGTONE_URI,
+            NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
         )
     }
 

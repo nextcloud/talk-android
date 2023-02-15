@@ -36,7 +36,6 @@ class EnumReactionActorTypeConverter : StringBasedTypeConverter<ReactionVoter.Re
     }
 
     override fun convertToString(`object`: ReactionVoter.ReactionActorType?): String {
-
         if (`object` == null) {
             return ""
         }

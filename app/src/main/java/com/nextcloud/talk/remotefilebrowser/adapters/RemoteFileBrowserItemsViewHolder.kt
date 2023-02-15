@@ -32,7 +32,7 @@ abstract class RemoteFileBrowserItemsViewHolder(
     open val binding: ViewBinding,
     val mimeTypeSelectionFilter: String? = null,
     val currentUser: User,
-    val selectionInterface: SelectionInterface,
+    val selectionInterface: SelectionInterface
 ) : RecyclerView.ViewHolder(binding.root) {
 
     abstract val fileIcon: ImageView

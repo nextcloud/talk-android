@@ -117,7 +117,10 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
             _viewState.value = PollCreationState(enableAddOptionButton = false, enableCreatePollButton = false)
 
             repository.createPoll(
-                roomToken, _question, _options.value!!.map { it.pollOption }, resultMode,
+                roomToken,
+                _question,
+                _options.value!!.map { it.pollOption },
+                resultMode,
                 maxVotes
             )
                 .doOnSubscribe { disposable = it }

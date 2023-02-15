@@ -42,7 +42,7 @@ data class UnifiedSearchEntry(
     @JsonField(name = ["rounded"])
     var rounded: Boolean?,
     @JsonField(name = ["attributes"])
-    var attributes: Map<String, String>?,
+    var attributes: Map<String, String>?
 ) : Parcelable {
     constructor() : this(null, null, null, null, null, null, null)
 }

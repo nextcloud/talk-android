@@ -45,7 +45,7 @@ class DateUtils(val context: Context) {
         } else {
             @Suppress("DEPRECATION")
             context.resources.configuration.locale
-        },
+        }
     )
 
     /* date formatter in local timezone and locale */
@@ -56,7 +56,7 @@ class DateUtils(val context: Context) {
         } else {
             @Suppress("DEPRECATION")
             context.resources.configuration.locale
-        },
+        }
     )
 
     init {

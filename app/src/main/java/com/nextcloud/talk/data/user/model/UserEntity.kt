@@ -35,16 +35,40 @@ import java.lang.Boolean.FALSE
 @Parcelize
 @Entity(tableName = "User")
 data class UserEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long = 0,
-    @ColumnInfo(name = "userId") var userId: String? = null,
-    @ColumnInfo(name = "username") var username: String? = null,
-    @ColumnInfo(name = "baseUrl") var baseUrl: String? = null,
-    @ColumnInfo(name = "token") var token: String? = null,
-    @ColumnInfo(name = "displayName") var displayName: String? = null,
-    @ColumnInfo(name = "pushConfigurationState") var pushConfigurationState: PushConfigurationState? = null,
-    @ColumnInfo(name = "capabilities") var capabilities: Capabilities? = null,
-    @ColumnInfo(name = "clientCertificate") var clientCertificate: String? = null,
-    @ColumnInfo(name = "externalSignalingServer") var externalSignalingServer: ExternalSignalingServer? = null,
-    @ColumnInfo(name = "current") var current: Boolean = FALSE,
-    @ColumnInfo(name = "scheduledForDeletion") var scheduledForDeletion: Boolean = FALSE,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    var id: Long = 0,
+
+    @ColumnInfo(name = "userId")
+    var userId: String? = null,
+
+    @ColumnInfo(name = "username")
+    var username: String? = null,
+
+    @ColumnInfo(name = "baseUrl")
+    var baseUrl: String? = null,
+
+    @ColumnInfo(name = "token")
+    var token: String? = null,
+
+    @ColumnInfo(name = "displayName")
+    var displayName: String? = null,
+
+    @ColumnInfo(name = "pushConfigurationState")
+    var pushConfigurationState: PushConfigurationState? = null,
+
+    @ColumnInfo(name = "capabilities")
+    var capabilities: Capabilities? = null,
+
+    @ColumnInfo(name = "clientCertificate")
+    var clientCertificate: String? = null,
+
+    @ColumnInfo(name = "externalSignalingServer")
+    var externalSignalingServer: ExternalSignalingServer? = null,
+
+    @ColumnInfo(name = "current")
+    var current: Boolean = FALSE,
+
+    @ColumnInfo(name = "scheduledForDeletion")
+    var scheduledForDeletion: Boolean = FALSE
 ) : Parcelable

@@ -66,6 +66,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
     private var dialogView: View? = null
     private var adapter: FlexibleAdapter<AdvancedUserItem>? = null
     private val userItems: MutableList<AdvancedUserItem> = ArrayList()
+
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogChooseAccountShareToBinding.inflate(LayoutInflater.from(requireContext()))

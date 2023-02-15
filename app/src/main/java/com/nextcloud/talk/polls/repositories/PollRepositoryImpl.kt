@@ -44,8 +44,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         question: String,
         options: List<String>,
         resultMode: Int,
-        maxVotes:
-            Int
+        maxVotes: Int
     ): Observable<Poll> {
         return ncApi.createPoll(
             credentials,
@@ -61,19 +60,17 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
     }
 
     override fun getPoll(roomToken: String, pollId: String): Observable<Poll> {
-
         return ncApi.getPoll(
             credentials,
             ApiUtils.getUrlForPoll(
                 currentUser.baseUrl,
                 roomToken,
                 pollId
-            ),
+            )
         ).map { mapToPoll(it.ocs?.data!!) }
     }
 
     override fun vote(roomToken: String, pollId: String, options: List<Int>): Observable<Poll> {
-
         return ncApi.votePoll(
             credentials,
             ApiUtils.getUrlForPoll(
@@ -86,14 +83,13 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
     }
 
     override fun closePoll(roomToken: String, pollId: String): Observable<Poll> {
-
         return ncApi.closePoll(
             credentials,
             ApiUtils.getUrlForPoll(
                 currentUser.baseUrl,
                 roomToken,
                 pollId
-            ),
+            )
         ).map { mapToPoll(it.ocs?.data!!) }
     }
 

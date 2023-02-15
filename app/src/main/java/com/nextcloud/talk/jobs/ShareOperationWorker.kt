@@ -70,7 +70,8 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
             )
                 .subscribeOn(Schedulers.io())
                 .blockingSubscribe(
-                    {}, { e -> Log.w(TAG, "error while creating RemoteShare", e) }
+                    {},
+                    { e -> Log.w(TAG, "error while creating RemoteShare", e) }
                 )
         }
         return Result.success()

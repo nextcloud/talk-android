@@ -107,7 +107,9 @@ data class Participant(
             } else {
                 ActorType.GUESTS
             }
-        } else actorType!!
+        } else {
+            actorType!!
+        }
 
     /**
      * actorId is only guaranteed in APIv3+ so use calculatedActorId.
@@ -115,7 +117,9 @@ data class Participant(
     val calculatedActorId: String?
         get() = if (actorId == null) {
             userId
-        } else actorId
+        } else {
+            actorId
+        }
 
     enum class ActorType {
         DUMMY, EMAILS, GROUPS, GUESTS, USERS, CIRCLES
