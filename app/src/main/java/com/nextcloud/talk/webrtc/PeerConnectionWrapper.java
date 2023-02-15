@@ -292,7 +292,7 @@ public class PeerConnectionWrapper {
             try {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
                 dataChannel.send(new DataChannel.Buffer(buffer, false));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
             }
         }

@@ -173,6 +173,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
@@ -2841,6 +2842,10 @@ class ChatController(args: Bundle) :
                 bundle.putBoolean(BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION, true)
             }
 
+            if (it.objectType == BREAKOUT_ROOM_TYPE) {
+                bundle.putBoolean(KEY_IS_BREAKOUT_ROOM, true)
+            }
+
             return if (activity != null) {
                 val callIntent = Intent(activity, CallActivity::class.java)
                 callIntent.putExtras(bundle)
@@ -3531,5 +3536,6 @@ class ChatController(args: Bundle) :
         private const val LOOKING_INTO_FUTURE_TIMEOUT = 30
         private const val CHUNK_SIZE: Int = 10
         private const val ONE_SECOND_IN_MILLIS = 1000
+        private const val BREAKOUT_ROOM_TYPE = "room"
     }
 }

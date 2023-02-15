@@ -173,6 +173,7 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_WITHOUT_NOTIFI
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO;
@@ -309,6 +310,7 @@ public class CallActivity extends CallBaseActivity {
     private CallParticipantList callParticipantList;
 
     private String switchToRoomToken = "";
+    private boolean isBreakoutRoom = false;
 
     private SignalingMessageReceiver.LocalParticipantMessageListener localParticipantMessageListener =
         new SignalingMessageReceiver.LocalParticipantMessageListener() {
@@ -388,6 +390,10 @@ public class CallActivity extends CallBaseActivity {
 
         if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
             isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL);
+        }
+
+        if (extras.containsKey(KEY_IS_BREAKOUT_ROOM)) {
+            isBreakoutRoom = extras.getBoolean(KEY_IS_BREAKOUT_ROOM);
         }
 
         credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
@@ -496,7 +502,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void initFeaturesVisibility() {
-        if (isAllowedToStartOrStopRecording()) {
+        if (isAllowedToStartOrStopRecording() || isAllowedToRaiseHand()) {
             binding.moreCallActions.setVisibility(View.VISIBLE);
         } else {
             binding.moreCallActions.setVisibility(View.GONE);
@@ -1225,6 +1231,12 @@ public class CallActivity extends CallBaseActivity {
     }
 
     public void clickHand(Boolean raise) {
+
+        if (isBreakoutRoom) {
+            Log.d(TAG, "send request to request help for breakout rooms.");
+        }
+//
+
         // TODO: fix how to build&send the message
 //        if (isConnectionEstablished() && peerConnectionWrapperList != null) {
 //            if (!hasMCU) {
@@ -1911,7 +1923,6 @@ public class CallActivity extends CallBaseActivity {
                         Bundle bundle = new Bundle();
                         bundle.putBoolean(KEY_SWITCH_TO_ROOM_AND_START_CALL, true);
                         bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken);
-
 //                        bundle.putString(KEY_ROOM_ID, roomId);
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser);
 //                        conversationName = extras.getString(KEY_CONVERSATION_NAME, "");
@@ -3062,7 +3073,8 @@ public class CallActivity extends CallBaseActivity {
     }
 
     public boolean isAllowedToRaiseHand() {
-        return CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "raise-hand");
+        return CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "raise-hand") ||
+            isBreakoutRoom;
     }
 
     private class SelfVideoTouchListener implements View.OnTouchListener {
