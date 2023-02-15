@@ -421,6 +421,22 @@ public class CallActivity extends CallBaseActivity {
             } else if (viewState instanceof RaiseHandViewModel.LoweredHandState) {
                 binding.lowerHandButton.setVisibility(View.GONE);
             }
+
+            // TODO: build&send raiseHand message (if not possible in RaiseHandViewModel, just do it here..)
+//        if (isConnectionEstablished() && peerConnectionWrapperList != null) {
+//            if (!hasMCU) {
+//                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+//                    peerConnectionWrapper.raiseHand(...);
+//                }
+//            } else {
+//                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+//                    if (peerConnectionWrapper.getSessionId().equals(webSocketClient.getSessionId())) {
+//                        peerConnectionWrapper.raiseHand(...);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
         });
 
         callRecordingViewModel = new ViewModelProvider(this, viewModelFactory).get((CallRecordingViewModel.class));
@@ -1248,22 +1264,6 @@ public class CallActivity extends CallBaseActivity {
 
     public void clickRaiseOrLowerHandButton() {
         raiseHandViewModel.clickHandButton();
-
-        // TODO: fix how to build&send the message
-//        if (isConnectionEstablished() && peerConnectionWrapperList != null) {
-//            if (!hasMCU) {
-//                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-//                    peerConnectionWrapper.raiseHand(raise);
-//                }
-//            } else {
-//                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-//                    if (peerConnectionWrapper.getSessionId().equals(webSocketClient.getSessionId())) {
-//                        peerConnectionWrapper.raiseHand(raise);
-//                        break;
-//                    }
-//                }
-//            }
-//        }
     }
 
 

@@ -191,8 +191,7 @@ public class PeerConnectionWrapper {
     }
 
     public void raiseHand(Boolean raise) {
-
-        // TODO: fix how to build&send the message
+        // TODO: build&send raiseHand message (either here or via RaiseHandViewModel)
 //        NCMessagePayload ncMessagePayload = new NCMessagePayload();
 //        ncMessagePayload.setState(raise);
 //        ncMessagePayload.setTimestamp(System.currentTimeMillis());
