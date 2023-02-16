@@ -30,7 +30,6 @@ object ShareUtils {
         user: User,
         conversation: Conversation?
     ): String {
-
         return String.format(
             context.resources.getString(R.string.nc_share_text),
             user.baseUrl,

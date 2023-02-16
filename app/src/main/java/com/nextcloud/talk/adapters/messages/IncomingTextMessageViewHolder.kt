@@ -184,8 +184,11 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
         } ?: run {
             binding.messageQuote.quotedMessageImage.visibility = View.GONE
         }
-        binding.messageQuote.quotedMessageAuthor.text = if (parentChatMessage.actorDisplayName.isNullOrEmpty())
-            context!!.getText(R.string.nc_nick_guest) else parentChatMessage.actorDisplayName
+        binding.messageQuote.quotedMessageAuthor.text = if (parentChatMessage.actorDisplayName.isNullOrEmpty()) {
+            context!!.getText(R.string.nc_nick_guest)
+        } else {
+            parentChatMessage.actorDisplayName
+        }
         binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
         if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {

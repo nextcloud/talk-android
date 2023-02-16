@@ -84,7 +84,11 @@ class ServerSelectionController :
                     }
                     setCertTextView()
                 },
-                arrayOf("RSA", "EC"), null, null, -1, null
+                arrayOf("RSA", "EC"),
+                null,
+                null,
+                -1,
+                null
             )
         }
     }
@@ -238,7 +242,8 @@ class ServerSelectionController :
                 } else if (!status.installed) {
                     setErrorText(
                         String.format(
-                            resources!!.getString(R.string.nc_server_not_installed), productName
+                            resources!!.getString(R.string.nc_server_not_installed),
+                            productName
                         )
                     )
                 } else if (status.needsUpgrade) {

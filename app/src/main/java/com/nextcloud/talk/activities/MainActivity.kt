@@ -210,7 +210,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     private fun handleActionFromContact(intent: Intent) {
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
-
             val cursor = contentResolver.query(intent.data!!, null, null, null, null)
 
             var userId = ""
@@ -250,13 +249,18 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
         val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            apiVersion, currentUser?.baseUrl, roomType,
-            null, userId, null
+            apiVersion,
+            currentUser?.baseUrl,
+            roomType,
+            null,
+            userId,
+            null
         )
 
         ncApi.createRoom(
             credentials,
-            retrofitBucket.url, retrofitBucket.queryMap
+            retrofitBucket.url,
+            retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -293,8 +297,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                                     Parcels.wrap(roomOverall.ocs!!.data)
                                 )
                                 remapChatController(
-                                    router!!, currentUser!!.id!!,
-                                    roomOverall.ocs!!.data!!.token!!, bundle, true
+                                    router!!,
+                                    currentUser!!.id!!,
+                                    roomOverall.ocs!!.data!!.token!!,
+                                    bundle,
+                                    true
                                 )
                             }
 

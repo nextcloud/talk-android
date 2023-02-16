@@ -459,7 +459,6 @@ class ChatController(args: Bundle) :
 
     private fun loadAvatarForStatusBar() {
         if (isOneToOneConversation() && activity != null) {
-
             val url = ApiUtils.getUrlForAvatar(
                 conversationUser!!.baseUrl,
                 currentConversation!!.name,
@@ -468,7 +467,6 @@ class ChatController(args: Bundle) :
             val target = object : Target {
 
                 private fun setIcon(drawable: Drawable?) {
-
                     actionBar?.let {
                         val avatarSize = (it.height / TOOLBAR_AVATAR_RATIO).roundToInt()
 
@@ -689,7 +687,6 @@ class ChatController(args: Bundle) :
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-
                     if (layoutManager!!.findFirstCompletelyVisibleItemPosition() > 0) {
                         binding?.scrollDownButton?.visibility = View.VISIBLE
                     } else {
@@ -2086,11 +2083,11 @@ class ChatController(args: Bundle) :
             val replyMessageId: Int? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int?
             sendMessage(
                 editable,
-                if (
-                    view
-                        ?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
-                        ?.visibility == View.VISIBLE
-                ) replyMessageId else null,
+                if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) {
+                    replyMessageId
+                } else {
+                    null
+                },
                 sendWithoutNotification
             )
             cancelReply()
@@ -2321,7 +2318,6 @@ class ChatController(args: Bundle) :
     }
 
     private fun processMessagesResponse(response: Response<*>, isFromTheFuture: Boolean) {
-
         val xChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
             Integer.parseInt(it)
         }
@@ -2408,7 +2404,6 @@ class ChatController(args: Bundle) :
     }
 
     private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>) {
-
         val shouldAddNewMessagesNotice = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
 
         if (shouldAddNewMessagesNotice) {
@@ -2592,11 +2587,13 @@ class ChatController(args: Bundle) :
 
         binding?.messageInputView?.context?.let {
             viewThemeUtils.platform.colorToolbarMenuIcon(
-                it, menu.findItem(R.id.conversation_voice_call)
+                it,
+                menu.findItem(R.id.conversation_voice_call)
             )
 
             viewThemeUtils.platform.colorToolbarMenuIcon(
-                it, menu.findItem(R.id.conversation_video_call)
+                it,
+                menu.findItem(R.id.conversation_video_call)
             )
         }
 

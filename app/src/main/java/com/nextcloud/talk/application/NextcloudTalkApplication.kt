@@ -179,7 +179,8 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
             CapabilitiesWorker::class.java,
-            HALF_DAY, TimeUnit.HOURS
+            HALF_DAY,
+            TimeUnit.HOURS
         ).build()
         val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()

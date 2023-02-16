@@ -54,7 +54,6 @@ abstract class SharedItemsViewHolder(
     abstract val progressBar: ProgressBar
 
     open fun onBind(item: SharedFileItem) {
-
         val placeholder = viewThemeUtils.talk.getPlaceholderImage(image.context, item.mimeType)
         if (item.previewAvailable) {
             image.loadImage(

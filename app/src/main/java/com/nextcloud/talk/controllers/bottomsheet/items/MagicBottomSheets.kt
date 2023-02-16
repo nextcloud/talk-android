@@ -37,7 +37,6 @@ fun <IT : ListItemWithImage> MaterialDialog.listItemsWithImage(
     waitForPositiveButton: Boolean = true,
     selection: ListItemListener<IT> = null
 ): MaterialDialog {
-
     if (getListAdapter() != null) {
         return updateListItemsWithImage(
             items = items,

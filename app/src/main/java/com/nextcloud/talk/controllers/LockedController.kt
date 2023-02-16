@@ -104,7 +104,8 @@ class LockedController : BaseController(R.layout.controller_locked) {
                 .build()
             val executor: Executor = Executors.newSingleThreadExecutor()
             val biometricPrompt = BiometricPrompt(
-                (context as FragmentActivity?)!!, executor,
+                (context as FragmentActivity?)!!,
+                executor,
                 object : BiometricPrompt.AuthenticationCallback() {
                     override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                         super.onAuthenticationSucceeded(result)

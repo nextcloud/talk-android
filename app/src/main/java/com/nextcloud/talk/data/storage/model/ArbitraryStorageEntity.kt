@@ -29,8 +29,16 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "ArbitraryStorage")
 data class ArbitraryStorageEntity(
-    @PrimaryKey @ColumnInfo(name = "accountIdentifier") var accountIdentifier: Long = 0,
-    @ColumnInfo(name = "key") var key: String? = null,
-    @ColumnInfo(name = "object") var storageObject: String? = null,
-    @ColumnInfo(name = "value") var value: String? = null
+    @PrimaryKey
+    @ColumnInfo(name = "accountIdentifier")
+    var accountIdentifier: Long = 0,
+
+    @ColumnInfo(name = "key")
+    var key: String? = null,
+
+    @ColumnInfo(name = "object")
+    var storageObject: String? = null,
+
+    @ColumnInfo(name = "value")
+    var value: String? = null
 ) : Parcelable

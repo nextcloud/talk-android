@@ -122,7 +122,8 @@ class ConversationItem(
         if (adapter.hasFilter()) {
             viewThemeUtils.platform.highlightText(
                 holder.binding.dialogName,
-                model.displayName!!, adapter.getFilter(String::class.java).toString()
+                model.displayName!!,
+                adapter.getFilter(String::class.java).toString()
             )
         } else {
             holder.binding.dialogName.text = model.displayName

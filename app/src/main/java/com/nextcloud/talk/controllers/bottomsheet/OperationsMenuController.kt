@@ -366,7 +366,8 @@ class OperationsMenuController(args: Bundle) : BaseController(
                     ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
-                            apiVersion, currentUser!!.baseUrl,
+                            apiVersion,
+                            currentUser!!.baseUrl,
                             conversation!!.token
                         )
                     )

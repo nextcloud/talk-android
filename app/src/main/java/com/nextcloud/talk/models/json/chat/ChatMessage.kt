@@ -407,7 +407,9 @@ data class ChatMessage(
             override fun getName(): String {
                 return if (!TextUtils.isEmpty(actorDisplayName)) {
                     actorDisplayName!!
-                } else sharedApplication!!.getString(R.string.nc_guest)
+                } else {
+                    sharedApplication!!.getString(R.string.nc_guest)
+                }
             }
 
             override fun getAvatar(): String? {

@@ -115,7 +115,8 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             AppCompatResources.getDrawable(context!!, drawableInt)?.let {
                 binding.checkMark.setImageDrawable(it)
                 binding.checkMark.setColorFilter(
-                    viewThemeUtils.getScheme(binding.checkMark.context).onSurfaceVariant, PorterDuff.Mode.SRC_ATOP
+                    viewThemeUtils.getScheme(binding.checkMark.context).onSurfaceVariant,
+                    PorterDuff.Mode.SRC_ATOP
                 )
             }
         }

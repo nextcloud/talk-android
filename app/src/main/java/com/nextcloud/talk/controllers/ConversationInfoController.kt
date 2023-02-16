@@ -305,8 +305,11 @@ class ConversationInfoController(args: Bundle) :
             conversation!!.lobbyTimer = 0
         }
 
-        conversation!!.lobbyState = if (isChecked) Conversation.LobbyState
-            .LOBBY_STATE_MODERATORS_ONLY else Conversation.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
+        conversation!!.lobbyState = if (isChecked) {
+            Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY
+        } else {
+            Conversation.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
+        }
 
         if (
             conversation!!.lobbyTimer != null &&
@@ -315,7 +318,7 @@ class ConversationInfoController(args: Bundle) :
         ) {
             binding?.webinarInfoView?.startTimePreferences?.setSummary(
                 dateUtils.getLocalDateTimeStringFromTimestamp(
-                    conversation!!.lobbyTimer!! * DateConstants.SECOND_DIVIDER,
+                    conversation!!.lobbyTimer!! * DateConstants.SECOND_DIVIDER
                 )
             )
         } else {
@@ -333,7 +336,11 @@ class ConversationInfoController(args: Bundle) :
         val state = if (
             (binding?.webinarInfoView?.conversationInfoLobby?.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
                 .isChecked
-        ) 1 else 0
+        ) {
+            1
+        } else {
+            0
+        }
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
@@ -380,7 +387,8 @@ class ConversationInfoController(args: Bundle) :
                 val dialogBuilder = MaterialAlertDialogBuilder(it.context)
                     .setIcon(
                         viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                            context, R.drawable.ic_delete_black_24dp
+                            context,
+                            R.drawable.ic_delete_black_24dp
                         )
                     )
                     .setTitle(R.string.nc_delete_call)
@@ -553,7 +561,8 @@ class ConversationInfoController(args: Bundle) :
                 val dialogBuilder = MaterialAlertDialogBuilder(it)
                     .setIcon(
                         viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                            context, R.drawable.ic_delete_black_24dp
+                            context,
+                            R.drawable.ic_delete_black_24dp
                         )
                     )
                     .setTitle(R.string.nc_clear_history)

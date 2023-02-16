@@ -248,7 +248,8 @@ class ContactsController(args: Bundle) :
         )
         ncApi.createRoom(
             credentials,
-            retrofitBucket.url, retrofitBucket.queryMap
+            retrofitBucket.url,
+            retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -267,7 +268,8 @@ class ContactsController(args: Bundle) :
                     ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
-                            apiVersion, currentUser!!.baseUrl,
+                            apiVersion,
+                            currentUser!!.baseUrl,
                             roomOverall.ocs!!.data!!.token
                         )
                     )
@@ -428,7 +430,9 @@ class ContactsController(args: Bundle) :
         modifiedQueryMap.put("shareTypes[]", shareTypesList)
         ncApi.getContactsWithSearchParam(
             credentials,
-            retrofitBucket.url, shareTypesList, modifiedQueryMap
+            retrofitBucket.url,
+            shareTypesList,
+            modifiedQueryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -799,10 +803,7 @@ class ContactsController(args: Bundle) :
             contactItem.model.calculatedActorId,
             null
         )
-        ncApi.createRoom(
-            credentials,
-            retrofitBucket.url, retrofitBucket.queryMap
-        )
+        ncApi.createRoom(credentials, retrofitBucket.url, retrofitBucket.queryMap)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<RoomOverall> {
