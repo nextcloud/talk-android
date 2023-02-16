@@ -172,6 +172,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_new_mention">Ongelezen vermeldingen</string>
     <string name="nc_new_messages">Ongelezen berichten</string>
     <string name="nc_new_password">Nieuw wachtwoord</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s niet beschikbaar (niet geïnstalleerd of beperkt door beheerder)</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nee</string>
     <string name="nc_no_messages_yet">Nog geen berichten</string>
@@ -376,6 +377,7 @@ Kies er eentje van een provider.</string>
     <string name="shared_items_other">Andere</string>
     <string name="shared_items_voice">Stem</string>
     <string name="starred">Favoriet</string>
+    <string name="startCallForbidden">U hebt geen toestemming om een gesprek te starten</string>
     <string name="status_message">Statusbericht</string>
     <string name="take_photo">Neem een foto</string>
     <string name="take_photo_error_deleting_picture">Fout bij het nemen van een foto</string>
