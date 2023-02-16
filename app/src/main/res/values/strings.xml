@@ -223,8 +223,8 @@
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
-    <string name="nc_call_raise_hand_description">Raise hand</string>
-    <string name="nc_call_lower_hand_description">Lower hand</string>
+    <string name="raise_hand">Raise hand</string>
+    <string name="lower_hand">Lower hand</string>
 
     <!-- Picture in Picture -->
     <string name="nc_pip_microphone_mute">Mute microphone</string>
@@ -572,9 +572,6 @@
     <string name="record_stop_confirm_title">Stop Call recording</string>
     <string name="record_stop_confirm_message">Do you really want to stop the recording?</string>
     <string name="record_active_info">The call is being recorded</string>
-
-    <string name="raise_hand">Raise hand</string>
-    <string name="lower_hand">Lower hand</string>
 
     <!-- Shared items -->
     <string name="shared_items_media">Media</string>
