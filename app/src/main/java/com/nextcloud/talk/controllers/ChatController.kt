@@ -982,25 +982,27 @@ class ChatController(args: Bundle) :
 
         initMediaPlayer(message)
 
-        if (!mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.start()
-        }
-
-        mediaPlayerHandler = Handler()
-        activity?.runOnUiThread(object : Runnable {
-            override fun run() {
-                if (mediaPlayer != null) {
-                    val currentPosition: Int = mediaPlayer!!.currentPosition / VOICE_MESSAGE_SEEKBAR_BASE
-                    message.voiceMessagePlayedSeconds = currentPosition
-                    adapter?.update(message)
-                }
-                mediaPlayerHandler.postDelayed(this, SECOND)
+        mediaPlayer?.let {
+            if (!it.isPlaying) {
+                it.start()
             }
-        })
 
-        message.isDownloadingVoiceMessage = false
-        message.isPlayingVoiceMessage = true
-        adapter?.update(message)
+            mediaPlayerHandler = Handler()
+            activity?.runOnUiThread(object : Runnable {
+                override fun run() {
+                    if (mediaPlayer != null) {
+                        val currentPosition: Int = mediaPlayer!!.currentPosition / VOICE_MESSAGE_SEEKBAR_BASE
+                        message.voiceMessagePlayedSeconds = currentPosition
+                        adapter?.update(message)
+                    }
+                    mediaPlayerHandler.postDelayed(this, SECOND)
+                }
+            })
+
+            message.isDownloadingVoiceMessage = false
+            message.isPlayingVoiceMessage = true
+            adapter?.update(message)
+        }
     }
 
     private fun pausePlayback(message: ChatMessage) {
@@ -1038,8 +1040,6 @@ class ChatController(args: Bundle) :
                 Log.e(TAG, "failed to initialize mediaPlayer", e)
                 Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
             }
-        } else {
-            Log.e(TAG, "mediaPlayer was not null. This should not happen!")
         }
     }
 
