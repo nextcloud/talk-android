@@ -28,6 +28,8 @@ import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.AUDIO_RECORDING_STARTED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.AUDIO_RECORDING_STOPPED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.BREAKOUT_ROOMS_STARTED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.BREAKOUT_ROOMS_STOPPED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_JOINED
@@ -141,6 +143,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "recording_stopped" -> RECORDING_STOPPED
             "audio_recording_started" -> AUDIO_RECORDING_STARTED
             "audio_recording_stopped" -> AUDIO_RECORDING_STOPPED
+            "breakout_rooms_started" -> BREAKOUT_ROOMS_STARTED
+            "breakout_rooms_stopped" -> BREAKOUT_ROOMS_STOPPED
             else -> DUMMY
         }
     }
@@ -202,6 +206,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             RECORDING_STOPPED -> "recording_stopped"
             AUDIO_RECORDING_STARTED -> "audio_recording_started"
             AUDIO_RECORDING_STOPPED -> "audio_recording_stopped"
+            BREAKOUT_ROOMS_STARTED -> "breakout_rooms_started"
+            BREAKOUT_ROOMS_STOPPED -> "breakout_rooms_stopped"
             else -> ""
         }
     }
