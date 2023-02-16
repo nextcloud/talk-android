@@ -318,7 +318,8 @@ class LocationPickerController(args: Bundle) :
             override fun onZoom(event: ZoomEvent): Boolean {
                 return false
             }
-        })
+        }
+    )
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun requestLocationUpdates() {
@@ -383,7 +384,6 @@ class LocationPickerController(args: Bundle) :
 
     private fun shareLocation(selectedLat: Double?, selectedLon: Double?, locationName: String?) {
         if (selectedLat != null || selectedLon != null) {
-
             val name = locationName
             if (name.isNullOrEmpty()) {
                 initGeocoder()

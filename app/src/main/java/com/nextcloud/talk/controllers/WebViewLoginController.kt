@@ -225,7 +225,8 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                         try {
                             val privateKey = KeyChain.getPrivateKey(activity!!, finalAlias!!)
                             val certificates = KeyChain.getCertificateChain(
-                                activity!!, finalAlias
+                                activity!!,
+                                finalAlias
                             )
                             if (privateKey != null && certificates != null) {
                                 request.proceed(privateKey, certificates)
@@ -249,7 +250,8 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                                     try {
                                         privateKey = KeyChain.getPrivateKey(activity!!, chosenAlias)
                                         val certificates = KeyChain.getCertificateChain(
-                                            activity!!, chosenAlias
+                                            activity!!,
+                                            chosenAlias
                                         )
                                         if (privateKey != null && certificates != null) {
                                             request.proceed(privateKey, certificates)

@@ -128,7 +128,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
                 pollDetailsResponse.actorType,
                 pollDetailsResponse.actorId,
                 pollDetailsResponse.actorDisplayName,
-                pollDetailsResponse.optionId,
+                pollDetailsResponse.optionId
             )
         }
     }

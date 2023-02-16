@@ -115,7 +115,6 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
-
         if (actionState == ACTION_STATE_SWIPE) {
             setTouchListener(recyclerView, viewHolder)
         }

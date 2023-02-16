@@ -237,7 +237,6 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     private fun loadUserAvatar(button: MaterialButton) {
-
         val target = object : Target {
             override fun onStart(placeholder: Drawable?) {
                 button.icon = placeholder
@@ -448,7 +447,9 @@ class ConversationsListController(bundle: Bundle) :
     private fun hasActivityActionSendIntent(): Boolean {
         return if (activity != null) {
             Intent.ACTION_SEND == activity!!.intent.action || Intent.ACTION_SEND_MULTIPLE == activity!!.intent.action
-        } else false
+        } else {
+            false
+        }
     }
 
     override fun showSearchOrToolbar() {
@@ -579,7 +580,7 @@ class ConversationsListController(bundle: Bundle) :
                 .setIcon(
                     viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
                         context,
-                        R.drawable.ic_baseline_error_outline_24dp,
+                        R.drawable.ic_baseline_error_outline_24dp
                     )
                 )
                 .setTitle(R.string.error_loading_chats)
@@ -1199,7 +1200,8 @@ class ConversationsListController(bundle: Bundle) :
                 val dialogBuilder = MaterialAlertDialogBuilder(it.context)
                     .setIcon(
                         viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                            context, R.drawable.ic_delete_black_24dp
+                            context,
+                            R.drawable.ic_delete_black_24dp
                         )
                     )
                     .setTitle(R.string.nc_dialog_invalid_password)

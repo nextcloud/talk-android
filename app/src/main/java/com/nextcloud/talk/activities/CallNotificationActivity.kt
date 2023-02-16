@@ -195,7 +195,8 @@ class CallNotificationActivity : CallBaseActivity() {
             userBeingCalled,
             intArrayOf(
                 ApiUtils.APIv4,
-                ApiUtils.APIv3, 1
+                ApiUtils.APIv3,
+                1
             )
         )
         ncApi!!.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, userBeingCalled!!.baseUrl, roomToken))

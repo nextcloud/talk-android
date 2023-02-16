@@ -36,7 +36,6 @@ class GuestAccessHelper(
     private val context = controller.context
 
     fun setupGuestAccess() {
-
         val guestAccessAllowSwitch = (
             binding.guestAccessView.guestAccessAllowSwitch.findViewById<View>(R.id.mp_checkable)
                 as SwitchCompat
@@ -71,7 +70,6 @@ class GuestAccessHelper(
         }
 
         binding.guestAccessView.guestAccessPasswordSwitch.setOnClickListener {
-
             if (guestAccessPasswordSwitch.isChecked) {
                 conversationsRepository.password("", conversation.token!!).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(PasswordResultObserver(false))

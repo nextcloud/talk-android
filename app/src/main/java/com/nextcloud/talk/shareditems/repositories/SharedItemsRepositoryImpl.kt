@@ -76,7 +76,6 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
         parameters: SharedItemsRepository.Parameters,
         type: SharedItemType
     ): SharedItems {
-
         var chatLastGiven: Int? = null
         val items = mutableMapOf<String, SharedItem>()
 

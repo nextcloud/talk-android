@@ -80,7 +80,7 @@ class Reaction {
                         viewThemeUtils,
                         isOutgoingMessage,
                         isSelfReaction
-                    ),
+                    )
                 )
 
                 emojiWithAmountWrapper.setOnClickListener {

@@ -118,7 +118,8 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
             ResourcesCompat.getDrawable(context!!.resources, drawableInt, null)?.let {
                 binding.checkMark.setImageDrawable(it)
                 binding.checkMark.setColorFilter(
-                    viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant, PorterDuff.Mode.SRC_ATOP
+                    viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant,
+                    PorterDuff.Mode.SRC_ATOP
                 )
             }
         }

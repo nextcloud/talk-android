@@ -263,7 +263,10 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             )
             drawable = Drawable.createFromResourceStream(
                 context!!.resources,
-                null, inputStream, null, null
+                null,
+                inputStream,
+                null,
+                null
             )
             try {
                 inputStream.close()

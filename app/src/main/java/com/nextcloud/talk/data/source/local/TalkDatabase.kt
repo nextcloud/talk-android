@@ -103,7 +103,8 @@ abstract class TalkDatabase : RoomDatabase() {
                             super.onOpen(db)
                             db.execSQL("PRAGMA defer_foreign_keys = 1")
                         }
-                    })
+                    }
+                )
                 .build()
         }
 

@@ -107,10 +107,13 @@ open class BaseActivity : AppCompatActivity() {
                 issuedFor = cert.subjectDN.name
             }
 
-            @SuppressLint("StringFormatMatches") val dialogText = String.format(
-                resources
-                    .getString(R.string.nc_certificate_dialog_text),
-                issuedBy, issuedFor, validFrom, validUntil
+            @SuppressLint("StringFormatMatches")
+            val dialogText = String.format(
+                resources.getString(R.string.nc_certificate_dialog_text),
+                issuedBy,
+                issuedFor,
+                validFrom,
+                validUntil
             )
 
             val dialogBuilder = MaterialAlertDialogBuilder(this)

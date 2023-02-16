@@ -729,7 +729,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 }
 
                 override fun onComplete() {
-
                     if (isCallNotificationVisible) {
                         // this state can be reached when call timeout is reached.
                         showMissedCallNotification()
@@ -751,13 +750,15 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 signatureVerification.user,
                 intArrayOf(
                     ApiUtils.APIv4,
-                    ApiUtils.APIv3, 1
+                    ApiUtils.APIv3,
+                    1
                 )
             )
             ncApi.getRoom(
                 credentials,
                 ApiUtils.getUrlForRoom(
-                    apiVersion, signatureVerification.user?.baseUrl,
+                    apiVersion,
+                    signatureVerification.user?.baseUrl,
                     pushMessage.id
                 )
             )
