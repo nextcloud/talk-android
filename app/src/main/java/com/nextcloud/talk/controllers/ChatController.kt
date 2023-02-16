@@ -316,10 +316,10 @@ class ChatController(args: Bundle) :
         setHasOptionsMenu(true)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        this.conversationUser = args.getParcelable(KEY_USER_ENTITY)
-        this.roomId = args.getString(KEY_ROOM_ID, "")
-        this.roomToken = args.getString(KEY_ROOM_TOKEN, "")
-        this.sharedText = args.getString(BundleKeys.KEY_SHARED_TEXT, "")
+        conversationUser = args.getParcelable(KEY_USER_ENTITY)
+        roomId = args.getString(KEY_ROOM_ID, "")
+        roomToken = args.getString(KEY_ROOM_TOKEN, "")
+        sharedText = args.getString(BundleKeys.KEY_SHARED_TEXT, "")
 
         Log.d(TAG, "   roomToken = $roomToken")
         if (roomToken.isNullOrEmpty()) {
@@ -327,11 +327,11 @@ class ChatController(args: Bundle) :
         }
 
         if (args.containsKey(KEY_ACTIVE_CONVERSATION)) {
-            this.currentConversation = Parcels.unwrap<Conversation>(args.getParcelable(KEY_ACTIVE_CONVERSATION))
-            this.participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
+            currentConversation = Parcels.unwrap<Conversation>(args.getParcelable(KEY_ACTIVE_CONVERSATION))
+            participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
         }
 
-        this.roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
+        roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
 
         credentials = if (conversationUser?.userId == "?") {
             null
@@ -340,14 +340,14 @@ class ChatController(args: Bundle) :
         }
 
         if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)
+            startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)
         }
 
         if (args.containsKey(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)) {
-            this.startCallFromRoomSwitch = args.getBoolean(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)
+            startCallFromRoomSwitch = args.getBoolean(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)
         }
 
-        this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)
+        voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)
     }
 
     private fun getRoomInfo() {
@@ -935,13 +935,26 @@ class ChatController(args: Bundle) :
             return
         }
 
-        val conversationIntent = Intent(activity, CallActivity::class.java)
-        val bundle = Bundle()
-        bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
-        bundle.putString(KEY_ROOM_TOKEN, token)
-
         if (conversationUser != null) {
-            conversationIntent.putExtras(bundle)
+            activity?.runOnUiThread {
+                if (currentConversation?.objectType == BREAKOUT_ROOM_TYPE) {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.switch_to_main_room),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.switch_to_breakout_room),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
+            bundle.putString(KEY_ROOM_TOKEN, token)
 
             ConductorRemapping.remapChatController(
                 router,

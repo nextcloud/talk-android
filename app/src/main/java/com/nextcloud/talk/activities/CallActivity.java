@@ -1935,17 +1935,18 @@ public class CallActivity extends CallBaseActivity {
                         Bundle bundle = new Bundle();
                         bundle.putBoolean(KEY_SWITCH_TO_ROOM_AND_START_CALL, true);
                         bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken);
-//                        bundle.putString(KEY_ROOM_ID, roomId);
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser);
-//                        conversationName = extras.getString(KEY_CONVERSATION_NAME, "");
                         bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall);
-                        bundle.putBoolean(KEY_CALL_WITHOUT_NOTIFICATION, true);
-                        bundle.putBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO, canPublishAudioStream);
-                        bundle.putBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO, canPublishVideoStream);
                         intent.putExtras(bundle);
                         startActivity(intent);
 
-                        Toast.makeText(context, "going to breakout room...", Toast.LENGTH_LONG).show();
+                        if (isBreakoutRoom) {
+                            Toast.makeText(context, context.getResources().getString(R.string.switch_to_main_room),
+                                           Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, context.getResources().getString(R.string.switch_to_breakout_room),
+                                           Toast.LENGTH_LONG).show();
+                        }
 
                         finish();
                     } else if (shutDownView) {

@@ -356,7 +356,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         handleActionFromContact(intent)
 
         if (intent.getBooleanExtra(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL, false)) {
-
             logRouterBackStack(router!!)
             remapChatController(
                 router!!,

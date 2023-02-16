@@ -130,12 +130,14 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                     binding.raiseHandIcon.setImageDrawable(
                         ContextCompat.getDrawable(context, R.drawable.ic_baseline_do_not_touch_24)
                     )
+                    dismiss()
                 }
                 is RaiseHandViewModel.LoweredHandState -> {
                     binding.raiseHandText.text = context.getText(R.string.raise_hand)
                     binding.raiseHandIcon.setImageDrawable(
                         ContextCompat.getDrawable(context, R.drawable.ic_hand_back_left)
                     )
+                    dismiss()
                 }
                 else -> {}
             }
