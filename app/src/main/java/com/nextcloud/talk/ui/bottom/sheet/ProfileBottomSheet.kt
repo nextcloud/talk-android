@@ -56,7 +56,6 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val router: Rout
     private val allowedAppIds = listOf(SPREED.stringValue, PROFILE.stringValue, EMAIL.stringValue)
 
     fun showFor(user: String, context: Context) {
-
         ncApi.hoverCard(
             ApiUtils.getCredentials(userModel.username, userModel.token),
             ApiUtils.getUrlForHoverCard(userModel.baseUrl, user)
@@ -87,7 +86,6 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val router: Rout
 
     @SuppressLint("CheckResult")
     private fun bottomSheet(actions: List<HoverCardAction>, displayName: String, userId: String, context: Context) {
-
         val filteredActions = actions.filter { allowedAppIds.contains(it.appId) }
         val items = filteredActions.map { configureActionListItem(it) }
 
@@ -109,7 +107,6 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val router: Rout
     }
 
     private fun configureActionListItem(action: HoverCardAction): BasicListItemWithImage {
-
         val drawable = when (AllowedAppIds.createFor(action)) {
             PROFILE -> R.drawable.ic_user
             EMAIL -> R.drawable.ic_email
@@ -123,7 +120,6 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val router: Rout
     }
 
     private fun talkTo(userId: String) {
-
         val apiVersion =
             ApiUtils.getConversationApiVersion(userModel, intArrayOf(ApiUtils.APIv4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
@@ -137,7 +133,8 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val router: Rout
         val credentials = ApiUtils.getCredentials(userModel.username, userModel.token)
         ncApi.createRoom(
             credentials,
-            retrofitBucket.url, retrofitBucket.queryMap
+            retrofitBucket.url,
+            retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -156,7 +153,8 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val router: Rout
                     ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
-                            apiVersion, userModel.baseUrl,
+                            apiVersion,
+                            userModel.baseUrl,
                             roomOverall.ocs!!.data!!.token
                         )
                     )
@@ -173,8 +171,11 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val router: Rout
                                     Parcels.wrap(roomOverall.ocs!!.data)
                                 )
                                 ConductorRemapping.remapChatController(
-                                    router, userModel.id!!,
-                                    roomOverall.ocs!!.data!!.token!!, bundle, true
+                                    router,
+                                    userModel.id!!,
+                                    roomOverall.ocs!!.data!!.token!!,
+                                    bundle,
+                                    true
                                 )
                             }
 

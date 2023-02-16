@@ -42,21 +42,24 @@ class PollResultsAdapter(
         when (viewType) {
             PollResultHeaderItem.VIEW_TYPE -> {
                 val itemBinding = PollResultHeaderItemBinding.inflate(
-                    LayoutInflater.from(parent.context), parent,
+                    LayoutInflater.from(parent.context),
+                    parent,
                     false
                 )
                 viewHolder = PollResultHeaderViewHolder(itemBinding, viewThemeUtils)
             }
             PollResultVoterItem.VIEW_TYPE -> {
                 val itemBinding = PollResultVoterItemBinding.inflate(
-                    LayoutInflater.from(parent.context), parent,
+                    LayoutInflater.from(parent.context),
+                    parent,
                     false
                 )
                 viewHolder = PollResultVoterViewHolder(user, itemBinding, viewThemeUtils)
             }
             PollResultVotersOverviewItem.VIEW_TYPE -> {
                 val itemBinding = PollResultVotersOverviewItemBinding.inflate(
-                    LayoutInflater.from(parent.context), parent,
+                    LayoutInflater.from(parent.context),
+                    parent,
                     false
                 )
                 viewHolder = PollResultVotersOverviewViewHolder(user, itemBinding)

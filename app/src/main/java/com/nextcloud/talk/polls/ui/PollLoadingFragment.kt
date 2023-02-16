@@ -67,9 +67,8 @@ class PollLoadingFragment : Fragment() {
         fun newInstance(
             fragmentHeight: Int
         ): PollLoadingFragment {
-
             val args = bundleOf(
-                KEY_FRAGMENT_HEIGHT to fragmentHeight,
+                KEY_FRAGMENT_HEIGHT to fragmentHeight
             )
 
             val fragment = PollLoadingFragment()

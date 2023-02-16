@@ -343,7 +343,9 @@ class ShowReactionsDialog(
                 }
                 return if (obj2 == null) {
                     1
-                } else obj1.lowercase().compareTo(obj2.lowercase())
+                } else {
+                    obj1.lowercase().compareTo(obj2.lowercase())
+                }
             }
         }
 
@@ -358,7 +360,9 @@ class ShowReactionsDialog(
                 }
                 return if (obj2 == null) {
                     1
-                } else obj1.compareTo(obj2)
+                } else {
+                    obj1.compareTo(obj2)
+                }
             }
         }
     }

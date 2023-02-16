@@ -36,8 +36,7 @@ data class OpenGraphObject(
     @JsonField(name = ["thumb"])
     var thumb: String? = null,
     @JsonField(name = ["link"])
-    var link: String? = null,
-
+    var link: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this("", "", null, null)

@@ -119,7 +119,7 @@ class ChunkedFileUploader(
     private fun createFolder(davResource: DavResource) {
         try {
             davResource.mkCol(
-                xmlBody = null,
+                xmlBody = null
             ) { response: Response ->
                 if (!response.isSuccessful) {
                     throw IOException("failed to create folder. response code: " + response.code)
@@ -270,10 +270,12 @@ class ChunkedFileUploader(
                 }
             }
         } finally {
-            if (channel != null) try {
-                channel.close()
-            } catch (e: IOException) {
-                Log.e(TAG, "Error closing file channel!", e)
+            if (channel != null) {
+                try {
+                    channel.close()
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error closing file channel!", e)
+                }
             }
             if (raf != null) {
                 try {
@@ -305,7 +307,6 @@ class ChunkedFileUploader(
     }
 
     private fun assembleChunks(uploadFolderUri: String, targetPath: String) {
-
         val destinationUri: String = ApiUtils.getUrlForFileUpload(
             currentUser.baseUrl,
             currentUser.userId,

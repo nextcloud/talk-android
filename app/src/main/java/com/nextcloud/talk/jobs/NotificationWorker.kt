@@ -520,11 +520,15 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if ("user" == userType || "guest" == userType) {
             val baseUrl = signatureVerification.user!!.baseUrl
-            val avatarUrl = if ("user" == userType) ApiUtils.getUrlForAvatar(
-                baseUrl,
-                notificationUser.id,
-                false
-            ) else ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.name, false)
+            val avatarUrl = if ("user" == userType) {
+                ApiUtils.getUrlForAvatar(
+                    baseUrl,
+                    notificationUser.id,
+                    false
+                )
+            } else {
+                ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.name, false)
+            }
             person.setIcon(loadAvatarSync(avatarUrl, context!!))
         }
         notificationBuilder.setStyle(getStyle(person.build(), style))

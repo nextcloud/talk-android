@@ -53,7 +53,6 @@ fun ImageView.loadAvatar(
     requestBigSize: Boolean = true
 ): io.reactivex.disposables
 .Disposable {
-
     val imageRequestUri = ApiUtils.getUrlForAvatar(
         user.baseUrl,
         avatar,
@@ -69,7 +68,6 @@ fun ImageView.replaceAvatar(
     requestBigSize: Boolean = true
 ): io.reactivex.disposables
 .Disposable {
-
     val imageRequestUri = ApiUtils.getUrlForAvatar(
         user.baseUrl,
         avatar,
@@ -86,7 +84,6 @@ private fun ImageView.loadAvatarInternal(
     replace: Boolean
 ): io.reactivex.disposables
 .Disposable {
-
     if (replace && this.result is SuccessResult) {
         val result = this.result as SuccessResult
         val memoryCacheKey = result.memoryCacheKey
@@ -227,7 +224,6 @@ fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
-
     val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group) as Any
     } else {

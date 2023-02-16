@@ -47,7 +47,7 @@ open class FileSortOrder(var name: String, var isAscending: Boolean) {
             sort_old_to_new.name to sort_old_to_new,
             sort_new_to_old.name to sort_new_to_old,
             sort_small_to_big.name to sort_small_to_big,
-            sort_big_to_small.name to sort_big_to_small,
+            sort_big_to_small.name to sort_big_to_small
         )
 
         fun getFileSortOrder(key: String?): FileSortOrder {

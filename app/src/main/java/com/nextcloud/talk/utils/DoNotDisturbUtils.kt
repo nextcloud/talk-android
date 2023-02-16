@@ -40,7 +40,6 @@ object DoNotDisturbUtils {
     @SuppressLint("NewApi")
     @JvmOverloads
     fun shouldPlaySound(context: Context? = NextcloudTalkApplication.sharedApplication?.applicationContext): Boolean {
-
         val notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 

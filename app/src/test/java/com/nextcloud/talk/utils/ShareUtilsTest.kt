@@ -68,7 +68,8 @@ class ShareUtilsTest {
     fun stringForIntent_noPasswordGiven_correctStringWithoutPasswordReturned() {
         val expectedResult = String.format(
             "Join the conversation at %s/index.php/call/%s",
-            baseUrl, token
+            baseUrl,
+            token
         )
         Assert.assertEquals(
             "Intent string was not as expected",

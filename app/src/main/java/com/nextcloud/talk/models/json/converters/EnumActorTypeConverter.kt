@@ -44,7 +44,6 @@ class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>()
     }
 
     override fun convertToString(`object`: Participant.ActorType?): String {
-
         if (`object` == null) {
             return ""
         }

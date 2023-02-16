@@ -109,7 +109,8 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
 
         WorkManager.getInstance()
             .enqueueUniquePeriodicWork(
-                "periodicTokenRegistration", ExistingPeriodicWorkPolicy.REPLACE,
+                "periodicTokenRegistration",
+                ExistingPeriodicWorkPolicy.REPLACE,
                 periodicTokenRegistration
             )
     }
@@ -120,13 +121,14 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
             MONTHLY,
             TimeUnit.DAYS,
             FLEX_INTERVAL,
-            TimeUnit.DAYS,
+            TimeUnit.DAYS
         )
             .build()
 
         WorkManager.getInstance()
             .enqueueUniquePeriodicWork(
-                "periodicTokenRefreshFromFCM", ExistingPeriodicWorkPolicy.REPLACE,
+                "periodicTokenRefreshFromFCM",
+                ExistingPeriodicWorkPolicy.REPLACE,
                 periodicTokenRefreshFromFCM
             )
     }

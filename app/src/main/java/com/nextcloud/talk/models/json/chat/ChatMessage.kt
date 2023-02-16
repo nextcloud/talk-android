@@ -129,7 +129,7 @@ data class ChatMessage(
 
     var voiceMessagePlayedSeconds: Int = 0,
 
-    var voiceMessageDownloadProgress: Int = 0,
+    var voiceMessageDownloadProgress: Int = 0
 
 ) : Parcelable, MessageContentType, MessageContentType.Image {
 
@@ -235,7 +235,9 @@ data class ChatMessage(
         }
         return if (!messageTypesToIgnore.contains(getCalculateMessageType())) {
             message!!.trim { it <= ' ' }
-        } else null
+        } else {
+            null
+        }
     }
 
     fun getCalculateMessageType(): MessageType {
@@ -418,7 +420,8 @@ data class ChatMessage(
                     }
                     actorType == "bridged" -> {
                         ApiUtils.getUrlForAvatar(
-                            activeUser!!.baseUrl, "bridge-bot",
+                            activeUser!!.baseUrl,
+                            "bridge-bot",
                             true
                         )
                     }
@@ -524,7 +527,7 @@ data class ChatMessage(
         RECORDING_STARTED,
         RECORDING_STOPPED,
         AUDIO_RECORDING_STARTED,
-        AUDIO_RECORDING_STOPPED,
+        AUDIO_RECORDING_STOPPED
     }
 
     companion object {

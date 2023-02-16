@@ -31,7 +31,6 @@ class ParticipantPermissionsTest : TestCase() {
 
     @Test
     fun test_areFlagsSet() {
-
         val user = User()
         val conversation = Conversation()
         conversation.permissions = ParticipantPermissions.PUBLISH_SCREEN or

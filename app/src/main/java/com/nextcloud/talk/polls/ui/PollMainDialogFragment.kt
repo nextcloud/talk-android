@@ -182,7 +182,6 @@ class PollMainDialogFragment : DialogFragment() {
             pollId: String,
             name: String
         ): PollMainDialogFragment {
-
             val args = bundleOf(
                 KEY_USER_ENTITY to user,
                 KEY_ROOM_TOKEN to roomTokenParam,

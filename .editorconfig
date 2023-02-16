@@ -38,4 +38,4 @@ indent_size=2
 
 [*.{kt,kts}]
 # IDE does not follow this Ktlint rule strictly, but the default ordering is pretty good anyway, so let's ditch it
-disabled_rules=import-ordering
+ktlint_disabled_rules=import-ordering

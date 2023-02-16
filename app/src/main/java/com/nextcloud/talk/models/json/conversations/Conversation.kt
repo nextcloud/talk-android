@@ -194,8 +194,10 @@ data class Conversation(
         return if (canDeleteConversation != null) {
             // Available since APIv2
             canDeleteConversation!!
-        } else canModerate(conversationUser)
-        // Fallback for APIv1
+        } else {
+            canModerate(conversationUser)
+            // Fallback for APIv1
+        }
     }
 
     enum class NotificationLevel {

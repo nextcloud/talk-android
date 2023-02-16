@@ -63,36 +63,41 @@ class SSLSocketFactoryCompat(
 
     override fun createSocket(s: Socket, host: String, port: Int, autoClose: Boolean): Socket {
         val ssl = delegate.createSocket(s, host, port, autoClose)
-        if (ssl is SSLSocket)
+        if (ssl is SSLSocket) {
             upgradeTLS(ssl)
+        }
         return ssl
     }
 
     override fun createSocket(host: String, port: Int): Socket {
         val ssl = delegate.createSocket(host, port)
-        if (ssl is SSLSocket)
+        if (ssl is SSLSocket) {
             upgradeTLS(ssl)
+        }
         return ssl
     }
 
     override fun createSocket(host: String, port: Int, localHost: InetAddress, localPort: Int): Socket {
         val ssl = delegate.createSocket(host, port, localHost, localPort)
-        if (ssl is SSLSocket)
+        if (ssl is SSLSocket) {
             upgradeTLS(ssl)
+        }
         return ssl
     }
 
     override fun createSocket(host: InetAddress, port: Int): Socket {
         val ssl = delegate.createSocket(host, port)
-        if (ssl is SSLSocket)
+        if (ssl is SSLSocket) {
             upgradeTLS(ssl)
+        }
         return ssl
     }
 
     override fun createSocket(address: InetAddress, port: Int, localAddress: InetAddress, localPort: Int): Socket {
         val ssl = delegate.createSocket(address, port, localAddress, localPort)
-        if (ssl is SSLSocket)
+        if (ssl is SSLSocket) {
             upgradeTLS(ssl)
+        }
         return ssl
     }
 

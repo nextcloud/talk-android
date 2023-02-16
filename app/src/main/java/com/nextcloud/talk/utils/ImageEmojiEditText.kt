@@ -48,7 +48,6 @@ class ImageEmojiEditText : EmojiEditText {
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection? {
-
         val ic: InputConnection? = super.onCreateInputConnection(editorInfo)
 
         EditorInfoCompat.setContentMimeTypes(editorInfo, arrayOf(IMAGE_GIF, IMAGE_JPEG, IMAGE_PNG))
