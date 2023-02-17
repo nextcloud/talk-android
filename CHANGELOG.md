@@ -5,6 +5,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [15.1.2] - 2023-02-17
+
+## Added
+- Show raised hands of remote participants
+
+## Changed
+- Better voice message recording quality
+
+## Fixed
+- Missing author in group conversations
+- Missing file thumbnails in "share from Nextcloud"
+- Repair multiple actions when switching account via notification
+- Missing "back" button when opening chat by notification
+- Rare crashes
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/67?closed=1
+
 ## [15.1.1] - 2023-01-18
 
 ## Fixed
