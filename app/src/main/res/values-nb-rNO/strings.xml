@@ -110,6 +110,7 @@
     <string name="nc_guest_access_password_dialog_title">Gjestetilgang-passord</string>
     <string name="nc_guest_access_password_title">Passordbeskyttelse</string>
     <string name="nc_guest_access_password_weak_alert_title">Svakt passord</string>
+    <string name="nc_hint_enter_a_message">Enter a message …</string>
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_join_via_link">Bli med via en lenke</string>
     <string name="nc_join_via_web">Bli med via nett</string>
@@ -253,6 +254,7 @@
     <string name="nc_sort_by">Sorter etter</string>
     <string name="nc_start_time">Start tidspunkt</string>
     <string name="nc_upload_choose_local_files">Velg filer</string>
+    <string name="nc_upload_from_device">Last opp fra enhet</string>
     <string name="nc_upload_in_progess">Laster opp</string>
     <string name="nc_upload_picture_from_cam">Ta et bilde</string>
     <string name="nc_user">Bruker</string>
@@ -267,10 +269,12 @@
     <string name="polls_options">Valg</string>
     <string name="polls_results_subtitle">Resultater</string>
     <string name="polls_settings">Innstillinger</string>
+    <string name="polls_submit_vote">Stemme</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="save">Lagre</string>
     <string name="scope_federated_description">Synkroniser kun til betrodde servere</string>
     <string name="scope_federated_title">Sammenknyttet</string>
+    <string name="scope_local_description">Kun synlig for personer i denne installasjonen og for gjester</string>
     <string name="scope_local_title">Lokal</string>
     <string name="scope_private_description">Kun synlig for personer som matches via telefonnummerintegrasjon via Talk på mobil</string>
     <string name="scope_private_title">Privat</string>
