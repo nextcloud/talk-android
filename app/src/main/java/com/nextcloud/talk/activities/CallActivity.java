@@ -86,6 +86,7 @@ import com.nextcloud.talk.models.json.signaling.Signaling;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
@@ -173,6 +174,7 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_WITHOUT_NOTIFI
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO;
@@ -180,10 +182,13 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISS
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends CallBaseActivity {
+
+    public static boolean active = false;
 
     public static final String VIDEO_STREAM_TYPE_SCREEN = "screen";
     public static final String VIDEO_STREAM_TYPE_VIDEO = "video";
@@ -207,6 +212,7 @@ public class CallActivity extends CallBaseActivity {
     public WebRtcAudioManager audioManager;
 
     public CallRecordingViewModel callRecordingViewModel;
+    public RaiseHandViewModel raiseHandViewModel;
 
     private static final String[] PERMISSIONS_CALL = {
         Manifest.permission.CAMERA,
@@ -304,6 +310,18 @@ public class CallActivity extends CallBaseActivity {
 
     private CallParticipantList callParticipantList;
 
+    private String switchToRoomToken = "";
+    private boolean isBreakoutRoom = false;
+
+    private SignalingMessageReceiver.LocalParticipantMessageListener localParticipantMessageListener =
+        new SignalingMessageReceiver.LocalParticipantMessageListener() {
+            @Override
+            public void onSwitchTo(String token) {
+                switchToRoomToken = token;
+                hangup(true);
+            }
+        };
+
     private SignalingMessageReceiver.OfferMessageListener offerMessageListener = new SignalingMessageReceiver.OfferMessageListener() {
         @Override
         public void onOffer(String sessionId, String roomType, String sdp, String nick) {
@@ -375,6 +393,10 @@ public class CallActivity extends CallBaseActivity {
             isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL);
         }
 
+        if (extras.containsKey(KEY_IS_BREAKOUT_ROOM)) {
+            isBreakoutRoom = extras.getBoolean(KEY_IS_BREAKOUT_ROOM);
+        }
+
         credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
 
         baseUrl = extras.getString(KEY_MODIFIED_BASE_URL, "");
@@ -389,6 +411,33 @@ public class CallActivity extends CallBaseActivity {
         } else {
             setCallState(CallStatus.CONNECTING);
         }
+
+        raiseHandViewModel = new ViewModelProvider(this, viewModelFactory).get((RaiseHandViewModel.class));
+        raiseHandViewModel.setData(roomToken, isBreakoutRoom);
+
+        raiseHandViewModel.getViewState().observe(this, viewState -> {
+            if (viewState instanceof RaiseHandViewModel.RaisedHandState) {
+                binding.lowerHandButton.setVisibility(View.VISIBLE);
+            } else if (viewState instanceof RaiseHandViewModel.LoweredHandState) {
+                binding.lowerHandButton.setVisibility(View.GONE);
+            }
+
+            // TODO: build&send raiseHand message (if not possible in RaiseHandViewModel, just do it here..)
+//        if (isConnectionEstablished() && peerConnectionWrapperList != null) {
+//            if (!hasMCU) {
+//                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+//                    peerConnectionWrapper.raiseHand(...);
+//                }
+//            } else {
+//                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+//                    if (peerConnectionWrapper.getSessionId().equals(webSocketClient.getSessionId())) {
+//                        peerConnectionWrapper.raiseHand(...);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+        });
 
         callRecordingViewModel = new ViewModelProvider(this, viewModelFactory).get((CallRecordingViewModel.class));
         callRecordingViewModel.setData(roomToken);
@@ -449,6 +498,7 @@ public class CallActivity extends CallBaseActivity {
     @Override
     public void onStart() {
         super.onStart();
+        active = true;
         initFeaturesVisibility();
 
         try {
@@ -456,6 +506,12 @@ public class CallActivity extends CallBaseActivity {
         } catch (IOException e) {
             Log.e(TAG, "Failed to evict cache");
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
@@ -474,7 +530,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void initFeaturesVisibility() {
-        if (isAllowedToStartOrStopRecording()) {
+        if (isAllowedToStartOrStopRecording() || isAllowedToRaiseHand()) {
             binding.moreCallActions.setVisibility(View.VISIBLE);
         } else {
             binding.moreCallActions.setVisibility(View.GONE);
@@ -551,6 +607,10 @@ public class CallActivity extends CallBaseActivity {
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.record_active_info), Toast.LENGTH_LONG).show();
             }
+        });
+
+        binding.lowerHandButton.setOnClickListener(l -> {
+            raiseHandViewModel.lowerHand();
         });
     }
 
@@ -1202,6 +1262,10 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
+    public void clickRaiseOrLowerHandButton() {
+        raiseHandViewModel.clickHandButton();
+    }
+
 
     private void animateCallControls(boolean show, long startDelay) {
         if (isVoiceOnlyCall) {
@@ -1319,6 +1383,7 @@ public class CallActivity extends CallBaseActivity {
     @Override
     public void onDestroy() {
         if (signalingMessageReceiver != null) {
+            signalingMessageReceiver.removeListener(localParticipantMessageListener);
             signalingMessageReceiver.removeListener(offerMessageListener);
         }
 
@@ -1453,6 +1518,7 @@ public class CallActivity extends CallBaseActivity {
                         setupAndInitiateWebSocketsConnection();
                     } else {
                         signalingMessageReceiver = internalSignalingMessageReceiver;
+                        signalingMessageReceiver.addListener(localParticipantMessageListener);
                         signalingMessageReceiver.addListener(offerMessageListener);
                         signalingMessageSender = internalSignalingMessageSender;
                         joinRoomAndCall();
@@ -1662,6 +1728,7 @@ public class CallActivity extends CallBaseActivity {
             // Although setupAndInitiateWebSocketsConnection could be called several times the web socket is
             // initialized just once, so the message receiver is also initialized just once.
             signalingMessageReceiver = webSocketClient.getSignalingMessageReceiver();
+            signalingMessageReceiver.addListener(localParticipantMessageListener);
             signalingMessageReceiver.addListener(offerMessageListener);
             signalingMessageSender = webSocketClient.getSignalingMessageSender();
         } else {
@@ -1860,7 +1927,29 @@ public class CallActivity extends CallBaseActivity {
 
                 @Override
                 public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-                    if (shutDownView) {
+                    if (!switchToRoomToken.isEmpty()) {
+                        Intent intent = new Intent(context, MainActivity.class);
+
+                        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean(KEY_SWITCH_TO_ROOM_AND_START_CALL, true);
+                        bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken);
+                        bundle.putParcelable(KEY_USER_ENTITY, conversationUser);
+                        bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+
+                        if (isBreakoutRoom) {
+                            Toast.makeText(context, context.getResources().getString(R.string.switch_to_main_room),
+                                           Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, context.getResources().getString(R.string.switch_to_breakout_room),
+                                           Toast.LENGTH_LONG).show();
+                        }
+
+                        finish();
+                    } else if (shutDownView) {
                         finish();
                     } else if (currentCallStatus == CallStatus.RECONNECTING
                         || currentCallStatus == CallStatus.PUBLISHER_FAILED) {
@@ -2994,6 +3083,11 @@ public class CallActivity extends CallBaseActivity {
     public boolean isAllowedToStartOrStopRecording() {
         return CapabilitiesUtilNew.isCallRecordingAvailable(conversationUser)
             && isModerator;
+    }
+
+    public boolean isAllowedToRaiseHand() {
+        return CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "raise-hand") ||
+            isBreakoutRoom;
     }
 
     private class SelfVideoTouchListener implements View.OnTouchListener {

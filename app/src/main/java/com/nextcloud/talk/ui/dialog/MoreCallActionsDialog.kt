@@ -32,6 +32,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogMoreCallActionsBinding
+import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
 import javax.inject.Inject
@@ -72,11 +73,21 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         } else {
             binding.recordCall.visibility = View.GONE
         }
+
+        if (callActivity.isAllowedToRaiseHand) {
+            binding.raiseHand.visibility = View.VISIBLE
+        } else {
+            binding.raiseHand.visibility = View.GONE
+        }
     }
 
     private fun initClickListeners() {
         binding.recordCall.setOnClickListener {
             callActivity.callRecordingViewModel.clickRecordButton()
+        }
+
+        binding.raiseHand.setOnClickListener {
+            callActivity.clickRaiseOrLowerHandButton()
         }
     }
 
@@ -109,6 +120,26 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                 else -> {
                     Log.e(TAG, "unknown viewState for callRecordingViewModel")
                 }
+            }
+        }
+
+        callActivity.raiseHandViewModel.viewState.observe(this) { state ->
+            when (state) {
+                is RaiseHandViewModel.RaisedHandState -> {
+                    binding.raiseHandText.text = context.getText(R.string.lower_hand)
+                    binding.raiseHandIcon.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.ic_baseline_do_not_touch_24)
+                    )
+                    dismiss()
+                }
+                is RaiseHandViewModel.LoweredHandState -> {
+                    binding.raiseHandText.text = context.getText(R.string.raise_hand)
+                    binding.raiseHandIcon.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.ic_hand_back_left)
+                    )
+                    dismiss()
+                }
+                else -> {}
             }
         }
     }

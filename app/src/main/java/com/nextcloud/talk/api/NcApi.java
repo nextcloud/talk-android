@@ -587,4 +587,12 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> stopRecording(@Header("Authorization") String authorization,
                                               @Url String url);
+
+    @POST
+    Observable<GenericOverall> requestAssistance(@Header("Authorization") String authorization,
+                                              @Url String url);
+
+    @DELETE
+    Observable<GenericOverall> withdrawRequestAssistance(@Header("Authorization") String authorization,
+                                             @Url String url);
 }

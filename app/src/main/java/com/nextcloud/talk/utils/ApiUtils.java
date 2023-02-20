@@ -498,4 +498,8 @@ public class ApiUtils {
     public static String getUrlForRecording(int version, String baseUrl, String token) {
         return getUrlForApi(version, baseUrl) + "/recording/" + token;
     }
+
+    public static String getUrlForRequestAssistance(int version, String baseUrl, String token) {
+        return getUrlForApi(version, baseUrl) + "/breakout-rooms/" + token + "/request-assistance";
+    }
 }

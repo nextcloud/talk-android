@@ -223,6 +223,8 @@
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
+    <string name="raise_hand">Raise hand</string>
+    <string name="lower_hand">Lower hand</string>
 
     <!-- Picture in Picture -->
     <string name="nc_pip_microphone_mute">Mute microphone</string>
@@ -627,6 +629,10 @@
     <string name="nc_expire_message_eight_hours">8 hours</string>
     <string name="nc_expire_message_one_hour">1 hour</string>
     <string name="nc_expire_messages_explanation">Chat messages can be expired after a certain time. Note: Files shared in chat will not be deleted for the owner, but will no longer be shared in the conversation.</string>
+
+    <!-- Breakout rooms -->
+    <string name="switch_to_main_room">Switch to main room</string>
+    <string name="switch_to_breakout_room">Switch to breakout room</string>
 
     <string name="nc_not_allowed_to_activate_audio">You are not allowed to activate audio!</string>
     <string name="nc_not_allowed_to_activate_video">You are not allowed to activate video!</string>

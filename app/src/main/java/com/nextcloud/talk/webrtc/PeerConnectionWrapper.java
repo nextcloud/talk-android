@@ -190,6 +190,24 @@ public class PeerConnectionWrapper {
         }
     }
 
+    public void raiseHand(Boolean raise) {
+        // TODO: build&send raiseHand message (either here or via RaiseHandViewModel)
+//        NCMessagePayload ncMessagePayload = new NCMessagePayload();
+//        ncMessagePayload.setState(raise);
+//        ncMessagePayload.setTimestamp(System.currentTimeMillis());
+//
+//
+//        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+////        ncSignalingMessage.setFrom();
+//        ncSignalingMessage.setTo(sessionId);
+////        ncSignalingMessage.setSid();
+//        ncSignalingMessage.setType("raiseHand");
+//        ncSignalingMessage.setPayload(ncMessagePayload);
+//        ncSignalingMessage.setRoomType(videoStreamType);
+//
+//        signalingMessageSender.send(ncSignalingMessage);
+    }
+
     /**
      * Adds a listener for data channel messages.
      *
@@ -273,7 +291,7 @@ public class PeerConnectionWrapper {
             try {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
                 dataChannel.send(new DataChannel.Buffer(buffer, false));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
             }
         }

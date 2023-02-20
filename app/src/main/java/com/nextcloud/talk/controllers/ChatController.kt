@@ -151,6 +151,7 @@ import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
+import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
@@ -172,6 +173,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
@@ -265,6 +267,7 @@ class ChatController(args: Bundle) :
     private var lookingIntoFuture = false
     var newMessagesCount = 0
     var startCallFromNotification: Boolean? = null
+    var startCallFromRoomSwitch: Boolean = false
     val roomId: String
     val voiceOnly: Boolean
     var isFirstMessagesProcessing = true
@@ -299,16 +302,24 @@ class ChatController(args: Bundle) :
 
     private var videoURI: Uri? = null
 
+    private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
+        override fun onSwitchTo(token: String?) {
+            if (token != null) {
+                switchToRoom(token)
+            }
+        }
+    }
+
     init {
         Log.d(TAG, "init ChatController: " + System.identityHashCode(this).toString())
 
         setHasOptionsMenu(true)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        this.conversationUser = args.getParcelable(KEY_USER_ENTITY)
-        this.roomId = args.getString(KEY_ROOM_ID, "")
-        this.roomToken = args.getString(KEY_ROOM_TOKEN, "")
-        this.sharedText = args.getString(BundleKeys.KEY_SHARED_TEXT, "")
+        conversationUser = args.getParcelable(KEY_USER_ENTITY)
+        roomId = args.getString(KEY_ROOM_ID, "")
+        roomToken = args.getString(KEY_ROOM_TOKEN, "")
+        sharedText = args.getString(BundleKeys.KEY_SHARED_TEXT, "")
 
         Log.d(TAG, "   roomToken = $roomToken")
         if (roomToken.isNullOrEmpty()) {
@@ -316,11 +327,11 @@ class ChatController(args: Bundle) :
         }
 
         if (args.containsKey(KEY_ACTIVE_CONVERSATION)) {
-            this.currentConversation = Parcels.unwrap<Conversation>(args.getParcelable(KEY_ACTIVE_CONVERSATION))
-            this.participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
+            currentConversation = Parcels.unwrap<Conversation>(args.getParcelable(KEY_ACTIVE_CONVERSATION))
+            participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
         }
 
-        this.roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
+        roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
 
         credentials = if (conversationUser?.userId == "?") {
             null
@@ -329,10 +340,14 @@ class ChatController(args: Bundle) :
         }
 
         if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)
+            startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)
         }
 
-        this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)
+        if (args.containsKey(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)) {
+            startCallFromRoomSwitch = args.getBoolean(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)
+        }
+
+        voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)
     }
 
     private fun getRoomInfo() {
@@ -912,6 +927,43 @@ class ChatController(args: Bundle) :
             }
         }
         super.onViewBound(view)
+    }
+
+    private fun switchToRoom(token: String) {
+        if (CallActivity.active) {
+            Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatController...")
+            return
+        }
+
+        if (conversationUser != null) {
+            activity?.runOnUiThread {
+                if (currentConversation?.objectType == BREAKOUT_ROOM_TYPE) {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.switch_to_main_room),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.switch_to_breakout_room),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
+            bundle.putString(KEY_ROOM_TOKEN, token)
+
+            ConductorRemapping.remapChatController(
+                router,
+                conversationUser.id!!,
+                token,
+                bundle,
+                true
+            )
+        }
     }
 
     private fun showSendButtonMenu() {
@@ -1747,6 +1799,8 @@ class ChatController(args: Bundle) :
 
         eventBus.register(this)
 
+        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
+
         if (conversationUser?.userId != "?" &&
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag") &&
             activity != null
@@ -1832,6 +1886,8 @@ class ChatController(args: Bundle) :
         logConversationInfos("onDetach")
 
         eventBus.unregister(this)
+
+        webSocketInstance?.getSignalingMessageReceiver()?.removeListener(localParticipantMessageListener)
 
         if (activity != null) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
@@ -1935,7 +1991,14 @@ class ChatController(args: Bundle) :
                         ApplicationWideCurrentRoomHolder.getInstance().session =
                             currentConversation?.sessionId
 
+                        // FIXME The web socket should be set up in onAttach(). It is currently setup after joining the
+                        // room to "ensure" (rather, increase the chances) that the WebsocketConnectionsWorker job
+                        // was able to finish and, therefore, that the web socket instance can be got.
                         setupWebsocket()
+
+                        // Ensure that the listener is added if the web socket instance was not set up yet when
+                        // onAttach() was called.
+                        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
 
                         checkLobbyState()
 
@@ -1954,6 +2017,10 @@ class ChatController(args: Bundle) :
                         if (startCallFromNotification != null && startCallFromNotification ?: false) {
                             startCallFromNotification = false
                             startACall(voiceOnly, false)
+                        }
+
+                        if (startCallFromRoomSwitch) {
+                            startACall(voiceOnly, true)
                         }
                     }
 
@@ -2147,14 +2214,14 @@ class ChatController(args: Bundle) :
     }
 
     private fun setupWebsocket() {
-        if (conversationUser != null) {
-            webSocketInstance =
-                if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
-                    WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
-                } else {
-                    Log.d(TAG, "magicWebSocketInstance became null")
-                    null
-                }
+        if (conversationUser == null) {
+            return
+        }
+
+        webSocketInstance = WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
+
+        if (webSocketInstance == null) {
+            Log.d(TAG, "magicWebSocketInstance became null")
         }
     }
 
@@ -2381,9 +2448,11 @@ class ChatController(args: Bundle) :
     }
 
     private fun updateReadStatusOfAllMessages(xChatLastCommonRead: Int?) {
-        for (message in adapter!!.items) {
-            xChatLastCommonRead?.let {
-                updateReadStatusOfMessage(message, it)
+        if (adapter != null) {
+            for (message in adapter!!.items) {
+                xChatLastCommonRead?.let {
+                    updateReadStatusOfMessage(message, it)
+                }
             }
         }
     }
@@ -2784,6 +2853,10 @@ class ChatController(args: Bundle) :
             }
             if (callWithoutNotification) {
                 bundle.putBoolean(BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION, true)
+            }
+
+            if (it.objectType == BREAKOUT_ROOM_TYPE) {
+                bundle.putBoolean(KEY_IS_BREAKOUT_ROOM, true)
             }
 
             return if (activity != null) {
@@ -3476,5 +3549,6 @@ class ChatController(args: Bundle) :
         private const val LOOKING_INTO_FUTURE_TIMEOUT = 30
         private const val CHUNK_SIZE: Int = 10
         private const val ONE_SECOND_IN_MILLIS = 1000
+        private const val BREAKOUT_ROOM_TYPE = "room"
     }
 }
