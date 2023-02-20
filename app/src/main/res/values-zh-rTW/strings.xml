@@ -9,7 +9,9 @@
     <string name="audio_output_wired_headset">有線式頭戴耳機</string>
     <string name="avatar">頭像</string>
     <string name="away">外出</string>
+    <string name="call_more_actions_dialog_headline">進階通話選項</string>
     <string name="call_without_notification">通話而不通知</string>
+    <string name="camera_permission_granted">已獲取相機權限，請重新選擇相機或影像來源。</string>
     <string name="choose_avatar_from_cloud">從雲端選擇頭像</string>
     <string name="clear_status_message">清空狀態訊息</string>
     <string name="clear_status_message_after">在……之後清空狀態訊息</string>
@@ -23,6 +25,7 @@
     <string name="emoji_category_recent">近期</string>
     <string name="emoji_search">搜尋 emoji</string>
     <string name="encrypted">已加密</string>
+    <string name="error_loading_chats">在載入您的對話時出現錯誤</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
     <string name="file_list_folder">資料夾</string>
     <string name="file_list_loading">正在載入……</string>
@@ -57,6 +60,10 @@
     <string name="nc_allow_guests">允許訪客</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
+    <string name="nc_call_button_content_description_advanced">進階通話選項</string>
+    <string name="nc_call_button_content_description_answer_video_call">以視訊通話方式接聽</string>
+    <string name="nc_call_button_content_description_answer_voice_only">僅以語音通話方式接聽</string>
+    <string name="nc_call_button_content_description_audio_output">變更聲音輸出</string>
     <string name="nc_call_incoming">來電</string>
     <string name="nc_call_name">對話名稱</string>
     <string name="nc_call_name_is_same">名稱已存在</string>
