@@ -34,6 +34,7 @@
     <string name="invisible">Invisible</string>
     <string name="load_more_results">Cargar más resultados</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
+    <string name="lower_hand">Bajar la mano</string>
     <string name="menu_item_sort_by_date_newest_first">Nuevas primero</string>
     <string name="menu_item_sort_by_date_oldest_first">Antiguas primero</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -67,7 +68,6 @@
     <string name="nc_call_button_content_description_camera">Activar/Desactivar cámara</string>
     <string name="nc_call_button_content_description_hangup">Colgar</string>
     <string name="nc_call_button_content_description_microphone">Activar/Desactivar el micrófono</string>
-    <string name="nc_call_button_content_description_pip">Abrir modo picture in picture</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Cambiar a video propio</string>
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nombre de la conversación</string>
@@ -401,6 +401,7 @@
     <string name="polls_settings">Ajustes</string>
     <string name="polls_submit_vote">Votar</string>
     <string name="polls_voted_hidden_success">Voto enviado</string>
+    <string name="raise_hand">Levantar la mano</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="read_storage_no_permission">Compartir archivos desde el almacenamiento no es posible sin permisos</string>
     <string name="record_active_info">La llamada está siendo grabada.</string>

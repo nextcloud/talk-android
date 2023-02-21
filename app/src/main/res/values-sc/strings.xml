@@ -24,6 +24,7 @@
     <string name="invisible">Invisìbile</string>
     <string name="load_more_results">Càrriga àteros resurtados</string>
     <string name="lock_symbol">Sìmbolu de blocu</string>
+    <string name="lower_hand">Bàscia sa manu </string>
     <string name="menu_item_sort_by_date_newest_first">In antis is prus reghentes</string>
     <string name="menu_item_sort_by_date_oldest_first">In antis is prus betzos</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -47,6 +48,7 @@
     <string name="nc_allow_guests">Autoriza persones invitadas</string>
     <string name="nc_attendee_pin">Apunta: %1$s</string>
     <string name="nc_biometric_unlock">Isbloca %1$s</string>
+    <string name="nc_call_button_content_description_hangup">Serra</string>
     <string name="nc_call_incoming">IN INTRADA</string>
     <string name="nc_call_name">Nùmene resonada</string>
     <string name="nc_call_name_is_same">Su nùmene chi as postu est su pròpiu de cussu chi ddoe est giai</string>
@@ -322,6 +324,7 @@
     <string name="polls_options">Optziones</string>
     <string name="polls_results_subtitle">Resurtados</string>
     <string name="polls_settings">Impostatziones</string>
+    <string name="raise_hand">Àrtzia sa manu </string>
     <string name="reactions_tab_all">Totu</string>
     <string name="read_storage_no_permission">Non faghet a cumpartzire archìvios dae s\'archiviatzione chene permissos</string>
     <string name="save">Sarva</string>

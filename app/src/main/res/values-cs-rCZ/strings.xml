@@ -34,6 +34,7 @@
     <string name="invisible">Není vidět</string>
     <string name="load_more_results">Načíst další výsledky</string>
     <string name="lock_symbol">Uzamknout symbol</string>
+    <string name="lower_hand">Přestat se hlásit</string>
     <string name="menu_item_sort_by_date_newest_first">Nejnovější jako první</string>
     <string name="menu_item_sort_by_date_oldest_first">Nejstarší jako první</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -67,7 +68,6 @@
     <string name="nc_call_button_content_description_camera">Vyp/zap. kameru</string>
     <string name="nc_call_button_content_description_hangup">Zavěsit</string>
     <string name="nc_call_button_content_description_microphone">Vyp/zap. mikrofon</string>
-    <string name="nc_call_button_content_description_pip">Otevřít v režimu obraz-v-obraze</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Přepnout na video sama sebe</string>
     <string name="nc_call_incoming">PŘÍCHOZÍ</string>
     <string name="nc_call_name">Název konverzace</string>
@@ -400,6 +400,7 @@
     <string name="polls_settings">Nastavení</string>
     <string name="polls_submit_vote">Hlasovat</string>
     <string name="polls_voted_hidden_success">Hlas odeslán</string>
+    <string name="raise_hand">Hlásit se</string>
     <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
     <string name="record_active_info">Hovor je nahráván</string>
@@ -420,6 +421,7 @@
     <string name="scope_published_title">Zveřejněno</string>
     <string name="scope_toggle">Přepnout pohled</string>
     <string name="scope_toggle_description">Změnit úroveň soukromí pro %1$s</string>
+    <string name="scroll_to_bottom">Odrolovat na konec</string>
     <string name="secondsAgo">sekund před</string>
     <string name="selected_list_item">Vybráno</string>
     <string name="send_to">Odeslat k</string>

@@ -34,6 +34,7 @@
     <string name="invisible">Niewidoczny</string>
     <string name="load_more_results">Wczytaj więcej wyników</string>
     <string name="lock_symbol">Symbol zamknięcia</string>
+    <string name="lower_hand">Opuścić rękę</string>
     <string name="menu_item_sort_by_date_newest_first">Od najnowszych</string>
     <string name="menu_item_sort_by_date_oldest_first">Od najstarszych</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -65,9 +66,8 @@
     <string name="nc_call_button_content_description_answer_voice_only">Odbierz tylko jako połączenie głosowe</string>
     <string name="nc_call_button_content_description_audio_output">Zmień wyjście audio</string>
     <string name="nc_call_button_content_description_camera">Przełącz kamerę</string>
-    <string name="nc_call_button_content_description_hangup">Rozłącz się</string>
+    <string name="nc_call_button_content_description_hangup">Odłożyć słuchawkę</string>
     <string name="nc_call_button_content_description_microphone">Przełącz mikrofon</string>
-    <string name="nc_call_button_content_description_pip">Otwórz zdjęcie w trybie obrazu</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Przełącz na własne wideo</string>
     <string name="nc_call_incoming">PRZYCHODZĄCA</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
@@ -400,6 +400,7 @@
     <string name="polls_settings">Ustawienia</string>
     <string name="polls_submit_vote">Wyniki głosowania</string>
     <string name="polls_voted_hidden_success">Oddano głos</string>
+    <string name="raise_hand">Podnieść rękę</string>
     <string name="reactions_tab_all">Wszystkie</string>
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
     <string name="record_active_info">Rozmowa jest nagrywana</string>

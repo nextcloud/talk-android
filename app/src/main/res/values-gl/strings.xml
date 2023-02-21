@@ -33,6 +33,7 @@
     <string name="invisible">Invisíbel</string>
     <string name="load_more_results">Cargando máis resultados</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
+    <string name="lower_hand">Baixar a man</string>
     <string name="menu_item_sort_by_date_newest_first">Primeiro o máis recente</string>
     <string name="menu_item_sort_by_date_oldest_first">Primeiro o máis antigo</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -65,7 +66,6 @@
     <string name="nc_call_button_content_description_camera">Cambiar cámara</string>
     <string name="nc_call_button_content_description_hangup">Colgar</string>
     <string name="nc_call_button_content_description_microphone">Cambiar o micrófono</string>
-    <string name="nc_call_button_content_description_pip">Abrir modo imaxe en imaxe (picture in picture)</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Cambia ao vídeo propio</string>
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nome da conversa</string>
@@ -330,6 +330,7 @@
     <string name="polls_options">Opcións</string>
     <string name="polls_results_subtitle">Resultados</string>
     <string name="polls_settings">Axustes</string>
+    <string name="raise_hand">Erguer a man</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="save">Gardar</string>
     <string name="scope_federated_description">Sincronizar só con servidores de confianza</string>

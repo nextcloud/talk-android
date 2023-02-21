@@ -28,6 +28,7 @@
     <string name="invisible">مخفي</string>
     <string name="load_more_results">تحميل المزيد من النتائج</string>
     <string name="lock_symbol">رمز القفل</string>
+    <string name="lower_hand">خفض اليد </string>
     <string name="menu_item_sort_by_date_newest_first">الأحدث أولاً</string>
     <string name="menu_item_sort_by_date_oldest_first">الأقدم أولاً</string>
     <string name="menu_item_sort_by_name_a_z">أ - ي</string>
@@ -53,6 +54,7 @@
     <string name="nc_allow_guests">السماح للضيوف</string>
     <string name="nc_attendee_pin">الرمز: %1$s</string>
     <string name="nc_biometric_unlock">فتح قفل %1$s</string>
+    <string name="nc_call_button_content_description_hangup">إنهاء المكالمة</string>
     <string name="nc_call_incoming">واردة</string>
     <string name="nc_call_name">اسم المحادثة</string>
     <string name="nc_call_name_is_same">الاسم الذي أدخلته مطابق لاسم آخر </string>
@@ -334,6 +336,7 @@
     <string name="polls_options">الخيارات</string>
     <string name="polls_results_subtitle">النتائج </string>
     <string name="polls_settings">الإعدادات</string>
+    <string name="raise_hand">رفع اليد</string>
     <string name="reactions_tab_all">الكل</string>
     <string name="save">Save</string>
     <string name="scope_federated_description">قم فقط بالمزامنة مع الخوادم الموثوقة</string>
@@ -344,6 +347,7 @@
     <string name="scope_published_description">قم بالمزامنة مع الخوادم الموثوقة ودفتر العناوين العالمية والعامة</string>
     <string name="scope_published_title">نشرت</string>
     <string name="scope_toggle_description">تغيير مستوى الخصوصية لـ%1$s</string>
+    <string name="scroll_to_bottom">انتقل للاسفل</string>
     <string name="secondsAgo">منذ ثوانٍ</string>
     <string name="selected_list_item">تم تحديد</string>
     <string name="send_to">أرسل إلى</string>

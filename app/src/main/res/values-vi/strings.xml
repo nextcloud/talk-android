@@ -24,6 +24,7 @@
     <string name="invisible">Vô hình</string>
     <string name="load_more_results">Tải thêm kết quả</string>
     <string name="lock_symbol">Biểu tượng khóa</string>
+    <string name="lower_hand">Đặt tay xuống</string>
     <string name="menu_item_sort_by_date_newest_first">Mới nhất trước</string>
     <string name="menu_item_sort_by_date_oldest_first">Cũ nhất trước</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -217,6 +218,7 @@
     <string name="openConversations">Mở cuộc trò chuyện</string>
     <string name="polls_settings">Cài đặt</string>
     <string name="polls_submit_vote">Phiếu bầu</string>
+    <string name="raise_hand">Giơ tay</string>
     <string name="reactions_tab_all">Tất cả</string>
     <string name="save">Lưu</string>
     <string name="scope_federated_title">Federated</string>

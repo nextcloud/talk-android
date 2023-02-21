@@ -24,6 +24,7 @@
     <string name="fourHours">4 timer</string>
     <string name="invisible">Usynlig</string>
     <string name="load_more_results">Hent flere resultat</string>
+    <string name="lower_hand">Senk hånden</string>
     <string name="menu_item_sort_by_date_newest_first">Nyeste først</string>
     <string name="menu_item_sort_by_date_oldest_first">Eldste først</string>
     <string name="menu_item_sort_by_name_a_z">A - Å</string>
@@ -270,6 +271,7 @@
     <string name="polls_results_subtitle">Resultater</string>
     <string name="polls_settings">Innstillinger</string>
     <string name="polls_submit_vote">Stemme</string>
+    <string name="raise_hand">Løft hånden</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="save">Lagre</string>
     <string name="scope_federated_description">Synkroniser kun til betrodde servere</string>

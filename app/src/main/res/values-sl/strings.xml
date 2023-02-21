@@ -31,6 +31,7 @@
     <string name="invisible">Drugim nevidno</string>
     <string name="load_more_results">Naloži več zadetkov</string>
     <string name="lock_symbol">Simbol zaklepa</string>
+    <string name="lower_hand">Spusti roko</string>
     <string name="menu_item_sort_by_date_newest_first">najprej najnovejše</string>
     <string name="menu_item_sort_by_date_oldest_first">najprej najstarejše</string>
     <string name="menu_item_sort_by_name_a_z">po abecedi naraščajoče A–Ž</string>
@@ -62,7 +63,6 @@
     <string name="nc_call_button_content_description_camera">Preklopi kamero</string>
     <string name="nc_call_button_content_description_hangup">Končaj klic</string>
     <string name="nc_call_button_content_description_microphone">Preklopi mikrofon</string>
-    <string name="nc_call_button_content_description_pip">Odpri sliko v načinu slike</string>
     <string name="nc_call_incoming">DOHODNI</string>
     <string name="nc_call_name">Naslov pogovora</string>
     <string name="nc_call_name_is_same">Vpisano ime je enako obstoječemu</string>
@@ -373,6 +373,7 @@
     <string name="polls_settings">Nastavitve</string>
     <string name="polls_submit_vote">Glas</string>
     <string name="polls_voted_hidden_success">Oddan glas</string>
+    <string name="raise_hand">Dvigni roko</string>
     <string name="reactions_tab_all">Vse</string>
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>
     <string name="record_start_description">Začni s snemanjem</string>

@@ -34,6 +34,7 @@
     <string name="invisible">Невидим</string>
     <string name="load_more_results">Зареждане на още резултати</string>
     <string name="lock_symbol">Символ за заключване</string>
+    <string name="lower_hand">Сваляне на ръка</string>
     <string name="menu_item_sort_by_date_newest_first">Първо най-новият</string>
     <string name="menu_item_sort_by_date_oldest_first">Първо най-старият</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -67,7 +68,6 @@
     <string name="nc_call_button_content_description_camera">Превключване на камера</string>
     <string name="nc_call_button_content_description_hangup">Затваряне</string>
     <string name="nc_call_button_content_description_microphone">Превключване на микрофона</string>
-    <string name="nc_call_button_content_description_pip">Отваряне на картина в режим на картина</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Превключване към самозснемане на видео</string>
     <string name="nc_call_incoming">ВХОДЯЩИ</string>
     <string name="nc_call_name">Име на разговор</string>
@@ -400,6 +400,7 @@
     <string name="polls_settings">Настройки</string>
     <string name="polls_submit_vote">Глас</string>
     <string name="polls_voted_hidden_success">Гласуването е изпратено</string>
+    <string name="raise_hand">Вдигане на ръка</string>
     <string name="reactions_tab_all">Всички</string>
     <string name="read_storage_no_permission">Споделянето на файлове от хранилище не е възможно без права</string>
     <string name="record_active_info">Разговорът се записва</string>
@@ -420,6 +421,7 @@
     <string name="scope_published_title">Публикувано</string>
     <string name="scope_toggle">Превключване на обхват</string>
     <string name="scope_toggle_description">Промяна на нивото на поверителност на %1$s</string>
+    <string name="scroll_to_bottom">Превъртане до долу</string>
     <string name="secondsAgo">преди секунди</string>
     <string name="selected_list_item">Избранo</string>
     <string name="send_to">Изпращане до</string>

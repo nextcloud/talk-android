@@ -28,6 +28,7 @@
     <string name="fourHours">4 tuntia</string>
     <string name="invisible">Näkymätön</string>
     <string name="load_more_results">Lataa lisää tuloksia</string>
+    <string name="lower_hand">Laske käsi</string>
     <string name="menu_item_sort_by_date_newest_first">Uusin ensin</string>
     <string name="menu_item_sort_by_date_oldest_first">Vanhin ensin</string>
     <string name="menu_item_sort_by_name_a_z">A - Ö</string>
@@ -53,6 +54,7 @@
     <string name="nc_allow_guests">Salli vieraat</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Avaa lukitus %1$s</string>
+    <string name="nc_call_button_content_description_hangup">Lopeta</string>
     <string name="nc_call_incoming">SAAPUVA</string>
     <string name="nc_call_name">Keskustelun nimi</string>
     <string name="nc_call_name_is_same">Kirjoittamasi nimi on sama kuin olemassa oleva</string>
@@ -323,6 +325,7 @@
     <string name="polls_results_subtitle">Tulokset</string>
     <string name="polls_settings">Asetukset</string>
     <string name="polls_submit_vote">Äänestä</string>
+    <string name="raise_hand">Nosta käsi</string>
     <string name="reactions_tab_all">Kaikki</string>
     <string name="record_start_description">Käynnistä tallennus</string>
     <string name="record_stop_description">Lopeta tallennus</string>

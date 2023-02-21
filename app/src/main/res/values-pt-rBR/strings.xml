@@ -34,6 +34,7 @@
     <string name="invisible">Invisível</string>
     <string name="load_more_results">Carregar mais resultados </string>
     <string name="lock_symbol">Símbolo de cadeado</string>
+    <string name="lower_hand">Baixar a mão</string>
     <string name="menu_item_sort_by_date_newest_first">Mais novo primeiro</string>
     <string name="menu_item_sort_by_date_oldest_first">Mais antigo primeiro</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -65,9 +66,8 @@
     <string name="nc_call_button_content_description_answer_voice_only">Responder apenas com uma chamada de voz</string>
     <string name="nc_call_button_content_description_audio_output">Mude a saída de áudio</string>
     <string name="nc_call_button_content_description_camera">Alternar a câmera</string>
-    <string name="nc_call_button_content_description_hangup">Espere</string>
+    <string name="nc_call_button_content_description_hangup">Desligar</string>
     <string name="nc_call_button_content_description_microphone">Alternar o microfone</string>
-    <string name="nc_call_button_content_description_pip">Abrir imagem no modo de imagem</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para o próprio vídeo</string>
     <string name="nc_call_incoming">ENTRADA </string>
     <string name="nc_call_name">Nome de conversação</string>
@@ -400,6 +400,7 @@
     <string name="polls_settings">Configurações</string>
     <string name="polls_submit_vote">Voto</string>
     <string name="polls_voted_hidden_success">Voto enviado</string>
+    <string name="raise_hand">Levantar a mão</string>
     <string name="reactions_tab_all">Tudos</string>
     <string name="read_storage_no_permission">O compartilhamento de arquivos do armazenamento não é possível sem permissões </string>
     <string name="record_active_info">A chamada está sendo gravada</string>

@@ -25,6 +25,7 @@
     <string name="fourHours">4 ώρες</string>
     <string name="invisible">Αόρατο</string>
     <string name="load_more_results">Φόρτωση περισσοτέρων αποτελεσμάτων</string>
+    <string name="lower_hand">Κατεβάστε το χέρι</string>
     <string name="menu_item_sort_by_date_newest_first">Νεότερο πρώτα</string>
     <string name="menu_item_sort_by_date_oldest_first">Παλαιότερο πρώτα</string>
     <string name="menu_item_sort_by_name_a_z">Α - Ω</string>
@@ -47,6 +48,7 @@
     <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
     <string name="nc_allow_guests">Επιτρέπονται οι επισκέπτες</string>
     <string name="nc_biometric_unlock">Ξεκλείδωμα %1$s</string>
+    <string name="nc_call_button_content_description_hangup">Κλείσιμο τηλεφώνου</string>
     <string name="nc_call_incoming">ΕΙΣΕΡΧΟΜΕΝΗ</string>
     <string name="nc_call_name">Όνομα συνομιλίας</string>
     <string name="nc_call_name_is_same">Το όνομα που εισάγατε είναι το ίδιο με ένα υπάρχον</string>
@@ -330,6 +332,7 @@
     <string name="polls_results_subtitle">Αποτελέσματα</string>
     <string name="polls_settings">Ρυθμίσεις</string>
     <string name="polls_submit_vote">Ψήφος</string>
+    <string name="raise_hand">Σηκώστε το χέρι</string>
     <string name="reactions_tab_all">\'Ολα</string>
     <string name="read_storage_no_permission">Η κοινή χρήση αρχείων από τον χώρο αποθήκευσης δεν είναι δυνατή χωρίς δικαιώματα</string>
     <string name="record_start_description">Έναρξη εγγραφής</string>

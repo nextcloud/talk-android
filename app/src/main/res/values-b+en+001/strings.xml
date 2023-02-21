@@ -34,6 +34,7 @@
     <string name="invisible">Invisible</string>
     <string name="load_more_results">Load more results</string>
     <string name="lock_symbol">Lock symbol</string>
+    <string name="lower_hand">Lower hand</string>
     <string name="menu_item_sort_by_date_newest_first">Newest first</string>
     <string name="menu_item_sort_by_date_oldest_first">Oldest first</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -65,9 +66,8 @@
     <string name="nc_call_button_content_description_answer_voice_only">Answer as voice call only</string>
     <string name="nc_call_button_content_description_audio_output">Change audio output</string>
     <string name="nc_call_button_content_description_camera">Toggle camera</string>
-    <string name="nc_call_button_content_description_hangup">Hangup</string>
+    <string name="nc_call_button_content_description_hangup">Hang up</string>
     <string name="nc_call_button_content_description_microphone">Toggle microphone</string>
-    <string name="nc_call_button_content_description_pip">Open picture in picture mode</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_name">Conversation name</string>
@@ -400,6 +400,7 @@
     <string name="polls_settings">Settings</string>
     <string name="polls_submit_vote">Vote</string>
     <string name="polls_voted_hidden_success">Vote submitted</string>
+    <string name="raise_hand">Raise hand</string>
     <string name="reactions_tab_all">All</string>
     <string name="read_storage_no_permission">Sharing files from storage is not possible without permissions</string>
     <string name="record_active_info">The call is being recorded</string>

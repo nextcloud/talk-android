@@ -33,6 +33,7 @@
     <string name="invisible">Невидимый</string>
     <string name="load_more_results">Показать больше результатов</string>
     <string name="lock_symbol">Символ блокировки</string>
+    <string name="lower_hand">Опустить руку</string>
     <string name="menu_item_sort_by_date_newest_first">Самый новый первый</string>
     <string name="menu_item_sort_by_date_oldest_first">Самый старый первый</string>
     <string name="menu_item_sort_by_name_a_z">А - Я</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">Разрешить гостей</string>
     <string name="nc_attendee_pin">Пин: %1$s</string>
     <string name="nc_biometric_unlock">Разблокировать %1$s</string>
+    <string name="nc_call_button_content_description_hangup">Повесить трубку</string>
     <string name="nc_call_incoming">Входящий</string>
     <string name="nc_call_name">Наименование беседы</string>
     <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
@@ -382,6 +384,7 @@
     <string name="polls_results_subtitle">Результаты</string>
     <string name="polls_settings">Настройки</string>
     <string name="polls_submit_vote">Голосовать</string>
+    <string name="raise_hand">Поднять руку</string>
     <string name="reactions_tab_all">Все</string>
     <string name="read_storage_no_permission">Общий доступ к файлам из хранилища невозможен без разрешений</string>
     <string name="record_stop_description">Остановить запись</string>

@@ -34,6 +34,7 @@
     <string name="invisible">隱藏</string>
     <string name="load_more_results">載入更多結果</string>
     <string name="lock_symbol">上鎖符號</string>
+    <string name="lower_hand">放手</string>
     <string name="menu_item_sort_by_date_newest_first">新的在前</string>
     <string name="menu_item_sort_by_date_oldest_first">舊的在前</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -285,6 +286,7 @@
     <string name="polls_results_subtitle">結果</string>
     <string name="polls_settings">設定</string>
     <string name="polls_submit_vote">投票</string>
+    <string name="raise_hand">舉手</string>
     <string name="reactions_tab_all">全部</string>
     <string name="save">儲存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>

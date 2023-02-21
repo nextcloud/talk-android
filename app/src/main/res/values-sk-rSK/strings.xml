@@ -33,6 +33,7 @@
     <string name="invisible">Neviditeľný</string>
     <string name="load_more_results">Načítať viac výsledkov</string>
     <string name="lock_symbol">Symbol zámku</string>
+    <string name="lower_hand">Dať ruku dole</string>
     <string name="menu_item_sort_by_date_newest_first">Najnovšie prvé</string>
     <string name="menu_item_sort_by_date_oldest_first">Najstaršie prvé</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -59,6 +60,7 @@
     <string name="nc_allow_guests">Povoliť hostí</string>
     <string name="nc_attendee_pin">Špendlík: %1$s</string>
     <string name="nc_biometric_unlock">Odomknúť %1$s</string>
+    <string name="nc_call_button_content_description_hangup">Zložiť</string>
     <string name="nc_call_incoming">PRICHÁDZAJÚCI</string>
     <string name="nc_call_name">Názov rozhovoru</string>
     <string name="nc_call_name_is_same">Názov, ktorý ste zadali je zhodný s existujúcim</string>
@@ -389,6 +391,7 @@
     <string name="polls_settings">Nastavenia</string>
     <string name="polls_submit_vote">Hlas</string>
     <string name="polls_voted_hidden_success">Hlasovanie odoslané</string>
+    <string name="raise_hand">Zdvihnúť ruku</string>
     <string name="reactions_tab_all">Všetko</string>
     <string name="read_storage_no_permission">Zdielanie súborov z úložiska nie je možné bez oprávnenia</string>
     <string name="save">Uložiť</string>

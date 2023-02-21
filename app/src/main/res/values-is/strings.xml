@@ -39,6 +39,7 @@
     <string name="nc_all_ok_operation">Í lagi, allt klárt!</string>
     <string name="nc_allow_guests">Leyfa gesti</string>
     <string name="nc_biometric_unlock">Aflæsa  %1$s</string>
+    <string name="nc_call_button_content_description_hangup">Hang up</string>
     <string name="nc_call_name">Heiti samtals</string>
     <string name="nc_call_name_is_same">Nafnið sem þú settir inn er það sama og það sem fyrir er</string>
     <string name="nc_call_unknown">%s símtal</string>

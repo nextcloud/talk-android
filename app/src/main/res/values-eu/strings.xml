@@ -34,6 +34,7 @@
     <string name="invisible">Ikusezina</string>
     <string name="load_more_results">Kargatu emaitza gehiago </string>
     <string name="lock_symbol">Blokeo sinboloa</string>
+    <string name="lower_hand">Jaitsi eskua</string>
     <string name="menu_item_sort_by_date_newest_first">Berrienak lehenengo </string>
     <string name="menu_item_sort_by_date_oldest_first">Zaharrenak lehenengo</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -65,9 +66,8 @@
     <string name="nc_call_button_content_description_answer_voice_only">Erantzun ahots-dei gisa soilik</string>
     <string name="nc_call_button_content_description_audio_output">Aldatu audio irteera</string>
     <string name="nc_call_button_content_description_camera">Aldatu kamera</string>
-    <string name="nc_call_button_content_description_hangup">Eskegi</string>
+    <string name="nc_call_button_content_description_hangup">Eseki</string>
     <string name="nc_call_button_content_description_microphone">Aldatu mikrofonoa</string>
-    <string name="nc_call_button_content_description_pip">Ireki irudia irudi moduan</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Aldatu norberaren bideora</string>
     <string name="nc_call_incoming">SARRERAKOA</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
@@ -400,6 +400,7 @@
     <string name="polls_settings">Ezarpenak</string>
     <string name="polls_submit_vote">Bozkatu</string>
     <string name="polls_voted_hidden_success">Botoa eman da</string>
+    <string name="raise_hand">Jaso eskua</string>
     <string name="reactions_tab_all">Denak</string>
     <string name="read_storage_no_permission">Ezin dira fitxategiak biltegitik partekatu baimenik gabe</string>
     <string name="record_active_info">Deia grabatzen ari da</string>

@@ -31,6 +31,7 @@
     <string name="invisible">オフライン</string>
     <string name="load_more_results">結果をさらに読み込む</string>
     <string name="lock_symbol">鍵の記号</string>
+    <string name="lower_hand">手を下げる (r)</string>
     <string name="menu_item_sort_by_date_newest_first">新しい順</string>
     <string name="menu_item_sort_by_date_oldest_first">日付（昇順）</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -56,6 +57,7 @@
     <string name="nc_allow_guests">ゲストを許可する</string>
     <string name="nc_attendee_pin">ピン: %1$s</string>
     <string name="nc_biometric_unlock">%1$sを解除</string>
+    <string name="nc_call_button_content_description_hangup">通話終了</string>
     <string name="nc_call_incoming">呼び出し中</string>
     <string name="nc_call_name">会話名</string>
     <string name="nc_call_name_is_same">入力した名前は既存の名前と同じです</string>
@@ -351,6 +353,7 @@
     <string name="polls_results_subtitle">結果</string>
     <string name="polls_settings">設定</string>
     <string name="polls_submit_vote">投票</string>
+    <string name="raise_hand">挙手 (r)</string>
     <string name="reactions_tab_all">すべて</string>
     <string name="read_storage_no_permission">ストレージからのファイル共有は権限がなければ不可能です</string>
     <string name="save">保存</string>

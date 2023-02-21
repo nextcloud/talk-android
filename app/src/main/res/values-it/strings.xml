@@ -33,6 +33,7 @@
     <string name="invisible">Invisibile</string>
     <string name="load_more_results">Mostra altri risultati</string>
     <string name="lock_symbol">Simbolo lucchetto</string>
+    <string name="lower_hand">Abbassa la mano</string>
     <string name="menu_item_sort_by_date_newest_first">Prima i più recenti</string>
     <string name="menu_item_sort_by_date_oldest_first">Prima i più datati</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -62,6 +63,7 @@
     <string name="nc_call_button_content_description_answer_video_call">Rispondi come videochiamata</string>
     <string name="nc_call_button_content_description_answer_voice_only">Rispondi solo come chiamata vocale</string>
     <string name="nc_call_button_content_description_audio_output">Cambia l\'uscita audio</string>
+    <string name="nc_call_button_content_description_hangup">Riaggancia</string>
     <string name="nc_call_incoming">IN ARRIVO</string>
     <string name="nc_call_name">Nome della conversazione</string>
     <string name="nc_call_name_is_same">Il nome che hai digitato è uguale a quello esistente</string>
@@ -356,6 +358,7 @@
     <string name="polls_results_subtitle">Risultati</string>
     <string name="polls_settings">Impostazioni</string>
     <string name="polls_submit_vote">Votare</string>
+    <string name="raise_hand">Alza la mano</string>
     <string name="reactions_tab_all">Tutti</string>
     <string name="read_storage_no_permission">La condivisione dei file dall\'archiviazione non è possibile senza permessi</string>
     <string name="save">Salva</string>

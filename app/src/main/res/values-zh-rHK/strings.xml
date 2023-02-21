@@ -34,6 +34,7 @@
     <string name="invisible">隱藏</string>
     <string name="load_more_results">正在載入更多結果</string>
     <string name="lock_symbol">鎖符號</string>
+    <string name="lower_hand">放下手</string>
     <string name="menu_item_sort_by_date_newest_first">最新先</string>
     <string name="menu_item_sort_by_date_oldest_first">最舊先</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -65,7 +66,7 @@
     <string name="nc_call_button_content_description_answer_voice_only">僅以語音通話方式接聽</string>
     <string name="nc_call_button_content_description_audio_output">更改語音輸出</string>
     <string name="nc_call_button_content_description_camera">切換相機</string>
-    <string name="nc_call_button_content_description_hangup">收線</string>
+    <string name="nc_call_button_content_description_hangup">掛斷</string>
     <string name="nc_call_button_content_description_microphone">切換米高風</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">切換到自己的視頻</string>
     <string name="nc_call_incoming">來電</string>
@@ -399,6 +400,7 @@
     <string name="polls_settings">設定</string>
     <string name="polls_submit_vote">投票</string>
     <string name="polls_voted_hidden_success">已提交投票</string>
+    <string name="raise_hand">舉手</string>
     <string name="reactions_tab_all">全部</string>
     <string name="read_storage_no_permission">沒有權限就無法從存儲分享檔案</string>
     <string name="record_active_info">通話正在錄音中</string>

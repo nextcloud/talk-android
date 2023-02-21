@@ -34,6 +34,7 @@
     <string name="invisible">Unsichtbar</string>
     <string name="load_more_results">Weitere Ergebnisse laden</string>
     <string name="lock_symbol">Schloss-Symbol</string>
+    <string name="lower_hand">Hand herunternehmen</string>
     <string name="menu_item_sort_by_date_newest_first">Neue zuerst</string>
     <string name="menu_item_sort_by_date_oldest_first">Älteste zuerst</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -67,7 +68,6 @@
     <string name="nc_call_button_content_description_camera">Kamera umschalten</string>
     <string name="nc_call_button_content_description_hangup">Auflegen</string>
     <string name="nc_call_button_content_description_microphone">Mikrofon umschalten</string>
-    <string name="nc_call_button_content_description_pip">Bild-in-Bild-Modus öffnen</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Wechseln Sie zum Eigenen Video</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
@@ -400,6 +400,7 @@
     <string name="polls_settings">Einstellungen</string>
     <string name="polls_submit_vote">Abstimmen</string>
     <string name="polls_voted_hidden_success">Stimme abgegeben</string>
+    <string name="raise_hand">Hand heben</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Dateien können nicht ohne Berechtigung geteilt werden</string>
     <string name="record_active_info">Der Anruf wird aufgezeichnet</string>

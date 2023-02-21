@@ -33,6 +33,7 @@
     <string name="invisible">숨겨짐</string>
     <string name="load_more_results">더 많은 결과 불러오기</string>
     <string name="lock_symbol">자물쇠 기호</string>
+    <string name="lower_hand">낮은 손</string>
     <string name="menu_item_sort_by_date_newest_first">최신순</string>
     <string name="menu_item_sort_by_date_oldest_first">오래된순</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -63,8 +64,8 @@
     <string name="nc_call_button_content_description_answer_voice_only">영상 통화로만 응답합니다</string>
     <string name="nc_call_button_content_description_audio_output">오디오 출력을 바꾸다</string>
     <string name="nc_call_button_content_description_camera">카메라 전환</string>
+    <string name="nc_call_button_content_description_hangup">끊기</string>
     <string name="nc_call_button_content_description_microphone">마이크 전환</string>
-    <string name="nc_call_button_content_description_pip">사진모드로 사진을 열기</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">셀프 비디오로 전환</string>
     <string name="nc_call_name">대화명</string>
     <string name="nc_call_name_is_same">입력한 이름이 이미 사용 중입니다</string>
@@ -387,6 +388,7 @@
     <string name="polls_settings">설정</string>
     <string name="polls_submit_vote">투표</string>
     <string name="polls_voted_hidden_success">투표가 제출되었습니다</string>
+    <string name="raise_hand">손을 들다</string>
     <string name="reactions_tab_all">모두</string>
     <string name="read_storage_no_permission">허가 없이 저장소에서 파일을 공유할 수 없습니다</string>
     <string name="save">저장</string>

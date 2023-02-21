@@ -21,6 +21,7 @@
     <string name="fourHours">4 valandos</string>
     <string name="invisible">Nematomas</string>
     <string name="load_more_results">Įkelti daugiau rezultatų</string>
+    <string name="lower_hand">Nuleisti ranką</string>
     <string name="menu_item_sort_by_date_newest_first">Naujausi pirma</string>
     <string name="menu_item_sort_by_date_oldest_first">Seniausi pirma</string>
     <string name="menu_item_sort_by_name_a_z">A – Ž</string>
@@ -42,6 +43,7 @@
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
     <string name="nc_allow_guests">Leisti svečius</string>
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
+    <string name="nc_call_button_content_description_hangup">Padėti ragelį</string>
     <string name="nc_call_name">Pokalbio pavadinimas</string>
     <string name="nc_call_name_is_same">Jūsų įvestas vardas yra toks pats kaip ir esamas</string>
     <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
@@ -257,6 +259,7 @@
     <string name="polls_results_subtitle">Rezultatai</string>
     <string name="polls_settings">Nustatymai</string>
     <string name="polls_submit_vote">Balsuoti</string>
+    <string name="raise_hand">Pakelti ranką</string>
     <string name="reactions_tab_all">Visos</string>
     <string name="save">Įrašyti</string>
     <string name="scope_federated_description">Sinchronizuoti tik į patikimus serverius</string>

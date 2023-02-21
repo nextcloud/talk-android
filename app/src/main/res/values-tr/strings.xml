@@ -34,6 +34,7 @@
     <string name="invisible">Görünmez</string>
     <string name="load_more_results">Diğer sonuçları yükle</string>
     <string name="lock_symbol">Kilit simgesi</string>
+    <string name="lower_hand">Eli indir</string>
     <string name="menu_item_sort_by_date_newest_first">Yeniden eskiye</string>
     <string name="menu_item_sort_by_date_oldest_first">Eskiden yeniye</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -65,9 +66,8 @@
     <string name="nc_call_button_content_description_answer_voice_only">Yalnızca sesli çağrı olarak yanıtla</string>
     <string name="nc_call_button_content_description_audio_output">Ses çıkışını değiştir</string>
     <string name="nc_call_button_content_description_camera">Kamerayı aç/kapat</string>
-    <string name="nc_call_button_content_description_hangup">Çağrıyı sonlandır</string>
+    <string name="nc_call_button_content_description_hangup">Sonlandır</string>
     <string name="nc_call_button_content_description_microphone">Mikrofonu aç/kapat</string>
-    <string name="nc_call_button_content_description_pip">Resim içinde resim kipini aç</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Benim görüntüme geç</string>
     <string name="nc_call_incoming">GELEN</string>
     <string name="nc_call_name">Görüşme adı</string>
@@ -400,6 +400,7 @@
     <string name="polls_settings">Ayarlar</string>
     <string name="polls_submit_vote">Oy</string>
     <string name="polls_voted_hidden_success">Oy verildi</string>
+    <string name="raise_hand">El kaldır</string>
     <string name="reactions_tab_all">Tümü</string>
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
     <string name="record_active_info">Çağrı kaydediliyor</string>
