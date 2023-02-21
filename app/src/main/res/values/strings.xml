@@ -6,7 +6,7 @@
   ~ @author Marcel Hibbe
   ~ @author Tim Krüger
   ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
-  ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+  ~ Copyright (C) 2022-2023 Marcel Hibbe <dev@mhibbe.de>
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
@@ -23,6 +23,22 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
+
+<!--
+How to work with translations as a developer:
+- Only add new translations to values/stings.xml, don't do this for other languages (it will be done via transifex).
+- Never change the key of a translation. If it really has to be changed, delete it and create a new entry instead.
+- If you change a value in values/stings.xml, also backport this to all stable branches.
+- Translations are synced every night (or when manually triggered):
+   - New entries are added to transifex.com
+   - Updated translations from transifex are added via Nextcloud bot to this repo.
+
+How to translate with transifex:
+- Join as a team member for your language: https://www.transifex.com/nextcloud/nextcloud/languages/
+- Go to https://www.transifex.com/nextcloud/nextcloud/translate/#resource/android-talk and choose your language in the
+ dropdown menu to start translating.
+- To find a key via search, enter "key:" and it's name, e.g. "key:nc_about"
+-->
 
 <resources>
     <!-- Common -->
