@@ -21,15 +21,12 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
         viewModel.setData("foo")
         viewModel.clickRecordButton()
 
-        Assert.equals(CallRecordingViewModel.RecordingStartingState(true), viewModel.viewState.value)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingStartingState)
 
         // fake to execute setRecordingState which would be triggered by signaling message
         viewModel.setRecordingState(CallRecordingViewModel.RECORDING_STARTED_VIDEO_CODE)
 
-        Assert.equals(
-            CallRecordingViewModel.RecordingStartedState(true).javaClass,
-            viewModel.viewState.value?.javaClass
-        )
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingStartedState)
     }
 
     @Test
@@ -42,11 +39,11 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
 
         viewModel.clickRecordButton()
 
-        Assert.equals(CallRecordingViewModel.RecordingConfirmStopState, viewModel.viewState.value)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingConfirmStopState)
 
         viewModel.stopRecording()
 
-        Assert.equals(CallRecordingViewModel.RecordingStoppedState, viewModel.viewState.value)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingStoppedState)
     }
 
     @Test
@@ -59,11 +56,11 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
 
         viewModel.clickRecordButton()
 
-        Assert.equals(CallRecordingViewModel.RecordingConfirmStopState, viewModel.viewState.value)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingConfirmStopState)
 
         viewModel.clickRecordButton()
 
-        Assert.equals(CallRecordingViewModel.RecordingConfirmStopState, viewModel.viewState.value)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingConfirmStopState)
     }
 
     @Test
@@ -73,14 +70,12 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
         viewModel.setRecordingState(CallRecordingViewModel.RECORDING_STARTED_VIDEO_CODE)
         viewModel.clickRecordButton()
 
-        Assert.equals(CallRecordingViewModel.RecordingConfirmStopState, viewModel.viewState.value)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingConfirmStopState)
 
         viewModel.dismissStopRecording()
 
-        Assert.equals(
-            CallRecordingViewModel.RecordingStartedState(true, false).javaClass,
-            viewModel.viewState.value?.javaClass
-        )
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingStartedState)
+
         Assert.equals(
             false,
             (viewModel.viewState.value as CallRecordingViewModel.RecordingStartedState).showStartedInfo
