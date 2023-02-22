@@ -81,4 +81,28 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
             (viewModel.viewState.value as CallRecordingViewModel.RecordingStartedState).showStartedInfo
         )
     }
+
+    @Test
+    fun testSetRecordingStateDirectly() {
+        val viewModel = CallRecordingViewModel(repository)
+        viewModel.setData("foo")
+
+        viewModel.setRecordingState(CallRecordingViewModel.RECORDING_STOPPED_CODE)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingStoppedState)
+
+        viewModel.setRecordingState(CallRecordingViewModel.RECORDING_STARTED_AUDIO_CODE)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingStartedState)
+
+        viewModel.setRecordingState(CallRecordingViewModel.RECORDING_STARTED_VIDEO_CODE)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingStartedState)
+
+        viewModel.setRecordingState(CallRecordingViewModel.RECORDING_STARTING_AUDIO_CODE)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingStartingState)
+
+        viewModel.setRecordingState(CallRecordingViewModel.RECORDING_STARTING_VIDEO_CODE)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingStartingState)
+
+        viewModel.setRecordingState(CallRecordingViewModel.RECORDING_FAILED_CODE)
+        Assert.isTrue(viewModel.viewState.value is CallRecordingViewModel.RecordingErrorState)
+    }
 }
