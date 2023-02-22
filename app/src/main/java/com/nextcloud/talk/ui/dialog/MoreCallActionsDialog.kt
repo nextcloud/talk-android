@@ -94,6 +94,20 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
     private fun initObservers() {
         callActivity.callRecordingViewModel.viewState.observe(this) { state ->
             when (state) {
+                is CallRecordingViewModel.RecordingStoppedState,
+                is CallRecordingViewModel.RecordingErrorState -> {
+                    binding.recordCallText.text = context.getText(R.string.record_start_description)
+                    binding.recordCallIcon.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.record_start)
+                    )
+                    dismiss()
+                }
+                is CallRecordingViewModel.RecordingStartingState -> {
+                    binding.recordCallText.text = context.getText(R.string.record_starting)
+                    binding.recordCallIcon.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.record_stop)
+                    )
+                }
                 is CallRecordingViewModel.RecordingStartedState -> {
                     binding.recordCallText.text = context.getText(R.string.record_stop_description)
                     binding.recordCallIcon.setImageDrawable(
@@ -101,18 +115,8 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                     )
                     dismiss()
                 }
-                is CallRecordingViewModel.RecordingStoppedState -> {
-                    binding.recordCallText.text = context.getText(R.string.record_start_description)
-                    binding.recordCallIcon.setImageDrawable(
-                        ContextCompat.getDrawable(context, R.drawable.record_start)
-                    )
-                    dismiss()
-                }
-                is CallRecordingViewModel.RecordingStartLoadingState -> {
-                    binding.recordCallText.text = context.getText(R.string.record_start_loading)
-                }
-                is CallRecordingViewModel.RecordingStopLoadingState -> {
-                    binding.recordCallText.text = context.getText(R.string.record_stop_loading)
+                is CallRecordingViewModel.RecordingStoppingState -> {
+                    binding.recordCallText.text = context.getText(R.string.record_stopping)
                 }
                 is CallRecordingViewModel.RecordingConfirmStopState -> {
                     binding.recordCallText.text = context.getText(R.string.record_stop_description)

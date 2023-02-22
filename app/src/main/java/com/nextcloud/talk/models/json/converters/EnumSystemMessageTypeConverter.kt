@@ -78,6 +78,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTIO
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTION_REVOKED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.READ_ONLY
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.READ_ONLY_OFF
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.RECORDING_FAILED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.RECORDING_STARTED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.RECORDING_STOPPED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_ADDED
@@ -143,6 +144,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "recording_stopped" -> RECORDING_STOPPED
             "audio_recording_started" -> AUDIO_RECORDING_STARTED
             "audio_recording_stopped" -> AUDIO_RECORDING_STOPPED
+            "recording_failed" -> RECORDING_FAILED
             "breakout_rooms_started" -> BREAKOUT_ROOMS_STARTED
             "breakout_rooms_stopped" -> BREAKOUT_ROOMS_STOPPED
             else -> DUMMY
@@ -206,6 +208,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             RECORDING_STOPPED -> "recording_stopped"
             AUDIO_RECORDING_STARTED -> "audio_recording_started"
             AUDIO_RECORDING_STOPPED -> "audio_recording_stopped"
+            RECORDING_FAILED -> "recording_failed"
             BREAKOUT_ROOMS_STARTED -> "breakout_rooms_started"
             BREAKOUT_ROOMS_STOPPED -> "breakout_rooms_stopped"
             else -> ""

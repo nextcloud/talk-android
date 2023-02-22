@@ -21,7 +21,7 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
         viewModel.setData("foo")
         viewModel.clickRecordButton()
 
-        Assert.equals(CallRecordingViewModel.RecordingStartLoadingState, viewModel.viewState.value)
+        Assert.equals(CallRecordingViewModel.RecordingStartingState(true), viewModel.viewState.value)
 
         // fake to execute setRecordingState which would be triggered by signaling message
         viewModel.setRecordingState(CallRecordingViewModel.RECORDING_STARTED_VIDEO_CODE)
@@ -78,7 +78,7 @@ class CallRecordingViewModelTest : AbstractViewModelTest() {
         viewModel.dismissStopRecording()
 
         Assert.equals(
-            CallRecordingViewModel.RecordingStartedState(false).javaClass,
+            CallRecordingViewModel.RecordingStartedState(true, false).javaClass,
             viewModel.viewState.value?.javaClass
         )
         Assert.equals(

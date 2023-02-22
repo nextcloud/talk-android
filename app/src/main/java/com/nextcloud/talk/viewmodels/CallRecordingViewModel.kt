@@ -42,11 +42,11 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     lateinit var roomToken: String
 
     sealed interface ViewState
-    open class RecordingStartedState(val showStartedInfo: Boolean) : ViewState
+    open class RecordingStartedState(val hasVideo: Boolean, val showStartedInfo: Boolean) : ViewState
 
     object RecordingStoppedState : ViewState
-    object RecordingStartLoadingState : ViewState
-    object RecordingStopLoadingState : ViewState
+    open class RecordingStartingState(val hasVideo: Boolean) : ViewState
+    object RecordingStoppingState : ViewState
     object RecordingConfirmStopState : ViewState
     object RecordingErrorState : ViewState
 
@@ -69,6 +69,9 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
                 // just show it again.
                 _viewState.value = RecordingConfirmStopState
             }
+            is RecordingStartingState -> {
+                stopRecording()
+            }
             RecordingErrorState -> {
                 stopRecording()
             }
@@ -77,7 +80,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     }
 
     private fun startRecording() {
-        _viewState.value = RecordingStartLoadingState
+        _viewState.value = RecordingStartingState(true)
         repository.startRecording(roomToken)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -85,7 +88,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     }
 
     fun stopRecording() {
-        _viewState.value = RecordingStopLoadingState
+        _viewState.value = RecordingStoppingState
         repository.stopRecording(roomToken)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -93,7 +96,7 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     }
 
     fun dismissStopRecording() {
-        _viewState.value = RecordingStartedState(false)
+        _viewState.value = RecordingStartedState(true, false)
     }
 
     override fun onCleared() {
@@ -109,8 +112,11 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     fun setRecordingState(state: Int) {
         when (state) {
             RECORDING_STOPPED_CODE -> _viewState.value = RecordingStoppedState
-            RECORDING_STARTED_VIDEO_CODE -> _viewState.value = RecordingStartedState(true)
-            RECORDING_STARTED_AUDIO_CODE -> _viewState.value = RecordingStartedState(true)
+            RECORDING_STARTED_VIDEO_CODE -> _viewState.value = RecordingStartedState(true, true)
+            RECORDING_STARTED_AUDIO_CODE -> _viewState.value = RecordingStartedState(false, true)
+            RECORDING_STARTING_VIDEO_CODE -> _viewState.value = RecordingStartingState(true)
+            RECORDING_STARTING_AUDIO_CODE -> _viewState.value = RecordingStartingState(false)
+            RECORDING_FAILED_CODE -> _viewState.value = RecordingErrorState
             else -> {}
         }
     }
@@ -160,5 +166,8 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
         const val RECORDING_STOPPED_CODE = 0
         const val RECORDING_STARTED_VIDEO_CODE = 1
         const val RECORDING_STARTED_AUDIO_CODE = 2
+        const val RECORDING_STARTING_VIDEO_CODE = 3
+        const val RECORDING_STARTING_AUDIO_CODE = 4
+        const val RECORDING_FAILED_CODE = 5
     }
 }
