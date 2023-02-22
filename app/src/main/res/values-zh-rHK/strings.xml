@@ -68,6 +68,7 @@
     <string name="nc_call_button_content_description_camera">切換相機</string>
     <string name="nc_call_button_content_description_hangup">掛斷</string>
     <string name="nc_call_button_content_description_microphone">切換米高風</string>
+    <string name="nc_call_button_content_description_pip">打開畫中畫模式</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">切換到自己的視頻</string>
     <string name="nc_call_incoming">來電</string>
     <string name="nc_call_name">對話名稱</string>
@@ -441,6 +442,8 @@
     <string name="starred">我的最愛</string>
     <string name="startCallForbidden">你無權開始通話</string>
     <string name="status_message">狀態訊息</string>
+    <string name="switch_to_breakout_room">切換到分組討論室</string>
+    <string name="switch_to_main_room">切換到主室</string>
     <string name="take_photo">拍照</string>
     <string name="take_photo_error_deleting_picture">拍照時出錯</string>
     <string name="take_photo_permission">沒有權限就無法拍照</string>

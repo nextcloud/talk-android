@@ -68,6 +68,7 @@
     <string name="nc_call_button_content_description_camera">Kamera umschalten</string>
     <string name="nc_call_button_content_description_hangup">Auflegen</string>
     <string name="nc_call_button_content_description_microphone">Mikrofon umschalten</string>
+    <string name="nc_call_button_content_description_pip">Bild-in-Bild-Modus öffnen</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Wechseln Sie zum Eigenen Video</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
@@ -441,6 +442,8 @@
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Sie dürfen keinen Anruf zu tätigen</string>
     <string name="status_message">Statusnachricht</string>
+    <string name="switch_to_breakout_room">Zu Gruppenraum wechseln</string>
+    <string name="switch_to_main_room">Zu Hauptraum wechseln</string>
     <string name="take_photo">Ein Foto aufnehmen</string>
     <string name="take_photo_error_deleting_picture">Fehler beim Aufnehmen des Fotos</string>
     <string name="take_photo_permission">Das Fotografieren ist ohne Berechtigungen nicht möglich</string>
