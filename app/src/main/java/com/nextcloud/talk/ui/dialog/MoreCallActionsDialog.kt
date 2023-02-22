@@ -103,7 +103,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                     dismiss()
                 }
                 is CallRecordingViewModel.RecordingStartingState -> {
-                    binding.recordCallText.text = context.getText(R.string.record_starting)
+                    binding.recordCallText.text = context.getText(R.string.record_cancel_start)
                     binding.recordCallIcon.setImageDrawable(
                         ContextCompat.getDrawable(context, R.drawable.record_stop)
                     )
