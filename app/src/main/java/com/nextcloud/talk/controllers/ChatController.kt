@@ -146,6 +146,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
+import com.nextcloud.talk.models.json.notifications.Notification
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
@@ -267,6 +268,7 @@ class ChatController(args: Bundle) :
     private var lookingIntoFuture = false
     var newMessagesCount = 0
     var startCallFromNotification: Boolean? = null
+    private var recordingAvailableNotification: Notification? = null
     var startCallFromRoomSwitch: Boolean = false
     val roomId: String
     val voiceOnly: Boolean
@@ -341,6 +343,10 @@ class ChatController(args: Bundle) :
 
         if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)
+        }
+
+        if (args.containsKey(BundleKeys.KEY_NOTIFICATION_RECORDING_NOTIFICATION)) {
+            recordingAvailableNotification = args.getParcelable(BundleKeys.KEY_NOTIFICATION_RECORDING_NOTIFICATION)
         }
 
         if (args.containsKey(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)) {
@@ -926,7 +932,80 @@ class ChatController(args: Bundle) :
                 getRoomInfo()
             }
         }
+
+        if (recordingAvailableNotification != null) {
+            binding?.root?.context?.let { context ->
+                val dialogBuilder = MaterialAlertDialogBuilder(context)
+                dialogBuilder.setTitle(recordingAvailableNotification?.subject)
+                dialogBuilder.setMessage("Do you want to share the recording to the chat?")
+
+                for (action in recordingAvailableNotification?.actions!!) {
+                    if (!action.label.isNullOrEmpty() && !action.link.isNullOrEmpty()) {
+                        if (action.primary) {
+                            dialogBuilder.setPositiveButton(action.label!!) { dialog, which ->
+                                sendRequest(action.type!!, action.link!!)
+                            }
+                        } else {
+                            dialogBuilder.setNegativeButton(action.label!!) { dialog, which ->
+                                sendRequest(action.type!!, action.link!!)
+                            }
+                        }
+                    }
+                }
+
+                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(context, dialogBuilder)
+                val dialog = dialogBuilder.show()
+
+                viewThemeUtils.platform.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                )
+            }
+        }
         super.onViewBound(view)
+    }
+
+    private fun sendRequest(type: String, link: String) {
+        if (type == "POST") {
+            ncApi.sendCommonPostRequest(credentials, link)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<GenericOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(genericOverall: GenericOverall) {
+                    }
+
+                    override fun onError(e: Throwable) {
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        } else if (type == "DELETE") {
+            ncApi.sendCommonDeleteRequest(credentials, link)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<GenericOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(genericOverall: GenericOverall) {
+                    }
+
+                    override fun onError(e: Throwable) {
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        }
+        Log.d(TAG, "type=" + type + " link=" + link)
     }
 
     private fun switchToRoom(token: String) {

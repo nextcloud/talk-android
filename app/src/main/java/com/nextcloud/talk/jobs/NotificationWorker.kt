@@ -83,6 +83,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CA
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RECORDING_NOTIFICATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
@@ -164,9 +165,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else if (isSpreedNotification()) {
             Log.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
-                "chat" -> handleChatNotification()
-                "room" -> handleRoomNotification()
-                "call" -> handleCallNotification()
+                TYPE_CHAT -> handleChatNotification()
+                TYPE_ROOM -> handleRoomNotification()
+                TYPE_CALL -> handleCallNotification()
+                TYPE_RECORDING -> handleRecordingNotification()
                 else -> Log.e(TAG, "unknown pushMessage.type")
             }
         } else {
@@ -259,6 +261,18 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         checkIfCallIsActive(signatureVerification)
     }
 
+    private fun handleRecordingNotification() {
+        val chatWithRecordingIntent = Intent(context, MainActivity::class.java)
+        chatWithRecordingIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        val chatBundle = Bundle()
+        chatBundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
+        chatBundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
+        chatWithRecordingIntent.putExtras(chatBundle)
+        if (pushMessage.notificationId != Long.MIN_VALUE) {
+            showNotificationWithObjectData(chatWithRecordingIntent)
+        }
+    }
+
     private fun initNcApiAndCredentials() {
         credentials = ApiUtils.getCredentials(
             signatureVerification.user!!.username,
@@ -332,6 +346,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 override fun onNext(notificationOverall: NotificationOverall) {
                     val ncNotification = notificationOverall.ocs!!.notification
 
+                    if ("recording" == ncNotification?.objectType) {
+                        val bundle = Bundle()
+                        bundle.putParcelable(KEY_NOTIFICATION_RECORDING_NOTIFICATION, ncNotification)
+                        intent.putExtras(bundle)
+                    }
+
                     if (ncNotification!!.messageRichParameters != null &&
                         ncNotification.messageRichParameters!!.size > 0
                     ) {
@@ -396,11 +416,14 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val largeIcon: Bitmap
         val priority = NotificationCompat.PRIORITY_HIGH
         val smallIcon: Int = R.drawable.ic_logo
-        val category: String = if (CHAT == pushMessage.type || ROOM == pushMessage.type) {
-            Notification.CATEGORY_MESSAGE
-        } else {
-            Notification.CATEGORY_CALL
+
+        var category: String = ""
+        when (pushMessage.type) {
+            TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING -> category = Notification.CATEGORY_MESSAGE
+            TYPE_CALL -> category = Notification.CATEGORY_CALL
+            else -> Log.e(TAG, "unknown pushMessage.type")
         }
+
         when (conversationType) {
             "one2one" -> {
                 pushMessage.subject = ""
@@ -410,7 +433,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
             "public" -> largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_link_black_24px)?.toBitmap()!!
             else -> // assuming one2one
-                largeIcon = if (CHAT == pushMessage.type || ROOM == pushMessage.type) {
+                largeIcon = if (TYPE_CHAT == pushMessage.type || TYPE_ROOM == pushMessage.type) {
                     ContextCompat.getDrawable(context!!, R.drawable.ic_comment)?.toBitmap()!!
                 } else {
                     ContextCompat.getDrawable(context!!, R.drawable.ic_call_black_24dp)?.toBitmap()!!
@@ -459,10 +482,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationBuilder.setExtras(notificationInfoBundle)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (CHAT == pushMessage.type || ROOM == pushMessage.type) {
-                notificationBuilder.setChannelId(
-                    NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
-                )
+            when (pushMessage.type) {
+                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING -> {
+                    notificationBuilder.setChannelId(
+                        NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+                    )
+                }
             }
         } else {
             // red color for the lights
@@ -482,7 +507,18 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         // It is NOT the same as the notification ID used in communication with the server.
         val systemNotificationId: Int =
             activeStatusBarNotification?.id ?: calculateCRC32(System.currentTimeMillis().toString()).toInt()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && CHAT == pushMessage.type &&
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+            TYPE_CHAT == pushMessage.type &&
+            pushMessage.notificationUser != null
+        ) {
+            prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
+            addReplyAction(notificationBuilder, systemNotificationId)
+            addMarkAsReadAction(notificationBuilder, systemNotificationId)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+            TYPE_RECORDING == pushMessage.type &&
             pushMessage.notificationUser != null
         ) {
             prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
@@ -515,8 +551,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setName(EmojiCompat.get().process(notificationUser.name!!))
             .setBot("bot" == userType)
         notificationBuilder.setOnlyAlertOnce(true)
-        addReplyAction(notificationBuilder, systemNotificationId)
-        addMarkAsReadAction(notificationBuilder, systemNotificationId)
 
         if ("user" == userType || "guest" == userType) {
             val baseUrl = signatureVerification.user!!.baseUrl
@@ -566,7 +600,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 systemNotificationId,
                 messageId
             )
-            val action = NotificationCompat.Action.Builder(
+            val markAsReadAction = NotificationCompat.Action.Builder(
                 R.drawable.ic_eye,
                 context!!.resources.getString(R.string.nc_mark_as_read),
                 pendingIntent
@@ -574,7 +608,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
                 .setShowsUserInterface(false)
                 .build()
-            notificationBuilder.addAction(action)
+            notificationBuilder.addAction(markAsReadAction)
         }
     }
 
@@ -585,7 +619,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setLabel(replyLabel)
             .build()
 
-        val replyPendingIntent = buildIntentForAction(DirectReplyReceiver::class.java, systemNotificationId, 0)
+        val replyPendingIntent = buildIntentForAction(
+            DirectReplyReceiver::class.java,
+            systemNotificationId,
+            0
+        )
         val replyAction = NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
             .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
             .setShowsUserInterface(false)
@@ -641,7 +679,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             ) {
                 val audioAttributesBuilder =
                     AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                if (CHAT == pushMessage.type || ROOM == pushMessage.type) {
+                if (TYPE_CHAT == pushMessage.type || TYPE_ROOM == pushMessage.type) {
                     audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
                 } else {
                     audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
@@ -832,8 +870,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     companion object {
         val TAG = NotificationWorker::class.simpleName
-        private const val CHAT = "chat"
-        private const val ROOM = "room"
+        private const val TYPE_CHAT = "chat"
+        private const val TYPE_ROOM = "room"
+        private const val TYPE_CALL = "call"
+        private const val TYPE_RECORDING = "recording"
         private const val SPREED_APP = "spreed"
         private const val TIMER_START = 1
         private const val TIMER_COUNT = 12
