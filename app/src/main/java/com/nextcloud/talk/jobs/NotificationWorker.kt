@@ -165,10 +165,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else if (isSpreedNotification()) {
             Log.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
-                TYPE_CHAT -> handleChatNotification()
-                TYPE_ROOM -> handleRoomNotification()
-                TYPE_CALL -> handleCallNotification()
-                TYPE_RECORDING -> handleRecordingNotification()
+                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING -> handleNonCallPushMessage()
+                TYPE_CALL -> handleCallPushMessage()
                 else -> Log.e(TAG, "unknown pushMessage.type")
             }
         } else {
@@ -178,25 +176,16 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return Result.success()
     }
 
-    private fun handleChatNotification() {
-        val chatIntent = Intent(context, MainActivity::class.java)
-        chatIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-        val chatBundle = Bundle()
-        chatBundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
-        chatBundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
-        chatBundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
-        chatIntent.putExtras(chatBundle)
+    private fun handleNonCallPushMessage() {
+        val mainActivityIntent = createMainActivityIntent()
         if (pushMessage.notificationId != Long.MIN_VALUE) {
-            showNotificationWithObjectData(chatIntent)
+            getNcDataAndShowNotification(mainActivityIntent)
         } else {
-            showNotification(chatIntent)
+            showNotification(mainActivityIntent)
         }
     }
 
-    /**
-     * handle messages with type 'room', e.g. "xxx invited you to a group conversation"
-     */
-    private fun handleRoomNotification() {
+    private fun createMainActivityIntent(): Intent {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         val bundle = Bundle()
@@ -204,12 +193,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
         bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
         intent.putExtras(bundle)
-        if (bundle.containsKey(KEY_ROOM_TOKEN)) {
-            showNotificationWithObjectData(intent)
-        }
+        return intent
     }
 
-    private fun handleCallNotification() {
+    private fun handleCallPushMessage() {
         val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
@@ -259,18 +246,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         sendNotification(pushMessage.timestamp.toInt(), notification)
 
         checkIfCallIsActive(signatureVerification)
-    }
-
-    private fun handleRecordingNotification() {
-        val chatWithRecordingIntent = Intent(context, MainActivity::class.java)
-        chatWithRecordingIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-        val chatBundle = Bundle()
-        chatBundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
-        chatBundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
-        chatWithRecordingIntent.putExtras(chatBundle)
-        if (pushMessage.notificationId != Long.MIN_VALUE) {
-            showNotificationWithObjectData(chatWithRecordingIntent)
-        }
     }
 
     private fun initNcApiAndCredentials() {
@@ -327,13 +302,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun isSpreedNotification() = SPREED_APP == pushMessage.app
 
-    private fun showNotificationWithObjectData(intent: Intent) {
+    private fun getNcDataAndShowNotification(intent: Intent) {
         val user = signatureVerification.user
 
         // see https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md
-        ncApi.getNotification(
+        ncApi.getNcNotification(
             credentials,
-            ApiUtils.getUrlForNotificationWithId(
+            ApiUtils.getUrlForNcNotificationWithId(
                 user!!.baseUrl,
                 (pushMessage.notificationId!!).toString()
             )
@@ -346,59 +321,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 override fun onNext(notificationOverall: NotificationOverall) {
                     val ncNotification = notificationOverall.ocs!!.notification
 
-                    if ("recording" == ncNotification?.objectType) {
-                        val bundle = Bundle()
-                        bundle.putParcelable(KEY_NOTIFICATION_RECORDING_NOTIFICATION, ncNotification)
-                        intent.putExtras(bundle)
-                    }
-
-                    if (ncNotification!!.messageRichParameters != null &&
-                        ncNotification.messageRichParameters!!.size > 0
-                    ) {
-                        pushMessage.text = getParsedMessage(
-                            ncNotification.messageRich,
-                            ncNotification.messageRichParameters
-                        )
-                    } else {
-                        pushMessage.text = ncNotification.message
-                    }
-
-                    val subjectRichParameters = ncNotification.subjectRichParameters
-
-                    pushMessage.timestamp = ncNotification.datetime!!.millis
-
-                    if (subjectRichParameters != null && subjectRichParameters.size > 0) {
-                        val callHashMap = subjectRichParameters["call"]
-                        val userHashMap = subjectRichParameters["user"]
-                        val guestHashMap = subjectRichParameters["guest"]
-                        if (callHashMap != null && callHashMap.size > 0 && callHashMap.containsKey("name")) {
-                            if (subjectRichParameters.containsKey("reaction")) {
-                                pushMessage.subject = ""
-                                pushMessage.text = ncNotification.subject
-                            } else if (ncNotification.objectType == "chat") {
-                                pushMessage.subject = callHashMap["name"]!!
-                            } else {
-                                pushMessage.subject = ncNotification.subject!!
-                            }
-                            if (callHashMap.containsKey("call-type")) {
-                                conversationType = callHashMap["call-type"]
-                            }
-                        }
-                        val notificationUser = NotificationUser()
-                        if (userHashMap != null && userHashMap.isNotEmpty()) {
-                            notificationUser.id = userHashMap["id"]
-                            notificationUser.type = userHashMap["type"]
-                            notificationUser.name = userHashMap["name"]
-                            pushMessage.notificationUser = notificationUser
-                        } else if (guestHashMap != null && guestHashMap.isNotEmpty()) {
-                            notificationUser.id = guestHashMap["id"]
-                            notificationUser.type = guestHashMap["type"]
-                            notificationUser.name = guestHashMap["name"]
-                            pushMessage.notificationUser = notificationUser
-                        }
-                    }
-                    pushMessage.objectId = ncNotification.objectId
-                    showNotification(intent)
+                    enrichPushMessageByNcNotificationData(ncNotification)
+                    val newIntent = enrichIntentByNcNotificationData(intent, ncNotification)
+                    showNotification(newIntent)
                 }
 
                 override fun onError(e: Throwable) {
@@ -409,6 +334,76 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     // unused atm
                 }
             })
+    }
+
+    private fun enrichIntentByNcNotificationData(
+        intent: Intent,
+        ncNotification: com.nextcloud.talk.models.json.notifications.Notification?
+    ): Intent {
+        val newIntent = Intent(intent)
+
+        if ("recording" == ncNotification?.objectType) {
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_NOTIFICATION_RECORDING_NOTIFICATION, ncNotification)
+            newIntent.putExtras(bundle)
+        }
+
+        return newIntent
+    }
+
+    private fun enrichPushMessageByNcNotificationData(
+        ncNotification: com.nextcloud.talk.models.json.notifications.Notification?
+    ) {
+        if (ncNotification!!.messageRichParameters != null &&
+            ncNotification.messageRichParameters!!.size > 0
+        ) {
+            pushMessage.text = getParsedMessage(
+                ncNotification.messageRich,
+                ncNotification.messageRichParameters
+            )
+        } else {
+            pushMessage.text = ncNotification.message
+        }
+
+        val subjectRichParameters = ncNotification.subjectRichParameters
+
+        pushMessage.timestamp = ncNotification.datetime!!.millis
+
+        if (subjectRichParameters != null && subjectRichParameters.size > 0) {
+            val callHashMap = subjectRichParameters["call"]
+            val userHashMap = subjectRichParameters["user"]
+            val guestHashMap = subjectRichParameters["guest"]
+            if (callHashMap != null && callHashMap.size > 0 && callHashMap.containsKey("name")) {
+                if (subjectRichParameters.containsKey("reaction")) {
+                    pushMessage.subject = ""
+                    pushMessage.text = ncNotification.subject
+                } else if (ncNotification.objectType == "chat") {
+                    pushMessage.subject = callHashMap["name"]!!
+                } else {
+                    pushMessage.subject = ncNotification.subject!!
+                }
+
+                if (callHashMap.containsKey("call-type")) {
+                    conversationType = callHashMap["call-type"]
+                }
+                if ("recording" == ncNotification.objectType) {
+                    conversationType = "recording"
+                }
+            }
+            val notificationUser = NotificationUser()
+            if (userHashMap != null && userHashMap.isNotEmpty()) {
+                notificationUser.id = userHashMap["id"]
+                notificationUser.type = userHashMap["type"]
+                notificationUser.name = userHashMap["name"]
+                pushMessage.notificationUser = notificationUser
+            } else if (guestHashMap != null && guestHashMap.isNotEmpty()) {
+                notificationUser.id = guestHashMap["id"]
+                notificationUser.type = guestHashMap["type"]
+                notificationUser.name = guestHashMap["name"]
+                pushMessage.notificationUser = notificationUser
+            }
+        }
+        pushMessage.objectId = ncNotification.objectId
     }
 
     @Suppress("MagicNumber")
@@ -425,6 +420,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         when (conversationType) {
+            "recording" -> {
+                pushMessage.subject = "new Recording available"
+                largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_videocam_24)?.toBitmap()!!
+            }
             "one2one" -> {
                 pushMessage.subject = ""
                 largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
@@ -451,6 +450,17 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val pendingIntent = PendingIntent.getActivity(context, requestCode, intent, intentFlag)
         val uri = Uri.parse(signatureVerification.user!!.baseUrl)
         val baseUrl = uri.host
+
+        var contentTitle: CharSequence? = ""
+        if (!TextUtils.isEmpty(pushMessage.subject)) {
+            contentTitle = EmojiCompat.get().process(pushMessage.subject)
+        }
+
+        var contentText: CharSequence? = ""
+        if (!TextUtils.isEmpty(pushMessage.text)) {
+            contentText = EmojiCompat.get().process(pushMessage.text!!)
+        }
+
         val notificationBuilder = NotificationCompat.Builder(context!!, "1")
             .setLargeIcon(largeIcon)
             .setSmallIcon(smallIcon)
@@ -461,18 +471,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setShowWhen(true)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-        if (!TextUtils.isEmpty(pushMessage.subject)) {
-            notificationBuilder.setContentTitle(
-                EmojiCompat.get().process(pushMessage.subject)
-            )
-        }
-        if (!TextUtils.isEmpty(pushMessage.text)) {
-            notificationBuilder.setContentText(
-                EmojiCompat.get().process(pushMessage.text!!)
-            )
-        }
-
-        notificationBuilder.color = context!!.resources.getColor(R.color.colorPrimary)
+            .setContentTitle(contentTitle)
+            .setContentText(contentText)
+            .setColor(context!!.resources.getColor(R.color.colorPrimary))
 
         val notificationInfoBundle = Bundle()
         notificationInfoBundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
@@ -519,7 +520,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
             TYPE_RECORDING == pushMessage.type &&
-            pushMessage.notificationUser != null
+            pushMessage.notificationUser != null // null
         ) {
             prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
         }

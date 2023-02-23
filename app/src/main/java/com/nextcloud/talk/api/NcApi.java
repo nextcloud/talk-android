@@ -382,8 +382,8 @@ public interface NcApi {
                                                                @Url String url);
 
     @GET
-    Observable<NotificationOverall> getNotification(@Header("Authorization") String authorization,
-                                                    @Url String url);
+    Observable<NotificationOverall> getNcNotification(@Header("Authorization") String authorization,
+                                                      @Url String url);
 
     @FormUrlEncoded
     @POST
