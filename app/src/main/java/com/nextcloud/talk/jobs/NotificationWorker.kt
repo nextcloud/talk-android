@@ -58,6 +58,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.data.NotificationDialogData
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -320,14 +321,15 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
                 override fun onNext(notificationOverall: NotificationOverall) {
                     val ncNotification = notificationOverall.ocs!!.notification
-
-                    enrichPushMessageByNcNotificationData(ncNotification)
-                    val newIntent = enrichIntentByNcNotificationData(intent, ncNotification)
-                    showNotification(newIntent)
+                    if (ncNotification != null) {
+                        enrichPushMessageByNcNotificationData(ncNotification)
+                        val newIntent = enrichIntentByNcNotificationData(intent, ncNotification)
+                        showNotification(newIntent)
+                    }
                 }
 
                 override fun onError(e: Throwable) {
-                    // unused atm
+                    Log.e(TAG, "Failed to get notification", e)
                 }
 
                 override fun onComplete() {
@@ -338,13 +340,30 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun enrichIntentByNcNotificationData(
         intent: Intent,
-        ncNotification: com.nextcloud.talk.models.json.notifications.Notification?
+        ncNotification: com.nextcloud.talk.models.json.notifications.Notification
     ): Intent {
         val newIntent = Intent(intent)
 
-        if ("recording" == ncNotification?.objectType) {
+        if ("recording" == ncNotification.objectType) {
+            val notificationDialogData = NotificationDialogData()
+
+            notificationDialogData.title = context?.getString(R.string.record_file_available).orEmpty()
+            notificationDialogData.text = ncNotification.subject.orEmpty()
+
+            for (action in ncNotification.actions!!) {
+                if (action.primary) {
+                    notificationDialogData.primaryActionDescription = action.label.orEmpty()
+                    notificationDialogData.primaryActionMethod = action.type.orEmpty()
+                    notificationDialogData.primaryActionUrl = action.link.orEmpty()
+                } else {
+                    notificationDialogData.secondaryActionDescription = action.label.orEmpty()
+                    notificationDialogData.secondaryActionMethod = action.type.orEmpty()
+                    notificationDialogData.secondaryActionUrl = action.link.orEmpty()
+                }
+            }
+
             val bundle = Bundle()
-            bundle.putParcelable(KEY_NOTIFICATION_RECORDING_NOTIFICATION, ncNotification)
+            bundle.putParcelable(KEY_NOTIFICATION_RECORDING_NOTIFICATION, notificationDialogData)
             newIntent.putExtras(bundle)
         }
 
@@ -376,11 +395,14 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             if (callHashMap != null && callHashMap.size > 0 && callHashMap.containsKey("name")) {
                 if (subjectRichParameters.containsKey("reaction")) {
                     pushMessage.subject = ""
-                    pushMessage.text = ncNotification.subject
                 } else if (ncNotification.objectType == "chat") {
                     pushMessage.subject = callHashMap["name"]!!
                 } else {
                     pushMessage.subject = ncNotification.subject!!
+                }
+
+                if (subjectRichParameters.containsKey("reaction")) {
+                    pushMessage.text = ncNotification.subject
                 }
 
                 if (callHashMap.containsKey("call-type")) {
@@ -421,7 +443,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         when (conversationType) {
             "recording" -> {
-                pushMessage.subject = "new Recording available"
                 largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_videocam_24)?.toBitmap()!!
             }
             "one2one" -> {

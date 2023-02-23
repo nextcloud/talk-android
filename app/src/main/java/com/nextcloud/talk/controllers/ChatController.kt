@@ -126,6 +126,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.NotificationDialogData
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
@@ -146,7 +147,6 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
-import com.nextcloud.talk.models.json.notifications.Notification
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
@@ -185,6 +185,7 @@ import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.remapchat.ConductorRemapping
 import com.nextcloud.talk.utils.remapchat.RemapChatModel
 import com.nextcloud.talk.utils.rx.DisposableSet
+import com.nextcloud.talk.utils.rx.SendCommonRequestUtil
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
@@ -268,7 +269,7 @@ class ChatController(args: Bundle) :
     private var lookingIntoFuture = false
     var newMessagesCount = 0
     var startCallFromNotification: Boolean? = null
-    private var recordingAvailableNotification: Notification? = null
+    private var recordingAvailableNotification: NotificationDialogData? = null
     var startCallFromRoomSwitch: Boolean = false
     val roomId: String
     val voiceOnly: Boolean
@@ -936,20 +937,17 @@ class ChatController(args: Bundle) :
         if (recordingAvailableNotification != null) {
             binding?.root?.context?.let { context ->
                 val dialogBuilder = MaterialAlertDialogBuilder(context)
-                dialogBuilder.setTitle(recordingAvailableNotification?.subject)
-                dialogBuilder.setMessage("Do you want to share the recording to the chat?")
+                recordingAvailableNotification?.let {
+                    dialogBuilder.setTitle(it.title)
+                    dialogBuilder.setMessage(it.text)
 
-                for (action in recordingAvailableNotification?.actions!!) {
-                    if (!action.label.isNullOrEmpty() && !action.link.isNullOrEmpty()) {
-                        if (action.primary) {
-                            dialogBuilder.setPositiveButton(action.label!!) { dialog, which ->
-                                sendRequest(action.type!!, action.link!!)
-                            }
-                        } else {
-                            dialogBuilder.setNegativeButton(action.label!!) { dialog, which ->
-                                sendRequest(action.type!!, action.link!!)
-                            }
-                        }
+                    val requestUtil = SendCommonRequestUtil(ncApi, credentials!!)
+
+                    dialogBuilder.setPositiveButton(it.primaryActionDescription) { _, _ ->
+                        requestUtil.sendRequest(it.primaryActionMethod, it.primaryActionUrl)
+                    }
+                    dialogBuilder.setNegativeButton(it.secondaryActionDescription) { _, _ ->
+                        requestUtil.sendRequest(it.secondaryActionMethod, it.secondaryActionUrl)
                     }
                 }
 
@@ -963,49 +961,6 @@ class ChatController(args: Bundle) :
             }
         }
         super.onViewBound(view)
-    }
-
-    private fun sendRequest(type: String, link: String) {
-        if (type == "POST") {
-            ncApi.sendCommonPostRequest(credentials, link)
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(genericOverall: GenericOverall) {
-                    }
-
-                    override fun onError(e: Throwable) {
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
-        } else if (type == "DELETE") {
-            ncApi.sendCommonDeleteRequest(credentials, link)
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(genericOverall: GenericOverall) {
-                    }
-
-                    override fun onError(e: Throwable) {
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
-        }
-        Log.d(TAG, "type=" + type + " link=" + link)
     }
 
     private fun switchToRoom(token: String) {
