@@ -4,6 +4,7 @@
     <string name="appbar_search_in">Тражи у %s</string>
     <string name="audio_output_phone">Телефон</string>
     <string name="avatar">Аватар</string>
+    <string name="away">Одсутан</string>
     <string name="close">Затвори</string>
     <string name="conversations">Разговори</string>
     <string name="edit">Измени</string>
