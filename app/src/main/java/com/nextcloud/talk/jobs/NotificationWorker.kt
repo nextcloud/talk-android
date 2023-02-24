@@ -347,8 +347,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         if ("recording" == ncNotification.objectType) {
             val notificationDialogData = NotificationDialogData()
 
-            notificationDialogData.title = context?.getString(R.string.record_file_available).orEmpty()
-            notificationDialogData.text = ncNotification.subject.orEmpty()
+            notificationDialogData.title = pushMessage.subject
+            notificationDialogData.text = pushMessage.text.orEmpty()
 
             for (action in ncNotification.actions!!) {
                 if (action.primary) {
@@ -371,9 +371,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun enrichPushMessageByNcNotificationData(
-        ncNotification: com.nextcloud.talk.models.json.notifications.Notification?
+        ncNotification: com.nextcloud.talk.models.json.notifications.Notification
     ) {
-        if (ncNotification!!.messageRichParameters != null &&
+        pushMessage.objectId = ncNotification.objectId
+        pushMessage.timestamp = ncNotification.datetime!!.millis
+
+        if (ncNotification.messageRichParameters != null &&
             ncNotification.messageRichParameters!!.size > 0
         ) {
             pushMessage.text = getParsedMessage(
@@ -385,9 +388,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         val subjectRichParameters = ncNotification.subjectRichParameters
-
-        pushMessage.timestamp = ncNotification.datetime!!.millis
-
         if (subjectRichParameters != null && subjectRichParameters.size > 0) {
             val callHashMap = subjectRichParameters["call"]
             val userHashMap = subjectRichParameters["user"]
@@ -408,9 +408,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 if (callHashMap.containsKey("call-type")) {
                     conversationType = callHashMap["call-type"]
                 }
-                if ("recording" == ncNotification.objectType) {
-                    conversationType = "recording"
-                }
             }
             val notificationUser = NotificationUser()
             if (userHashMap != null && userHashMap.isNotEmpty()) {
@@ -424,8 +421,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 notificationUser.name = guestHashMap["name"]
                 pushMessage.notificationUser = notificationUser
             }
+        } else {
+            pushMessage.subject = ncNotification.subject.orEmpty()
         }
-        pushMessage.objectId = ncNotification.objectId
+
+        if ("recording" == ncNotification.objectType) {
+            conversationType = "recording"
+        }
     }
 
     @Suppress("MagicNumber")
@@ -487,13 +489,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setSmallIcon(smallIcon)
             .setCategory(category)
             .setPriority(priority)
+            .setContentTitle(contentTitle)
+            .setContentText(contentText)
             .setSubText(baseUrl)
             .setWhen(pushMessage.timestamp)
             .setShowWhen(true)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-            .setContentTitle(contentTitle)
-            .setContentText(contentText)
             .setColor(context!!.resources.getColor(R.color.colorPrimary))
 
         val notificationInfoBundle = Bundle()
