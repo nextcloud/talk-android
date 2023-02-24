@@ -85,6 +85,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RECORDING_NOTIFICATION
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
@@ -413,42 +414,15 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else {
             pushMessage.subject = ncNotification.subject.orEmpty()
         }
-
-        if ("recording" == ncNotification.objectType) {
-            conversationType = "recording"
-        }
     }
 
     @Suppress("MagicNumber")
     private fun showNotification(intent: Intent) {
-        val largeIcon: Bitmap
-        val priority = NotificationCompat.PRIORITY_HIGH
-        val smallIcon: Int = R.drawable.ic_logo
-
-        var category: String = ""
+        var category = ""
         when (pushMessage.type) {
             TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING -> category = Notification.CATEGORY_MESSAGE
             TYPE_CALL -> category = Notification.CATEGORY_CALL
             else -> Log.e(TAG, "unknown pushMessage.type")
-        }
-
-        when (conversationType) {
-            "recording" -> {
-                largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_videocam_24)?.toBitmap()!!
-            }
-            "one2one" -> {
-                pushMessage.subject = ""
-                largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
-            }
-            "group" ->
-                largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
-            "public" -> largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_link_black_24px)?.toBitmap()!!
-            else -> // assuming one2one
-                largeIcon = if (TYPE_CHAT == pushMessage.type || TYPE_ROOM == pushMessage.type) {
-                    ContextCompat.getDrawable(context!!, R.drawable.ic_comment)?.toBitmap()!!
-                } else {
-                    ContextCompat.getDrawable(context!!, R.drawable.ic_call_black_24dp)?.toBitmap()!!
-                }
         }
 
         // Use unique request code to make sure that a new PendingIntent gets created for each notification
@@ -474,10 +448,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         val notificationBuilder = NotificationCompat.Builder(context!!, "1")
-            .setLargeIcon(largeIcon)
-            .setSmallIcon(smallIcon)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
-            .setPriority(priority)
+            .setLargeIcon(getLargeIcon())
+            .setSmallIcon(R.drawable.ic_logo)
             .setContentTitle(contentTitle)
             .setContentText(contentText)
             .setSubText(baseUrl)
@@ -492,6 +466,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         // could be an ID or a TOKEN
         notificationInfoBundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
         notificationInfoBundle.putLong(KEY_NOTIFICATION_ID, pushMessage.notificationId!!)
+
+        if (pushMessage.type == TYPE_RECORDING) {
+            notificationInfoBundle.putBoolean(KEY_NOTIFICATION_RESTRICT_DELETION, true)
+        }
+
         notificationBuilder.setExtras(notificationInfoBundle)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -532,11 +511,48 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
             TYPE_RECORDING == pushMessage.type &&
+            pushMessage.notificationUser != null
+        ) {
+            prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
+            // addDiscardRecordingAvailableAction(notificationBuilder, systemNotificationId)
+            // addShareRecordingToChatAction(notificationBuilder, systemNotificationId)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+            TYPE_RECORDING == pushMessage.type &&
             pushMessage.notificationUser != null // null
         ) {
             prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
         }
         sendNotification(systemNotificationId, notificationBuilder.build())
+    }
+
+    private fun getLargeIcon(): Bitmap {
+        val largeIcon: Bitmap
+        if (pushMessage.type == "recording") {
+            largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_videocam_24)?.toBitmap()!!
+        } else {
+            when (conversationType) {
+                "one2one" -> {
+                    pushMessage.subject = ""
+                    largeIcon =
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
+                }
+                "group" ->
+                    largeIcon =
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
+                "public" ->
+                    largeIcon =
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_link_black_24px)?.toBitmap()!!
+                else -> // assuming one2one
+                    largeIcon = if (TYPE_CHAT == pushMessage.type || TYPE_ROOM == pushMessage.type) {
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_comment)?.toBitmap()!!
+                    } else {
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_call_black_24dp)?.toBitmap()!!
+                    }
+            }
+        }
+        return largeIcon
     }
 
     private fun calculateCRC32(s: String): Long {
@@ -645,6 +661,51 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .build()
         notificationBuilder.addAction(replyAction)
     }
+
+    // @RequiresApi(api = Build.VERSION_CODES.N)
+    // private fun addDiscardRecordingAvailableAction(notificationBuilder: NotificationCompat.Builder,
+    //     systemNotificationId:
+    // Int) {
+    //     val replyLabel = context!!.resources.getString(R.string.nc_reply)
+    //     val remoteInput = RemoteInput.Builder(NotificationUtils.KEY_DIRECT_REPLY)
+    //         .setLabel(replyLabel)
+    //         .build()
+    //
+    //     val replyPendingIntent = buildIntentForAction(
+    //         DirectReplyReceiver::class.java,
+    //         systemNotificationId,
+    //         0
+    //     )
+    //     val replyAction = NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
+    //         .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
+    //         .setShowsUserInterface(false)
+    //         .setAllowGeneratedReplies(true)
+    //         .addRemoteInput(remoteInput)
+    //         .build()
+    //     notificationBuilder.addAction(replyAction)
+    // }
+    //
+    // @RequiresApi(api = Build.VERSION_CODES.N)
+    // private fun addShareRecordingToChatAction(notificationBuilder: NotificationCompat.Builder, systemNotificationId:
+    // Int) {
+    //     val replyLabel = context!!.resources.getString(R.string.nc_reply)
+    //     val remoteInput = RemoteInput.Builder(NotificationUtils.KEY_DIRECT_REPLY)
+    //         .setLabel(replyLabel)
+    //         .build()
+    //
+    //     val replyPendingIntent = buildIntentForAction(
+    //         DirectReplyReceiver::class.java,
+    //         systemNotificationId,
+    //         0
+    //     )
+    //     val replyAction = NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
+    //         .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
+    //         .setShowsUserInterface(false)
+    //         .setAllowGeneratedReplies(true)
+    //         .addRemoteInput(remoteInput)
+    //         .build()
+    //     notificationBuilder.addAction(replyAction)
+    // }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private fun getStyle(person: Person, style: NotificationCompat.MessagingStyle?): NotificationCompat.MessagingStyle {
@@ -860,6 +921,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 })
         }
     }
+
     private fun createMainActivityIntent(): Intent {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -870,6 +932,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         intent.putExtras(bundle)
         return intent
     }
+
     private fun getIntentToOpenConversation(): PendingIntent? {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK

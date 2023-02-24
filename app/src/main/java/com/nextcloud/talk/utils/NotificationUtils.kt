@@ -267,7 +267,9 @@ object NotificationUtils {
 
     fun cancelExistingNotificationsForRoom(context: Context?, conversationUser: User, roomTokenOrId: String) {
         scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
-            if (roomTokenOrId == notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)) {
+            if (roomTokenOrId == notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN) &&
+                !notification.extras.getBoolean(BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION)
+            ) {
                 notificationManager.cancel(statusBarNotification.id)
             }
         }
