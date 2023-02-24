@@ -182,6 +182,7 @@
     <string name="nc_server_connect">Испробај везу са сервером</string>
     <string name="nc_server_db_upgrade_needed">Ажурирајте своју %1$s базу</string>
     <string name="nc_server_failed_to_import_account">Грешка при учитавању одабраног налога</string>
+    <string name="nc_server_helper_text">Линк на ваш %1$s веб интерфејс када га отворите у прегледачу.</string>
     <string name="nc_server_import_account">Увези налог из апликације %1$s</string>
     <string name="nc_server_import_account_plain">Увези налог</string>
     <string name="nc_server_import_accounts">Увези налоге из апликације %1$s</string>
@@ -242,6 +243,8 @@
     <string name="nc_wrong_password">Погрешна лозинка</string>
     <string name="nc_yes">Да</string>
     <string name="oneHour">1 сат</string>
+    <string name="online">На мрежи</string>
+    <string name="online_status">Мрежни статус</string>
     <string name="polls_add_option">Додај ставку</string>
     <string name="polls_options">Избори</string>
     <string name="polls_settings">Поставке</string>
@@ -254,6 +257,8 @@
     <string name="scope_published_description">Синхронизуј на сервере од поверења и глобалне и јавне адресаре</string>
     <string name="secondsAgo">пре неколико секунди</string>
     <string name="selected_list_item">Одабрано</string>
+    <string name="set_status">Постави статус</string>
+    <string name="set_status_message">Постављање статусне поруке</string>
     <string name="share">Подели</string>
     <string name="shared_items_audio">Звук</string>
     <string name="shared_items_file">Фајл</string>
@@ -265,6 +270,7 @@
     <string name="take_photo">Сликај</string>
     <string name="take_photo_send">Пошаљи</string>
     <string name="take_photo_switch_camera">Пребаци камеру</string>
+    <string name="take_photo_toggle_torch">Пребаци стање лампе</string>
     <string name="thirtyMinutes">30 минута</string>
     <string name="thisWeek">Ове недеље</string>
     <string name="title_attachments">Прилози</string>
@@ -278,4 +284,5 @@
     <string name="user_status">Статус</string>
     <string name="userinfo_no_info_headline">Нису постављени лични подаци</string>
     <string name="userinfo_no_info_text">Додајте име, слику и детаље за контакт на страницу профила.</string>
+    <string name="whats_your_status">Који је ваш статус?</string>
     </resources>

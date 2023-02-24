@@ -405,12 +405,12 @@
     <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
     <string name="record_active_info">Hovor je nahráván</string>
+    <string name="record_cancel_start">Zrušit zahajování nahrávání</string>
+    <string name="record_failed_info">Nahrávání se nezdařilo. Obraťte se na svého správce.</string>
     <string name="record_start_description">Zahájit nahrávání</string>
-    <string name="record_start_loading">Spouštění…</string>
     <string name="record_stop_confirm_message">Opravdu chcete přestat nahrávat?</string>
     <string name="record_stop_confirm_title">Zastavit nahrávání hovoru</string>
     <string name="record_stop_description">Zastavit nahrávání</string>
-    <string name="record_stop_loading">Zastavování…</string>
     <string name="save">Uložit</string>
     <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>
     <string name="scope_federated_title">Propojené</string>

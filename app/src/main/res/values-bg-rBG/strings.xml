@@ -405,11 +405,9 @@
     <string name="read_storage_no_permission">Споделянето на файлове от хранилище не е възможно без права</string>
     <string name="record_active_info">Разговорът се записва</string>
     <string name="record_start_description">Започване на запис</string>
-    <string name="record_start_loading">Начало ...</string>
     <string name="record_stop_confirm_message">Наистина ли искате да спрете записа?</string>
     <string name="record_stop_confirm_title">Спиране на записа на повикването</string>
     <string name="record_stop_description">Спиране на записването</string>
-    <string name="record_stop_loading">Спиране ...</string>
     <string name="save">Записване</string>
     <string name="scope_federated_description">Синхронизиране само с доверени сървъри</string>
     <string name="scope_federated_title">Федериран</string>

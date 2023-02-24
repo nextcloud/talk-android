@@ -406,12 +406,12 @@
     <string name="reactions_tab_all">Todo</string>
     <string name="read_storage_no_permission">Compartir archivos desde el almacenamiento no es posible sin permisos</string>
     <string name="record_active_info">La llamada está siendo grabada.</string>
+    <string name="record_cancel_start">Cancelar la grabación</string>
+    <string name="record_failed_info">La grabación falló. Por favor, contacta con tu administrador.</string>
     <string name="record_start_description">Empezar a grabar</string>
-    <string name="record_start_loading">Iniciando ...</string>
     <string name="record_stop_confirm_message">¿Realmente desea detener la grabación?</string>
     <string name="record_stop_confirm_title">Detener grabación de la llamada</string>
     <string name="record_stop_description">Detener grabación</string>
-    <string name="record_stop_loading">Deteniendo ...</string>
     <string name="save">Guardar</string>
     <string name="scope_federated_description">Sincronizar solo con servidores de confianza</string>
     <string name="scope_federated_title">Federado</string>

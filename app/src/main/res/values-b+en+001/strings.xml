@@ -405,12 +405,12 @@
     <string name="reactions_tab_all">All</string>
     <string name="read_storage_no_permission">Sharing files from storage is not possible without permissions</string>
     <string name="record_active_info">The call is being recorded</string>
+    <string name="record_cancel_start">Cancel recording start</string>
+    <string name="record_failed_info">The recording failed. Please contact your administrator.</string>
     <string name="record_start_description">Start recording</string>
-    <string name="record_start_loading">Starting …</string>
     <string name="record_stop_confirm_message">Do you really want to stop the recording?</string>
     <string name="record_stop_confirm_title">Stop Call recording</string>
     <string name="record_stop_description">Stop recording</string>
-    <string name="record_stop_loading">Stopping …</string>
     <string name="save">Save</string>
     <string name="scope_federated_description">Only synchronize to trusted servers</string>
     <string name="scope_federated_title">Federated</string>

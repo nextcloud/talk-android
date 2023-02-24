@@ -405,12 +405,12 @@
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Dateien können nicht ohne Berechtigung geteilt werden</string>
     <string name="record_active_info">Der Anruf wird aufgezeichnet</string>
+    <string name="record_cancel_start">Aufnahmestart abbrechen</string>
+    <string name="record_failed_info">Aufnahme fehlgeschlagen. Bitte wenden Sie sich an Ihre Administration.</string>
     <string name="record_start_description">Aufnahme beginnen</string>
-    <string name="record_start_loading">Starte…</string>
     <string name="record_stop_confirm_message">Möchten Sie die Aufnahme wirklich beenden?</string>
     <string name="record_stop_confirm_title">Anrufaufnahme beenden</string>
     <string name="record_stop_description">Aufnahme stoppen</string>
-    <string name="record_stop_loading">Beende…</string>
     <string name="save">Speichern</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>
     <string name="scope_federated_title">Federated</string>

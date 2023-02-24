@@ -405,12 +405,12 @@
     <string name="reactions_tab_all">全部</string>
     <string name="read_storage_no_permission">沒有權限就無法從存儲分享檔案</string>
     <string name="record_active_info">通話正在錄音中</string>
+    <string name="record_cancel_start">取消錄製開始</string>
+    <string name="record_failed_info">錄製失敗。請聯絡管理員。</string>
     <string name="record_start_description">開始錄音</string>
-    <string name="record_start_loading">開始 ...</string>
     <string name="record_stop_confirm_message">你想停止錄音嗎？</string>
     <string name="record_stop_confirm_title">停止通話錄音</string>
     <string name="record_stop_description">停止錄音</string>
-    <string name="record_stop_loading">停止 ...</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>
     <string name="scope_federated_title">已聯盟</string>

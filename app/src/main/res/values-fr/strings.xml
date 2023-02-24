@@ -405,12 +405,12 @@
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
     <string name="record_active_info">L\'appel est enregistré</string>
+    <string name="record_cancel_start">Annuler le démarrage de l\'enregistrement</string>
+    <string name="record_failed_info">L\'enregistrement a échoué. Veuillez contacter votre administrateur.</string>
     <string name="record_start_description">Commencer l\'enregistrement</string>
-    <string name="record_start_loading">Démarrage…</string>
     <string name="record_stop_confirm_message">Voulez-vous vraiment arrêter l\'enregistrement ?</string>
     <string name="record_stop_confirm_title">Arrêter l\'enregistrement de l\'appel</string>
     <string name="record_stop_description">Arrêter l\'enregistrement</string>
-    <string name="record_stop_loading">Arrêt…</string>
     <string name="save">Sauvegarder</string>
     <string name="scope_federated_description">Synchronisation avec les serveurs de confiance uniquement</string>
     <string name="scope_federated_title">Fédéré</string>

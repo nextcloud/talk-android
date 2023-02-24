@@ -405,11 +405,9 @@
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
     <string name="record_active_info">Çağrı kaydediliyor</string>
     <string name="record_start_description">Kaydı başlat</string>
-    <string name="record_start_loading">Başlatılıyor…</string>
     <string name="record_stop_confirm_message">Kaydı durdurmak istediğinize emin misiniz?</string>
     <string name="record_stop_confirm_title">Çağrı kaydını durdur</string>
     <string name="record_stop_description">Kaydı durdur</string>
-    <string name="record_stop_loading">Durduruluyor…</string>
     <string name="save">Kaydet</string>
     <string name="scope_federated_description">Yalnızca güvenilen sunucular ile eşitlensin</string>
     <string name="scope_federated_title">Birleşik</string>
