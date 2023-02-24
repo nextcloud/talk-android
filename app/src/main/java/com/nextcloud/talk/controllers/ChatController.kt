@@ -126,7 +126,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
-import com.nextcloud.talk.data.NotificationDialogData
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
@@ -185,7 +184,6 @@ import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.remapchat.ConductorRemapping
 import com.nextcloud.talk.utils.remapchat.RemapChatModel
 import com.nextcloud.talk.utils.rx.DisposableSet
-import com.nextcloud.talk.utils.rx.SendCommonRequestUtil
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
@@ -269,7 +267,6 @@ class ChatController(args: Bundle) :
     private var lookingIntoFuture = false
     var newMessagesCount = 0
     var startCallFromNotification: Boolean? = null
-    private var recordingAvailableNotification: NotificationDialogData? = null
     var startCallFromRoomSwitch: Boolean = false
     val roomId: String
     val voiceOnly: Boolean
@@ -344,10 +341,6 @@ class ChatController(args: Bundle) :
 
         if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)
-        }
-
-        if (args.containsKey(BundleKeys.KEY_NOTIFICATION_RECORDING_NOTIFICATION)) {
-            recordingAvailableNotification = args.getParcelable(BundleKeys.KEY_NOTIFICATION_RECORDING_NOTIFICATION)
         }
 
         if (args.containsKey(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)) {
@@ -931,33 +924,6 @@ class ChatController(args: Bundle) :
                 handleFromNotification()
             } else {
                 getRoomInfo()
-            }
-        }
-
-        if (recordingAvailableNotification != null) {
-            binding?.root?.context?.let { context ->
-                val dialogBuilder = MaterialAlertDialogBuilder(context)
-                recordingAvailableNotification?.let {
-                    dialogBuilder.setTitle(it.title)
-                    dialogBuilder.setMessage(it.text)
-
-                    val requestUtil = SendCommonRequestUtil(ncApi, credentials!!)
-
-                    dialogBuilder.setPositiveButton(it.primaryActionDescription) { _, _ ->
-                        requestUtil.sendRequest(it.primaryActionMethod, it.primaryActionUrl)
-                    }
-                    dialogBuilder.setNegativeButton(it.secondaryActionDescription) { _, _ ->
-                        requestUtil.sendRequest(it.secondaryActionMethod, it.secondaryActionUrl)
-                    }
-                }
-
-                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(context, dialogBuilder)
-                val dialog = dialogBuilder.show()
-
-                viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                )
             }
         }
         super.onViewBound(view)

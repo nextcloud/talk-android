@@ -388,17 +388,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 )
                 logRouterBackStack(router!!)
             }
-        } else if (intent.hasExtra(BundleKeys.KEY_NOTIFICATION_RECORDING_NOTIFICATION)) {
-            logRouterBackStack(router!!)
-            remapChatController(
-                router!!,
-                intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
-                intent.getStringExtra(KEY_ROOM_TOKEN)!!,
-                intent.extras!!,
-                true,
-                true
-            )
-            logRouterBackStack(router!!)
         }
     }
 

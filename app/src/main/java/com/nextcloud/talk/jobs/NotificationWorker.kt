@@ -4,7 +4,7 @@
  * @author Andy Scherzinger
  * @author Mario Danic
  * @author Marcel Hibbe
- * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2022-2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
@@ -58,7 +58,6 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
-import com.nextcloud.talk.data.NotificationDialogData
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -68,7 +67,9 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.models.json.push.NotificationUser
 import com.nextcloud.talk.receivers.DirectReplyReceiver
+import com.nextcloud.talk.receivers.DismissRecordingAvailableReceiver
 import com.nextcloud.talk.receivers.MarkAsReadReceiver
+import com.nextcloud.talk.receivers.ShareRecordingToChatReceiver
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DoNotDisturbUtils.shouldPlaySound
 import com.nextcloud.talk.utils.NotificationUtils
@@ -80,14 +81,15 @@ import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.loadAvatarSync
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_DISMISS_RECORDING_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RECORDING_NOTIFICATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -183,7 +185,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         if (pushMessage.notificationId != Long.MIN_VALUE) {
             getNcDataAndShowNotification(mainActivityIntent)
         } else {
-            showNotification(mainActivityIntent)
+            showNotification(mainActivityIntent, null)
         }
     }
 
@@ -313,8 +315,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     val ncNotification = notificationOverall.ocs!!.notification
                     if (ncNotification != null) {
                         enrichPushMessageByNcNotificationData(ncNotification)
-                        val newIntent = enrichIntentByNcNotificationData(intent, ncNotification)
-                        showNotification(newIntent)
+                        // val newIntent = enrichIntentByNcNotificationData(intent, ncNotification)
+                        showNotification(intent, ncNotification)
                     }
                 }
 
@@ -333,29 +335,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         ncNotification: com.nextcloud.talk.models.json.notifications.Notification
     ): Intent {
         val newIntent = Intent(intent)
-
-        if ("recording" == ncNotification.objectType) {
-            val notificationDialogData = NotificationDialogData()
-
-            notificationDialogData.title = pushMessage.subject
-            notificationDialogData.text = pushMessage.text.orEmpty()
-
-            for (action in ncNotification.actions!!) {
-                if (action.primary) {
-                    notificationDialogData.primaryActionDescription = action.label.orEmpty()
-                    notificationDialogData.primaryActionMethod = action.type.orEmpty()
-                    notificationDialogData.primaryActionUrl = action.link.orEmpty()
-                } else {
-                    notificationDialogData.secondaryActionDescription = action.label.orEmpty()
-                    notificationDialogData.secondaryActionMethod = action.type.orEmpty()
-                    notificationDialogData.secondaryActionUrl = action.link.orEmpty()
-                }
-            }
-
-            val bundle = Bundle()
-            bundle.putParcelable(KEY_NOTIFICATION_RECORDING_NOTIFICATION, notificationDialogData)
-            newIntent.putExtras(bundle)
-        }
 
         return newIntent
     }
@@ -417,7 +396,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     @Suppress("MagicNumber")
-    private fun showNotification(intent: Intent) {
+    private fun showNotification(
+        intent: Intent,
+        ncNotification: com.nextcloud.talk.models.json.notifications.Notification?
+    ) {
         var category = ""
         when (pushMessage.type) {
             TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING -> category = Notification.CATEGORY_MESSAGE
@@ -447,6 +429,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             contentText = EmojiCompat.get().process(pushMessage.text!!)
         }
 
+        val autoCancelOnClick = TYPE_RECORDING != pushMessage.type
+
         val notificationBuilder = NotificationCompat.Builder(context!!, "1")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
@@ -458,7 +442,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setWhen(pushMessage.timestamp)
             .setShowWhen(true)
             .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
+            .setAutoCancel(autoCancelOnClick)
             .setColor(context!!.resources.getColor(R.color.colorPrimary))
 
         val notificationInfoBundle = Bundle()
@@ -511,25 +495,17 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
             TYPE_RECORDING == pushMessage.type &&
-            pushMessage.notificationUser != null
+            ncNotification != null
         ) {
-            prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
-            // addDiscardRecordingAvailableAction(notificationBuilder, systemNotificationId)
-            // addShareRecordingToChatAction(notificationBuilder, systemNotificationId)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
-            TYPE_RECORDING == pushMessage.type &&
-            pushMessage.notificationUser != null // null
-        ) {
-            prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
+            addDismissRecordingAvailableAction(notificationBuilder, systemNotificationId, ncNotification)
+            addShareRecordingToChatAction(notificationBuilder, systemNotificationId, ncNotification)
         }
         sendNotification(systemNotificationId, notificationBuilder.build())
     }
 
     private fun getLargeIcon(): Bitmap {
         val largeIcon: Bitmap
-        if (pushMessage.type == "recording") {
+        if (pushMessage.type == TYPE_RECORDING) {
             largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_videocam_24)?.toBitmap()!!
         } else {
             when (conversationType) {
@@ -662,50 +638,82 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationBuilder.addAction(replyAction)
     }
 
-    // @RequiresApi(api = Build.VERSION_CODES.N)
-    // private fun addDiscardRecordingAvailableAction(notificationBuilder: NotificationCompat.Builder,
-    //     systemNotificationId:
-    // Int) {
-    //     val replyLabel = context!!.resources.getString(R.string.nc_reply)
-    //     val remoteInput = RemoteInput.Builder(NotificationUtils.KEY_DIRECT_REPLY)
-    //         .setLabel(replyLabel)
-    //         .build()
-    //
-    //     val replyPendingIntent = buildIntentForAction(
-    //         DirectReplyReceiver::class.java,
-    //         systemNotificationId,
-    //         0
-    //     )
-    //     val replyAction = NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
-    //         .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
-    //         .setShowsUserInterface(false)
-    //         .setAllowGeneratedReplies(true)
-    //         .addRemoteInput(remoteInput)
-    //         .build()
-    //     notificationBuilder.addAction(replyAction)
-    // }
-    //
-    // @RequiresApi(api = Build.VERSION_CODES.N)
-    // private fun addShareRecordingToChatAction(notificationBuilder: NotificationCompat.Builder, systemNotificationId:
-    // Int) {
-    //     val replyLabel = context!!.resources.getString(R.string.nc_reply)
-    //     val remoteInput = RemoteInput.Builder(NotificationUtils.KEY_DIRECT_REPLY)
-    //         .setLabel(replyLabel)
-    //         .build()
-    //
-    //     val replyPendingIntent = buildIntentForAction(
-    //         DirectReplyReceiver::class.java,
-    //         systemNotificationId,
-    //         0
-    //     )
-    //     val replyAction = NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
-    //         .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
-    //         .setShowsUserInterface(false)
-    //         .setAllowGeneratedReplies(true)
-    //         .addRemoteInput(remoteInput)
-    //         .build()
-    //     notificationBuilder.addAction(replyAction)
-    // }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private fun addDismissRecordingAvailableAction(
+        notificationBuilder: NotificationCompat.Builder,
+        systemNotificationId: Int,
+        ncNotification: com.nextcloud.talk.models.json.notifications.Notification
+    ) {
+        var dismissLabel = ""
+        var dismissRecordingUrl = ""
+
+        for (action in ncNotification.actions!!) {
+            if (!action.primary) {
+                dismissLabel = action.label.orEmpty()
+                dismissRecordingUrl = action.link.orEmpty()
+            }
+        }
+
+        val dismissIntent = Intent(context, DismissRecordingAvailableReceiver::class.java)
+        dismissIntent.putExtra(KEY_SYSTEM_NOTIFICATION_ID, systemNotificationId)
+        dismissIntent.putExtra(KEY_DISMISS_RECORDING_URL, dismissRecordingUrl)
+
+        val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+        val dismissPendingIntent = PendingIntent.getBroadcast(context, systemNotificationId, dismissIntent, intentFlag)
+
+        val dismissAction = NotificationCompat.Action.Builder(R.drawable.ic_delete, dismissLabel, dismissPendingIntent)
+            .setShowsUserInterface(false)
+            .setAllowGeneratedReplies(true)
+            .build()
+        notificationBuilder.addAction(dismissAction)
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private fun addShareRecordingToChatAction(
+        notificationBuilder: NotificationCompat.Builder,
+        systemNotificationId: Int,
+        ncNotification: com.nextcloud.talk.models.json.notifications.Notification
+    ) {
+        var shareToChatLabel = ""
+        var shareToChatUrl = ""
+
+        for (action in ncNotification.actions!!) {
+            if (action.primary) {
+                shareToChatLabel = action.label.orEmpty()
+                shareToChatUrl = action.link.orEmpty()
+            }
+        }
+
+        val shareRecordingIntent = Intent(context, ShareRecordingToChatReceiver::class.java)
+        shareRecordingIntent.putExtra(KEY_SYSTEM_NOTIFICATION_ID, systemNotificationId)
+        shareRecordingIntent.putExtra(KEY_SHARE_RECORDING_TO_CHAT_URL, shareToChatUrl)
+
+        val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+        val shareRecordingPendingIntent = PendingIntent.getBroadcast(
+            context,
+            systemNotificationId,
+            shareRecordingIntent,
+            intentFlag
+        )
+
+        val shareRecordingAction = NotificationCompat.Action.Builder(
+            R.drawable.ic_delete,
+            shareToChatLabel,
+            shareRecordingPendingIntent
+        )
+            .setShowsUserInterface(false)
+            .setAllowGeneratedReplies(true)
+            .build()
+        notificationBuilder.addAction(shareRecordingAction)
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private fun getStyle(person: Person, style: NotificationCompat.MessagingStyle?): NotificationCompat.MessagingStyle {
