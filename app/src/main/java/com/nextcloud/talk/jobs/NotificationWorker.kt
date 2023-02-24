@@ -186,17 +186,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
     }
 
-    private fun createMainActivityIntent(): Intent {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-        val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
-        bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
-        bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
-        intent.putExtras(bundle)
-        return intent
-    }
-
     private fun handleCallPushMessage() {
         val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
         val bundle = Bundle()
@@ -871,16 +860,23 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 })
         }
     }
-
-    private fun getIntentToOpenConversation(): PendingIntent? {
-        val bundle = Bundle()
+    private fun createMainActivityIntent(): Intent {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-
+        val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
         bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
         bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
-
+        intent.putExtras(bundle)
+        return intent
+    }
+    private fun getIntentToOpenConversation(): PendingIntent? {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        val bundle = Bundle()
+        bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
+        bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
+        bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
         intent.putExtras(bundle)
 
         val requestCode = System.currentTimeMillis().toInt()
