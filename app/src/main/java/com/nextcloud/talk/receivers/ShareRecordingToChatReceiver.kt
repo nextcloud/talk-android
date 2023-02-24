@@ -24,10 +24,10 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import autodagger.AutoInjector
-import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
@@ -65,9 +65,6 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
 
     override fun onReceive(receiveContext: Context, intent: Intent?) {
         context = receiveContext
-
-        // NOTE - systemNotificationId is an internal ID used on the device only.
-        // It is NOT the same as the notification ID used in communication with the server.
         systemNotificationId = intent!!.getIntExtra(KEY_SYSTEM_NOTIFICATION_ID, 0)
         link = intent.getStringExtra(BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL)
 
@@ -93,7 +90,19 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
 
                 override fun onNext(genericOverall: GenericOverall) {
                     cancelNotification(systemNotificationId!!)
-                    context.startActivity(createOpenChatIntent())
+
+                    // Here it would make sense to open the chat where the recording was shared to (startActivity...).
+                    // However, as we are in a broadcast receiver, this needs a TaskStackBuilder
+                    // combined with addNextIntentWithParentStack. For further reading, see
+                    // https://developer.android.com/develop/ui/views/notifications/navigation#DirectEntry
+                    // As we are using the conductor framework it might be hard the combine this or to keep an overview.
+                    // For this reason there is only a toast for now until we got rid of conductor.
+
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.nc_all_ok_operation),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
 
                 override fun onError(e: Throwable) {
@@ -104,21 +113,6 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
                     // unused atm
                 }
             })
-    }
-
-    private fun createOpenChatIntent(): Intent {
-        val intent = Intent(context, MainActivity::class.java)
-        // intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.addFlags(
-            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        )
-
-        val bundle = Bundle()
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationOfShareTarget)
-        bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)
-        intent.putExtras(bundle)
-        return intent
     }
 
     private fun cancelNotification(notificationId: Int) {
