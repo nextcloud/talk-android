@@ -1,34 +1,25 @@
 <!--
-  ~
-  ~ Nextcloud Android client application
-  ~
-  ~ @author Tobias Kaminsky
-  ~ Copyright (C) 2019 Tobias Kaminsky
-  ~ Copyright (C) 2019 Nextcloud GmbH
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU Affero General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Affero General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
-  -->
+    @author Google LLC
+    Copyright (C) 2023 Google LLC
 
-<vector xmlns:tools="http://schemas.android.com/tools"
-    android:autoMirrored="true"
-    android:height="24dp"
-    android:viewportHeight="24"
-    android:viewportWidth="24"
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:ignore="VectorRaster">
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
     <path
         android:fillColor="#FF000000"
-        android:pathData="M3,17.25V21h3.75L17.81,9.94l-3.75,-3.75L3,17.25zM20.71,7.04c0.39,-0.39 0.39,-1.02 0,-1.41l-2.34,-2.34c-0.39,-0.39 -1.02,-0.39 -1.41,0l-1.83,1.83 3.75,3.75 1.83,-1.83z" />
+        android:pathData="M772,357L602,189L658,133Q681,110 714.5,110Q748,110 771,133L827,189Q850,212 851,244.5Q852,277 829,300L772,357ZM714,416L290,840L120,840L120,670L544,246L714,416Z" />
 </vector>
