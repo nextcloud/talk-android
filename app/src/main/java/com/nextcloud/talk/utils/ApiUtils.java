@@ -392,7 +392,7 @@ public class ApiUtils {
     }
 
     // see https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md
-    public static String getUrlForNotificationWithId(String baseUrl, String notificationId) {
+    public static String getUrlForNcNotificationWithId(String baseUrl, String notificationId) {
         return baseUrl + ocsApiVersion + "/apps/notifications/api/v2/notifications/" + notificationId;
     }
 

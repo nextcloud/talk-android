@@ -382,8 +382,8 @@ public interface NcApi {
                                                                @Url String url);
 
     @GET
-    Observable<NotificationOverall> getNotification(@Header("Authorization") String authorization,
-                                                    @Url String url);
+    Observable<NotificationOverall> getNcNotification(@Header("Authorization") String authorization,
+                                                      @Url String url);
 
     @FormUrlEncoded
     @POST
@@ -595,4 +595,12 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> withdrawRequestAssistance(@Header("Authorization") String authorization,
                                              @Url String url);
+
+    @POST
+    Observable<GenericOverall> sendCommonPostRequest(@Header("Authorization") String authorization,
+                                                 @Url String url);
+
+    @DELETE
+    Observable<GenericOverall> sendCommonDeleteRequest(@Header("Authorization") String authorization,
+                                                     @Url String url);
 }

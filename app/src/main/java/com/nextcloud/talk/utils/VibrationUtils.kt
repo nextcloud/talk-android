@@ -25,7 +25,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 
 object VibrationUtils {
-    private const val SHORT_VIBRATE: Long = 20
+    private const val SHORT_VIBRATE: Long = 100
 
     fun vibrateShort(context: Context) {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

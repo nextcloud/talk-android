@@ -198,6 +198,8 @@
 
         <receiver android:name=".receivers.DirectReplyReceiver" />
         <receiver android:name=".receivers.MarkAsReadReceiver" />
+        <receiver android:name=".receivers.DismissRecordingAvailableReceiver" />
+        <receiver android:name=".receivers.ShareRecordingToChatReceiver" />
 
         <service
             android:name=".utils.SyncService"
