@@ -1,30 +1,26 @@
 <!--
-  Nextcloud Android client application
+    @author Google LLC
+    Copyright (C) 2023 Google LLC
 
-  Copyright (C) 2020 Nextcloud.
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  This program is free software; you can redistribute it and/or
-  modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
-  License as published by the Free Software Foundation; either
-  version 3 of the License, or any later version.
+    http://www.apache.org/licenses/LICENSE-2.0
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU AFFERO GENERAL PUBLIC LICENSE for more details.
-
-  You should have received a copy of the GNU Affero General Public
-  License along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-  Icon provided by Android Material Library in Apache License 2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:tint="#666666"
-    android:viewportWidth="24.0"
-    android:viewportHeight="24.0">
+    android:viewportWidth="960"
+    android:viewportHeight="960">
     <path
         android:fillColor="#FF000000"
-        android:pathData="M15,12c2.21,0 4,-1.79 4,-4s-1.79,-4 -4,-4 -4,1.79 -4,4 1.79,4 4,4zM6,10L6,7L4,7v3L1,10v2h3v3h2v-3h3v-2L6,10zM15,14c-2.67,0 -8,1.34 -8,4v2h16v-2c0,-2.66 -5.33,-4 -8,-4z" />
+        android:pathData="M720,560L720,440L600,440L600,360L720,360L720,240L800,240L800,360L920,360L920,440L800,440L800,560L720,560ZM360,480Q294,480 247,433Q200,386 200,320Q200,254 247,207Q294,160 360,160Q426,160 473,207Q520,254 520,320Q520,386 473,433Q426,480 360,480ZM40,800L40,688Q40,654 57.5,625.5Q75,597 104,582Q166,551 230,535.5Q294,520 360,520Q426,520 490,535.5Q554,551 616,582Q645,597 662.5,625.5Q680,654 680,688L680,800L40,800Z" />
 </vector>
