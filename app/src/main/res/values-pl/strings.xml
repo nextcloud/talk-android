@@ -405,11 +405,9 @@
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
     <string name="record_active_info">Rozmowa jest nagrywana</string>
     <string name="record_start_description">Rozpocznij nagrywanie</string>
-    <string name="record_start_loading">Uruchamianie…</string>
     <string name="record_stop_confirm_message">Czy na pewno chcesz zatrzymać nagrywanie?</string>
     <string name="record_stop_confirm_title">Zatrzymaj nagrywanie rozmowy</string>
     <string name="record_stop_description">Zatrzymaj nagrywanie</string>
-    <string name="record_stop_loading">Zatrzymywanie…</string>
     <string name="save">Zapisz</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>
     <string name="scope_federated_title">Sfederowane</string>

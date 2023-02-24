@@ -402,11 +402,9 @@
     <string name="read_storage_no_permission">No es poden compartir fitxers des de l\'emmagatzematge sense permisos</string>
     <string name="record_active_info">La trucada està sent enregistrada</string>
     <string name="record_start_description">Iniciar l\'enregistrament</string>
-    <string name="record_start_loading">Iniciant...</string>
     <string name="record_stop_confirm_message">Realment voleu aturar l\'enregistrament?</string>
     <string name="record_stop_confirm_title">Aturar l\'enregistrament de la trucada</string>
     <string name="record_stop_description">Aturar l\'enregistrament</string>
-    <string name="record_stop_loading">Aturant...</string>
     <string name="save">Desa</string>
     <string name="scope_federated_description">Sincronitza només amb servidors de confiança</string>
     <string name="scope_federated_title">Federat</string>

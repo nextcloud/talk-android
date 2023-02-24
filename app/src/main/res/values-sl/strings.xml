@@ -377,11 +377,9 @@
     <string name="reactions_tab_all">Vse</string>
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>
     <string name="record_start_description">Začni s snemanjem</string>
-    <string name="record_start_loading">Začenjanje ...</string>
     <string name="record_stop_confirm_message">Ali res želite ustaviti snemanje?</string>
     <string name="record_stop_confirm_title">Ustavi snemanje klica</string>
     <string name="record_stop_description">Ustavi snemanje</string>
-    <string name="record_stop_loading">Ustavljanje ...</string>
     <string name="save">Shrani</string>
     <string name="scope_federated_description">Usklajuj le z zaupanja vrednimi strežniki</string>
     <string name="scope_federated_title">Zvezno</string>
