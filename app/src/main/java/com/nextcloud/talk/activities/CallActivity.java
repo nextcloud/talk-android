@@ -445,30 +445,44 @@ public class CallActivity extends CallBaseActivity {
 
         callRecordingViewModel.getViewState().observe(this, viewState -> {
             if (viewState instanceof CallRecordingViewModel.RecordingStartedState) {
+                binding.callRecordingIndicator.setImageResource(R.drawable.record_stop);
                 binding.callRecordingIndicator.setVisibility(View.VISIBLE);
                 if (((CallRecordingViewModel.RecordingStartedState) viewState).getShowStartedInfo()) {
                     VibrationUtils.INSTANCE.vibrateShort(context);
                     Toast.makeText(context, context.getResources().getString(R.string.record_active_info), Toast.LENGTH_LONG).show();
                 }
+            } else if (viewState instanceof CallRecordingViewModel.RecordingStartingState) {
+                if (isAllowedToStartOrStopRecording()) {
+                    binding.callRecordingIndicator.setImageResource(R.drawable.record_starting);
+                    binding.callRecordingIndicator.setVisibility(View.VISIBLE);
+                } else {
+                    binding.callRecordingIndicator.setVisibility(View.GONE);
+                }
             } else if (viewState instanceof CallRecordingViewModel.RecordingConfirmStopState) {
-                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this)
-                    .setTitle(R.string.record_stop_confirm_title)
-                    .setMessage(R.string.record_stop_confirm_message)
-                    .setPositiveButton(R.string.record_stop_description,
-                                       (dialog, which) -> callRecordingViewModel.stopRecording())
-                    .setNegativeButton(R.string.nc_common_dismiss,
-                                       (dialog, which) -> callRecordingViewModel.dismissStopRecording());
-                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder);
-                AlertDialog dialog = dialogBuilder.show();
+                if (isAllowedToStartOrStopRecording()) {
+                    MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.record_stop_confirm_title)
+                        .setMessage(R.string.record_stop_confirm_message)
+                        .setPositiveButton(R.string.record_stop_description,
+                                           (dialog, which) -> callRecordingViewModel.stopRecording())
+                        .setNegativeButton(R.string.nc_common_dismiss,
+                                           (dialog, which) -> callRecordingViewModel.dismissStopRecording());
+                    viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder);
+                    AlertDialog dialog = dialogBuilder.show();
 
-                viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                                                        );
-
+                    viewThemeUtils.platform.colorTextButtons(
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                                                            );
+                } else {
+                    Log.e(TAG, "Being in RecordingConfirmStopState as non moderator. This should not happen!");
+                }
             } else if (viewState instanceof CallRecordingViewModel.RecordingErrorState) {
-                Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
-                               Toast.LENGTH_LONG).show();
+                if (isAllowedToStartOrStopRecording()) {
+                    Toast.makeText(context, context.getResources().getString(R.string.record_failed_info),
+                                   Toast.LENGTH_LONG).show();
+                }
+                binding.callRecordingIndicator.setVisibility(View.GONE);
             } else {
                 binding.callRecordingIndicator.setVisibility(View.GONE);
             }
@@ -603,7 +617,14 @@ public class CallActivity extends CallBaseActivity {
 
         binding.callRecordingIndicator.setOnClickListener(l -> {
             if (isAllowedToStartOrStopRecording()) {
-                callRecordingViewModel.clickRecordButton();
+                if (callRecordingViewModel.getViewState().getValue() instanceof CallRecordingViewModel.RecordingStartingState) {
+                    if (moreCallActionsDialog == null) {
+                        moreCallActionsDialog = new MoreCallActionsDialog(this);
+                    }
+                    moreCallActionsDialog.show();
+                } else {
+                    callRecordingViewModel.clickRecordButton();
+                }
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.record_active_info), Toast.LENGTH_LONG).show();
             }
