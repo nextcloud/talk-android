@@ -68,6 +68,7 @@
     <string name="nc_call_button_content_description_camera">Activar/Desactivar cámara</string>
     <string name="nc_call_button_content_description_hangup">Colgar</string>
     <string name="nc_call_button_content_description_microphone">Activar/Desactivar el micrófono</string>
+    <string name="nc_call_button_content_description_pip">Abrir el modo de imagen sobre imagen, PiP</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Cambiar a video propio</string>
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nombre de la conversación</string>
@@ -442,6 +443,8 @@
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">No estas autorizado a iniciar una llamada</string>
     <string name="status_message">Mensaje de estado</string>
+    <string name="switch_to_breakout_room">Cambiar a la sala de reuniones</string>
+    <string name="switch_to_main_room">Cambiar a la sala principal</string>
     <string name="take_photo">Hacer una foto</string>
     <string name="take_photo_error_deleting_picture">Error al hacer la foto</string>
     <string name="take_photo_permission">No se puede hacer una foto sin permisos</string>

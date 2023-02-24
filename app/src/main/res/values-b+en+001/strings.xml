@@ -68,6 +68,7 @@
     <string name="nc_call_button_content_description_camera">Toggle camera</string>
     <string name="nc_call_button_content_description_hangup">Hang up</string>
     <string name="nc_call_button_content_description_microphone">Toggle microphone</string>
+    <string name="nc_call_button_content_description_pip">Open picture-in-picture mode</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_name">Conversation name</string>
@@ -441,6 +442,8 @@
     <string name="starred">Favourite</string>
     <string name="startCallForbidden">You are not allowed to start a call</string>
     <string name="status_message">Status message</string>
+    <string name="switch_to_breakout_room">Switch to breakout room</string>
+    <string name="switch_to_main_room">Switch to main room</string>
     <string name="take_photo">Take a photo</string>
     <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>

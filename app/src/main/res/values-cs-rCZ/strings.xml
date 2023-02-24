@@ -68,6 +68,7 @@
     <string name="nc_call_button_content_description_camera">Vyp/zap. kameru</string>
     <string name="nc_call_button_content_description_hangup">Zavěsit</string>
     <string name="nc_call_button_content_description_microphone">Vyp/zap. mikrofon</string>
+    <string name="nc_call_button_content_description_pip">Otevřít v režimu obraz-v-obraze</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Přepnout na video sama sebe</string>
     <string name="nc_call_incoming">PŘÍCHOZÍ</string>
     <string name="nc_call_name">Název konverzace</string>
@@ -441,6 +442,8 @@
     <string name="starred">Oblíbené</string>
     <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>
     <string name="status_message">Stavová zpráva</string>
+    <string name="switch_to_breakout_room">Přepnout na přestávkovou místnost</string>
+    <string name="switch_to_main_room">Přepnout na hlavní místnost</string>
     <string name="take_photo">Vyfotit</string>
     <string name="take_photo_error_deleting_picture">Chyba při pořizování obrázku</string>
     <string name="take_photo_permission">Focení není možné bez udělení oprávnění</string>

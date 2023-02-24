@@ -309,6 +309,7 @@
     <string name="nc_upload_confirm_send_single">Να σταλεί αυτό το αρχείο στον %1$s;</string>
     <string name="nc_upload_failed">Λυπούμαστε, η μεταφόρτωση απέτυχε</string>
     <string name="nc_upload_from_cloud">Διαμοιρασμός από %1$s</string>
+    <string name="nc_upload_from_device">Μεταφόρτωση από συσκευή</string>
     <string name="nc_upload_in_progess">Γίνεται μεταφόρτωση</string>
     <string name="nc_upload_picture_from_cam">Βγάλε φωτογραφία</string>
     <string name="nc_user">Χρήστης</string>
