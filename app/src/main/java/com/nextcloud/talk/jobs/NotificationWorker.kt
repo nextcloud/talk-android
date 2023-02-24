@@ -691,6 +691,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val shareRecordingIntent = Intent(context, ShareRecordingToChatReceiver::class.java)
         shareRecordingIntent.putExtra(KEY_SYSTEM_NOTIFICATION_ID, systemNotificationId)
         shareRecordingIntent.putExtra(KEY_SHARE_RECORDING_TO_CHAT_URL, shareToChatUrl)
+        shareRecordingIntent.putExtra(KEY_ROOM_TOKEN, pushMessage.id)
+        shareRecordingIntent.putExtra(KEY_USER_ENTITY, signatureVerification.user)
 
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT

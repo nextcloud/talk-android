@@ -24,8 +24,10 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import autodagger.AutoInjector
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
@@ -54,6 +56,8 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
     lateinit var currentUser: User
     private var systemNotificationId: Int? = null
     private var link: String? = null
+    var roomToken: String? = null
+    var conversationOfShareTarget: User? = null
 
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -66,6 +70,9 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
         // It is NOT the same as the notification ID used in communication with the server.
         systemNotificationId = intent!!.getIntExtra(KEY_SYSTEM_NOTIFICATION_ID, 0)
         link = intent.getStringExtra(BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL)
+
+        roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)
+        conversationOfShareTarget = intent.getParcelableExtra<User>(BundleKeys.KEY_USER_ENTITY)
 
         val id = intent.getLongExtra(KEY_INTERNAL_USER_ID, userManager.currentUser.blockingGet().id!!)
         currentUser = userManager.getUserWithId(id).blockingGet()
@@ -86,6 +93,7 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
 
                 override fun onNext(genericOverall: GenericOverall) {
                     cancelNotification(systemNotificationId!!)
+                    context.startActivity(createOpenChatIntent())
                 }
 
                 override fun onError(e: Throwable) {
@@ -96,6 +104,21 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
                     // unused atm
                 }
             })
+    }
+
+    private fun createOpenChatIntent(): Intent {
+        val intent = Intent(context, MainActivity::class.java)
+        // intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        )
+
+        val bundle = Bundle()
+        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationOfShareTarget)
+        bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)
+        intent.putExtras(bundle)
+        return intent
     }
 
     private fun cancelNotification(notificationId: Int) {
