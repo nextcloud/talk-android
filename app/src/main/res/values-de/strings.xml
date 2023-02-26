@@ -411,7 +411,7 @@
     <string name="record_stop_confirm_message">Möchten Sie die Aufnahme wirklich beenden?</string>
     <string name="record_stop_confirm_title">Anrufaufnahme beenden</string>
     <string name="record_stop_description">Aufnahme stoppen</string>
-    <string name="record_stopping">Stoppe Aufnahme ...</string>
+    <string name="record_stopping">Stoppe Aufnahme …</string>
     <string name="save">Speichern</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>
     <string name="scope_federated_title">Federated</string>

@@ -411,6 +411,7 @@
     <string name="record_stop_confirm_message">你想停止錄音嗎？</string>
     <string name="record_stop_confirm_title">停止通話錄音</string>
     <string name="record_stop_description">停止錄音</string>
+    <string name="record_stopping">停止錄音 ...</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>
     <string name="scope_federated_title">已聯盟</string>

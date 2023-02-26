@@ -404,6 +404,8 @@
     <string name="reactions_tab_all">Tümü</string>
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
     <string name="record_active_info">Çağrı kaydediliyor</string>
+    <string name="record_cancel_start">Kaydı başlatmaktan vazgeç</string>
+    <string name="record_failed_info">Kayıt yapılamadı. lütfen yöneticinizle görüşün.</string>
     <string name="record_start_description">Kaydı başlat</string>
     <string name="record_stop_confirm_message">Kaydı durdurmak istediğinize emin misiniz?</string>
     <string name="record_stop_confirm_title">Çağrı kaydını durdur</string>

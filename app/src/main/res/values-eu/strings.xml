@@ -68,6 +68,7 @@
     <string name="nc_call_button_content_description_camera">Aldatu kamera</string>
     <string name="nc_call_button_content_description_hangup">Eseki</string>
     <string name="nc_call_button_content_description_microphone">Aldatu mikrofonoa</string>
+    <string name="nc_call_button_content_description_pip">Ireki irudiz irudi modua</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Aldatu norberaren bideora</string>
     <string name="nc_call_incoming">SARRERAKOA</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
@@ -404,10 +405,13 @@
     <string name="reactions_tab_all">Denak</string>
     <string name="read_storage_no_permission">Ezin dira fitxategiak biltegitik partekatu baimenik gabe</string>
     <string name="record_active_info">Deia grabatzen ari da</string>
+    <string name="record_cancel_start">Utzi grabazioaren hasiera</string>
+    <string name="record_failed_info">Grabazioak huts egin du. Jarri zure administratzailearekin harremanetan.</string>
     <string name="record_start_description">Hasi grabatzen</string>
     <string name="record_stop_confirm_message">Ziur zaude gelditu nahi duzula grabaketa?</string>
     <string name="record_stop_confirm_title">Gelditu grabaketa</string>
     <string name="record_stop_description">Utzi grabaketa</string>
+    <string name="record_stopping">Grabazioa gelditzen…</string>
     <string name="save">Gorde</string>
     <string name="scope_federated_description">Sinkronizatu zerbitzari fidagarriekin soilik</string>
     <string name="scope_federated_title">Federatua</string>
@@ -439,6 +443,8 @@
     <string name="starred">Gogokoa</string>
     <string name="startCallForbidden">Ez duzu dei bat hasteko baimenik</string>
     <string name="status_message">Egoera-mezua</string>
+    <string name="switch_to_breakout_room">Aldatu azpitaldearen gelara</string>
+    <string name="switch_to_main_room">Aldatu gela nagusira</string>
     <string name="take_photo">Atera argazki bat</string>
     <string name="take_photo_error_deleting_picture">Errorea argazkia ateratzen</string>
     <string name="take_photo_permission">Ezin dira argazkiak atera baimenik gabe</string>
