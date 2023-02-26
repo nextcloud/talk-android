@@ -411,6 +411,7 @@
     <string name="record_stop_confirm_message">Opravdu chcete přestat nahrávat?</string>
     <string name="record_stop_confirm_title">Zastavit nahrávání hovoru</string>
     <string name="record_stop_description">Zastavit nahrávání</string>
+    <string name="record_stopping">Zastavování nahrávání</string>
     <string name="save">Uložit</string>
     <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>
     <string name="scope_federated_title">Propojené</string>

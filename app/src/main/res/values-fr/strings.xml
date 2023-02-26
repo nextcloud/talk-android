@@ -411,6 +411,7 @@
     <string name="record_stop_confirm_message">Voulez-vous vraiment arrêter l\'enregistrement ?</string>
     <string name="record_stop_confirm_title">Arrêter l\'enregistrement de l\'appel</string>
     <string name="record_stop_description">Arrêter l\'enregistrement</string>
+    <string name="record_stopping">Arrêt de l\'enregistrement ...</string>
     <string name="save">Sauvegarder</string>
     <string name="scope_federated_description">Synchronisation avec les serveurs de confiance uniquement</string>
     <string name="scope_federated_title">Fédéré</string>
