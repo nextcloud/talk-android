@@ -3488,9 +3488,9 @@ class ChatController(args: Bundle) :
     }
 
     fun jumpToQuotedMessage(parentMessage: ChatMessage) {
-        for(position in 0 until(adapter!!.items.size)) {
+        for (position in 0 until (adapter!!.items.size)) {
             val currentItem = adapter?.items?.get(position)?.item
-            if( currentItem is ChatMessage && currentItem.id == parentMessage.id) {
+            if (currentItem is ChatMessage && currentItem.id == parentMessage.id) {
                 layoutManager!!.scrollToPosition(position)
                 break
             }
