@@ -2533,12 +2533,14 @@ class ChatController(args: Bundle) :
 
     private fun modifyMessageCount(shouldAddNewMessagesNotice: Boolean, shouldScroll: Boolean) {
         if (!shouldAddNewMessagesNotice && !shouldScroll) {
-            if (!binding?.popupBubbleView?.isShown!!) {
-                newMessagesCount = 1
-                binding?.scrollDownButton?.visibility = View.GONE
-                binding?.popupBubbleView?.show()
-            } else if (binding?.popupBubbleView?.isShown!!) {
-                newMessagesCount++
+            binding?.popupBubbleView?.isShown?.let {
+                if (it) {
+                    newMessagesCount++
+                } else {
+                    newMessagesCount = 1
+                    binding?.scrollDownButton?.visibility = View.GONE
+                    binding?.popupBubbleView?.show()
+                }
             }
         } else {
             newMessagesCount = 0
