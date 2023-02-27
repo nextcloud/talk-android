@@ -74,6 +74,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
     lateinit var dateUtils: DateUtils
 
     lateinit var commonMessageInterface: CommonMessageInterface
+
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
