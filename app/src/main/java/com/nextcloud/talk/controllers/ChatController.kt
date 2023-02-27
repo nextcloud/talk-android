@@ -2543,6 +2543,7 @@ class ChatController(args: Bundle) :
                 }
             }
         } else {
+            binding?.scrollDownButton?.visibility = View.GONE
             newMessagesCount = 0
         }
     }
