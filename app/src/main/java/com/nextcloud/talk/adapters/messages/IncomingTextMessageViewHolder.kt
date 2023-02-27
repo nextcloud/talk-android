@@ -40,6 +40,7 @@ import coil.load
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
 import com.nextcloud.talk.extensions.loadBotsAvatar
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
@@ -197,6 +198,11 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
             binding.messageQuote.quoteColoredView.setBackgroundColor(
                 ContextCompat.getColor(binding.messageQuote.quoteColoredView.context, R.color.high_emphasis_text)
             )
+        }
+
+        binding.messageQuote.quotedChatMessageView.setOnClickListener() {
+            val chatController = commonMessageInterface as ChatController
+            chatController.jumpToQuotedMessage(parentChatMessage)
         }
     }
 
