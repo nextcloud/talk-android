@@ -254,7 +254,6 @@ class ChatController(args: Bundle) :
     private val roomPassword: String
     var credentials: String? = null
     var currentConversation: Conversation? = null
-    var inConversation = false
     private var historyRead = false
     private var globalLastKnownFutureMessageId = -1
     private var globalLastKnownPastMessageId = -1
@@ -1819,8 +1818,7 @@ class ChatController(args: Bundle) :
 
         cancelNotificationsForCurrentConversation()
 
-        Log.d(TAG, "onAttach inConversation: $inConversation")
-        if (inConversation) {
+        if (!validSessionId()) {
             Log.d(TAG, "execute joinRoomWithPassword in onAttach")
             joinRoomWithPassword()
         }
@@ -1867,7 +1865,7 @@ class ChatController(args: Bundle) :
 
         if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
-            if (inConversation && validSessionId()) {
+            if (validSessionId()) {
                 leaveRoom(null, null)
             } else {
                 Log.d(TAG, "not leaving room (inConversation is false and/or validSessionId is false)")
@@ -1918,7 +1916,6 @@ class ChatController(args: Bundle) :
         currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
 
         adapter = null
-        inConversation = false
         Log.d(TAG, "inConversation was set to false!")
     }
 
@@ -1949,7 +1946,6 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: $startNanoTime")
-                        inConversation = true
                         currentConversation?.sessionId = roomOverall.ocs!!.data!!.sessionId
 
                         logConversationInfos("joinRoomWithPassword#onNext")
@@ -1996,7 +1992,6 @@ class ChatController(args: Bundle) :
         } else {
             Log.d(TAG, "sessionID was valid -> skip joinRoom")
 
-            inConversation = true
             ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation?.sessionId
             if (magicWebSocketInstance != null) {
                 magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
@@ -2194,7 +2189,7 @@ class ChatController(args: Bundle) :
     }
 
     fun pullChatMessages(lookIntoFuture: Int, setReadMarker: Int = 1, xChatLastCommonRead: Int? = null) {
-        if (!inConversation) {
+        if (!validSessionId()) {
             return
         }
 
@@ -2387,7 +2382,7 @@ class ChatController(args: Bundle) :
 
             historyRead = true
 
-            if (!lookingIntoFuture && inConversation) {
+            if (!lookingIntoFuture && validSessionId()) {
                 pullChatMessages(1)
             }
         }
@@ -2423,7 +2418,7 @@ class ChatController(args: Bundle) :
         updateReadStatusOfAllMessages(xChatLastCommonRead)
         adapter?.notifyDataSetChanged()
 
-        if (inConversation) {
+        if (validSessionId()) {
             pullChatMessages(1, 1, xChatLastCommonRead)
         }
     }
@@ -2610,7 +2605,7 @@ class ChatController(args: Bundle) :
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        if (!historyRead && inConversation) {
+        if (!historyRead && validSessionId()) {
             pullChatMessages(0)
         }
     }
@@ -3457,7 +3452,6 @@ class ChatController(args: Bundle) :
         Log.d(TAG, " | roomToken: $roomToken")
         Log.d(TAG, " | currentConversation?.displayName: ${currentConversation?.displayName}")
         Log.d(TAG, " | currentConversation?.sessionId: ${currentConversation?.sessionId}")
-        Log.d(TAG, " | inConversation: $inConversation")
         Log.d(TAG, " |-----------------------------------------------")
     }
 
