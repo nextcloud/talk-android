@@ -412,6 +412,7 @@
     <string name="record_stop_confirm_message">¿Realmente desea detener la grabación?</string>
     <string name="record_stop_confirm_title">Detener grabación de la llamada</string>
     <string name="record_stop_description">Detener grabación</string>
+    <string name="record_stopping">Deteniendo grabación ...</string>
     <string name="save">Guardar</string>
     <string name="scope_federated_description">Sincronizar solo con servidores de confianza</string>
     <string name="scope_federated_title">Federado</string>
