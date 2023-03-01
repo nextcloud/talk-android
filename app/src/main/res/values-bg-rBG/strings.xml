@@ -68,6 +68,7 @@
     <string name="nc_call_button_content_description_camera">Превключване на камера</string>
     <string name="nc_call_button_content_description_hangup">Затваряне</string>
     <string name="nc_call_button_content_description_microphone">Превключване на микрофона</string>
+    <string name="nc_call_button_content_description_pip">Отваряне в режим картина в картината </string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Превключване към самозснемане на видео</string>
     <string name="nc_call_incoming">ВХОДЯЩИ</string>
     <string name="nc_call_name">Име на разговор</string>
@@ -404,10 +405,13 @@
     <string name="reactions_tab_all">Всички</string>
     <string name="read_storage_no_permission">Споделянето на файлове от хранилище не е възможно без права</string>
     <string name="record_active_info">Разговорът се записва</string>
+    <string name="record_cancel_start">Отмяна на стартирането на записа</string>
+    <string name="record_failed_info">Записът е неуспешен. Моля, свържете се с вашия администратор.</string>
     <string name="record_start_description">Започване на запис</string>
     <string name="record_stop_confirm_message">Наистина ли искате да спрете записа?</string>
-    <string name="record_stop_confirm_title">Спиране на записа на повикването</string>
+    <string name="record_stop_confirm_title">Спиране на записа на обаждането</string>
     <string name="record_stop_description">Спиране на записването</string>
+    <string name="record_stopping">Спиране на записването ...</string>
     <string name="save">Записване</string>
     <string name="scope_federated_description">Синхронизиране само с доверени сървъри</string>
     <string name="scope_federated_title">Федериран</string>
@@ -439,6 +443,8 @@
     <string name="starred">Любими</string>
     <string name="startCallForbidden">Нямате право да започнете разговор</string>
     <string name="status_message">Съобщение за състояние</string>
+    <string name="switch_to_breakout_room">Превключване към стая за отделно събрание</string>
+    <string name="switch_to_main_room">Превключване към основна стая</string>
     <string name="take_photo">Направете снимка</string>
     <string name="take_photo_error_deleting_picture">Грешка при снимане</string>
     <string name="take_photo_permission">Правенето на снимка не е възможно без права</string>

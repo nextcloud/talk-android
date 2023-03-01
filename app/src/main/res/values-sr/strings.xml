@@ -81,7 +81,9 @@
     <string name="nc_display_name_not_stored">Не могу да сачувам име за приказ. Прекидам</string>
     <string name="nc_email">Е-пошта</string>
     <string name="nc_expire_message_off">Искључена</string>
+    <string name="nc_expire_message_one_day">1 дан</string>
     <string name="nc_expire_message_one_hour">1 сат</string>
+    <string name="nc_expire_message_one_week">1 недеље</string>
     <string name="nc_external_server_failed">Грешка приликом дохватања подешавања сигнализирања</string>
     <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним разговорима путем мобилног телефона. Можете пробати да се придружите разговору преко веб прегледача.</string>
     <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
@@ -252,9 +254,12 @@
     <string name="save">Сачувај</string>
     <string name="scope_federated_description">Само синхронизује са серверима од поверења</string>
     <string name="scope_federated_title">Здружено</string>
+    <string name="scope_local_description">Видљиво је само људима на овој инстанци и гостима</string>
     <string name="scope_local_title">Локално</string>
+    <string name="scope_private_description">Видљиво је само људима који су пронађени интеграцијом броја телефона кроз Разговор на мобилном</string>
     <string name="scope_private_title">Приватно</string>
     <string name="scope_published_description">Синхронизуј на сервере од поверења и глобалне и јавне адресаре</string>
+    <string name="scope_published_title">Објављено</string>
     <string name="secondsAgo">пре неколико секунди</string>
     <string name="selected_list_item">Одабрано</string>
     <string name="set_status">Постави статус</string>
