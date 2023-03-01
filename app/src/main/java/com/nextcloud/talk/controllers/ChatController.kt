@@ -249,6 +249,7 @@ class ChatController(args: Bundle) :
 
     val disposables = DisposableSet()
 
+    var sessionIdAfterRoomJoined: String? = null
     var roomToken: String? = null
     val conversationUser: User?
     private val roomPassword: String
@@ -519,12 +520,9 @@ class ChatController(args: Bundle) :
     override fun onViewBound(view: View) {
         Log.d(TAG, "onViewBound: " + System.identityHashCode(this).toString())
         actionBar?.show()
-        var adapterWasNull = false
 
         if (adapter == null) {
             binding?.progressBar?.visibility = View.VISIBLE
-
-            adapterWasNull = true
 
             val messageHolders = MessageHolders()
             val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!, router)
@@ -909,14 +907,6 @@ class ChatController(args: Bundle) :
             setTitle()
         }
 
-        if (adapterWasNull) {
-            Log.d(TAG, "starting for the first time (because adapter was null)")
-            if (TextUtils.isEmpty(roomToken)) {
-                handleFromNotification()
-            } else {
-                getRoomInfo()
-            }
-        }
         super.onViewBound(view)
     }
 
@@ -1751,8 +1741,8 @@ class ChatController(args: Bundle) :
 
     private fun validSessionId(): Boolean {
         return currentConversation != null &&
-            !TextUtils.isEmpty(currentConversation?.sessionId) &&
-            currentConversation?.sessionId != "0"
+            sessionIdAfterRoomJoined?.isNotEmpty() == true &&
+            sessionIdAfterRoomJoined != "0"
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -1768,10 +1758,6 @@ class ChatController(args: Bundle) :
         ) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
         }
-
-        ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = roomId
-        ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomToken
-        ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
         val smileyButton = binding?.messageInputView?.findViewById<ImageButton>(R.id.smileyButton)
 
@@ -1818,9 +1804,10 @@ class ChatController(args: Bundle) :
 
         cancelNotificationsForCurrentConversation()
 
-        if (!validSessionId()) {
-            Log.d(TAG, "execute joinRoomWithPassword in onAttach")
-            joinRoomWithPassword()
+        if (TextUtils.isEmpty(roomToken)) {
+            handleFromNotification()
+        } else {
+            getRoomInfo()
         }
     }
 
@@ -1920,6 +1907,17 @@ class ChatController(args: Bundle) :
     }
 
     private fun joinRoomWithPassword() {
+        // if ApplicationWideCurrentRoomHolder contains a session (because a call is active), then keep the sessionId
+        if (ApplicationWideCurrentRoomHolder.getInstance().currentRoomId ==
+            currentConversation!!.roomId
+        ) {
+            sessionIdAfterRoomJoined = ApplicationWideCurrentRoomHolder.getInstance().session
+
+            ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = roomId
+            ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomToken
+            ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
+        }
+
         if (!validSessionId()) {
             Log.d(TAG, "sessionID was not valid -> joinRoom")
             var apiVersion = 1
@@ -1946,12 +1944,11 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: $startNanoTime")
-                        currentConversation?.sessionId = roomOverall.ocs!!.data!!.sessionId
+                        sessionIdAfterRoomJoined = roomOverall.ocs!!.data!!.sessionId
 
                         logConversationInfos("joinRoomWithPassword#onNext")
 
-                        ApplicationWideCurrentRoomHolder.getInstance().session =
-                            currentConversation?.sessionId
+                        ApplicationWideCurrentRoomHolder.getInstance().session = sessionIdAfterRoomJoined
 
                         setupWebsocket()
 
@@ -2050,7 +2047,7 @@ class ChatController(args: Bundle) :
                     if (magicWebSocketInstance != null && currentConversation != null) {
                         magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
                             "",
-                            currentConversation?.sessionId
+                            sessionIdAfterRoomJoined
                         )
                     } else {
                         Log.e(TAG, "magicWebSocketInstance or currentConversation were null! Failed to leave the room!")
@@ -2063,7 +2060,7 @@ class ChatController(args: Bundle) :
                         }
                     }
 
-                    currentConversation?.sessionId = "0"
+                    sessionIdAfterRoomJoined = "0"
 
                     if (remapChatModel != null && funToCallWhenLeaveSuccessful != null) {
                         Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
@@ -3451,7 +3448,7 @@ class ChatController(args: Bundle) :
         Log.d(TAG, " | ChatController: " + System.identityHashCode(this).toString())
         Log.d(TAG, " | roomToken: $roomToken")
         Log.d(TAG, " | currentConversation?.displayName: ${currentConversation?.displayName}")
-        Log.d(TAG, " | currentConversation?.sessionId: ${currentConversation?.sessionId}")
+        Log.d(TAG, " | sessionIdAfterRoomJoined: $sessionIdAfterRoomJoined")
         Log.d(TAG, " |-----------------------------------------------")
     }
 

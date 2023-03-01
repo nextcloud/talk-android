@@ -1424,7 +1424,7 @@ public class CallActivity extends CallBaseActivity {
                         Log.d(TAG, " new callSession by joinRoom= " + callSession);
 
                         ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
-                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(conversation.getRoomId());
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
                         ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
                         callOrJoinRoomViaWebSocket();
