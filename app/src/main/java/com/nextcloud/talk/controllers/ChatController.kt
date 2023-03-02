@@ -283,7 +283,7 @@ class ChatController(args: Bundle) :
 
     var webSocketInstance: WebSocketInstance? = null
 
-    var lobbyTimerHandler: Handler? = null
+    var getRoomInfoTimerHandler: Handler? = null
     var pastPreconditionFailed = false
     var futurePreconditionFailed = false
 
@@ -353,11 +353,6 @@ class ChatController(args: Bundle) :
     private fun getRoomInfo() {
         logConversationInfos("getRoomInfo")
 
-        val shouldRepeat = CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "webinary-lobby")
-        if (shouldRepeat) {
-            checkingLobbyStatus = true
-        }
-
         if (conversationUser != null) {
             val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
@@ -401,13 +396,17 @@ class ChatController(args: Bundle) :
 
                     override fun onComplete() {
                         Log.d(TAG, "getRoomInfo - getRoom - onComplete: $startNanoTime")
-                        if (shouldRepeat) {
-                            if (lobbyTimerHandler == null) {
-                                lobbyTimerHandler = Handler()
-                            }
 
-                            lobbyTimerHandler?.postDelayed({ getRoomInfo() }, LOBBY_TIMER_DELAY)
+                        val delayForRecursiveCall = if (shouldShowLobby()) {
+                            GET_ROOM_INFO_DELAY_LOBBY
+                        } else {
+                            GET_ROOM_INFO_DELAY_NORMAL
                         }
+
+                        if (getRoomInfoTimerHandler == null) {
+                            getRoomInfoTimerHandler = Handler()
+                        }
+                        getRoomInfoTimerHandler?.postDelayed({ getRoomInfo() }, delayForRecursiveCall)
                     }
                 })
         }
@@ -1337,7 +1336,8 @@ class ChatController(args: Bundle) :
 
     private fun shouldShowLobby(): Boolean {
         if (currentConversation != null) {
-            return currentConversation?.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
+            return CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") &&
+                currentConversation?.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
                 currentConversation?.canModerate(conversationUser!!) == false &&
                 !participantPermissions.canIgnoreLobby()
         }
@@ -1381,10 +1381,6 @@ class ChatController(args: Bundle) :
             currentConversation?.isLobbyViewApplicable(conversationUser!!) == true &&
             isAlive()
         ) {
-            if (!checkingLobbyStatus) {
-                getRoomInfo()
-            }
-
             if (shouldShowLobby()) {
                 binding?.lobby?.lobbyView?.visibility = View.VISIBLE
                 binding?.messagesListView?.visibility = View.GONE
@@ -1880,8 +1876,8 @@ class ChatController(args: Bundle) :
 
         checkingLobbyStatus = false
 
-        if (lobbyTimerHandler != null) {
-            lobbyTimerHandler?.removeCallbacksAndMessages(null)
+        if (getRoomInfoTimerHandler != null) {
+            getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
         }
 
         if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
@@ -1993,8 +1989,6 @@ class ChatController(args: Bundle) :
                         // onAttach() was called.
                         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
 
-                        checkLobbyState()
-
                         if (isFirstMessagesProcessing) {
                             pullChatMessages(0)
                         } else {
@@ -2034,7 +2028,7 @@ class ChatController(args: Bundle) :
                     sessionIdAfterRoomJoined
                 )
             }
-            checkLobbyState()
+
             if (isFirstMessagesProcessing) {
                 pullChatMessages(0)
             } else {
@@ -2078,8 +2072,8 @@ class ChatController(args: Bundle) :
 
                     checkingLobbyStatus = false
 
-                    if (lobbyTimerHandler != null) {
-                        lobbyTimerHandler?.removeCallbacksAndMessages(null)
+                    if (getRoomInfoTimerHandler != null) {
+                        getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
                     }
 
                     if (webSocketInstance != null && currentConversation != null) {
@@ -3508,7 +3502,8 @@ class ChatController(args: Bundle) :
         private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 6
         private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
         private const val POP_CURRENT_CONTROLLER_DELAY: Long = 100
-        private const val LOBBY_TIMER_DELAY: Long = 5000
+        private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
+        private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val HTTP_CODE_OK: Int = 200
         private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
