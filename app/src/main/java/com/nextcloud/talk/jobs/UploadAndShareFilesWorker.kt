@@ -121,10 +121,12 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             val remotePath = getRemotePath(currentUser)
             val uploadSuccess: Boolean
 
+            initNotificationSetup()
+
             if (file != null && file.length() > CHUNK_UPLOAD_THRESHOLD_SIZE) {
                 Log.d(TAG, "starting chunked upload because size is " + file.length())
 
-                initNotification()
+                initNotificationWithPercentage()
                 val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
 
                 uploadSuccess = ChunkedFileUploader(
@@ -190,14 +192,16 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         mNotifyManager!!.notify(notificationId, notification)
     }
 
-    private fun initNotification() {
+    private fun initNotificationSetup() {
         mNotifyManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         mBuilder = NotificationCompat.Builder(
             context,
             NotificationUtils.NotificationChannels
                 .NOTIFICATION_CHANNEL_UPLOADS.name
         )
+    }
 
+    private fun initNotificationWithPercentage() {
         notification = mBuilder!!
             .setContentTitle(context.resources.getString(R.string.nc_upload_in_progess))
             .setContentText(getNotificationContentText(ZERO_PERCENT))
@@ -258,6 +262,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         notification = mBuilder!!
             .setContentTitle(failureTitle)
             .setContentText(failureText)
+            .setSmallIcon(R.drawable.baseline_error_24)
             .setOngoing(false)
             .build()
 
