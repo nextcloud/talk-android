@@ -66,6 +66,7 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
@@ -120,6 +121,7 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearc
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
 import com.nextcloud.talk.utils.remapchat.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -1112,6 +1114,17 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     private fun openConversation(textToPaste: String? = "") {
+        if (CallActivity.active &&
+            selectedConversation!!.token != ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken
+        ) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.restrict_join_other_room_while_call),
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
         val bundle = Bundle()
         bundle.putParcelable(KEY_USER_ENTITY, currentUser)
         bundle.putParcelable(KEY_ACTIVE_CONVERSATION, Parcels.wrap(selectedConversation))
