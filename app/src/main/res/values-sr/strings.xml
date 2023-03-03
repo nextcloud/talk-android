@@ -12,6 +12,7 @@
     <string name="dnd">Не узнемиравај</string>
     <string name="dontClear">Не бриши</string>
     <string name="edit">Измени</string>
+    <string name="emoji_backspace">Брисање улево</string>
     <string name="emoji_category_recent">Недавно</string>
     <string name="encrypted">Шифровано</string>
     <string name="file_list_folder">фасцикли</string>
