@@ -227,6 +227,35 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
+    fun themeStatusCardView(cardView: MaterialCardView) {
+        withScheme(cardView) { scheme ->
+            val background = cardView.context.getColor(R.color.grey_200)
+            cardView.backgroundTintList =
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                    ),
+                    intArrayOf(
+                        scheme.secondaryContainer,
+                        background
+                    )
+                )
+            cardView.setStrokeColor(
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                    ),
+                    intArrayOf(
+                        scheme.onSecondaryContainer,
+                        scheme.surface
+                    )
+                )
+            )
+        }
+    }
+
     companion object {
         private val THEMEABLE_PLACEHOLDER_IDS = listOf(
             R.drawable.ic_mimetype_package_x_generic,
