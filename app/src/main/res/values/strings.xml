@@ -241,6 +241,7 @@ How to translate with transifex:
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="raise_hand">Raise hand</string>
     <string name="lower_hand">Lower hand</string>
+    <string name="restrict_join_other_room_while_call">"It's not possible to join other rooms while being in a call</string>
 
     <!-- Picture in Picture -->
     <string name="nc_pip_microphone_mute">Mute microphone</string>

@@ -1885,8 +1885,7 @@ class ChatController(args: Bundle) :
             if (validSessionId()) {
                 leaveRoom(null, null)
             } else {
-                Log.d(TAG, "not leaving room (inConversation is false and/or validSessionId is false)")
-                // room might have already been left...
+                Log.d(TAG, "not leaving room (validSessionId is false)")
             }
         } else {
             Log.e(TAG, "not leaving room...")
@@ -1937,6 +1936,24 @@ class ChatController(args: Bundle) :
     }
 
     private fun joinRoomWithPassword() {
+        if (CallActivity.active &&
+            roomToken != ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken
+        ) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.restrict_join_other_room_while_call),
+                Toast.LENGTH_LONG
+            ).show()
+
+            Log.e(
+                TAG,
+                "Restricted to open chat controller because a call in another room is active. This is an " +
+                    "edge case which is not properly handled yet."
+            )
+            router.popToRoot()
+            return
+        }
+
         // if ApplicationWideCurrentRoomHolder contains a session (because a call is active), then keep the sessionId
         if (ApplicationWideCurrentRoomHolder.getInstance().currentRoomId ==
             currentConversation!!.roomId
@@ -1974,11 +1991,15 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: $startNanoTime")
-                        sessionIdAfterRoomJoined = roomOverall.ocs!!.data!!.sessionId
+
+                        val conversation = roomOverall.ocs!!.data!!
+                        sessionIdAfterRoomJoined = conversation.sessionId
+                        ApplicationWideCurrentRoomHolder.getInstance().session = conversation.sessionId
+                        ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = conversation.roomId
+                        ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = conversation.token
+                        ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
                         logConversationInfos("joinRoomWithPassword#onNext")
-
-                        ApplicationWideCurrentRoomHolder.getInstance().session = sessionIdAfterRoomJoined
 
                         // FIXME The web socket should be set up in onAttach(). It is currently setup after joining the
                         // room to "ensure" (rather, increase the chances) that the WebsocketConnectionsWorker job
