@@ -33,11 +33,14 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -51,6 +54,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallNotificationActivity
 import com.nextcloud.talk.activities.MainActivity
@@ -315,28 +319,23 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     val ncNotification = notificationOverall.ocs!!.notification
                     if (ncNotification != null) {
                         enrichPushMessageByNcNotificationData(ncNotification)
-                        // val newIntent = enrichIntentByNcNotificationData(intent, ncNotification)
                         showNotification(intent, ncNotification)
                     }
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Failed to get notification", e)
+                    Log.e(TAG, "Failed to get NC notification", e)
+                    if (BuildConfig.DEBUG) {
+                        Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(context, "Failed to get NC notification", Toast.LENGTH_LONG).show()
+                        }
+                    }
                 }
 
                 override fun onComplete() {
                     // unused atm
                 }
             })
-    }
-
-    private fun enrichIntentByNcNotificationData(
-        intent: Intent,
-        ncNotification: com.nextcloud.talk.models.json.notifications.Notification
-    ): Intent {
-        val newIntent = Intent(intent)
-
-        return newIntent
     }
 
     private fun enrichPushMessageByNcNotificationData(
