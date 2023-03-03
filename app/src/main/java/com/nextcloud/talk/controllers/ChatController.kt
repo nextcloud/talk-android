@@ -926,7 +926,7 @@ class ChatController(args: Bundle) :
 
         if (conversationUser != null) {
             activity?.runOnUiThread {
-                if (currentConversation?.objectType == BREAKOUT_ROOM_TYPE) {
+                if (currentConversation?.objectType == Conversation.ObjectType.ROOM) {
                     Toast.makeText(
                         context,
                         context.resources.getString(R.string.switch_to_main_room),
@@ -2849,7 +2849,7 @@ class ChatController(args: Bundle) :
                 bundle.putBoolean(BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION, true)
             }
 
-            if (it.objectType == BREAKOUT_ROOM_TYPE) {
+            if (it.objectType == Conversation.ObjectType.ROOM) {
                 bundle.putBoolean(KEY_IS_BREAKOUT_ROOM, true)
             }
 
@@ -3552,6 +3552,5 @@ class ChatController(args: Bundle) :
         private const val LOOKING_INTO_FUTURE_TIMEOUT = 30
         private const val CHUNK_SIZE: Int = 10
         private const val ONE_SECOND_IN_MILLIS = 1000
-        private const val BREAKOUT_ROOM_TYPE = "room"
     }
 }

@@ -543,12 +543,18 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     private fun addToConversationItems(conversation: Conversation) {
-        if (bundle.containsKey(KEY_FORWARD_HIDE_SOURCE_ROOM) && conversation.roomId == bundle.getString(
-                KEY_FORWARD_HIDE_SOURCE_ROOM
-            )
+        if (bundle.containsKey(KEY_FORWARD_HIDE_SOURCE_ROOM) && conversation.roomId ==
+            bundle.getString(KEY_FORWARD_HIDE_SOURCE_ROOM)
         ) {
             return
         }
+
+        if (conversation.objectType == Conversation.ObjectType.ROOM &&
+            conversation.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY
+        ) {
+            return
+        }
+
         val headerTitle: String = resources!!.getString(R.string.conversations)
         val genericTextHeaderItem: GenericTextHeaderItem
         if (!callHeaderItems.containsKey(headerTitle)) {

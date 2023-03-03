@@ -188,37 +188,33 @@ class ConversationItem(
     private fun shouldLoadAvatar(
         holder: ConversationItemViewHolder
     ): Boolean {
-        var objectType: String?
-        var returnValue = true
-        if (!TextUtils.isEmpty(model.objectType.also { objectType = it })) {
-            when (objectType) {
-                "share:password" -> {
-                    holder.binding.dialogAvatar.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.ic_circular_lock
+        return when (model.objectType) {
+            Conversation.ObjectType.SHARE_PASSWORD -> {
+                holder.binding.dialogAvatar.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_circular_lock
+                    )
+                )
+                false
+            }
+            Conversation.ObjectType.FILE -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    holder.binding.dialogAvatar.loadAvatar(
+                        viewThemeUtils.talk.themePlaceholderAvatar(
+                            holder.binding.dialogAvatar,
+                            R.drawable.ic_avatar_document
                         )
                     )
-                    returnValue = false
+                } else {
+                    holder.binding.dialogAvatar.loadAvatar(
+                        R.drawable.ic_circular_document
+                    )
                 }
-                "file" -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        holder.binding.dialogAvatar.loadAvatar(
-                            viewThemeUtils.talk.themePlaceholderAvatar(
-                                holder.binding.dialogAvatar,
-                                R.drawable.ic_avatar_document
-                            )
-                        )
-                    } else {
-                        holder.binding.dialogAvatar.loadAvatar(
-                            R.drawable.ic_circular_document
-                        )
-                    }
-                    returnValue = false
-                }
+                false
             }
+            else -> true
         }
-        return returnValue
     }
 
     private fun setLastMessage(

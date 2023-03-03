@@ -30,6 +30,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.models.json.converters.ConversationObjectTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
@@ -84,8 +85,8 @@ data class Conversation(
     @JsonField(name = ["lastMessage"])
     var lastMessage: ChatMessage? = null,
 
-    @JsonField(name = ["objectType"])
-    var objectType: String? = null,
+    @JsonField(name = ["objectType"], typeConverter = ConversationObjectTypeConverter::class)
+    var objectType: ObjectType? = null,
 
     @JsonField(name = ["notificationLevel"], typeConverter = EnumNotificationLevelConverter::class)
     var notificationLevel: NotificationLevel? = null,
@@ -220,5 +221,12 @@ data class Conversation(
         ROOM_PUBLIC_CALL,
         ROOM_SYSTEM,
         FORMER_ONE_TO_ONE
+    }
+
+    enum class ObjectType {
+        DEFAULT,
+        SHARE_PASSWORD,
+        FILE,
+        ROOM
     }
 }
