@@ -412,6 +412,7 @@
     <string name="record_stop_confirm_title">Stop Call recording</string>
     <string name="record_stop_description">Stop recording</string>
     <string name="record_stopping">Stopping recording …</string>
+    <string name="restrict_join_other_room_while_call">It is not possible to join other rooms while in a call</string>
     <string name="save">Save</string>
     <string name="scope_federated_description">Only synchronize to trusted servers</string>
     <string name="scope_federated_title">Federated</string>
