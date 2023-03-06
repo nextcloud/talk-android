@@ -1414,10 +1414,10 @@ class ChatController(args: Bundle) :
                 binding?.messageInputView?.inputEditText?.visibility = View.VISIBLE
                 if (isFirstMessagesProcessing && pastPreconditionFailed) {
                     pastPreconditionFailed = false
-                    pullChatMessages(0)
+                    pullChatMessages(false)
                 } else if (futurePreconditionFailed) {
                     futurePreconditionFailed = false
-                    pullChatMessages(1)
+                    pullChatMessages(true)
                 }
             }
         } else {
@@ -2014,9 +2014,9 @@ class ChatController(args: Bundle) :
                         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
 
                         if (isFirstMessagesProcessing) {
-                            pullChatMessages(0)
+                            pullChatMessages(false)
                         } else {
-                            pullChatMessages(1, 0)
+                            pullChatMessages(true, 0)
                         }
 
                         if (webSocketInstance != null) {
@@ -2054,9 +2054,9 @@ class ChatController(args: Bundle) :
             }
 
             if (isFirstMessagesProcessing) {
-                pullChatMessages(0)
+                pullChatMessages(false)
             } else {
-                pullChatMessages(1)
+                pullChatMessages(true)
             }
         }
     }
@@ -2234,7 +2234,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    fun pullChatMessages(lookIntoFuture: Int, setReadMarker: Int = 1, xChatLastCommonRead: Int? = null) {
+    fun pullChatMessages(lookIntoFuture: Boolean, setReadMarker: Int = 1, xChatLastCommonRead: Int? = null) {
         if (!validSessionId()) {
             return
         }
@@ -2252,7 +2252,7 @@ class ChatController(args: Bundle) :
         val fieldMap = HashMap<String, Int>()
         fieldMap["includeLastKnown"] = 0
 
-        if (lookIntoFuture > 0) {
+        if (lookIntoFuture) {
             lookingIntoFuture = true
         } else if (isFirstMessagesProcessing) {
             if (currentConversation != null) {
@@ -2270,11 +2270,16 @@ class ChatController(args: Bundle) :
 
         fieldMap["timeout"] = timeout
 
-        fieldMap["lookIntoFuture"] = lookIntoFuture
+        if (lookIntoFuture) {
+            fieldMap["lookIntoFuture"] = 1
+        } else {
+            fieldMap["lookIntoFuture"] = 0
+        }
+
         fieldMap["limit"] = MESSAGE_PULL_LIMIT
         fieldMap["setReadMarker"] = setReadMarker
 
-        val lastKnown = if (lookIntoFuture > 0) {
+        val lastKnown = if (lookIntoFuture) {
             globalLastKnownFutureMessageId
         } else {
             globalLastKnownPastMessageId
@@ -2291,7 +2296,7 @@ class ChatController(args: Bundle) :
             apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
         }
 
-        if (lookIntoFuture > 0) {
+        if (lookIntoFuture) {
             Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - calling")
             ncApi.pullChatMessages(
                 credentials,
@@ -2311,7 +2316,7 @@ class ChatController(args: Bundle) :
                         pullChatMessagesPending = false
                         if (response.code() == HTTP_CODE_NOT_MODIFIED) {
                             Log.d(TAG, "pullChatMessages - quasi recursive call to pullChatMessages")
-                            pullChatMessages(1, setReadMarker, xChatLastCommonRead)
+                            pullChatMessages(true, setReadMarker, xChatLastCommonRead)
                         } else if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
                             futurePreconditionFailed = true
                         } else {
@@ -2416,7 +2421,7 @@ class ChatController(args: Bundle) :
             historyRead = true
 
             if (!lookingIntoFuture && validSessionId()) {
-                pullChatMessages(1)
+                pullChatMessages(true)
             }
         }
     }
@@ -2452,7 +2457,7 @@ class ChatController(args: Bundle) :
         adapter?.notifyDataSetChanged()
 
         if (validSessionId()) {
-            pullChatMessages(1, 1, xChatLastCommonRead)
+            pullChatMessages(true, 1, xChatLastCommonRead)
         }
     }
 
@@ -2645,7 +2650,7 @@ class ChatController(args: Bundle) :
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         if (!historyRead && validSessionId()) {
-            pullChatMessages(0)
+            pullChatMessages(false)
         }
     }
 
