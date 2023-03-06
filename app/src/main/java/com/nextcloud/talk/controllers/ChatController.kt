@@ -2495,10 +2495,7 @@ class ChatController(args: Bundle) :
         addMessagesToAdapter(shouldAddNewMessagesNotice, chatMessageList)
 
         if (shouldAddNewMessagesNotice && adapter != null) {
-            layoutManager?.scrollToPositionWithOffset(
-                adapter!!.getMessagePositionByIdInReverse("-1"),
-                binding?.messagesListView?.height!! / 2
-            )
+            layoutManager?.scrollToPosition(0)
         }
     }
 
