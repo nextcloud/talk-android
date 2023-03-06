@@ -2016,7 +2016,7 @@ class ChatController(args: Bundle) :
                         if (isFirstMessagesProcessing) {
                             pullChatMessages(false)
                         } else {
-                            pullChatMessages(true, 0)
+                            pullChatMessages(true, false)
                         }
 
                         if (webSocketInstance != null) {
@@ -2234,7 +2234,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    fun pullChatMessages(lookIntoFuture: Boolean, setReadMarker: Int = 1, xChatLastCommonRead: Int? = null) {
+    fun pullChatMessages(lookIntoFuture: Boolean, setReadMarker: Boolean = true, xChatLastCommonRead: Int? = null) {
         if (!validSessionId()) {
             return
         }
@@ -2277,7 +2277,12 @@ class ChatController(args: Bundle) :
         }
 
         fieldMap["limit"] = MESSAGE_PULL_LIMIT
-        fieldMap["setReadMarker"] = setReadMarker
+
+        if (setReadMarker) {
+            fieldMap["setReadMarker"] = 1
+        } else {
+            fieldMap["setReadMarker"] = 0
+        }
 
         val lastKnown = if (lookIntoFuture) {
             globalLastKnownFutureMessageId
@@ -2457,7 +2462,7 @@ class ChatController(args: Bundle) :
         adapter?.notifyDataSetChanged()
 
         if (validSessionId()) {
-            pullChatMessages(true, 1, xChatLastCommonRead)
+            pullChatMessages(true, true, xChatLastCommonRead)
         }
     }
 
