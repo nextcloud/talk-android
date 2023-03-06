@@ -1994,6 +1994,8 @@ class ChatController(args: Bundle) :
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: $startNanoTime")
 
                         val conversation = roomOverall.ocs!!.data!!
+                        currentConversation = conversation
+
                         sessionIdAfterRoomJoined = conversation.sessionId
                         ApplicationWideCurrentRoomHolder.getInstance().session = conversation.sessionId
                         ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = conversation.roomId
