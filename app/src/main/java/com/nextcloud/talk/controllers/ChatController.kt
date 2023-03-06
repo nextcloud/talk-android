@@ -2234,7 +2234,11 @@ class ChatController(args: Bundle) :
         }
     }
 
-    fun pullChatMessages(lookIntoFuture: Boolean, setReadMarker: Boolean = true, xChatLastCommonRead: Int? = null) {
+    fun pullChatMessages(
+        lookIntoFuture: Boolean,
+        setReadMarker: Boolean = true,
+        xChatLastCommonRead: Int? = null
+    ) {
         if (!validSessionId()) {
             return
         }
@@ -2301,24 +2305,23 @@ class ChatController(args: Bundle) :
             apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
         }
 
-        if (lookIntoFuture) {
-            Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - calling")
-            ncApi.pullChatMessages(
-                credentials,
-                ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken),
-                fieldMap
-            )
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<Response<*>> {
-                    override fun onSubscribe(d: Disposable) {
-                        disposables.add(d)
-                    }
+        ncApi.pullChatMessages(
+            credentials,
+            ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken),
+            fieldMap
+        )
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<Response<*>> {
+                override fun onSubscribe(d: Disposable) {
+                    disposables.add(d)
+                }
 
-                    @Suppress("Detekt.TooGenericExceptionCaught")
-                    override fun onNext(response: Response<*>) {
-                        Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - got response")
-                        pullChatMessagesPending = false
+                @Suppress("Detekt.TooGenericExceptionCaught")
+                override fun onNext(response: Response<*>) {
+                    pullChatMessagesPending = false
+
+                    if (lookIntoFuture) {
                         if (response.code() == HTTP_CODE_NOT_MODIFIED) {
                             Log.d(TAG, "pullChatMessages - quasi recursive call to pullChatMessages")
                             pullChatMessages(true, setReadMarker, xChatLastCommonRead)
@@ -2327,56 +2330,26 @@ class ChatController(args: Bundle) :
                         } else {
                             processMessagesResponse(response, true)
                         }
-
-                        processExpiredMessages()
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - ERROR", e)
-                        pullChatMessagesPending = false
-                    }
-
-                    override fun onComplete() {
-                        pullChatMessagesPending = false
-                    }
-                })
-        } else {
-            Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - calling")
-            ncApi.pullChatMessages(
-                credentials,
-                ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken),
-                fieldMap
-            )
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<Response<*>> {
-                    override fun onSubscribe(d: Disposable) {
-                        disposables.add(d)
-                    }
-
-                    @Suppress("Detekt.TooGenericExceptionCaught")
-                    override fun onNext(response: Response<*>) {
-                        Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - got response")
-                        pullChatMessagesPending = false
+                    } else {
                         if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
                             pastPreconditionFailed = true
                         } else {
                             processMessagesResponse(response, false)
                         }
-
-                        processExpiredMessages()
                     }
 
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - ERROR", e)
-                        pullChatMessagesPending = false
-                    }
+                    processExpiredMessages()
+                }
 
-                    override fun onComplete() {
-                        pullChatMessagesPending = false
-                    }
-                })
-        }
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "pullChatMessages - pullChatMessages ERROR", e)
+                    pullChatMessagesPending = false
+                }
+
+                override fun onComplete() {
+                    pullChatMessagesPending = false
+                }
+            })
     }
 
     private fun processExpiredMessages() {
