@@ -858,30 +858,31 @@ class ChatController(args: Bundle) :
 
                         showRecordAudioUi(true)
 
-                        binding?.messageInputView?.slideToCancelDescription?.x?.let {
-                            if (sliderInitX == 0.0F) {
-                                sliderInitX = it
-                            }
-                        }
-
                         val movedX: Float = event.x
                         deltaX = movedX - downX
 
                         // only allow slide to left
-                        if (binding?.messageInputView?.slideToCancelDescription?.x!! > sliderInitX) {
-                            binding?.messageInputView?.slideToCancelDescription?.x = sliderInitX
+                        binding?.messageInputView?.slideToCancelDescription?.x?.let {
+                            if (sliderInitX == 0.0F) {
+                                sliderInitX = it
+                            }
+
+                            if (it > sliderInitX) {
+                                binding?.messageInputView?.slideToCancelDescription?.x = sliderInitX
+                            }
                         }
 
-                        if (binding?.messageInputView?.slideToCancelDescription?.x!! < VOICE_RECORD_CANCEL_SLIDER_X) {
-                            Log.d(TAG, "stopping recording because slider was moved to left")
-                            stopAndDiscardAudioRecording()
-                            showRecordAudioUi(false)
-                            binding?.messageInputView?.slideToCancelDescription?.x = sliderInitX
-                            return true
-                        } else {
-                            binding?.messageInputView?.slideToCancelDescription?.x =
-                                binding?.messageInputView?.slideToCancelDescription?.x!! + deltaX
-                            downX = movedX
+                        binding?.messageInputView?.slideToCancelDescription?.x?.let {
+                            if (it < VOICE_RECORD_CANCEL_SLIDER_X) {
+                                Log.d(TAG, "stopping recording because slider was moved to left")
+                                stopAndDiscardAudioRecording()
+                                showRecordAudioUi(false)
+                                binding?.messageInputView?.slideToCancelDescription?.x = sliderInitX
+                                return true
+                            } else {
+                                binding?.messageInputView?.slideToCancelDescription?.x = it + deltaX
+                                downX = movedX
+                            }
                         }
                     }
                 }
