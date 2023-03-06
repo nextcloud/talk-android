@@ -264,7 +264,6 @@ class ChatController(args: Bundle) :
     private var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
-    private var lookingIntoFuture = false
     var newMessagesCount = 0
     var startCallFromNotification: Boolean? = null
     var startCallFromRoomSwitch: Boolean = false
@@ -2256,9 +2255,7 @@ class ChatController(args: Bundle) :
         val fieldMap = HashMap<String, Int>()
         fieldMap["includeLastKnown"] = 0
 
-        if (lookIntoFuture) {
-            lookingIntoFuture = true
-        } else if (isFirstMessagesProcessing) {
+        if (!lookIntoFuture && isFirstMessagesProcessing) {
             if (currentConversation != null) {
                 globalLastKnownFutureMessageId = currentConversation!!.lastReadMessage
                 globalLastKnownPastMessageId = currentConversation!!.lastReadMessage
@@ -2266,21 +2263,20 @@ class ChatController(args: Bundle) :
             }
         }
 
-        val timeout = if (lookingIntoFuture) {
+        val timeout = if (lookIntoFuture) {
             LOOKING_INTO_FUTURE_TIMEOUT
         } else {
             0
         }
 
         fieldMap["timeout"] = timeout
+        fieldMap["limit"] = MESSAGE_PULL_LIMIT
 
         if (lookIntoFuture) {
             fieldMap["lookIntoFuture"] = 1
         } else {
             fieldMap["lookIntoFuture"] = 0
         }
-
-        fieldMap["limit"] = MESSAGE_PULL_LIMIT
 
         if (setReadMarker) {
             fieldMap["setReadMarker"] = 1
@@ -2376,7 +2372,10 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun processMessagesResponse(response: Response<*>, isFromTheFuture: Boolean) {
+    private fun processMessagesResponse(
+        response: Response<*>,
+        isFromTheFuture: Boolean
+    ) {
         val xChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
             Integer.parseInt(it)
         }
@@ -2398,9 +2397,7 @@ class ChatController(args: Bundle) :
 
             historyRead = true
 
-            if (!lookingIntoFuture && validSessionId()) {
-                pullChatMessages(true)
-            }
+            pullChatMessages(true)
         }
     }
 
