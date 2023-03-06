@@ -67,7 +67,7 @@
 
         <com.nextcloud.talk.utils.ImageEmojiEditText
             android:id="@id/messageInput"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/quotedChatMessageView"
             android:layout_centerHorizontal="true"
