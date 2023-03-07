@@ -2242,6 +2242,8 @@ class ChatController(args: Bundle) :
             return
         }
 
+        Log.d(TAG, "pullChatMessages. lookIntoFuture= $lookIntoFuture")
+
         if (pullChatMessagesPending) {
             // Sometimes pullChatMessages may be called before response to a previous call is received.
             // In such cases just ignore the second call. Message processing will continue when response to the
@@ -2250,7 +2252,9 @@ class ChatController(args: Bundle) :
             Log.d(TAG, "pullChatMessages - pullChatMessagesPending is true, exiting")
             return
         }
+
         pullChatMessagesPending = true
+        Log.d(TAG, "pullChatMessagesPending was set to true")
 
         val fieldMap = HashMap<String, Int>()
         fieldMap["includeLastKnown"] = 0
@@ -2261,6 +2265,17 @@ class ChatController(args: Bundle) :
                 globalLastKnownPastMessageId = currentConversation!!.lastReadMessage
                 fieldMap["includeLastKnown"] = 1
             }
+        }
+
+        val lastKnown = if (lookIntoFuture) {
+            globalLastKnownFutureMessageId
+        } else {
+            globalLastKnownPastMessageId
+        }
+
+        fieldMap["lastKnownMessageId"] = lastKnown
+        xChatLastCommonRead?.let {
+            fieldMap["lastCommonReadId"] = it
         }
 
         val timeout = if (lookIntoFuture) {
@@ -2284,17 +2299,6 @@ class ChatController(args: Bundle) :
             fieldMap["setReadMarker"] = 0
         }
 
-        val lastKnown = if (lookIntoFuture) {
-            globalLastKnownFutureMessageId
-        } else {
-            globalLastKnownPastMessageId
-        }
-
-        fieldMap["lastKnownMessageId"] = lastKnown
-        xChatLastCommonRead?.let {
-            fieldMap["lastCommonReadId"] = it
-        }
-
         var apiVersion = 1
         // FIXME this is a best guess, guests would need to get the capabilities themselves
         if (conversationUser != null) {
@@ -2316,31 +2320,28 @@ class ChatController(args: Bundle) :
                 @SuppressLint("NotifyDataSetChanged")
                 @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(response: Response<*>) {
+                    // when fetching history in between the regular polling, this is set to false!! -> bug?
                     pullChatMessagesPending = false
-
-                    if (isFirstMessagesProcessing) {
-                        cancelNotificationsForCurrentConversation()
-
-                        isFirstMessagesProcessing = false
-                        binding?.progressBar?.visibility = View.GONE
-
-                        binding?.messagesListView?.visibility = View.VISIBLE
-                    }
+                    Log.d(TAG, "pullChatMessagesPending was set to false")
 
                     when (response.code()) {
                         HTTP_CODE_NOT_MODIFIED -> {
-                            Log.d(TAG, "pullChatMessages - HTTP_CODE_NOT_MODIFIED")
+                            Log.d(TAG, "pullChatMessages - HTTP_CODE_NOT_MODIFIED. lookIntoFuture=$lookIntoFuture")
 
                             if (lookIntoFuture) {
-                                Log.d(TAG, "recursive call to pullChatMessages")
+                                Log.d(TAG, "recursive call to pullChatMessages. lookIntoFuture=$lookIntoFuture")
                                 pullChatMessages(true, setReadMarker, xChatLastCommonRead)
                             } else {
+                                Log.d(TAG, "when is this reached?")
                                 historyRead = true
                                 pullChatMessages(true)
                             }
                         }
                         HTTP_CODE_PRECONDITION_FAILED -> {
-                            Log.d(TAG, "pullChatMessages - HTTP_CODE_PRECONDITION_FAILED")
+                            Log.d(
+                                TAG,
+                                "pullChatMessages - HTTP_CODE_PRECONDITION_FAILED. lookIntoFuture=$lookIntoFuture"
+                            )
 
                             if (lookIntoFuture) {
                                 futurePreconditionFailed = true
@@ -2349,7 +2350,7 @@ class ChatController(args: Bundle) :
                             }
                         }
                         HTTP_CODE_OK -> {
-                            Log.d(TAG, "pullChatMessages - HTTP_CODE_OK")
+                            Log.d(TAG, "pullChatMessages - HTTP_CODE_OK. lookIntoFuture=$lookIntoFuture")
 
                             val chatOverall = response.body() as ChatOverall?
                             val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data!!)
@@ -2376,11 +2377,21 @@ class ChatController(args: Bundle) :
                             updateReadStatusOfAllMessages(xChatLastCommonRead)
                             adapter?.notifyDataSetChanged()
 
-                            pullChatMessages(true, true, xChatLastCommonRead)
+                            if (isFirstMessagesProcessing || lookIntoFuture) {
+                                Log.d(TAG, "recursive call to pullChatMessages. lookIntoFuture=$lookIntoFuture")
+                                pullChatMessages(true, true, xChatLastCommonRead)
+                            }
                         }
                     }
 
                     processExpiredMessages()
+
+                    if (isFirstMessagesProcessing) {
+                        cancelNotificationsForCurrentConversation()
+                        isFirstMessagesProcessing = false
+                        binding?.progressBar?.visibility = View.GONE
+                        binding?.messagesListView?.visibility = View.VISIBLE
+                    }
                 }
 
                 override fun onError(e: Throwable) {
@@ -2607,6 +2618,7 @@ class ChatController(args: Bundle) :
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         if (!historyRead) {
+            Log.d(TAG, "requested onLoadMore to pullChatMessages with lookIntoFuture=false")
             pullChatMessages(false)
         }
     }
