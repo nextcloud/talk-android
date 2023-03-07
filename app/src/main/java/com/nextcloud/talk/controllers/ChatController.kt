@@ -2313,24 +2313,70 @@ class ChatController(args: Bundle) :
                     disposables.add(d)
                 }
 
+                @SuppressLint("NotifyDataSetChanged")
                 @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(response: Response<*>) {
                     pullChatMessagesPending = false
 
-                    if (lookIntoFuture) {
-                        if (response.code() == HTTP_CODE_NOT_MODIFIED) {
-                            Log.d(TAG, "pullChatMessages - quasi recursive call to pullChatMessages")
-                            pullChatMessages(true, setReadMarker, xChatLastCommonRead)
-                        } else if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
-                            futurePreconditionFailed = true
-                        } else {
-                            processMessagesResponse(response, true)
+                    if (isFirstMessagesProcessing) {
+                        cancelNotificationsForCurrentConversation()
+
+                        isFirstMessagesProcessing = false
+                        binding?.progressBar?.visibility = View.GONE
+
+                        binding?.messagesListView?.visibility = View.VISIBLE
+                    }
+
+                    when (response.code()) {
+                        HTTP_CODE_NOT_MODIFIED -> {
+                            Log.d(TAG, "pullChatMessages - HTTP_CODE_NOT_MODIFIED")
+
+                            if (lookIntoFuture) {
+                                Log.d(TAG, "recursive call to pullChatMessages")
+                                pullChatMessages(true, setReadMarker, xChatLastCommonRead)
+                            } else {
+                                historyRead = true
+                                pullChatMessages(true)
+                            }
                         }
-                    } else {
-                        if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
-                            pastPreconditionFailed = true
-                        } else {
-                            processMessagesResponse(response, false)
+                        HTTP_CODE_PRECONDITION_FAILED -> {
+                            Log.d(TAG, "pullChatMessages - HTTP_CODE_PRECONDITION_FAILED")
+
+                            if (lookIntoFuture) {
+                                futurePreconditionFailed = true
+                            } else {
+                                pastPreconditionFailed = true
+                            }
+                        }
+                        HTTP_CODE_OK -> {
+                            Log.d(TAG, "pullChatMessages - HTTP_CODE_OK")
+
+                            val chatOverall = response.body() as ChatOverall?
+                            val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data!!)
+
+                            processHeaderChatLastGiven(response, lookIntoFuture)
+
+                            if (chatMessageList.isNotEmpty() &&
+                                ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
+                            ) {
+                                adapter?.clear()
+                                adapter?.notifyDataSetChanged()
+                            }
+
+                            if (lookIntoFuture) {
+                                processMessagesFromTheFuture(chatMessageList)
+                            } else {
+                                processMessagesNotFromTheFuture(chatMessageList)
+                            }
+
+                            val xChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
+                                Integer.parseInt(it)
+                            }
+
+                            updateReadStatusOfAllMessages(xChatLastCommonRead)
+                            adapter?.notifyDataSetChanged()
+
+                            pullChatMessages(true, true, xChatLastCommonRead)
                         }
                     }
 
@@ -2369,70 +2415,6 @@ class ChatController(args: Bundle) :
 
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")) {
             deleteExpiredMessages()
-        }
-    }
-
-    private fun processMessagesResponse(
-        response: Response<*>,
-        isFromTheFuture: Boolean
-    ) {
-        val xChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
-            Integer.parseInt(it)
-        }
-
-        processHeaderChatLastGiven(response, isFromTheFuture)
-
-        if (response.code() == HTTP_CODE_OK) {
-            val chatOverall = response.body() as ChatOverall?
-            val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data!!)
-
-            processMessages(chatMessageList, isFromTheFuture, xChatLastCommonRead)
-        } else if (response.code() == HTTP_CODE_NOT_MODIFIED && !isFromTheFuture) {
-            if (isFirstMessagesProcessing) {
-                cancelNotificationsForCurrentConversation()
-
-                isFirstMessagesProcessing = false
-                binding?.progressBar?.visibility = View.GONE
-            }
-
-            historyRead = true
-
-            pullChatMessages(true)
-        }
-    }
-
-    private fun processMessages(
-        chatMessageList: List<ChatMessage>,
-        isFromTheFuture: Boolean,
-        xChatLastCommonRead: Int?
-    ) {
-        if (chatMessageList.isNotEmpty() &&
-            ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
-        ) {
-            adapter?.clear()
-            adapter?.notifyDataSetChanged()
-        }
-
-        if (isFirstMessagesProcessing) {
-            cancelNotificationsForCurrentConversation()
-
-            isFirstMessagesProcessing = false
-            binding?.progressBar?.visibility = View.GONE
-
-            binding?.messagesListView?.visibility = View.VISIBLE
-        }
-
-        if (isFromTheFuture) {
-            processMessagesFromTheFuture(chatMessageList)
-        } else {
-            processMessagesNotFromTheFuture(chatMessageList)
-        }
-
-        updateReadStatusOfAllMessages(xChatLastCommonRead)
-        adapter?.notifyDataSetChanged()
-
-        if (validSessionId()) {
-            pullChatMessages(true, true, xChatLastCommonRead)
         }
     }
 
@@ -2624,7 +2606,7 @@ class ChatController(args: Bundle) :
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        if (!historyRead && validSessionId()) {
+        if (!historyRead) {
             pullChatMessages(false)
         }
     }
