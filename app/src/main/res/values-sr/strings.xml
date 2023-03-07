@@ -412,6 +412,7 @@
     <string name="record_stop_confirm_title">Прекидање снимање позива</string>
     <string name="record_stop_description">Заустави снимање</string>
     <string name="record_stopping">Снимање се зауставља ...</string>
+    <string name="restrict_join_other_room_while_call">Док сте у позиву не можете да приступите осталим собама</string>
     <string name="save">Сачувај</string>
     <string name="scope_federated_description">Само синхронизује са серверима од поверења</string>
     <string name="scope_federated_title">Здружено</string>
