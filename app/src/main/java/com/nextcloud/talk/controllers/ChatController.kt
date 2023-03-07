@@ -1994,6 +1994,8 @@ class ChatController(args: Bundle) :
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: $startNanoTime")
 
                         val conversation = roomOverall.ocs!!.data!!
+                        currentConversation = conversation
+
                         sessionIdAfterRoomJoined = conversation.sessionId
                         ApplicationWideCurrentRoomHolder.getInstance().session = conversation.sessionId
                         ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = conversation.roomId
@@ -2823,14 +2825,18 @@ class ChatController(args: Bundle) :
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
-        val pp = ParticipantPermissions(conversationUser!!, currentConversation!!)
-        if (!pp.canStartCall() && currentConversation?.hasCall == false) {
-            Toast.makeText(context, R.string.startCallForbidden, Toast.LENGTH_LONG).show()
-        } else {
-            ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
-            val callIntent = getIntentForCall(isVoiceOnlyCall, callWithoutNotification)
-            if (callIntent != null) {
-                startActivity(callIntent)
+        currentConversation?.let {
+            if (conversationUser != null) {
+                val pp = ParticipantPermissions(conversationUser, it)
+                if (!pp.canStartCall() && currentConversation?.hasCall == false) {
+                    Toast.makeText(context, R.string.startCallForbidden, Toast.LENGTH_LONG).show()
+                } else {
+                    ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
+                    val callIntent = getIntentForCall(isVoiceOnlyCall, callWithoutNotification)
+                    if (callIntent != null) {
+                        startActivity(callIntent)
+                    }
+                }
             }
         }
     }
