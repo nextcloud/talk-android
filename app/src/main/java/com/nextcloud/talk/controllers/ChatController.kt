@@ -257,7 +257,6 @@ class ChatController(args: Bundle) :
     private val roomPassword: String
     var credentials: String? = null
     var currentConversation: Conversation? = null
-    private var historyRead = false
     private var globalLastKnownFutureMessageId = -1
     private var globalLastKnownPastMessageId = -1
     var adapter: TalkMessagesListAdapter<ChatMessage>? = null
@@ -2320,28 +2319,20 @@ class ChatController(args: Bundle) :
                 @SuppressLint("NotifyDataSetChanged")
                 @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(response: Response<*>) {
-                    // when fetching history in between the regular polling, this is set to false!! -> bug?
                     pullChatMessagesPending = false
                     Log.d(TAG, "pullChatMessagesPending was set to false")
 
                     when (response.code()) {
                         HTTP_CODE_NOT_MODIFIED -> {
-                            Log.d(TAG, "pullChatMessages - HTTP_CODE_NOT_MODIFIED. lookIntoFuture=$lookIntoFuture")
+                            Log.d(TAG, "pullChatMessages - HTTP_CODE_NOT_MODIFIED.")
 
                             if (lookIntoFuture) {
-                                Log.d(TAG, "recursive call to pullChatMessages. lookIntoFuture=$lookIntoFuture")
+                                Log.d(TAG, "recursive call to pullChatMessages.")
                                 pullChatMessages(true, setReadMarker, xChatLastCommonRead)
-                            } else {
-                                Log.d(TAG, "when is this reached?")
-                                historyRead = true
-                                pullChatMessages(true)
                             }
                         }
                         HTTP_CODE_PRECONDITION_FAILED -> {
-                            Log.d(
-                                TAG,
-                                "pullChatMessages - HTTP_CODE_PRECONDITION_FAILED. lookIntoFuture=$lookIntoFuture"
-                            )
+                            Log.d(TAG, "pullChatMessages - HTTP_CODE_PRECONDITION_FAILED.")
 
                             if (lookIntoFuture) {
                                 futurePreconditionFailed = true
@@ -2350,7 +2341,7 @@ class ChatController(args: Bundle) :
                             }
                         }
                         HTTP_CODE_OK -> {
-                            Log.d(TAG, "pullChatMessages - HTTP_CODE_OK. lookIntoFuture=$lookIntoFuture")
+                            Log.d(TAG, "pullChatMessages - HTTP_CODE_OK.")
 
                             val chatOverall = response.body() as ChatOverall?
                             val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data!!)
@@ -2378,7 +2369,7 @@ class ChatController(args: Bundle) :
                             adapter?.notifyDataSetChanged()
 
                             if (isFirstMessagesProcessing || lookIntoFuture) {
-                                Log.d(TAG, "recursive call to pullChatMessages. lookIntoFuture=$lookIntoFuture")
+                                Log.d(TAG, "recursive call to pullChatMessages")
                                 pullChatMessages(true, true, xChatLastCommonRead)
                             }
                         }
@@ -2617,10 +2608,8 @@ class ChatController(args: Bundle) :
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        if (!historyRead) {
-            Log.d(TAG, "requested onLoadMore to pullChatMessages with lookIntoFuture=false")
-            pullChatMessages(false)
-        }
+        Log.d(TAG, "requested onLoadMore to pullChatMessages with lookIntoFuture=false")
+        pullChatMessages(false)
     }
 
     override fun format(date: Date): String {
