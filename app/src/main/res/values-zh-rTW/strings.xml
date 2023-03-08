@@ -161,6 +161,7 @@
     <string name="nc_leaving_call">正在離開通話 …</string>
     <string name="nc_license_summary">GNU產生公開授權，第3版</string>
     <string name="nc_license_title">授權</string>
+    <string name="nc_lobby_start_soon">會議即將開始</string>
     <string name="nc_location_current_position_description">您目前的位置</string>
     <string name="nc_location_permission_required">需要位置權限</string>
     <string name="nc_location_unknown">位置不明</string>
@@ -200,11 +201,15 @@
     <string name="nc_plain_old_messages">訊息</string>
     <string name="nc_privacy">隱私全條款</string>
     <string name="nc_proceed">進行</string>
+    <string name="nc_promote">授予主持人資格</string>
     <string name="nc_public_call">新的公開對話</string>
     <string name="nc_push_disabled">取消推送通知</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
+    <string name="nc_remove_group_and_members">移除群組與成員</string>
+    <string name="nc_remove_participant">移除參與者</string>
     <string name="nc_rename">重新命名對話</string>
     <string name="nc_reply">回覆</string>
+    <string name="nc_reply_privately">私下回覆</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>
     <string name="nc_screen_lock_timeout_300">5分鐘</string>
     <string name="nc_screen_lock_timeout_60">一分鐘</string>
@@ -280,9 +285,13 @@
     <string name="oneHour">1小時</string>
     <string name="online">線上</string>
     <string name="online_status">線上狀態</string>
+    <string name="openConversations">開啟對話</string>
     <string name="polls_add_option">新增選項</string>
+    <string name="polls_end_poll">結束投票</string>
+    <string name="polls_multiple_answers">多個答案</string>
     <string name="polls_options">選項</string>
     <string name="polls_private_poll">私人投票</string>
+    <string name="polls_question">問題</string>
     <string name="polls_results_subtitle">結果</string>
     <string name="polls_settings">設定</string>
     <string name="polls_submit_vote">投票</string>
@@ -297,9 +306,11 @@
     <string name="scope_private_title">私人</string>
     <string name="scope_published_description">同步到受信任的伺服器以及全域與公開的通訊錄</string>
     <string name="scope_published_title">已發佈</string>
+    <string name="scroll_to_bottom">捲動至底部</string>
     <string name="secondsAgo">秒前</string>
     <string name="selected_list_item">已選擇</string>
     <string name="send_to">傳送至</string>
+    <string name="send_without_notification">傳送而不通知</string>
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>
@@ -307,6 +318,7 @@
     <string name="shared_items_file">檔案</string>
     <string name="shared_items_media">多媒體</string>
     <string name="shared_items_other">其他</string>
+    <string name="shared_items_poll">投票</string>
     <string name="shared_items_voice">語音</string>
     <string name="starred">收藏</string>
     <string name="status_message">狀態訊息</string>

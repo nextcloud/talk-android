@@ -68,6 +68,7 @@
     <string name="nc_call_button_content_description_camera">Kamerayı aç/kapat</string>
     <string name="nc_call_button_content_description_hangup">Sonlandır</string>
     <string name="nc_call_button_content_description_microphone">Mikrofonu aç/kapat</string>
+    <string name="nc_call_button_content_description_pip">Resim içinde resim kipini aç</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Benim görüntüme geç</string>
     <string name="nc_call_incoming">GELEN</string>
     <string name="nc_call_name">Görüşme adı</string>
@@ -410,6 +411,8 @@
     <string name="record_stop_confirm_message">Kaydı durdurmak istediğinize emin misiniz?</string>
     <string name="record_stop_confirm_title">Çağrı kaydını durdur</string>
     <string name="record_stop_description">Kaydı durdur</string>
+    <string name="record_stopping">Kayıt durduruluyor…</string>
+    <string name="restrict_join_other_room_while_call">Bir çağrı sürerken diğer odalara katılamazsınız</string>
     <string name="save">Kaydet</string>
     <string name="scope_federated_description">Yalnızca güvenilen sunucular ile eşitlensin</string>
     <string name="scope_federated_title">Birleşik</string>
@@ -441,6 +444,8 @@
     <string name="starred">Sık kullanılanlara ekle</string>
     <string name="startCallForbidden">Bir çağrı başlatma izniniz yok</string>
     <string name="status_message">Durum iletisi</string>
+    <string name="switch_to_breakout_room">Çalışma odasına geç</string>
+    <string name="switch_to_main_room">Ana odaya geç</string>
     <string name="take_photo">Bir fotoğraf çekin</string>
     <string name="take_photo_error_deleting_picture">Fotoğraf çekilirken sorun çıktı</string>
     <string name="take_photo_permission">İzin verilmeden bir fotoğraf çekilemez</string>

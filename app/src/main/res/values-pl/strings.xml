@@ -68,6 +68,7 @@
     <string name="nc_call_button_content_description_camera">Przełącz kamerę</string>
     <string name="nc_call_button_content_description_hangup">Odłożyć słuchawkę</string>
     <string name="nc_call_button_content_description_microphone">Przełącz mikrofon</string>
+    <string name="nc_call_button_content_description_pip">Otwórz tryb obrazu w obrazie</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Przełącz na własne wideo</string>
     <string name="nc_call_incoming">PRZYCHODZĄCA</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
@@ -404,10 +405,14 @@
     <string name="reactions_tab_all">Wszystkie</string>
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
     <string name="record_active_info">Rozmowa jest nagrywana</string>
+    <string name="record_cancel_start">Anuluj rozpoczęcie nagrywania</string>
+    <string name="record_failed_info">Nagrywanie nie powiodło się. Skontaktuj się z administratorem.</string>
     <string name="record_start_description">Rozpocznij nagrywanie</string>
     <string name="record_stop_confirm_message">Czy na pewno chcesz zatrzymać nagrywanie?</string>
     <string name="record_stop_confirm_title">Zatrzymaj nagrywanie rozmowy</string>
     <string name="record_stop_description">Zatrzymaj nagrywanie</string>
+    <string name="record_stopping">Zatrzymywanie nagrywania…</string>
+    <string name="restrict_join_other_room_while_call">Podczas rozmowy nie można dołączać do innych pokoi</string>
     <string name="save">Zapisz</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>
     <string name="scope_federated_title">Sfederowane</string>
@@ -439,6 +444,8 @@
     <string name="starred">Ulubione</string>
     <string name="startCallForbidden">Nie możesz rozpocząć połączenia</string>
     <string name="status_message">Komunikat statusu</string>
+    <string name="switch_to_breakout_room">Przełącz się do pokoju podgrupy</string>
+    <string name="switch_to_main_room">Przełącz się do głównego pokoju</string>
     <string name="take_photo">Zrobić zdjęcie</string>
     <string name="take_photo_error_deleting_picture">Błąd podczas robienia zdjęcia</string>
     <string name="take_photo_permission">Zrobienie zdjęcia nie jest możliwe bez uprawnień</string>
