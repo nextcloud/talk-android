@@ -54,7 +54,8 @@
                 android:gravity="center"
                 android:numColumns="2"
                 android:scrollbars="vertical"
-                android:stretchMode="columnWidth" />
+                android:stretchMode="columnWidth"
+                tools:listitem="@layout/call_item"/>
 
             <FrameLayout
                 android:id="@+id/selfVideoViewWrapper"
@@ -160,111 +161,113 @@
                 android:layout_alignTop="@id/verticalCenter"
                 android:layout_marginTop="-50dp" />
 
-            <ImageButton
-                android:id="@+id/lower_hand_button"
-                android:layout_width="@dimen/min_size_clickable_area"
-                android:layout_height="@dimen/min_size_clickable_area"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="150dp"
-                android:layout_marginEnd="20dp"
-                android:contentDescription="@string/lower_hand"
-                android:background="@drawable/shape_oval"
-                android:backgroundTint="@color/call_buttons_background"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:srcCompat="@drawable/ic_baseline_do_not_touch_24" />
-
         </RelativeLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/callControls"
-        android:layout_height="@dimen/call_controls_height"
-        android:layout_width="450dp"
-        android:layout_centerHorizontal="true"
-        android:paddingHorizontal="@dimen/call_controls_padding_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignBottom="@id/linearWrapperLayout"
-        android:animateLayoutChanges="true"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="6">
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <ImageButton
-            android:id="@+id/pictureInPictureButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:layout_marginHorizontal="@dimen/call_controls_margin_horizontal"
-            android:layout_weight="1"
+            android:id="@+id/lower_hand_button"
+            android:layout_width="@dimen/min_size_clickable_area"
+            android:layout_height="@dimen/min_size_clickable_area"
+            android:layout_gravity="end"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/shape_oval"
             android:backgroundTint="@color/call_buttons_background"
-            app:srcCompat="@drawable/ic_baseline_picture_in_picture_alt_24"
-            android:contentDescription="@string/nc_call_button_content_description_pip" />
+            android:contentDescription="@string/lower_hand"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_baseline_do_not_touch_24"
+            tools:visibility="visible" />
 
-        <ImageButton
-            android:id="@+id/audioOutputButton"
-            android:layout_width="0dp"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/callControls"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:layout_marginHorizontal="@dimen/call_controls_margin_horizontal"
-            android:layout_weight="1"
-            android:background="@drawable/shape_oval"
-            android:backgroundTint="@color/call_buttons_background"
-            app:srcCompat="@drawable/ic_volume_mute_white_24dp"
-            android:contentDescription="@string/nc_call_button_content_description_audio_output" />
+            android:layout_marginBottom="@dimen/standard_half_margin"
+            android:animateLayoutChanges="true"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:minHeight="@dimen/call_controls_height"
+            android:orientation="horizontal"
+            android:padding="@dimen/standard_half_padding"
+            app:alignItems="center"
+            app:flexWrap="wrap"
+            app:justifyContent="center">
 
-        <ImageButton
-            android:id="@+id/cameraButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:layout_marginHorizontal="@dimen/call_controls_margin_horizontal"
-            android:layout_weight="1"
-            android:alpha="0.7"
-            android:background="@drawable/shape_oval"
-            android:backgroundTint="@color/call_buttons_background"
-            app:srcCompat="@drawable/ic_videocam_white_24px"
-            android:contentDescription="@string/nc_call_button_content_description_camera" />
+            <ImageButton
+                android:id="@+id/pictureInPictureButton"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_margin="@dimen/standard_half_margin"
+                android:adjustViewBounds="true"
+                android:background="@drawable/shape_oval"
+                android:backgroundTint="@color/call_buttons_background"
+                android:contentDescription="@string/nc_call_button_content_description_pip"
+                app:srcCompat="@drawable/ic_baseline_picture_in_picture_alt_24" />
 
-        <ImageButton
-            android:id="@+id/microphoneButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:layout_marginHorizontal="@dimen/call_controls_margin_horizontal"
-            android:layout_weight="1"
-            android:alpha="0.7"
-            android:background="@drawable/shape_oval"
-            android:backgroundTint="@color/call_buttons_background"
-            app:srcCompat="@drawable/ic_mic_off_white_24px"
-            android:contentDescription="@string/nc_call_button_content_description_microphone" />
+            <ImageButton
+                android:id="@+id/audioOutputButton"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_margin="@dimen/standard_half_margin"
+                android:adjustViewBounds="true"
+                android:background="@drawable/shape_oval"
+                android:backgroundTint="@color/call_buttons_background"
+                android:contentDescription="@string/nc_call_button_content_description_audio_output"
+                app:srcCompat="@drawable/ic_volume_mute_white_24dp" />
 
-        <ImageButton
-            android:id="@+id/more_call_actions"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:layout_marginHorizontal="@dimen/call_controls_margin_horizontal"
-            android:layout_weight="1"
-            android:background="@drawable/shape_oval"
-            android:backgroundTint="@color/call_buttons_background"
-            app:srcCompat="@drawable/ic_dots_horizontal_white"
-            android:contentDescription="@string/nc_call_button_content_description_microphone" />
+            <ImageButton
+                android:id="@+id/cameraButton"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_margin="@dimen/standard_half_margin"
+                android:adjustViewBounds="true"
+                android:alpha="0.7"
+                android:background="@drawable/shape_oval"
+                android:backgroundTint="@color/call_buttons_background"
+                android:contentDescription="@string/nc_call_button_content_description_camera"
+                app:srcCompat="@drawable/ic_videocam_white_24px" />
 
-        <ImageButton
-            android:id="@+id/hangupButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:layout_marginHorizontal="@dimen/call_controls_margin_horizontal"
-            android:layout_weight="1"
-            android:background="@drawable/shape_oval"
-            android:backgroundTint="@color/nc_darkRed"
-            app:srcCompat="@drawable/ic_call_end_white_24px"
-            android:contentDescription="@string/nc_call_button_content_description_hangup" />
+            <ImageButton
+                android:id="@+id/microphoneButton"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_margin="@dimen/standard_half_margin"
+                android:adjustViewBounds="true"
+                android:alpha="0.7"
+                android:background="@drawable/shape_oval"
+                android:backgroundTint="@color/call_buttons_background"
+                android:contentDescription="@string/nc_call_button_content_description_microphone"
+                app:srcCompat="@drawable/ic_mic_off_white_24px" />
+
+            <ImageButton
+                android:id="@+id/more_call_actions"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_margin="@dimen/standard_half_margin"
+                android:adjustViewBounds="true"
+                android:background="@drawable/shape_oval"
+                android:backgroundTint="@color/call_buttons_background"
+                android:contentDescription="@string/nc_call_button_content_description_microphone"
+                app:srcCompat="@drawable/ic_dots_horizontal_white" />
+
+            <ImageButton
+                android:id="@+id/hangupButton"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_margin="@dimen/standard_half_margin"
+                android:adjustViewBounds="true"
+                android:background="@drawable/shape_oval"
+                android:backgroundTint="@color/nc_darkRed"
+                android:contentDescription="@string/nc_call_button_content_description_hangup"
+                app:srcCompat="@drawable/ic_call_end_white_24px" />
+        </com.google.android.flexbox.FlexboxLayout>
     </LinearLayout>
 
     <LinearLayout
