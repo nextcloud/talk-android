@@ -2321,16 +2321,16 @@ class ChatController(args: Bundle) :
                                 processMessagesNotFromTheFuture(chatMessageList)
                             }
 
-                            val xChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
+                            val newXChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
                                 Integer.parseInt(it)
                             }
 
-                            updateReadStatusOfAllMessages(xChatLastCommonRead)
+                            updateReadStatusOfAllMessages(newXChatLastCommonRead)
                             adapter?.notifyDataSetChanged()
 
                             if (isFirstMessagesProcessing || lookIntoFuture) {
                                 Log.d(TAG, "recursive call to pullChatMessages")
-                                pullChatMessages(true, true, xChatLastCommonRead)
+                                pullChatMessages(true, true, newXChatLastCommonRead)
                             }
                         }
                     }
