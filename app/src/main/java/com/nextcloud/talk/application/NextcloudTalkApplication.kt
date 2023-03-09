@@ -182,6 +182,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
             HALF_DAY,
             TimeUnit.HOURS
         ).build()
+
         val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()
 

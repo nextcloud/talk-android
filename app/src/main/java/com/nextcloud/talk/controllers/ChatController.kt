@@ -1783,6 +1783,7 @@ class ChatController(args: Bundle) :
 
         eventBus.register(this)
 
+        setupWebsocket()
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
 
         if (conversationUser?.userId != "?" &&
@@ -2002,11 +2003,6 @@ class ChatController(args: Bundle) :
 
                         logConversationInfos("joinRoomWithPassword#onNext")
 
-                        // FIXME The web socket should be set up in onAttach(). It is currently setup after joining the
-                        // room to "ensure" (rather, increase the chances) that the WebsocketConnectionsWorker job
-                        // was able to finish and, therefore, that the web socket instance can be got.
-                        setupWebsocket()
-
                         // Ensure that the listener is added if the web socket instance was not set up yet when
                         // onAttach() was called.
                         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
@@ -2225,10 +2221,13 @@ class ChatController(args: Bundle) :
             return
         }
 
-        webSocketInstance = WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
+        webSocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUserId(conversationUser.id!!)
 
         if (webSocketInstance == null) {
-            Log.d(TAG, "magicWebSocketInstance became null")
+            Log.e(TAG, "failed to setup webSocketInstance")
+            if (BuildConfig.DEBUG) {
+                Toast.makeText(context, "failed to setup webSocketInstance", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
