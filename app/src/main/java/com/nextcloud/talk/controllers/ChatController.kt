@@ -2251,52 +2251,13 @@ class ChatController(args: Bundle) :
             Log.d(TAG, "pullChatMessages - pullChatMessagesPending is true, exiting")
             return
         }
-
         pullChatMessagesPending = true
-        Log.d(TAG, "pullChatMessagesPending was set to true")
 
-        val fieldMap = HashMap<String, Int>()
-        fieldMap["includeLastKnown"] = 0
-
-        if (!lookIntoFuture && isFirstMessagesProcessing) {
-            if (currentConversation != null) {
-                globalLastKnownFutureMessageId = currentConversation!!.lastReadMessage
-                globalLastKnownPastMessageId = currentConversation!!.lastReadMessage
-                fieldMap["includeLastKnown"] = 1
-            }
-        }
-
-        val lastKnown = if (lookIntoFuture) {
-            globalLastKnownFutureMessageId
-        } else {
-            globalLastKnownPastMessageId
-        }
-
-        fieldMap["lastKnownMessageId"] = lastKnown
-        xChatLastCommonRead?.let {
-            fieldMap["lastCommonReadId"] = it
-        }
-
-        val timeout = if (lookIntoFuture) {
-            LOOKING_INTO_FUTURE_TIMEOUT
-        } else {
-            0
-        }
-
-        fieldMap["timeout"] = timeout
-        fieldMap["limit"] = MESSAGE_PULL_LIMIT
-
-        if (lookIntoFuture) {
-            fieldMap["lookIntoFuture"] = 1
-        } else {
-            fieldMap["lookIntoFuture"] = 0
-        }
-
-        if (setReadMarker) {
-            fieldMap["setReadMarker"] = 1
-        } else {
-            fieldMap["setReadMarker"] = 0
-        }
+        val pullChatMessagesFieldMap = setupFieldsForPullChatMessages(
+            lookIntoFuture,
+            xChatLastCommonRead,
+            setReadMarker
+        )
 
         var apiVersion = 1
         // FIXME this is a best guess, guests would need to get the capabilities themselves
@@ -2307,7 +2268,7 @@ class ChatController(args: Bundle) :
         ncApi.pullChatMessages(
             credentials,
             ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken),
-            fieldMap
+            pullChatMessagesFieldMap
         )
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -2320,7 +2281,6 @@ class ChatController(args: Bundle) :
                 @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(response: Response<*>) {
                     pullChatMessagesPending = false
-                    Log.d(TAG, "pullChatMessagesPending was set to false")
 
                     when (response.code()) {
                         HTTP_CODE_NOT_MODIFIED -> {
@@ -2394,6 +2354,56 @@ class ChatController(args: Bundle) :
                     pullChatMessagesPending = false
                 }
             })
+    }
+
+    private fun setupFieldsForPullChatMessages(
+        lookIntoFuture: Boolean,
+        xChatLastCommonRead: Int?,
+        setReadMarker: Boolean
+    ): HashMap<String, Int> {
+        val fieldMap = HashMap<String, Int>()
+        fieldMap["includeLastKnown"] = 0
+
+        if (!lookIntoFuture && isFirstMessagesProcessing) {
+            if (currentConversation != null) {
+                globalLastKnownFutureMessageId = currentConversation!!.lastReadMessage
+                globalLastKnownPastMessageId = currentConversation!!.lastReadMessage
+                fieldMap["includeLastKnown"] = 1
+            }
+        }
+
+        val lastKnown = if (lookIntoFuture) {
+            globalLastKnownFutureMessageId
+        } else {
+            globalLastKnownPastMessageId
+        }
+
+        fieldMap["lastKnownMessageId"] = lastKnown
+        xChatLastCommonRead?.let {
+            fieldMap["lastCommonReadId"] = it
+        }
+
+        val timeout = if (lookIntoFuture) {
+            LOOKING_INTO_FUTURE_TIMEOUT
+        } else {
+            0
+        }
+
+        fieldMap["timeout"] = timeout
+        fieldMap["limit"] = MESSAGE_PULL_LIMIT
+
+        if (lookIntoFuture) {
+            fieldMap["lookIntoFuture"] = 1
+        } else {
+            fieldMap["lookIntoFuture"] = 0
+        }
+
+        if (setReadMarker) {
+            fieldMap["setReadMarker"] = 1
+        } else {
+            fieldMap["setReadMarker"] = 0
+        }
+        return fieldMap
     }
 
     private fun processExpiredMessages() {
@@ -2608,7 +2618,6 @@ class ChatController(args: Bundle) :
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        Log.d(TAG, "requested onLoadMore to pullChatMessages with lookIntoFuture=false")
         pullChatMessages(false)
     }
 
