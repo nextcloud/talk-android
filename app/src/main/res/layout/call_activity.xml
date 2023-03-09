@@ -181,8 +181,9 @@
 
     <LinearLayout
         android:id="@+id/callControls"
-        android:layout_width="match_parent"
         android:layout_height="@dimen/call_controls_height"
+        android:layout_width="450dp"
+        android:layout_centerHorizontal="true"
         android:paddingHorizontal="@dimen/call_controls_padding_horizontal"
         android:layout_alignBottom="@id/linearWrapperLayout"
         android:animateLayoutChanges="true"
