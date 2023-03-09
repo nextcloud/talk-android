@@ -148,6 +148,7 @@
     <string name="nc_guest_access_allow_title">允許訪客</string>
     <string name="nc_guest_access_password_dialog_hint">輸入密碼</string>
     <string name="nc_guest_access_password_dialog_title">訪客存取密碼</string>
+    <string name="nc_guest_access_password_summary">設定密碼以限制誰可以使用公開連結。</string>
     <string name="nc_guest_access_password_title">密碼保護</string>
     <string name="nc_guest_access_password_weak_alert_title">密碼安全性弱</string>
     <string name="nc_guest_access_resend_invitations">重新傳送邀請</string>
@@ -297,6 +298,10 @@
     <string name="polls_submit_vote">投票</string>
     <string name="raise_hand">舉手</string>
     <string name="reactions_tab_all">全部</string>
+    <string name="record_cancel_start">取消錄音開始</string>
+    <string name="record_failed_info">錄音失敗。請聯絡您的管理員。</string>
+    <string name="record_start_description">開始錄音</string>
+    <string name="record_stop_description">停止錄音</string>
     <string name="save">儲存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>
     <string name="scope_federated_title">已聯盟</string>
