@@ -115,6 +115,8 @@ public class SignalingSettingsWorker extends Worker {
                                                                                    .getExternalSignalingTicket());
                         }
 
+                        user.setExternalSignalingServer(externalSignalingServer);
+
                         userManager.saveUser(user).subscribe(new SingleObserver<Integer>() {
                             @Override
                             public void onSubscribe(Disposable d) {
