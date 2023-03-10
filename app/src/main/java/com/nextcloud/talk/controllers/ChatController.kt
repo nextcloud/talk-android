@@ -1783,6 +1783,7 @@ class ChatController(args: Bundle) :
 
         eventBus.register(this)
 
+        setupWebsocket()
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
 
         if (conversationUser?.userId != "?" &&
@@ -2002,15 +2003,6 @@ class ChatController(args: Bundle) :
 
                         logConversationInfos("joinRoomWithPassword#onNext")
 
-                        // FIXME The web socket should be set up in onAttach(). It is currently setup after joining the
-                        // room to "ensure" (rather, increase the chances) that the WebsocketConnectionsWorker job
-                        // was able to finish and, therefore, that the web socket instance can be got.
-                        setupWebsocket()
-
-                        // Ensure that the listener is added if the web socket instance was not set up yet when
-                        // onAttach() was called.
-                        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
-
                         if (isFirstMessagesProcessing) {
                             pullChatMessages(false)
                         } else {
@@ -2103,15 +2095,6 @@ class ChatController(args: Bundle) :
                             "",
                             sessionIdAfterRoomJoined
                         )
-                    } else {
-                        Log.e(TAG, "magicWebSocketInstance or currentConversation were null! Failed to leave the room!")
-                        if (BuildConfig.DEBUG) {
-                            Toast.makeText(
-                                context,
-                                "magicWebSocketInstance or currentConversation were null! Failed to leave the room!",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
                     }
 
                     sessionIdAfterRoomJoined = "0"
@@ -2224,11 +2207,10 @@ class ChatController(args: Bundle) :
         if (conversationUser == null) {
             return
         }
-
-        webSocketInstance = WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
+        webSocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUserId(conversationUser.id!!)
 
         if (webSocketInstance == null) {
-            Log.d(TAG, "magicWebSocketInstance became null")
+            Log.d(TAG, "webSocketInstance not set up. This should only happen when not using the HPB")
         }
     }
 
