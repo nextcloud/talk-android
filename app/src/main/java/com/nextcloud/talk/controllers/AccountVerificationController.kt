@@ -48,6 +48,7 @@ import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
+import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.Status
@@ -434,11 +435,15 @@ class AccountVerificationController(args: Bundle? = null) :
             Data.Builder()
                 .putLong(KEY_INTERNAL_USER_ID, internalAccountId)
                 .build()
-        val signalingSettings =
-            OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
-                .setInputData(userData)
-                .build()
-        WorkManager.getInstance().enqueue(signalingSettings)
+        val signalingSettings = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
+            .setInputData(userData)
+            .build()
+        val websocketConnectionsWorker = OneTimeWorkRequest.Builder(WebsocketConnectionsWorker::class.java).build()
+
+        WorkManager.getInstance(applicationContext!!)
+            .beginWith(signalingSettings)
+            .then(websocketConnectionsWorker)
+            .enqueue()
     }
 
     private fun proceedWithLogin() {
