@@ -177,6 +177,18 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
         DeviceUtils.ignoreSpecialBatteryFeatures()
 
+        initWorkers()
+
+        val config = BundledEmojiCompatConfig(this)
+        config.setReplaceAll(true)
+        val emojiCompat = EmojiCompat.init(config)
+
+        EmojiManager.install(GoogleEmojiProvider())
+
+        NotificationUtils.registerNotificationChannels(applicationContext, appPreferences)
+    }
+
+    private fun initWorkers() {
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()
@@ -199,14 +211,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
             ExistingPeriodicWorkPolicy.REPLACE,
             periodicCapabilitiesUpdateWork
         )
-
-        val config = BundledEmojiCompatConfig(this)
-        config.setReplaceAll(true)
-        val emojiCompat = EmojiCompat.init(config)
-
-        EmojiManager.install(GoogleEmojiProvider())
-
-        NotificationUtils.registerNotificationChannels(applicationContext, appPreferences)
     }
 
     override fun onTerminate() {
