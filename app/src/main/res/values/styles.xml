@@ -289,4 +289,10 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="fab_3_rounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+
 </resources>
