@@ -2095,15 +2095,6 @@ class ChatController(args: Bundle) :
                             "",
                             sessionIdAfterRoomJoined
                         )
-                    } else {
-                        Log.e(TAG, "magicWebSocketInstance or currentConversation were null! Failed to leave the room!")
-                        if (BuildConfig.DEBUG) {
-                            Toast.makeText(
-                                context,
-                                "magicWebSocketInstance or currentConversation were null! Failed to leave the room!",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
                     }
 
                     sessionIdAfterRoomJoined = "0"
@@ -2216,14 +2207,10 @@ class ChatController(args: Bundle) :
         if (conversationUser == null) {
             return
         }
-
         webSocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUserId(conversationUser.id!!)
 
         if (webSocketInstance == null) {
-            Log.e(TAG, "failed to setup webSocketInstance")
-            if (BuildConfig.DEBUG) {
-                Toast.makeText(context, "failed to setup webSocketInstance", Toast.LENGTH_LONG).show()
-            }
+            Log.d(TAG, "webSocketInstance not set up. This should only happen when not using the HPB")
         }
     }
 
