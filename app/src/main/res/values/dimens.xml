@@ -87,5 +87,6 @@
 
     <dimen name="poll_buttons_min_width">150dp</dimen>
 
+    <dimen name="fab_small">40dp</dimen>
 
 </resources>
