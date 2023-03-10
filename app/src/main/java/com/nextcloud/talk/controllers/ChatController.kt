@@ -2003,10 +2003,6 @@ class ChatController(args: Bundle) :
 
                         logConversationInfos("joinRoomWithPassword#onNext")
 
-                        // Ensure that the listener is added if the web socket instance was not set up yet when
-                        // onAttach() was called.
-                        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
-
                         if (isFirstMessagesProcessing) {
                             pullChatMessages(false)
                         } else {
