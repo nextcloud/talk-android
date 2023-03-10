@@ -61,6 +61,7 @@ import com.nextcloud.talk.dagger.modules.ViewModelModule
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
+import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.ui.theme.ThemeModule
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
@@ -177,18 +178,22 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         DeviceUtils.ignoreSpecialBatteryFeatures()
 
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+        val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
+        val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()
+        val websocketConnectionsWorker = OneTimeWorkRequest.Builder(WebsocketConnectionsWorker::class.java).build()
+
+        WorkManager.getInstance(applicationContext)
+            .beginWith(accountRemovalWork)
+            .then(capabilitiesUpdateWork)
+            .then(signalingSettingsWork)
+            .then(websocketConnectionsWorker)
+            .enqueue()
+
         val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
             CapabilitiesWorker::class.java,
             HALF_DAY,
             TimeUnit.HOURS
         ).build()
-
-        val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
-        val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()
-
-        WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
-        WorkManager.getInstance(applicationContext).enqueue(capabilitiesUpdateWork)
-        WorkManager.getInstance(applicationContext).enqueue(signalingSettingsWork)
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             "DailyCapabilitiesUpdateWork",
             ExistingPeriodicWorkPolicy.REPLACE,
