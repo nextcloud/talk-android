@@ -112,9 +112,9 @@ public class CapabilitiesWorker extends Worker {
         long internalUserId = data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1);
 
         List<User> userEntityObjectList = new ArrayList<>();
-        boolean userExists = userManager.getUserWithInternalId(internalUserId).isEmpty().blockingGet();
+        boolean userNotFound = userManager.getUserWithInternalId(internalUserId).isEmpty().blockingGet();
 
-        if (internalUserId == -1 || !userExists) {
+        if (internalUserId == -1 || userNotFound) {
             userEntityObjectList = userManager.getUsers().blockingGet();
         } else {
             userEntityObjectList.add(userManager.getUserWithInternalId(internalUserId).blockingGet());
