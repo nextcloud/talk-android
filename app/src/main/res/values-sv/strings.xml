@@ -16,6 +16,7 @@
     <string name="edit">Ändra</string>
     <string name="emoji_backspace">Backsteg</string>
     <string name="emoji_category_recent">Senaste</string>
+    <string name="emoji_search">Sök emoji</string>
     <string name="encrypted">Krypterad</string>
     <string name="failed_to_save">Misslyckades att spara  %1$s</string>
     <string name="file_list_folder">mapp</string>
@@ -32,6 +33,8 @@
     <string name="menu_item_sort_by_size_biggest_first">Störst först</string>
     <string name="menu_item_sort_by_size_smallest_first">Minst först</string>
     <string name="message_search_begin_empty">Inga sökresultat</string>
+    <string name="message_search_begin_typing">Börja skriva för att söka ...</string>
+    <string name="message_search_hint">Sök ...</string>
     <string name="messages">Meddelanden</string>
     <string name="nc_Server_account_imported">Valt konto är nu importerat och tillgängligt</string>
     <string name="nc_about">Om</string>
