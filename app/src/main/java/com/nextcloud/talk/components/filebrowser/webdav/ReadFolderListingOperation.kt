@@ -40,7 +40,7 @@ import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview
 import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite
 import com.nextcloud.talk.components.filebrowser.models.properties.OCId
 import com.nextcloud.talk.components.filebrowser.models.properties.OCSize
-import com.nextcloud.talk.dagger.modules.RestModule.MagicAuthenticator
+import com.nextcloud.talk.dagger.modules.RestModule.HttpAuthenticator
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
@@ -61,7 +61,7 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: User, 
         okHttpClientBuilder.followRedirects(false)
         okHttpClientBuilder.followSslRedirects(false)
         okHttpClientBuilder.authenticator(
-            MagicAuthenticator(
+            HttpAuthenticator(
                 ApiUtils.getCredentials(
                     currentUser.username,
                     currentUser.token

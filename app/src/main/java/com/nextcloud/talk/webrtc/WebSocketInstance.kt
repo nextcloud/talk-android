@@ -452,7 +452,7 @@ class WebSocketInstance internal constructor(
     }
 
     companion object {
-        private const val TAG = "MagicWebSocketInstance"
+        private const val TAG = "WebSocketInstance"
         private const val NORMAL_CLOSURE = 1000
     }
 }

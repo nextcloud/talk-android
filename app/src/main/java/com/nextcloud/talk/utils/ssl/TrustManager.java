@@ -38,22 +38,20 @@ import java.security.KeyStoreException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 
-public class MagicTrustManager implements X509TrustManager {
-    private static final String TAG = "MagicTrustManager";
+public class TrustManager implements X509TrustManager {
+    private static final String TAG = "TrustManager";
 
     private File keystoreFile;
     private X509TrustManager systemTrustManager = null;
     private KeyStore trustedKeyStore = null;
 
-    public MagicTrustManager() {
+    public TrustManager() {
         keystoreFile = new File(NextcloudTalkApplication.Companion.getSharedApplication()
                                     .getDir("CertsKeystore", Context.MODE_PRIVATE),
                                 "keystore.bks");
@@ -84,7 +82,7 @@ public class MagicTrustManager implements X509TrustManager {
 
             trustManagerFactory.init((KeyStore) null);
 
-            for (TrustManager trustManager : trustManagerFactory.getTrustManagers()) {
+            for (javax.net.ssl.TrustManager trustManager : trustManagerFactory.getTrustManagers()) {
                 if (trustManager instanceof X509TrustManager) {
                     systemTrustManager = (X509TrustManager) trustManager;
                     break;
@@ -97,8 +95,8 @@ public class MagicTrustManager implements X509TrustManager {
 
     }
 
-    public HostnameVerifier getHostnameVerifier(HostnameVerifier defaultHostNameVerifier) {
-        return new MagicHostnameVerifier(defaultHostNameVerifier);
+    public javax.net.ssl.HostnameVerifier getHostnameVerifier(javax.net.ssl.HostnameVerifier defaultHostNameVerifier) {
+        return new HostnameVerifier(defaultHostNameVerifier);
     }
 
     private boolean isCertInTrustStore(X509Certificate[] x509Certificates, String s) {
@@ -108,15 +106,15 @@ public class MagicTrustManager implements X509TrustManager {
                 systemTrustManager.checkServerTrusted(x509Certificates, s);
                 return true;
             } catch (CertificateException e) {
-                if (!isCertInMagicTrustStore(x509Certificate)) {
+                if (!isCertInTrustStore(x509Certificate)) {
                     EventBus.getDefault().post(new CertificateEvent(x509Certificate, this,
                                                                     null));
                     long startTime = System.currentTimeMillis();
-                    while (!isCertInMagicTrustStore(x509Certificate) && System.currentTimeMillis() <=
+                    while (!isCertInTrustStore(x509Certificate) && System.currentTimeMillis() <=
                         startTime + 15000) {
                         //do nothing
                     }
-                    return isCertInMagicTrustStore(x509Certificate);
+                    return isCertInTrustStore(x509Certificate);
                 } else {
                     return true;
                 }
@@ -126,7 +124,7 @@ public class MagicTrustManager implements X509TrustManager {
         return false;
     }
 
-    private boolean isCertInMagicTrustStore(X509Certificate x509Certificate) {
+    private boolean isCertInTrustStore(X509Certificate x509Certificate) {
         if (trustedKeyStore != null) {
             try {
                 if (trustedKeyStore.getCertificateAlias(x509Certificate) != null) {
@@ -168,11 +166,11 @@ public class MagicTrustManager implements X509TrustManager {
         return systemTrustManager.getAcceptedIssuers();
     }
 
-    private class MagicHostnameVerifier implements HostnameVerifier {
-        private static final String TAG = "MagicHostnameVerifier";
-        private HostnameVerifier defaultHostNameVerifier;
+    private class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
+        private static final String TAG = "HostnameVerifier";
+        private javax.net.ssl.HostnameVerifier defaultHostNameVerifier;
 
-        private MagicHostnameVerifier(HostnameVerifier defaultHostNameVerifier) {
+        private HostnameVerifier(javax.net.ssl.HostnameVerifier defaultHostNameVerifier) {
             this.defaultHostNameVerifier = defaultHostNameVerifier;
         }
 
