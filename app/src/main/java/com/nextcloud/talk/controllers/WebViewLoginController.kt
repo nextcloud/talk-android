@@ -64,7 +64,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ORIGINAL_PROTOCOL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
-import com.nextcloud.talk.utils.ssl.MagicTrustManager
+import com.nextcloud.talk.utils.ssl.TrustManager
 import de.cotech.hw.fido.WebViewFidoBridge
 import io.reactivex.disposables.Disposable
 import org.greenrobot.eventbus.EventBus
@@ -88,7 +88,7 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var magicTrustManager: MagicTrustManager
+    lateinit var trustManager: TrustManager
 
     @Inject
     lateinit var eventBus: EventBus
@@ -288,10 +288,10 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                         handler.cancel()
                     } else {
                         try {
-                            magicTrustManager.checkServerTrusted(arrayOf(cert), "generic")
+                            trustManager.checkServerTrusted(arrayOf(cert), "generic")
                             handler.proceed()
                         } catch (exception: CertificateException) {
-                            eventBus.post(CertificateEvent(cert, magicTrustManager, handler))
+                            eventBus.post(CertificateEvent(cert, trustManager, handler))
                         }
                     }
                 } catch (exception: Exception) {

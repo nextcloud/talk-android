@@ -45,15 +45,15 @@ import javax.net.ssl.X509KeyManager;
 
 import androidx.annotation.Nullable;
 
-public class MagicKeyManager implements X509KeyManager {
-    private static final String TAG = "MagicKeyManager";
+public class KeyManager implements X509KeyManager {
+    private static final String TAG = "KeyManager";
     private final X509KeyManager keyManager;
 
     private UserManager userManager;
     private AppPreferences appPreferences;
     private Context context;
 
-    public MagicKeyManager(X509KeyManager keyManager, UserManager userManager, AppPreferences appPreferences) {
+    public KeyManager(X509KeyManager keyManager, UserManager userManager, AppPreferences appPreferences) {
         this.keyManager = keyManager;
         this.userManager = userManager;
         this.appPreferences = appPreferences;

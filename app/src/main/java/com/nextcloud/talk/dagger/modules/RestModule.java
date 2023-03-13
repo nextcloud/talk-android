@@ -32,9 +32,9 @@ import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
-import com.nextcloud.talk.utils.ssl.MagicKeyManager;
-import com.nextcloud.talk.utils.ssl.MagicTrustManager;
+import com.nextcloud.talk.utils.ssl.KeyManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
+import com.nextcloud.talk.utils.ssl.TrustManager;
 
 import java.io.IOException;
 import java.net.CookieManager;
@@ -121,13 +121,13 @@ public class RestModule {
 
     @Singleton
     @Provides
-    MagicTrustManager provideMagicTrustManager() {
-        return new MagicTrustManager();
+    TrustManager provideTrustManager() {
+        return new TrustManager();
     }
 
     @Singleton
     @Provides
-    MagicKeyManager provideKeyManager(AppPreferences appPreferences, UserManager userManager) {
+    KeyManager provideKeyManager(AppPreferences appPreferences, UserManager userManager) {
         KeyStore keyStore = null;
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -135,7 +135,7 @@ public class RestModule {
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(keyStore, null);
             X509KeyManager origKm = (X509KeyManager) kmf.getKeyManagers()[0];
-            return new MagicKeyManager(origKm, userManager, appPreferences);
+            return new KeyManager(origKm, userManager, appPreferences);
         } catch (KeyStoreException e) {
             Log.e(TAG, "KeyStoreException " + e.getLocalizedMessage());
         } catch (CertificateException e) {
@@ -153,9 +153,9 @@ public class RestModule {
 
     @Singleton
     @Provides
-    SSLSocketFactoryCompat provideSslSocketFactoryCompat(MagicKeyManager keyManager, MagicTrustManager
-            magicTrustManager) {
-        return new SSLSocketFactoryCompat(keyManager, magicTrustManager);
+    SSLSocketFactoryCompat provideSslSocketFactoryCompat(KeyManager keyManager, TrustManager
+        trustManager) {
+        return new SSLSocketFactoryCompat(keyManager, trustManager);
     }
 
     @Singleton
@@ -184,7 +184,7 @@ public class RestModule {
     @Singleton
     @Provides
     OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
-                                   MagicTrustManager magicTrustManager,
+                                   TrustManager trustManager,
                                    SSLSocketFactoryCompat sslSocketFactoryCompat, Cache cache,
                                    CookieManager cookieManager, Dispatcher dispatcher) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -198,9 +198,9 @@ public class RestModule {
         httpClient.cache(cache);
 
         // Trust own CA and all self-signed certs
-        httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager);
+        httpClient.sslSocketFactory(sslSocketFactoryCompat, trustManager);
         httpClient.retryOnConnectionFailure(true);
-        httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE));
+        httpClient.hostnameVerifier(trustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE));
 
         httpClient.dispatcher(dispatcher);
         if (!Proxy.NO_PROXY.equals(proxy)) {
@@ -209,7 +209,7 @@ public class RestModule {
             if (appPreferences.getProxyCredentials() &&
                     !TextUtils.isEmpty(appPreferences.getProxyUsername()) &&
                     !TextUtils.isEmpty(appPreferences.getProxyPassword())) {
-                httpClient.proxyAuthenticator(new MagicAuthenticator(Credentials.basic(
+                httpClient.proxyAuthenticator(new HttpAuthenticator(Credentials.basic(
                         appPreferences.getProxyUsername(),
                         appPreferences.getProxyPassword()), "Proxy-Authorization"));
             }
@@ -253,12 +253,12 @@ public class RestModule {
         }
     }
 
-    public static class MagicAuthenticator implements Authenticator {
+    public static class HttpAuthenticator implements Authenticator {
 
         private String credentials;
         private String authenticatorType;
 
-        public MagicAuthenticator(@NonNull String credentials, @NonNull String authenticatorType) {
+        public HttpAuthenticator(@NonNull String credentials, @NonNull String authenticatorType) {
             this.credentials = credentials;
             this.authenticatorType = authenticatorType;
         }

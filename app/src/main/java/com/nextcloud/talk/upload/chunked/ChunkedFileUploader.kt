@@ -295,7 +295,7 @@ class ChunkedFileUploader(
         // okHttpClientBuilder.readTimeout(Duration.ofMinutes(30)) // TODO set timeout
         okHttpClientBuilder.protocols(listOf(Protocol.HTTP_1_1))
         okHttpClientBuilder.authenticator(
-            RestModule.MagicAuthenticator(
+            RestModule.HttpAuthenticator(
                 ApiUtils.getCredentials(
                     currentUser.username,
                     currentUser.token
