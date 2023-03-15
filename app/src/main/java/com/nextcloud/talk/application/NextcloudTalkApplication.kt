@@ -255,6 +255,8 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
             imageLoaderBuilder.logger(DebugLogger())
         }
 
+        imageLoaderBuilder.okHttpClient(okHttpClient)
+
         return imageLoaderBuilder.build()
     }
 

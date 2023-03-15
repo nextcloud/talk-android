@@ -52,7 +52,7 @@ public class ReadFilesystemOperation {
         okHttpClientBuilder.followRedirects(false);
         okHttpClientBuilder.followSslRedirects(false);
         okHttpClientBuilder.authenticator(
-                new RestModule.MagicAuthenticator(
+                new RestModule.HttpAuthenticator(
                         ApiUtils.getCredentials(
                                 currentUser.getUsername(),
                                 currentUser.getToken()

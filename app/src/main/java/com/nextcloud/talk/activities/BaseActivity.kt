@@ -36,7 +36,7 @@ import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.utils.ssl.MagicTrustManager
+import com.nextcloud.talk.utils.ssl.TrustManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -81,7 +81,7 @@ open class BaseActivity : AppCompatActivity() {
 
     fun showCertificateDialog(
         cert: X509Certificate,
-        magicTrustManager: MagicTrustManager,
+        trustManager: TrustManager,
         sslErrorHandler: SslErrorHandler?
     ) {
         val formatter = DateFormat.getDateInstance(DateFormat.LONG)
@@ -121,7 +121,7 @@ open class BaseActivity : AppCompatActivity() {
                 .setTitle(R.string.nc_certificate_dialog_title)
                 .setMessage(dialogText)
                 .setPositiveButton(R.string.nc_yes) { _, _ ->
-                    magicTrustManager.addCertInTrustStore(cert)
+                    trustManager.addCertInTrustStore(cert)
                     sslErrorHandler?.proceed()
                 }
                 .setNegativeButton(R.string.nc_no) { _, _ ->
