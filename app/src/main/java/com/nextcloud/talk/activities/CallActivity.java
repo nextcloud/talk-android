@@ -416,27 +416,20 @@ public class CallActivity extends CallBaseActivity {
         raiseHandViewModel.setData(roomToken, isBreakoutRoom);
 
         raiseHandViewModel.getViewState().observe(this, viewState -> {
+            boolean raised = false;
             if (viewState instanceof RaiseHandViewModel.RaisedHandState) {
                 binding.lowerHandButton.setVisibility(View.VISIBLE);
+                raised = true;
             } else if (viewState instanceof RaiseHandViewModel.LoweredHandState) {
                 binding.lowerHandButton.setVisibility(View.GONE);
+                raised = false;
             }
 
-            // TODO: build&send raiseHand message (if not possible in RaiseHandViewModel, just do it here..)
-//        if (isConnectionEstablished() && peerConnectionWrapperList != null) {
-//            if (!hasMCU) {
-//                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-//                    peerConnectionWrapper.raiseHand(...);
-//                }
-//            } else {
-//                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-//                    if (peerConnectionWrapper.getSessionId().equals(webSocketClient.getSessionId())) {
-//                        peerConnectionWrapper.raiseHand(...);
-//                        break;
-//                    }
-//                }
-//            }
-//        }
+            if (isConnectionEstablished() && peerConnectionWrapperList != null) {
+                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+                    peerConnectionWrapper.raiseHand(raised);
+                }
+            }
         });
 
         callRecordingViewModel = new ViewModelProvider(this, viewModelFactory).get((CallRecordingViewModel.class));
