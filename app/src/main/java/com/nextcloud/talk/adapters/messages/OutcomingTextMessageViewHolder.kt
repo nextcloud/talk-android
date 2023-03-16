@@ -46,7 +46,7 @@ import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
 import javax.inject.Inject
@@ -71,7 +71,7 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
         val messageParameters: HashMap<String?, HashMap<String?, String?>>? = message.messageParameters
-        var messageString: Spannable = SpannableString(message.text)
+        var messageString: Spannable = SpannableString(message.message)
         realView.isSelected = false
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
@@ -186,33 +186,39 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         message: ChatMessage,
         messageString: Spannable
     ): Spannable {
-        var messageString1 = messageString
+        var messageStringInternal = messageString
         for (key in messageParameters.keys) {
             val individualHashMap: HashMap<String?, String?>? = message.messageParameters!![key]
             if (individualHashMap != null) {
-                if (individualHashMap["type"] == "user" ||
-                    individualHashMap["type"] == "guest" ||
-                    individualHashMap["type"] == "call"
-                ) {
-                    messageString1 = searchAndReplaceWithMentionSpan(
-                        binding.messageText.context,
-                        messageString1,
-                        individualHashMap["id"]!!,
-                        individualHashMap["name"]!!,
-                        individualHashMap["type"]!!,
-                        message.activeUser,
-                        R.xml.chip_others,
-                        viewThemeUtils
-                    )
-                } else if (individualHashMap["type"] == "file") {
-                    realView.setOnClickListener { v: View? ->
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                        context!!.startActivity(browserIntent)
+                when (individualHashMap["type"]) {
+                    "user", "guest", "call" -> {
+                        val chip = if (individualHashMap["id"] == message.activeUser!!.userId) {
+                            R.xml.chip_you
+                        } else {
+                            R.xml.chip_others
+                        }
+                        messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
+                            key,
+                            binding.messageText.context,
+                            messageStringInternal,
+                            individualHashMap["id"]!!,
+                            individualHashMap["name"]!!,
+                            individualHashMap["type"]!!,
+                            message.activeUser!!,
+                            chip,
+                            viewThemeUtils
+                        )
+                    }
+                    "file" -> {
+                        itemView.setOnClickListener { v ->
+                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
+                            context.startActivity(browserIntent)
+                        }
                     }
                 }
             }
         }
-        return messageString1
+        return messageStringInternal
     }
 
     fun assignCommonMessageInterface(commonMessageInterface: CommonMessageInterface) {
