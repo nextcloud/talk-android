@@ -313,7 +313,7 @@
     <string name="nc_settings_privacy">Gizlilik</string>
     <string name="nc_settings_proxy_host_title">Vekil sunucu adı</string>
     <string name="nc_settings_proxy_password_title">Vekil sunucu parolası</string>
-    <string name="nc_settings_proxy_port_title">Vekil sunucu kapı numarası</string>
+    <string name="nc_settings_proxy_port_title">Vekil sunucu bağlantı noktası</string>
     <string name="nc_settings_proxy_type_title">Vekil sunucu türü</string>
     <string name="nc_settings_proxy_username_title">Vekil sunucu kullanıcı adı</string>
     <string name="nc_settings_read_privacy_desc">Okundu durumumu paylaş ve diğerlerinin okundu durumunu görüntüle</string>

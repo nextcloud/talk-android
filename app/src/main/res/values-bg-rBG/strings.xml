@@ -412,6 +412,7 @@
     <string name="record_stop_confirm_title">Спиране на записа на обаждането</string>
     <string name="record_stop_description">Спиране на записването</string>
     <string name="record_stopping">Спиране на записването ...</string>
+    <string name="restrict_join_other_room_while_call">Не е възможно присъединяването към други стаи, докато сте в обаждане.</string>
     <string name="save">Записване</string>
     <string name="scope_federated_description">Синхронизиране само с доверени сървъри</string>
     <string name="scope_federated_title">Федериран</string>
