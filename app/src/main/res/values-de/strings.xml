@@ -440,7 +440,7 @@
     <string name="shared_items_media">Medien</string>
     <string name="shared_items_other">Sonstiges</string>
     <string name="shared_items_poll">Umfrage</string>
-    <string name="shared_items_voice">Anruf</string>
+    <string name="shared_items_voice">Sprachnachrichten</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Sie dürfen keinen Anruf zu tätigen</string>
     <string name="status_message">Statusnachricht</string>
