@@ -3,6 +3,8 @@
  *
  * @author Tim Krüger
  * @author Álvaro Brey
+ * @author Marcel Hibbe
+ * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  *
@@ -29,6 +31,7 @@ enum class SharedItemType {
     AUDIO,
     FILE,
     MEDIA,
+    RECORDING,
     VOICE,
     LOCATION,
     DECKCARD,

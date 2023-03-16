@@ -3,6 +3,8 @@
   ~
   ~ @author Tim Krüger
   ~ @author Andy Scherzinger
+  ~ @author Marcel Hibbe
+  ~ Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
   ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
   ~ Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
   ~
@@ -50,7 +52,7 @@
             android:layout_height="@dimen/min_size_clickable_area"
             android:background="@color/appbar"
             app:tabGravity="fill"
-            app:tabMode="fixed"
+            app:tabMode="scrollable"
             app:tabMaxWidth="0dp"
             app:tabTextAppearance="@style/TextAppearanceTab" />
 

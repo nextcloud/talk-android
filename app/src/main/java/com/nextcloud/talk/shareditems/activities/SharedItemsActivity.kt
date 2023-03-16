@@ -3,6 +3,8 @@
  *
  * @author Tim Krüger
  * @author Álvaro Brey
+ * @author Marcel Hibbe
+ * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  *
@@ -187,6 +189,13 @@ class SharedItemsActivity : AppCompatActivity() {
             tabAudio.tag = SharedItemType.AUDIO
             tabAudio.setText(R.string.shared_items_audio)
             binding.sharedItemsTabs.addTab(tabAudio)
+        }
+
+        if (sharedItemTypes.contains(SharedItemType.RECORDING)) {
+            val tabRecording: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            tabRecording.tag = SharedItemType.RECORDING
+            tabRecording.setText(R.string.shared_items_recording)
+            binding.sharedItemsTabs.addTab(tabRecording)
         }
 
         if (sharedItemTypes.contains(SharedItemType.VOICE)) {
