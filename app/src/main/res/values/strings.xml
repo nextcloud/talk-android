@@ -481,13 +481,6 @@ How to translate with transifex:
     <string name="nc_share_contact">Share contact</string>
     <string name="nc_share_contact_permission">Permission to read contacts is required</string>
 
-    <!-- shared items -->
-    <string name="nc_shared_items">Shared items</string>
-    <string name="nc_shared_items_description">Images, files, voice messages …</string>
-    <string name="nc_shared_items_empty">No shared items</string>
-    <string name="nc_shared_items_location">Location</string>
-    <string name="nc_shared_items_deck_card">Deck card</string>
-
     <!-- share to screen -->
     <string name="nc_share_to_choose_account">Choose account</string>
 
@@ -592,6 +585,9 @@ How to translate with transifex:
     <string name="record_failed_info">The recording failed. Please contact your administrator.</string>
 
     <!-- Shared items -->
+    <string name="nc_shared_items">Shared items</string>
+    <string name="nc_shared_items_description">Images, files, voice messages …</string>
+    <string name="nc_shared_items_empty">No shared items</string>
     <string name="shared_items_media">Media</string>
     <string name="shared_items_file">File</string>
     <string name="shared_items_recording">Call recording</string>
@@ -599,6 +595,8 @@ How to translate with transifex:
     <string name="shared_items_voice">Voice</string>
     <string name="shared_items_other">Other</string>
     <string name="shared_items_poll">Poll</string>
+    <string name="nc_shared_items_location">Location</string>
+    <string name="nc_shared_items_deck_card">Deck card</string>
 
     <!-- Message search -->
     <string name="messages">Messages</string>
