@@ -594,6 +594,7 @@ How to translate with transifex:
     <!-- Shared items -->
     <string name="shared_items_media">Media</string>
     <string name="shared_items_file">File</string>
+    <string name="shared_items_recording">Call recording</string>
     <string name="shared_items_audio">Audio</string>
     <string name="shared_items_voice">Voice</string>
     <string name="shared_items_other">Other</string>
