@@ -85,9 +85,9 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
 
         itemView.isSelected = false
 
-        var messageString: Spannable = SpannableString(message.text)
+        var messageString: Spannable = SpannableString(message.message)
 
-        var textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
+        var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
 
         val messageParameters = message.messageParameters
         if (messageParameters != null && messageParameters.size > 0) {
@@ -226,38 +226,30 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
         for (key in messageParameters.keys) {
             val individualHashMap = message.messageParameters!![key]
             if (individualHashMap != null) {
-                if (
-                    individualHashMap["type"] == "user" ||
-                    individualHashMap["type"] == "guest" ||
-                    individualHashMap["type"] == "call"
-                ) {
-                    if (individualHashMap["id"] == message.activeUser!!.userId) {
+                when (individualHashMap["type"]) {
+                    "user", "guest", "call" -> {
+                        val chip = if (individualHashMap["id"] == message.activeUser!!.userId) {
+                            R.xml.chip_you
+                        } else {
+                            R.xml.chip_others
+                        }
                         messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
+                            key,
                             binding.messageText.context,
                             messageStringInternal,
                             individualHashMap["id"]!!,
                             individualHashMap["name"]!!,
                             individualHashMap["type"]!!,
                             message.activeUser!!,
-                            R.xml.chip_you,
-                            viewThemeUtils
-                        )
-                    } else {
-                        messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
-                            binding.messageText.context,
-                            messageStringInternal,
-                            individualHashMap["id"]!!,
-                            individualHashMap["name"]!!,
-                            individualHashMap["type"]!!,
-                            message.activeUser!!,
-                            R.xml.chip_others,
+                            chip,
                             viewThemeUtils
                         )
                     }
-                } else if (individualHashMap["type"] == "file") {
-                    itemView.setOnClickListener { v ->
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                        context!!.startActivity(browserIntent)
+                    "file" -> {
+                        itemView.setOnClickListener { v ->
+                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
+                            context.startActivity(browserIntent)
+                        }
                     }
                 }
             }
