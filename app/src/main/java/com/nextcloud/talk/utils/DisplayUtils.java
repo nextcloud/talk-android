@@ -98,6 +98,7 @@ import static com.nextcloud.talk.utils.FileSortOrder.sort_z_to_a_id;
 
 public class DisplayUtils {
 
+    private static final String TAG = "DisplayUtils";
     private static final int INDEX_LUMINATION = 2;
     private static final double MAX_LIGHTNESS = 0.92;
 
@@ -240,7 +241,7 @@ public class DisplayUtils {
         return chip;
     }
 
-    public static Spannable searchAndReplaceWithMentionSpan(Context context, Spannable text,
+    public static Spannable searchAndReplaceWithMentionSpan(String key, Context context, Spannable text,
                                                             String id, String label, String type,
                                                             User conversationUser,
                                                             @XmlRes int chipXmlRes,
@@ -249,8 +250,8 @@ public class DisplayUtils {
         Spannable spannableString = new SpannableString(text);
         String stringText = text.toString();
 
-        Matcher m = Pattern.compile("@" + label,
-                                    Pattern.CASE_INSENSITIVE | Pattern.LITERAL | Pattern.MULTILINE)
+        String keyWithBrackets = "{" + key + "}";
+        Matcher m = Pattern.compile(keyWithBrackets, Pattern.CASE_INSENSITIVE | Pattern.LITERAL | Pattern.MULTILINE)
             .matcher(spannableString);
 
         ClickableSpan clickableSpan = new ClickableSpan() {
@@ -266,17 +267,23 @@ public class DisplayUtils {
             int start = stringText.indexOf(m.group(), lastStartIndex);
             int end = start + m.group().length();
             lastStartIndex = end;
-            mentionChipSpan = new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
-                                                                                                   id,
-                                                                                                   label,
-                                                                                                   conversationUser,
-                                                                                                   type,
-                                                                                                   chipXmlRes,
-                                                                                                   null,
-                                                                                                   viewThemeUtils),
-                                                        BetterImageSpan.ALIGN_CENTER, id,
+
+            Drawable drawableForChip = DisplayUtils.getDrawableForMentionChipSpan(context,
+                                                       id,
+                                                       label,
+                                                       conversationUser,
+                                                       type,
+                                                       chipXmlRes,
+                                                       null,
+                                                       viewThemeUtils);
+
+            mentionChipSpan = new Spans.MentionChipSpan(drawableForChip,
+                                                        BetterImageSpan.ALIGN_CENTER,
+                                                        id,
                                                         label);
+
             spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
             if (chipXmlRes == R.xml.chip_you) {
                 spannableString.setSpan(
                     new ForegroundColorSpan(viewThemeUtils.getScheme(context).getOnPrimary()),
