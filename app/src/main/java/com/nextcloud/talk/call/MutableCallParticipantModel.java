@@ -41,6 +41,10 @@ public class MutableCallParticipantModel extends CallParticipantModel {
         this.nick.setValue(nick);
     }
 
+    public void setInternal(Boolean internal) {
+        this.internal.setValue(internal);
+    }
+
     public void setRaisedHand(boolean state, long timestamp) {
         this.raisedHand.setValue(new RaisedHand(state, timestamp));
     }

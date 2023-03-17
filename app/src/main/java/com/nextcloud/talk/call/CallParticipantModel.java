@@ -75,6 +75,8 @@ public class CallParticipantModel {
     protected Data<String> userId;
     protected Data<String> nick;
 
+    protected Data<Boolean> internal;
+
     protected Data<RaisedHand> raisedHand;
 
     protected Data<PeerConnection.IceConnectionState> iceConnectionState;
@@ -90,6 +92,8 @@ public class CallParticipantModel {
 
         this.userId = new Data<>();
         this.nick = new Data<>();
+
+        this.internal = new Data<>();
 
         this.raisedHand = new Data<>();
 
@@ -112,6 +116,10 @@ public class CallParticipantModel {
 
     public String getNick() {
         return nick.getValue();
+    }
+
+    public Boolean isInternal() {
+        return internal.getValue();
     }
 
     public RaisedHand getRaisedHand() {

@@ -389,6 +389,7 @@ public abstract class SignalingMessageReceiver {
         //                     "participantType": #INTEGER#,
         //                     "userId": #STRING#, // Optional
         //                     "nextcloudSessionId": #STRING#, // Optional
+        //                     "internal": #BOOLEAN#, // Optional
         //                     "participantPermissions": #INTEGER#, // Talk >= 13
         //                 },
         //                 ...
@@ -478,6 +479,10 @@ public abstract class SignalingMessageReceiver {
 
         if (participantMap.get("userId") != null && !participantMap.get("userId").toString().isEmpty()) {
             participant.setUserId(participantMap.get("userId").toString());
+        }
+
+        if (participantMap.get("internal") != null && Boolean.parseBoolean(participantMap.get("internal").toString())) {
+            participant.setInternal(Boolean.TRUE);
         }
 
         // Only in external signaling messages
