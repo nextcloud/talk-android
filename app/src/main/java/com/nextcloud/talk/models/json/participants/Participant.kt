@@ -27,7 +27,6 @@ import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import kotlinx.parcelize.Parcelize
-import java.util.ArrayList
 
 @Parcelize
 @JsonObject
@@ -47,6 +46,9 @@ data class Participant(
     @Deprecated("")
     @JsonField(name = ["userId"])
     var userId: String? = null,
+
+    @JsonField(name = ["internal"])
+    var internal: Boolean? = null,
 
     @JsonField(name = ["type", "participantType"], typeConverter = EnumParticipantTypeConverter::class)
     var type: ParticipantType? = null,
@@ -90,7 +92,7 @@ data class Participant(
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(
-        null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null,
         0, null, ArrayList(0), 0, 0, null,
         null, null
     )
