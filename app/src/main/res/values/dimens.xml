@@ -69,8 +69,6 @@
     <dimen name="call_self_video_short_side_length">80dp</dimen>
     <dimen name="call_grid_item_min_height">180dp</dimen>
     <dimen name="call_controls_height">110dp</dimen>
-    <dimen name="call_controls_padding_horizontal">10dp</dimen>
-    <dimen name="call_controls_margin_horizontal">10dp</dimen>
     <dimen name="call_participant_progress_bar_size">48dp</dimen>
     <dimen name="call_self_participant_progress_bar_size">48dp</dimen>
     <dimen name="zero">0dp</dimen>
@@ -89,5 +87,6 @@
 
     <dimen name="poll_buttons_min_width">150dp</dimen>
 
+    <dimen name="fab_small">40dp</dimen>
 
 </resources>
