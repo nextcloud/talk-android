@@ -148,6 +148,10 @@ public class CallParticipant {
         callParticipantModel.setNick(nick);
     }
 
+    public void setInternal(Boolean internal) {
+        callParticipantModel.setInternal(internal);
+    }
+
     public void setPeerConnectionWrapper(PeerConnectionWrapper peerConnectionWrapper) {
         if (this.peerConnectionWrapper != null) {
             this.peerConnectionWrapper.removeObserver(peerConnectionObserver);

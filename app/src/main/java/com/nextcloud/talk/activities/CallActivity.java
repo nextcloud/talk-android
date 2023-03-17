@@ -2081,6 +2081,10 @@ public class CallActivity extends CallBaseActivity {
                 callParticipants.get(sessionId).setUserId(userId);
             }
 
+            if (participant.getInternal() != null) {
+                callParticipants.get(sessionId).setInternal(participant.getInternal());
+            }
+
             String nick;
             if (hasExternalSignalingServer) {
                 nick = webSocketClient.getDisplayNameForSession(sessionId);
@@ -2440,6 +2444,10 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void addParticipantDisplayItem(CallParticipantModel callParticipantModel, String videoStreamType) {
+        if (callParticipantModel.isInternal() != null && callParticipantModel.isInternal()) {
+            return;
+        }
+
         String defaultGuestNick = getResources().getString(R.string.nc_nick_guest);
 
         ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(baseUrl,
