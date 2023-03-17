@@ -440,6 +440,7 @@
     <string name="shared_items_media">Média</string>
     <string name="shared_items_other">Autre</string>
     <string name="shared_items_poll">Sondage</string>
+    <string name="shared_items_recording">Enregistrement d\'appel</string>
     <string name="shared_items_voice">Voix</string>
     <string name="starred">Favori</string>
     <string name="startCallForbidden">Vous n\'êtes pas autorisé à commencer un appel</string>
