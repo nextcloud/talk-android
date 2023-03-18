@@ -440,6 +440,7 @@
     <string name="shared_items_media">Média</string>
     <string name="shared_items_other">Ostatní</string>
     <string name="shared_items_poll">Anketa</string>
+    <string name="shared_items_recording">Nahrávka hovoru</string>
     <string name="shared_items_voice">Hlas</string>
     <string name="starred">Oblíbené</string>
     <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>

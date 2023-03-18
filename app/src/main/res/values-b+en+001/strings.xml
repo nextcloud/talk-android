@@ -440,6 +440,7 @@
     <string name="shared_items_media">Media</string>
     <string name="shared_items_other">Other</string>
     <string name="shared_items_poll">Poll</string>
+    <string name="shared_items_recording">Call recording</string>
     <string name="shared_items_voice">Voice</string>
     <string name="starred">Favourite</string>
     <string name="startCallForbidden">You are not allowed to start a call</string>

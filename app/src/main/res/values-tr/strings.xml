@@ -440,6 +440,7 @@
     <string name="shared_items_media">Ortam</string>
     <string name="shared_items_other">Diğer</string>
     <string name="shared_items_poll">Anket</string>
+    <string name="shared_items_recording">Çağrı kaydı</string>
     <string name="shared_items_voice">Ses</string>
     <string name="starred">Sık kullanılanlara ekle</string>
     <string name="startCallForbidden">Bir çağrı başlatma izniniz yok</string>
