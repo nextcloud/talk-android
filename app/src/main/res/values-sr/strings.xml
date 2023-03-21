@@ -440,6 +440,7 @@
     <string name="shared_items_media">Мултимедија</string>
     <string name="shared_items_other">Остало</string>
     <string name="shared_items_poll">Гласање</string>
+    <string name="shared_items_recording">Снимање позива</string>
     <string name="shared_items_voice">Гласовна пошта</string>
     <string name="starred">Омиљени</string>
     <string name="startCallForbidden">Није вам дозвољене да започнете позив</string>
