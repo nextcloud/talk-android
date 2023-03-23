@@ -5,15 +5,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [16.0.0] - 2023-03-20
+
+### Added
+- Call recording support (requires NC26, HPB + recording server)
+- Breakout rooms support (requires NC26 + HPB)
+- Raise hand
+- Scroll to bottom button in chat (@rapterjet2004)
+- Scroll to quoted messages on tap (@rapterjet2004)
+
+### Fixed
+- Display duplicated chatmessages
+- Chatmessages not being displayed
+- Broken "mention" design when groupname contains emoji
+- Avatars/Images not being displayed in some cases
+- Fix theming of set status dialog buttons
+- Fix call buttons size for landscape mode
+- Rare crashes
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/65?closed=1
+
 ## [15.1.2] - 2023-02-17
 
-## Added
+### Added
 - Show raised hands of remote participants
 
-## Changed
+### Changed
 - Better voice message recording quality
 
-## Fixed
+### Fixed
 - Missing author in group conversations
 - Missing file thumbnails in "share from Nextcloud"
 - Repair multiple actions when switching account via notification
@@ -24,7 +44,7 @@ For a full list, please see https://github.com/nextcloud/talk-android/milestone/
 
 ## [15.1.1] - 2023-01-18
 
-## Fixed
+### Fixed
 
 - Missing file icons in chat
 - "Random" crashes
@@ -34,15 +54,15 @@ For a full list, please see https://github.com/nextcloud/talk-android/milestone/
 
 ## [15.1.0] - 2023-01-12
 
-## Added
+### Added
 - Support latest emojis
 - Localize time formatting
 
-## Changed
+### Changed
 - Android 6 required
 - Improvements to calls
 
-## Fixed
+### Fixed
 - Crash on startup because of Unknown color
 - The video of the first remote participant is eventually disabled
 - Show notifications for missed calls and improve duration for ringing
