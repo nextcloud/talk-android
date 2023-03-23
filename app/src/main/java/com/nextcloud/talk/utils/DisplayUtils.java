@@ -269,13 +269,13 @@ public class DisplayUtils {
             lastStartIndex = end;
 
             Drawable drawableForChip = DisplayUtils.getDrawableForMentionChipSpan(context,
-                                                       id,
-                                                       label,
-                                                       conversationUser,
-                                                       type,
-                                                       chipXmlRes,
-                                                       null,
-                                                       viewThemeUtils);
+                                                                                  id,
+                                                                                  label,
+                                                                                  conversationUser,
+                                                                                  type,
+                                                                                  chipXmlRes,
+                                                                                  null,
+                                                                                  viewThemeUtils);
 
             mentionChipSpan = new Spans.MentionChipSpan(drawableForChip,
                                                         BetterImageSpan.ALIGN_CENTER,
@@ -453,18 +453,20 @@ public class DisplayUtils {
     }
 
     public static void loadAvatarImage(User user, ImageView avatarImageView, boolean deleteCache) {
-        String avatarId;
-        if (!TextUtils.isEmpty(user.getUserId())) {
-            avatarId = user.getUserId();
-        } else {
-            avatarId = user.getUsername();
-        }
-
-        if (avatarId != null) {
-            if (deleteCache) {
-                ImageViewExtensionsKt.replaceAvatar(avatarImageView, user, avatarId, true);
+        if (user != null && avatarImageView != null) {
+            String avatarId;
+            if (!TextUtils.isEmpty(user.getUserId())) {
+                avatarId = user.getUserId();
             } else {
-                ImageViewExtensionsKt.loadAvatar(avatarImageView, user, avatarId, true);
+                avatarId = user.getUsername();
+            }
+
+            if (avatarId != null) {
+                if (deleteCache) {
+                    ImageViewExtensionsKt.replaceAvatar(avatarImageView, user, avatarId, true);
+                } else {
+                    ImageViewExtensionsKt.loadAvatar(avatarImageView, user, avatarId, true);
+                }
             }
         }
     }
