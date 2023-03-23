@@ -25,11 +25,9 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
@@ -104,12 +102,10 @@ class DirectReplyReceiver : BroadcastReceiver() {
                     // unused atm
                 }
 
-                @RequiresApi(Build.VERSION_CODES.N)
                 override fun onNext(genericOverall: GenericOverall) {
                     confirmReplySent()
                 }
 
-                @RequiresApi(Build.VERSION_CODES.N)
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Failed to send reply", e)
                     informReplyFailed()
@@ -121,12 +117,10 @@ class DirectReplyReceiver : BroadcastReceiver() {
             })
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     private fun confirmReplySent() {
         appendMessageToNotification(replyMessage!!)
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     private fun informReplyFailed() {
         val errorColor = ForegroundColorSpan(context.resources.getColor(R.color.medium_emphasis_text, context.theme))
         val errorMessageHeader = context.resources.getString(R.string.nc_message_failed_to_send)
@@ -134,13 +128,11 @@ class DirectReplyReceiver : BroadcastReceiver() {
         appendMessageToNotification(errorMessage)
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     private fun findActiveNotification(notificationId: Int): Notification? {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return notificationManager.activeNotifications.find { it.id == notificationId }?.notification
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     private fun appendMessageToNotification(reply: CharSequence) {
         // Implementation inspired by the SO question and article below:
         // https://stackoverflow.com/questions/51549456/android-o-notification-for-direct-reply-message

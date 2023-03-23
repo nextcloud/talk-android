@@ -26,9 +26,7 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -97,12 +95,10 @@ class MarkAsReadReceiver : BroadcastReceiver() {
                     // unused atm
                 }
 
-                @RequiresApi(Build.VERSION_CODES.N)
                 override fun onNext(genericOverall: GenericOverall) {
                     cancelNotification(systemNotificationId!!)
                 }
 
-                @RequiresApi(Build.VERSION_CODES.N)
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Failed to set chat read marker", e)
                 }
@@ -113,7 +109,6 @@ class MarkAsReadReceiver : BroadcastReceiver() {
             })
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     private fun cancelNotification(notificationId: Int) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(notificationId)

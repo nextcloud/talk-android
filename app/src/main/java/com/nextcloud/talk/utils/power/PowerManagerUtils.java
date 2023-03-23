@@ -27,13 +27,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
-import autodagger.AutoInjector;
+
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 
 import javax.inject.Inject;
+
+import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
 
@@ -56,9 +57,7 @@ public class PowerManagerUtils {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         fullLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "nctalk:fullwakelock");
         partialLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "nctalk:partialwakelock");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            proximityLock = new ProximityLock(pm);
-        }
+        proximityLock = new ProximityLock(pm);
 
         // we suppress a possible leak because this is indeed application context
         @SuppressLint("WifiManagerPotentialLeak") WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -127,10 +126,7 @@ public class PowerManagerUtils {
                 if (!wifiLock.isHeld()) {
                     wifiLock.acquire();
                 }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    proximityLock.release();
-                }
+                proximityLock.release();
                 break;
             case PARTIAL:
                 if (!partialLock.isHeld()) {
@@ -142,18 +138,13 @@ public class PowerManagerUtils {
                 }
 
                 fullLock.release();
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    proximityLock.release();
-                }
+                proximityLock.release();
                 break;
             case SLEEP:
                 fullLock.release();
                 partialLock.release();
                 wifiLock.release();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    proximityLock.release();
-                }
+                proximityLock.release();
                 break;
             case PROXIMITY:
                 if (!partialLock.isHeld()) {
@@ -167,9 +158,7 @@ public class PowerManagerUtils {
                 fullLock.release(
 
                 );
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    proximityLock.acquire();
-                }
+                proximityLock.acquire();
                 break;
             default:
                 // something went very very wrong
