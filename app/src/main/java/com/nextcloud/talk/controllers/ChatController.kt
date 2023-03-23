@@ -415,18 +415,20 @@ class ChatController(args: Bundle) :
             participantPermissions.hasChatPermission() &&
             !isReadOnlyConversation()
         ) {
-            val messageSwipeController = MessageSwipeCallback(
-                activity!!,
-                object : MessageSwipeActions {
-                    override fun showReplyUI(position: Int) {
-                        val chatMessage = adapter?.items?.get(position)?.item as ChatMessage?
-                        replyToMessage(chatMessage)
+            activity?.let {
+                val messageSwipeController = MessageSwipeCallback(
+                    it,
+                    object : MessageSwipeActions {
+                        override fun showReplyUI(position: Int) {
+                            val chatMessage = adapter?.items?.get(position)?.item as ChatMessage?
+                            replyToMessage(chatMessage)
+                        }
                     }
-                }
-            )
+                )
 
-            val itemTouchHelper = ItemTouchHelper(messageSwipeController)
-            itemTouchHelper.attachToRecyclerView(binding?.messagesListView)
+                val itemTouchHelper = ItemTouchHelper(messageSwipeController)
+                itemTouchHelper.attachToRecyclerView(binding?.messagesListView)
+            }
         }
     }
 
