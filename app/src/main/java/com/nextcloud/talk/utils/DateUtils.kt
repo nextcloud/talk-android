@@ -25,7 +25,6 @@ import android.content.res.Resources
 import android.icu.text.RelativeDateTimeFormatter
 import android.icu.text.RelativeDateTimeFormatter.Direction
 import android.icu.text.RelativeDateTimeFormatter.RelativeUnit
-import android.os.Build
 import com.nextcloud.talk.R
 import java.text.DateFormat
 import java.util.Calendar
@@ -40,23 +39,13 @@ class DateUtils(val context: Context) {
     private var format: DateFormat = DateFormat.getDateTimeInstance(
         DateFormat.DEFAULT, // dateStyle
         DateFormat.SHORT, // timeStyle
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.resources.configuration.locales[0]
-        } else {
-            @Suppress("DEPRECATION")
-            context.resources.configuration.locale
-        }
+        context.resources.configuration.locales[0]
     )
 
     /* date formatter in local timezone and locale */
     private var formatTime: DateFormat = DateFormat.getTimeInstance(
         DateFormat.SHORT, // timeStyle
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.resources.configuration.locales[0]
-        } else {
-            @Suppress("DEPRECATION")
-            context.resources.configuration.locale
-        }
+        context.resources.configuration.locales[0]
     )
 
     init {
@@ -73,48 +62,44 @@ class DateUtils(val context: Context) {
     }
 
     fun relativeStartTimeForLobby(timestampMilliseconds: Long, resources: Resources): String {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val fmt = RelativeDateTimeFormatter.getInstance()
-            val timeLeftMillis = timestampMilliseconds - System.currentTimeMillis()
-            val minutes = timeLeftMillis.toDouble() / DateConstants.SECOND_DIVIDER / DateConstants.MINUTES_DIVIDER
-            val hours = minutes / DateConstants.HOURS_DIVIDER
-            val days = hours / DateConstants.DAYS_DIVIDER
+        val fmt = RelativeDateTimeFormatter.getInstance()
+        val timeLeftMillis = timestampMilliseconds - System.currentTimeMillis()
+        val minutes = timeLeftMillis.toDouble() / DateConstants.SECOND_DIVIDER / DateConstants.MINUTES_DIVIDER
+        val hours = minutes / DateConstants.HOURS_DIVIDER
+        val days = hours / DateConstants.DAYS_DIVIDER
 
-            val minutesInt = minutes.roundToInt()
-            val hoursInt = hours.roundToInt()
-            val daysInt = days.roundToInt()
+        val minutesInt = minutes.roundToInt()
+        val hoursInt = hours.roundToInt()
+        val daysInt = days.roundToInt()
 
-            when {
-                daysInt > 0 -> {
-                    fmt.format(
-                        daysInt.toDouble(),
-                        Direction.NEXT,
-                        RelativeUnit.DAYS
-                    )
-                }
-
-                hoursInt > 0 -> {
-                    fmt.format(
-                        hoursInt.toDouble(),
-                        Direction.NEXT,
-                        RelativeUnit.HOURS
-                    )
-                }
-
-                minutesInt > 1 -> {
-                    fmt.format(
-                        minutesInt.toDouble(),
-                        Direction.NEXT,
-                        RelativeUnit.MINUTES
-                    )
-                }
-
-                else -> {
-                    resources.getString(R.string.nc_lobby_start_soon)
-                }
+        return when {
+            daysInt > 0 -> {
+                fmt.format(
+                    daysInt.toDouble(),
+                    Direction.NEXT,
+                    RelativeUnit.DAYS
+                )
             }
-        } else {
-            ""
+
+            hoursInt > 0 -> {
+                fmt.format(
+                    hoursInt.toDouble(),
+                    Direction.NEXT,
+                    RelativeUnit.HOURS
+                )
+            }
+
+            minutesInt > 1 -> {
+                fmt.format(
+                    minutesInt.toDouble(),
+                    Direction.NEXT,
+                    RelativeUnit.MINUTES
+                )
+            }
+
+            else -> {
+                resources.getString(R.string.nc_lobby_start_soon)
+            }
         }
     }
 }

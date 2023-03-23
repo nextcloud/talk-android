@@ -25,7 +25,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -184,19 +183,13 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     private fun openFileByExternalApp(fileName: String, mimetype: String) {
         val path = context.cacheDir.absolutePath + "/" + fileName
         val file = File(path)
-        val intent: Intent
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            intent = Intent(Intent.ACTION_VIEW)
-            intent.setDataAndType(Uri.fromFile(file), mimetype)
-            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-        } else {
-            intent = Intent()
-            intent.action = Intent.ACTION_VIEW
-            val pdfURI = FileProvider.getUriForFile(context, context.packageName, file)
-            intent.setDataAndType(pdfURI, mimetype)
-            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
+        val intent = Intent()
+        intent.action = Intent.ACTION_VIEW
+        val pdfURI = FileProvider.getUriForFile(context, context.packageName, file)
+        intent.setDataAndType(pdfURI, mimetype)
+        intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
         try {
             if (intent.resolveActivity(context.packageManager) != null) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

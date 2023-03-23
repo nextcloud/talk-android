@@ -55,12 +55,7 @@ object LoggingUtils {
         // emailIntent.type = TEXT_PLAIN
         // emailIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         // val uri: Uri
-        //
-        // if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-        //     uri = Uri.fromFile(logFile)
-        // } else {
-        //     uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, logFile)
-        // }
+        // uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, logFile)
         //
         // emailIntent.putExtra(Intent.EXTRA_STREAM, uri)
         // emailIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

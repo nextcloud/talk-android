@@ -41,7 +41,6 @@ import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
@@ -483,19 +482,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val systemNotificationId: Int =
             activeStatusBarNotification?.id ?: calculateCRC32(System.currentTimeMillis().toString()).toInt()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
-            TYPE_CHAT == pushMessage.type &&
-            pushMessage.notificationUser != null
-        ) {
+        if (TYPE_CHAT == pushMessage.type && pushMessage.notificationUser != null) {
             prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
             addReplyAction(notificationBuilder, systemNotificationId)
             addMarkAsReadAction(notificationBuilder, systemNotificationId)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
-            TYPE_RECORDING == pushMessage.type &&
-            ncNotification != null
-        ) {
+        if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
             addDismissRecordingAvailableAction(notificationBuilder, systemNotificationId, ncNotification)
             addShareRecordingToChatAction(notificationBuilder, systemNotificationId, ncNotification)
         }
@@ -536,7 +529,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return crc32.value
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private fun prepareChatNotification(
         notificationBuilder: NotificationCompat.Builder,
         activeStatusBarNotification: StatusBarNotification?,
@@ -616,7 +608,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private fun addReplyAction(notificationBuilder: NotificationCompat.Builder, systemNotificationId: Int) {
         val replyLabel = context!!.resources.getString(R.string.nc_reply)
         val remoteInput = RemoteInput.Builder(NotificationUtils.KEY_DIRECT_REPLY)
@@ -637,7 +628,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationBuilder.addAction(replyAction)
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private fun addDismissRecordingAvailableAction(
         notificationBuilder: NotificationCompat.Builder,
         systemNotificationId: Int,
@@ -671,7 +661,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationBuilder.addAction(dismissAction)
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private fun addShareRecordingToChatAction(
         notificationBuilder: NotificationCompat.Builder,
         systemNotificationId: Int,
@@ -716,7 +705,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationBuilder.addAction(shareRecordingAction)
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private fun getStyle(person: Person, style: NotificationCompat.MessagingStyle?): NotificationCompat.MessagingStyle {
         val newStyle = NotificationCompat.MessagingStyle(person)
         newStyle.conversationTitle = pushMessage.subject
