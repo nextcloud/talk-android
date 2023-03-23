@@ -220,12 +220,12 @@ class MessageSearchActivity : BaseActivity() {
         searchView = menuItem.actionView as SearchView
         setupSearchView()
         menuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                 searchView.requestFocus()
                 return true
             }
 
-            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                 onBackPressed()
                 return false
             }
