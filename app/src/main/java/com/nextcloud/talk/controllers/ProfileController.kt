@@ -222,7 +222,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                     }
 
                     override fun onError(e: Throwable) {
-                        Toast.makeText(applicationContext, "Error", Toast.LENGTH_LONG).show()
+                        Log.e(TAG, "Failed to delete avatar", e)
                     }
 
                     override fun onComplete() {
