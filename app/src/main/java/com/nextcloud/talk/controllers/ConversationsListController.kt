@@ -87,7 +87,6 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
-import com.nextcloud.talk.jobs.UploadAndShareFilesWorker.Companion.isStoragePermissionGranted
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker.Companion.requestStoragePermission
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
@@ -119,6 +118,7 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatu
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
+import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.remapchat.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -158,6 +158,9 @@ class ConversationsListController(bundle: Bundle) :
 
     @Inject
     lateinit var unifiedSearchRepository: UnifiedSearchRepository
+
+    @Inject
+    lateinit var platformPermissionUtil: PlatformPermissionUtil
 
     private val binding: ControllerConversationsRvBinding? by viewBinding(ControllerConversationsRvBinding::bind)
 
@@ -960,7 +963,7 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     private fun showSendFilesConfirmDialog() {
-        if (isStoragePermissionGranted(context)) {
+        if (platformPermissionUtil.isFilesPermissionGranted()) {
             val fileNamesWithLineBreaks = StringBuilder("\n")
             for (file in filesToShare!!) {
                 val filename = FileUtils.getFileName(Uri.parse(file), context)

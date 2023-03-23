@@ -801,7 +801,7 @@ class ChatController(args: Bundle) :
                             requestRecordAudioPermissions()
                             return true
                         }
-                        if (!UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
+                        if (!permissionUtil.isFilesPermissionGranted()) {
                             UploadAndShareFilesWorker.requestStoragePermission(this@ChatController)
                             return true
                         }
@@ -1312,6 +1312,26 @@ class ChatController(args: Bundle) :
         )
     }
 
+    private fun requestReadFilesPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_AUDIO
+                ),
+                REQUEST_SHARE_FILE_PERMISSION
+            )
+        } else {
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ),
+                REQUEST_SHARE_FILE_PERMISSION
+            )
+        }
+    }
+
     private fun checkShowCallButtons() {
         if (isAlive()) {
             if (isReadOnlyConversation() || shouldShowLobby()) {
@@ -1490,7 +1510,7 @@ class ChatController(args: Bundle) :
                             .setTitle(confirmationQuestion)
                             .setMessage(filenamesWithLineBreaks.toString())
                             .setPositiveButton(R.string.nc_yes) { _, _ ->
-                                if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
+                                if (permissionUtil.isFilesPermissionGranted()) {
                                     uploadFiles(filesToUpload)
                                 } else {
                                     UploadAndShareFilesWorker.requestStoragePermission(this)
@@ -1557,7 +1577,7 @@ class ChatController(args: Bundle) :
                             throw IllegalStateException("Failed to get data from intent and uri")
                         }
 
-                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context)) {
+                        if (permissionUtil.isFilesPermissionGranted()) {
                             uploadFiles(filesToUpload)
                         } else {
                             UploadAndShareFilesWorker.requestStoragePermission(this)
@@ -1618,6 +1638,10 @@ class ChatController(args: Bundle) :
         }
     }
 
+    private fun hasGrantedPermissions(grantResults: IntArray): Boolean {
+        return permissionUtil.isFilesPermissionGranted()
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -1629,6 +1653,16 @@ class ChatController(args: Bundle) :
                 Toast
                     .makeText(context, context.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
                     .show()
+            }
+        } else if (requestCode == REQUEST_SHARE_FILE_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showLocalFilePicker()
+            } else {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.nc_file_storage_permission),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         } else if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -1696,7 +1730,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    fun sendSelectLocalFileIntent() {
+    private fun showLocalFilePicker() {
         val action = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             type = "*/*"
             addCategory(Intent.CATEGORY_OPENABLE)
@@ -1711,6 +1745,14 @@ class ChatController(args: Bundle) :
             ),
             REQUEST_CODE_CHOOSE_FILE
         )
+    }
+
+    fun sendSelectLocalFileIntent() {
+        if (!permissionUtil.isFilesPermissionGranted()) {
+            requestReadFilesPermissions()
+        } else {
+            showLocalFilePicker()
+        }
     }
 
     fun sendChooseContactIntent() {
@@ -3490,6 +3532,7 @@ class ChatController(args: Bundle) :
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
         private const val REQUEST_CODE_MESSAGE_SEARCH: Int = 777
+        private const val REQUEST_SHARE_FILE_PERMISSION: Int = 221
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
