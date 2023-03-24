@@ -32,7 +32,6 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.PermissionChecker
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
@@ -57,6 +56,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CA
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -78,6 +78,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     @Inject
     lateinit var okHttpClient: OkHttpClient
 
+    @Inject
+    lateinit var platformPermissionUtil: PlatformPermissionUtil
+
     lateinit var fileName: String
 
     private var mNotifyManager: NotificationManager? = null
@@ -93,7 +96,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     override fun doWork(): Result {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        if (!isStoragePermissionGranted(context)) {
+        if (!platformPermissionUtil.isFilesPermissionGranted()) {
             Log.w(
                 TAG,
                 "Storage permission is not granted. As a developer please make sure you check for" +
@@ -285,39 +288,19 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         private const val ZERO_PERCENT = 0
         const val REQUEST_PERMISSION = 3123
 
-        fun isStoragePermissionGranted(context: Context): Boolean {
-            return when {
-                Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
-                    if (PermissionChecker.checkSelfPermission(
-                            context,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                        ) == PermissionChecker.PERMISSION_GRANTED
-                    ) {
-                        Log.d(TAG, "Permission is granted (SDK 30 or greater)")
-                        true
-                    } else {
-                        Log.d(TAG, "Permission is revoked (SDK 30 or greater)")
-                        false
-                    }
-                }
-                else -> {
-                    if (PermissionChecker.checkSelfPermission(
-                            context,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        ) == PermissionChecker.PERMISSION_GRANTED
-                    ) {
-                        Log.d(TAG, "Permission is granted")
-                        true
-                    } else {
-                        Log.d(TAG, "Permission is revoked")
-                        false
-                    }
-                }
-            }
-        }
-
         fun requestStoragePermission(controller: Controller) {
             when {
+                Build.VERSION
+                    .SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+                    controller.requestPermissions(
+                        arrayOf(
+                            Manifest.permission.READ_MEDIA_IMAGES,
+                            Manifest.permission.READ_MEDIA_VIDEO,
+                            Manifest.permission.READ_MEDIA_AUDIO
+                        ),
+                        REQUEST_PERMISSION
+                    )
+                }
                 Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
                     controller.requestPermissions(
                         arrayOf(

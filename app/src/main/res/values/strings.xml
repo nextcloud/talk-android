@@ -464,6 +464,7 @@ How to translate with transifex:
     <string name="nc_upload_notification_text">%1$s to %2$s - %3$s\%%</string>
     <string name="nc_upload_failed_notification_title">Failure</string>
     <string name="nc_upload_failed_notification_text">Failed to upload %1$s</string>
+    <string name="nc_file_storage_permission">Permission for file access is required</string>
 
     <!-- Video -->
     <string name="nc_video_filename">Video recording from %1$s</string>
