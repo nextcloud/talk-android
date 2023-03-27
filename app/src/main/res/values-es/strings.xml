@@ -441,6 +441,7 @@
     <string name="shared_items_media">Multimedia</string>
     <string name="shared_items_other">Otro</string>
     <string name="shared_items_poll">Encuesta</string>
+    <string name="shared_items_recording">Grabación de llamada</string>
     <string name="shared_items_voice">Voz</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">No estas autorizado a iniciar una llamada</string>
