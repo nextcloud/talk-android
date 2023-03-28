@@ -142,6 +142,7 @@
     <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas a través de teléfonos móviles. Puedes intentar unirte a la llamada a través del navegador web.</string>
     <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>
     <string name="nc_file_browser_back">Volver</string>
+    <string name="nc_file_storage_permission">Se quiere permiso para accesar al archivo</string>
     <string name="nc_following_link">Usuario que sigue un enlace público</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
     <string name="nc_forward_message">Reenviar</string>

@@ -142,6 +142,7 @@
     <string name="nc_failed_signaling_settings">Целевият сървър не поддържа присъединяване към обществени разговори чрез мобилни телефони. Може да опитате присъединяване към разговора чрез уеб браузър.</string>
     <string name="nc_failed_to_perform_operation">Съжалявам нещо се обърка!</string>
     <string name="nc_file_browser_back">Назад</string>
+    <string name="nc_file_storage_permission">Нужно е право за достъп до файл</string>
     <string name="nc_following_link">Потребител, който следва публична връзка</string>
     <string name="nc_formatted_message_you">Вие: %1$s</string>
     <string name="nc_forward_message">Препращане</string>
@@ -440,6 +441,7 @@
     <string name="shared_items_media">Медия</string>
     <string name="shared_items_other">Други</string>
     <string name="shared_items_poll">Анкета</string>
+    <string name="shared_items_recording">Запис на обаждане</string>
     <string name="shared_items_voice">Гласов</string>
     <string name="starred">Любими</string>
     <string name="startCallForbidden">Нямате право да започнете разговор</string>

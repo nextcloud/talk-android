@@ -142,6 +142,7 @@
     <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování se k veřejným konverzacím prostřednictvím mobilních telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
     <string name="nc_file_browser_back">Zpět</string>
+    <string name="nc_file_storage_permission">Je zapotřebí oprávnění pro přístup k souborům</string>
     <string name="nc_following_link">Uživatel následující veřejný odkaz</string>
     <string name="nc_formatted_message_you">Vy: %1$s</string>
     <string name="nc_forward_message">Přeposlat</string>

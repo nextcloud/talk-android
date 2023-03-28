@@ -142,6 +142,7 @@
     <string name="nc_failed_signaling_settings">Target server does not support joining public conversations via mobile phones. You may attempt to join the conversation via web browser.</string>
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
     <string name="nc_file_browser_back">Back</string>
+    <string name="nc_file_storage_permission">Permission for file access is required</string>
     <string name="nc_following_link">User following a public link</string>
     <string name="nc_formatted_message_you">You: %1$s</string>
     <string name="nc_forward_message">Forward</string>
