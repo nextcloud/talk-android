@@ -108,12 +108,22 @@ class LocationPickerActivity :
 
     var moveToCurrentLocation: Boolean = true
     var readyToShareLocation: Boolean = false
+
+    private var mapCenterLat: Double = 0.0
+    private var mapCenterLon: Double = 0.0
+
     var searchItem: MenuItem? = null
     var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+
+        if (savedInstanceState != null) {
+            moveToCurrentLocation = savedInstanceState.getBoolean("moveToCurrentLocation") == true
+            mapCenterLat = savedInstanceState.getDouble("mapCenterLat")
+            mapCenterLon = savedInstanceState.getDouble("mapCenterLon")
+        }
 
         binding = ActivityLocationBinding.inflate(layoutInflater)
         setupActionBar()
@@ -151,6 +161,13 @@ class LocationPickerActivity :
                 Log.w(TAG, "readyToShareLocation was false while user tried to share location.")
             }
         }
+    }
+
+    override fun onSaveInstanceState(bundle: Bundle) {
+        super.onSaveInstanceState(bundle)
+        bundle.putBoolean("moveToCurrentLocation", moveToCurrentLocation)
+        bundle.putDouble("mapCenterLat", binding.map.mapCenter.latitude)
+        bundle.putDouble("mapCenterLon", binding.map.mapCenter.longitude)
     }
 
     private fun setupActionBar() {
@@ -271,6 +288,10 @@ class LocationPickerActivity :
             mapController.setZoom(ZOOM_LEVEL_RECEIVED_RESULT)
         } else {
             mapController.setZoom(ZOOM_LEVEL_DEFAULT)
+        }
+
+        if (mapCenterLat != 0.0 && mapCenterLon != 0.0) {
+            mapController.setCenter(GeoPoint(mapCenterLat, mapCenterLon))
         }
 
         val zoomToCurrentPositionOnFirstFix = geocodingResult == null && moveToCurrentLocation
