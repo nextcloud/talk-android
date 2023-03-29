@@ -273,7 +273,7 @@ class LocationPickerActivity :
             mapController.setZoom(ZOOM_LEVEL_DEFAULT)
         }
 
-        val zoomToCurrentPositionOnFirstFix = geocodingResult == null
+        val zoomToCurrentPositionOnFirstFix = geocodingResult == null && moveToCurrentLocation
         locationOverlay.runOnFirstFix {
             if (locationOverlay.myLocation != null) {
                 myLocation = locationOverlay.myLocation
