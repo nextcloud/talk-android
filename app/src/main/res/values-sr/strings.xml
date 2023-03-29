@@ -142,6 +142,7 @@
     <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним разговорима путем мобилног телефона. Можете пробати да се придружите разговору преко веб прегледача.</string>
     <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
     <string name="nc_file_browser_back">Назад</string>
+    <string name="nc_file_storage_permission">Потребна је дозвола за приступ фајлу</string>
     <string name="nc_following_link">Корисник који је пратио јавну везу</string>
     <string name="nc_formatted_message_you">Ти: %1$s</string>
     <string name="nc_forward_message">Проследи</string>
