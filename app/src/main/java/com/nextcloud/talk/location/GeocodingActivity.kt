@@ -115,6 +115,7 @@ class GeocodingActivity :
             val geocodingResult = GeocodingResult(address.latitude, address.longitude, address.displayName)
 
             val intent = Intent(this, LocationPickerActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
             intent.putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
             startActivity(intent)
@@ -197,6 +198,7 @@ class GeocodingActivity :
 
                 override fun onMenuItemActionCollapse(menuItem: MenuItem): Boolean {
                     val intent = Intent(context, LocationPickerActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
                     startActivity(intent)
                     return true
