@@ -31,17 +31,17 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.ProfileController
 import com.nextcloud.talk.databinding.DialogScopeBinding
 import com.nextcloud.talk.models.json.userprofile.Scope
+import com.nextcloud.talk.profile.ProfileActivity
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ScopeDialog(
     con: Context,
-    private val userInfoAdapter: ProfileController.UserInfoAdapter,
-    private val field: ProfileController.Field,
+    private val userInfoAdapter: ProfileActivity.UserInfoAdapter,
+    private val field: ProfileActivity.Field,
     private val position: Int
 ) : BottomSheetDialog(con) {
 
@@ -61,7 +61,7 @@ class ScopeDialog(
 
         viewThemeUtils.platform.themeDialog(dialogScopeBinding.root)
 
-        if (field == ProfileController.Field.DISPLAYNAME || field == ProfileController.Field.EMAIL) {
+        if (field == ProfileActivity.Field.DISPLAYNAME || field == ProfileActivity.Field.EMAIL) {
             dialogScopeBinding.scopePrivate.visibility = View.GONE
         }
 

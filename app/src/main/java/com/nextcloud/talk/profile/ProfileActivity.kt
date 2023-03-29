@@ -19,13 +19,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.controllers
+package com.nextcloud.talk.profile
 
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -34,12 +35,12 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -49,14 +50,12 @@ import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getError
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.with
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.BaseController
-import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ControllerProfileBinding
+import com.nextcloud.talk.databinding.ActivityProfileBinding
 import com.nextcloud.talk.databinding.UserInfoDetailsTableItemBinding
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.Scope
@@ -95,8 +94,8 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("Detekt.TooManyFunctions")
-class ProfileController : BaseController(R.layout.controller_profile) {
-    private val binding: ControllerProfileBinding? by viewBinding(ControllerProfileBinding::bind)
+class ProfileActivity : BaseActivity() {
+    private lateinit var binding: ActivityProfileBinding
 
     @Inject
     lateinit var ncApi: NcApi
@@ -113,22 +112,119 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     private var userInfo: UserProfileData? = null
     private var editableFields = ArrayList<String>()
 
-    override val title: String
-        get() =
-            resources!!.getString(R.string.nc_profile_personal_info_title)
-
-    override fun onViewBound(view: View) {
-        super.onViewBound(view)
-        sharedApplication!!.componentApplication.inject(this)
-        setHasOptionsMenu(true)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        setupActionBar()
+        setupSystemColors()
+        setContentView(binding.root)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_profile, menu)
+    override fun onResume() {
+        super.onResume()
+
+        adapter = UserInfoAdapter(null, viewThemeUtils, this)
+        binding.userinfoList.adapter = adapter
+        binding.userinfoList.setItemViewCacheSize(DEFAULT_CACHE_SIZE)
+        currentUser = userManager.currentUser.blockingGet()
+        val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+        binding.avatarUpload.setOnClickListener { sendSelectLocalFileIntent() }
+        binding.avatarChoose.setOnClickListener { showBrowserScreen() }
+        binding.avatarCamera.setOnClickListener { checkPermissionAndTakePicture() }
+        binding.avatarDelete.setOnClickListener {
+            ncApi.deleteAvatar(
+                credentials,
+                ApiUtils.getUrlForTempAvatar(currentUser!!.baseUrl)
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<GenericOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(genericOverall: GenericOverall) {
+                        DisplayUtils.loadAvatarImage(
+                            currentUser,
+                            binding.avatarImage,
+                            true
+                        )
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Failed to delete avatar", e)
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        }
+        binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
+        ncApi.getUserProfile(credentials, ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl))
+            .retry(DEFAULT_RETRIES)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<UserProfileOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(userProfileOverall: UserProfileOverall) {
+                    userInfo = userProfileOverall.ocs!!.data
+                    showUserProfile()
+                }
+
+                override fun onError(e: Throwable) {
+                    setErrorMessageForMultiList(
+                        getString(R.string.userinfo_no_info_headline),
+                        getString(R.string.userinfo_error_text),
+                        R.drawable.ic_list_empty_error
+                    )
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
+
+        colorIcons()
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
+    private fun setupActionBar() {
+        setSupportActionBar(binding.profileToolbar)
+        binding.profileToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.title = context.getString(R.string.nc_profile_personal_info_title)
+    }
+
+    private fun setupSystemColors() {
+        DisplayUtils.applyColorToStatusBar(
+            this,
+            ResourcesCompat.getColor(
+                resources,
+                R.color.appbar,
+                null
+            )
+        )
+        DisplayUtils.applyColorToNavigationBar(
+            this.window,
+            ResourcesCompat.getColor(resources, R.color.bg_default, null)
+        )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.menu_profile, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
         menu.findItem(R.id.edit).isVisible = editableFields.size > 0
         if (edit) {
@@ -136,6 +232,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
         } else {
             menu.findItem(R.id.edit).setTitle(R.string.edit)
         }
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -146,11 +243,11 @@ class ProfileController : BaseController(R.layout.controller_profile) {
             edit = !edit
             if (edit) {
                 item.setTitle(R.string.save)
-                binding?.emptyList?.root?.visibility = View.GONE
-                binding?.userinfoList?.visibility = View.VISIBLE
+                binding.emptyList.root.visibility = View.GONE
+                binding.userinfoList.visibility = View.VISIBLE
                 if (CapabilitiesUtilNew.isAvatarEndpointAvailable(currentUser!!)) {
                     // TODO later avatar can also be checked via user fields, for now it is in Talk capability
-                    binding?.avatarButtons?.visibility = View.VISIBLE
+                    binding.avatarButtons.visibility = View.VISIBLE
                 }
                 ncApi.getEditableUserProfileFields(
                     ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
@@ -179,10 +276,10 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                     })
             } else {
                 item.setTitle(R.string.edit)
-                binding?.avatarButtons?.visibility = View.INVISIBLE
+                binding.avatarButtons.visibility = View.INVISIBLE
                 if (adapter!!.filteredDisplayList.isEmpty()) {
-                    binding?.emptyList?.root?.visibility = View.VISIBLE
-                    binding?.userinfoList?.visibility = View.GONE
+                    binding.emptyList.root.visibility = View.VISIBLE
+                    binding.userinfoList.visibility = View.GONE
                 }
             }
             adapter!!.notifyDataSetChanged()
@@ -191,78 +288,8 @@ class ProfileController : BaseController(R.layout.controller_profile) {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        adapter = UserInfoAdapter(null, viewThemeUtils, this)
-        binding?.userinfoList?.adapter = adapter
-        binding?.userinfoList?.setItemViewCacheSize(DEFAULT_CACHE_SIZE)
-        currentUser = userManager.currentUser.blockingGet()
-        val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
-        binding?.avatarUpload?.setOnClickListener { sendSelectLocalFileIntent() }
-        binding?.avatarChoose?.setOnClickListener { showBrowserScreen() }
-        binding?.avatarCamera?.setOnClickListener { checkPermissionAndTakePicture() }
-        binding?.avatarDelete?.setOnClickListener {
-            ncApi.deleteAvatar(
-                credentials,
-                ApiUtils.getUrlForTempAvatar(currentUser!!.baseUrl)
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(genericOverall: GenericOverall) {
-                        DisplayUtils.loadAvatarImage(
-                            currentUser,
-                            binding?.avatarImage,
-                            true
-                        )
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "Failed to delete avatar", e)
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
-        }
-        binding?.avatarImage?.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
-        ncApi.getUserProfile(credentials, ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl))
-            .retry(DEFAULT_RETRIES)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<UserProfileOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(userProfileOverall: UserProfileOverall) {
-                    userInfo = userProfileOverall.ocs!!.data
-                    showUserProfile()
-                }
-
-                override fun onError(e: Throwable) {
-                    setErrorMessageForMultiList(
-                        activity!!.getString(R.string.userinfo_no_info_headline),
-                        activity!!.getString(R.string.userinfo_error_text),
-                        R.drawable.ic_list_empty_error
-                    )
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
-
-        colorIcons()
-    }
-
     private fun colorIcons() {
-        binding?.let {
+        binding.let {
             viewThemeUtils.material.themeFAB(it.avatarChoose)
             viewThemeUtils.material.themeFAB(it.avatarCamera)
             viewThemeUtils.material.themeFAB(it.avatarUpload)
@@ -281,17 +308,14 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     }
 
     private fun showUserProfile() {
-        if (activity == null) {
-            return
-        }
         if (currentUser!!.baseUrl != null) {
-            binding?.userinfoBaseurl?.text = Uri.parse(currentUser!!.baseUrl).host
+            binding.userinfoBaseurl.text = Uri.parse(currentUser!!.baseUrl).host
         }
-        DisplayUtils.loadAvatarImage(currentUser, binding?.avatarImage, false)
+        DisplayUtils.loadAvatarImage(currentUser, binding.avatarImage, false)
         if (!TextUtils.isEmpty(userInfo?.displayName)) {
-            binding?.userinfoFullName?.text = userInfo?.displayName
+            binding.userinfoFullName.text = userInfo?.displayName
         }
-        binding?.loadingContent?.visibility = View.VISIBLE
+        binding.loadingContent.visibility = View.VISIBLE
         adapter!!.setData(createUserInfoDetails(userInfo))
         if (isAllEmpty(
                 arrayOf(
@@ -304,18 +328,18 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                     )
             )
         ) {
-            binding?.userinfoList?.visibility = View.GONE
-            binding?.loadingContent?.visibility = View.GONE
-            binding?.emptyList?.root?.visibility = View.VISIBLE
+            binding.userinfoList.visibility = View.GONE
+            binding.loadingContent.visibility = View.GONE
+            binding.emptyList.root.visibility = View.VISIBLE
             setErrorMessageForMultiList(
-                activity!!.getString(R.string.userinfo_no_info_headline),
-                activity!!.getString(R.string.userinfo_no_info_text),
+                getString(R.string.userinfo_no_info_headline),
+                getString(R.string.userinfo_no_info_text),
                 R.drawable.ic_user
             )
         } else {
-            binding?.emptyList?.root?.visibility = View.GONE
-            binding?.loadingContent?.visibility = View.GONE
-            binding?.userinfoList?.visibility = View.VISIBLE
+            binding.emptyList.root.visibility = View.GONE
+            binding.loadingContent.visibility = View.GONE
+            binding.userinfoList.visibility = View.VISIBLE
         }
 
         // show edit button
@@ -333,7 +357,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
 
                     override fun onNext(userProfileFieldsOverall: UserProfileFieldsOverall) {
                         editableFields = userProfileFieldsOverall.ocs!!.data!!
-                        activity!!.invalidateOptionsMenu()
+                        invalidateOptionsMenu()
                         adapter!!.notifyDataSetChanged()
                     }
 
@@ -351,17 +375,13 @@ class ProfileController : BaseController(R.layout.controller_profile) {
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun setErrorMessageForMultiList(headline: String, message: String, @DrawableRes errorResource: Int) {
-        if (activity == null) {
-            return
-        }
-
-        binding?.emptyList?.emptyListViewHeadline?.text = headline
-        binding?.emptyList?.emptyListViewText?.text = message
-        binding?.emptyList?.emptyListIcon?.setImageResource(errorResource)
-        binding?.emptyList?.emptyListIcon?.visibility = View.VISIBLE
-        binding?.emptyList?.emptyListViewText?.visibility = View.VISIBLE
-        binding?.userinfoList?.visibility = View.GONE
-        binding?.loadingContent?.visibility = View.GONE
+        binding.emptyList.emptyListViewHeadline.text = headline
+        binding.emptyList.emptyListViewText.text = message
+        binding.emptyList.emptyListIcon.setImageResource(errorResource)
+        binding.emptyList.emptyListIcon.visibility = View.VISIBLE
+        binding.emptyList.emptyListViewText.visibility = View.VISIBLE
+        binding.userinfoList.visibility = View.GONE
+        binding.loadingContent.visibility = View.GONE
     }
 
     @Suppress("Detekt.LongMethod")
@@ -483,7 +503,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     }
 
     private fun sendSelectLocalFileIntent() {
-        with(activity!!)
+        with(this)
             .provider(ImageProvider.GALLERY)
             .crop()
             .cropSquare()
@@ -496,7 +516,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
         val bundle = Bundle()
         bundle.putString(KEY_MIME_TYPE_FILTER, IMAGE_PREFIX)
 
-        val avatarIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
+        val avatarIntent = Intent(this, RemoteFileBrowserActivity::class.java)
         avatarIntent.putExtras(bundle)
 
         startActivityForResult(avatarIntent, REQUEST_CODE_SELECT_REMOTE_FILES)
@@ -580,7 +600,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     }
 
     private fun openImageWithPicker(file: File) {
-        with(activity!!)
+        with(this)
             .provider(ImageProvider.URI)
             .crop()
             .cropSquare()
@@ -591,6 +611,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_IMAGE_PICKER) {
                 val uri: Uri = data?.data!!
@@ -608,7 +629,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                 Log.w(TAG, "Unknown intent request code")
             }
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
-            Toast.makeText(activity, getError(data), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getError(data), Toast.LENGTH_SHORT).show()
         } else {
             Log.i(TAG, "Task Cancelled")
         }
@@ -704,7 +725,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
     class UserInfoAdapter(
         displayList: List<UserInfoDetailsItem>?,
         private val viewThemeUtils: ViewThemeUtils,
-        private val controller: ProfileController
+        private val controller: ProfileActivity
     ) : RecyclerView.Adapter<UserInfoAdapter.ViewHolder>() {
         var displayList: List<UserInfoDetailsItem>?
         var filteredDisplayList: MutableList<UserInfoDetailsItem> = LinkedList()
@@ -764,7 +785,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                     holder.binding.userInfoEditTextEdit.isCursorVisible = true
                     holder.binding.scope.setOnClickListener {
                         ScopeDialog(
-                            controller.activity!!,
+                            holder.binding.scope.context,
                             this,
                             item.field,
                             holder.adapterPosition
@@ -827,7 +848,7 @@ class ProfileController : BaseController(R.layout.controller_profile) {
                         // nothing
                     }
                 }
-                holder.binding.scope.contentDescription = controller.activity!!.resources.getString(
+                holder.binding.scope.contentDescription = holder.binding.scope.context.getString(
                     R.string.scope_toggle_description,
                     item.hint
                 )

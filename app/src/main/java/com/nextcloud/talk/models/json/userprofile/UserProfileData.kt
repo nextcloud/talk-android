@@ -21,11 +21,11 @@
  */
 package com.nextcloud.talk.models.json.userprofile
 
+import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.controllers.ProfileController
 import com.nextcloud.talk.models.json.converters.ScopeConverter
-import android.os.Parcelable
+import com.nextcloud.talk.profile.ProfileActivity
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -76,26 +76,26 @@ data class UserProfileData(
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 
-    fun getValueByField(field: ProfileController.Field?): String? {
+    fun getValueByField(field: ProfileActivity.Field?): String? {
         return when (field) {
-            ProfileController.Field.EMAIL -> email
-            ProfileController.Field.DISPLAYNAME -> displayName
-            ProfileController.Field.PHONE -> phone
-            ProfileController.Field.ADDRESS -> address
-            ProfileController.Field.WEBSITE -> website
-            ProfileController.Field.TWITTER -> twitter
+            ProfileActivity.Field.EMAIL -> email
+            ProfileActivity.Field.DISPLAYNAME -> displayName
+            ProfileActivity.Field.PHONE -> phone
+            ProfileActivity.Field.ADDRESS -> address
+            ProfileActivity.Field.WEBSITE -> website
+            ProfileActivity.Field.TWITTER -> twitter
             else -> ""
         }
     }
 
-    fun getScopeByField(field: ProfileController.Field?): Scope? {
+    fun getScopeByField(field: ProfileActivity.Field?): Scope? {
         return when (field) {
-            ProfileController.Field.EMAIL -> emailScope
-            ProfileController.Field.DISPLAYNAME -> displayNameScope
-            ProfileController.Field.PHONE -> phoneScope
-            ProfileController.Field.ADDRESS -> addressScope
-            ProfileController.Field.WEBSITE -> websiteScope
-            ProfileController.Field.TWITTER -> twitterScope
+            ProfileActivity.Field.EMAIL -> emailScope
+            ProfileActivity.Field.DISPLAYNAME -> displayNameScope
+            ProfileActivity.Field.PHONE -> phoneScope
+            ProfileActivity.Field.ADDRESS -> addressScope
+            ProfileActivity.Field.WEBSITE -> websiteScope
+            ProfileActivity.Field.TWITTER -> twitterScope
             else -> null
         }
     }
