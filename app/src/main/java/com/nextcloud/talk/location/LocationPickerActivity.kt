@@ -119,10 +119,14 @@ class LocationPickerActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
+        roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
+        geocodingResult = intent.getParcelableExtra(KEY_GEOCODING_RESULT)
+
         if (savedInstanceState != null) {
             moveToCurrentLocation = savedInstanceState.getBoolean("moveToCurrentLocation") == true
             mapCenterLat = savedInstanceState.getDouble("mapCenterLat")
             mapCenterLon = savedInstanceState.getDouble("mapCenterLon")
+            geocodingResult = savedInstanceState.getParcelable("geocodingResult")
         }
 
         binding = ActivityLocationBinding.inflate(layoutInflater)
@@ -131,9 +135,6 @@ class LocationPickerActivity :
         setContentView(binding.root)
 
         getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
-
-        roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
-        geocodingResult = intent.getParcelableExtra(KEY_GEOCODING_RESULT)
     }
 
     override fun onStart() {
@@ -168,6 +169,7 @@ class LocationPickerActivity :
         bundle.putBoolean("moveToCurrentLocation", moveToCurrentLocation)
         bundle.putDouble("mapCenterLat", binding.map.mapCenter.latitude)
         bundle.putDouble("mapCenterLon", binding.map.mapCenter.longitude)
+        bundle.putParcelable("geocodingResult", geocodingResult)
     }
 
     private fun setupActionBar() {
