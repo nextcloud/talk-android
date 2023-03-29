@@ -31,6 +31,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/settings_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/settings_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/appbar"
+            android:theme="?attr/actionBarPopupTheme"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIconTint="@color/fontAppbar"
+            app:popupTheme="@style/appActionBarPopupMenu"
+            app:titleTextColor="@color/fontAppbar"
+            tools:title="@string/nc_app_product_name" />
+    </com.google.android.material.appbar.AppBarLayout>
+
     <com.yarolegovich.mp.MaterialPreferenceCategory
         android:id="@+id/message_view"
         android:layout_width="match_parent"
@@ -258,11 +275,12 @@
         apc:cardElevation="0dp"
         apc:mpc_title="@string/nc_settings_advanced_title">
 
-        <com.yarolegovich.mp.MaterialStandardPreference
-            android:id="@+id/settings_reauthorize"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_title="@string/nc_settings_reauthorize" />
+        <!-- TODO: fix reauthorize -->
+<!--        <com.yarolegovich.mp.MaterialStandardPreference-->
+<!--            android:id="@+id/settings_reauthorize"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            apc:mp_title="@string/nc_settings_reauthorize" />-->
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_client_cert"

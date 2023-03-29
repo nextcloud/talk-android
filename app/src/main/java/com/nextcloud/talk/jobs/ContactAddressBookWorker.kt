@@ -23,6 +23,7 @@ package com.nextcloud.talk.jobs
 import android.Manifest
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.app.Activity
 import android.content.ContentProviderOperation
 import android.content.Context
 import android.content.OperationApplicationException
@@ -39,7 +40,6 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
-import com.bluelinelabs.conductor.Controller
 import com.google.gson.Gson
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -470,7 +470,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             }
         }
 
-        fun checkPermission(controller: Controller, context: Context): Boolean {
+        fun checkPermission(activity: Activity, context: Context): Boolean {
             if (ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.WRITE_CONTACTS
@@ -480,7 +480,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                         Manifest.permission.READ_CONTACTS
                     ) != PackageManager.PERMISSION_GRANTED
             ) {
-                controller.requestPermissions(
+                activity.requestPermissions(
                     arrayOf(
                         Manifest.permission.WRITE_CONTACTS,
                         Manifest.permission.READ_CONTACTS
