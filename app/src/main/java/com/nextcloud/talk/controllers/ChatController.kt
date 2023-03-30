@@ -134,6 +134,7 @@ import com.nextcloud.talk.extensions.loadAvatarOrImagePreview
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
@@ -1767,13 +1768,9 @@ class ChatController(args: Bundle) :
     fun showShareLocationScreen() {
         Log.d(TAG, "showShareLocationScreen")
 
-        val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, roomToken)
-        router.pushController(
-            RouterTransaction.with(LocationPickerController(bundle))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
+        val intent = Intent(activity, LocationPickerActivity::class.java)
+        intent.putExtra(KEY_ROOM_TOKEN, roomToken)
+        activity!!.startActivity(intent)
     }
 
     private fun showConversationInfoScreen() {

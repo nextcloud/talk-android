@@ -194,6 +194,14 @@
             android:name=".messagesearch.MessageSearchActivity"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name=".location.LocationPickerActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".location.GeocodingActivity"
+            android:theme="@style/AppTheme" />
+
         <receiver android:name=".receivers.PackageReplacedReceiver"
             android:exported="false">
             <intent-filter>

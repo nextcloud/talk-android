@@ -18,32 +18,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.controllers
+package com.nextcloud.talk.location
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.adapters.GeocodingAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.BaseController
-import com.nextcloud.talk.controllers.util.viewBinding
-import com.nextcloud.talk.databinding.ControllerGeocodingBinding
+import com.nextcloud.talk.databinding.ActivityGeocodingBinding
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
@@ -57,13 +58,11 @@ import org.osmdroid.config.Configuration
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class GeocodingController(args: Bundle) :
-    BaseController(
-        R.layout.controller_geocoding,
-        args
-    ),
+class GeocodingActivity :
+    BaseActivity(),
     SearchView.OnQueryTextListener {
-    private val binding: ControllerGeocodingBinding? by viewBinding(ControllerGeocodingBinding::bind)
+
+    private lateinit var binding: ActivityGeocodingBinding
 
     @Inject
     lateinit var ncApi: NcApi
@@ -71,7 +70,7 @@ class GeocodingController(args: Bundle) :
     @Inject
     lateinit var okHttpClient: OkHttpClient
 
-    var roomToken: String?
+    lateinit var roomToken: String
     var nominatimClient: TalkJsonNominatimClient? = null
 
     var searchItem: MenuItem? = null
@@ -81,52 +80,89 @@ class GeocodingController(args: Bundle) :
     lateinit var adapter: GeocodingAdapter
     private var geocodingResults: List<Address> = ArrayList()
 
-    constructor(args: Bundle, listener: LocationPickerController) : this(args) {
-        targetController = listener
-    }
-
-    init {
-        setHasOptionsMenu(true)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+
+        binding = ActivityGeocodingBinding.inflate(layoutInflater)
+        setupActionBar()
+        setupSystemColors()
+        setContentView(binding.root)
+
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
-        query = args.getString(BundleKeys.KEY_GEOCODING_QUERY)
-        roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN)
+
+        roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
+        query = intent.getStringExtra(BundleKeys.KEY_GEOCODING_QUERY)
     }
 
-    private fun initAdapter(addresses: List<Address>) {
-        adapter = GeocodingAdapter(binding?.geocodingResults?.context!!, addresses)
-        binding?.geocodingResults?.adapter = adapter
-    }
-
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-
+    override fun onStart() {
+        super.onStart()
         initAdapter(geocodingResults)
-
         initGeocoder()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         if (!query.isNullOrEmpty()) {
             searchLocation()
         } else {
             Log.e(TAG, "search string that was passed to GeocodingController was null or empty")
         }
 
-        binding?.geocodingResults?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        binding.geocodingResults.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val address: Address = adapter.getItem(position) as Address
-            val listener: GeocodingResultListener? = targetController as GeocodingResultListener?
-            listener?.receiveChosenGeocodingResult(address.latitude, address.longitude, address.displayName)
-            router.popCurrentController()
+            val geocodingResult = GeocodingResult(address.latitude, address.longitude, address.displayName)
+
+            val intent = Intent(this, LocationPickerActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+            intent.putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
+            startActivity(intent)
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_geocoding, menu)
+    private fun setupActionBar() {
+        setSupportActionBar(binding.geocodingToolbar)
+        binding.geocodingToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
+        supportActionBar?.title = ""
+    }
+
+    private fun setupSystemColors() {
+        DisplayUtils.applyColorToStatusBar(
+            this,
+            ResourcesCompat.getColor(
+                resources,
+                R.color.appbar,
+                null
+            )
+        )
+        DisplayUtils.applyColorToNavigationBar(
+            this.window,
+            ResourcesCompat.getColor(resources, R.color.bg_default, null)
+        )
+    }
+
+    private fun initAdapter(addresses: List<Address>) {
+        adapter = GeocodingAdapter(binding.geocodingResults.context!!, addresses)
+        binding.geocodingResults.adapter = adapter
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.menu_geocoding, menu)
         searchItem = menu.findItem(R.id.geocoding_action_search)
         initSearchView()
 
         searchItem?.expandActionView()
         searchView?.setQuery(query, false)
         searchView?.clearFocus()
+        return true
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -141,38 +177,39 @@ class GeocodingController(args: Bundle) :
     }
 
     private fun initSearchView() {
-        if (activity != null) {
-            val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-            if (searchItem != null) {
-                searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-                searchView?.maxWidth = Int.MAX_VALUE
-                searchView?.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
-                var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
-                    imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
-                }
-                searchView?.imeOptions = imeOptions
-                searchView?.queryHint = resources!!.getString(R.string.nc_search)
-                searchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
-                searchView?.setOnQueryTextListener(this)
-
-                searchItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-                    override fun onMenuItemActionExpand(menuItem: MenuItem): Boolean {
-                        return true
-                    }
-
-                    override fun onMenuItemActionCollapse(menuItem: MenuItem): Boolean {
-                        router.popCurrentController()
-                        return true
-                    }
-                })
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        if (searchItem != null) {
+            searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+            searchView?.maxWidth = Int.MAX_VALUE
+            searchView?.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
+            var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
+                imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
             }
+            searchView?.imeOptions = imeOptions
+            searchView?.queryHint = resources!!.getString(R.string.nc_search)
+            searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            searchView?.setOnQueryTextListener(this)
+
+            searchItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                override fun onMenuItemActionExpand(menuItem: MenuItem): Boolean {
+                    return true
+                }
+
+                override fun onMenuItemActionCollapse(menuItem: MenuItem): Boolean {
+                    val intent = Intent(context, LocationPickerActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+                    startActivity(intent)
+                    return true
+                }
+            })
         }
     }
 
     private fun initGeocoder() {
-        val baseUrl = context!!.getString(R.string.osm_geocoder_url)
-        val email = context!!.getString(R.string.osm_geocoder_contact)
+        val baseUrl = getString(R.string.osm_geocoder_url)
+        val email = context.getString(R.string.osm_geocoder_contact)
         nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
     }
 
@@ -206,11 +243,7 @@ class GeocodingController(args: Bundle) :
         }
     }
 
-    interface GeocodingResultListener {
-        fun receiveChosenGeocodingResult(lat: Double, lon: Double, name: String)
-    }
-
     companion object {
-        private const val TAG = "GeocodingController"
+        private val TAG = GeocodingActivity::class.java.simpleName
     }
 }

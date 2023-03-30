@@ -18,11 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.controllers
+package com.nextcloud.talk.location
 
 import android.Manifest
+import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
@@ -33,7 +35,6 @@ import android.os.Bundle
 import android.text.InputType
 import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -44,19 +45,17 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.BaseController
-import com.nextcloud.talk.controllers.util.viewBinding
-import com.nextcloud.talk.databinding.ControllerLocationBinding
+import com.nextcloud.talk.databinding.ActivityLocationBinding
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_GEOCODING_RESULT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
@@ -82,15 +81,12 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class LocationPickerController(args: Bundle) :
-    BaseController(
-        R.layout.controller_location,
-        args
-    ),
+class LocationPickerActivity :
+    BaseActivity(),
     SearchView.OnQueryTextListener,
-    LocationListener,
-    GeocodingController.GeocodingResultListener {
-    private val binding: ControllerLocationBinding? by viewBinding(ControllerLocationBinding::bind)
+    LocationListener {
+
+    private lateinit var binding: ActivityLocationBinding
 
     @Inject
     lateinit var ncApi: NcApi
@@ -103,38 +99,121 @@ class LocationPickerController(args: Bundle) :
 
     var nominatimClient: TalkJsonNominatimClient? = null
 
-    var roomToken: String?
+    lateinit var roomToken: String
+    var geocodingResult: GeocodingResult? = null
 
     var myLocation: GeoPoint = GeoPoint(COORDINATE_ZERO, COORDINATE_ZERO)
     private var locationManager: LocationManager? = null
     private lateinit var locationOverlay: MyLocationNewOverlay
 
-    var moveToCurrentLocationWasClicked: Boolean = true
+    var moveToCurrentLocation: Boolean = true
     var readyToShareLocation: Boolean = false
+
+    private var mapCenterLat: Double = 0.0
+    private var mapCenterLon: Double = 0.0
+
     var searchItem: MenuItem? = null
     var searchView: SearchView? = null
 
-    var receivedChosenGeocodingResult: Boolean = false
-    var geocodedLat: Double = 0.0
-    var geocodedLon: Double = 0.0
-    var geocodedName: String = ""
-
-    init {
-        setHasOptionsMenu(true)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
-        roomToken = args.getString(KEY_ROOM_TOKEN)
+        roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
+        geocodingResult = intent.getParcelableExtra(KEY_GEOCODING_RESULT)
+
+        if (savedInstanceState != null) {
+            moveToCurrentLocation = savedInstanceState.getBoolean("moveToCurrentLocation") == true
+            mapCenterLat = savedInstanceState.getDouble("mapCenterLat")
+            mapCenterLon = savedInstanceState.getDouble("mapCenterLon")
+            geocodingResult = savedInstanceState.getParcelable("geocodingResult")
+        }
+
+        binding = ActivityLocationBinding.inflate(layoutInflater)
+        setupActionBar()
+        setupSystemColors()
+        setContentView(binding.root)
+
+        getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
+    override fun onStart() {
+        super.onStart()
         initMap()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (geocodingResult != null) {
+            moveToCurrentLocation = false
+        }
+
+        setLocationDescription(false, geocodingResult != null)
+        binding.shareLocation.isClickable = false
+        binding.shareLocation.setOnClickListener {
+            if (readyToShareLocation) {
+                shareLocation(
+                    binding.map.mapCenter?.latitude,
+                    binding.map.mapCenter?.longitude,
+                    binding.placeName.text.toString()
+                )
+            } else {
+                Log.w(TAG, "readyToShareLocation was false while user tried to share location.")
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(bundle: Bundle) {
+        super.onSaveInstanceState(bundle)
+        bundle.putBoolean("moveToCurrentLocation", moveToCurrentLocation)
+        bundle.putDouble("mapCenterLat", binding.map.mapCenter.latitude)
+        bundle.putDouble("mapCenterLon", binding.map.mapCenter.longitude)
+        bundle.putParcelable("geocodingResult", geocodingResult)
+    }
+
+    private fun setupActionBar() {
+        setSupportActionBar(binding.locationPickerToolbar)
+        binding.locationPickerToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.title = context.getString(R.string.nc_share_location)
+    }
+
+    private fun setupSystemColors() {
+        DisplayUtils.applyColorToStatusBar(
+            this,
+            ResourcesCompat.getColor(
+                resources,
+                R.color.appbar,
+                null
+            )
+        )
+        DisplayUtils.applyColorToNavigationBar(
+            this.window,
+            ResourcesCompat.getColor(resources, R.color.bg_default, null)
+        )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.menu_locationpicker, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        searchItem = menu.findItem(R.id.location_action_search)
+        initSearchView()
+        return true
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun onDetach(view: View) {
-        super.onDetach(view)
+    override fun onStop() {
+        super.onStop()
 
         try {
             locationManager!!.removeUpdates(this)
@@ -145,68 +224,29 @@ class LocationPickerController(args: Bundle) :
         locationOverlay.disableMyLocation()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_locationpicker, menu)
-        searchItem = menu.findItem(R.id.location_action_search)
-        initSearchView()
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        actionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
-        actionBar?.title = context!!.getString(R.string.nc_share_location)
-    }
-
-    override val title: String
-        get() =
-            resources!!.getString(R.string.nc_share_location)
-
-    override fun onViewBound(view: View) {
-        setLocationDescription(false, receivedChosenGeocodingResult)
-        binding?.shareLocation?.isClickable = false
-        binding?.shareLocation?.setOnClickListener {
-            if (readyToShareLocation) {
-                shareLocation(
-                    binding?.map?.mapCenter?.latitude,
-                    binding?.map?.mapCenter?.longitude,
-                    binding?.placeName?.text.toString()
-                )
-            } else {
-                Log.w(TAG, "readyToShareLocation was false while user tried to share location.")
-            }
-        }
-    }
-
     private fun initSearchView() {
-        if (activity != null) {
-            val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-            if (searchItem != null) {
-                searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-                searchView?.maxWidth = Int.MAX_VALUE
-                searchView?.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
-                var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
-                    imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
-                }
-                searchView?.imeOptions = imeOptions
-                searchView?.queryHint = resources!!.getString(R.string.nc_search)
-                searchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
-                searchView?.setOnQueryTextListener(this)
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        if (searchItem != null) {
+            searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+            searchView?.maxWidth = Int.MAX_VALUE
+            searchView?.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
+            var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
+                imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
             }
+            searchView?.imeOptions = imeOptions
+            searchView?.queryHint = resources!!.getString(R.string.nc_search)
+            searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            searchView?.setOnQueryTextListener(this)
         }
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (!query.isNullOrEmpty()) {
-            val bundle = Bundle()
-            bundle.putString(BundleKeys.KEY_GEOCODING_QUERY, query)
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-            router.pushController(
-                RouterTransaction.with(GeocodingController(bundle, this))
-                    .pushChangeHandler(HorizontalChangeHandler())
-                    .popChangeHandler(HorizontalChangeHandler())
-            )
+            val intent = Intent(this, GeocodingActivity::class.java)
+            intent.putExtra(BundleKeys.KEY_GEOCODING_QUERY, query)
+            intent.putExtra(KEY_ROOM_TOKEN, roomToken)
+            startActivity(intent)
         }
         return true
     }
@@ -217,10 +257,10 @@ class LocationPickerController(args: Bundle) :
 
     @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.ComplexMethod")
     private fun initMap() {
-        binding?.map?.setTileSource(TileSourceFactory.MAPNIK)
-        binding?.map?.onResume()
+        binding.map.setTileSource(TileSourceFactory.MAPNIK)
+        binding.map.onResume()
 
-        locationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         if (!isLocationPermissionsGranted()) {
             requestLocationPermissions()
@@ -229,12 +269,12 @@ class LocationPickerController(args: Bundle) :
         }
 
         val copyrightOverlay = CopyrightOverlay(context)
-        binding?.map?.overlays?.add(copyrightOverlay)
+        binding.map.overlays.add(copyrightOverlay)
 
-        binding?.map?.setMultiTouchControls(true)
-        binding?.map?.isTilesScaledToDpi = true
+        binding.map.setMultiTouchControls(true)
+        binding.map.isTilesScaledToDpi = true
 
-        locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), binding?.map)
+        locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), binding.map)
         locationOverlay.enableMyLocation()
         locationOverlay.setPersonHotspot(PERSON_HOT_SPOT_X, PERSON_HOT_SPOT_Y)
         locationOverlay.setPersonIcon(
@@ -242,24 +282,28 @@ class LocationPickerController(args: Bundle) :
                 ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)
             )
         )
-        binding?.map?.overlays?.add(locationOverlay)
+        binding.map.overlays.add(locationOverlay)
 
-        val mapController = binding?.map?.controller
+        val mapController = binding.map.controller
 
-        if (receivedChosenGeocodingResult) {
-            mapController?.setZoom(ZOOM_LEVEL_RECEIVED_RESULT)
+        if (geocodingResult != null) {
+            mapController.setZoom(ZOOM_LEVEL_RECEIVED_RESULT)
         } else {
-            mapController?.setZoom(ZOOM_LEVEL_DEFAULT)
+            mapController.setZoom(ZOOM_LEVEL_DEFAULT)
         }
 
-        val zoomToCurrentPositionOnFirstFix = !receivedChosenGeocodingResult
+        if (mapCenterLat != 0.0 && mapCenterLon != 0.0) {
+            mapController.setCenter(GeoPoint(mapCenterLat, mapCenterLon))
+        }
+
+        val zoomToCurrentPositionOnFirstFix = geocodingResult == null && moveToCurrentLocation
         locationOverlay.runOnFirstFix {
             if (locationOverlay.myLocation != null) {
                 myLocation = locationOverlay.myLocation
                 if (zoomToCurrentPositionOnFirstFix) {
-                    activity!!.runOnUiThread {
-                        mapController?.setZoom(ZOOM_LEVEL_DEFAULT)
-                        mapController?.setCenter(myLocation)
+                    runOnUiThread {
+                        mapController.setZoom(ZOOM_LEVEL_DEFAULT)
+                        mapController.setCenter(myLocation)
                     }
                 }
             } else {
@@ -269,20 +313,22 @@ class LocationPickerController(args: Bundle) :
             }
         }
 
-        if (receivedChosenGeocodingResult && geocodedLat != COORDINATE_ZERO && geocodedLon != COORDINATE_ZERO) {
-            mapController?.setCenter(GeoPoint(geocodedLat, geocodedLon))
-        }
-
-        binding?.centerMapButton?.setOnClickListener {
-            if (myLocation.latitude == COORDINATE_ZERO && myLocation.longitude == COORDINATE_ZERO) {
-                Toast.makeText(context, context.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
-            } else {
-                mapController?.animateTo(myLocation)
-                moveToCurrentLocationWasClicked = true
+        geocodingResult?.let {
+            if (it.lat != COORDINATE_ZERO && it.lon != COORDINATE_ZERO) {
+                mapController.setCenter(GeoPoint(it.lat, it.lon))
             }
         }
 
-        binding?.map?.addMapListener(
+        binding.centerMapButton.setOnClickListener {
+            if (myLocation.latitude == COORDINATE_ZERO && myLocation.longitude == COORDINATE_ZERO) {
+                Toast.makeText(context, context.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
+            } else {
+                mapController.animateTo(myLocation)
+                moveToCurrentLocation = true
+            }
+        }
+
+        binding.map.addMapListener(
             delayedMapListener()
         )
     }
@@ -293,17 +339,17 @@ class LocationPickerController(args: Bundle) :
             override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
                 try {
                     when {
-                        moveToCurrentLocationWasClicked -> {
+                        moveToCurrentLocation -> {
                             setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
-                            moveToCurrentLocationWasClicked = false
+                            moveToCurrentLocation = false
                         }
-                        receivedChosenGeocodingResult -> {
-                            binding?.shareLocation?.isClickable = true
+                        geocodingResult != null -> {
+                            binding.shareLocation.isClickable = true
                             setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
-                            receivedChosenGeocodingResult = false
+                            geocodingResult = null
                         }
                         else -> {
-                            binding?.shareLocation?.isClickable = true
+                            binding.shareLocation.isClickable = true
                             setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
                         }
                     }
@@ -349,35 +395,35 @@ class LocationPickerController(args: Bundle) :
                             " and there is no alternative like UnifiedNlp installed. Furthermore no GPS is " +
                             "supported."
                     )
-                    Toast.makeText(context, context?.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG)
+                    Toast.makeText(context, context.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG)
                         .show()
                 }
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "Error when requesting location updates. Permissions may be missing.", e)
-            Toast.makeText(context, context?.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Log.e(TAG, "Error when requesting location updates.", e)
-            Toast.makeText(context, context?.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG).show()
         }
     }
 
     private fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
         when {
             isGpsLocation -> {
-                binding?.shareLocationDescription?.text = context!!.getText(R.string.nc_share_current_location)
-                binding?.placeName?.visibility = View.GONE
-                binding?.placeName?.text = ""
+                binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_current_location)
+                binding.placeName.visibility = View.GONE
+                binding.placeName.text = ""
             }
             isGeocodedResult -> {
-                binding?.shareLocationDescription?.text = context!!.getText(R.string.nc_share_this_location)
-                binding?.placeName?.visibility = View.VISIBLE
-                binding?.placeName?.text = geocodedName
+                binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_this_location)
+                binding.placeName.visibility = View.VISIBLE
+                binding.placeName.text = geocodingResult?.displayName
             }
             else -> {
-                binding?.shareLocationDescription?.text = context!!.getText(R.string.nc_share_this_location)
-                binding?.placeName?.visibility = View.GONE
-                binding?.placeName?.text = ""
+                binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_this_location)
+                binding.placeName.visibility = View.GONE
+                binding.placeName.text = ""
             }
         }
     }
@@ -395,11 +441,14 @@ class LocationPickerController(args: Bundle) :
     }
 
     private fun executeShareLocation(selectedLat: Double?, selectedLon: Double?, locationName: String?) {
+        binding.roundedImageView.visibility = View.GONE
+        binding.sendingLocationProgressbar.visibility = View.VISIBLE
+
         val objectId = "geo:$selectedLat,$selectedLon"
 
         var locationNameToShare = locationName
         if (locationNameToShare.isNullOrBlank()) {
-            locationNameToShare = resources?.getString(R.string.nc_shared_location)
+            locationNameToShare = resources.getString(R.string.nc_shared_location)
         }
 
         val metaData: String =
@@ -410,8 +459,8 @@ class LocationPickerController(args: Bundle) :
         val apiVersion = ApiUtils.getChatApiVersion(currentUser, intArrayOf(1))
 
         ncApi.sendLocation(
-            ApiUtils.getCredentials(currentUser?.username, currentUser?.token),
-            ApiUtils.getUrlToSendLocation(apiVersion, currentUser?.baseUrl, roomToken),
+            ApiUtils.getCredentials(currentUser.username, currentUser.token),
+            ApiUtils.getUrlToSendLocation(apiVersion, currentUser.baseUrl, roomToken),
             "geo-location",
             objectId,
             metaData
@@ -424,13 +473,13 @@ class LocationPickerController(args: Bundle) :
                 }
 
                 override fun onNext(t: GenericOverall) {
-                    router.popCurrentController()
+                    finish()
                 }
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "error when trying to share location", e)
                     Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
-                    router.popCurrentController()
+                    finish()
                 }
 
                 override fun onComplete() {
@@ -472,6 +521,8 @@ class LocationPickerController(args: Bundle) :
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
         fun areAllGranted(grantResults: IntArray): Boolean {
             grantResults.forEach {
                 if (it == PackageManager.PERMISSION_DENIED) return false
@@ -485,13 +536,6 @@ class LocationPickerController(args: Bundle) :
             Toast.makeText(context, context!!.getString(R.string.nc_location_permission_required), Toast.LENGTH_LONG)
                 .show()
         }
-    }
-
-    override fun receiveChosenGeocodingResult(lat: Double, lon: Double, name: String) {
-        receivedChosenGeocodingResult = true
-        geocodedLat = lat
-        geocodedLon = lon
-        geocodedName = name
     }
 
     private fun initGeocoder() {
@@ -542,8 +586,13 @@ class LocationPickerController(args: Bundle) :
         // empty
     }
 
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_CANCELED)
+        finish()
+    }
+
     companion object {
-        private const val TAG = "LocPicker"
+        private val TAG = LocationPickerActivity::class.java.simpleName
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 1
         private const val PERSON_HOT_SPOT_X: Float = 20.0F
         private const val PERSON_HOT_SPOT_Y: Float = 20.0F
