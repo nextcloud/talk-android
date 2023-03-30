@@ -206,6 +206,10 @@
             android:name=".profile.ProfileActivity"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:theme="@style/AppTheme" />
+
         <receiver android:name=".receivers.PackageReplacedReceiver"
             android:exported="false">
             <intent-filter>

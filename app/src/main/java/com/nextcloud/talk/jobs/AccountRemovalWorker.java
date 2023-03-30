@@ -23,7 +23,10 @@
 package com.nextcloud.talk.jobs;
 
 import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -208,5 +211,17 @@ public class AccountRemovalWorker extends Worker {
                 Log.e(TAG, "error while trying to delete user", e);
             }
         }
+        if (userManager.getUsers().blockingGet().isEmpty()) {
+            restartApp(getApplicationContext());
+        }
+    }
+
+    public static void restartApp(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(context.getPackageName());
+        ComponentName componentName = intent.getComponent();
+        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+        context.startActivity(mainIntent);
+        Runtime.getRuntime().exit(0);
     }
 }

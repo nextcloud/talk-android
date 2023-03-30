@@ -93,6 +93,7 @@ import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
+import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
@@ -719,11 +720,8 @@ class ConversationsListController(bundle: Bundle) :
                         ChooseAccountDialogFragment.TAG
                     )
                 } else {
-                    router.pushController(
-                        RouterTransaction.with(SettingsController())
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler())
-                    )
+                    val intent = Intent(context, SettingsActivity::class.java)
+                    startActivity(intent)
                 }
             }
         }
