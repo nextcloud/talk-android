@@ -78,6 +78,7 @@ import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.checkPermissio
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import com.nextcloud.talk.profile.ProfileActivity
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -483,13 +484,8 @@ class SettingsController : BaseController(R.layout.controller_settings) {
         setupMessageView()
 
         binding?.avatarContainer?.setOnClickListener {
-            router
-                .pushController(
-                    RouterTransaction.with(ProfileController())
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler())
-
-                )
+            val intent = Intent(activity, ProfileActivity::class.java)
+            activity!!.startActivity(intent)
         }
 
         themeCategories()
