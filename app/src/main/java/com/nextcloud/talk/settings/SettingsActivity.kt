@@ -203,16 +203,6 @@ class SettingsActivity : BaseActivity() {
         if (currentUser != null) {
             binding.baseUrlText.text = Uri.parse(currentUser!!.baseUrl).host
             setupServerAgeWarning()
-
-            // TODO: fix reauthorize
-            // binding.settingsReauthorize?.addPreferenceClickListener {
-            //     router.pushController(
-            //         RouterTransaction.with(WebViewLoginController(currentUser!!.baseUrl, true))
-            //             .pushChangeHandler(VerticalChangeHandler())
-            //             .popChangeHandler(VerticalChangeHandler())
-            //     )
-            // }
-
             if (currentUser!!.displayName != null) {
                 binding.displayNameText.text = currentUser!!.displayName
             }
@@ -268,9 +258,9 @@ class SettingsActivity : BaseActivity() {
 
     private fun setupPhoneBookIntegration() {
         if (CapabilitiesUtilNew.isPhoneBookIntegrationAvailable(currentUser!!)) {
-            binding.settingsPhoneBookIntegration?.visibility = View.VISIBLE
+            binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
         } else {
-            binding.settingsPhoneBookIntegration?.visibility = View.GONE
+            binding.settingsPhoneBookIntegration.visibility = View.GONE
         }
     }
 

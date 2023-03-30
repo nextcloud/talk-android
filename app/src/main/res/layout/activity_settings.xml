@@ -275,13 +275,6 @@
         apc:cardElevation="0dp"
         apc:mpc_title="@string/nc_settings_advanced_title">
 
-        <!-- TODO: fix reauthorize -->
-<!--        <com.yarolegovich.mp.MaterialStandardPreference-->
-<!--            android:id="@+id/settings_reauthorize"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            apc:mp_title="@string/nc_settings_reauthorize" />-->
-
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_client_cert"
             android:layout_width="match_parent"
