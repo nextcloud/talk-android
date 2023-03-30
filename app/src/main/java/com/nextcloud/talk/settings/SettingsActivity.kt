@@ -217,8 +217,8 @@ class SettingsActivity : BaseActivity() {
         setupMessageView()
 
         binding.avatarContainer.setOnClickListener {
-            val intent = Intent(activity, ProfileActivity::class.java)
-            activity!!.startActivity(intent)
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
         }
 
         themeCategories()
