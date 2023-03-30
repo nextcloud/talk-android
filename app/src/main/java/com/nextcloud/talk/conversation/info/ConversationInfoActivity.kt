@@ -97,7 +97,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ConversationInfoActivity() :
+class ConversationInfoActivity :
     BaseActivity(),
     FlexibleAdapter.OnItemClickListener {
 
@@ -213,29 +213,6 @@ class ConversationInfoActivity() :
             ResourcesCompat.getColor(resources, R.color.bg_default, null)
         )
     }
-
-    // override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    //     super.onCreateOptionsMenu(menu)
-    //     menuInflater.inflate(R.menu.menu_locationpicker, menu)
-    //     return true
-    // }
-    //
-    // override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-    //     super.onPrepareOptionsMenu(menu)
-    //     // searchItem = menu.findItem(R.id.location_action_search)
-    //     // initSearchView()
-    //     return true
-    // }
-
-    // override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    //     when (item.itemId) {
-    //         android.R.id.home -> {
-    //             finish()
-    //             return true
-    //         }
-    //         else -> return super.onOptionsItemSelected(item)
-    //     }
-    // }
 
     private fun themeSwitchPreferences() {
         binding.run {

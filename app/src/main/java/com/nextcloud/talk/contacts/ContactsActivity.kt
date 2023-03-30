@@ -21,17 +21,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.controllers
+package com.nextcloud.talk.contacts
 
 import android.app.SearchManager
 import android.content.Context
 import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -44,14 +44,12 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.adapters.items.ContactItem
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
-import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerContactsRvBinding
 import com.nextcloud.talk.events.OpenConversationEvent
@@ -66,9 +64,9 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.dialog.ContactsBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
-import com.nextcloud.talk.utils.remapchat.ConductorRemapping
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -78,7 +76,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.ResponseBody
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.parceler.Parcels
@@ -88,17 +85,14 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ContactsController(args: Bundle) :
-    BaseController(R.layout.controller_contacts_rv),
+class ContactsActivity :
+    BaseActivity(),
     SearchView.OnQueryTextListener,
     FlexibleAdapter.OnItemClickListener {
-    private val binding: ControllerContactsRvBinding? by viewBinding(ControllerContactsRvBinding::bind)
+    private lateinit var binding: ControllerContactsRvBinding
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var eventBus: EventBus
 
     @Inject
     lateinit var ncApi: NcApi
@@ -126,18 +120,29 @@ class ContactsController(args: Bundle) :
     private var conversationToken: String? = null
     private var contactsBottomDialog: ContactsBottomDialog? = null
 
-    init {
-        setHasOptionsMenu(true)
-        sharedApplication!!.componentApplication.inject(this)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+
+        binding = ControllerContactsRvBinding.inflate(layoutInflater)
+        setupActionBar()
+        setupSystemColors()
+        setContentView(binding.root)
+
+        if (savedInstanceState != null) {
+            if (adapter != null) {
+                adapter?.onRestoreInstanceState(savedInstanceState)
+            }
+        }
 
         existingParticipants = ArrayList()
-        if (args.containsKey(BundleKeys.KEY_NEW_CONVERSATION)) {
+        if (intent.hasExtra(BundleKeys.KEY_NEW_CONVERSATION)) {
             isNewConversationView = true
-        } else if (args.containsKey(BundleKeys.KEY_ADD_PARTICIPANTS)) {
+        } else if (intent.hasExtra(BundleKeys.KEY_ADD_PARTICIPANTS)) {
             isAddingParticipantsView = true
-            conversationToken = args.getString(BundleKeys.KEY_TOKEN)
-            if (args.containsKey(BundleKeys.KEY_EXISTING_PARTICIPANTS)) {
-                existingParticipants = args.getStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS)
+            conversationToken = intent.getStringExtra(BundleKeys.KEY_TOKEN)
+            if (intent.hasExtra(BundleKeys.KEY_EXISTING_PARTICIPANTS)) {
+                existingParticipants = intent.getStringArrayListExtra(BundleKeys.KEY_EXISTING_PARTICIPANTS)
             }
         }
         selectedUserIds = HashSet()
@@ -146,40 +151,122 @@ class ContactsController(args: Bundle) :
         selectedCircleIds = HashSet()
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        eventBus.register(this)
+    override fun onResume() {
+        super.onResume()
+
         if (isNewConversationView) {
             toggleConversationPrivacyLayout(!isPublicCall)
         }
         if (isAddingParticipantsView) {
-            binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.GONE
-            binding?.conversationPrivacyToggle?.callHeaderLayout?.visibility = View.GONE
+            binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.GONE
+            binding.conversationPrivacyToggle.callHeaderLayout.visibility = View.GONE
         } else {
-            binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.setOnClickListener {
+            binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.setOnClickListener {
                 joinConversationViaLink()
             }
-            binding?.conversationPrivacyToggle?.callHeaderLayout?.setOnClickListener {
+            binding.conversationPrivacyToggle.callHeaderLayout.setOnClickListener {
                 toggleCallHeader()
             }
         }
-    }
 
-    override fun onViewBound(view: View) {
-        super.onViewBound(view)
         currentUser = userManager.currentUser.blockingGet()
         if (currentUser != null) {
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
         }
         if (adapter == null) {
             contactItems = ArrayList<AbstractFlexibleItem<*>>()
-            adapter = FlexibleAdapter(contactItems, activity, false)
+            adapter = FlexibleAdapter(contactItems, this, false)
             if (currentUser != null) {
                 fetchData()
             }
         }
         setupAdapter()
         prepareViews()
+    }
+
+    private fun setupActionBar() {
+        setSupportActionBar(binding.contactsToolbar)
+        binding.contactsToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.title = when {
+            isAddingParticipantsView -> {
+                resources!!.getString(R.string.nc_add_participants)
+            }
+            isNewConversationView -> {
+                resources!!.getString(R.string.nc_select_participants)
+            }
+            else -> {
+                resources!!.getString(R.string.nc_app_product_name)
+            }
+        }
+    }
+
+    private fun setupSystemColors() {
+        DisplayUtils.applyColorToStatusBar(
+            this,
+            ResourcesCompat.getColor(
+                resources,
+                R.color.appbar,
+                null
+            )
+        )
+        DisplayUtils.applyColorToNavigationBar(
+            this.window,
+            ResourcesCompat.getColor(resources, R.color.bg_default, null)
+        )
+    }
+
+    override fun onSaveInstanceState(bundle: Bundle) {
+        super.onSaveInstanceState(bundle)
+        adapter?.onSaveInstanceState(bundle)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.menu_contacts, menu)
+        searchItem = menu.findItem(R.id.action_search)
+        doneMenuItem = menu.findItem(R.id.contacts_selection_done)
+        initSearchView()
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        if (searchItem != null) {
+            binding?.titleTextView?.let {
+                viewThemeUtils.platform.colorToolbarMenuIcon(
+                    it.context,
+                    searchItem!!
+                )
+            }
+        }
+
+        checkAndHandleDoneMenuItem()
+        if (adapter?.hasFilter() == true) {
+            searchItem!!.expandActionView()
+            searchView!!.setQuery(adapter!!.getFilter(String::class.java) as CharSequence, false)
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.home -> {
+                finish()
+                true
+            }
+            R.id.contacts_selection_done -> {
+                selectionDone()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
     }
 
     private fun setupAdapter() {
@@ -285,13 +372,16 @@ class ContactsController(args: Bundle) :
                                     BundleKeys.KEY_ACTIVE_CONVERSATION,
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
-                                ConductorRemapping.remapChatController(
-                                    router,
-                                    currentUser!!.id!!,
-                                    roomOverall.ocs!!.data!!.token!!,
-                                    bundle,
-                                    true
-                                )
+
+                                // TODO: fix to open chat (go via MainActivity and open RemapChat... if conductor is still used)
+
+                                // ConductorRemapping.remapChatController(
+                                //     router,
+                                //     currentUser!!.id!!,
+                                //     roomOverall.ocs!!.data!!.token!!,
+                                //     bundle,
+                                //     true
+                                // )
                             }
 
                             override fun onError(e: Throwable) {
@@ -330,72 +420,28 @@ class ContactsController(args: Bundle) :
             AddParticipantsToConversation::class.java
         ).setInputData(data.build()).build()
         WorkManager.getInstance().enqueue(addParticipantsToConversationWorker)
-        router.popCurrentController()
+        finish()
     }
 
     private fun initSearchView() {
-        if (activity != null) {
-            val searchManager: SearchManager? = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
-            if (searchItem != null) {
-                searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-                viewThemeUtils.talk.themeSearchView(searchView!!)
-                searchView!!.maxWidth = Int.MAX_VALUE
-                searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
-                var imeOptions: Int = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                    appPreferences?.isKeyboardIncognito == true
-                ) {
-                    imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
-                }
-                searchView!!.imeOptions = imeOptions
-                searchView!!.queryHint = resources!!.getString(R.string.nc_search)
-                if (searchManager != null) {
-                    searchView!!.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
-                }
-                searchView!!.setOnQueryTextListener(this)
-            }
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.home -> {
-                router.popCurrentController()
-            }
-            R.id.contacts_selection_done -> {
-                selectionDone()
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_contacts, menu)
-        searchItem = menu.findItem(R.id.action_search)
-        doneMenuItem = menu.findItem(R.id.contacts_selection_done)
-        initSearchView()
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-
+        val searchManager: SearchManager? = getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (searchItem != null) {
-            binding?.titleTextView?.let {
-                viewThemeUtils.platform.colorToolbarMenuIcon(
-                    it.context,
-                    searchItem!!
-                )
+            searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+            viewThemeUtils.talk.themeSearchView(searchView!!)
+            searchView!!.maxWidth = Int.MAX_VALUE
+            searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
+            var imeOptions: Int = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                appPreferences?.isKeyboardIncognito == true
+            ) {
+                imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
             }
-        }
-
-        checkAndHandleDoneMenuItem()
-        if (adapter?.hasFilter() == true) {
-            searchItem!!.expandActionView()
-            searchView!!.setQuery(adapter!!.getFilter(String::class.java) as CharSequence, false)
+            searchView!!.imeOptions = imeOptions
+            searchView!!.queryHint = resources!!.getString(R.string.nc_search)
+            if (searchManager != null) {
+                searchView!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            }
+            searchView!!.setOnQueryTextListener(this)
         }
     }
 
@@ -626,7 +672,7 @@ class ContactsController(args: Bundle) :
     }
 
     private fun prepareViews() {
-        layoutManager = SmoothScrollLinearLayoutManager(activity)
+        layoutManager = SmoothScrollLinearLayoutManager(this)
         binding?.controllerGenericRv?.recyclerView?.layoutManager = layoutManager
         binding?.controllerGenericRv?.recyclerView?.setHasFixedSize(true)
         binding?.controllerGenericRv?.recyclerView?.adapter = adapter
@@ -671,18 +717,6 @@ class ContactsController(args: Bundle) :
         }
     }
 
-    override fun onSaveViewState(view: View, outState: Bundle) {
-        adapter?.onSaveInstanceState(outState)
-        super.onSaveViewState(view, outState)
-    }
-
-    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
-        super.onRestoreViewState(view, savedViewState)
-        if (adapter != null) {
-            adapter?.onRestoreInstanceState(savedViewState)
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         dispose(null)
@@ -716,41 +750,24 @@ class ContactsController(args: Bundle) :
         }
     }
 
-    override val title: String
-        get() = when {
-            isAddingParticipantsView -> {
-                resources!!.getString(R.string.nc_add_participants)
-            }
-            isNewConversationView -> {
-                resources!!.getString(R.string.nc_select_participants)
-            }
-            else -> {
-                resources!!.getString(R.string.nc_app_product_name)
-            }
-        }
-
     private fun prepareAndShowBottomSheetWithBundle(bundle: Bundle) {
         // 11: create conversation-enter name for new conversation
         // 10: get&join room when enter link
-        contactsBottomDialog = ContactsBottomDialog(activity!!, bundle)
+        contactsBottomDialog = ContactsBottomDialog(this, bundle)
         contactsBottomDialog?.show()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(openConversationEvent: OpenConversationEvent) {
-        ConductorRemapping.remapChatController(
-            router,
-            currentUser!!.id!!,
-            openConversationEvent.conversation!!.token!!,
-            openConversationEvent.bundle!!,
-            true
-        )
+        // TODO: fix to open chat
+        // ConductorRemapping.remapChatController(
+        //     router,
+        //     currentUser!!.id!!,
+        //     openConversationEvent.conversation!!.token!!,
+        //     openConversationEvent.bundle!!,
+        //     true
+        // )
         contactsBottomDialog?.dismiss()
-    }
-
-    override fun onDetach(view: View) {
-        super.onDetach(view)
-        eventBus.unregister(this)
     }
 
     override fun onItemClick(view: View, position: Int): Boolean {
@@ -812,23 +829,23 @@ class ContactsController(args: Bundle) :
                 }
 
                 override fun onNext(roomOverall: RoomOverall) {
-                    if (activity != null) {
-                        val bundle = Bundle()
-                        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser)
-                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-                        bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
-                        bundle.putParcelable(
-                            BundleKeys.KEY_ACTIVE_CONVERSATION,
-                            Parcels.wrap(roomOverall.ocs!!.data!!)
-                        )
-                        ConductorRemapping.remapChatController(
-                            router,
-                            currentUser!!.id!!,
-                            roomOverall.ocs!!.data!!.token!!,
-                            bundle,
-                            true
-                        )
-                    }
+                    val bundle = Bundle()
+                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser)
+                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
+                    bundle.putParcelable(
+                        BundleKeys.KEY_ACTIVE_CONVERSATION,
+                        Parcels.wrap(roomOverall.ocs!!.data!!)
+                    )
+
+                    // TODO: fix to open chat
+                    // ConductorRemapping.remapChatController(
+                    //     router,
+                    //     currentUser!!.id!!,
+                    //     roomOverall.ocs!!.data!!.token!!,
+                    //     bundle,
+                    //     true
+                    // )
                 }
 
                 override fun onError(e: Throwable) {
