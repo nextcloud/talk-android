@@ -187,7 +187,7 @@ dependencies {
     implementation "androidx.work:work-rxjava2:${workVersion}"
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     androidTestImplementation "androidx.work:work-testing:${workVersion}"
-    implementation 'com.google.android:flexbox:2.0.1'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation ('com.gitlab.bitfireAT:dav4jvm:2.1.3', {
         exclude group: 'org.ogce', module: 'xpp3'	// Android comes with its own XmlPullParser
     })
