@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  Nextcloud Android client application
+
+  Copyright (C) 2017-2023 Andy Scherzinger
+  Copyright (C) 2017 Nextcloud
+
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+
+  You should have received a copy of the GNU Affero General Public
+  License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_default"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/profile_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/profile_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/appbar"
+            android:theme="?attr/actionBarPopupTheme"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIconTint="@color/fontAppbar"
+            app:popupTheme="@style/appActionBarPopupMenu"
+            app:titleTextColor="@color/fontAppbar"
+            tools:title="@string/nc_profile_personal_info_title" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/avatarContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/avatar_image"
+                android:layout_width="@dimen/avatar_size_big"
+                android:layout_height="@dimen/avatar_size_big"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginTop="@dimen/standard_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/standard_margin"
+                android:contentDescription="@string/avatar"
+                android:src="@drawable/account_circle_96dp"
+                android:transitionName="userAvatar.transitionTag" />
+
+            <androidx.emoji2.widget.EmojiTextView
+                android:id="@+id/userinfo_fullName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/standard_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/standard_quarter_margin"
+                android:layout_toEndOf="@+id/avatar_image"
+                android:ellipsize="end"
+                tools:text="John Doe" />
+
+            <TextView
+                android:id="@+id/userinfo_baseurl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/userinfo_fullName"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/standard_quarter_margin"
+                android:layout_toEndOf="@+id/avatar_image"
+                android:ellipsize="end"
+                android:lines="2"
+                android:textColor="@color/medium_emphasis_text"
+                tools:text="john@nextcloud.com" />
+
+            <LinearLayout
+                android:id="@+id/avatar_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/avatar_image"
+                android:layout_marginStart="23dp"
+                android:orientation="horizontal"
+                android:visibility="invisible"
+                tools:visibility="visible">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/avatar_upload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/standard_quarter_margin"
+                    android:layout_marginRight="@dimen/standard_quarter_margin"
+                    android:layout_marginBottom="@dimen/standard_margin"
+                    android:contentDescription="@string/upload_new_avatar_from_device"
+                    android:tint="@android:color/white"
+                    app:elevation="0dp"
+                    app:fabSize="mini"
+                    app:srcCompat="@drawable/upload" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/avatar_choose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/standard_quarter_margin"
+                    android:layout_marginRight="@dimen/standard_quarter_margin"
+                    android:layout_marginBottom="@dimen/standard_margin"
+                    android:contentDescription="@string/choose_avatar_from_cloud"
+                    android:tint="@android:color/white"
+                    app:elevation="0dp"
+                    app:fabSize="mini"
+                    app:srcCompat="@drawable/ic_mimetype_folder" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/avatar_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/standard_quarter_margin"
+                    android:layout_marginRight="@dimen/standard_quarter_margin"
+                    android:layout_marginBottom="@dimen/standard_margin"
+                    android:contentDescription="@string/set_avatar_from_camera"
+                    android:tint="@android:color/white"
+                    app:elevation="0dp"
+                    app:fabSize="mini"
+                    app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/avatar_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/standard_quarter_margin"
+                    android:layout_marginRight="@dimen/standard_quarter_margin"
+                    android:layout_marginBottom="@dimen/standard_margin"
+                    android:contentDescription="@string/delete_avatar"
+                    android:tint="@android:color/white"
+                    app:elevation="0dp"
+                    app:fabSize="mini"
+                    app:srcCompat="@drawable/trashbin" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/userinfo_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="3"
+                tools:listitem="@layout/user_info_details_table_item"
+                tools:visibility="gone" />
+
+            <include
+                android:id="@+id/emptyList"
+                layout="@layout/empty_list" />
+
+            <LinearLayout
+                android:id="@+id/loading_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/user_info_details_table_item_shimmer" />
+
+                <include layout="@layout/user_info_details_table_item_shimmer" />
+
+                <include layout="@layout/user_info_details_table_item_shimmer" />
+
+                <include layout="@layout/user_info_details_table_item_shimmer" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
