@@ -54,6 +54,7 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.adapters.items.ParticipantItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.data.user.model.User
@@ -523,20 +524,9 @@ class ConversationInfoActivity :
         bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
         bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
 
-        // TODO fix to open Contacts
-        // router.pushController(
-        //     (
-        //         RouterTransaction.with(
-        //             ContactsController(bundle)
-        //         )
-        //             .pushChangeHandler(
-        //                 HorizontalChangeHandler()
-        //             )
-        //             .popChangeHandler(
-        //                 HorizontalChangeHandler()
-        //             )
-        //         )
-        // )
+        val intent = Intent(this, ContactsActivity::class.java)
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
 
     private fun leaveConversation() {
