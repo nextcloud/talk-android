@@ -93,6 +93,19 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         router = Conductor.attachRouter(this, binding.controllerContainer, savedInstanceState)
 
+        if (intent.getBooleanExtra(BundleKeys.KEY_OPEN_CHAT, false)) {
+            logRouterBackStack(router!!)
+            remapChatController(
+                router!!,
+                intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
+                intent.getStringExtra(KEY_ROOM_TOKEN)!!,
+                intent.extras!!,
+                true,
+                true
+            )
+            logRouterBackStack(router!!)
+        }
+
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {

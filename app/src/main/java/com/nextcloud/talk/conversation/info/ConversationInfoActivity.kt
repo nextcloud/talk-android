@@ -51,6 +51,7 @@ import com.afollestad.materialdialogs.datetime.dateTimePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.items.ParticipantItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -538,8 +539,9 @@ class ConversationInfoActivity :
                 ).setInputData(it).build()
             )
 
-            // TODO: fix to open ConversationList
-            // router.popToRoot()
+            val intent = Intent(context, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
         }
     }
 
@@ -608,8 +610,9 @@ class ConversationInfoActivity :
                     DeleteConversationWorker::class.java
                 ).setInputData(it).build()
             )
-            // TODO: fix to open ConversationList
-            // router.popToRoot()
+            val intent = Intent(context, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
         }
     }
 

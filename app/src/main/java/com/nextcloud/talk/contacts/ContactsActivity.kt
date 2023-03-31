@@ -25,6 +25,7 @@ package com.nextcloud.talk.contacts
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -45,6 +46,7 @@ import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.items.ContactItem
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.api.NcApi
@@ -66,6 +68,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPEN_CHAT
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
@@ -373,15 +376,12 @@ class ContactsActivity :
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
 
-                                // TODO: fix to open chat (go via MainActivity and open RemapChat... if conductor is still used)
-
-                                // ConductorRemapping.remapChatController(
-                                //     router,
-                                //     currentUser!!.id!!,
-                                //     roomOverall.ocs!!.data!!.token!!,
-                                //     bundle,
-                                //     true
-                                // )
+                                // TODO: go directly to ChatActivity when conductor is removed
+                                bundle.putBoolean(KEY_OPEN_CHAT, true)
+                                val intent = Intent(context, MainActivity::class.java)
+                                intent.putExtras(bundle)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                startActivity(intent)
                             }
 
                             override fun onError(e: Throwable) {
@@ -759,7 +759,6 @@ class ContactsActivity :
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(openConversationEvent: OpenConversationEvent) {
-        // TODO: fix to open chat
         // ConductorRemapping.remapChatController(
         //     router,
         //     currentUser!!.id!!,
@@ -767,6 +766,16 @@ class ContactsActivity :
         //     openConversationEvent.bundle!!,
         //     true
         // )
+
+        // TODO: go directly to ChatActivity when conductor is removed
+
+        var bundle = openConversationEvent.bundle!!
+
+        bundle.putBoolean(KEY_OPEN_CHAT, true)
+        val intent = Intent(context, MainActivity::class.java)
+        intent.putExtras(bundle)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
         contactsBottomDialog?.dismiss()
     }
 
@@ -838,14 +847,12 @@ class ContactsActivity :
                         Parcels.wrap(roomOverall.ocs!!.data!!)
                     )
 
-                    // TODO: fix to open chat
-                    // ConductorRemapping.remapChatController(
-                    //     router,
-                    //     currentUser!!.id!!,
-                    //     roomOverall.ocs!!.data!!.token!!,
-                    //     bundle,
-                    //     true
-                    // )
+                    // TODO: go directly to ChatActivity when conductor is removed
+                    bundle.putBoolean(KEY_OPEN_CHAT, true)
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.putExtras(bundle)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(intent)
                 }
 
                 override fun onError(e: Throwable) {
