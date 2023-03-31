@@ -139,9 +139,10 @@
     <string name="nc_expire_messages">Süreli sohbet iletileri</string>
     <string name="nc_expire_messages_explanation">Sohbet iletileri süresi belirli bir süre sonra dolacak şekilde ayarlanabilir. Not: Süresi dolan iletlerdeki dosyalar sahibi için silinmez, ancak artık sohbette paylaşılmaz.</string>
     <string name="nc_external_server_failed">İşaretleşme ayarları alınamadı</string>
-    <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı desteklemiyor. Görüşmeye web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
+    <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı desteklemiyor. Görüşmeye tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_failed_to_perform_operation">Ne yazık ki bir şeyler ters gitti!</string>
     <string name="nc_file_browser_back">Geri</string>
+    <string name="nc_file_storage_permission">Dosyalara erişme izni gereklidir</string>
     <string name="nc_following_link">Herkese açık bir bağlantıyı izleyen kullanıcı</string>
     <string name="nc_formatted_message_you">Siz: %1$s</string>
     <string name="nc_forward_message">İlet</string>
@@ -169,7 +170,7 @@
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler Rahatsız Etmeyin ayarlarını değiştirecek</string>
     <string name="nc_join_via_link">Bir bağlantı ile katıl</string>
-    <string name="nc_join_via_web">Web üzerinden katıl</string>
+    <string name="nc_join_via_web">Site üzerinden katıl</string>
     <string name="nc_last_moderator">%1$s görüşmesinden ayrılabilmek için yeni bir sorumlu atamalısınız.</string>
     <string name="nc_last_moderator_title">Görüşmeden ayrılınamadı</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
@@ -281,7 +282,7 @@
     <string name="nc_server_connect">Sunucu bağlantısını sına</string>
     <string name="nc_server_db_upgrade_needed">Lütfen %1$s veri tabanınızı güncelleyin</string>
     <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
-    <string name="nc_server_helper_text">%1$s web arayüzü için web tarayıcıda açacağınız bağlantı.</string>
+    <string name="nc_server_helper_text">%1$s site arayüzü için tarayıcıda açacağınız bağlantı.</string>
     <string name="nc_server_import_account">%1$s uygulamasındaki hesabı içe aktar</string>
     <string name="nc_server_import_account_plain">Hesabı içe aktar</string>
     <string name="nc_server_import_accounts">%1$s uygulamasındaki hesapları içe aktar</string>
@@ -374,7 +375,7 @@
     <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
-    <string name="nc_webinar">Web sunumu</string>
+    <string name="nc_webinar">İnternet sunumu</string>
     <string name="nc_wrong_link">Görüşme bağlantısı geçersiz</string>
     <string name="nc_wrong_password">Parola yanlış</string>
     <string name="nc_yes">Evet</string>
@@ -466,7 +467,7 @@
     <string name="user_info_email">E-posta</string>
     <string name="user_info_phone">Telefon numarası</string>
     <string name="user_info_twitter">Twitter</string>
-    <string name="user_info_website">Web sitesi</string>
+    <string name="user_info_website">Site</string>
     <string name="user_status">Durum</string>
     <string name="userinfo_error_text">Kullanıcının kişisel bilgileri alınamadı</string>
     <string name="userinfo_no_info_headline">Herhangi bir kişisel bilgi ayarlanmamış</string>

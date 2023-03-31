@@ -142,6 +142,7 @@
     <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
     <string name="nc_file_browser_back">Vissza</string>
+    <string name="nc_file_storage_permission">Fájlelérési jogosultság szükséges</string>
     <string name="nc_following_link">Nyilvános hivatkozást használó felhasználó</string>
     <string name="nc_formatted_message_you">Ön: %1$s</string>
     <string name="nc_forward_message">Továbbítás</string>

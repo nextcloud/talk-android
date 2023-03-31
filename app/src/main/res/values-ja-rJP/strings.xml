@@ -177,6 +177,7 @@
     <string name="nc_new_mention">未読の返信</string>
     <string name="nc_new_messages">未読のメッセージ</string>
     <string name="nc_new_password">新しいパスワード</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s利用できません（インストールされていないか、管理者によって制限されています）</string>
     <string name="nc_nick_guest">ゲスト</string>
     <string name="nc_no">いいえ</string>
     <string name="nc_no_messages_yet">メッセージはまだありません</string>

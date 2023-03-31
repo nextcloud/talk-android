@@ -6,9 +6,12 @@
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_phone">Telefoon</string>
     <string name="audio_output_speaker">Speaker</string>
+    <string name="audio_output_wired_headset">Bedrade headset</string>
     <string name="avatar">Avatar</string>
     <string name="away">Afwezig</string>
+    <string name="call_more_actions_dialog_headline">Geavanceerde oproepopties</string>
     <string name="call_without_notification">Oproepen zonder melding</string>
+    <string name="camera_permission_granted">Toegang tot camera verleend. Kies aub. uw camera opnieuw.</string>
     <string name="choose_avatar_from_cloud">Kies een avatar uit de cloud</string>
     <string name="clear_status_message">Statusbericht wissen</string>
     <string name="clear_status_message_after">Statusbericht wissen na</string>
@@ -18,8 +21,11 @@
     <string name="dnd">Niet storen</string>
     <string name="dontClear">Niet opruimen</string>
     <string name="edit">Bewerken</string>
+    <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recent</string>
+    <string name="emoji_search">Zoek emoji</string>
     <string name="encrypted">Versleuteld</string>
+    <string name="error_loading_chats">Het laden van uw gesprekken was problematisch</string>
     <string name="failed_to_save">Kon %1$s niet opslaan</string>
     <string name="file_list_folder">map</string>
     <string name="file_list_loading">Laden …</string>
@@ -52,7 +58,13 @@
     <string name="nc_allow_guests">Laat gasten toe</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Ontgrendel %1$s</string>
+    <string name="nc_call_button_content_description_advanced">Geavanceerde oproepopties</string>
+    <string name="nc_call_button_content_description_answer_video_call">Als videogesprek opnemen</string>
+    <string name="nc_call_button_content_description_answer_voice_only">Als geluidsgesprek opnemen</string>
+    <string name="nc_call_button_content_description_audio_output">Wijzig de oudio uitgang</string>
+    <string name="nc_call_button_content_description_camera">Omschakelen camera</string>
     <string name="nc_call_button_content_description_hangup">Ophangen</string>
+    <string name="nc_call_button_content_description_microphone">Microfoon omschakelen</string>
     <string name="nc_call_incoming">INKOMEND</string>
     <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
@@ -113,6 +125,7 @@
     <string name="nc_display_name_not_stored">Kon weergavenaam niet opslaan, afbreken</string>
     <string name="nc_email">E-mailadres</string>
     <string name="nc_expire_message_eight_hours">8 uur</string>
+    <string name="nc_expire_message_four_weeks">4 weken</string>
     <string name="nc_expire_message_off">Uit</string>
     <string name="nc_expire_message_one_day">1 dag</string>
     <string name="nc_expire_message_one_hour">1 uur</string>
@@ -137,6 +150,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_guest_access_password_title">Wachtwoordbeveiliging</string>
     <string name="nc_guest_access_password_weak_alert_title">Zwak wachtwoord</string>
     <string name="nc_guest_access_resend_invitations">Opnieuw verzenden uitnodigingen</string>
+    <string name="nc_guest_access_resend_invitations_successful">Uitnodigingen werden opnieuw verstuurd.</string>
     <string name="nc_guest_access_share_link">Deel gesprekslink</string>
     <string name="nc_hint_enter_a_message">Voer een bericht in…</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
@@ -168,6 +182,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_message_read">Bericht gelezen</string>
     <string name="nc_message_sent">Bericht verstuurd</string>
     <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" machtiging in de systeeminstellingen.</string>
+    <string name="nc_missed_call">Je hebt een gesprek gemist van %s</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nooit deelgenomen</string>
     <string name="nc_new_conversation">Nieuw gesprek</string>
@@ -317,6 +332,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_share_to_choose_account">Kies account</string>
     <string name="nc_shared_items">Gedeelde objecten</string>
     <string name="nc_shared_items_deck_card">Deck kaart</string>
+    <string name="nc_shared_items_empty">Geen gedeelde objecten</string>
     <string name="nc_shared_items_location">Locatie</string>
     <string name="nc_shared_location">Gedeelde locatie</string>
     <string name="nc_sort_by">Sorteren op</string>
@@ -325,9 +341,11 @@ Kies er eentje van een provider.</string>
     <string name="nc_upload_confirm_send_multiple">Bestanden versturen naar %1$s?</string>
     <string name="nc_upload_confirm_send_single">Bestand versturen naar %1$s?</string>
     <string name="nc_upload_failed">Sorry, uploaden mislukt</string>
+    <string name="nc_upload_failed_notification_title">Gefaald</string>
     <string name="nc_upload_from_cloud">Delen van %1$s</string>
     <string name="nc_upload_from_device">Uploaden vanaf apparaat</string>
     <string name="nc_upload_in_progess">Uploaden</string>
+    <string name="nc_upload_notification_text">%1$s naar%2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Neem foto</string>
     <string name="nc_user">Gebruiker</string>
     <string name="nc_voice_message_filename">Talk neemt op vanaf%1$s (%2$s)</string>
@@ -346,14 +364,24 @@ Kies er eentje van een provider.</string>
     <string name="open_in_files_app">Openen in de Bestanden-app</string>
     <string name="play_pause_voice_message">Afspelen/pauzeren voicebericht</string>
     <string name="polls_add_option">Voeg een optie toe</string>
+    <string name="polls_end_poll">Peiling beëindigen</string>
+    <string name="polls_multiple_answers">Meerdere antwoorden</string>
+    <string name="polls_option_delete">Verwijder optie %1$s</string>
+    <string name="polls_option_hint">Optie %1$s</string>
     <string name="polls_options">Opties</string>
     <string name="polls_private_poll">Privé peiling</string>
+    <string name="polls_question">Vraag</string>
+    <string name="polls_question_hint">Uw vraag</string>
     <string name="polls_results_subtitle">Resultaten</string>
     <string name="polls_settings">Instellingen</string>
     <string name="polls_submit_vote">Stemmen</string>
     <string name="raise_hand">Hand opsteken</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Bestanden delen vanuit opslag is niet mogelijk zonder machtiging</string>
+    <string name="record_active_info">Het gesprek wordt opgenomen</string>
+    <string name="record_start_description">Begin opname</string>
+    <string name="record_stop_confirm_title">Beëindig opname van gesprek</string>
+    <string name="record_stop_description">Beëindig opname</string>
     <string name="save">Bewaren</string>
     <string name="scope_federated_description">Alleen synchroniseren met vertrouwde servers</string>
     <string name="scope_federated_title">Gefedereerd</string>
@@ -407,4 +435,8 @@ Kies er eentje van een provider.</string>
     <string name="userinfo_no_info_headline">Geen persoonlijke informatie ingesteld</string>
     <string name="userinfo_no_info_text">Voeg naam, foto en contactgegevens toe op je profielpagina.</string>
     <string name="whats_your_status">Wat is jouw status?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d stem</item>
+        <item quantity="other">%d stemmen</item>
+    </plurals>
+</resources>

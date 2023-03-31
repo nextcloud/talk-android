@@ -142,6 +142,7 @@
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile. Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
     <string name="nc_file_browser_back">Retour</string>
+    <string name="nc_file_storage_permission">La permission d\'accès aux fichiers est requise</string>
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
     <string name="nc_formatted_message_you">Vous : %1$s</string>
     <string name="nc_forward_message">Transférer</string>
