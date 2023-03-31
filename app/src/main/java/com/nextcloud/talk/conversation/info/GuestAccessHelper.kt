@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
-import com.nextcloud.talk.controllers.ConversationInfoController
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
 import com.nextcloud.talk.databinding.DialogPasswordBinding
@@ -24,16 +23,15 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class GuestAccessHelper(
-    controller: ConversationInfoController,
+    private val activity: ConversationInfoActivity,
     private val binding: ControllerConversationInfoBinding,
     private val conversation: Conversation,
     private val conversationUser: User
 ) {
 
-    private val activity = controller.activity!!
-    private val conversationsRepository = controller.conversationsRepository
-    private val viewThemeUtils = controller.viewThemeUtils
-    private val context = controller.context
+    private val conversationsRepository = activity.conversationsRepository
+    private val viewThemeUtils = activity.viewThemeUtils
+    private val context = activity.context
 
     fun setupGuestAccess() {
         val guestAccessAllowSwitch = (

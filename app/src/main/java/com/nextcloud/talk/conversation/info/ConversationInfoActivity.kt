@@ -5,7 +5,7 @@
  * @author Andy Scherzinger
  * @author Tim Krüger
  * @author Marcel Hibbe
- * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
+ * Copyright (C) 2022-2023 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -24,21 +24,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.controllers
+package com.nextcloud.talk.conversation.info
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -47,18 +48,16 @@ import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.datetime.dateTimePicker
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.items.ParticipantItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
-import com.nextcloud.talk.controllers.util.viewBinding
-import com.nextcloud.talk.conversation.info.GuestAccessHelper
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
@@ -82,6 +81,7 @@ import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
@@ -91,7 +91,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.Calendar
@@ -100,14 +99,11 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ConversationInfoController(args: Bundle) :
-    BaseController(
-        R.layout.controller_conversation_info,
-        args
-    ),
+class ConversationInfoActivity :
+    BaseActivity(),
     FlexibleAdapter.OnItemClickListener {
 
-    private val binding: ControllerConversationInfoBinding? by viewBinding(ControllerConversationInfoBinding::bind)
+    private lateinit var binding: ControllerConversationInfoBinding
 
     @Inject
     lateinit var ncApi: NcApi
@@ -116,15 +112,12 @@ class ConversationInfoController(args: Bundle) :
     lateinit var conversationsRepository: ConversationsRepository
 
     @Inject
-    lateinit var eventBus: EventBus
-
-    @Inject
     lateinit var dateUtils: DateUtils
 
-    private val conversationToken: String?
-    private val conversationUser: User?
-    private val hasAvatarSpacing: Boolean
-    private val credentials: String?
+    private lateinit var conversationToken: String
+    private lateinit var conversationUser: User
+    private var hasAvatarSpacing: Boolean = false
+    private lateinit var credentials: String
     private var roomDisposable: Disposable? = null
     private var participantsDisposable: Disposable? = null
 
@@ -146,68 +139,97 @@ class ConversationInfoController(args: Bundle) :
             return null
         }
 
-    init {
-        setHasOptionsMenu(true)
-        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
-        conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY)
-        conversationToken = args.getString(BundleKeys.KEY_ROOM_TOKEN)
-        hasAvatarSpacing = args.getBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
-        credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+
+        binding = ControllerConversationInfoBinding.inflate(layoutInflater)
+        setupActionBar()
+        setupSystemColors()
+        setContentView(binding.root)
+
+        conversationUser = intent.getParcelableExtra(BundleKeys.KEY_USER_ENTITY)!!
+        conversationToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
+        hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
+        credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                router.popCurrentController()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        eventBus.register(this)
+    override fun onResume() {
+        super.onResume()
 
         if (databaseStorageModule == null) {
-            databaseStorageModule = DatabaseStorageModule(conversationUser!!, conversationToken)
+            databaseStorageModule = DatabaseStorageModule(conversationUser, conversationToken)
         }
 
-        binding?.notificationSettingsView?.notificationSettings?.setStorageModule(databaseStorageModule)
-        binding?.webinarInfoView?.webinarSettings?.setStorageModule(databaseStorageModule)
-        binding?.guestAccessView?.guestAccessSettings?.setStorageModule(databaseStorageModule)
+        binding.notificationSettingsView.notificationSettings.setStorageModule(databaseStorageModule)
+        binding.webinarInfoView.webinarSettings.setStorageModule(databaseStorageModule)
+        binding.guestAccessView.guestAccessSettings.setStorageModule(databaseStorageModule)
 
-        binding?.deleteConversationAction?.setOnClickListener { showDeleteConversationDialog() }
-        binding?.leaveConversationAction?.setOnClickListener { leaveConversation() }
-        binding?.clearConversationHistory?.setOnClickListener { showClearHistoryDialog() }
-        binding?.addParticipantsAction?.setOnClickListener { addParticipants() }
+        binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
+        binding.leaveConversationAction.setOnClickListener { leaveConversation() }
+        binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
+        binding.addParticipantsAction.setOnClickListener { addParticipants() }
 
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
-            binding?.showSharedItemsAction?.setOnClickListener { showSharedItems() }
+            binding.showSharedItemsAction.setOnClickListener { showSharedItems() }
         } else {
-            binding?.categorySharedItems?.visibility = GONE
+            binding.categorySharedItems.visibility = GONE
         }
 
         fetchRoomInfo()
 
         themeCategories()
         themeSwitchPreferences()
+
+        binding.addParticipantsAction.visibility = GONE
+
+        binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it) }
+    }
+
+    private fun setupActionBar() {
+        setSupportActionBar(binding.conversationInfoToolbar)
+        binding.conversationInfoToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.title = if (hasAvatarSpacing) {
+            " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)
+        } else {
+            resources!!.getString(R.string.nc_conversation_menu_conversation_info)
+        }
+    }
+
+    private fun setupSystemColors() {
+        DisplayUtils.applyColorToStatusBar(
+            this,
+            ResourcesCompat.getColor(
+                resources,
+                R.color.appbar,
+                null
+            )
+        )
+        DisplayUtils.applyColorToNavigationBar(
+            this.window,
+            ResourcesCompat.getColor(resources, R.color.bg_default, null)
+        )
     }
 
     private fun themeSwitchPreferences() {
-        binding?.run {
+        binding.run {
             listOf(
-                binding?.webinarInfoView?.conversationInfoLobby!!,
-                binding?.notificationSettingsView?.callNotifications!!,
-                binding?.notificationSettingsView?.conversationInfoPriorityConversation!!,
-                binding?.guestAccessView?.guestAccessAllowSwitch!!,
-                binding?.guestAccessView?.guestAccessPasswordSwitch!!
+                binding.webinarInfoView.conversationInfoLobby,
+                binding.notificationSettingsView.callNotifications,
+                binding.notificationSettingsView.conversationInfoPriorityConversation,
+                binding.guestAccessView.guestAccessAllowSwitch,
+                binding.guestAccessView.guestAccessPasswordSwitch
             ).forEach(viewThemeUtils.talk::colorSwitchPreference)
         }
     }
 
     private fun themeCategories() {
-        binding?.run {
+        binding.run {
             listOf(
                 conversationInfoName,
                 conversationDescription,
@@ -216,30 +238,22 @@ class ConversationInfoController(args: Bundle) :
                 ownOptions,
                 categorySharedItems,
                 categoryConversationSettings,
-                binding?.guestAccessView?.guestAccessCategory!!,
-                binding?.webinarInfoView?.conversationInfoWebinar!!,
-                binding?.notificationSettingsView?.notificationSettingsCategory!!
+                binding.guestAccessView.guestAccessCategory,
+                binding.webinarInfoView.conversationInfoWebinar,
+                binding.notificationSettingsView.notificationSettingsCategory
             ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
         }
     }
 
     private fun showSharedItems() {
-        val intent = Intent(activity, SharedItemsActivity::class.java)
+        val intent = Intent(this, SharedItemsActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(BundleKeys.KEY_CONVERSATION_NAME, conversation?.displayName)
         intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
         intent.putExtra(BundleKeys.KEY_USER_ENTITY, conversationUser as Parcelable)
         intent.putExtra(SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR, conversation?.isParticipantOwnerOrModerator)
-        activity!!.startActivity(intent)
-    }
-
-    override fun onViewBound(view: View) {
-        super.onViewBound(view)
-
-        binding?.addParticipantsAction?.visibility = GONE
-
-        binding?.progressBar?.let { viewThemeUtils.platform.colorCircularProgressBar(it) }
+        startActivity(intent)
     }
 
     private fun setupWebinaryView() {
@@ -257,7 +271,7 @@ class ConversationInfoController(args: Bundle) :
             reconfigureLobbyTimerView()
 
             binding?.webinarInfoView?.startTimePreferences?.setOnClickListener {
-                MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
                     val currentTimeCalendar = Calendar.getInstance()
                     if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
                         currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer!! * DateConstants.SECOND_DIVIDER
@@ -345,7 +359,7 @@ class ConversationInfoController(args: Bundle) :
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
         ncApi.setLobbyForConversation(
-            ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token),
+            ApiUtils.getCredentials(conversationUser.username, conversationUser.token),
             ApiUtils.getUrlForRoomWebinaryLobby(apiVersion, conversationUser.baseUrl, conversation!!.token),
             state,
             conversation!!.lobbyTimer
@@ -376,54 +390,45 @@ class ConversationInfoController(args: Bundle) :
         getListOfParticipants()
     }
 
-    override fun onDetach(view: View) {
-        super.onDetach(view)
-        eventBus.unregister(this)
-    }
-
     private fun showDeleteConversationDialog() {
-        if (activity != null) {
-            binding?.conversationInfoName?.let {
-                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                    .setIcon(
-                        viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                            context,
-                            R.drawable.ic_delete_black_24dp
-                        )
+        binding.conversationInfoName.let {
+            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
+                .setIcon(
+                    viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                        context,
+                        R.drawable.ic_delete_black_24dp
                     )
-                    .setTitle(R.string.nc_delete_call)
-                    .setMessage(R.string.nc_delete_conversation_more)
-                    .setPositiveButton(R.string.nc_delete) { _, _ ->
-                        deleteConversation()
-                    }
-                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                        // unused atm
-                    }
-
-                viewThemeUtils.dialog
-                    .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-                val dialog = dialogBuilder.show()
-                viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 )
-            }
+                .setTitle(R.string.nc_delete_call)
+                .setMessage(R.string.nc_delete_conversation_more)
+                .setPositiveButton(R.string.nc_delete) { _, _ ->
+                    deleteConversation()
+                }
+                .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                    // unused atm
+                }
+
+            viewThemeUtils.dialog
+                .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         }
     }
 
     private fun setupAdapter() {
-        if (activity != null) {
-            if (adapter == null) {
-                adapter = FlexibleAdapter(userItems, activity, true)
-            }
-
-            val layoutManager = SmoothScrollLinearLayoutManager(activity)
-            binding?.recyclerView?.layoutManager = layoutManager
-            binding?.recyclerView?.setHasFixedSize(true)
-            binding?.recyclerView?.adapter = adapter
-
-            adapter!!.addListener(this)
+        if (adapter == null) {
+            adapter = FlexibleAdapter(userItems, this, true)
         }
+
+        val layoutManager = SmoothScrollLinearLayoutManager(this)
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.isNestedScrollingEnabled = false
+        adapter!!.addListener(this)
     }
 
     private fun handleParticipants(participants: List<Participant>) {
@@ -435,7 +440,7 @@ class ConversationInfoController(args: Bundle) :
 
         for (i in participants.indices) {
             participant = participants[i]
-            userItem = ParticipantItem(router.activity, participant, conversationUser, viewThemeUtils)
+            userItem = ParticipantItem(this, participant, conversationUser, viewThemeUtils)
             if (participant.sessionId != null) {
                 userItem.isOnline = !participant.sessionId.equals("0")
             } else {
@@ -461,17 +466,9 @@ class ConversationInfoController(args: Bundle) :
 
         setupAdapter()
 
-        binding?.participantsListCategory?.visibility = VISIBLE
+        binding.participantsListCategory?.visibility = VISIBLE
         adapter!!.updateDataSet(userItems)
     }
-
-    override val title: String
-        get() =
-            if (hasAvatarSpacing) {
-                " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)
-            } else {
-                resources!!.getString(R.string.nc_conversation_menu_conversation_info)
-            }
 
     private fun getListOfParticipants() {
         var apiVersion = 1
@@ -528,19 +525,9 @@ class ConversationInfoController(args: Bundle) :
         bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
         bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
 
-        router.pushController(
-            (
-                RouterTransaction.with(
-                    ContactsController(bundle)
-                )
-                    .pushChangeHandler(
-                        HorizontalChangeHandler()
-                    )
-                    .popChangeHandler(
-                        HorizontalChangeHandler()
-                    )
-                )
-        )
+        val intent = Intent(this, ContactsActivity::class.java)
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
 
     private fun leaveConversation() {
@@ -551,37 +538,38 @@ class ConversationInfoController(args: Bundle) :
                         .java
                 ).setInputData(it).build()
             )
-            router.popToRoot()
+
+            val intent = Intent(context, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
         }
     }
 
     private fun showClearHistoryDialog() {
-        if (activity != null) {
-            binding?.conversationInfoName?.context?.let {
-                val dialogBuilder = MaterialAlertDialogBuilder(it)
-                    .setIcon(
-                        viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                            context,
-                            R.drawable.ic_delete_black_24dp
-                        )
+        binding.conversationInfoName.context.let {
+            val dialogBuilder = MaterialAlertDialogBuilder(it)
+                .setIcon(
+                    viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                        context,
+                        R.drawable.ic_delete_black_24dp
                     )
-                    .setTitle(R.string.nc_clear_history)
-                    .setMessage(R.string.nc_clear_history_warning)
-                    .setPositiveButton(R.string.nc_delete_all) { _, _ ->
-                        clearHistory()
-                    }
-                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                        // unused atm
-                    }
-
-                viewThemeUtils.dialog
-                    .colorMaterialAlertDialogBackground(it, dialogBuilder)
-                val dialog = dialogBuilder.show()
-                viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 )
-            }
+                .setTitle(R.string.nc_clear_history)
+                .setMessage(R.string.nc_clear_history_warning)
+                .setPositiveButton(R.string.nc_delete_all) { _, _ ->
+                    clearHistory()
+                }
+                .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                    // unused atm
+                }
+
+            viewThemeUtils.dialog
+                .colorMaterialAlertDialogBackground(it, dialogBuilder)
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         }
     }
 
@@ -590,7 +578,7 @@ class ConversationInfoController(args: Bundle) :
 
         ncApi.clearChatHistory(
             credentials,
-            ApiUtils.getUrlForChat(apiVersion, conversationUser!!.baseUrl, conversationToken)
+            ApiUtils.getUrlForChat(apiVersion, conversationUser.baseUrl, conversationToken)
         )
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -622,7 +610,9 @@ class ConversationInfoController(args: Bundle) :
                     DeleteConversationWorker::class.java
                 ).setInputData(it).build()
             )
-            router.popToRoot()
+            val intent = Intent(context, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
         }
     }
 
@@ -659,7 +649,7 @@ class ConversationInfoController(args: Bundle) :
                         binding?.clearConversationHistory?.visibility = GONE
                     }
 
-                    if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
+                    if (!isDestroyed) {
                         binding?.ownOptions?.visibility = VISIBLE
 
                         setupWebinaryView()
@@ -706,7 +696,7 @@ class ConversationInfoController(args: Bundle) :
 
                         binding?.let {
                             GuestAccessHelper(
-                                this@ConversationInfoController,
+                                this@ConversationInfoActivity,
                                 it,
                                 conversation!!,
                                 conversationUser
@@ -882,7 +872,7 @@ class ConversationInfoController(args: Bundle) :
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
-                    conversationUser!!.baseUrl,
+                    conversationUser.baseUrl,
                     conversation!!.token
                 ),
                 participant.userId
@@ -895,7 +885,7 @@ class ConversationInfoController(args: Bundle) :
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
-                    conversationUser!!.baseUrl,
+                    conversationUser.baseUrl,
                     conversation!!.token
                 ),
                 participant.userId
@@ -912,7 +902,7 @@ class ConversationInfoController(args: Bundle) :
                 credentials,
                 ApiUtils.getUrlForAttendees(
                     apiVersion,
-                    conversationUser!!.baseUrl,
+                    conversationUser.baseUrl,
                     conversation!!.token
                 ),
                 participant.attendeeId
@@ -944,7 +934,7 @@ class ConversationInfoController(args: Bundle) :
                 ncApi.removeParticipantFromConversation(
                     credentials,
                     ApiUtils.getUrlForRemovingParticipantFromConversation(
-                        conversationUser!!.baseUrl,
+                        conversationUser.baseUrl,
                         conversation!!.token,
                         true
                     ),
@@ -974,7 +964,7 @@ class ConversationInfoController(args: Bundle) :
                 ncApi.removeParticipantFromConversation(
                     credentials,
                     ApiUtils.getUrlForRemovingParticipantFromConversation(
-                        conversationUser!!.baseUrl,
+                        conversationUser.baseUrl,
                         conversation!!.token,
                         false
                     ),
@@ -1005,7 +995,7 @@ class ConversationInfoController(args: Bundle) :
     }
 
     override fun onItemClick(view: View?, position: Int): Boolean {
-        if (!conversation!!.canModerate(conversationUser!!)) {
+        if (!conversation!!.canModerate(conversationUser)) {
             return true
         }
 
@@ -1022,7 +1012,7 @@ class ConversationInfoController(args: Bundle) :
                         context.getString(R.string.nc_attendee_pin, participant.attendeePin)
                     )
                 )
-                MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
                     cornerRadius(res = R.dimen.corner_radius)
 
                     title(text = participant.displayName)
@@ -1048,7 +1038,7 @@ class ConversationInfoController(args: Bundle) :
                     context.getString(R.string.nc_remove_group_and_members)
                 )
             )
-            MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+            MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
                 cornerRadius(res = R.dimen.corner_radius)
 
                 title(text = participant.displayName)
@@ -1068,7 +1058,7 @@ class ConversationInfoController(args: Bundle) :
                     context.getString(R.string.nc_remove_circle_and_members)
                 )
             )
-            MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+            MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
                 cornerRadius(res = R.dimen.corner_radius)
 
                 title(text = participant.displayName)
@@ -1119,7 +1109,7 @@ class ConversationInfoController(args: Bundle) :
         }
 
         if (items.isNotEmpty()) {
-            MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+            MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
                 cornerRadius(res = R.dimen.corner_radius)
 
                 title(text = participant.displayName)

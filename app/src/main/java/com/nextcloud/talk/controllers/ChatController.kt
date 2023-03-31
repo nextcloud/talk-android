@@ -126,6 +126,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.conversation.info.ConversationInfoActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
@@ -1778,11 +1779,10 @@ class ChatController(args: Bundle) :
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
         bundle.putString(KEY_ROOM_TOKEN, roomToken)
         bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, isOneToOneConversation())
-        router.pushController(
-            RouterTransaction.with(ConversationInfoController(bundle))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
+
+        val intent = Intent(activity, ConversationInfoActivity::class.java)
+        intent.putExtras(bundle)
+        activity!!.startActivity(intent)
     }
 
     private fun setupMentionAutocomplete() {

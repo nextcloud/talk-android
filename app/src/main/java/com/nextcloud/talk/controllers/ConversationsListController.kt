@@ -61,7 +61,6 @@ import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -76,6 +75,7 @@ import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
@@ -767,13 +767,9 @@ class ConversationsListController(bundle: Bundle) :
             conversation.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun showNewConversationsScreen() {
-        val bundle = Bundle()
-        bundle.putBoolean(KEY_NEW_CONVERSATION, true)
-        router.pushController(
-            RouterTransaction.with(ContactsController(bundle))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
+        val intent = Intent(context, ContactsActivity::class.java)
+        intent.putExtra(KEY_NEW_CONVERSATION, true)
+        startActivity(intent)
     }
 
     private fun dispose(disposable: Disposable?) {
