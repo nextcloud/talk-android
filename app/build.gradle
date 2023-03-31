@@ -252,7 +252,7 @@ dependencies {
         exclude group: 'com.google.android', module: 'flexbox'	// replaced by v3 not yet used here
     })
 
-    implementation 'joda-time:joda-time:2.12.4'
+    implementation 'joda-time:joda-time:2.12.5'
     implementation "io.coil-kt:coil:${coilKtVersion}"
     implementation "io.coil-kt:coil-gif:${coilKtVersion}"
     implementation "io.coil-kt:coil-svg:${coilKtVersion}"
