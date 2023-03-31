@@ -40,7 +40,7 @@ import coil.load
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.ChatController
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
 import com.nextcloud.talk.extensions.loadBotsAvatar
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
@@ -201,8 +201,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
         }
 
         binding.messageQuote.quotedChatMessageView.setOnClickListener() {
-            val chatController = commonMessageInterface as ChatController
-            chatController.jumpToQuotedMessage(parentChatMessage)
+            val chatActivity = commonMessageInterface as ChatActivity
+            chatActivity.jumpToQuotedMessage(parentChatMessage)
         }
     }
 

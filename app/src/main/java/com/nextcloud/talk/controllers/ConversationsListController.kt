@@ -75,6 +75,7 @@ import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
@@ -87,7 +88,6 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
-import com.nextcloud.talk.jobs.UploadAndShareFilesWorker.Companion.requestStoragePermission
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -120,7 +120,6 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
-import com.nextcloud.talk.utils.remapchat.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -996,7 +995,8 @@ class ConversationsListController(bundle: Bundle) :
                 )
             }
         } else {
-            requestStoragePermission(this@ConversationsListController)
+            // TODO
+            // requestStoragePermission(this@ConversationsListController)
         }
     }
 
@@ -1132,13 +1132,18 @@ class ConversationsListController(bundle: Bundle) :
             bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
             selectedMessageId = null
         }
-        remapChatController(
-            router,
-            currentUser!!.id!!,
-            selectedConversation!!.token!!,
-            bundle,
-            false
-        )
+        // remapChatController(
+        //     router,
+        //     currentUser!!.id!!,
+        //     selectedConversation!!.token!!,
+        //     bundle,
+        //     false
+        // )
+
+        val intent = Intent(context, ChatActivity::class.java)
+        intent.putExtras(bundle)
+        startActivity(intent)
+
         clearIntentAction()
     }
 

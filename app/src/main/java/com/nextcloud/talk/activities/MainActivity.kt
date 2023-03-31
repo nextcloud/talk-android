@@ -39,6 +39,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
@@ -56,7 +57,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
-import com.nextcloud.talk.utils.remapchat.ConductorRemapping.remapChatController
 import io.reactivex.Observer
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -93,16 +93,22 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         router = Conductor.attachRouter(this, binding.controllerContainer, savedInstanceState)
 
+        // TODO: delete this. open chats directly via intent
         if (intent.getBooleanExtra(BundleKeys.KEY_OPEN_CHAT, false)) {
             logRouterBackStack(router!!)
-            remapChatController(
-                router!!,
-                intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
-                intent.getStringExtra(KEY_ROOM_TOKEN)!!,
-                intent.extras!!,
-                true,
-                true
-            )
+            // remapChatController(
+            //     router!!,
+            //     intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
+            //     intent.getStringExtra(KEY_ROOM_TOKEN)!!,
+            //     intent.extras!!,
+            //     true,
+            //     true
+            // )
+
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.putExtras(intent.extras!!)
+            startActivity(intent)
+
             logRouterBackStack(router!!)
         }
 
@@ -306,13 +312,17 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                                     KEY_ACTIVE_CONVERSATION,
                                     Parcels.wrap(roomOverall.ocs!!.data)
                                 )
-                                remapChatController(
-                                    router!!,
-                                    currentUser!!.id!!,
-                                    roomOverall.ocs!!.data!!.token!!,
-                                    bundle,
-                                    true
-                                )
+                                // remapChatController(
+                                //     router!!,
+                                //     currentUser!!.id!!,
+                                //     roomOverall.ocs!!.data!!.token!!,
+                                //     bundle,
+                                //     true
+                                // )
+
+                                val intent = Intent(context, ChatActivity::class.java)
+                                intent.putExtras(bundle)
+                                startActivity(intent)
                             }
 
                             override fun onError(e: Throwable) {
@@ -367,14 +377,19 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         if (intent.getBooleanExtra(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL, false)) {
             logRouterBackStack(router!!)
-            remapChatController(
-                router!!,
-                intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
-                intent.getStringExtra(KEY_ROOM_TOKEN)!!,
-                intent.extras!!,
-                true,
-                true
-            )
+            // remapChatController(
+            //     router!!,
+            //     intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
+            //     intent.getStringExtra(KEY_ROOM_TOKEN)!!,
+            //     intent.extras!!,
+            //     true,
+            //     true
+            // )
+
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.putExtras(intent.extras!!)
+            startActivity(intent)
+
             logRouterBackStack(router!!)
         }
 
@@ -388,14 +403,19 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 startActivity(callNotificationIntent)
             } else {
                 logRouterBackStack(router!!)
-                remapChatController(
-                    router!!,
-                    intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
-                    intent.getStringExtra(KEY_ROOM_TOKEN)!!,
-                    intent.extras!!,
-                    true,
-                    true
-                )
+                // remapChatController(
+                //     router!!,
+                //     intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
+                //     intent.getStringExtra(KEY_ROOM_TOKEN)!!,
+                //     intent.extras!!,
+                //     true,
+                //     true
+                // )
+
+                val intent = Intent(context, ChatActivity::class.java)
+                intent.putExtras(intent.extras!!)
+                startActivity(intent)
+
                 logRouterBackStack(router!!)
             }
         }

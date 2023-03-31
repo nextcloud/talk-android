@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.adapters.messages;
 
-import com.nextcloud.talk.controllers.ChatController;
+import com.nextcloud.talk.chat.ChatActivity;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.commons.ViewHolder;
 import com.stfalcon.chatkit.commons.models.IMessage;
@@ -30,15 +30,15 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import java.util.List;
 
 public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAdapter<M> {
-    private final ChatController chatController;
+    private final ChatActivity chatActivity;
 
     public TalkMessagesListAdapter(
-            String senderId,
-            MessageHolders holders,
-            ImageLoader imageLoader,
-            ChatController chatController) {
+        String senderId,
+        MessageHolders holders,
+        ImageLoader imageLoader,
+        ChatActivity chatActivity) {
         super(senderId, holders, imageLoader);
-        this.chatController = chatController;
+        this.chatActivity = chatActivity;
     }
     
     public List<MessagesListAdapter.Wrapper> getItems() {
@@ -50,30 +50,30 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
         super.onBindViewHolder(holder, position);
 
         if (holder instanceof IncomingTextMessageViewHolder) {
-            ((IncomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+            ((IncomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
         } else if (holder instanceof OutcomingTextMessageViewHolder) {
-            ((OutcomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+            ((OutcomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
 
         } else if (holder instanceof IncomingLocationMessageViewHolder) {
-            ((IncomingLocationMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+            ((IncomingLocationMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
         } else if (holder instanceof OutcomingLocationMessageViewHolder) {
-            ((OutcomingLocationMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+            ((OutcomingLocationMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
 
         } else if (holder instanceof IncomingLinkPreviewMessageViewHolder) {
-            ((IncomingLinkPreviewMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+            ((IncomingLinkPreviewMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
         } else if (holder instanceof OutcomingLinkPreviewMessageViewHolder) {
-            ((OutcomingLinkPreviewMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+            ((OutcomingLinkPreviewMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
 
         } else if (holder instanceof IncomingVoiceMessageViewHolder) {
-            ((IncomingVoiceMessageViewHolder) holder).assignVoiceMessageInterface(chatController);
-            ((IncomingVoiceMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+            ((IncomingVoiceMessageViewHolder) holder).assignVoiceMessageInterface(chatActivity);
+            ((IncomingVoiceMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
         } else if (holder instanceof OutcomingVoiceMessageViewHolder) {
-            ((OutcomingVoiceMessageViewHolder) holder).assignVoiceMessageInterface(chatController);
-            ((OutcomingVoiceMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+            ((OutcomingVoiceMessageViewHolder) holder).assignVoiceMessageInterface(chatActivity);
+            ((OutcomingVoiceMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
 
         } else if (holder instanceof PreviewMessageViewHolder) {
-            ((PreviewMessageViewHolder) holder).assignPreviewMessageInterface(chatController);
-            ((PreviewMessageViewHolder) holder).assignCommonMessageInterface(chatController);
+            ((PreviewMessageViewHolder) holder).assignPreviewMessageInterface(chatActivity);
+            ((PreviewMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
         }
     }
 }

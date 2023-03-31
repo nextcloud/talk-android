@@ -28,7 +28,6 @@ import android.util.Log
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.bluelinelabs.conductor.Router
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
@@ -42,7 +41,6 @@ import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.PROFI
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.SPREED
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.remapchat.ConductorRemapping
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -51,7 +49,7 @@ import org.parceler.Parcels
 
 private const val TAG = "ProfileBottomSheet"
 
-class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val router: Router) {
+class ProfileBottomSheet(val ncApi: NcApi, val userModel: User) {
 
     private val allowedAppIds = listOf(SPREED.stringValue, PROFILE.stringValue, EMAIL.stringValue)
 
@@ -170,13 +168,15 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val router: Rout
                                     BundleKeys.KEY_ACTIVE_CONVERSATION,
                                     Parcels.wrap(roomOverall.ocs!!.data)
                                 )
-                                ConductorRemapping.remapChatController(
-                                    router,
-                                    userModel.id!!,
-                                    roomOverall.ocs!!.data!!.token!!,
-                                    bundle,
-                                    true
-                                )
+
+                                // TODO
+                                // ConductorRemapping.remapChatController(
+                                //     router,
+                                //     userModel.id!!,
+                                //     roomOverall.ocs!!.data!!.token!!,
+                                //     bundle,
+                                //     true
+                                // )
                             }
 
                             override fun onError(e: Throwable) {

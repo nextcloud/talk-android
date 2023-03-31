@@ -37,7 +37,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.ChatController
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
 import com.nextcloud.talk.models.domain.ReactionAddedModel
@@ -59,13 +59,13 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class MessageActionsDialog(
-    private val chatController: ChatController,
+    private val chatActivity: ChatActivity,
     private val message: ChatMessage,
     private val user: User?,
     private val currentConversation: Conversation?,
     private val showMessageDeletionButton: Boolean,
     private val hasChatPermission: Boolean
-) : BottomSheetDialog(chatController.activity!!) {
+) : BottomSheetDialog(chatActivity) {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -233,7 +233,7 @@ class MessageActionsDialog(
     private fun initMenuMarkAsUnread(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuMarkAsUnread.setOnClickListener {
-                chatController.markAsUnread(message)
+                chatActivity.markAsUnread(message)
                 dismiss()
             }
         }
@@ -244,7 +244,7 @@ class MessageActionsDialog(
     private fun initMenuForwardMessage(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuForwardMessage.setOnClickListener {
-                chatController.forwardMessage(message)
+                chatActivity.forwardMessage(message)
                 dismiss()
             }
         }
@@ -255,7 +255,7 @@ class MessageActionsDialog(
     private fun initMenuDeleteMessage(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuDeleteMessage.setOnClickListener {
-                chatController.deleteMessage(message)
+                chatActivity.deleteMessage(message)
                 dismiss()
             }
         }
@@ -266,7 +266,7 @@ class MessageActionsDialog(
     private fun initMenuReplyPrivately(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuReplyPrivately.setOnClickListener {
-                chatController.replyPrivately(message)
+                chatActivity.replyPrivately(message)
                 dismiss()
             }
         }
@@ -277,7 +277,7 @@ class MessageActionsDialog(
     private fun initMenuReplyToMessage(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuReplyToMessage.setOnClickListener {
-                chatController.replyToMessage(message)
+                chatActivity.replyToMessage(message)
                 dismiss()
             }
         }
@@ -288,7 +288,7 @@ class MessageActionsDialog(
     private fun initMenuItemCopy(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuCopyMessage.setOnClickListener {
-                chatController.copyMessage(message)
+                chatActivity.copyMessage(message)
                 dismiss()
             }
         }
@@ -325,7 +325,7 @@ class MessageActionsDialog(
 
         override fun onNext(reactionAddedModel: ReactionAddedModel) {
             if (reactionAddedModel.success) {
-                chatController.updateUiToAddReaction(
+                chatActivity.updateUiToAddReaction(
                     reactionAddedModel.chatMessage,
                     reactionAddedModel.emoji
                 )
@@ -348,7 +348,7 @@ class MessageActionsDialog(
 
         override fun onNext(reactionDeletedModel: ReactionDeletedModel) {
             if (reactionDeletedModel.success) {
-                chatController.updateUiToDeleteReaction(
+                chatActivity.updateUiToDeleteReaction(
                     reactionDeletedModel.chatMessage,
                     reactionDeletedModel.emoji
                 )

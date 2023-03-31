@@ -218,6 +218,10 @@
             android:name=".contacts.ContactsActivity"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name=".chat.ChatActivity"
+            android:theme="@style/AppTheme" />
+
         <receiver android:name=".receivers.PackageReplacedReceiver"
             android:exported="false">
             <intent-filter>
