@@ -105,9 +105,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             //     true
             // )
 
-            val intent = Intent(context, ChatActivity::class.java)
-            intent.putExtras(intent.extras!!)
-            startActivity(intent)
+            val chatIntent = Intent(context, ChatActivity::class.java)
+            chatIntent.putExtras(intent.extras!!)
+            startActivity(chatIntent)
 
             logRouterBackStack(router!!)
         }
@@ -312,17 +312,10 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                                     KEY_ACTIVE_CONVERSATION,
                                     Parcels.wrap(roomOverall.ocs!!.data)
                                 )
-                                // remapChatController(
-                                //     router!!,
-                                //     currentUser!!.id!!,
-                                //     roomOverall.ocs!!.data!!.token!!,
-                                //     bundle,
-                                //     true
-                                // )
 
-                                val intent = Intent(context, ChatActivity::class.java)
-                                intent.putExtras(bundle)
-                                startActivity(intent)
+                                val chatIntent = Intent(context, ChatActivity::class.java)
+                                chatIntent.putExtras(bundle)
+                                startActivity(chatIntent)
                             }
 
                             override fun onError(e: Throwable) {
@@ -386,9 +379,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             //     true
             // )
 
-            val intent = Intent(context, ChatActivity::class.java)
-            intent.putExtras(intent.extras!!)
-            startActivity(intent)
+            val chatIntent = Intent(context, ChatActivity::class.java)
+            chatIntent.putExtras(intent.extras!!)
+            startActivity(chatIntent)
 
             logRouterBackStack(router!!)
         }
@@ -412,9 +405,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 //     true
                 // )
 
-                val intent = Intent(context, ChatActivity::class.java)
-                intent.putExtras(intent.extras!!)
-                startActivity(intent)
+                val chatIntent = Intent(context, ChatActivity::class.java)
+                chatIntent.putExtras(intent.extras!!)
+                startActivity(chatIntent)
 
                 logRouterBackStack(router!!)
             }

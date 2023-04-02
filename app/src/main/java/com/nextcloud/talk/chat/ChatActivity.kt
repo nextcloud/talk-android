@@ -180,7 +180,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
-import com.nextcloud.talk.utils.remapchat.RemapChatModel
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
@@ -255,7 +254,7 @@ class ChatActivity :
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
     var newMessagesCount = 0
-    var startCallFromNotification: Boolean? = null
+    var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
     lateinit var roomId: String
     var voiceOnly: Boolean = true
@@ -308,24 +307,25 @@ class ChatActivity :
         setupSystemColors()
         setContentView(binding.root)
 
-        conversationUser = intent.getParcelableExtra(KEY_USER_ENTITY)
-        roomId = intent.getStringExtra(KEY_ROOM_ID)!!
-        roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
-        sharedText = intent.getStringExtra(BundleKeys.KEY_SHARED_TEXT)!!
+        val extras: Bundle? = intent.extras
+
+        conversationUser = extras?.getParcelable(KEY_USER_ENTITY)
+        roomId = extras?.getString(KEY_ROOM_ID).orEmpty()
+        roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
+
+        sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
 
         Log.d(TAG, "   roomToken = $roomToken")
-        if (roomToken.isNullOrEmpty()) {
+        if (roomToken.isEmpty()) {
             Log.d(TAG, "   roomToken was null or empty!")
         }
 
         if (intent.hasExtra(KEY_ACTIVE_CONVERSATION)) {
-            currentConversation = Parcels.unwrap<Conversation>(intent.getParcelableExtra(KEY_ACTIVE_CONVERSATION))
+            currentConversation = Parcels.unwrap<Conversation>(extras?.getParcelable(KEY_ACTIVE_CONVERSATION))
             participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
         }
 
-        if (intent.hasExtra(BundleKeys.KEY_CONVERSATION_PASSWORD)) {
-            roomPassword = intent.getStringExtra(BundleKeys.KEY_CONVERSATION_PASSWORD)!!
-        }
+        roomPassword = extras?.getString(BundleKeys.KEY_CONVERSATION_PASSWORD).orEmpty()
 
         credentials = if (conversationUser?.userId == "?") {
             null
@@ -333,15 +333,10 @@ class ChatActivity :
             ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
         }
 
-        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            startCallFromNotification = intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)
-        }
+        startCallFromNotification = extras?.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false) == true
+        startCallFromRoomSwitch = extras?.getBoolean(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL, false) == true
 
-        if (intent.hasExtra(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)) {
-            startCallFromRoomSwitch = intent.getBooleanExtra(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL, false)
-        }
-
-        voiceOnly = intent.getBooleanExtra(BundleKeys.KEY_CALL_VOICE_ONLY, false)
+        voiceOnly = extras?.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false) == true
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1020,14 +1015,11 @@ class ChatActivity :
             bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
             bundle.putString(KEY_ROOM_TOKEN, token)
 
-            // TODO
-            // ConductorRemapping.remapChatController(
-            //     router,
-            //     conversationUser.id!!,
-            //     token,
-            //     bundle,
-            //     true
-            // )
+            leaveRoom {
+                val chatIntent = Intent(context, ChatActivity::class.java)
+                chatIntent.putExtras(bundle)
+                startActivity(chatIntent)
+            }
         }
     }
 
@@ -1929,7 +1921,7 @@ class ChatActivity :
         if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
             if (validSessionId()) {
-                leaveRoom(null, null)
+                leaveRoom(null)
             } else {
                 Log.d(TAG, "not leaving room (validSessionId is false)")
             }
@@ -2097,8 +2089,7 @@ class ChatActivity :
     }
 
     fun leaveRoom(
-        remapChatModel: RemapChatModel?,
-        funToCallWhenLeaveSuccessful: ((RemapChatModel) -> Unit)?
+        funToCallWhenLeaveSuccessful: (() -> Unit)?
     ) {
         logConversationInfos("leaveRoom")
 
@@ -2144,9 +2135,9 @@ class ChatActivity :
 
                     sessionIdAfterRoomJoined = "0"
 
-                    if (remapChatModel != null && funToCallWhenLeaveSuccessful != null) {
+                    if (funToCallWhenLeaveSuccessful != null) {
                         Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
-                        funToCallWhenLeaveSuccessful(remapChatModel)
+                        funToCallWhenLeaveSuccessful()
                     } else {
                         Log.d(TAG, "remapChatController was not set")
                     }
@@ -3092,14 +3083,11 @@ class ChatActivity :
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
 
-                                // TODO
-                                // ConductorRemapping.remapChatController(
-                                //     router,
-                                //     conversationUser!!.id!!,
-                                //     roomOverall.ocs!!.data!!.token!!,
-                                //     bundle,
-                                //     true
-                                // )
+                                leaveRoom {
+                                    val chatIntent = Intent(context, ChatActivity::class.java)
+                                    chatIntent.putExtras(bundle)
+                                    startActivity(chatIntent)
+                                }
                             }
 
                             override fun onError(e: Throwable) {
@@ -3413,14 +3401,11 @@ class ChatActivity :
                             )
                             conversationIntent.putExtras(bundle)
 
-                            // TODO
-                            // ConductorRemapping.remapChatController(
-                            //     router,
-                            //     conversationUser.id!!,
-                            //     roomOverall.ocs!!.data!!.token!!,
-                            //     bundle,
-                            //     true
-                            // )
+                            leaveRoom {
+                                val chatIntent = Intent(context, ChatActivity::class.java)
+                                chatIntent.putExtras(bundle)
+                                startActivity(chatIntent)
+                            }
                         } else {
                             conversationIntent.putExtras(bundle)
                             startActivity(conversationIntent)
