@@ -1018,6 +1018,7 @@ class ChatActivity :
             leaveRoom {
                 val chatIntent = Intent(context, ChatActivity::class.java)
                 chatIntent.putExtras(bundle)
+                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chatIntent)
             }
         }
@@ -3086,6 +3087,7 @@ class ChatActivity :
                                 leaveRoom {
                                     val chatIntent = Intent(context, ChatActivity::class.java)
                                     chatIntent.putExtras(bundle)
+                                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                     startActivity(chatIntent)
                                 }
                             }
@@ -3404,6 +3406,7 @@ class ChatActivity :
                             leaveRoom {
                                 val chatIntent = Intent(context, ChatActivity::class.java)
                                 chatIntent.putExtras(bundle)
+                                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                 startActivity(chatIntent)
                             }
                         } else {
