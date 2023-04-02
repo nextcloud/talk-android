@@ -352,7 +352,7 @@ class ChatActivity :
         if (conversationUser?.userId != "?" &&
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag")
         ) {
-            findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
+            binding.chatToolbar.setOnClickListener { v -> showConversationInfoScreen() }
         }
 
         val smileyButton = binding?.messageInputView?.findViewById<ImageButton>(R.id.smileyButton)
@@ -948,7 +948,7 @@ class ChatActivity :
             val target = object : Target {
 
                 private fun setIcon(drawable: Drawable?) {
-                    actionBar?.let {
+                    supportActionBar?.let {
                         val avatarSize = (it.height / TOOLBAR_AVATAR_RATIO).roundToInt()
 
                         if (drawable != null && avatarSize > 0) {
