@@ -46,11 +46,11 @@ import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.items.ContactItem
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerContactsRvBinding
@@ -68,7 +68,6 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPEN_CHAT
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
@@ -376,12 +375,10 @@ class ContactsActivity :
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
 
-                                // TODO: go directly to ChatActivity when conductor is removed
-                                bundle.putBoolean(KEY_OPEN_CHAT, true)
-                                val intent = Intent(context, MainActivity::class.java)
-                                intent.putExtras(bundle)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                startActivity(intent)
+                                val chatIntent = Intent(context, ChatActivity::class.java)
+                                chatIntent.putExtras(bundle)
+                                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                startActivity(chatIntent)
                             }
 
                             override fun onError(e: Throwable) {
@@ -759,23 +756,11 @@ class ContactsActivity :
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(openConversationEvent: OpenConversationEvent) {
-        // ConductorRemapping.remapChatController(
-        //     router,
-        //     currentUser!!.id!!,
-        //     openConversationEvent.conversation!!.token!!,
-        //     openConversationEvent.bundle!!,
-        //     true
-        // )
+        val chatIntent = Intent(context, ChatActivity::class.java)
+        chatIntent.putExtras(openConversationEvent.bundle!!)
+        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(chatIntent)
 
-        // TODO: go directly to ChatActivity when conductor is removed
-
-        var bundle = openConversationEvent.bundle!!
-
-        bundle.putBoolean(KEY_OPEN_CHAT, true)
-        val intent = Intent(context, MainActivity::class.java)
-        intent.putExtras(bundle)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
         contactsBottomDialog?.dismiss()
     }
 
@@ -847,12 +832,10 @@ class ContactsActivity :
                         Parcels.wrap(roomOverall.ocs!!.data!!)
                     )
 
-                    // TODO: go directly to ChatActivity when conductor is removed
-                    bundle.putBoolean(KEY_OPEN_CHAT, true)
-                    val intent = Intent(context, MainActivity::class.java)
-                    intent.putExtras(bundle)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    startActivity(intent)
+                    val chatIntent = Intent(context, ChatActivity::class.java)
+                    chatIntent.putExtras(bundle)
+                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(chatIntent)
                 }
 
                 override fun onError(e: Throwable) {

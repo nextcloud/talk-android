@@ -93,25 +93,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         router = Conductor.attachRouter(this, binding.controllerContainer, savedInstanceState)
 
-        // TODO: delete this. open chats directly via intent
-        if (intent.getBooleanExtra(BundleKeys.KEY_OPEN_CHAT, false)) {
-            logRouterBackStack(router!!)
-            // remapChatController(
-            //     router!!,
-            //     intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
-            //     intent.getStringExtra(KEY_ROOM_TOKEN)!!,
-            //     intent.extras!!,
-            //     true,
-            //     true
-            // )
-
-            val chatIntent = Intent(context, ChatActivity::class.java)
-            chatIntent.putExtras(intent.extras!!)
-            startActivity(chatIntent)
-
-            logRouterBackStack(router!!)
-        }
-
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {

@@ -86,5 +86,4 @@ object BundleKeys {
     const val KEY_DISMISS_RECORDING_URL = "KEY_DISMISS_RECORDING_URL"
     const val KEY_SHARE_RECORDING_TO_CHAT_URL = "KEY_SHARE_RECORDING_TO_CHAT_URL"
     const val KEY_GEOCODING_RESULT = "KEY_GEOCODING_RESULT"
-    const val KEY_OPEN_CHAT = "KEY_OPEN_CHAT" // just temporarily used until conductor is deleted
 }
