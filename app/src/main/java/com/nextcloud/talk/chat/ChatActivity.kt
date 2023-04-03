@@ -2730,11 +2730,6 @@ class ChatActivity :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            android.R.id.home -> {
-                // TODO
-                // (activity as MainActivity).resetConversationsList()
-                true
-            }
             R.id.conversation_video_call -> {
                 startACall(false, false)
                 true
