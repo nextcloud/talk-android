@@ -261,7 +261,11 @@ data class ChatMessage(
     }
 
     override fun getText(): String {
-        return getParsedMessage(message, messageParameters)!!
+        return if (message != null) {
+            getParsedMessage(message, messageParameters)!!
+        } else {
+            ""
+        }
     }
 
     /*} else if (getCalculateMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
