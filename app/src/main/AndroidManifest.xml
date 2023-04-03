@@ -220,7 +220,8 @@
 
         <activity
             android:name=".chat.ChatActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
 
         <receiver android:name=".receivers.PackageReplacedReceiver"
             android:exported="false">
