@@ -225,6 +225,8 @@ class ChatActivity :
     CommonMessageInterface,
     PreviewMessageInterface {
 
+    var active = false
+
     private lateinit var binding: ControllerChatBinding
 
     @Inject
@@ -342,6 +344,16 @@ class ChatActivity :
 
         initAdapter()
         binding.messagesListView.setAdapter(adapter)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        active = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        active = false
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -1085,14 +1097,13 @@ class ChatActivity :
     }
 
     private fun startPlayback(message: ChatMessage) {
-        // TODO check how to handle this when conductor is removed
-        // if (!this.isAttached) {
-        //     // don't begin to play voice message if screen is not visible anymore.
-        //     // this situation might happen if file is downloading but user already left the chatview.
-        //     // If user returns to chatview, the old chatview instance is not attached anymore
-        //     // and he has to click the play button again (which is considered to be okay)
-        //     return
-        // }
+        if (!active) {
+            // don't begin to play voice message if screen is not visible anymore.
+            // this situation might happen if file is downloading but user already left the chatview.
+            // If user returns to chatview, the old chatview instance is not attached anymore
+            // and he has to click the play button again (which is considered to be okay)
+            return
+        }
 
         initMediaPlayer(message)
 
