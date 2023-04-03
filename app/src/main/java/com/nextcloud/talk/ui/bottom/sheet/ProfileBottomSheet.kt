@@ -30,6 +30,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.data.user.model.User
@@ -98,7 +99,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User) {
                 when (AllowedAppIds.createFor(action)) {
                     PROFILE -> openProfile(action.hyperlink!!, context)
                     EMAIL -> composeEmail(action.title!!, context)
-                    SPREED -> talkTo(userId)
+                    SPREED -> talkTo(userId, context)
                 }
             }
         }
@@ -117,7 +118,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User) {
         )
     }
 
-    private fun talkTo(userId: String) {
+    private fun talkTo(userId: String, context: Context) {
         val apiVersion =
             ApiUtils.getConversationApiVersion(userModel, intArrayOf(ApiUtils.APIv4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
@@ -169,14 +170,10 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User) {
                                     Parcels.wrap(roomOverall.ocs!!.data)
                                 )
 
-                                // TODO
-                                // ConductorRemapping.remapChatController(
-                                //     router,
-                                //     userModel.id!!,
-                                //     roomOverall.ocs!!.data!!.token!!,
-                                //     bundle,
-                                //     true
-                                // )
+                                val chatIntent = Intent(context, ChatActivity::class.java)
+                                chatIntent.putExtras(bundle)
+                                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                context.startActivity(chatIntent)
                             }
 
                             override fun onError(e: Throwable) {
