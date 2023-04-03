@@ -337,9 +337,13 @@ class ChatActivity :
         startCallFromRoomSwitch = extras?.getBoolean(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL, false) == true
 
         voiceOnly = extras?.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false) == true
+
+        binding.progressBar.visibility = View.VISIBLE
+
+        initAdapter()
+        binding.messagesListView.setAdapter(adapter)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onResume() {
         super.onResume()
@@ -355,33 +359,7 @@ class ChatActivity :
             binding.chatToolbar.setOnClickListener { v -> showConversationInfoScreen() }
         }
 
-        val smileyButton = binding?.messageInputView?.findViewById<ImageButton>(R.id.smileyButton)
-
-        emojiPopup = binding?.messageInputView?.inputEditText?.let {
-            EmojiPopup(
-                rootView = binding.root,
-                editText = it,
-                onEmojiPopupShownListener = {
-                    if (resources != null) {
-                        smileyButton?.setImageDrawable(
-                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_24)
-                        )
-                    }
-                },
-                onEmojiPopupDismissListener = {
-                    smileyButton?.setImageDrawable(
-                        ContextCompat.getDrawable(context, R.drawable.ic_insert_emoticon_black_24dp)
-                    )
-                },
-                onEmojiClickListener = {
-                    binding?.messageInputView?.inputEditText?.editableText?.append(" ")
-                }
-            )
-        }
-
-        smileyButton?.setOnClickListener {
-            emojiPopup?.toggle()
-        }
+        initSmileyKeyboardToggler()
 
         binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
             cancelReply()
@@ -401,139 +379,6 @@ class ChatActivity :
         }
 
         actionBar?.show()
-
-        if (adapter == null) {
-            binding?.progressBar?.visibility = View.VISIBLE
-
-            val messageHolders = MessageHolders()
-            val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!)
-
-            val payload =
-                MessagePayload(roomToken!!, currentConversation?.isParticipantOwnerOrModerator, profileBottomSheet)
-
-            messageHolders.setIncomingTextConfig(
-                IncomingTextMessageViewHolder::class.java,
-                R.layout.item_custom_incoming_text_message,
-                payload
-            )
-            messageHolders.setOutcomingTextConfig(
-                OutcomingTextMessageViewHolder::class.java,
-                R.layout.item_custom_outcoming_text_message
-            )
-
-            messageHolders.setIncomingImageConfig(
-                IncomingPreviewMessageViewHolder::class.java,
-                R.layout.item_custom_incoming_preview_message,
-                payload
-            )
-
-            messageHolders.setOutcomingImageConfig(
-                OutcomingPreviewMessageViewHolder::class.java,
-                R.layout.item_custom_outcoming_preview_message
-            )
-
-            messageHolders.registerContentType(
-                CONTENT_TYPE_SYSTEM_MESSAGE,
-                SystemMessageViewHolder::class.java,
-                R.layout.item_system_message,
-                SystemMessageViewHolder::class.java,
-                R.layout.item_system_message,
-                this
-            )
-
-            messageHolders.registerContentType(
-                CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
-                UnreadNoticeMessageViewHolder::class.java,
-                R.layout.item_date_header,
-                UnreadNoticeMessageViewHolder::class.java,
-                R.layout.item_date_header,
-                this
-            )
-
-            messageHolders.registerContentType(
-                CONTENT_TYPE_LOCATION,
-                IncomingLocationMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_incoming_location_message,
-                OutcomingLocationMessageViewHolder::class.java,
-                null,
-                R.layout.item_custom_outcoming_location_message,
-                this
-            )
-
-            messageHolders.registerContentType(
-                CONTENT_TYPE_VOICE_MESSAGE,
-                IncomingVoiceMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_incoming_voice_message,
-                OutcomingVoiceMessageViewHolder::class.java,
-                null,
-                R.layout.item_custom_outcoming_voice_message,
-                this
-            )
-
-            messageHolders.registerContentType(
-                CONTENT_TYPE_POLL,
-                IncomingPollMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_incoming_poll_message,
-                OutcomingPollMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_outcoming_poll_message,
-                this
-            )
-
-            messageHolders.registerContentType(
-                CONTENT_TYPE_LINK_PREVIEW,
-                IncomingLinkPreviewMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_incoming_link_preview_message,
-                OutcomingLinkPreviewMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_outcoming_link_preview_message,
-                this
-            )
-
-            val senderId = if (!conversationUser!!.userId.equals("?")) {
-                "users/" + conversationUser!!.userId
-            } else {
-                currentConversation?.actorType + "/" + currentConversation?.actorId
-            }
-
-            Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: $senderId")
-
-            adapter = TalkMessagesListAdapter(
-                senderId,
-                messageHolders,
-                ImageLoader { imageView, url, placeholder ->
-                    imageView.loadAvatarOrImagePreview(url!!, conversationUser!!, placeholder as Drawable?)
-                },
-                this
-            )
-        } else {
-            binding?.messagesListView?.visibility = View.VISIBLE
-        }
-
-        binding?.messagesListView?.setAdapter(adapter)
-        adapter?.setLoadMoreListener(this)
-        adapter?.setDateHeadersFormatter { format(it) }
-        adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
-
-        adapter?.registerViewClickListener(
-            R.id.playPauseBtn
-        ) { view, message ->
-            val filename = message.selectedIndividualHashMap!!["name"]
-            val file = File(context.cacheDir, filename!!)
-            if (file.exists()) {
-                if (message.isPlayingVoiceMessage) {
-                    pausePlayback(message)
-                } else {
-                    startPlayback(message)
-                }
-            } else {
-                downloadFileToCache(message)
-            }
-        }
 
         setupSwipeToReply()
 
@@ -650,6 +495,191 @@ class ChatActivity :
             uploadFile(it.toString(), false)
         }
 
+        initVoiceRecordButton()
+
+        binding?.messageInputView?.inputEditText?.setText(sharedText)
+        binding?.messageInputView?.setAttachmentsListener {
+            AttachmentDialog(this, this).show()
+        }
+
+        binding?.messageInputView?.button?.setOnClickListener { submitMessage(false) }
+
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
+            binding?.messageInputView?.button?.setOnLongClickListener {
+                showSendButtonMenu()
+                true
+            }
+        }
+
+        binding?.messageInputView?.button?.contentDescription =
+            resources?.getString(R.string.nc_description_send_message_button)
+
+        binding?.messageInputView?.button?.let { viewThemeUtils.platform.colorImageView(it) }
+
+        if (currentConversation != null && currentConversation?.roomId != null) {
+            loadAvatarForStatusBar()
+            setActionBarTitle()
+        }
+    }
+
+    private fun setupActionBar() {
+        setSupportActionBar(binding.chatToolbar)
+        binding.chatToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
+        setActionBarTitle()
+    }
+
+    private fun setupSystemColors() {
+        DisplayUtils.applyColorToStatusBar(
+            this,
+            ResourcesCompat.getColor(
+                resources,
+                R.color.appbar,
+                null
+            )
+        )
+        DisplayUtils.applyColorToNavigationBar(
+            this.window,
+            ResourcesCompat.getColor(resources, R.color.bg_default, null)
+        )
+    }
+
+    private fun initAdapter() {
+        val senderId = if (!conversationUser!!.userId.equals("?")) {
+            "users/" + conversationUser!!.userId
+        } else {
+            currentConversation?.actorType + "/" + currentConversation?.actorId
+        }
+
+        Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: $senderId")
+
+        adapter = TalkMessagesListAdapter(
+            senderId,
+            initMessageHolders(),
+            ImageLoader { imageView, url, placeholder ->
+                imageView.loadAvatarOrImagePreview(url!!, conversationUser!!, placeholder as Drawable?)
+            },
+            this
+        )
+
+        adapter?.setLoadMoreListener(this)
+        adapter?.setDateHeadersFormatter { format(it) }
+        adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
+        adapter?.registerViewClickListener(
+            R.id.playPauseBtn
+        ) { view, message ->
+            val filename = message.selectedIndividualHashMap!!["name"]
+            val file = File(context.cacheDir, filename!!)
+            if (file.exists()) {
+                if (message.isPlayingVoiceMessage) {
+                    pausePlayback(message)
+                } else {
+                    startPlayback(message)
+                }
+            } else {
+                downloadFileToCache(message)
+            }
+        }
+    }
+
+    private fun initMessageHolders(): MessageHolders {
+        val messageHolders = MessageHolders()
+        val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!)
+
+        val payload =
+            MessagePayload(roomToken!!, currentConversation?.isParticipantOwnerOrModerator, profileBottomSheet)
+
+        messageHolders.setIncomingTextConfig(
+            IncomingTextMessageViewHolder::class.java,
+            R.layout.item_custom_incoming_text_message,
+            payload
+        )
+        messageHolders.setOutcomingTextConfig(
+            OutcomingTextMessageViewHolder::class.java,
+            R.layout.item_custom_outcoming_text_message
+        )
+
+        messageHolders.setIncomingImageConfig(
+            IncomingPreviewMessageViewHolder::class.java,
+            R.layout.item_custom_incoming_preview_message,
+            payload
+        )
+
+        messageHolders.setOutcomingImageConfig(
+            OutcomingPreviewMessageViewHolder::class.java,
+            R.layout.item_custom_outcoming_preview_message
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_SYSTEM_MESSAGE,
+            SystemMessageViewHolder::class.java,
+            R.layout.item_system_message,
+            SystemMessageViewHolder::class.java,
+            R.layout.item_system_message,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
+            UnreadNoticeMessageViewHolder::class.java,
+            R.layout.item_date_header,
+            UnreadNoticeMessageViewHolder::class.java,
+            R.layout.item_date_header,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_LOCATION,
+            IncomingLocationMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_incoming_location_message,
+            OutcomingLocationMessageViewHolder::class.java,
+            null,
+            R.layout.item_custom_outcoming_location_message,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_VOICE_MESSAGE,
+            IncomingVoiceMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_incoming_voice_message,
+            OutcomingVoiceMessageViewHolder::class.java,
+            null,
+            R.layout.item_custom_outcoming_voice_message,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_POLL,
+            IncomingPollMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_incoming_poll_message,
+            OutcomingPollMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_outcoming_poll_message,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_LINK_PREVIEW,
+            IncomingLinkPreviewMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_incoming_link_preview_message,
+            OutcomingLinkPreviewMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_outcoming_link_preview_message,
+            this
+        )
+        return messageHolders
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initVoiceRecordButton() {
         showMicrophoneButton(true)
 
         binding?.messageInputView?.messageInput?.doAfterTextChanged {
@@ -765,56 +795,36 @@ class ChatActivity :
                 return v?.onTouchEvent(event) ?: true
             }
         })
-
-        binding?.messageInputView?.inputEditText?.setText(sharedText)
-        binding?.messageInputView?.setAttachmentsListener {
-            AttachmentDialog(this, this).show()
-        }
-
-        binding?.messageInputView?.button?.setOnClickListener { submitMessage(false) }
-
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
-            binding?.messageInputView?.button?.setOnLongClickListener {
-                showSendButtonMenu()
-                true
-            }
-        }
-
-        binding?.messageInputView?.button?.contentDescription =
-            resources?.getString(R.string.nc_description_send_message_button)
-
-        binding?.messageInputView?.button?.let { viewThemeUtils.platform.colorImageView(it) }
-
-        if (currentConversation != null && currentConversation?.roomId != null) {
-            loadAvatarForStatusBar()
-            setActionBarTitle()
-        }
     }
 
-    private fun setupActionBar() {
-        setSupportActionBar(binding.chatToolbar)
-        binding.chatToolbar.setNavigationOnClickListener {
-            onBackPressed()
-        }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
-        setActionBarTitle()
-    }
+    private fun initSmileyKeyboardToggler() {
+        val smileyButton = binding?.messageInputView?.findViewById<ImageButton>(R.id.smileyButton)
 
-    private fun setupSystemColors() {
-        DisplayUtils.applyColorToStatusBar(
-            this,
-            ResourcesCompat.getColor(
-                resources,
-                R.color.appbar,
-                null
+        emojiPopup = binding?.messageInputView?.inputEditText?.let {
+            EmojiPopup(
+                rootView = binding.root,
+                editText = it,
+                onEmojiPopupShownListener = {
+                    if (resources != null) {
+                        smileyButton?.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_24)
+                        )
+                    }
+                },
+                onEmojiPopupDismissListener = {
+                    smileyButton?.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.ic_insert_emoticon_black_24dp)
+                    )
+                },
+                onEmojiClickListener = {
+                    binding?.messageInputView?.inputEditText?.editableText?.append(" ")
+                }
             )
-        )
-        DisplayUtils.applyColorToNavigationBar(
-            this.window,
-            ResourcesCompat.getColor(resources, R.color.bg_default, null)
-        )
+        }
+
+        smileyButton?.setOnClickListener {
+            emojiPopup?.toggle()
+        }
     }
 
     private fun getRoomInfo() {
