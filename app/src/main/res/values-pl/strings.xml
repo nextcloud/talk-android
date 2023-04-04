@@ -142,6 +142,7 @@
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe. Możesz spróbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
     <string name="nc_failed_to_perform_operation">Przepraszamy, coś poszło nie tak!</string>
     <string name="nc_file_browser_back">Wstecz</string>
+    <string name="nc_file_storage_permission">Wymagane jest zezwolenie na dostęp do plików</string>
     <string name="nc_following_link">Użytkownik korzysta z łącza publicznego</string>
     <string name="nc_formatted_message_you">Ty: %1$s</string>
     <string name="nc_forward_message">Przekaż dalej</string>
@@ -440,6 +441,7 @@
     <string name="shared_items_media">Multimedia</string>
     <string name="shared_items_other">Inne</string>
     <string name="shared_items_poll">Sonda</string>
+    <string name="shared_items_recording">Nagrywanie rozmowy</string>
     <string name="shared_items_voice">Połączenie głosowe</string>
     <string name="starred">Ulubione</string>
     <string name="startCallForbidden">Nie możesz rozpocząć połączenia</string>
