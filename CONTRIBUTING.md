@@ -255,7 +255,8 @@ A good practice is to not include the word `menu` as part of the name because th
 
 ## Translations
 
-We manage translations via [Transifex](https://www.transifex.com/nextcloud/nextcloud/talk-android/). So just request joining the translation team for Android on the site and start translating. All translations will then be automatically pushed to this repository, there is no need for any pull request for translations.
+We manage translations via [Transifex](https://app.transifex.com/nextcloud/nextcloud/talk-android/). So just request 
+joining the translation team for Android on the site and start translating. All translations will then be automatically pushed to this repository, there is no need for any pull request for translations.
 
 When submitting PRs with changed translations, please only submit changes to values/strings.xml and not changes to translated files. These will be overwritten by the next merge of transifex-but and would increase PR review efforts.
 

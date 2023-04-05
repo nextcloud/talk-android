@@ -34,8 +34,8 @@ How to work with translations as a developer:
    - Updated translations from transifex are added via Nextcloud bot to this repo.
 
 How to translate with transifex:
-- Join as a team member for your language: https://www.transifex.com/nextcloud/nextcloud/languages/
-- Go to https://www.transifex.com/nextcloud/nextcloud/translate/#resource/android-talk and choose your language in the
+- Join as a team member for your language: https://app.transifex.com/nextcloud/nextcloud/languages/
+- Go to https://app.transifex.com/nextcloud/nextcloud/translate/#resource/android-talk and choose your language in the
  dropdown menu to start translating.
 - To find a key via search, enter "key:" and it's name, e.g. "key:nc_about"
 -->
