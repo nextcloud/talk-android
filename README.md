@@ -35,7 +35,7 @@ If you want to [contribute](https://nextcloud.com/contribute/) to Nextcloud, you
 
 - on [our public Talk team conversation](https://cloud.nextcloud.com/call/c7fz9qpr)
 - our forum at https://help.nextcloud.com
-- for translations of the app on [Transifex](https://www.transifex.com/nextcloud/nextcloud/android-talk/)
+- for translations of the app on [Transifex](https://app.transifex.com/nextcloud/nextcloud/android-talk/)
 - opening issues and PRs (including a corresponding issue)
 
 ## Contribution Guidelines :scroll:
