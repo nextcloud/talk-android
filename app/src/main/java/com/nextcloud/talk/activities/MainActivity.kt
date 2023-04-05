@@ -349,24 +349,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     private fun handleIntent(intent: Intent) {
         handleActionFromContact(intent)
 
-        if (intent.getBooleanExtra(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL, false)) {
-            logRouterBackStack(router!!)
-            // remapChatController(
-            //     router!!,
-            //     intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
-            //     intent.getStringExtra(KEY_ROOM_TOKEN)!!,
-            //     intent.extras!!,
-            //     true,
-            //     true
-            // )
-
-            val chatIntent = Intent(context, ChatActivity::class.java)
-            chatIntent.putExtras(intent.extras!!)
-            startActivity(chatIntent)
-
-            logRouterBackStack(router!!)
-        }
-
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
                 if (!router!!.hasRootController()) {
@@ -377,14 +359,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 startActivity(callNotificationIntent)
             } else {
                 logRouterBackStack(router!!)
-                // remapChatController(
-                //     router!!,
-                //     intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!.id!!,
-                //     intent.getStringExtra(KEY_ROOM_TOKEN)!!,
-                //     intent.extras!!,
-                //     true,
-                //     true
-                // )
 
                 val chatIntent = Intent(context, ChatActivity::class.java)
                 chatIntent.putExtras(intent.extras!!)

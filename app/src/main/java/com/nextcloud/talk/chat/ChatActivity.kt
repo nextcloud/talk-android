@@ -169,6 +169,7 @@ import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.VibrationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
@@ -177,6 +178,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
@@ -295,7 +298,11 @@ class ChatActivity :
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
             if (token != null) {
-                switchToRoom(token)
+                if (CallActivity.active) {
+                    Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
+                } else {
+                    switchToRoom(token, false, false)
+                }
             }
         }
     }
@@ -309,6 +316,34 @@ class ChatActivity :
         setupSystemColors()
         setContentView(binding.root)
 
+        handleIntent(intent)
+
+        binding.progressBar.visibility = View.VISIBLE
+
+        initAdapter()
+        binding.messagesListView.setAdapter(adapter)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val extras: Bundle? = intent.extras
+
+        val requestedRoomSwitch = extras?.getBoolean(KEY_SWITCH_TO_ROOM, false) == true
+
+        if (requestedRoomSwitch) {
+            val newRoomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
+            val startCallAfterRoomSwitch = extras?.getBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, false) == true
+            val isVoiceOnlyCall = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
+
+            if (newRoomToken != roomToken) {
+                switchToRoom(newRoomToken, startCallAfterRoomSwitch, isVoiceOnlyCall)
+            }
+        } else {
+            handleIntent(intent)
+        }
+    }
+
+    private fun handleIntent(intent: Intent) {
         val extras: Bundle? = intent.extras
 
         conversationUser = extras?.getParcelable(KEY_USER_ENTITY)
@@ -336,14 +371,9 @@ class ChatActivity :
         }
 
         startCallFromNotification = extras?.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false) == true
-        startCallFromRoomSwitch = extras?.getBoolean(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL, false) == true
+        startCallFromRoomSwitch = extras?.getBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, false) == true
 
-        voiceOnly = extras?.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false) == true
-
-        binding.progressBar.visibility = View.VISIBLE
-
-        initAdapter()
-        binding.messagesListView.setAdapter(adapter)
+        voiceOnly = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
     }
 
     override fun onStart() {
@@ -1010,12 +1040,7 @@ class ChatActivity :
         currentConversation?.type == Conversation.ConversationType
         .ROOM_TYPE_ONE_TO_ONE_CALL
 
-    private fun switchToRoom(token: String) {
-        if (CallActivity.active) {
-            Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatController...")
-            return
-        }
-
+    private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
         if (conversationUser != null) {
             runOnUiThread {
                 if (currentConversation?.objectType == Conversation.ObjectType.ROOM) {
@@ -1036,6 +1061,11 @@ class ChatActivity :
             val bundle = Bundle()
             bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
             bundle.putString(KEY_ROOM_TOKEN, token)
+
+            if (startCallAfterRoomSwitch) {
+                bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true)
+                bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall)
+            }
 
             leaveRoom {
                 val chatIntent = Intent(context, ChatActivity::class.java)
@@ -1926,7 +1956,7 @@ class ChatActivity :
     override fun onPause() {
         super.onPause()
 
-        logConversationInfos("onDetach")
+        logConversationInfos("onPause")
 
         eventBus.unregister(this)
 
@@ -1995,24 +2025,6 @@ class ChatActivity :
     }
 
     private fun joinRoomWithPassword() {
-        if (CallActivity.active &&
-            roomToken != ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken
-        ) {
-            Toast.makeText(
-                context,
-                context.getString(R.string.restrict_join_other_room_while_call),
-                Toast.LENGTH_LONG
-            ).show()
-
-            Log.e(
-                TAG,
-                "Restricted to open chat controller because a call in another room is active. This is an " +
-                    "edge case which is not properly handled yet."
-            )
-            finish()
-            return
-        }
-
         // if ApplicationWideCurrentRoomHolder contains a session (because a call is active), then keep the sessionId
         if (ApplicationWideCurrentRoomHolder.getInstance().currentRoomId ==
             currentConversation!!.roomId
@@ -2080,6 +2092,7 @@ class ChatActivity :
                         }
 
                         if (startCallFromRoomSwitch) {
+                            startCallFromRoomSwitch = false
                             startACall(voiceOnly, true)
                         }
                     }
@@ -2160,8 +2173,6 @@ class ChatActivity :
                     if (funToCallWhenLeaveSuccessful != null) {
                         Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
                         funToCallWhenLeaveSuccessful()
-                    } else {
-                        Log.d(TAG, "remapChatController was not set")
                     }
                 }
 
@@ -2872,7 +2883,7 @@ class ChatActivity :
             )
 
             if (isVoiceOnlyCall) {
-                bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true)
+                bundle.putBoolean(KEY_CALL_VOICE_ONLY, true)
             }
             if (callWithoutNotification) {
                 bundle.putBoolean(BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION, true)
@@ -3509,7 +3520,7 @@ class ChatActivity :
     private fun logConversationInfos(methodName: String) {
         Log.d(TAG, " |-----------------------------------------------")
         Log.d(TAG, " | method: $methodName")
-        Log.d(TAG, " | ChatController: " + System.identityHashCode(this).toString())
+        Log.d(TAG, " | ChatActivity: " + System.identityHashCode(this).toString())
         Log.d(TAG, " | roomToken: $roomToken")
         Log.d(TAG, " | currentConversation?.displayName: ${currentConversation?.displayName}")
         Log.d(TAG, " | sessionIdAfterRoomJoined: $sessionIdAfterRoomJoined")
@@ -3517,7 +3528,7 @@ class ChatActivity :
     }
 
     companion object {
-        private const val TAG = "ChatController"
+        private val TAG = ChatActivity::class.simpleName
         private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
         private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
         private const val CONTENT_TYPE_LOCATION: Byte = 3
