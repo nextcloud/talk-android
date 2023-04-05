@@ -32,14 +32,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.ChatController
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.DialogAttachmentBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class AttachmentDialog(val activity: Activity, var chatController: ChatController) : BottomSheetDialog(activity) {
+class AttachmentDialog(val activity: Activity, var chatActivity: ChatActivity) : BottomSheetDialog(activity) {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -61,8 +61,8 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
     }
 
     private fun initItemsStrings() {
-        var serverName = CapabilitiesUtilNew.getServerName(chatController.conversationUser)
-        dialogAttachmentBinding.txtAttachFileFromCloud.text = chatController.resources?.let {
+        var serverName = CapabilitiesUtilNew.getServerName(chatActivity.conversationUser)
+        dialogAttachmentBinding.txtAttachFileFromCloud.text = chatActivity.resources?.let {
             if (serverName.isNullOrEmpty()) {
                 serverName = it.getString(R.string.nc_server_product_name)
             }
@@ -72,15 +72,15 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
 
     private fun initItemsVisibility() {
         if (!CapabilitiesUtilNew.hasSpreedFeatureCapability(
-                chatController.conversationUser,
+                chatActivity.conversationUser,
                 "geo-location-sharing"
             )
         ) {
             dialogAttachmentBinding.menuShareLocation.visibility = View.GONE
         }
 
-        if (!CapabilitiesUtilNew.hasSpreedFeatureCapability(chatController.conversationUser, "talk-polls") ||
-            chatController.isOneToOneConversation()
+        if (!CapabilitiesUtilNew.hasSpreedFeatureCapability(chatActivity.conversationUser, "talk-polls") ||
+            chatActivity.isOneToOneConversation()
         ) {
             dialogAttachmentBinding.menuAttachPoll.visibility = View.GONE
         }
@@ -92,37 +92,37 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
 
     private fun initItemsClickListeners() {
         dialogAttachmentBinding.menuShareLocation.setOnClickListener {
-            chatController.showShareLocationScreen()
+            chatActivity.showShareLocationScreen()
             dismiss()
         }
 
         dialogAttachmentBinding.menuAttachFileFromLocal.setOnClickListener {
-            chatController.sendSelectLocalFileIntent()
+            chatActivity.sendSelectLocalFileIntent()
             dismiss()
         }
 
         dialogAttachmentBinding.menuAttachPictureFromCam.setOnClickListener {
-            chatController.sendPictureFromCamIntent()
+            chatActivity.sendPictureFromCamIntent()
             dismiss()
         }
 
         dialogAttachmentBinding.menuAttachVideoFromCam.setOnClickListener {
-            chatController.sendVideoFromCamIntent()
+            chatActivity.sendVideoFromCamIntent()
             dismiss()
         }
 
         dialogAttachmentBinding.menuAttachPoll.setOnClickListener {
-            chatController.createPoll()
+            chatActivity.createPoll()
             dismiss()
         }
 
         dialogAttachmentBinding.menuAttachFileFromCloud.setOnClickListener {
-            chatController.showBrowserScreen()
+            chatActivity.showBrowserScreen()
             dismiss()
         }
 
         dialogAttachmentBinding.menuAttachContact.setOnClickListener {
-            chatController.sendChooseContactIntent()
+            chatActivity.sendChooseContactIntent()
             dismiss()
         }
     }

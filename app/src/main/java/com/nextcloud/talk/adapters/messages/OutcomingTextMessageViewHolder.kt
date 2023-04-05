@@ -38,7 +38,7 @@ import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.ChatController
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.ItemCustomOutcomingTextMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
@@ -172,8 +172,8 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         binding.messageQuote.quoteColoredView.setBackgroundColor(textColor)
 
         binding.messageQuote.quotedChatMessageView.setOnClickListener() {
-            val chatController = commonMessageInterface as ChatController
-            chatController.jumpToQuotedMessage(parentChatMessage)
+            val chatActivity = commonMessageInterface as ChatActivity
+            chatActivity.jumpToQuotedMessage(parentChatMessage)
         }
     }
 

@@ -21,6 +21,7 @@
 package com.nextcloud.talk.jobs
 
 import android.Manifest
+import android.app.Activity
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -39,7 +40,6 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
-import com.bluelinelabs.conductor.Controller
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
@@ -288,11 +288,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         private const val ZERO_PERCENT = 0
         const val REQUEST_PERMISSION = 3123
 
-        fun requestStoragePermission(controller: Controller) {
+        fun requestStoragePermission(activity: Activity) {
             when {
                 Build.VERSION
                     .SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
-                    controller.requestPermissions(
+                    activity.requestPermissions(
                         arrayOf(
                             Manifest.permission.READ_MEDIA_IMAGES,
                             Manifest.permission.READ_MEDIA_VIDEO,
@@ -302,7 +302,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     )
                 }
                 Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
-                    controller.requestPermissions(
+                    activity.requestPermissions(
                         arrayOf(
                             Manifest.permission.READ_EXTERNAL_STORAGE
                         ),
@@ -310,7 +310,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     )
                 }
                 else -> {
-                    controller.requestPermissions(
+                    activity.requestPermissions(
                         arrayOf(
                             Manifest.permission.WRITE_EXTERNAL_STORAGE
                         ),

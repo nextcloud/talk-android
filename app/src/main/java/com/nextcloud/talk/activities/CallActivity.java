@@ -66,6 +66,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.call.CallParticipant;
 import com.nextcloud.talk.call.CallParticipantList;
 import com.nextcloud.talk.call.CallParticipantModel;
+import com.nextcloud.talk.chat.ChatActivity;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.CallActivityBinding;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
@@ -182,7 +183,8 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISS
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
-import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -1917,8 +1919,8 @@ public class CallActivity extends CallBaseActivity {
             removeCallParticipant(sessionId);
         }
 
+        ApplicationWideCurrentRoomHolder.getInstance().clear();
         hangupNetworkCalls(shutDownView);
-        ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
@@ -1942,26 +1944,17 @@ public class CallActivity extends CallBaseActivity {
                 @Override
                 public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
                     if (!switchToRoomToken.isEmpty()) {
-                        Intent intent = new Intent(context, MainActivity.class);
-
-                        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        Intent intent = new Intent(context, ChatActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                         Bundle bundle = new Bundle();
-                        bundle.putBoolean(KEY_SWITCH_TO_ROOM_AND_START_CALL, true);
+                        bundle.putBoolean(KEY_SWITCH_TO_ROOM, true);
+                        bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true);
                         bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken);
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser);
                         bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall);
                         intent.putExtras(bundle);
                         startActivity(intent);
-
-                        if (isBreakoutRoom) {
-                            Toast.makeText(context, context.getResources().getString(R.string.switch_to_main_room),
-                                           Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(context, context.getResources().getString(R.string.switch_to_breakout_room),
-                                           Toast.LENGTH_LONG).show();
-                        }
-
                         finish();
                     } else if (shutDownView) {
                         finish();

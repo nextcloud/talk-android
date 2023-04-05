@@ -24,11 +24,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.controllers
+package com.nextcloud.talk.chat
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -58,7 +57,6 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -76,6 +74,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.text.EmojiCompat
@@ -93,14 +92,12 @@ import coil.load
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.adapters.messages.CommonMessageInterface
 import com.nextcloud.talk.adapters.messages.IncomingLinkPreviewMessageViewHolder
@@ -124,8 +121,7 @@ import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
-import com.nextcloud.talk.controllers.base.BaseController
-import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.conversation.info.ConversationInfoActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerChatBinding
@@ -164,6 +160,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
@@ -172,6 +169,7 @@ import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.VibrationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
@@ -180,11 +178,11 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
-import com.nextcloud.talk.utils.remapchat.ConductorRemapping
-import com.nextcloud.talk.utils.remapchat.RemapChatModel
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
@@ -202,7 +200,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.parceler.Parcels
@@ -221,11 +218,8 @@ import kotlin.collections.set
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ChatController(args: Bundle) :
-    BaseController(
-        R.layout.controller_chat,
-        args
-    ),
+class ChatActivity :
+    BaseActivity(),
     MessagesListAdapter.OnLoadMoreListener,
     MessagesListAdapter.Formatter<Date>,
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
@@ -234,13 +228,12 @@ class ChatController(args: Bundle) :
     CommonMessageInterface,
     PreviewMessageInterface {
 
-    private val binding: ControllerChatBinding? by viewBinding(ControllerChatBinding::bind)
+    var active = false
+
+    private lateinit var binding: ControllerChatBinding
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var eventBus: EventBus
 
     @Inject
     lateinit var reactionsRepository: ReactionsRepository
@@ -254,9 +247,9 @@ class ChatController(args: Bundle) :
     val disposables = DisposableSet()
 
     var sessionIdAfterRoomJoined: String? = null
-    var roomToken: String? = null
-    val conversationUser: User?
-    private val roomPassword: String
+    lateinit var roomToken: String
+    var conversationUser: User? = null
+    private var roomPassword: String = ""
     var credentials: String? = null
     var currentConversation: Conversation? = null
     private var globalLastKnownFutureMessageId = -1
@@ -266,10 +259,10 @@ class ChatController(args: Bundle) :
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
     var newMessagesCount = 0
-    var startCallFromNotification: Boolean? = null
+    var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
-    val roomId: String
-    val voiceOnly: Boolean
+    lateinit var roomId: String
+    var voiceOnly: Boolean = true
     var isFirstMessagesProcessing = true
     private var emojiPopup: EmojiPopup? = null
 
@@ -288,7 +281,7 @@ class ChatController(args: Bundle) :
     var futurePreconditionFailed = false
 
     private val filesToUpload: MutableList<String> = ArrayList()
-    private var sharedText: String
+    private lateinit var sharedText: String
     var isVoiceRecordingInProgress: Boolean = false
     var currentVoiceRecordFile: String = ""
 
@@ -305,362 +298,129 @@ class ChatController(args: Bundle) :
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
             if (token != null) {
-                switchToRoom(token)
+                if (CallActivity.active) {
+                    Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
+                } else {
+                    switchToRoom(token, false, false)
+                }
             }
         }
     }
 
-    init {
-        Log.d(TAG, "init ChatController: " + System.identityHashCode(this).toString())
-
-        setHasOptionsMenu(true)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        conversationUser = args.getParcelable(KEY_USER_ENTITY)
-        roomId = args.getString(KEY_ROOM_ID, "")
-        roomToken = args.getString(KEY_ROOM_TOKEN, "")
-        sharedText = args.getString(BundleKeys.KEY_SHARED_TEXT, "")
+        binding = ControllerChatBinding.inflate(layoutInflater)
+        setupActionBar()
+        setupSystemColors()
+        setContentView(binding.root)
+
+        handleIntent(intent)
+
+        binding.progressBar.visibility = View.VISIBLE
+
+        initAdapter()
+        binding.messagesListView.setAdapter(adapter)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val extras: Bundle? = intent.extras
+
+        val requestedRoomSwitch = extras?.getBoolean(KEY_SWITCH_TO_ROOM, false) == true
+
+        if (requestedRoomSwitch) {
+            val newRoomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
+            val startCallAfterRoomSwitch = extras?.getBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, false) == true
+            val isVoiceOnlyCall = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
+
+            if (newRoomToken != roomToken) {
+                switchToRoom(newRoomToken, startCallAfterRoomSwitch, isVoiceOnlyCall)
+            }
+        } else {
+            handleIntent(intent)
+        }
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val extras: Bundle? = intent.extras
+
+        conversationUser = extras?.getParcelable(KEY_USER_ENTITY)
+        roomId = extras?.getString(KEY_ROOM_ID).orEmpty()
+        roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
+
+        sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
 
         Log.d(TAG, "   roomToken = $roomToken")
-        if (roomToken.isNullOrEmpty()) {
+        if (roomToken.isEmpty()) {
             Log.d(TAG, "   roomToken was null or empty!")
         }
 
-        if (args.containsKey(KEY_ACTIVE_CONVERSATION)) {
-            currentConversation = Parcels.unwrap<Conversation>(args.getParcelable(KEY_ACTIVE_CONVERSATION))
+        if (intent.hasExtra(KEY_ACTIVE_CONVERSATION)) {
+            currentConversation = Parcels.unwrap<Conversation>(extras?.getParcelable(KEY_ACTIVE_CONVERSATION))
             participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
         }
 
-        roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
+        roomPassword = extras?.getString(BundleKeys.KEY_CONVERSATION_PASSWORD).orEmpty()
 
         credentials = if (conversationUser?.userId == "?") {
             null
         } else {
-            ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token)
+            ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
         }
 
-        if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)
-        }
+        startCallFromNotification = extras?.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false) == true
+        startCallFromRoomSwitch = extras?.getBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, false) == true
 
-        if (args.containsKey(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)) {
-            startCallFromRoomSwitch = args.getBoolean(BundleKeys.KEY_SWITCH_TO_ROOM_AND_START_CALL)
-        }
-
-        voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)
+        voiceOnly = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
     }
 
-    private fun getRoomInfo() {
-        logConversationInfos("getRoomInfo")
-
-        if (conversationUser != null) {
-            val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
-
-            val startNanoTime = System.nanoTime()
-            Log.d(TAG, "getRoomInfo - getRoom - calling: $startNanoTime")
-            ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser.baseUrl, roomToken))
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<RoomOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        disposables.add(d)
-                    }
-
-                    @Suppress("Detekt.TooGenericExceptionCaught")
-                    override fun onNext(roomOverall: RoomOverall) {
-                        Log.d(TAG, "getRoomInfo - getRoom - got response: $startNanoTime")
-                        currentConversation = roomOverall.ocs!!.data
-
-                        logConversationInfos("getRoomInfo#onNext")
-
-                        loadAvatarForStatusBar()
-                        setTitle()
-                        participantPermissions = ParticipantPermissions(conversationUser, currentConversation!!)
-
-                        setupSwipeToReply()
-                        setupMentionAutocomplete()
-                        checkShowCallButtons()
-                        checkShowMessageInputView()
-                        checkLobbyState()
-
-                        if (!validSessionId()) {
-                            joinRoomWithPassword()
-                        } else {
-                            Log.d(TAG, "already inConversation. joinRoomWithPassword is skipped")
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "getRoomInfo - getRoom - ERROR", e)
-                    }
-
-                    override fun onComplete() {
-                        Log.d(TAG, "getRoomInfo - getRoom - onComplete: $startNanoTime")
-
-                        val delayForRecursiveCall = if (shouldShowLobby()) {
-                            GET_ROOM_INFO_DELAY_LOBBY
-                        } else {
-                            GET_ROOM_INFO_DELAY_NORMAL
-                        }
-
-                        if (getRoomInfoTimerHandler == null) {
-                            getRoomInfoTimerHandler = Handler()
-                        }
-                        getRoomInfoTimerHandler?.postDelayed({ getRoomInfo() }, delayForRecursiveCall)
-                    }
-                })
-        }
+    override fun onStart() {
+        super.onStart()
+        active = true
     }
 
-    private fun setupSwipeToReply() {
-        if (this::participantPermissions.isInitialized &&
-            participantPermissions.hasChatPermission() &&
-            !isReadOnlyConversation()
-        ) {
-            activity?.let {
-                val messageSwipeController = MessageSwipeCallback(
-                    it,
-                    object : MessageSwipeActions {
-                        override fun showReplyUI(position: Int) {
-                            val chatMessage = adapter?.items?.get(position)?.item as ChatMessage?
-                            replyToMessage(chatMessage)
-                        }
-                    }
-                )
-
-                val itemTouchHelper = ItemTouchHelper(messageSwipeController)
-                itemTouchHelper.attachToRecyclerView(binding?.messagesListView)
-            }
-        }
+    override fun onStop() {
+        super.onStop()
+        active = false
     }
 
-    private fun handleFromNotification() {
-        var apiVersion = 1
-        // FIXME Can this be called for guests?
-        if (conversationUser != null) {
-            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
-        }
-
-        Log.d(TAG, "handleFromNotification - getRooms - calling")
-        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl), false)
-            ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<RoomsOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposables.add(d)
-                }
-
-                override fun onNext(roomsOverall: RoomsOverall) {
-                    Log.d(TAG, "handleFromNotification - getRooms - got response")
-                    for (conversation in roomsOverall.ocs!!.data!!) {
-                        if (roomId == conversation.roomId) {
-                            roomToken = conversation.token
-                            currentConversation = conversation
-                            participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
-                            setTitle()
-                            getRoomInfo()
-                            break
-                        }
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "handleFromNotification - getRooms - ERROR: ", e)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
-    }
-
-    private fun loadAvatarForStatusBar() {
-        if (isOneToOneConversation() && activity != null) {
-            val url = ApiUtils.getUrlForAvatar(
-                conversationUser!!.baseUrl,
-                currentConversation!!.name,
-                true
-            )
-            val target = object : Target {
-
-                private fun setIcon(drawable: Drawable?) {
-                    actionBar?.let {
-                        val avatarSize = (it.height / TOOLBAR_AVATAR_RATIO).roundToInt()
-
-                        if (drawable != null && avatarSize > 0) {
-                            val bitmap = drawable.toBitmap(avatarSize, avatarSize)
-                            it.setIcon(BitmapDrawable(resources, bitmap))
-                        } else {
-                            Log.d(TAG, "loadAvatarForStatusBar avatarSize <= 0")
-                        }
-                    }
-                }
-
-                override fun onStart(placeholder: Drawable?) {
-                    this.setIcon(placeholder)
-                }
-
-                override fun onSuccess(result: Drawable) {
-                    this.setIcon(result)
-                }
-            }
-
-            val credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
-
-            context.imageLoader.enqueue(
-                ImageRequest.Builder(context)
-                    .data(url)
-                    .addHeader("Authorization", credentials)
-                    .placeholder(R.drawable.ic_user)
-                    .transformations(CircleCropTransformation())
-                    .crossfade(true)
-                    .target(target)
-                    .build()
-            )
-        }
-    }
-
-    fun isOneToOneConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == Conversation.ConversationType
-        .ROOM_TYPE_ONE_TO_ONE_CALL
-
-    @SuppressLint("ClickableViewAccessibility")
     @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun onViewBound(view: View) {
-        Log.d(TAG, "onViewBound: " + System.identityHashCode(this).toString())
-        actionBar?.show()
+    override fun onResume() {
+        super.onResume()
 
-        if (adapter == null) {
-            binding?.progressBar?.visibility = View.VISIBLE
+        logConversationInfos("onResume")
 
-            val messageHolders = MessageHolders()
-            val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!, router)
+        setupWebsocket()
+        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
 
-            val payload =
-                MessagePayload(roomToken!!, currentConversation?.isParticipantOwnerOrModerator, profileBottomSheet)
+        if (conversationUser?.userId != "?" &&
+            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag")
+        ) {
+            binding.chatToolbar.setOnClickListener { v -> showConversationInfoScreen() }
+        }
 
-            messageHolders.setIncomingTextConfig(
-                IncomingTextMessageViewHolder::class.java,
-                R.layout.item_custom_incoming_text_message,
-                payload
-            )
-            messageHolders.setOutcomingTextConfig(
-                OutcomingTextMessageViewHolder::class.java,
-                R.layout.item_custom_outcoming_text_message
-            )
+        initSmileyKeyboardToggler()
 
-            messageHolders.setIncomingImageConfig(
-                IncomingPreviewMessageViewHolder::class.java,
-                R.layout.item_custom_incoming_preview_message,
-                payload
-            )
+        binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
+            cancelReply()
+        }
 
-            messageHolders.setOutcomingImageConfig(
-                OutcomingPreviewMessageViewHolder::class.java,
-                R.layout.item_custom_outcoming_preview_message
-            )
+        binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {
+            viewThemeUtils.platform
+                .themeImageButton(it)
+        }
 
-            messageHolders.registerContentType(
-                CONTENT_TYPE_SYSTEM_MESSAGE,
-                SystemMessageViewHolder::class.java,
-                R.layout.item_system_message,
-                SystemMessageViewHolder::class.java,
-                R.layout.item_system_message,
-                this
-            )
+        cancelNotificationsForCurrentConversation()
 
-            messageHolders.registerContentType(
-                CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
-                UnreadNoticeMessageViewHolder::class.java,
-                R.layout.item_date_header,
-                UnreadNoticeMessageViewHolder::class.java,
-                R.layout.item_date_header,
-                this
-            )
-
-            messageHolders.registerContentType(
-                CONTENT_TYPE_LOCATION,
-                IncomingLocationMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_incoming_location_message,
-                OutcomingLocationMessageViewHolder::class.java,
-                null,
-                R.layout.item_custom_outcoming_location_message,
-                this
-            )
-
-            messageHolders.registerContentType(
-                CONTENT_TYPE_VOICE_MESSAGE,
-                IncomingVoiceMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_incoming_voice_message,
-                OutcomingVoiceMessageViewHolder::class.java,
-                null,
-                R.layout.item_custom_outcoming_voice_message,
-                this
-            )
-
-            messageHolders.registerContentType(
-                CONTENT_TYPE_POLL,
-                IncomingPollMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_incoming_poll_message,
-                OutcomingPollMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_outcoming_poll_message,
-                this
-            )
-
-            messageHolders.registerContentType(
-                CONTENT_TYPE_LINK_PREVIEW,
-                IncomingLinkPreviewMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_incoming_link_preview_message,
-                OutcomingLinkPreviewMessageViewHolder::class.java,
-                payload,
-                R.layout.item_custom_outcoming_link_preview_message,
-                this
-            )
-
-            val senderId = if (!conversationUser.userId.equals("?")) {
-                "users/" + conversationUser.userId
-            } else {
-                currentConversation?.actorType + "/" + currentConversation?.actorId
-            }
-
-            Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: $senderId")
-
-            adapter = TalkMessagesListAdapter(
-                senderId,
-                messageHolders,
-                ImageLoader { imageView, url, placeholder ->
-                    imageView.loadAvatarOrImagePreview(url!!, conversationUser, placeholder as Drawable?)
-                },
-                this
-            )
+        if (TextUtils.isEmpty(roomToken)) {
+            handleFromNotification()
         } else {
-            binding?.messagesListView?.visibility = View.VISIBLE
+            getRoomInfo()
         }
 
-        binding?.messagesListView?.setAdapter(adapter)
-        adapter?.setLoadMoreListener(this)
-        adapter?.setDateHeadersFormatter { format(it) }
-        adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
-
-        adapter?.registerViewClickListener(
-            R.id.playPauseBtn
-        ) { view, message ->
-            val filename = message.selectedIndividualHashMap!!["name"]
-            val file = File(context.cacheDir, filename!!)
-            if (file.exists()) {
-                if (message.isPlayingVoiceMessage) {
-                    pausePlayback(message)
-                } else {
-                    startPlayback(message)
-                }
-            } else {
-                downloadFileToCache(message)
-            }
-        }
+        actionBar?.show()
 
         setupSwipeToReply()
 
@@ -777,6 +537,191 @@ class ChatController(args: Bundle) :
             uploadFile(it.toString(), false)
         }
 
+        initVoiceRecordButton()
+
+        binding?.messageInputView?.inputEditText?.setText(sharedText)
+        binding?.messageInputView?.setAttachmentsListener {
+            AttachmentDialog(this, this).show()
+        }
+
+        binding?.messageInputView?.button?.setOnClickListener { submitMessage(false) }
+
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
+            binding?.messageInputView?.button?.setOnLongClickListener {
+                showSendButtonMenu()
+                true
+            }
+        }
+
+        binding?.messageInputView?.button?.contentDescription =
+            resources?.getString(R.string.nc_description_send_message_button)
+
+        binding?.messageInputView?.button?.let { viewThemeUtils.platform.colorImageView(it) }
+
+        if (currentConversation != null && currentConversation?.roomId != null) {
+            loadAvatarForStatusBar()
+            setActionBarTitle()
+        }
+    }
+
+    private fun setupActionBar() {
+        setSupportActionBar(binding.chatToolbar)
+        binding.chatToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
+        setActionBarTitle()
+    }
+
+    private fun setupSystemColors() {
+        DisplayUtils.applyColorToStatusBar(
+            this,
+            ResourcesCompat.getColor(
+                resources,
+                R.color.appbar,
+                null
+            )
+        )
+        DisplayUtils.applyColorToNavigationBar(
+            this.window,
+            ResourcesCompat.getColor(resources, R.color.bg_default, null)
+        )
+    }
+
+    private fun initAdapter() {
+        val senderId = if (!conversationUser!!.userId.equals("?")) {
+            "users/" + conversationUser!!.userId
+        } else {
+            currentConversation?.actorType + "/" + currentConversation?.actorId
+        }
+
+        Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: $senderId")
+
+        adapter = TalkMessagesListAdapter(
+            senderId,
+            initMessageHolders(),
+            ImageLoader { imageView, url, placeholder ->
+                imageView.loadAvatarOrImagePreview(url!!, conversationUser!!, placeholder as Drawable?)
+            },
+            this
+        )
+
+        adapter?.setLoadMoreListener(this)
+        adapter?.setDateHeadersFormatter { format(it) }
+        adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
+        adapter?.registerViewClickListener(
+            R.id.playPauseBtn
+        ) { view, message ->
+            val filename = message.selectedIndividualHashMap!!["name"]
+            val file = File(context.cacheDir, filename!!)
+            if (file.exists()) {
+                if (message.isPlayingVoiceMessage) {
+                    pausePlayback(message)
+                } else {
+                    startPlayback(message)
+                }
+            } else {
+                downloadFileToCache(message)
+            }
+        }
+    }
+
+    private fun initMessageHolders(): MessageHolders {
+        val messageHolders = MessageHolders()
+        val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!)
+
+        val payload =
+            MessagePayload(roomToken!!, currentConversation?.isParticipantOwnerOrModerator, profileBottomSheet)
+
+        messageHolders.setIncomingTextConfig(
+            IncomingTextMessageViewHolder::class.java,
+            R.layout.item_custom_incoming_text_message,
+            payload
+        )
+        messageHolders.setOutcomingTextConfig(
+            OutcomingTextMessageViewHolder::class.java,
+            R.layout.item_custom_outcoming_text_message
+        )
+
+        messageHolders.setIncomingImageConfig(
+            IncomingPreviewMessageViewHolder::class.java,
+            R.layout.item_custom_incoming_preview_message,
+            payload
+        )
+
+        messageHolders.setOutcomingImageConfig(
+            OutcomingPreviewMessageViewHolder::class.java,
+            R.layout.item_custom_outcoming_preview_message
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_SYSTEM_MESSAGE,
+            SystemMessageViewHolder::class.java,
+            R.layout.item_system_message,
+            SystemMessageViewHolder::class.java,
+            R.layout.item_system_message,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
+            UnreadNoticeMessageViewHolder::class.java,
+            R.layout.item_date_header,
+            UnreadNoticeMessageViewHolder::class.java,
+            R.layout.item_date_header,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_LOCATION,
+            IncomingLocationMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_incoming_location_message,
+            OutcomingLocationMessageViewHolder::class.java,
+            null,
+            R.layout.item_custom_outcoming_location_message,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_VOICE_MESSAGE,
+            IncomingVoiceMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_incoming_voice_message,
+            OutcomingVoiceMessageViewHolder::class.java,
+            null,
+            R.layout.item_custom_outcoming_voice_message,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_POLL,
+            IncomingPollMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_incoming_poll_message,
+            OutcomingPollMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_outcoming_poll_message,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_LINK_PREVIEW,
+            IncomingLinkPreviewMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_incoming_link_preview_message,
+            OutcomingLinkPreviewMessageViewHolder::class.java,
+            payload,
+            R.layout.item_custom_outcoming_link_preview_message,
+            this
+        )
+        return messageHolders
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initVoiceRecordButton() {
         showMicrophoneButton(true)
 
         binding?.messageInputView?.messageInput?.doAfterTextChanged {
@@ -796,7 +741,7 @@ class ChatController(args: Bundle) :
 
         binding?.messageInputView?.recordAudioButton?.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                view.performClick()
+                v?.performClick() // ?????????
                 when (event?.action) {
                     MotionEvent.ACTION_DOWN -> {
                         if (!isRecordAudioPermissionGranted()) {
@@ -804,7 +749,7 @@ class ChatController(args: Bundle) :
                             return true
                         }
                         if (!permissionUtil.isFilesPermissionGranted()) {
-                            UploadAndShareFilesWorker.requestStoragePermission(this@ChatController)
+                            UploadAndShareFilesWorker.requestStoragePermission(this@ChatActivity)
                             return true
                         }
 
@@ -892,42 +837,212 @@ class ChatController(args: Bundle) :
                 return v?.onTouchEvent(event) ?: true
             }
         })
-
-        binding?.messageInputView?.inputEditText?.setText(sharedText)
-        binding?.messageInputView?.setAttachmentsListener {
-            activity?.let { AttachmentDialog(it, this).show() }
-        }
-
-        binding?.messageInputView?.button?.setOnClickListener { submitMessage(false) }
-
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
-            binding?.messageInputView?.button?.setOnLongClickListener {
-                showSendButtonMenu()
-                true
-            }
-        }
-
-        binding?.messageInputView?.button?.contentDescription =
-            resources?.getString(R.string.nc_description_send_message_button)
-
-        binding?.messageInputView?.button?.let { viewThemeUtils.platform.colorImageView(it) }
-
-        if (currentConversation != null && currentConversation?.roomId != null) {
-            loadAvatarForStatusBar()
-            setTitle()
-        }
-
-        super.onViewBound(view)
     }
 
-    private fun switchToRoom(token: String) {
-        if (CallActivity.active) {
-            Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatController...")
-            return
+    private fun initSmileyKeyboardToggler() {
+        val smileyButton = binding?.messageInputView?.findViewById<ImageButton>(R.id.smileyButton)
+
+        emojiPopup = binding?.messageInputView?.inputEditText?.let {
+            EmojiPopup(
+                rootView = binding.root,
+                editText = it,
+                onEmojiPopupShownListener = {
+                    if (resources != null) {
+                        smileyButton?.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_24)
+                        )
+                    }
+                },
+                onEmojiPopupDismissListener = {
+                    smileyButton?.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.ic_insert_emoticon_black_24dp)
+                    )
+                },
+                onEmojiClickListener = {
+                    binding?.messageInputView?.inputEditText?.editableText?.append(" ")
+                }
+            )
         }
 
+        smileyButton?.setOnClickListener {
+            emojiPopup?.toggle()
+        }
+    }
+
+    private fun getRoomInfo() {
+        logConversationInfos("getRoomInfo")
+
+        conversationUser?.let {
+            val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+
+            val startNanoTime = System.nanoTime()
+            Log.d(TAG, "getRoomInfo - getRoom - calling: $startNanoTime")
+            ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, it.baseUrl, roomToken))
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<RoomOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        disposables.add(d)
+                    }
+
+                    @Suppress("Detekt.TooGenericExceptionCaught")
+                    override fun onNext(roomOverall: RoomOverall) {
+                        Log.d(TAG, "getRoomInfo - getRoom - got response: $startNanoTime")
+                        currentConversation = roomOverall.ocs!!.data
+
+                        logConversationInfos("getRoomInfo#onNext")
+
+                        loadAvatarForStatusBar()
+                        setActionBarTitle()
+                        participantPermissions = ParticipantPermissions(it, currentConversation!!)
+
+                        setupSwipeToReply()
+                        setupMentionAutocomplete()
+                        checkShowCallButtons()
+                        checkShowMessageInputView()
+                        checkLobbyState()
+
+                        if (!validSessionId()) {
+                            joinRoomWithPassword()
+                        } else {
+                            Log.d(TAG, "already inConversation. joinRoomWithPassword is skipped")
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "getRoomInfo - getRoom - ERROR", e)
+                    }
+
+                    override fun onComplete() {
+                        Log.d(TAG, "getRoomInfo - getRoom - onComplete: $startNanoTime")
+
+                        val delayForRecursiveCall = if (shouldShowLobby()) {
+                            GET_ROOM_INFO_DELAY_LOBBY
+                        } else {
+                            GET_ROOM_INFO_DELAY_NORMAL
+                        }
+
+                        if (getRoomInfoTimerHandler == null) {
+                            getRoomInfoTimerHandler = Handler()
+                        }
+                        getRoomInfoTimerHandler?.postDelayed({ getRoomInfo() }, delayForRecursiveCall)
+                    }
+                })
+        }
+    }
+
+    private fun setupSwipeToReply() {
+        if (this::participantPermissions.isInitialized &&
+            participantPermissions.hasChatPermission() &&
+            !isReadOnlyConversation()
+        ) {
+            val messageSwipeController = MessageSwipeCallback(
+                this,
+                object : MessageSwipeActions {
+                    override fun showReplyUI(position: Int) {
+                        val chatMessage = adapter?.items?.get(position)?.item as ChatMessage?
+                        replyToMessage(chatMessage)
+                    }
+                }
+            )
+
+            val itemTouchHelper = ItemTouchHelper(messageSwipeController)
+            itemTouchHelper.attachToRecyclerView(binding?.messagesListView)
+        }
+    }
+
+    private fun handleFromNotification() {
+        var apiVersion = 1
+        // FIXME Can this be called for guests?
         if (conversationUser != null) {
-            activity?.runOnUiThread {
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+        }
+
+        Log.d(TAG, "handleFromNotification - getRooms - calling")
+        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl), false)
+            ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<RoomsOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    disposables.add(d)
+                }
+
+                override fun onNext(roomsOverall: RoomsOverall) {
+                    Log.d(TAG, "handleFromNotification - getRooms - got response")
+                    for (conversation in roomsOverall.ocs!!.data!!) {
+                        if (roomId == conversation.roomId) {
+                            roomToken = conversation.token!!
+                            currentConversation = conversation
+                            participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
+                            setActionBarTitle()
+                            getRoomInfo()
+                            break
+                        }
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "handleFromNotification - getRooms - ERROR: ", e)
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
+    }
+
+    private fun loadAvatarForStatusBar() {
+        if (isOneToOneConversation()) {
+            val url = ApiUtils.getUrlForAvatar(
+                conversationUser!!.baseUrl,
+                currentConversation!!.name,
+                true
+            )
+            val target = object : Target {
+
+                private fun setIcon(drawable: Drawable?) {
+                    supportActionBar?.let {
+                        val avatarSize = (it.height / TOOLBAR_AVATAR_RATIO).roundToInt()
+
+                        if (drawable != null && avatarSize > 0) {
+                            val bitmap = drawable.toBitmap(avatarSize, avatarSize)
+                            it.setIcon(BitmapDrawable(resources, bitmap))
+                        } else {
+                            Log.d(TAG, "loadAvatarForStatusBar avatarSize <= 0")
+                        }
+                    }
+                }
+
+                override fun onStart(placeholder: Drawable?) {
+                    this.setIcon(placeholder)
+                }
+
+                override fun onSuccess(result: Drawable) {
+                    this.setIcon(result)
+                }
+            }
+
+            val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
+
+            context.imageLoader.enqueue(
+                ImageRequest.Builder(context)
+                    .data(url)
+                    .addHeader("Authorization", credentials)
+                    .placeholder(R.drawable.ic_user)
+                    .transformations(CircleCropTransformation())
+                    .crossfade(true)
+                    .target(target)
+                    .build()
+            )
+        }
+    }
+
+    fun isOneToOneConversation() = currentConversation != null && currentConversation?.type != null &&
+        currentConversation?.type == Conversation.ConversationType
+        .ROOM_TYPE_ONE_TO_ONE_CALL
+
+    private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
+        if (conversationUser != null) {
+            runOnUiThread {
                 if (currentConversation?.objectType == Conversation.ObjectType.ROOM) {
                     Toast.makeText(
                         context,
@@ -947,19 +1062,23 @@ class ChatController(args: Bundle) :
             bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
             bundle.putString(KEY_ROOM_TOKEN, token)
 
-            ConductorRemapping.remapChatController(
-                router,
-                conversationUser.id!!,
-                token,
-                bundle,
-                true
-            )
+            if (startCallAfterRoomSwitch) {
+                bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true)
+                bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall)
+            }
+
+            leaveRoom {
+                val chatIntent = Intent(context, ChatActivity::class.java)
+                chatIntent.putExtras(bundle)
+                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(chatIntent)
+            }
         }
     }
 
     private fun showSendButtonMenu() {
         val popupMenu = PopupMenu(
-            ContextThemeWrapper(view?.context, R.style.ChatSendButtonMenu),
+            ContextThemeWrapper(this, R.style.ChatSendButtonMenu),
             binding?.messageInputView?.button,
             Gravity.END
         )
@@ -980,14 +1099,14 @@ class ChatController(args: Bundle) :
 
     private fun showCallButtonMenu(isVoiceOnlyCall: Boolean) {
         val anchor: View? = if (isVoiceOnlyCall) {
-            activity?.findViewById(R.id.conversation_voice_call)
+            findViewById(R.id.conversation_voice_call)
         } else {
-            activity?.findViewById(R.id.conversation_video_call)
+            findViewById(R.id.conversation_video_call)
         }
 
         if (anchor != null) {
             val popupMenu = PopupMenu(
-                ContextThemeWrapper(view?.context, R.style.CallButtonMenu),
+                ContextThemeWrapper(this, R.style.CallButtonMenu),
                 anchor,
                 Gravity.END
             )
@@ -1008,7 +1127,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun startPlayback(message: ChatMessage) {
-        if (!this.isAttached) {
+        if (!active) {
             // don't begin to play voice message if screen is not visible anymore.
             // this situation might happen if file is downloading but user already left the chatview.
             // If user returns to chatview, the old chatview instance is not attached anymore
@@ -1024,7 +1143,7 @@ class ChatController(args: Bundle) :
             }
 
             mediaPlayerHandler = Handler()
-            activity?.runOnUiThread(object : Runnable {
+            runOnUiThread(object : Runnable {
                 override fun run() {
                     if (mediaPlayer != null) {
                         val currentPosition: Int = mediaPlayer!!.currentPosition / VOICE_MESSAGE_SEEKBAR_BASE
@@ -1335,25 +1454,21 @@ class ChatController(args: Bundle) :
     }
 
     private fun checkShowCallButtons() {
-        if (isAlive()) {
-            if (isReadOnlyConversation() || shouldShowLobby()) {
-                disableCallButtons()
-            } else {
-                enableCallButtons()
-            }
+        if (isReadOnlyConversation() || shouldShowLobby()) {
+            disableCallButtons()
+        } else {
+            enableCallButtons()
         }
     }
 
     private fun checkShowMessageInputView() {
-        if (isAlive()) {
-            if (isReadOnlyConversation() ||
-                shouldShowLobby() ||
-                !participantPermissions.hasChatPermission()
-            ) {
-                binding?.messageInputView?.visibility = View.GONE
-            } else {
-                binding?.messageInputView?.visibility = View.VISIBLE
-            }
+        if (isReadOnlyConversation() ||
+            shouldShowLobby() ||
+            !participantPermissions.hasChatPermission()
+        ) {
+            binding?.messageInputView?.visibility = View.GONE
+        } else {
+            binding?.messageInputView?.visibility = View.VISIBLE
         }
     }
 
@@ -1401,8 +1516,7 @@ class ChatController(args: Bundle) :
 
     private fun checkLobbyState() {
         if (currentConversation != null &&
-            currentConversation?.isLobbyViewApplicable(conversationUser!!) == true &&
-            isAlive()
+            currentConversation?.isLobbyViewApplicable(conversationUser!!) == true
         ) {
             if (shouldShowLobby()) {
                 binding?.lobby?.lobbyView?.visibility = View.VISIBLE
@@ -1451,6 +1565,7 @@ class ChatController(args: Bundle) :
 
     @Throws(IllegalStateException::class)
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
         if (resultCode != RESULT_OK && (requestCode != REQUEST_CODE_MESSAGE_SEARCH)) {
             Log.e(TAG, "resultCode for received intent was != ok")
             return
@@ -1543,7 +1658,7 @@ class ChatController(args: Bundle) :
             }
             REQUEST_CODE_SELECT_CONTACT -> {
                 val contactUri = intent?.data ?: return
-                val cursor: Cursor? = activity?.contentResolver!!.query(contactUri, null, null, null, null)
+                val cursor: Cursor? = contentResolver!!.query(contactUri, null, null, null, null)
 
                 if (cursor != null && cursor.moveToFirst()) {
                     val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
@@ -1552,7 +1667,7 @@ class ChatController(args: Bundle) :
                     writeContactToVcfFile(cursor, file)
 
                     val shareUri = FileProvider.getUriForFile(
-                        activity!!,
+                        this,
                         BuildConfig.APPLICATION_ID,
                         File(file.absolutePath)
                     )
@@ -1627,7 +1742,7 @@ class ChatController(args: Bundle) :
         val lookupKey = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.LOOKUP_KEY))
         val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey)
 
-        val fd: AssetFileDescriptor = activity?.contentResolver!!.openAssetFileDescriptor(uri, "r")!!
+        val fd: AssetFileDescriptor = contentResolver!!.openAssetFileDescriptor(uri, "r")!!
         fd.use {
             val fis = fd.createInputStream()
 
@@ -1645,6 +1760,7 @@ class ChatController(args: Bundle) :
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
@@ -1762,16 +1878,16 @@ class ChatController(args: Bundle) :
     }
 
     fun showBrowserScreen() {
-        val sharingFileBrowserIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
+        val sharingFileBrowserIntent = Intent(this, RemoteFileBrowserActivity::class.java)
         startActivityForResult(sharingFileBrowserIntent, REQUEST_CODE_SELECT_REMOTE_FILES)
     }
 
     fun showShareLocationScreen() {
         Log.d(TAG, "showShareLocationScreen")
 
-        val intent = Intent(activity, LocationPickerActivity::class.java)
+        val intent = Intent(this, LocationPickerActivity::class.java)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-        activity!!.startActivity(intent)
+        startActivity(intent)
     }
 
     private fun showConversationInfoScreen() {
@@ -1780,33 +1896,31 @@ class ChatController(args: Bundle) :
         bundle.putString(KEY_ROOM_TOKEN, roomToken)
         bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, isOneToOneConversation())
 
-        val intent = Intent(activity, ConversationInfoActivity::class.java)
+        val intent = Intent(this, ConversationInfoActivity::class.java)
         intent.putExtras(bundle)
-        activity!!.startActivity(intent)
+        startActivity(intent)
     }
 
     private fun setupMentionAutocomplete() {
-        if (isAlive()) {
-            val elevation = MENTION_AUTO_COMPLETE_ELEVATION
-            resources?.let {
-                val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default))
-                val presenter = MentionAutocompletePresenter(activity, roomToken)
-                val callback = MentionAutocompleteCallback(
-                    activity,
-                    conversationUser!!,
-                    binding?.messageInputView?.inputEditText,
-                    viewThemeUtils
-                )
+        val elevation = MENTION_AUTO_COMPLETE_ELEVATION
+        resources?.let {
+            val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default))
+            val presenter = MentionAutocompletePresenter(this, roomToken)
+            val callback = MentionAutocompleteCallback(
+                this,
+                conversationUser!!,
+                binding?.messageInputView?.inputEditText,
+                viewThemeUtils
+            )
 
-                if (mentionAutocomplete == null && binding?.messageInputView?.inputEditText != null) {
-                    mentionAutocomplete = Autocomplete.on<Mention>(binding?.messageInputView?.inputEditText)
-                        .with(elevation)
-                        .with(backgroundDrawable)
-                        .with(MagicCharPolicy('@'))
-                        .with(presenter)
-                        .with(callback)
-                        .build()
-                }
+            if (mentionAutocomplete == null && binding?.messageInputView?.inputEditText != null) {
+                mentionAutocomplete = Autocomplete.on<Mention>(binding?.messageInputView?.inputEditText)
+                    .with(elevation)
+                    .with(backgroundDrawable)
+                    .with(MagicCharPolicy('@'))
+                    .with(presenter)
+                    .with(callback)
+                    .build()
             }
         }
     }
@@ -1815,69 +1929,6 @@ class ChatController(args: Bundle) :
         return currentConversation != null &&
             sessionIdAfterRoomJoined?.isNotEmpty() == true &&
             sessionIdAfterRoomJoined != "0"
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        logConversationInfos("onAttach")
-
-        eventBus.register(this)
-
-        setupWebsocket()
-        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
-
-        if (conversationUser?.userId != "?" &&
-            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag") &&
-            activity != null
-        ) {
-            activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
-        }
-
-        val smileyButton = binding?.messageInputView?.findViewById<ImageButton>(R.id.smileyButton)
-
-        emojiPopup = binding?.messageInputView?.inputEditText?.let {
-            EmojiPopup(
-                rootView = view,
-                editText = it,
-                onEmojiPopupShownListener = {
-                    if (resources != null) {
-                        smileyButton?.setImageDrawable(
-                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_24)
-                        )
-                    }
-                },
-                onEmojiPopupDismissListener = {
-                    smileyButton?.setImageDrawable(
-                        ContextCompat.getDrawable(context, R.drawable.ic_insert_emoticon_black_24dp)
-                    )
-                },
-                onEmojiClickListener = {
-                    binding?.messageInputView?.inputEditText?.editableText?.append(" ")
-                }
-            )
-        }
-
-        smileyButton?.setOnClickListener {
-            emojiPopup?.toggle()
-        }
-
-        binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
-            cancelReply()
-        }
-
-        binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {
-            viewThemeUtils.platform
-                .themeImageButton(it)
-        }
-
-        cancelNotificationsForCurrentConversation()
-
-        if (TextUtils.isEmpty(roomToken)) {
-            handleFromNotification()
-        } else {
-            getRoomInfo()
-        }
     }
 
     private fun cancelReply() {
@@ -1892,7 +1943,7 @@ class ChatController(args: Bundle) :
                 try {
                     NotificationUtils.cancelExistingNotificationsForRoom(
                         applicationContext,
-                        conversationUser,
+                        conversationUser!!,
                         roomToken!!
                     )
                 } catch (e: RuntimeException) {
@@ -1902,18 +1953,16 @@ class ChatController(args: Bundle) :
         }
     }
 
-    override fun onDetach(view: View) {
-        super.onDetach(view)
+    override fun onPause() {
+        super.onPause()
 
-        logConversationInfos("onDetach")
+        logConversationInfos("onPause")
 
         eventBus.unregister(this)
 
         webSocketInstance?.getSignalingMessageReceiver()?.removeListener(localParticipantMessageListener)
 
-        if (activity != null) {
-            activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
-        }
+        findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
 
         checkingLobbyStatus = false
 
@@ -1924,7 +1973,7 @@ class ChatController(args: Bundle) :
         if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
             if (validSessionId()) {
-                leaveRoom(null, null)
+                leaveRoom(null)
             } else {
                 Log.d(TAG, "not leaving room (validSessionId is false)")
             }
@@ -1938,7 +1987,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean {
-        return activity != null && !activity?.isChangingConfigurations!!
+        return !isChangingConfigurations!!
     }
 
     private fun isNotInCall(): Boolean {
@@ -1946,8 +1995,8 @@ class ChatController(args: Bundle) :
             !ApplicationWideCurrentRoomHolder.getInstance().isDialing
     }
 
-    override val title: String
-        get() =
+    private fun setActionBarTitle() {
+        supportActionBar?.title =
             if (currentConversation?.displayName != null) {
                 try {
                     " " + EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
@@ -1957,14 +2006,13 @@ class ChatController(args: Bundle) :
             } else {
                 ""
             }
+    }
 
     public override fun onDestroy() {
         super.onDestroy()
         logConversationInfos("onDestroy")
 
-        if (activity != null) {
-            activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
-        }
+        findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
 
         if (actionBar != null) {
             actionBar?.setIcon(null)
@@ -1977,24 +2025,6 @@ class ChatController(args: Bundle) :
     }
 
     private fun joinRoomWithPassword() {
-        if (CallActivity.active &&
-            roomToken != ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken
-        ) {
-            Toast.makeText(
-                context,
-                context.getString(R.string.restrict_join_other_room_while_call),
-                Toast.LENGTH_LONG
-            ).show()
-
-            Log.e(
-                TAG,
-                "Restricted to open chat controller because a call in another room is active. This is an " +
-                    "edge case which is not properly handled yet."
-            )
-            router.popToRoot()
-            return
-        }
-
         // if ApplicationWideCurrentRoomHolder contains a session (because a call is active), then keep the sessionId
         if (ApplicationWideCurrentRoomHolder.getInstance().currentRoomId ==
             currentConversation!!.roomId
@@ -2062,6 +2092,7 @@ class ChatController(args: Bundle) :
                         }
 
                         if (startCallFromRoomSwitch) {
+                            startCallFromRoomSwitch = false
                             startACall(voiceOnly, true)
                         }
                     }
@@ -2093,8 +2124,7 @@ class ChatController(args: Bundle) :
     }
 
     fun leaveRoom(
-        remapChatModel: RemapChatModel?,
-        funToCallWhenLeaveSuccessful: ((RemapChatModel) -> Unit)?
+        funToCallWhenLeaveSuccessful: (() -> Unit)?
     ) {
         logConversationInfos("leaveRoom")
 
@@ -2140,11 +2170,9 @@ class ChatController(args: Bundle) :
 
                     sessionIdAfterRoomJoined = "0"
 
-                    if (remapChatModel != null && funToCallWhenLeaveSuccessful != null) {
+                    if (funToCallWhenLeaveSuccessful != null) {
                         Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
-                        funToCallWhenLeaveSuccessful(remapChatModel)
-                    } else {
-                        Log.d(TAG, "remapChatController was not set")
+                        funToCallWhenLeaveSuccessful()
                     }
                 }
 
@@ -2178,10 +2206,10 @@ class ChatController(args: Bundle) :
             }
 
             binding?.messageInputView?.inputEditText?.setText("")
-            val replyMessageId: Int? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int?
+            val replyMessageId: Int? = findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int?
             sendMessage(
                 editable,
-                if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) {
+                if (findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) {
                     replyMessageId
                 } else {
                     null
@@ -2198,9 +2226,9 @@ class ChatController(args: Bundle) :
 
             ncApi.sendChatMessage(
                 credentials,
-                ApiUtils.getUrlForChat(apiVersion, conversationUser.baseUrl, roomToken),
+                ApiUtils.getUrlForChat(apiVersion, conversationUser!!.baseUrl, roomToken),
                 message,
-                conversationUser.displayName,
+                conversationUser!!.displayName,
                 replyTo,
                 sendWithoutNotification
             )
@@ -2248,7 +2276,7 @@ class ChatController(args: Bundle) :
         if (conversationUser == null) {
             return
         }
-        webSocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUserId(conversationUser.id!!)
+        webSocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUserId(conversationUser!!.id!!)
 
         if (webSocketInstance == null) {
             Log.d(TAG, "webSocketInstance not set up. This should only happen when not using the HPB")
@@ -2629,7 +2657,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun scrollToRequestedMessageIfNeeded() {
-        args.getString(BundleKeys.KEY_MESSAGE_ID)?.let {
+        intent.getStringExtra(BundleKeys.KEY_MESSAGE_ID)?.let {
             scrollToMessageWithId(it)
         }
     }
@@ -2654,9 +2682,9 @@ class ChatController(args: Bundle) :
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_conversation, menu)
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.menu_conversation, menu)
 
         binding?.messageInputView?.context?.let {
             viewThemeUtils.platform.colorToolbarMenuIcon(
@@ -2690,14 +2718,14 @@ class ChatController(args: Bundle) :
 
             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-call")) {
                 Handler().post {
-                    activity?.findViewById<View?>(R.id.conversation_voice_call)?.setOnLongClickListener {
+                    findViewById<View?>(R.id.conversation_voice_call)?.setOnLongClickListener {
                         showCallButtonMenu(true)
                         true
                     }
                 }
 
                 Handler().post {
-                    activity?.findViewById<View?>(R.id.conversation_video_call)?.setOnLongClickListener {
+                    findViewById<View?>(R.id.conversation_video_call)?.setOnLongClickListener {
                         showCallButtonMenu(false)
                         true
                     }
@@ -2707,9 +2735,10 @@ class ChatController(args: Bundle) :
             menu.removeItem(R.id.conversation_video_call)
             menu.removeItem(R.id.conversation_voice_call)
         }
+        return true
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
         conversationUser?.let {
             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(it, "read-only-rooms")) {
@@ -2718,14 +2747,11 @@ class ChatController(args: Bundle) :
             val searchItem = menu.findItem(R.id.conversation_search)
             searchItem.isVisible = CapabilitiesUtilNew.isUnifiedSearchAvailable(it)
         }
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            android.R.id.home -> {
-                (activity as MainActivity).resetConversationsList()
-                true
-            }
             R.id.conversation_video_call -> {
                 startACall(false, false)
                 true
@@ -2751,7 +2777,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun showSharedItems() {
-        val intent = Intent(activity, SharedItemsActivity::class.java)
+        val intent = Intent(this, SharedItemsActivity::class.java)
         intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         intent.putExtra(KEY_USER_ENTITY, conversationUser as Parcelable)
@@ -2759,11 +2785,11 @@ class ChatController(args: Bundle) :
             SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
             currentConversation?.isParticipantOwnerOrModerator
         )
-        activity!!.startActivity(intent)
+        startActivity(intent)
     }
 
     private fun startMessageSearch() {
-        val intent = Intent(activity, MessageSearchActivity::class.java)
+        val intent = Intent(this, MessageSearchActivity::class.java)
         intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         startActivityForResult(intent, REQUEST_CODE_MESSAGE_SEARCH)
@@ -2822,7 +2848,7 @@ class ChatController(args: Bundle) :
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
         currentConversation?.let {
             if (conversationUser != null) {
-                val pp = ParticipantPermissions(conversationUser, it)
+                val pp = ParticipantPermissions(conversationUser!!, it)
                 if (!pp.canStartCall() && currentConversation?.hasCall == false) {
                     Toast.makeText(context, R.string.startCallForbidden, Toast.LENGTH_LONG).show()
                 } else {
@@ -2857,7 +2883,7 @@ class ChatController(args: Bundle) :
             )
 
             if (isVoiceOnlyCall) {
-                bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true)
+                bundle.putBoolean(KEY_CALL_VOICE_ONLY, true)
             }
             if (callWithoutNotification) {
                 bundle.putBoolean(BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION, true)
@@ -2867,13 +2893,9 @@ class ChatController(args: Bundle) :
                 bundle.putBoolean(KEY_IS_BREAKOUT_ROOM, true)
             }
 
-            return if (activity != null) {
-                val callIntent = Intent(activity, CallActivity::class.java)
-                callIntent.putExtras(bundle)
-                callIntent
-            } else {
-                null
-            }
+            val callIntent = Intent(this, CallActivity::class.java)
+            callIntent.putExtras(bundle)
+            return callIntent
         } ?: run {
             return null
         }
@@ -2895,16 +2917,14 @@ class ChatController(args: Bundle) :
     }
 
     override fun onLongClickReactions(chatMessage: ChatMessage) {
-        activity?.let {
-            ShowReactionsDialog(
-                activity!!,
-                currentConversation,
-                chatMessage,
-                conversationUser,
-                participantPermissions.hasChatPermission(),
-                ncApi
-            ).show()
-        }
+        ShowReactionsDialog(
+            this,
+            currentConversation,
+            chatMessage,
+            conversationUser,
+            participantPermissions.hasChatPermission(),
+            ncApi
+        ).show()
     }
 
     inner class ReactionAddedObserver : Observer<ReactionAddedModel> {
@@ -2968,16 +2988,14 @@ class ChatController(args: Bundle) :
     private fun openMessageActionsDialog(iMessage: IMessage?) {
         val message = iMessage as ChatMessage
         if (hasVisibleItems(message) && !isSystemMessage(message)) {
-            activity?.let {
-                MessageActionsDialog(
-                    this,
-                    message,
-                    conversationUser,
-                    currentConversation,
-                    isShowMessageDeletionButton(message),
-                    participantPermissions.hasChatPermission()
-                ).show()
-            }
+            MessageActionsDialog(
+                this,
+                message,
+                conversationUser,
+                currentConversation,
+                isShowMessageDeletionButton(message),
+                participantPermissions.hasChatPermission()
+            ).show()
         }
     }
 
@@ -3093,13 +3111,12 @@ class ChatController(args: Bundle) :
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
 
-                                ConductorRemapping.remapChatController(
-                                    router,
-                                    conversationUser!!.id!!,
-                                    roomOverall.ocs!!.data!!.token!!,
-                                    bundle,
-                                    true
-                                )
+                                leaveRoom {
+                                    val chatIntent = Intent(context, ChatActivity::class.java)
+                                    chatIntent.putExtras(bundle)
+                                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                    startActivity(chatIntent)
+                                }
                             }
 
                             override fun onError(e: Throwable) {
@@ -3127,11 +3144,13 @@ class ChatController(args: Bundle) :
         bundle.putBoolean(BundleKeys.KEY_FORWARD_MSG_FLAG, true)
         bundle.putString(BundleKeys.KEY_FORWARD_MSG_TEXT, message?.text)
         bundle.putString(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM, roomId)
-        router.pushController(
-            RouterTransaction.with(ConversationsListController(bundle))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
+
+        // TODO
+        // router.pushController(
+        //     RouterTransaction.with(ConversationsListController(bundle))
+        //         .pushChangeHandler(HorizontalChangeHandler())
+        //         .popChangeHandler(HorizontalChangeHandler())
+        // )
     }
 
     fun markAsUnread(message: IMessage?) {
@@ -3170,7 +3189,7 @@ class ChatController(args: Bundle) :
 
     fun copyMessage(message: IMessage?) {
         val clipboardManager =
-            activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText(
             resources?.getString(R.string.nc_app_product_name),
             message?.text
@@ -3182,7 +3201,7 @@ class ChatController(args: Bundle) :
         return !message.isDeleted || // copy message
             message.replyable || // reply to
             message.replyable && // reply privately
-            conversationUser?.userId?.isNotEmpty() == true && conversationUser.userId != "?" &&
+            conversationUser?.userId?.isNotEmpty() == true && conversationUser!!.userId != "?" &&
             message.user.id.startsWith("users/") &&
             message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
             currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
@@ -3309,10 +3328,10 @@ class ChatController(args: Bundle) :
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
         if (conversationUser == null) return false
 
-        val isUserAllowedByPrivileges = if (message.actorId == conversationUser.userId) {
+        val isUserAllowedByPrivileges = if (message.actorId == conversationUser!!.userId) {
             true
         } else {
-            currentConversation!!.canModerate(conversationUser)
+            currentConversation!!.canModerate(conversationUser!!)
         }
 
         val isOlderThanSixHours = message
@@ -3397,7 +3416,7 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onNext(roomOverall: RoomOverall) {
-                        val conversationIntent = Intent(activity, CallActivity::class.java)
+                        val conversationIntent = Intent(context, CallActivity::class.java)
                         val bundle = Bundle()
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
                         bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
@@ -3411,20 +3430,19 @@ class ChatController(args: Bundle) :
                             )
                             conversationIntent.putExtras(bundle)
 
-                            ConductorRemapping.remapChatController(
-                                router,
-                                conversationUser.id!!,
-                                roomOverall.ocs!!.data!!.token!!,
-                                bundle,
-                                true
-                            )
+                            leaveRoom {
+                                val chatIntent = Intent(context, ChatActivity::class.java)
+                                chatIntent.putExtras(bundle)
+                                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                startActivity(chatIntent)
+                            }
                         } else {
                             conversationIntent.putExtras(bundle)
                             startActivity(conversationIntent)
                             Handler().postDelayed(
                                 {
-                                    if (!isDestroyed && !isBeingDestroyed) {
-                                        router.popCurrentController()
+                                    if (!isDestroyed) {
+                                        finish()
                                     }
                                 },
                                 POP_CURRENT_CONTROLLER_DELAY
@@ -3456,7 +3474,7 @@ class ChatController(args: Bundle) :
             requestCameraPermissions()
         } else {
             Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
-                takeVideoIntent.resolveActivity(activity!!.packageManager)?.also {
+                takeVideoIntent.resolveActivity(packageManager)?.also {
                     val videoFile: File? = try {
                         val outputDir = context.cacheDir
                         val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
@@ -3486,10 +3504,7 @@ class ChatController(args: Bundle) :
         val pollVoteDialog = PollCreateDialogFragment.newInstance(
             roomToken!!
         )
-        pollVoteDialog.show(
-            (activity as MainActivity?)!!.supportFragmentManager,
-            TAG
-        )
+        pollVoteDialog.show(supportFragmentManager, TAG)
     }
 
     fun jumpToQuotedMessage(parentMessage: ChatMessage) {
@@ -3505,7 +3520,7 @@ class ChatController(args: Bundle) :
     private fun logConversationInfos(methodName: String) {
         Log.d(TAG, " |-----------------------------------------------")
         Log.d(TAG, " | method: $methodName")
-        Log.d(TAG, " | ChatController: " + System.identityHashCode(this).toString())
+        Log.d(TAG, " | ChatActivity: " + System.identityHashCode(this).toString())
         Log.d(TAG, " | roomToken: $roomToken")
         Log.d(TAG, " | currentConversation?.displayName: ${currentConversation?.displayName}")
         Log.d(TAG, " | sessionIdAfterRoomJoined: $sessionIdAfterRoomJoined")
@@ -3513,7 +3528,7 @@ class ChatController(args: Bundle) :
     }
 
     companion object {
-        private const val TAG = "ChatController"
+        private val TAG = ChatActivity::class.simpleName
         private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
         private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
         private const val CONTENT_TYPE_LOCATION: Byte = 3

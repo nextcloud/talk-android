@@ -28,10 +28,10 @@ import androidx.core.content.ContextCompat
 import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.ItemCustomIncomingPollMessageBinding
 import com.nextcloud.talk.extensions.loadBotsAvatar
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
@@ -136,7 +136,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
                     pollName
                 )
                 pollVoteDialog.show(
-                    (binding.messagePollIcon.context as MainActivity).supportFragmentManager,
+                    (binding.messagePollIcon.context as ChatActivity).supportFragmentManager,
                     TAG
                 )
             }
