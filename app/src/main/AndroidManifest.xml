@@ -224,6 +224,10 @@
             android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".conversationlist.ConversationsListActivity"
+            android:theme="@style/AppTheme" />
+
         <receiver android:name=".receivers.PackageReplacedReceiver"
             android:exported="false">
             <intent-filter>

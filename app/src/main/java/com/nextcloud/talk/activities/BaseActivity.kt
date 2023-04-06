@@ -48,6 +48,10 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 open class BaseActivity : AppCompatActivity() {
 
+    enum class AppBarLayoutType {
+        TOOLBAR, SEARCH_BAR, EMPTY
+    }
+
     @Inject
     lateinit var eventBus: EventBus
 
@@ -59,6 +63,9 @@ open class BaseActivity : AppCompatActivity() {
 
     @Inject
     lateinit var context: Context
+
+    open val appBarLayoutType: AppBarLayoutType
+        get() = AppBarLayoutType.TOOLBAR
 
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)

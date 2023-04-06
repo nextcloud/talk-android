@@ -121,8 +121,8 @@ import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
-import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.conversation.info.ConversationInfoActivity
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
@@ -1763,7 +1763,7 @@ class ChatActivity :
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
+                Log.d(ConversationsListActivity.TAG, "upload starting after permissions were granted")
                 if (filesToUpload.isNotEmpty()) {
                     uploadFiles(filesToUpload)
                 }
@@ -3154,12 +3154,9 @@ class ChatActivity :
         bundle.putString(BundleKeys.KEY_FORWARD_MSG_TEXT, message?.text)
         bundle.putString(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM, roomId)
 
-        // TODO
-        // router.pushController(
-        //     RouterTransaction.with(ConversationsListController(bundle))
-        //         .pushChangeHandler(HorizontalChangeHandler())
-        //         .popChangeHandler(HorizontalChangeHandler())
-        // )
+        val intent = Intent(this, ConversationsListActivity::class.java)
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
 
     fun markAsUnread(message: IMessage?) {

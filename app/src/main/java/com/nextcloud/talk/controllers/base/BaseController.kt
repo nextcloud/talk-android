@@ -22,10 +22,7 @@
  */
 package com.nextcloud.talk.controllers.base
 
-import android.animation.AnimatorInflater
-import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -39,12 +36,10 @@ import android.widget.EditText
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
-import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
-import com.google.android.material.appbar.AppBarLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -54,9 +49,7 @@ import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SwitchAccountController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
-import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import javax.inject.Inject
 import kotlin.jvm.internal.Intrinsics
@@ -120,12 +113,12 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
     protected open fun onViewBound(view: View) {
         var activity: MainActivity? = null
 
-        if (getActivity() != null && getActivity() is MainActivity) {
-            activity = getActivity() as MainActivity?
-            viewThemeUtils.material.themeCardView(activity!!.binding.searchToolbar)
-            viewThemeUtils.material.themeToolbar(activity.binding.toolbar)
-            viewThemeUtils.material.themeSearchBarText(activity.binding.searchText)
-        }
+        // if (getActivity() != null && getActivity() is MainActivity) {
+        //     activity = getActivity() as MainActivity?
+        //     viewThemeUtils.material.themeCardView(activity!!.binding.searchToolbar)
+        //     viewThemeUtils.material.themeToolbar(activity.binding.toolbar)
+        //     viewThemeUtils.material.themeSearchBarText(activity.binding.searchText)
+        // }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
             disableKeyboardPersonalisedLearning((view as ViewGroup))
@@ -136,7 +129,7 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
     }
 
     override fun onAttach(view: View) {
-        showSearchOrToolbar()
+        // showSearchOrToolbar()
         setTitle()
         if (actionBar != null) {
             actionBar!!.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize >= 1)
@@ -144,93 +137,93 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
         super.onAttach(view)
     }
 
-    open fun showSearchOrToolbar() {
-        if (isValidActivity(activity)) {
-            val showSearchBar = appBarLayoutType == AppBarLayoutType.SEARCH_BAR
-            val activity = activity as MainActivity
-
-            if (appBarLayoutType == AppBarLayoutType.EMPTY) {
-                hideBars(activity.binding)
-            } else {
-                if (showSearchBar) {
-                    showSearchBar(activity.binding)
-                } else {
-                    showToolbar(activity.binding)
-                }
-                colorizeStatusBar(showSearchBar, activity, resources)
-            }
-
-            colorizeNavigationBar(activity, resources)
-        }
-    }
-
-    private fun isValidActivity(activity: Activity?): Boolean {
-        return activity != null && activity is MainActivity
-    }
-
-    private fun showSearchBar(binding: ActivityMainBinding) {
-        val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
-        binding.searchToolbar.visibility = View.VISIBLE
-        binding.searchText.hint = searchHint
-        binding.toolbar.visibility = View.GONE
-        // layoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
-        // .LayoutParams.SCROLL_FLAG_SNAP | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-        layoutParams.scrollFlags = 0
-        binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-            binding.appBar.context,
-            R.animator.appbar_elevation_off
-        )
-        binding.searchToolbar.layoutParams = layoutParams
-    }
-
-    private fun showToolbar(binding: ActivityMainBinding) {
-        val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
-        binding.searchToolbar.visibility = View.GONE
-        binding.toolbar.visibility = View.VISIBLE
-        viewThemeUtils.material.colorToolbarOverflowIcon(binding.toolbar)
-        layoutParams.scrollFlags = 0
-        binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-            binding.appBar.context,
-            R.animator.appbar_elevation_on
-        )
-        binding.searchToolbar.layoutParams = layoutParams
-    }
-
-    private fun hideBars(binding: ActivityMainBinding) {
-        binding.toolbar.visibility = View.GONE
-        binding.searchToolbar.visibility = View.GONE
-    }
-
-    fun hideSearchBar() {
-        val activity = activity as MainActivity?
-        val layoutParams = activity!!.binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
-        activity.binding.searchToolbar.visibility = View.GONE
-        activity.binding.toolbar.visibility = View.VISIBLE
-        layoutParams.scrollFlags = 0
-        activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-            activity.binding.appBar.context,
-            R.animator.appbar_elevation_on
-        )
-    }
-
-    private fun colorizeStatusBar(showSearchBar: Boolean, activity: Activity?, resources: Resources?) {
-        if (activity != null && resources != null) {
-            if (showSearchBar) {
-                view?.let { viewThemeUtils.platform.resetStatusBar(activity) }
-            } else {
-                view?.let { viewThemeUtils.platform.themeStatusBar(activity, it) }
-            }
-        }
-    }
-
-    private fun colorizeNavigationBar(activity: Activity?, resources: Resources?) {
-        if (activity != null && resources != null) {
-            DisplayUtils.applyColorToNavigationBar(
-                activity.window,
-                ResourcesCompat.getColor(resources, R.color.bg_default, null)
-            )
-        }
-    }
+    // open fun showSearchOrToolbar() {
+    //     if (isValidActivity(activity)) {
+    //         val showSearchBar = appBarLayoutType == AppBarLayoutType.SEARCH_BAR
+    //         val activity = activity as MainActivity
+    //
+    //         if (appBarLayoutType == AppBarLayoutType.EMPTY) {
+    //             hideBars(activity.binding)
+    //         } else {
+    //             if (showSearchBar) {
+    //                 showSearchBar(activity.binding)
+    //             } else {
+    //                 showToolbar(activity.binding)
+    //             }
+    //             colorizeStatusBar(showSearchBar, activity, resources)
+    //         }
+    //
+    //         colorizeNavigationBar(activity, resources)
+    //     }
+    // }
+    //
+    // private fun isValidActivity(activity: Activity?): Boolean {
+    //     return activity != null && activity is MainActivity
+    // }
+    //
+    // private fun showSearchBar(binding: ActivityMainBinding) {
+    //     val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+    //     binding.searchToolbar.visibility = View.VISIBLE
+    //     binding.searchText.hint = searchHint
+    //     binding.toolbar.visibility = View.GONE
+    //     // layoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
+    //     // .LayoutParams.SCROLL_FLAG_SNAP | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+    //     layoutParams.scrollFlags = 0
+    //     binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+    //         binding.appBar.context,
+    //         R.animator.appbar_elevation_off
+    //     )
+    //     binding.searchToolbar.layoutParams = layoutParams
+    // }
+    //
+    // private fun showToolbar(binding: ActivityMainBinding) {
+    //     val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+    //     binding.searchToolbar.visibility = View.GONE
+    //     binding.toolbar.visibility = View.VISIBLE
+    //     viewThemeUtils.material.colorToolbarOverflowIcon(binding.toolbar)
+    //     layoutParams.scrollFlags = 0
+    //     binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+    //         binding.appBar.context,
+    //         R.animator.appbar_elevation_on
+    //     )
+    //     binding.searchToolbar.layoutParams = layoutParams
+    // }
+    //
+    // private fun hideBars(binding: ActivityMainBinding) {
+    //     binding.toolbar.visibility = View.GONE
+    //     binding.searchToolbar.visibility = View.GONE
+    // }
+    //
+    // fun hideSearchBar() {
+    //     val activity = activity as MainActivity?
+    //     val layoutParams = activity!!.binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+    //     activity.binding.searchToolbar.visibility = View.GONE
+    //     activity.binding.toolbar.visibility = View.VISIBLE
+    //     layoutParams.scrollFlags = 0
+    //     activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+    //         activity.binding.appBar.context,
+    //         R.animator.appbar_elevation_on
+    //     )
+    // }
+    //
+    // private fun colorizeStatusBar(showSearchBar: Boolean, activity: Activity?, resources: Resources?) {
+    //     if (activity != null && resources != null) {
+    //         if (showSearchBar) {
+    //             view?.let { viewThemeUtils.platform.resetStatusBar(activity) }
+    //         } else {
+    //             view?.let { viewThemeUtils.platform.themeStatusBar(activity, it) }
+    //         }
+    //     }
+    // }
+    //
+    // private fun colorizeNavigationBar(activity: Activity?, resources: Resources?) {
+    //     if (activity != null && resources != null) {
+    //         DisplayUtils.applyColorToNavigationBar(
+    //             activity.window,
+    //             ResourcesCompat.getColor(resources, R.color.bg_default, null)
+    //         )
+    //     }
+    // }
 
     override fun onDetach(view: View) {
         super.onDetach(view)

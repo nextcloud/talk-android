@@ -38,7 +38,7 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
 import com.nextcloud.talk.adapters.items.MessageResultItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.ConversationsListController
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMessageSearchBinding
 import com.nextcloud.talk.utils.DisplayUtils
@@ -241,7 +241,7 @@ class MessageSearchActivity : BaseActivity() {
                 when {
                     TextUtils.isEmpty(query) -> Observable.empty()
                     else -> Observable.timer(
-                        ConversationsListController.SEARCH_DEBOUNCE_INTERVAL_MS.toLong(),
+                        ConversationsListActivity.SEARCH_DEBOUNCE_INTERVAL_MS.toLong(),
                         TimeUnit.MILLISECONDS
                     )
                 }
