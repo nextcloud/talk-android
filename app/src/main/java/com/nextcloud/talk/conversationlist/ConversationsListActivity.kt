@@ -1293,16 +1293,17 @@ class ConversationsListActivity :
                         Log.d(TAG, "No other users found. AccountRemovalWorker will restart the app.")
                     }
                 }
-                .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
-                    // TODO
-                    // router.pushController(
-                    //     RouterTransaction.with(
-                    //         WebViewLoginController(currentUser!!.baseUrl, true)
-                    //     )
-                    //         .pushChangeHandler(VerticalChangeHandler())
-                    //         .popChangeHandler(VerticalChangeHandler())
-                    // )
-                }
+
+            // TODO: show negative button again when conductor is removed
+            // .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
+            //     // router.pushController(
+            //     //     RouterTransaction.with(
+            //     //         WebViewLoginController(currentUser!!.baseUrl, true)
+            //     //     )
+            //     //         .pushChangeHandler(VerticalChangeHandler())
+            //     //         .popChangeHandler(VerticalChangeHandler())
+            //     // )
+            // }
 
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
             val dialog = dialogBuilder.show()
@@ -1335,8 +1336,10 @@ class ConversationsListActivity :
                 }
                 .setNegativeButton(R.string.nc_cancel) { _, _ ->
                     if (userManager.users.blockingGet().isNotEmpty()) {
-                        // TODO
+                        // TODO show SwitchAccount screen again when conductor is removed instead to close app
                         // router.pushController(RouterTransaction.with(SwitchAccountController()))
+                        finishAffinity()
+                        finish()
                     } else {
                         finishAffinity()
                         finish()
