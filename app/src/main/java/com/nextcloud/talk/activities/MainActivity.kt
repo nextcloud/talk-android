@@ -52,6 +52,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -92,7 +93,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         router = Conductor.attachRouter(this, binding.controllerContainer, savedInstanceState)
 
-        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+        if (intent.hasExtra(ADD_ACCOUNT) && intent.getBooleanExtra(ADD_ACCOUNT, false)) {
+            addAccount()
+        } else if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {
             if (!appPreferences.isDbRoomMigrated) {

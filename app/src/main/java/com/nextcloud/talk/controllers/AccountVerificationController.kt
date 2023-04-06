@@ -466,7 +466,8 @@ class AccountVerificationController(args: Bundle? = null) :
                             ApplicationWideMessageHolder.getInstance().messageType =
                                 ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
                         }
-                        router.popToRoot()
+                        val intent = Intent(context, ConversationsListActivity::class.java)
+                        startActivity(intent)
                     }
                 }
             }
