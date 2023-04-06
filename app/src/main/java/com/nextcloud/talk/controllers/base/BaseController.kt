@@ -54,6 +54,7 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import javax.inject.Inject
 import kotlin.jvm.internal.Intrinsics
 
+// TODO: check what needs to be migrated from this class to BaseActivity etc when conductor is removed
 @AutoInjector(NextcloudTalkApplication::class)
 abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = null) : Controller(args) {
     enum class AppBarLayoutType {
@@ -270,6 +271,7 @@ abstract class BaseController(@LayoutRes var layoutRes: Int, args: Bundle? = nul
         Intrinsics.checkNotNullParameter(toolbar, "toolbar")
     }
 
+    // TODO: check if this must be migrated when using activities instead of conductor
     private fun cleanTempCertPreference() {
         val temporaryClassNames: MutableList<String> = ArrayList()
         temporaryClassNames.add(ServerSelectionController::class.java.name)
