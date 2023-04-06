@@ -34,6 +34,7 @@
     <string name="invisible">Invisible</string>
     <string name="load_more_results">Carregar més resultats</string>
     <string name="lock_symbol">Símbol de bloqueig</string>
+    <string name="lower_hand">Baixa mà</string>
     <string name="menu_item_sort_by_date_newest_first">Més nou primer</string>
     <string name="menu_item_sort_by_date_oldest_first">Més antic primer</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -398,9 +399,12 @@
     <string name="polls_settings">Paràmetres</string>
     <string name="polls_submit_vote">Votar</string>
     <string name="polls_voted_hidden_success">S\'ha enviat el vot</string>
+    <string name="raise_hand">Aixeca la mà</string>
     <string name="reactions_tab_all">Totes</string>
     <string name="read_storage_no_permission">No es poden compartir fitxers des de l\'emmagatzematge sense permisos</string>
     <string name="record_active_info">La trucada està sent enregistrada</string>
+    <string name="record_cancel_start">Cancel·la l\'inici de la gravació</string>
+    <string name="record_failed_info">La gravació ha fallat. Poseu-vos en contacte amb el vostre administrador.</string>
     <string name="record_start_description">Iniciar l\'enregistrament</string>
     <string name="record_stop_confirm_message">Realment voleu aturar l\'enregistrament?</string>
     <string name="record_stop_confirm_title">Aturar l\'enregistrament de la trucada</string>
