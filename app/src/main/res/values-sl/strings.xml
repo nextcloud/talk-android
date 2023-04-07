@@ -335,8 +335,8 @@
     <string name="nc_sort_by">Razvrsti po</string>
     <string name="nc_start_time">Čas začetka</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
-    <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke za %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko za %1$s?</string>
+    <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke osebi %1$s?</string>
+    <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko osebi %1$s?</string>
     <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
     <string name="nc_upload_from_cloud">Souporaba %1$s</string>
     <string name="nc_upload_from_device">Pošlji z naprave</string>
