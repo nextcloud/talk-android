@@ -11,6 +11,7 @@
     <string name="away">Ne spremljam</string>
     <string name="call_more_actions_dialog_headline">Napredne možnosti klica</string>
     <string name="call_without_notification">Klic brez obvestila</string>
+    <string name="camera_permission_granted">Dovoljenje za uporabo kamere je dodeljeno. Ponovno izberite kamero.</string>
     <string name="choose_avatar_from_cloud">Izbor pogodbe iz oblaka</string>
     <string name="clear_status_message">Počisti sporočilo stanja</string>
     <string name="clear_status_message_after">Počisti sporočilo stanja po</string>
@@ -23,6 +24,7 @@
     <string name="emoji_category_recent">Nedavno</string>
     <string name="emoji_search">Iskanje izraznih ikon</string>
     <string name="encrypted">Šifrirano</string>
+    <string name="error_loading_chats">Prišlo je do napake nalaganja pogovorov.</string>
     <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>
     <string name="file_list_folder">mapa</string>
     <string name="file_list_loading">Poteka nalaganje …</string>
@@ -59,10 +61,14 @@
     <string name="nc_attendee_pin">Koda PIN: %1$s</string>
     <string name="nc_biometric_unlock">Odkleni %1$s</string>
     <string name="nc_call_button_content_description_advanced">Napredne možnosti klica</string>
+    <string name="nc_call_button_content_description_answer_video_call">Odgovori z video klicem</string>
+    <string name="nc_call_button_content_description_answer_voice_only">Odgovori kot zvokovni klic</string>
     <string name="nc_call_button_content_description_audio_output">Spremeni odvod zvoka</string>
     <string name="nc_call_button_content_description_camera">Preklopi kamero</string>
     <string name="nc_call_button_content_description_hangup">Končaj klic</string>
     <string name="nc_call_button_content_description_microphone">Preklopi mikrofon</string>
+    <string name="nc_call_button_content_description_pip">Odpri način slike v sliki</string>
+    <string name="nc_call_button_content_description_switch_to_self_vide">Preklopi na pogled sebe</string>
     <string name="nc_call_incoming">DOHODNI</string>
     <string name="nc_call_name">Naslov pogovora</string>
     <string name="nc_call_name_is_same">Vpisano ime je enako obstoječemu</string>
@@ -129,11 +135,13 @@
     <string name="nc_expire_message_one_day">1 dneva</string>
     <string name="nc_expire_message_one_hour">1 uri</string>
     <string name="nc_expire_message_one_week">1 tedna</string>
+    <string name="nc_expire_messages">Preteči prikaz sporočil klepeta</string>
     <string name="nc_expire_messages_explanation">Sporočila klepeta lahko po določenem času potečejo. Opomba: datoteke, ki so v skupni rabi v klepetu, se za lastnika ne izbrišejo, vendar se bodo več zbrane v pogovoru.</string>
     <string name="nc_external_server_failed">Pridobivanje signalnih nastavitev je spodletelo</string>
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom po mobilnih telefonih. Poskusite se povezati v spletnem brskalniku.</string>
     <string name="nc_failed_to_perform_operation">Prišlo je do napake!</string>
     <string name="nc_file_browser_back">Nazaj</string>
+    <string name="nc_file_storage_permission">Zahtevano je dovoljenje za dostop do datoteke</string>
     <string name="nc_following_link">Uporabnik, ki je sledil javni povezavi</string>
     <string name="nc_formatted_message_you">→ %1$s</string>
     <string name="nc_forward_message">Posreduj</string>
@@ -144,8 +152,11 @@
     <string name="nc_groups">Skupine</string>
     <string name="nc_guest">Gost</string>
     <string name="nc_guest_access">Dostop gostov</string>
+    <string name="nc_guest_access_allow_failed">Ni mogoče preklopiti možnosti dostopa za goste.</string>
+    <string name="nc_guest_access_allow_summary">Dovoli gostujočim uporabo javne povezave do pogovora.</string>
     <string name="nc_guest_access_allow_title">Dovoli udeležbo gostov</string>
     <string name="nc_guest_access_password_dialog_hint">Vpis gesla</string>
+    <string name="nc_guest_access_password_dialog_title">Dostopno geslo za goste</string>
     <string name="nc_guest_access_password_summary">Nastavi geslo za omejitev uporabe javne povezave.</string>
     <string name="nc_guest_access_password_title">Zaščita z geslom</string>
     <string name="nc_guest_access_password_weak_alert_title">Šibko geslo</string>
@@ -256,6 +267,7 @@
     <string name="nc_sent_an_image_you">Pošljete sliko</string>
     <string name="nc_sent_location" formatted="true">%1$s pošlje podatek trenutnega mesta.</string>
     <string name="nc_sent_location_you">Poslali ste podatke o trenutnem mestu.</string>
+    <string name="nc_sent_poll_you">Poslali ste anketo.</string>
     <string name="nc_sent_voice" formatted="true">%1$s pošilja glasovno sporočilo.</string>
     <string name="nc_sent_voice_you">Poslali te zvočno sporočilo.</string>
     <string name="nc_server_connect">Preizkusi povezavo s strežnikom</string>
@@ -328,8 +340,10 @@
     <string name="nc_share_text_pass">\nGeslo: %1$s</string>
     <string name="nc_share_this_location">Objavi trenutno mesto</string>
     <string name="nc_share_to_choose_account">Izbor računa</string>
+    <string name="nc_shared_items">Predmeti v souporabi</string>
     <string name="nc_shared_items_deck_card">Naloga Deck</string>
     <string name="nc_shared_items_description">Slike, datoteke, glasovna sporočila ...</string>
+    <string name="nc_shared_items_empty">Ni predmetov v souporabi</string>
     <string name="nc_shared_items_location">Trenutno mesto</string>
     <string name="nc_shared_location">Objavljeno trenutno mesto</string>
     <string name="nc_sort_by">Razvrsti po</string>
@@ -338,9 +352,11 @@
     <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke osebi %1$s?</string>
     <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko osebi %1$s?</string>
     <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
+    <string name="nc_upload_failed_notification_text">Pošiljanje %1$s je spodletelo</string>
     <string name="nc_upload_from_cloud">Souporaba %1$s</string>
     <string name="nc_upload_from_device">Pošlji z naprave</string>
     <string name="nc_upload_in_progess">Poteka pošiljanje</string>
+    <string name="nc_upload_notification_text">%1$s za %2$s – %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Zajemi sliko</string>
     <string name="nc_upload_video_from_cam">Zajemi video</string>
     <string name="nc_user">Uporabnik</string>
@@ -406,10 +422,13 @@
     <string name="shared_items_media">Predstavna vsebina</string>
     <string name="shared_items_other">Drugo</string>
     <string name="shared_items_poll">Anketa</string>
+    <string name="shared_items_recording">Posnetek klica</string>
     <string name="shared_items_voice">Glasovna pošta</string>
     <string name="starred">Priljubljeno</string>
     <string name="startCallForbidden">Ni ustreznih dovoljenj za klicanje</string>
     <string name="status_message">Sporočilo stanja</string>
+    <string name="switch_to_breakout_room">Preklopi na ločene skupine</string>
+    <string name="switch_to_main_room">Preklopi na skupno mesto</string>
     <string name="take_photo">Zajemi sliko</string>
     <string name="take_photo_error_deleting_picture">Napaka zajemanja slike</string>
     <string name="take_photo_permission">Zajemanje slik brez ustreznih dovoljenj ni mogoče</string>

@@ -144,9 +144,9 @@
     <string name="nc_lobby_start_date">Ця зустріч запланована на %1$s</string>
     <string name="nc_lobby_start_soon">Зустріч незабаром розпочнеться</string>
     <string name="nc_lobby_waiting">Зараз ви чекаєте у Вітальні</string>
-    <string name="nc_location_current_position_description">Ваше місцезнаходження</string>
-    <string name="nc_location_permission_required">Обов\'язково потрібен доступ до місцезнаходження</string>
-    <string name="nc_location_unknown">Місцезнаходження не визначено</string>
+    <string name="nc_location_current_position_description">Ваше місце розташування</string>
+    <string name="nc_location_permission_required">Обов\'язково потрібен доступ до місця розташування</string>
+    <string name="nc_location_unknown">Місце розташування не визначено</string>
     <string name="nc_locked">Заблоковано</string>
     <string name="nc_locked_tap_to_unlock">Торкніться щоб розблокувати</string>
     <string name="nc_manual">Не встановлено</string>
@@ -276,8 +276,8 @@
     <string name="nc_settings_use_credentials_title">Для проксі потрібні облікові дані</string>
     <string name="nc_settings_warning">Увага</string>
     <string name="nc_share_contact">Поділіться контактом</string>
-    <string name="nc_share_current_location">Поділіться поточним місцезнаходженням</string>
-    <string name="nc_share_location">Поділіться місцезнаходженням</string>
+    <string name="nc_share_current_location">Поділіться поточним місцем розташування</string>
+    <string name="nc_share_location">Поділіться місцем розташування</string>
     <string name="nc_share_text_pass">\nПароль: %1$s</string>
     <string name="nc_share_this_location">Поділіться цим розташуванням</string>
     <string name="nc_share_to_choose_account">Оберіть обліковий запис</string>
