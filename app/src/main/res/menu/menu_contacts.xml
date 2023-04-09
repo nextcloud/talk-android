@@ -27,7 +27,7 @@
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/nc_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="collapseActionView|always" />
+        app:showAsAction="collapseActionView|ifRoom" />
 
     <item
         android:id="@+id/contacts_selection_done"

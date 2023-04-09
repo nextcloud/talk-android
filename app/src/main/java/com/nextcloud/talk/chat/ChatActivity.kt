@@ -74,7 +74,6 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.text.EmojiCompat
@@ -160,7 +159,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
@@ -244,6 +242,9 @@ class ChatActivity :
     @Inject
     lateinit var dateUtils: DateUtils
 
+    override val view: View
+        get() = binding.root
+
     val disposables = DisposableSet()
 
     var sessionIdAfterRoomJoined: String? = null
@@ -313,8 +314,8 @@ class ChatActivity :
 
         binding = ControllerChatBinding.inflate(layoutInflater)
         setupActionBar()
-        setupSystemColors()
         setContentView(binding.root)
+        setupSystemColors()
 
         handleIntent(intent)
 
@@ -562,6 +563,8 @@ class ChatActivity :
             loadAvatarForStatusBar()
             setActionBarTitle()
         }
+
+        viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
     }
 
     private fun setupActionBar() {
@@ -573,21 +576,7 @@ class ChatActivity :
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
         setActionBarTitle()
-    }
-
-    private fun setupSystemColors() {
-        DisplayUtils.applyColorToStatusBar(
-            this,
-            ResourcesCompat.getColor(
-                resources,
-                R.color.appbar,
-                null
-            )
-        )
-        DisplayUtils.applyColorToNavigationBar(
-            this.window,
-            ResourcesCompat.getColor(resources, R.color.bg_default, null)
-        )
+        viewThemeUtils.material.themeToolbar(binding.chatToolbar)
     }
 
     private fun initAdapter() {

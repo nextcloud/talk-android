@@ -24,16 +24,19 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.WindowManager
 import android.webkit.SslErrorHandler
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.ssl.TrustManager
@@ -67,6 +70,9 @@ open class BaseActivity : AppCompatActivity() {
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
 
+    open val view: View?
+        get() = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         super.onCreate(savedInstanceState)
@@ -83,6 +89,30 @@ open class BaseActivity : AppCompatActivity() {
 
         if (appPreferences.isScreenLocked) {
             SecurityUtils.createKey(appPreferences.screenLockTimeout)
+        }
+    }
+
+    fun setupSystemColors() {
+        colorizeStatusBar()
+        colorizeNavigationBar()
+    }
+
+    open fun colorizeStatusBar() {
+        if (resources != null) {
+            if (appBarLayoutType == AppBarLayoutType.SEARCH_BAR) {
+                viewThemeUtils.platform.resetStatusBar(this)
+            } else {
+                viewThemeUtils.platform.themeStatusBar(this)
+            }
+        }
+    }
+
+    fun colorizeNavigationBar() {
+        if (resources != null) {
+            DisplayUtils.applyColorToNavigationBar(
+                this.window,
+                ResourcesCompat.getColor(resources, R.color.bg_default, null)
+            )
         }
     }
 

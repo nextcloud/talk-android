@@ -27,12 +27,10 @@ package com.nextcloud.talk.conversationlist
 
 import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -51,7 +49,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
@@ -99,7 +96,6 @@ import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -196,8 +192,10 @@ class ConversationsListActivity :
 
         binding = ControllerConversationsRvBinding.inflate(layoutInflater)
         setupActionBar()
-        setupSystemColors()
         setContentView(binding.root)
+        setupSystemColors()
+        viewThemeUtils.material.themeCardView(binding.searchToolbar)
+        viewThemeUtils.material.themeSearchBarText(binding.searchText)
 
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
     }
@@ -252,21 +250,7 @@ class ConversationsListActivity :
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
         supportActionBar?.title = resources!!.getString(R.string.nc_app_product_name)
-    }
-
-    private fun setupSystemColors() {
-        DisplayUtils.applyColorToStatusBar(
-            this,
-            ResourcesCompat.getColor(
-                resources,
-                R.color.appbar,
-                null
-            )
-        )
-        DisplayUtils.applyColorToNavigationBar(
-            this.window,
-            ResourcesCompat.getColor(resources, R.color.bg_default, null)
-        )
+        viewThemeUtils.material.themeToolbar(binding.conversationListToolbar)
     }
 
     private fun loadUserAvatar(
@@ -455,19 +439,13 @@ class ConversationsListActivity :
 
     private fun showSearchOrToolbar() {
         if (TextUtils.isEmpty(searchQuery)) {
-            val showSearchBar = appBarLayoutType == AppBarLayoutType.SEARCH_BAR
-
-            if (appBarLayoutType == AppBarLayoutType.EMPTY) {
-                hideBars()
+            if (appBarLayoutType == AppBarLayoutType.SEARCH_BAR) {
+                showSearchBar()
             } else {
-                if (showSearchBar) {
-                    showSearchBar()
-                } else {
-                    showToolbar()
-                }
-                colorizeStatusBar(showSearchBar, this, resources)
+                showToolbar()
             }
-            colorizeNavigationBar(this, resources)
+            colorizeStatusBar()
+            colorizeNavigationBar()
         }
     }
 
@@ -489,7 +467,7 @@ class ConversationsListActivity :
     private fun showToolbar() {
         val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         binding.searchToolbar.visibility = View.GONE
-        binding.searchToolbar.visibility = View.VISIBLE
+        binding.conversationListToolbar.visibility = View.VISIBLE
         viewThemeUtils.material.colorToolbarOverflowIcon(binding.conversationListToolbar)
         layoutParams.scrollFlags = 0
         binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
@@ -497,11 +475,6 @@ class ConversationsListActivity :
             R.animator.appbar_elevation_on
         )
         binding.conversationListToolbar.layoutParams = layoutParams
-    }
-
-    private fun hideBars() {
-        binding.conversationListToolbar.visibility = View.GONE
-        binding.searchToolbar.visibility = View.GONE
     }
 
     private fun hideSearchBar() {
@@ -513,25 +486,6 @@ class ConversationsListActivity :
             binding.conversationListAppbar.context,
             R.animator.appbar_elevation_on
         )
-    }
-
-    private fun colorizeStatusBar(showSearchBar: Boolean, activity: Activity?, resources: Resources?) {
-        if (activity != null && resources != null) {
-            if (showSearchBar) {
-                viewThemeUtils.platform.resetStatusBar(activity)
-            } else {
-                viewThemeUtils.platform.themeStatusBar(activity, binding.root)
-            }
-        }
-    }
-
-    private fun colorizeNavigationBar(activity: Activity?, resources: Resources?) {
-        if (activity != null && resources != null) {
-            DisplayUtils.applyColorToNavigationBar(
-                activity.window,
-                ResourcesCompat.getColor(resources, R.color.bg_default, null)
-            )
-        }
     }
 
     private fun hasActivityActionSendIntent(): Boolean {
