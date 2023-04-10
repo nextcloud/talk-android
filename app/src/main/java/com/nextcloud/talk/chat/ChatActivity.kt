@@ -74,7 +74,6 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.text.EmojiCompat
@@ -121,8 +120,8 @@ import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
-import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.conversation.info.ConversationInfoActivity
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
@@ -160,7 +159,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
@@ -244,6 +242,9 @@ class ChatActivity :
     @Inject
     lateinit var dateUtils: DateUtils
 
+    override val view: View
+        get() = binding.root
+
     val disposables = DisposableSet()
 
     var sessionIdAfterRoomJoined: String? = null
@@ -313,8 +314,8 @@ class ChatActivity :
 
         binding = ControllerChatBinding.inflate(layoutInflater)
         setupActionBar()
-        setupSystemColors()
         setContentView(binding.root)
+        setupSystemColors()
 
         handleIntent(intent)
 
@@ -562,6 +563,8 @@ class ChatActivity :
             loadAvatarForStatusBar()
             setActionBarTitle()
         }
+
+        viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
     }
 
     private fun setupActionBar() {
@@ -573,21 +576,7 @@ class ChatActivity :
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
         setActionBarTitle()
-    }
-
-    private fun setupSystemColors() {
-        DisplayUtils.applyColorToStatusBar(
-            this,
-            ResourcesCompat.getColor(
-                resources,
-                R.color.appbar,
-                null
-            )
-        )
-        DisplayUtils.applyColorToNavigationBar(
-            this.window,
-            ResourcesCompat.getColor(resources, R.color.bg_default, null)
-        )
+        viewThemeUtils.material.themeToolbar(binding.chatToolbar)
     }
 
     private fun initAdapter() {
@@ -1763,7 +1752,7 @@ class ChatActivity :
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
+                Log.d(ConversationsListActivity.TAG, "upload starting after permissions were granted")
                 if (filesToUpload.isNotEmpty()) {
                     uploadFiles(filesToUpload)
                 }
@@ -3154,12 +3143,9 @@ class ChatActivity :
         bundle.putString(BundleKeys.KEY_FORWARD_MSG_TEXT, message?.text)
         bundle.putString(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM, roomId)
 
-        // TODO
-        // router.pushController(
-        //     RouterTransaction.with(ConversationsListController(bundle))
-        //         .pushChangeHandler(HorizontalChangeHandler())
-        //         .popChangeHandler(HorizontalChangeHandler())
-        // )
+        val intent = Intent(this, ConversationsListActivity::class.java)
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
 
     fun markAsUnread(message: IMessage?) {

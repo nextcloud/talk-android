@@ -40,19 +40,19 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -93,7 +93,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         router = Conductor.attachRouter(this, binding.controllerContainer, savedInstanceState)
 
-        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+        if (intent.hasExtra(ADD_ACCOUNT) && intent.getBooleanExtra(ADD_ACCOUNT, false)) {
+            addAccount()
+        } else if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {
             if (!appPreferences.isDbRoomMigrated) {
@@ -165,11 +167,10 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     private fun setDefaultRootController() {
-        router!!.setRoot(
-            RouterTransaction.with(ConversationsListController(Bundle()))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
+        val intent = Intent(this, ConversationsListActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtras(Bundle())
+        startActivity(intent)
     }
 
     fun resetConversationsList() {
@@ -190,11 +191,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 Log.e(TAG, "Error loading existing users", e)
             }
         })
-    }
-
-    fun openSettings() {
-        val intent = Intent(this, SettingsActivity::class.java)
-        startActivity(intent)
     }
 
     fun addAccount() {

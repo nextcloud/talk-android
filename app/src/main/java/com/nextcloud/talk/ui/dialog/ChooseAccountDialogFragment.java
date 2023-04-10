@@ -26,6 +26,7 @@ package com.nextcloud.talk.ui.dialog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,12 +39,14 @@ import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.conversationlist.ConversationsListActivity;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.DialogChooseAccountBinding;
 import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.models.json.status.StatusOverall;
+import com.nextcloud.talk.settings.SettingsActivity;
 import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.users.UserManager;
@@ -67,6 +70,8 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ACCOUNT;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChooseAccountDialogFragment extends DialogFragment {
@@ -178,16 +183,20 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         // Creating listeners for quick-actions
         binding.currentAccount.getRoot().setOnClickListener(v -> dismiss());
 
-        if (getActivity() instanceof MainActivity) {
-            binding.addAccount.setOnClickListener(v -> {
-                dismiss();
-                ((MainActivity) getActivity()).addAccount();
-            });
-            binding.manageSettings.setOnClickListener(v -> {
-                dismiss();
-                ((MainActivity) getActivity()).openSettings();
-            });
-        }
+
+        binding.addAccount.setOnClickListener(v -> {
+            // TODO: change this when conductor is removed
+            Intent intent = new Intent(getContext(), MainActivity.class);
+            intent.putExtra(ADD_ACCOUNT, true);
+            startActivity(intent);
+            dismiss();
+        });
+        binding.manageSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), SettingsActivity.class);
+            startActivity(intent);
+            dismiss();
+        });
+
 
         binding.setStatus.setOnClickListener(v -> {
             dismiss();
@@ -294,10 +303,14 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
                     if (userManager.setUserAsActive(user).blockingGet()) {
                         cookieManager.getCookieStore().removeAll();
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(
-                                () -> ((MainActivity) getActivity()).resetConversationsList());
-                        }
+
+                        Intent intent = new Intent(getContext(), ConversationsListActivity.class);
+                        // TODO: might be better with FLAG_ACTIVITY_SINGLE_TOP instead than FLAG_ACTIVITY_CLEAR_TOP to
+                        // have a smoother transition. However the handling in onNewIntent() in
+                        // ConversationListActivity must be improved for this.
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+
                         dismiss();
                     }
                 }

@@ -22,6 +22,7 @@
 package com.nextcloud.talk.controllers
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
@@ -42,6 +43,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerAccountVerificationBinding
 import com.nextcloud.talk.events.EventStatus
@@ -457,17 +459,15 @@ class AccountVerificationController(args: Bundle? = null) :
             if (activity != null) {
                 activity!!.runOnUiThread {
                     if (userManager.users.blockingGet().size == 1) {
-                        router.setRoot(
-                            RouterTransaction.with(ConversationsListController(Bundle()))
-                                .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler())
-                        )
+                        val intent = Intent(context, ConversationsListActivity::class.java)
+                        startActivity(intent)
                     } else {
                         if (isAccountImport) {
                             ApplicationWideMessageHolder.getInstance().messageType =
                                 ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
                         }
-                        router.popToRoot()
+                        val intent = Intent(context, ConversationsListActivity::class.java)
+                        startActivity(intent)
                     }
                 }
             }
@@ -517,11 +517,8 @@ class AccountVerificationController(args: Bundle? = null) :
                         }
                     } else {
                         if (userManager.users.blockingGet().isNotEmpty()) {
-                            router.setRoot(
-                                RouterTransaction.with(ConversationsListController(Bundle()))
-                                    .pushChangeHandler(HorizontalChangeHandler())
-                                    .popChangeHandler(HorizontalChangeHandler())
-                            )
+                            val intent = Intent(context, ConversationsListActivity::class.java)
+                            startActivity(intent)
                         } else {
                             router.setRoot(
                                 RouterTransaction.with(ServerSelectionController())

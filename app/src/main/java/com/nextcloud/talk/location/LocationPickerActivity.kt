@@ -131,8 +131,8 @@ class LocationPickerActivity :
 
         binding = ActivityLocationBinding.inflate(layoutInflater)
         setupActionBar()
-        setupSystemColors()
         setContentView(binding.root)
+        setupSystemColors()
 
         getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
     }
@@ -181,21 +181,7 @@ class LocationPickerActivity :
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
         supportActionBar?.title = context.getString(R.string.nc_share_location)
-    }
-
-    private fun setupSystemColors() {
-        DisplayUtils.applyColorToStatusBar(
-            this,
-            ResourcesCompat.getColor(
-                resources,
-                R.color.appbar,
-                null
-            )
-        )
-        DisplayUtils.applyColorToNavigationBar(
-            this.window,
-            ResourcesCompat.getColor(resources, R.color.bg_default, null)
-        )
+        viewThemeUtils.material.themeToolbar(binding.locationPickerToolbar)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

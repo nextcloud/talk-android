@@ -66,7 +66,6 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.dialog.ContactsBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -128,8 +127,8 @@ class ContactsActivity :
 
         binding = ControllerContactsRvBinding.inflate(layoutInflater)
         setupActionBar()
-        setupSystemColors()
         setContentView(binding.root)
+        setupSystemColors()
 
         if (savedInstanceState != null) {
             if (adapter != null) {
@@ -205,21 +204,7 @@ class ContactsActivity :
                 resources!!.getString(R.string.nc_app_product_name)
             }
         }
-    }
-
-    private fun setupSystemColors() {
-        DisplayUtils.applyColorToStatusBar(
-            this,
-            ResourcesCompat.getColor(
-                resources,
-                R.color.appbar,
-                null
-            )
-        )
-        DisplayUtils.applyColorToNavigationBar(
-            this.window,
-            ResourcesCompat.getColor(resources, R.color.bg_default, null)
-        )
+        viewThemeUtils.material.themeToolbar(binding.contactsToolbar)
     }
 
     override fun onSaveInstanceState(bundle: Bundle) {

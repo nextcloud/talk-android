@@ -23,7 +23,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.controllers
+package com.nextcloud.talk.conversationlist
 
 import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
@@ -31,6 +31,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -40,7 +41,6 @@ import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -60,13 +60,12 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
@@ -74,11 +73,8 @@ import com.nextcloud.talk.adapters.items.MessageResultItem
 import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
-import com.nextcloud.talk.controllers.base.BaseController
-import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationsRvBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
@@ -130,7 +126,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.apache.commons.lang3.builder.CompareToBuilder
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.parceler.Parcels
@@ -140,18 +135,16 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ConversationsListController(bundle: Bundle) :
-    BaseController(R.layout.controller_conversations_rv, bundle),
+class ConversationsListActivity :
+    BaseActivity(),
     FlexibleAdapter.OnItemClickListener,
     FlexibleAdapter.OnItemLongClickListener,
     ConversationMenuInterface {
-    private val bundle: Bundle
+
+    private lateinit var binding: ControllerConversationsRvBinding
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var eventBus: EventBus
 
     @Inject
     lateinit var ncApi: NcApi
@@ -161,11 +154,6 @@ class ConversationsListController(bundle: Bundle) :
 
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
-
-    private val binding: ControllerConversationsRvBinding? by viewBinding(ControllerConversationsRvBinding::bind)
-
-    override val title: String
-        get() = resources!!.getString(R.string.nc_app_product_name)
 
     override val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.SEARCH_BAR
@@ -190,7 +178,7 @@ class ConversationsListController(bundle: Bundle) :
     private var selectedConversation: Conversation? = null
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
-    private var forwardMessage: Boolean
+    private var forwardMessage: Boolean = false
     private var nextUnreadConversationScrollPosition = 0
     private var layoutManager: SmoothScrollLinearLayoutManager? = null
     private val callHeaderItems = HashMap<String, GenericTextHeaderItem>()
@@ -198,46 +186,98 @@ class ConversationsListController(bundle: Bundle) :
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
 
-    override fun onViewBound(view: View) {
-        super.onViewBound(view)
-        sharedApplication!!.componentApplication.inject(this)
-        actionBar?.show()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+
+        binding = ControllerConversationsRvBinding.inflate(layoutInflater)
+        setupActionBar()
+        setContentView(binding.root)
+        setupSystemColors()
+        viewThemeUtils.material.themeCardView(binding.searchToolbar)
+        viewThemeUtils.material.themeSearchBarText(binding.searchText)
+
+        forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // actionBar?.show()
         if (adapter == null) {
-            adapter = FlexibleAdapter(conversationItems, activity, true)
+            adapter = FlexibleAdapter(conversationItems, this, true)
         } else {
             binding?.loadingContent?.visibility = View.GONE
         }
         adapter!!.addListener(this)
         prepareViews()
+
+        showShareToScreen = hasActivityActionSendIntent()
+
+        ClosedInterfaceImpl().setUpPushTokenRegistration()
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this)
+        }
+        currentUser = userManager.currentUser.blockingGet()
+        if (currentUser != null) {
+            if (isServerEOL(currentUser!!)) {
+                showServerEOLDialog()
+                return
+            }
+            if (isUnifiedSearchAvailable(currentUser!!)) {
+                searchHelper = MessageSearchHelper(unifiedSearchRepository)
+            }
+            credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+
+            loadUserAvatar(binding.switchAccountButton)
+            viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
+
+            fetchRooms()
+        } else {
+            Log.e(TAG, "userManager.currentUser.blockingGet() returned null")
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+        }
+
+        showSearchOrToolbar()
+    }
+
+    private fun setupActionBar() {
+        setSupportActionBar(binding.conversationListToolbar)
+        binding.conversationListToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
+        supportActionBar?.title = resources!!.getString(R.string.nc_app_product_name)
+        viewThemeUtils.material.themeToolbar(binding.conversationListToolbar)
     }
 
     private fun loadUserAvatar(
         target: Target
     ) {
-        if (activity != null) {
-            if (currentUser != null) {
-                val url = ApiUtils.getUrlForAvatar(
-                    currentUser!!.baseUrl,
-                    currentUser!!.userId,
-                    true
-                )
+        if (currentUser != null) {
+            val url = ApiUtils.getUrlForAvatar(
+                currentUser!!.baseUrl,
+                currentUser!!.userId,
+                true
+            )
 
-                val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+            val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
-                context.imageLoader.enqueue(
-                    ImageRequest.Builder(context)
-                        .data(url)
-                        .addHeader("Authorization", credentials)
-                        .placeholder(R.drawable.ic_user)
-                        .transformations(CircleCropTransformation())
-                        .crossfade(true)
-                        .target(target)
-                        .build()
-                )
-            } else {
-                Log.e(TAG, "currentUser was null in loadUserAvatar")
-                Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
-            }
+            context.imageLoader.enqueue(
+                ImageRequest.Builder(context)
+                    .data(url)
+                    .addHeader("Authorization", credentials)
+                    .placeholder(R.drawable.ic_user)
+                    .transformations(CircleCropTransformation())
+                    .crossfade(true)
+                    .target(target)
+                    .build()
+            )
+        } else {
+            Log.e(TAG, "currentUser was null in loadUserAvatar")
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -268,92 +308,44 @@ class ConversationsListController(bundle: Bundle) :
         loadUserAvatar(target)
     }
 
-    override fun onAttach(view: View) {
-        Log.d(
-            TAG,
-            "onAttach: Controller: " + System.identityHashCode(this) +
-                " Activity: " + System.identityHashCode(activity)
-        )
-        super.onAttach(view)
-
-        showShareToScreen = hasActivityActionSendIntent()
-
-        ClosedInterfaceImpl().setUpPushTokenRegistration()
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this)
-        }
-        currentUser = userManager.currentUser.blockingGet()
-        if (currentUser != null) {
-            if (isServerEOL(currentUser!!)) {
-                showServerEOLDialog()
-                return
-            }
-            if (isUnifiedSearchAvailable(currentUser!!)) {
-                searchHelper = MessageSearchHelper(unifiedSearchRepository)
-            }
-            credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
-            if (activity != null && activity is MainActivity) {
-                loadUserAvatar((activity as MainActivity?)!!.binding.switchAccountButton)
-                viewThemeUtils.material
-                    .colorMaterialTextButton((activity as MainActivity?)!!.binding.switchAccountButton)
-            }
-            fetchRooms()
-        } else {
-            Log.e(TAG, "userManager.currentUser.blockingGet() returned null")
-            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
-        }
-    }
-
-    override fun onDetach(view: View) {
-        Log.d(
-            TAG,
-            "onDetach: Controller: " + System.identityHashCode(this) +
-                " Activity: " + System.identityHashCode(activity)
-        )
-        super.onDetach(view)
-        eventBus.unregister(this)
-    }
-
     private fun initSearchView() {
-        if (activity != null) {
-            val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
-            if (searchItem != null) {
-                searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-                viewThemeUtils.talk.themeSearchView(searchView!!)
-                searchView!!.maxWidth = Int.MAX_VALUE
-                searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
-                var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
-                    imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
-                }
-                searchView!!.imeOptions = imeOptions
-                searchView!!.queryHint = searchHint
-                if (searchManager != null) {
-                    searchView!!.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
-                }
-                searchViewDisposable = observeSearchView(searchView!!)
-                    .debounce { query: String? ->
-                        if (TextUtils.isEmpty(query)) {
-                            return@debounce Observable.empty<Long>()
-                        } else {
-                            return@debounce Observable.timer(
-                                SEARCH_DEBOUNCE_INTERVAL_MS.toLong(),
-                                TimeUnit.MILLISECONDS
-                            )
-                        }
-                    }
-                    .distinctUntilChanged()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { newText: String? -> onQueryTextChange(newText) }
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager?
+        if (searchItem != null) {
+            searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+            viewThemeUtils.talk.themeSearchView(searchView!!)
+            searchView!!.maxWidth = Int.MAX_VALUE
+            searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
+            var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
+                imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
             }
+            searchView!!.imeOptions = imeOptions
+            searchView!!.queryHint = getString(R.string.appbar_search_in, getString(R.string.nc_app_product_name))
+            if (searchManager != null) {
+                searchView!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            }
+            searchViewDisposable = observeSearchView(searchView!!)
+                .debounce { query: String? ->
+                    if (TextUtils.isEmpty(query)) {
+                        return@debounce Observable.empty<Long>()
+                    } else {
+                        return@debounce Observable.timer(
+                            SEARCH_DEBOUNCE_INTERVAL_MS.toLong(),
+                            TimeUnit.MILLISECONDS
+                        )
+                    }
+                }
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { newText: String? -> onQueryTextChange(newText) }
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
 
-        inflater.inflate(R.menu.menu_conversation_plus_filter, menu)
+        menuInflater.inflate(R.menu.menu_conversation_plus_filter, menu)
         searchItem = menu.findItem(R.id.action_search)
         chooseAccountItem = menu.findItem(R.id.action_choose_account)
         loadUserAvatar(chooseAccountItem!!)
@@ -362,17 +354,19 @@ class ConversationsListController(bundle: Bundle) :
             if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
                 val newFragment: DialogFragment = ChooseAccountShareToDialogFragment.newInstance()
                 newFragment.show(
-                    (activity as MainActivity?)!!.supportFragmentManager,
+                    supportFragmentManager,
                     ChooseAccountShareToDialogFragment.TAG
                 )
             }
             true
         }
         initSearchView()
+        return true
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
+
         searchView = MenuItemCompat.getActionView(searchItem) as SearchView
 
         val moreAccountsAvailable = userManager.users.blockingGet().size > 1
@@ -385,24 +379,19 @@ class ConversationsListController(bundle: Bundle) :
             hideSearchBar()
             actionBar?.setTitle(R.string.nc_forward_to_three_dots)
         } else {
-            val activity = activity as MainActivity?
             searchItem!!.isVisible = conversationItems.size > 0
-            if (activity != null) {
-                if (adapter!!.hasFilter()) {
-                    showSearchView(activity, searchView, searchItem)
-                    searchView!!.setQuery(adapter!!.getFilter(String::class.java), false)
-                }
-                activity.binding.searchText.setOnClickListener {
-                    showSearchView(activity, searchView, searchItem)
-                    viewThemeUtils.platform.themeStatusBar(activity, searchView!!)
-                }
+            if (adapter!!.hasFilter()) {
+                showSearchView(searchView, searchItem)
+                searchView!!.setQuery(adapter!!.getFilter(String::class.java), false)
+            }
+            binding.searchText.setOnClickListener {
+                showSearchView(searchView, searchItem)
+                viewThemeUtils.platform.themeStatusBar(this, searchView!!)
             }
             searchView!!.setOnCloseListener {
                 if (TextUtils.isEmpty(searchView!!.query.toString())) {
                     searchView!!.onActionViewCollapsed()
-                    if (activity != null) {
-                        viewThemeUtils.platform.resetStatusBar(activity)
-                    }
+                    viewThemeUtils.platform.resetStatusBar(this)
                 } else {
                     searchView!!.post { searchView!!.setQuery(TAG, true) }
                 }
@@ -428,48 +417,88 @@ class ConversationsListController(bundle: Bundle) :
                     }
                     binding?.swipeRefreshLayoutView?.isEnabled = true
                     searchView!!.onActionViewCollapsed()
-                    val mainActivity = getActivity() as MainActivity?
-                    if (mainActivity != null) {
-                        mainActivity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-                            mainActivity.binding.appBar.context,
-                            R.animator.appbar_elevation_off
-                        )
-                        mainActivity.binding.toolbar.visibility = View.GONE
-                        mainActivity.binding.searchToolbar.visibility = View.VISIBLE
-                        if (resources != null) {
-                            viewThemeUtils.platform
-                                .resetStatusBar(mainActivity)
-                        }
+
+                    binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+                        binding.conversationListAppbar.context,
+                        R.animator.appbar_elevation_off
+                    )
+                    binding.conversationListToolbar.visibility = View.GONE
+                    binding.searchToolbar.visibility = View.VISIBLE
+                    if (resources != null) {
+                        viewThemeUtils.platform.resetStatusBar(this@ConversationsListActivity)
                     }
+
                     val layoutManager = binding?.recyclerView?.layoutManager as SmoothScrollLinearLayoutManager?
                     layoutManager?.scrollToPositionWithOffset(0, 0)
                     return true
                 }
             })
         }
+        return true
+    }
+
+    private fun showSearchOrToolbar() {
+        if (TextUtils.isEmpty(searchQuery)) {
+            if (appBarLayoutType == AppBarLayoutType.SEARCH_BAR) {
+                showSearchBar()
+            } else {
+                showToolbar()
+            }
+            colorizeStatusBar()
+            colorizeNavigationBar()
+        }
+    }
+
+    private fun showSearchBar() {
+        val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+        binding.searchToolbar.visibility = View.VISIBLE
+        binding.searchText.hint = getString(R.string.appbar_search_in, getString(R.string.nc_app_product_name))
+        binding.conversationListToolbar.visibility = View.GONE
+        // layoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
+        // .LayoutParams.SCROLL_FLAG_SNAP | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        layoutParams.scrollFlags = 0
+        binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+            binding.conversationListAppbar.context,
+            R.animator.appbar_elevation_off
+        )
+        binding.searchToolbar.layoutParams = layoutParams
+    }
+
+    private fun showToolbar() {
+        val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+        binding.searchToolbar.visibility = View.GONE
+        binding.conversationListToolbar.visibility = View.VISIBLE
+        viewThemeUtils.material.colorToolbarOverflowIcon(binding.conversationListToolbar)
+        layoutParams.scrollFlags = 0
+        binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+            binding.conversationListAppbar.context,
+            R.animator.appbar_elevation_on
+        )
+        binding.conversationListToolbar.layoutParams = layoutParams
+    }
+
+    private fun hideSearchBar() {
+        val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+        binding.searchToolbar.visibility = View.GONE
+        binding.conversationListToolbar.visibility = View.VISIBLE
+        layoutParams.scrollFlags = 0
+        binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+            binding.conversationListAppbar.context,
+            R.animator.appbar_elevation_on
+        )
     }
 
     private fun hasActivityActionSendIntent(): Boolean {
-        return if (activity != null) {
-            Intent.ACTION_SEND == activity!!.intent.action || Intent.ACTION_SEND_MULTIPLE == activity!!.intent.action
-        } else {
-            false
-        }
+        return Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
     }
 
-    override fun showSearchOrToolbar() {
-        if (TextUtils.isEmpty(searchQuery)) {
-            super.showSearchOrToolbar()
-        }
-    }
-
-    private fun showSearchView(activity: MainActivity, searchView: SearchView?, searchItem: MenuItem?) {
-        activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-            activity.binding.appBar.context,
+    private fun showSearchView(searchView: SearchView?, searchItem: MenuItem?) {
+        binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+            binding.conversationListAppbar.context,
             R.animator.appbar_elevation_on
         )
-        activity.binding.toolbar.visibility = View.VISIBLE
-        activity.binding.searchToolbar.visibility = View.GONE
+        binding.conversationListToolbar.visibility = View.VISIBLE
+        binding.searchToolbar.visibility = View.GONE
         searchItem!!.expandActionView()
     }
 
@@ -499,10 +528,11 @@ class ConversationsListController(bundle: Bundle) :
                 // This is invoked asynchronously, when server returns a response the view might have been
                 // unbound in the meantime. Check if the view is still there.
                 // FIXME - does it make sense to update internal data structures even when view has been unbound?
-                if (view == null) {
-                    Log.d(TAG, "fetchData - getRooms - view is not bound: $startNanoTime")
-                    return@subscribe
-                }
+                // if (view == null) {
+                //     Log.d(TAG, "fetchData - getRooms - view is not bound: $startNanoTime")
+                //     return@subscribe
+                // }
+
                 if (adapterWasNull) {
                     adapterWasNull = false
                     binding?.loadingContent?.visibility = View.GONE
@@ -548,8 +578,8 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     private fun addToConversationItems(conversation: Conversation) {
-        if (bundle.containsKey(KEY_FORWARD_HIDE_SOURCE_ROOM) && conversation.roomId ==
-            bundle.getString(KEY_FORWARD_HIDE_SOURCE_ROOM)
+        if (intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM) != null &&
+            intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM) == conversation.roomId
         ) {
             return
         }
@@ -566,23 +596,22 @@ class ConversationsListController(bundle: Bundle) :
             genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
             callHeaderItems[headerTitle] = genericTextHeaderItem
         }
-        if (activity != null) {
-            val conversationItem = ConversationItem(
-                conversation,
-                currentUser!!,
-                activity!!,
-                viewThemeUtils
-            )
-            conversationItems.add(conversationItem)
-            val conversationItemWithHeader = ConversationItem(
-                conversation,
-                currentUser!!,
-                activity!!,
-                callHeaderItems[headerTitle],
-                viewThemeUtils
-            )
-            conversationItemsWithHeader.add(conversationItemWithHeader)
-        }
+
+        val conversationItem = ConversationItem(
+            conversation,
+            currentUser!!,
+            this,
+            viewThemeUtils
+        )
+        conversationItems.add(conversationItem)
+        val conversationItemWithHeader = ConversationItem(
+            conversation,
+            currentUser!!,
+            this,
+            callHeaderItems[headerTitle],
+            viewThemeUtils
+        )
+        conversationItemsWithHeader.add(conversationItemWithHeader)
     }
 
     private fun showErrorDialog() {
@@ -639,7 +668,7 @@ class ConversationsListController(bundle: Bundle) :
                         val conversationItem = ConversationItem(
                             conversation,
                             currentUser!!,
-                            activity!!,
+                            this,
                             callHeaderItems[headerTitle],
                             viewThemeUtils
                         )
@@ -659,30 +688,18 @@ class ConversationsListController(bundle: Bundle) :
     private fun handleHttpExceptions(throwable: Throwable) {
         if (throwable is HttpException) {
             when (throwable.code()) {
-                HTTP_UNAUTHORIZED -> if (parentController != null && parentController!!.router != null) {
-                    Log.d(TAG, "Starting reauth webview via getParentController()")
-                    parentController!!.router.pushController(
-                        RouterTransaction.with(
-                            WebViewLoginController(
-                                currentUser!!.baseUrl,
-                                true
-                            )
-                        )
-                            .pushChangeHandler(VerticalChangeHandler())
-                            .popChangeHandler(VerticalChangeHandler())
-                    )
-                } else {
-                    Log.d(TAG, "Starting reauth webview via ConversationsListController")
-                    showUnauthorizedDialog()
+                HTTP_UNAUTHORIZED -> showUnauthorizedDialog()
+                else -> {
+                    Log.e(TAG, "Http exception in ConversationListActivity", throwable)
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
                 }
-                else -> {}
             }
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareViews() {
-        layoutManager = SmoothScrollLinearLayoutManager(Objects.requireNonNull(activity))
+        layoutManager = SmoothScrollLinearLayoutManager(this)
         binding?.recyclerView?.layoutManager = layoutManager
         binding?.recyclerView?.setHasFixedSize(true)
         binding?.recyclerView?.adapter = adapter
@@ -695,8 +712,8 @@ class ConversationsListController(bundle: Bundle) :
             }
         })
         binding?.recyclerView?.setOnTouchListener { v: View, _: MotionEvent? ->
-            if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
-                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            if (!isDestroyed) {
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
             }
             false
@@ -709,21 +726,17 @@ class ConversationsListController(bundle: Bundle) :
             showNewConversationsScreen()
         }
         binding?.floatingActionButton?.let { viewThemeUtils.material.themeFAB(it) }
-        if (activity != null && activity is MainActivity) {
-            val activity = activity as MainActivity?
-            activity!!.binding.switchAccountButton.setOnClickListener {
-                if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
-                    val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
-                    newFragment.show(
-                        (getActivity() as MainActivity?)!!.supportFragmentManager,
-                        ChooseAccountDialogFragment.TAG
-                    )
-                } else {
-                    val intent = Intent(context, SettingsActivity::class.java)
-                    startActivity(intent)
-                }
+
+        binding.switchAccountButton.setOnClickListener {
+            if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
+                val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
+                newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
+            } else {
+                val intent = Intent(context, SettingsActivity::class.java)
+                startActivity(intent)
             }
         }
+
         binding?.newMentionPopupBubble?.hide()
         binding?.newMentionPopupBubble?.setPopupBubbleListener {
             binding?.recyclerView?.smoothScrollToPosition(
@@ -786,17 +799,19 @@ class ConversationsListController(bundle: Bundle) :
         }
     }
 
-    public override fun onSaveViewState(view: View, outState: Bundle) {
+    override fun onSaveInstanceState(bundle: Bundle) {
+        super.onSaveInstanceState(bundle)
+
         if (searchView != null && !TextUtils.isEmpty(searchView!!.query)) {
-            outState.putString(KEY_SEARCH_QUERY, searchView!!.query.toString())
+            bundle.putString(KEY_SEARCH_QUERY, searchView!!.query.toString())
         }
-        super.onSaveViewState(view, outState)
     }
 
-    public override fun onRestoreViewState(view: View, savedViewState: Bundle) {
-        super.onRestoreViewState(view, savedViewState)
-        if (savedViewState.containsKey(KEY_SEARCH_QUERY)) {
-            searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "")
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        if (savedInstanceState.containsKey(KEY_SEARCH_QUERY)) {
+            searchQuery = savedInstanceState.getString(KEY_SEARCH_QUERY, "")
         }
     }
 
@@ -906,7 +921,7 @@ class ConversationsListController(bundle: Bundle) :
     @Suppress("Detekt.ComplexMethod")
     private fun handleConversation(conversation: Conversation?) {
         selectedConversation = conversation
-        if (selectedConversation != null && activity != null) {
+        if (selectedConversation != null) {
             val hasChatPermission = ParticipantPermissions(currentUser!!, selectedConversation!!).hasChatPermission()
             if (showShareToScreen) {
                 if (hasChatPermission &&
@@ -919,7 +934,7 @@ class ConversationsListController(bundle: Bundle) :
                 }
             } else if (forwardMessage) {
                 if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
-                    openConversation(bundle.getString(KEY_FORWARD_MSG_TEXT))
+                    openConversation(intent.getStringExtra(KEY_FORWARD_MSG_TEXT))
                     forwardMessage = false
                 } else {
                     Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show()
@@ -1001,7 +1016,7 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     private fun clearIntentAction() {
-        activity!!.intent.action = ""
+        intent.action = ""
     }
 
     override fun onItemLongClick(position: Int) {
@@ -1012,7 +1027,7 @@ class ConversationsListController(bundle: Bundle) :
             if (clickedItem != null) {
                 val conversation = (clickedItem as ConversationItem).model
                 conversationsListBottomDialog = ConversationsListBottomDialog(
-                    activity!!,
+                    this,
                     this,
                     userManager.currentUser.blockingGet(),
                     conversation
@@ -1025,8 +1040,7 @@ class ConversationsListController(bundle: Bundle) :
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun collectDataFromIntent() {
         filesToShare = ArrayList()
-        if (activity != null && activity!!.intent != null) {
-            val intent = activity!!.intent
+        if (intent != null) {
             if (Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action) {
                 try {
                     val mimeType = intent.type
@@ -1099,6 +1113,7 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION &&
             grantResults.isNotEmpty() &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -1132,13 +1147,6 @@ class ConversationsListController(bundle: Bundle) :
             bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
             selectedMessageId = null
         }
-        // remapChatController(
-        //     router,
-        //     currentUser!!.id!!,
-        //     selectedConversation!!.token!!,
-        //     bundle,
-        //     false
-        // )
 
         val intent = Intent(context, ChatActivity::class.java)
         intent.putExtras(bundle)
@@ -1171,8 +1179,7 @@ class ConversationsListController(bundle: Bundle) :
 
     override fun showDeleteConversationDialog(bundle: Bundle) {
         conversationMenuBundle = bundle
-        if (activity != null &&
-            conversationMenuBundle != null &&
+        if (conversationMenuBundle != null &&
             isInternalUserEqualsCurrentUser(currentUser, conversationMenuBundle)
         ) {
             val conversation = Parcels.unwrap<Conversation>(conversationMenuBundle!!.getParcelable(KEY_ROOM))
@@ -1216,53 +1223,48 @@ class ConversationsListController(bundle: Bundle) :
     }
 
     private fun showUnauthorizedDialog() {
-        if (activity != null) {
-            binding?.floatingActionButton?.let {
-                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                    .setIcon(
-                        viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                            context,
-                            R.drawable.ic_delete_black_24dp
-                        )
+        binding?.floatingActionButton?.let {
+            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
+                .setIcon(
+                    viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                        context,
+                        R.drawable.ic_delete_black_24dp
                     )
-                    .setTitle(R.string.nc_dialog_invalid_password)
-                    .setMessage(R.string.nc_dialog_reauth_or_delete)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.nc_delete) { _, _ ->
-                        val otherUserExists = userManager
-                            .scheduleUserForDeletionWithId(currentUser!!.id!!)
-                            .blockingGet()
-                        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
-                        WorkManager.getInstance().enqueue(accountRemovalWork)
-                        if (otherUserExists && view != null) {
-                            onViewBound(view!!)
-                            onAttach(view!!)
-                        } else if (!otherUserExists) {
-                            router.setRoot(
-                                RouterTransaction.with(ServerSelectionController())
-                                    .pushChangeHandler(VerticalChangeHandler())
-                                    .popChangeHandler(VerticalChangeHandler())
-                            )
-                        }
-                    }
-                    .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
-                        router.pushController(
-                            RouterTransaction.with(
-                                WebViewLoginController(currentUser!!.baseUrl, true)
-                            )
-                                .pushChangeHandler(VerticalChangeHandler())
-                                .popChangeHandler(VerticalChangeHandler())
-                        )
-                    }
-
-                viewThemeUtils.dialog
-                    .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-                val dialog = dialogBuilder.show()
-                viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 )
-            }
+                .setTitle(R.string.nc_dialog_invalid_password)
+                .setMessage(R.string.nc_dialog_reauth_or_delete)
+                .setCancelable(false)
+                .setPositiveButton(R.string.nc_delete) { _, _ ->
+                    val otherUserExists = userManager
+                        .scheduleUserForDeletionWithId(currentUser!!.id!!)
+                        .blockingGet()
+                    val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+                    WorkManager.getInstance().enqueue(accountRemovalWork)
+                    if (otherUserExists) {
+                        finish()
+                        startActivity(intent)
+                    } else if (!otherUserExists) {
+                        Log.d(TAG, "No other users found. AccountRemovalWorker will restart the app.")
+                    }
+                }
+
+            // TODO: show negative button again when conductor is removed
+            // .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
+            //     // router.pushController(
+            //     //     RouterTransaction.with(
+            //     //         WebViewLoginController(currentUser!!.baseUrl, true)
+            //     //     )
+            //     //         .pushChangeHandler(VerticalChangeHandler())
+            //     //         .popChangeHandler(VerticalChangeHandler())
+            //     // )
+            // }
+
+            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         }
     }
 
@@ -1279,25 +1281,22 @@ class ConversationsListController(bundle: Bundle) :
                         .blockingGet()
                     val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
                     WorkManager.getInstance().enqueue(accountRemovalWork)
-                    if (otherUserExists && view != null) {
-                        onViewBound(view!!)
-                        onAttach(view!!)
+                    if (otherUserExists) {
+                        finish()
+                        startActivity(intent)
                     } else if (!otherUserExists) {
-                        router.setRoot(
-                            RouterTransaction.with(
-                                ServerSelectionController()
-                            )
-                                .pushChangeHandler(VerticalChangeHandler())
-                                .popChangeHandler(VerticalChangeHandler())
-                        )
+                        restartApp(this)
                     }
                 }
                 .setNegativeButton(R.string.nc_cancel) { _, _ ->
                     if (userManager.users.blockingGet().isNotEmpty()) {
-                        router.pushController(RouterTransaction.with(SwitchAccountController()))
+                        // TODO show SwitchAccount screen again when conductor is removed instead to close app
+                        // router.pushController(RouterTransaction.with(SwitchAccountController()))
+                        finishAffinity()
+                        finish()
                     } else {
-                        activity!!.finishAffinity()
-                        activity!!.finish()
+                        finishAffinity()
+                        finish()
                     }
                 }
 
@@ -1308,6 +1307,15 @@ class ConversationsListController(bundle: Bundle) :
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
         }
+    }
+
+    fun restartApp(context: Context) {
+        val packageManager = context.packageManager
+        val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+        val componentName = intent!!.component
+        val mainIntent = Intent.makeRestartActivityTask(componentName)
+        context.startActivity(mainIntent)
+        Runtime.getRuntime().exit(0)
     }
 
     private fun deleteConversation(data: Data) {
@@ -1351,6 +1359,13 @@ class ConversationsListController(bundle: Bundle) :
         showErrorDialog()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        // TODO: replace this when conductor is removed. For now it avoids to load the MainActiviy which has no UI.
+        finishAffinity()
+    }
+
     companion object {
         const val TAG = "ConvListController"
         const val UNREAD_BUBBLE_DELAY = 2500
@@ -1359,11 +1374,5 @@ class ConversationsListController(bundle: Bundle) :
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
         const val SEARCH_MIN_CHARS = 2
         const val HTTP_UNAUTHORIZED = 401
-    }
-
-    init {
-        setHasOptionsMenu(true)
-        forwardMessage = bundle.getBoolean(KEY_FORWARD_MSG_FLAG)
-        this.bundle = bundle
     }
 }

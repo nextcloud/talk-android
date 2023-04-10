@@ -25,11 +25,118 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/conversation_list_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_default"
+        android:elevation="0dp"
+        android:clipChildren="true"
+        android:clipToPadding="false"
+        android:windowContentOverlay="@null"
+        app:elevation="0dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/search_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="1dp"
+            android:visibility="gone"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp"
+            tools:visibility="visible">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/menu_button"
+                    style="@style/Widget.AppTheme.Button.IconButton"
+                    android:layout_width="3dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="@string/nc_action_open_main_menu"
+                    android:visibility="gone"
+                    app:cornerRadius="@dimen/button_corner_radius"
+                    app:icon="@drawable/ic_menu"
+                    app:iconTint="@color/fontAppbar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/search_text"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="18dp"
+                    android:ellipsize="end"
+                    android:gravity="start|center_vertical"
+                    android:lines="1"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/fontSecondaryAppbar"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/menu_button"
+                    app:layout_constraintEnd_toStartOf="@id/rightContainer"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Search in Nextcloud" />
+
+                <FrameLayout
+                    android:id="@+id/rightContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:minWidth="48dp"
+                    android:layout_centerVertical="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/switch_account_button"
+                        style="@style/Widget.AppTheme.Button.IconButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/nc_settings"
+                        android:scaleType="fitCenter"
+                        android:transitionName="userAvatar.transitionTag"
+                        app:cornerRadius="@dimen/button_corner_radius"
+                        app:iconSize="@dimen/avatar_size_app_bar"
+                        app:iconTint="@null"
+                        tools:icon="@drawable/ic_user" />
+
+                </FrameLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/conversation_list_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/appbar"
+            android:theme="?attr/actionBarPopupTheme"
+            app:layout_scrollFlags="enterAlwaysCollapsed|noScroll"
+            app:navigationIconTint="@color/fontAppbar"
+            app:popupTheme="@style/appActionBarPopupMenu"
+            app:titleTextColor="@color/fontAppbar"
+            tools:title="@string/nc_app_product_name" />
+    </com.google.android.material.appbar.AppBarLayout>
+
     <LinearLayout
         android:id="@+id/loading_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="50dp">
 
         <include layout="@layout/rv_item_conversation_with_last_message_shimmer" />
 

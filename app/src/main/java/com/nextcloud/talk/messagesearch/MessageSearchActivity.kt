@@ -30,7 +30,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
@@ -38,10 +37,9 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
 import com.nextcloud.talk.adapters.items.MessageResultItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.ConversationsListController
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMessageSearchBinding
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
@@ -80,8 +78,8 @@ class MessageSearchActivity : BaseActivity() {
 
         binding = ActivityMessageSearchBinding.inflate(layoutInflater)
         setupActionBar()
-        setupSystemColors()
         setContentView(binding.root)
+        setupSystemColors()
 
         viewModel = ViewModelProvider(this, viewModelFactory)[MessageSearchViewModel::class.java]
         user = userProvider.currentUser.blockingGet()
@@ -99,21 +97,7 @@ class MessageSearchActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val conversationName = intent.getStringExtra(BundleKeys.KEY_CONVERSATION_NAME)
         supportActionBar?.title = conversationName
-    }
-
-    private fun setupSystemColors() {
-        DisplayUtils.applyColorToStatusBar(
-            this,
-            ResourcesCompat.getColor(
-                resources,
-                R.color.appbar,
-                null
-            )
-        )
-        DisplayUtils.applyColorToNavigationBar(
-            this.window,
-            ResourcesCompat.getColor(resources, R.color.bg_default, null)
-        )
+        viewThemeUtils.material.themeToolbar(binding.messageSearchToolbar)
     }
 
     private fun setupStateObserver() {
@@ -241,7 +225,7 @@ class MessageSearchActivity : BaseActivity() {
                 when {
                     TextUtils.isEmpty(query) -> Observable.empty()
                     else -> Observable.timer(
-                        ConversationsListController.SEARCH_DEBOUNCE_INTERVAL_MS.toLong(),
+                        ConversationsListActivity.SEARCH_DEBOUNCE_INTERVAL_MS.toLong(),
                         TimeUnit.MILLISECONDS
                     )
                 }

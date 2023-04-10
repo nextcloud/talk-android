@@ -40,7 +40,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.DrawableRes
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -117,8 +116,8 @@ class ProfileActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setupActionBar()
-        setupSystemColors()
         setContentView(binding.root)
+        setupSystemColors()
     }
 
     override fun onResume() {
@@ -201,21 +200,7 @@ class ProfileActivity : BaseActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
         supportActionBar?.title = context.getString(R.string.nc_profile_personal_info_title)
-    }
-
-    private fun setupSystemColors() {
-        DisplayUtils.applyColorToStatusBar(
-            this,
-            ResourcesCompat.getColor(
-                resources,
-                R.color.appbar,
-                null
-            )
-        )
-        DisplayUtils.applyColorToNavigationBar(
-            this.window,
-            ResourcesCompat.getColor(resources, R.color.bg_default, null)
-        )
+        viewThemeUtils.material.themeToolbar(binding.profileToolbar)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

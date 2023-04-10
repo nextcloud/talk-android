@@ -38,7 +38,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_ADD_FAVORITE
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MARK_AS_READ
@@ -47,6 +46,7 @@ import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_RENAME_ROOM
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
 import com.nextcloud.talk.jobs.LeaveConversationWorker
@@ -64,7 +64,7 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationsListBottomDialog(
     val activity: Activity,
-    val controller: ConversationsListController,
+    val controller: ConversationsListActivity,
     val currentUser: User,
     val conversation: Conversation
 ) : BottomSheetDialog(activity) {
