@@ -310,7 +310,7 @@ dependencies {
 
     // implementation 'androidx.activity:activity-ktx:1.4.0'
 
-    implementation 'com.github.nextcloud.android-common:ui:0.7.0'
+    implementation 'com.github.nextcloud.android-common:ui:0.8.0'
 }
 
 task installGitHooks(type: Copy, group: "development") {
