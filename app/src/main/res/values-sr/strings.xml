@@ -154,7 +154,7 @@
     <string name="nc_guest">Гост</string>
     <string name="nc_guest_access">Приступ госта</string>
     <string name="nc_guest_access_allow_failed">Приступ госта не може да се укључи/искључи.</string>
-    <string name="nc_guest_access_allow_summary">Дозвољава да гости деле јавне линк за приступ овом разговору.</string>
+    <string name="nc_guest_access_allow_summary">Дозвољава да гости деле јавни линк за приступ овом разговору.</string>
     <string name="nc_guest_access_allow_title">Дозволи госте</string>
     <string name="nc_guest_access_password_dialog_hint">Унесите лозинку</string>
     <string name="nc_guest_access_password_dialog_title">Лозинка за приступ госта</string>
