@@ -74,8 +74,8 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
         view = viewHolder.itemView
-        if (viewHolder.itemView.getTag(REPLYABLE_VIEW_TAG) != null &&
-            viewHolder.itemView.getTag(REPLYABLE_VIEW_TAG) as Boolean
+        if (viewHolder.itemView.getTag(R.string.replyable_message_view_tag) != null &&
+            viewHolder.itemView.getTag(R.string.replyable_message_view_tag) as Boolean
         ) {
             imageDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_reply)!!
             shareRound = AppCompatResources.getDrawable(context, R.drawable.round_bgnd)!!
@@ -291,6 +291,5 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
         const val ICON_BOUNDS_PIXEL_TOP: Int = 13
         const val ICON_BOUNDS_PIXEL_RIGHT: Int = 12
         const val ICON_BOUNDS_PIXEL_BOTTOM: Int = 11
-        const val REPLYABLE_VIEW_TAG: Int = R.string.replyable_message_view_tag
     }
 }

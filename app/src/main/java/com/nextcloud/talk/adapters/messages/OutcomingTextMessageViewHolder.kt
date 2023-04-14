@@ -42,7 +42,6 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.ItemCustomOutcomingTextMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
-import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
@@ -127,7 +126,7 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
 
         binding.checkMark.setContentDescription(readStatusContentDescriptionString)
 
-        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
+        itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
         Reaction().showReactions(
             message,

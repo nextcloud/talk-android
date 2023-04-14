@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.polls.adapters
 
-import com.nextcloud.talk.R
+import com.nextcloud.talk.adapters.items.FlexibleItemViewType
 import com.nextcloud.talk.polls.model.PollDetails
 
 data class PollResultVotersOverviewItem(
@@ -33,6 +33,6 @@ data class PollResultVotersOverviewItem(
 
     companion object {
         // layout is used as view type for uniqueness
-        const val VIEW_TYPE: Int = R.layout.poll_result_voters_overview_item
+        const val VIEW_TYPE = FlexibleItemViewType.POLL_RESULT_VOTERS_OVERVIEW_ITEM
     }
 }

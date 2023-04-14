@@ -36,7 +36,7 @@ object LoadMoreResultsItem :
     IFilterable<String> {
 
     // layout is used as view type for uniqueness
-    const val VIEW_TYPE: Int = R.layout.rv_item_load_more
+    const val VIEW_TYPE = FlexibleItemViewType.LOAD_MORE_RESULTS_ITEM
 
     class ViewHolder(view: View, adapter: FlexibleAdapter<*>) :
         FlexibleViewHolder(view, adapter) {
