@@ -39,6 +39,9 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.FileSortOrder;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
@@ -65,7 +68,7 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
     private SortingOrderFragmentBinding binding;
     private View dialogView;
 
-    private View[] taggedViews;
+    private List<View> taggedViews;
     private String currentSortOrderName;
 
     public static SortingOrderDialogFragment newInstance(@NonNull FileSortOrder sortOrder) {
@@ -121,31 +124,32 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
         viewThemeUtils.platform.themeDialog(binding.root);
         viewThemeUtils.material.colorMaterialButtonPrimaryBorderless(binding.cancel);
 
-        taggedViews = new View[12];
-        taggedViews[0] = binding.sortByNameAscending;
-        taggedViews[0].setTag(FileSortOrder.Companion.getSort_a_to_z());
-        taggedViews[1] = binding.sortByNameAZText;
-        taggedViews[1].setTag(FileSortOrder.Companion.getSort_a_to_z());
-        taggedViews[2] = binding.sortByNameDescending;
-        taggedViews[2].setTag(FileSortOrder.Companion.getSort_z_to_a());
-        taggedViews[3] = binding.sortByNameZAText;
-        taggedViews[3].setTag(FileSortOrder.Companion.getSort_z_to_a());
-        taggedViews[4] = binding.sortByModificationDateAscending;
-        taggedViews[4].setTag(FileSortOrder.Companion.getSort_old_to_new());
-        taggedViews[5] = binding.sortByModificationDateOldestFirstText;
-        taggedViews[5].setTag(FileSortOrder.Companion.getSort_old_to_new());
-        taggedViews[6] = binding.sortByModificationDateDescending;
-        taggedViews[6].setTag(FileSortOrder.Companion.getSort_new_to_old());
-        taggedViews[7] = binding.sortByModificationDateNewestFirstText;
-        taggedViews[7].setTag(FileSortOrder.Companion.getSort_new_to_old());
-        taggedViews[8] = binding.sortBySizeAscending;
-        taggedViews[8].setTag(FileSortOrder.Companion.getSort_small_to_big());
-        taggedViews[9] = binding.sortBySizeSmallestFirstText;
-        taggedViews[9].setTag(FileSortOrder.Companion.getSort_small_to_big());
-        taggedViews[10] = binding.sortBySizeDescending;
-        taggedViews[10].setTag(FileSortOrder.Companion.getSort_big_to_small());
-        taggedViews[11] = binding.sortBySizeBiggestFirstText;
-        taggedViews[11].setTag(FileSortOrder.Companion.getSort_big_to_small());
+        taggedViews = new ArrayList<>(12);
+
+        binding.sortByNameAscending.setTag(FileSortOrder.Companion.getSort_a_to_z());
+        taggedViews.add(binding.sortByNameAscending);
+        binding.sortByNameAZText.setTag(FileSortOrder.Companion.getSort_a_to_z());
+        taggedViews.add(binding.sortByNameAZText);
+        binding.sortByNameDescending.setTag(FileSortOrder.Companion.getSort_z_to_a());
+        taggedViews.add(binding.sortByNameDescending);
+        binding.sortByNameZAText.setTag(FileSortOrder.Companion.getSort_z_to_a());
+        taggedViews.add(binding.sortByNameZAText);
+        binding.sortByModificationDateAscending.setTag(FileSortOrder.Companion.getSort_old_to_new());
+        taggedViews.add(binding.sortByModificationDateAscending);
+        binding.sortByModificationDateOldestFirstText.setTag(FileSortOrder.Companion.getSort_old_to_new());
+        taggedViews.add(binding.sortByModificationDateOldestFirstText);
+        binding.sortByModificationDateDescending.setTag(FileSortOrder.Companion.getSort_new_to_old());
+        taggedViews.add(binding.sortByModificationDateDescending);
+        binding.sortByModificationDateNewestFirstText.setTag(FileSortOrder.Companion.getSort_new_to_old());
+        taggedViews.add(binding.sortByModificationDateNewestFirstText);
+        binding.sortBySizeAscending.setTag(FileSortOrder.Companion.getSort_small_to_big());
+        taggedViews.add(binding.sortBySizeAscending);
+        binding.sortBySizeSmallestFirstText.setTag(FileSortOrder.Companion.getSort_small_to_big());
+        taggedViews.add(binding.sortBySizeSmallestFirstText);
+        binding.sortBySizeDescending.setTag(FileSortOrder.Companion.getSort_big_to_small());
+        taggedViews.add(binding.sortBySizeDescending);
+        binding.sortBySizeBiggestFirstText.setTag(FileSortOrder.Companion.getSort_big_to_small());
+        taggedViews.add(binding.sortBySizeBiggestFirstText);
 
         setupActiveOrderSelection();
     }
