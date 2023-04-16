@@ -142,6 +142,7 @@
     <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du telefono mugikorraren bidez elkarrizketa publikoetara sartzerik onartzen. Elkarrizketara web nabigatzaile baten bidez sartzen saiatu.</string>
     <string name="nc_failed_to_perform_operation">Barkatu, zerbait gaizki joan da!</string>
     <string name="nc_file_browser_back">Itzuli</string>
+    <string name="nc_file_storage_permission">Fitxategietan sartzeko baimena behar da</string>
     <string name="nc_following_link">Erabiltzailea esteka publiko bat jarraitzen ari da</string>
     <string name="nc_formatted_message_you">Zu: %1$s</string>
     <string name="nc_forward_message">Birbidali</string>
@@ -412,6 +413,7 @@
     <string name="record_stop_confirm_title">Gelditu grabaketa</string>
     <string name="record_stop_description">Utzi grabaketa</string>
     <string name="record_stopping">Grabazioa gelditzen…</string>
+    <string name="restrict_join_other_room_while_call">Ezin da beste geletan sartu dei batean ari zaren bitartean</string>
     <string name="save">Gorde</string>
     <string name="scope_federated_description">Sinkronizatu zerbitzari fidagarriekin soilik</string>
     <string name="scope_federated_title">Federatua</string>
@@ -439,6 +441,7 @@
     <string name="shared_items_media">Media</string>
     <string name="shared_items_other">Bestelakoa</string>
     <string name="shared_items_poll">Galdeketa</string>
+    <string name="shared_items_recording">Dei grabatzea</string>
     <string name="shared_items_voice">Ahotsa</string>
     <string name="starred">Gogokoa</string>
     <string name="startCallForbidden">Ez duzu dei bat hasteko baimenik</string>
