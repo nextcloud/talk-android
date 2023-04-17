@@ -26,10 +26,9 @@ package com.nextcloud.talk.profile
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -49,7 +48,6 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getError
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
-import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
@@ -478,56 +476,6 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
-    private fun sendSelectLocalFileIntent() {
-        with(this)
-            .provider(ImageProvider.GALLERY)
-            .crop()
-            .cropSquare()
-            .compress(MAX_SIZE)
-            .maxResultSize(MAX_SIZE, MAX_SIZE)
-            .createIntent { intent -> startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER) }
-    }
-
-    private fun showBrowserScreen() {
-        val bundle = Bundle()
-        bundle.putString(KEY_MIME_TYPE_FILTER, IMAGE_PREFIX)
-
-        val avatarIntent = Intent(this, RemoteFileBrowserActivity::class.java)
-        avatarIntent.putExtras(bundle)
-
-        startActivityForResult(avatarIntent, REQUEST_CODE_SELECT_REMOTE_FILES)
-    }
-
-    private fun checkPermissionAndTakePicture() {
-        if (permissionUtil.isCameraPermissionGranted()) {
-            takePictureForAvatar()
-        } else {
-            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), REQUEST_PERMISSION_CAMERA)
-        }
-    }
-
-    private fun takePictureForAvatar() {
-        startActivityForResult(TakePhotoActivity.createIntent(context), REQUEST_CODE_TAKE_PICTURE)
-    }
-
-    private fun handleAvatar(remotePath: String?) {
-        val uri = currentUser!!.baseUrl + "/index.php/apps/files/api/v1/thumbnail/512/512/" +
-            Uri.encode(remotePath, "/")
-        val downloadCall = ncApi.downloadResizedImage(
-            ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-            uri
-        )
-        downloadCall.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                saveBitmapAndPassToImagePicker(BitmapFactory.decodeStream(response.body()!!.byteStream()))
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                // unused atm
-            }
-        })
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_PERMISSION_CAMERA) {
@@ -539,51 +487,6 @@ class ProfileActivity : BaseActivity() {
                     .show()
             }
         }
-    }
-
-    // only possible with API26
-    private fun saveBitmapAndPassToImagePicker(bitmap: Bitmap) {
-        val file: File = saveBitmapToTempFile(bitmap) ?: return
-        openImageWithPicker(file)
-    }
-
-    private fun saveBitmapToTempFile(bitmap: Bitmap): File? {
-        try {
-            val file = createTempFileForAvatar()
-            try {
-                FileOutputStream(file).use { out ->
-                    bitmap.compress(Bitmap.CompressFormat.PNG, FULL_QUALITY, out)
-                }
-                return file
-            } catch (e: IOException) {
-                Log.e(TAG, "Error compressing bitmap", e)
-            }
-        } catch (e: IOException) {
-            Log.e(TAG, "Error creating temporary avatar image", e)
-        }
-        return null
-    }
-
-    private fun createTempFileForAvatar(): File {
-        FileUtils.removeTempCacheFile(
-            this.context,
-            AVATAR_PATH
-        )
-        return FileUtils.getTempCacheFile(
-            context,
-            AVATAR_PATH
-        )
-    }
-
-    private fun openImageWithPicker(file: File) {
-        with(this)
-            .provider(ImageProvider.URI)
-            .crop()
-            .cropSquare()
-            .compress(MAX_SIZE)
-            .maxResultSize(MAX_SIZE, MAX_SIZE)
-            .setUri(Uri.fromFile(file))
-            .createIntent { intent -> startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -603,22 +506,6 @@ class ProfileActivity : BaseActivity() {
                 Log.i(TAG, "Task Cancelled")
             }
         }
-
-        // if (requestCode == REQUEST_CODE_IMAGE_PICKER) {
-        //     val uri: Uri = data?.data!!
-        //     uploadAvatar(uri.toFile())
-        // } else if (requestCode == REQUEST_CODE_SELECT_REMOTE_FILES) {
-        //     val pathList = data?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
-        //     if (pathList?.size!! >= 1) {
-        //         handleAvatar(pathList[0])
-        //     }
-        // } else if (requestCode == REQUEST_CODE_TAKE_PICTURE) {
-        //     data?.data?.path?.let {
-        //         openImageWithPicker(File(it))
-        //     }
-        // } else {
-        //     Log.w(TAG, "Unknown intent request code")
-        // }
     }
 
     private fun uploadAvatar(file: File?) {

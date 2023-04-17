@@ -32,7 +32,6 @@ import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -48,7 +47,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class PickImage(
-    private val controller: BaseController,
+    private val activity: Activity,
     private var currentUser: User?
 ) {
 
@@ -63,54 +62,44 @@ class PickImage(
     }
 
     fun selectLocal() {
-        val activity = controller.activity
-        if (activity != null) {
-            ImagePicker.Companion.with(activity)
-                .provider(ImageProvider.GALLERY)
-                .crop()
-                .cropSquare()
-                .compress(MAX_SIZE)
-                .maxResultSize(MAX_SIZE, MAX_SIZE)
-                .createIntent { intent -> controller.startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER) }
-        }
+        ImagePicker.Companion.with(activity)
+            .provider(ImageProvider.GALLERY)
+            .crop()
+            .cropSquare()
+            .compress(MAX_SIZE)
+            .maxResultSize(MAX_SIZE, MAX_SIZE)
+            .createIntent { intent -> this.activity.startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER) }
     }
 
     private fun selectLocal(file: File) {
-        val activity = controller.activity
-        if (activity != null) {
-            ImagePicker.Companion.with(activity)
-                .provider(ImageProvider.URI)
-                .crop()
-                .cropSquare()
-                .compress(MAX_SIZE)
-                .maxResultSize(MAX_SIZE, MAX_SIZE)
-                .setUri(Uri.fromFile(file))
-                .createIntent { intent -> controller.startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER) }
-        }
+        ImagePicker.Companion.with(activity)
+            .provider(ImageProvider.URI)
+            .crop()
+            .cropSquare()
+            .compress(MAX_SIZE)
+            .maxResultSize(MAX_SIZE, MAX_SIZE)
+            .setUri(Uri.fromFile(file))
+            .createIntent { intent -> this.activity.startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER) }
     }
 
     fun selectRemote() {
-        val activity = controller.activity
-        if (activity != null) {
-            val bundle = Bundle()
-            bundle.putString(BundleKeys.KEY_MIME_TYPE_FILTER, Mimetype.IMAGE_PREFIX)
+        val bundle = Bundle()
+        bundle.putString(BundleKeys.KEY_MIME_TYPE_FILTER, Mimetype.IMAGE_PREFIX)
 
-            val avatarIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
-            avatarIntent.putExtras(bundle)
+        val avatarIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
+        avatarIntent.putExtras(bundle)
 
-            controller.startActivityForResult(avatarIntent, REQUEST_CODE_SELECT_REMOTE_FILES)
-        }
+        this.activity.startActivityForResult(avatarIntent, REQUEST_CODE_SELECT_REMOTE_FILES)
     }
 
     fun takePicture() {
-
         if (permissionUtil.isCameraPermissionGranted()) {
-            controller.startActivityForResult(
-                TakePhotoActivity.createIntent(controller.context),
+            activity.startActivityForResult(
+                TakePhotoActivity.createIntent(activity),
                 REQUEST_CODE_TAKE_PICTURE
             )
         } else {
-            controller.requestPermissions(
+            activity.requestPermissions(
                 arrayOf(android.Manifest.permission.CAMERA),
                 REQUEST_PERMISSION_CAMERA
             )
@@ -160,17 +149,16 @@ class PickImage(
 
     private fun createTempFileForAvatar(): File {
         FileUtils.removeTempCacheFile(
-            controller.context,
+            activity,
             AVATAR_PATH
         )
         return FileUtils.getTempCacheFile(
-            controller.context,
+            activity,
             AVATAR_PATH
         )
     }
 
     fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?, handleImage: (uri: Uri) -> Unit) {
-
         if (resultCode != Activity.RESULT_OK) {
             Log.w(
                 TAG,
