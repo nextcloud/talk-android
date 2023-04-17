@@ -339,7 +339,7 @@ class ConversationItem(
     }
 
     companion object {
-        const val VIEW_TYPE = R.layout.rv_item_conversation_with_last_message
+        const val VIEW_TYPE = FlexibleItemViewType.CONVERSATION_ITEM
         private const val MILLIES = 1000L
         private const val STATUS_SIZE_IN_DP = 9f
         private const val UNREAD_BUBBLE_STROKE_WIDTH = 6.0f

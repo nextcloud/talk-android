@@ -45,7 +45,6 @@ import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
 import com.nextcloud.talk.extensions.loadBotsAvatar
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
@@ -111,7 +110,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
 
-        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
+        itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
         Reaction().showReactions(
             message,

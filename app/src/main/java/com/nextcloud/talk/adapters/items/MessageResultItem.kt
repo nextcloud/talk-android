@@ -92,8 +92,7 @@ data class MessageResultItem constructor(
     }
 
     companion object {
-        // layout is used as view type for uniqueness
-        const val VIEW_TYPE: Int = R.layout.rv_item_search_message
+        const val VIEW_TYPE = FlexibleItemViewType.MESSAGE_RESULT_ITEM
     }
 
     override fun getHeader(): GenericTextHeaderItem = MessagesTextHeaderItem(context, viewThemeUtils)

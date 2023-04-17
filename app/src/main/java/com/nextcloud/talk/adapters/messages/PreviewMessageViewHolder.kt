@@ -54,7 +54,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -159,7 +158,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             }
             messageText.text = ""
         }
-        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
+        itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
         Reaction().showReactions(
             message,
             ::clickOnReaction,

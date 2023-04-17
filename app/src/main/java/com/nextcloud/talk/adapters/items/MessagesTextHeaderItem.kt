@@ -28,10 +28,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 class MessagesTextHeaderItem(context: Context, viewThemeUtils: ViewThemeUtils) :
     GenericTextHeaderItem(context.getString(R.string.messages), viewThemeUtils) {
     companion object {
-        /**
-         * "Random" value, just has to be different than other view types
-         */
-        const val VIEW_TYPE = 1120391230
+        const val VIEW_TYPE = FlexibleItemViewType.MESSAGES_TEXT_HEADER_ITEM
     }
 
     override fun getItemViewType(): Int = VIEW_TYPE
