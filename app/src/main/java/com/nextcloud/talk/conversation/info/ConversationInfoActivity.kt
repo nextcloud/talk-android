@@ -61,8 +61,8 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.extensions.loadAvatar
-import com.nextcloud.talk.extensions.loadGroupCallAvatar
-import com.nextcloud.talk.extensions.loadPublicCallAvatar
+import com.nextcloud.talk.extensions.loadDefaultGroupCallAvatar
+import com.nextcloud.talk.extensions.loadDefaultPublicCallAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
@@ -763,10 +763,10 @@ class ConversationInfoActivity :
                 conversation!!.name?.let { binding?.avatarImage?.loadAvatar(conversationUser!!, it) }
             }
             Conversation.ConversationType.ROOM_GROUP_CALL -> {
-                binding?.avatarImage?.loadGroupCallAvatar(viewThemeUtils)
+                binding?.avatarImage?.loadDefaultGroupCallAvatar(viewThemeUtils)
             }
             Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                binding?.avatarImage?.loadPublicCallAvatar(viewThemeUtils)
+                binding?.avatarImage?.loadDefaultPublicCallAvatar(viewThemeUtils)
             }
             Conversation.ConversationType.ROOM_SYSTEM -> {
                 binding?.avatarImage?.loadSystemAvatar()

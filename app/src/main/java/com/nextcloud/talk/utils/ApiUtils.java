@@ -375,6 +375,10 @@ public class ApiUtils {
         return baseUrl + "/index.php/avatar/guest/" + Uri.encode(name) + "/" + avatarSize;
     }
 
+    public static String getUrlForConversationAvatar(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/avatar";
+    }
+
     public static String getCredentials(String username, String token) {
         if (TextUtils.isEmpty(username) && TextUtils.isEmpty(token)) {
             return null;

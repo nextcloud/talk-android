@@ -47,6 +47,20 @@ import com.nextcloud.talk.utils.ApiUtils
 private const val ROUNDING_PIXEL = 16f
 private const val TAG = "ImageViewExtensions"
 
+fun ImageView.loadConversationAvatar(
+    user: User,
+    roomToken: String
+): io.reactivex.disposables
+.Disposable {
+    val imageRequestUri = ApiUtils.getUrlForConversationAvatar(
+        1,
+        user.baseUrl,
+        roomToken
+    )
+
+    return loadAvatarInternal(user, imageRequestUri, false)
+}
+
 fun ImageView.loadAvatar(
     user: User,
     avatar: String,
@@ -223,7 +237,7 @@ fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
     )
 }
 
-fun ImageView.loadGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
+fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
     val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group) as Any
     } else {
@@ -232,7 +246,7 @@ fun ImageView.loadGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.
     return loadAvatar(data)
 }
 
-fun ImageView.loadPublicCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
+fun ImageView.loadDefaultPublicCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
     val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_link) as Any
     } else {

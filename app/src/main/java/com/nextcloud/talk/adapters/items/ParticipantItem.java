@@ -147,7 +147,7 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             "groups".equals(participant.getSource()) ||
             participant.getCalculatedActorType() == Participant.ActorType.CIRCLES ||
             "circles".equals(participant.getSource())) {
-            ImageViewExtensionsKt.loadGroupCallAvatar(holder.binding.avatarView, viewThemeUtils);
+            ImageViewExtensionsKt.loadDefaultGroupCallAvatar(holder.binding.avatarView, viewThemeUtils);
         } else if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
             ImageViewExtensionsKt.loadMailAvatar(holder.binding.avatarView, viewThemeUtils);
         } else if (participant.getCalculatedActorType() == Participant.ActorType.GUESTS ||
