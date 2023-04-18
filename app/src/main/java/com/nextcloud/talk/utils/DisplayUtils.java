@@ -182,9 +182,10 @@ public class DisplayUtils {
 
         int drawable;
 
-        boolean isCall = "call".equals(type) || "calls".equals(type);
+        boolean isCallOrGroup =
+            "call".equals(type) || "calls".equals(type) || "groups".equals(type) || "user-group".equals(type);
 
-        if (!isCall) {
+        if (!isCallOrGroup) {
             if (chipResource == R.xml.chip_you) {
                 drawable = R.drawable.mention_chip;
             } else {
@@ -198,7 +199,7 @@ public class DisplayUtils {
 
         chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
 
-        if (!isCall) {
+        if (!isCallOrGroup) {
             String url = ApiUtils.getUrlForAvatar(conversationUser.getBaseUrl(), id, true);
             if ("guests".equals(type) || "guest".equals(type)) {
                 url = ApiUtils.getUrlForGuestAvatar(

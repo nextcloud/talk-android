@@ -2188,7 +2188,10 @@ class ChatActivity :
             for (i in mentionSpans.indices) {
                 mentionSpan = mentionSpans[i]
                 var mentionId = mentionSpan.id
-                if (mentionId.contains(" ") || mentionId.startsWith("guest/")) {
+                if (mentionId.contains(" ") ||
+                    mentionId.startsWith("guest/") ||
+                    mentionId.startsWith("group/")
+                ) {
                     mentionId = "\"" + mentionId + "\""
                 }
                 editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@$mentionId")

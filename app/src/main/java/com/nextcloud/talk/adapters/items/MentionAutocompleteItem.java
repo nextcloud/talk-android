@@ -58,6 +58,8 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
     public static final String SOURCE_CALLS = "calls";
     public static final String SOURCE_GUESTS = "guests";
 
+    public static final String SOURCE_GROUPS = "groups";
+
     private String source;
     private final String objectId;
     private final String displayName;
@@ -153,7 +155,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
             holder.binding.secondaryText.setText("@" + objectId);
         }
 
-        if (SOURCE_CALLS.equals(source)) {
+        if (SOURCE_CALLS.equals(source) || SOURCE_GROUPS.equals(source)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 ImageViewExtensionsKt.loadAvatar(
                     holder.binding.avatarView,
