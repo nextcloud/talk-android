@@ -190,7 +190,7 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
             val individualHashMap: HashMap<String?, String?>? = message.messageParameters!![key]
             if (individualHashMap != null) {
                 when (individualHashMap["type"]) {
-                    "user", "guest", "call" -> {
+                    "user", "guest", "call", "user-group" -> {
                         val chip = if (individualHashMap["id"] == message.activeUser!!.userId) {
                             R.xml.chip_you
                         } else {
