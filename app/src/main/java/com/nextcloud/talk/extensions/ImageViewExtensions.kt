@@ -41,6 +41,7 @@ import coil.transform.RoundedCornersTransformation
 import com.amulyakhare.textdrawable.TextDrawable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 
@@ -49,16 +50,30 @@ private const val TAG = "ImageViewExtensions"
 
 fun ImageView.loadConversationAvatar(
     user: User,
-    roomToken: String
+    conversation: Conversation
 ): io.reactivex.disposables
 .Disposable {
     val imageRequestUri = ApiUtils.getUrlForConversationAvatar(
         1,
         user.baseUrl,
-        roomToken
+        conversation.token
     )
 
-    return loadAvatarInternal(user, imageRequestUri, false)
+    // TODO: improve this! using the "old" drawables for now. because the themed drawables are not rounded by
+    //  themselves and coil is
+    //  not able to make placeholders rounded!! https://github.com/coil-kt/coil/issues/37
+    val placeholder =
+        when (conversation.type) {
+            Conversation.ConversationType.ROOM_GROUP_CALL ->
+                ContextCompat.getDrawable(context, R.drawable.ic_circular_group)
+
+            Conversation.ConversationType.ROOM_PUBLIC_CALL ->
+                ContextCompat.getDrawable(context, R.drawable.ic_circular_link)
+
+            else -> ContextCompat.getDrawable(context, R.drawable.account_circle_96dp)
+        }
+
+    return loadAvatarInternal(user, imageRequestUri, false, placeholder)
 }
 
 fun ImageView.loadAvatar(
@@ -73,7 +88,7 @@ fun ImageView.loadAvatar(
         requestBigSize
     )
 
-    return loadAvatarInternal(user, imageRequestUri, false)
+    return loadAvatarInternal(user, imageRequestUri, false, null)
 }
 
 fun ImageView.replaceAvatar(
@@ -88,14 +103,15 @@ fun ImageView.replaceAvatar(
         requestBigSize
     )
 
-    return loadAvatarInternal(user, imageRequestUri, true)
+    return loadAvatarInternal(user, imageRequestUri, true, null)
 }
 
 @OptIn(ExperimentalCoilApi::class)
 private fun ImageView.loadAvatarInternal(
     user: User?,
     url: String,
-    replace: Boolean
+    replace: Boolean,
+    placeholder: Drawable?
 ): io.reactivex.disposables
 .Disposable {
     if (replace && this.result is SuccessResult) {
@@ -118,7 +134,9 @@ private fun ImageView.loadAvatarInternal(
                 )
             }
             transformations(CircleCropTransformation())
-            placeholder(R.drawable.account_circle_96dp)
+            placeholder(placeholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
+            error(placeholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
+            fallback(placeholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             listener(onError = { _, result ->
                 Log.w(TAG, "Can't load avatar with URL: $url", result.throwable)
             })
@@ -128,7 +146,7 @@ private fun ImageView.loadAvatarInternal(
 
 @Deprecated("Use function loadAvatar", level = DeprecationLevel.WARNING)
 fun ImageView.loadAvatarWithUrl(user: User? = null, url: String): io.reactivex.disposables.Disposable {
-    return loadAvatarInternal(user, url, false)
+    return loadAvatarInternal(user, url, false, null)
 }
 
 fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.Disposable {
@@ -188,7 +206,7 @@ fun ImageView.loadImage(url: String, user: User, placeholder: Drawable? = null):
 fun ImageView.loadAvatarOrImagePreview(url: String, user: User, placeholder: Drawable? = null): io.reactivex
 .disposables.Disposable {
     return if (url.contains("/avatar/")) {
-        loadAvatarInternal(user, url, false)
+        loadAvatarInternal(user, url, false, null)
     } else {
         loadImage(url, user, placeholder)
     }

@@ -179,8 +179,7 @@ class ConversationItem(
                 }
 
                 ConversationType.ROOM_GROUP_CALL ->
-                    // holder.binding.dialogAvatar.loadDefaultGroupCallAvatar(viewThemeUtils)
-                    holder.binding.dialogAvatar.loadConversationAvatar(user, model.token!!)
+                    holder.binding.dialogAvatar.loadConversationAvatar(user, model)
 
                 ConversationType.FORMER_ONE_TO_ONE ->
                     holder.binding.dialogAvatar.loadDefaultGroupCallAvatar(viewThemeUtils)
