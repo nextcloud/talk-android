@@ -44,6 +44,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 
 private const val ROUNDING_PIXEL = 16f
 private const val TAG = "ImageViewExtensions"
@@ -59,9 +60,8 @@ fun ImageView.loadConversationAvatar(
         conversation.token
     )
 
-    // TODO: improve this! using the "old" drawables for now. because the themed drawables are not rounded by
-    //  themselves and coil is
-    //  not able to make placeholders rounded!! https://github.com/coil-kt/coil/issues/37
+    // these placeholders are only used when the request fails completely. The server also return default avatars
+    // when no own images are set. (although these default avatars can not be themed for the android app..)
     val placeholder =
         when (conversation.type) {
             Conversation.ConversationType.ROOM_GROUP_CALL ->
@@ -125,8 +125,14 @@ private fun ImageView.loadAvatarInternal(
         diskCacheKey?.let { diskCache?.remove(it) }
     }
 
+    val finalUrl = if (DisplayUtils.isDarkModeOn(this.context)) {
+        "$url/dark"
+    } else {
+        url
+    }
+
     return DisposableWrapper(
-        load(url) {
+        load(finalUrl) {
             user?.let {
                 addHeader(
                     "Authorization",

@@ -42,8 +42,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationWithLastMessageBinding
 import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.extensions.loadConversationAvatar
-import com.nextcloud.talk.extensions.loadDefaultGroupCallAvatar
-import com.nextcloud.talk.extensions.loadDefaultPublicCallAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -178,14 +176,8 @@ class ConversationItem(
                     }
                 }
 
-                ConversationType.ROOM_GROUP_CALL ->
+                ConversationType.ROOM_GROUP_CALL, ConversationType.FORMER_ONE_TO_ONE, ConversationType.ROOM_PUBLIC_CALL ->
                     holder.binding.dialogAvatar.loadConversationAvatar(user, model)
-
-                ConversationType.FORMER_ONE_TO_ONE ->
-                    holder.binding.dialogAvatar.loadDefaultGroupCallAvatar(viewThemeUtils)
-
-                ConversationType.ROOM_PUBLIC_CALL ->
-                    holder.binding.dialogAvatar.loadDefaultPublicCallAvatar(viewThemeUtils)
 
                 else -> holder.binding.dialogAvatar.visibility = View.GONE
             }

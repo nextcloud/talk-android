@@ -61,8 +61,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.extensions.loadAvatar
-import com.nextcloud.talk.extensions.loadDefaultGroupCallAvatar
-import com.nextcloud.talk.extensions.loadDefaultPublicCallAvatar
+import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
@@ -760,16 +759,13 @@ class ConversationInfoActivity :
     private fun loadConversationAvatar() {
         when (conversation!!.type) {
             Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
-                conversation!!.name?.let { binding?.avatarImage?.loadAvatar(conversationUser!!, it) }
+                conversation!!.name?.let { binding.avatarImage.loadAvatar(conversationUser, it) }
             }
-            Conversation.ConversationType.ROOM_GROUP_CALL -> {
-                binding?.avatarImage?.loadDefaultGroupCallAvatar(viewThemeUtils)
-            }
-            Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                binding?.avatarImage?.loadDefaultPublicCallAvatar(viewThemeUtils)
+            Conversation.ConversationType.ROOM_GROUP_CALL, Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
+                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!)
             }
             Conversation.ConversationType.ROOM_SYSTEM -> {
-                binding?.avatarImage?.loadSystemAvatar()
+                binding.avatarImage.loadSystemAvatar()
             }
 
             else -> {

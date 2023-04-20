@@ -108,6 +108,11 @@ public class DisplayUtils {
 
     private static final int DATE_TIME_PARTS_SIZE = 2;
 
+    public static Boolean isDarkModeOn(Context context) {
+        int currentNightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return currentNightMode == Configuration.UI_MODE_NIGHT_YES;
+    }
+
     public static void setClickableString(String string, String url, TextView textView) {
         SpannableString spannableString = new SpannableString(string);
         spannableString.setSpan(new ClickableSpan() {
