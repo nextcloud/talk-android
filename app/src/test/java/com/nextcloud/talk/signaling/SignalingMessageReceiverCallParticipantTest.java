@@ -85,6 +85,26 @@ public class SignalingMessageReceiverCallParticipantTest {
     }
 
     @Test
+    public void testCallParticipantMessageReaction() {
+        SignalingMessageReceiver.CallParticipantMessageListener mockedCallParticipantMessageListener =
+            mock(SignalingMessageReceiver.CallParticipantMessageListener.class);
+
+        signalingMessageReceiver.addListener(mockedCallParticipantMessageListener, "theSessionId");
+
+        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        signalingMessage.setFrom("theSessionId");
+        signalingMessage.setType("reaction");
+        signalingMessage.setRoomType("theRoomType");
+        NCMessagePayload messagePayload = new NCMessagePayload();
+        messagePayload.setType("reaction");
+        messagePayload.setReaction("theReaction");
+        signalingMessage.setPayload(messagePayload);
+        signalingMessageReceiver.processSignalingMessage(signalingMessage);
+
+        verify(mockedCallParticipantMessageListener, only()).onReaction("theReaction");
+    }
+
+    @Test
     public void testCallParticipantMessageUnshareScreen() {
         SignalingMessageReceiver.CallParticipantMessageListener mockedCallParticipantMessageListener =
             mock(SignalingMessageReceiver.CallParticipantMessageListener.class);

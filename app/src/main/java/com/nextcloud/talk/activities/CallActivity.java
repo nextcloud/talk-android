@@ -2806,6 +2806,10 @@ public class CallActivity extends CallBaseActivity {
         }
 
         @Override
+        public void onReaction(String reaction) {
+        }
+
+        @Override
         public void onUnshareScreen() {
             endPeerConnection(sessionId, "screen");
         }

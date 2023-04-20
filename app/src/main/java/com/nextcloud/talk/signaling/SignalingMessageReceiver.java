@@ -149,6 +149,7 @@ public abstract class SignalingMessageReceiver {
      */
     public interface CallParticipantMessageListener {
         void onRaiseHand(boolean state, long timestamp);
+        void onReaction(String reaction);
         void onUnshareScreen();
     }
 
@@ -558,6 +559,57 @@ public abstract class SignalingMessageReceiver {
             }
 
             callParticipantMessageNotifier.notifyRaiseHand(sessionId, state, timestamp);
+
+            return;
+        }
+
+        if ("reaction".equals(type)) {
+            // Message schema (external signaling server):
+            // {
+            //     "type": "message",
+            //     "message": {
+            //         "sender": {
+            //             ...
+            //         },
+            //         "data": {
+            //             "to": #STRING#,
+            //             "roomType": "video",
+            //             "type": "reaction",
+            //             "payload": {
+            //                 "reaction": #STRING#,
+            //             },
+            //             "from": #STRING#,
+            //         },
+            //     },
+            // }
+            //
+            // Message schema (internal signaling server):
+            // {
+            //     "type": "message",
+            //     "data": {
+            //         "to": #STRING#,
+            //         "roomType": "video",
+            //         "type": "reaction",
+            //         "payload": {
+            //             "reaction": #STRING#,
+            //         },
+            //         "from": #STRING#,
+            //     },
+            // }
+
+            NCMessagePayload payload = signalingMessage.getPayload();
+            if (payload == null) {
+                // Broken message, this should not happen.
+                return;
+            }
+
+            String reaction = payload.getReaction();
+            if (reaction == null) {
+                // Broken message, this should not happen.
+                return;
+            }
+
+            callParticipantMessageNotifier.notifyReaction(sessionId, reaction);
 
             return;
         }
