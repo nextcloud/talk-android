@@ -270,15 +270,6 @@ fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.rea
     return loadAvatar(data)
 }
 
-fun ImageView.loadDefaultPublicCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
-    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_link) as Any
-    } else {
-        R.drawable.ic_circular_link
-    }
-    return loadAvatar(data)
-}
-
 fun ImageView.loadMailAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
     val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_mail) as Any
