@@ -27,6 +27,7 @@
 package com.nextcloud.talk.conversation.info
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -39,6 +40,8 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.net.toFile
+import androidx.core.view.ViewCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -47,6 +50,7 @@ import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.datetime.dateTimePicker
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -58,7 +62,7 @@ import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
+import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.extensions.loadConversationAvatar
@@ -79,6 +83,9 @@ import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.Mimetype
+import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
@@ -88,8 +95,12 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 import java.util.Calendar
 import java.util.Collections
 import java.util.Locale
@@ -100,7 +111,7 @@ class ConversationInfoActivity :
     BaseActivity(),
     FlexibleAdapter.OnItemClickListener {
 
-    private lateinit var binding: ControllerConversationInfoBinding
+    private lateinit var binding: ActivityConversationInfoBinding
 
     @Inject
     lateinit var ncApi: NcApi
@@ -124,6 +135,8 @@ class ConversationInfoActivity :
     private var adapter: FlexibleAdapter<ParticipantItem>? = null
     private var userItems: MutableList<ParticipantItem> = ArrayList()
 
+    private lateinit var pickImage: PickImage
+
     private val workerData: Data?
         get() {
             if (!TextUtils.isEmpty(conversationToken) && conversationUser != null) {
@@ -140,7 +153,7 @@ class ConversationInfoActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        binding = ControllerConversationInfoBinding.inflate(layoutInflater)
+        binding = ActivityConversationInfoBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
@@ -157,6 +170,8 @@ class ConversationInfoActivity :
         if (databaseStorageModule == null) {
             databaseStorageModule = DatabaseStorageModule(conversationUser, conversationToken)
         }
+
+        setupAvatarOptions()
 
         binding.notificationSettingsView.notificationSettings.setStorageModule(databaseStorageModule)
         binding.webinarInfoView.webinarSettings.setStorageModule(databaseStorageModule)
@@ -181,6 +196,81 @@ class ConversationInfoActivity :
         binding.addParticipantsAction.visibility = GONE
 
         binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it) }
+    }
+
+    private fun setupAvatarOptions() {
+        pickImage = PickImage(this, conversationUser)
+        binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
+        binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
+        binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
+        binding.avatarDelete.setOnClickListener {}
+        binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                pickImage.handleActivityResult(
+                    requestCode,
+                    resultCode,
+                    data
+                ) { uploadAvatar(it.toFile()) }
+            }
+            ImagePicker.RESULT_ERROR -> {
+                Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                Log.i(TAG, "Task Cancelled")
+            }
+        }
+    }
+
+    private fun uploadAvatar(file: File?) {
+        val builder = MultipartBody.Builder()
+        builder.setType(MultipartBody.FORM)
+        builder.addFormDataPart(
+            "files[]",
+            file!!.name,
+            file.asRequestBody(Mimetype.IMAGE_PREFIX_GENERIC.toMediaTypeOrNull())
+        )
+        val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
+            "files[]",
+            file.name,
+            file.asRequestBody(Mimetype.IMAGE_JPG.toMediaTypeOrNull())
+        )
+
+        // upload file
+        ncApi.uploadAvatar(
+            ApiUtils.getCredentials(conversationUser.username, conversationUser.token),
+            ApiUtils.getUrlForConversationAvatar(1,conversationUser.baseUrl, conversation!!.token),
+            filePart
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    DisplayUtils.loadAvatarImage(conversationUser, binding.avatarImage, true)
+                }
+
+                override fun onError(e: Throwable) {
+                    Toast.makeText(
+                        applicationContext,
+                        context.getString(R.string.default_error_msg),
+                        Toast
+                            .LENGTH_LONG
+                    ).show()
+                    Log.e(TAG, "Error uploading avatar", e)
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
     }
 
     private fun setupActionBar() {
@@ -627,9 +717,11 @@ class ConversationInfoActivity :
                         } else {
                             binding?.clearConversationHistory?.visibility = GONE
                         }
+                        binding.avatarButtons.visibility = VISIBLE
                     } else {
                         binding?.addParticipantsAction?.visibility = GONE
                         binding?.clearConversationHistory?.visibility = GONE
+                        binding.avatarButtons.visibility = GONE
                     }
 
                     if (!isDestroyed) {
@@ -761,9 +853,11 @@ class ConversationInfoActivity :
             Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
                 conversation!!.name?.let { binding.avatarImage.loadAvatar(conversationUser, it) }
             }
+
             Conversation.ConversationType.ROOM_GROUP_CALL, Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
                 binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!)
             }
+
             Conversation.ConversationType.ROOM_SYSTEM -> {
                 binding.avatarImage.loadSystemAvatar()
             }

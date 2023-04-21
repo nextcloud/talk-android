@@ -11,7 +11,7 @@ import androidx.appcompat.widget.SwitchCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
+import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.databinding.DialogPasswordBinding
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
@@ -24,7 +24,7 @@ import io.reactivex.schedulers.Schedulers
 
 class GuestAccessHelper(
     private val activity: ConversationInfoActivity,
-    private val binding: ControllerConversationInfoBinding,
+    private val binding: ActivityConversationInfoBinding,
     private val conversation: Conversation,
     private val conversationUser: User
 ) {
