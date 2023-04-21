@@ -2456,7 +2456,16 @@ class ChatController(args: Bundle) :
         addMessagesToAdapter(shouldAddNewMessagesNotice, chatMessageList)
 
         if (shouldAddNewMessagesNotice && adapter != null) {
-            layoutManager?.scrollToPosition(0)
+            scrollToFirstUnreadMessage()
+        }
+    }
+
+    private fun scrollToFirstUnreadMessage() {
+        adapter?.let {
+            layoutManager?.scrollToPositionWithOffset(
+                it.getMessagePositionByIdInReverse("-1"),
+                (binding?.messagesListView?.height ?: 0) / 2
+            )
         }
     }
 
