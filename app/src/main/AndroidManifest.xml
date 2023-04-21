@@ -222,6 +222,7 @@
             android:name=".chat.ChatActivity"
             android:theme="@style/AppTheme"
             android:launchMode="singleInstance"
+            android:noHistory="true"
             android:screenOrientation="portrait" />
 
         <activity
