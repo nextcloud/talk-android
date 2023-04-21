@@ -24,7 +24,10 @@ package com.nextcloud.talk.models.json.capabilities
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
+
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Parcelize
@@ -34,7 +37,8 @@ data class SpreedCapability(
     @JsonField(name = ["features"])
     var features: List<String>?,
     @JsonField(name = ["config"])
-    var config: HashMap<String, HashMap<String, String>>?
+    var config: HashMap<String, HashMap<String, @RawValue @Contextual
+            Any>>?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)
