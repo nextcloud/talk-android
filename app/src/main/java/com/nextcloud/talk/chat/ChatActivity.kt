@@ -579,6 +579,12 @@ class ChatActivity :
         viewThemeUtils.material.themeToolbar(binding.chatToolbar)
     }
 
+    override fun onBackPressed() {
+        val intent = Intent(this, ConversationsListActivity::class.java)
+        intent.putExtras(Bundle())
+        startActivity(intent)
+    }
+
     private fun initAdapter() {
         val senderId = if (!conversationUser!!.userId.equals("?")) {
             "users/" + conversationUser!!.userId
