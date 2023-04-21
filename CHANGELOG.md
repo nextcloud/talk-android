@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [16.0.1] - 2023-04-21
+
+### Fixed
+- Fix to scroll to first unread message
+- Rare crashes
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/69?closed=1
+
 ## [16.0.0] - 2023-03-20
 
 ### Added
