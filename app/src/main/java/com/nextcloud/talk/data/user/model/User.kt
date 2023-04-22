@@ -44,7 +44,7 @@ data class User(
 ) : Parcelable {
 
     fun getMaxMessageLength(): Int {
-        return capabilities?.spreedCapability?.config?.get("chat")?.get("max-length")?.toInt()
+        return (capabilities?.spreedCapability?.config?.get("chat")?.get("max-length") as? String)?.toInt()
             ?: DEFAULT_CHAT_MESSAGE_LENGTH
     }
 
@@ -53,7 +53,7 @@ data class User(
     }
 
     fun canUserCreateGroupConversations(): Boolean {
-        val canCreateValue = capabilities?.spreedCapability?.config?.get("conversations")?.get("can-create")
+        val canCreateValue = capabilities?.spreedCapability?.config?.get("conversations")?.get("can-create") as? String
         canCreateValue?.let {
             return it.toBoolean()
         }
