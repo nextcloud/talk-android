@@ -144,6 +144,10 @@ object CapabilitiesUtilNew {
         return user.capabilities?.spreedCapability?.features?.contains("temp-user-avatar-api") == true
     }
 
+    fun isConversationAvatarEndpointAvailable(user: User): Boolean {
+        return user.capabilities?.spreedCapability?.features?.contains("avatar") == true
+    }
+
     fun canEditScopes(user: User): Boolean {
         return user.capabilities?.provisioningCapability?.accountPropertyScopesVersion != null &&
             user.capabilities!!.provisioningCapability!!.accountPropertyScopesVersion!! > 1

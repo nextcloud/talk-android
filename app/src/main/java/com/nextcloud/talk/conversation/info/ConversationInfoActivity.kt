@@ -199,18 +199,22 @@ class ConversationInfoActivity :
     }
 
     private fun setupAvatarOptions() {
-        pickImage = PickImage(this, conversationUser)
-        binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
-        binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
-        binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
-        binding.avatarDelete.setOnClickListener { deleteAvatar() }
-        binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
+        if (CapabilitiesUtilNew.isConversationAvatarEndpointAvailable(conversationUser)) {
+            pickImage = PickImage(this, conversationUser)
+            binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
+            binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
+            binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
+            binding.avatarDelete.setOnClickListener { deleteAvatar() }
+            binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
 
-        binding.let {
-            viewThemeUtils.material.themeFAB(it.avatarUpload)
-            viewThemeUtils.material.themeFAB(it.avatarChoose)
-            viewThemeUtils.material.themeFAB(it.avatarCamera)
-            viewThemeUtils.material.themeFAB(it.avatarDelete)
+            binding.let {
+                viewThemeUtils.material.themeFAB(it.avatarUpload)
+                viewThemeUtils.material.themeFAB(it.avatarChoose)
+                viewThemeUtils.material.themeFAB(it.avatarCamera)
+                viewThemeUtils.material.themeFAB(it.avatarDelete)
+            }
+        } else {
+            binding.avatarButtons.visibility = GONE
         }
     }
 
@@ -269,9 +273,11 @@ class ConversationInfoActivity :
                     data
                 ) { uploadAvatar(it.toFile()) }
             }
+
             ImagePicker.RESULT_ERROR -> {
                 Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
             }
+
             else -> {
                 Log.i(TAG, "Task Cancelled")
             }
