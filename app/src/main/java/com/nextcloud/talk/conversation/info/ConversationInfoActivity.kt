@@ -205,6 +205,13 @@ class ConversationInfoActivity :
         binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
         binding.avatarDelete.setOnClickListener { deleteAvatar() }
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
+
+        binding.let {
+            viewThemeUtils.material.themeFAB(it.avatarUpload)
+            viewThemeUtils.material.themeFAB(it.avatarChoose)
+            viewThemeUtils.material.themeFAB(it.avatarCamera)
+            viewThemeUtils.material.themeFAB(it.avatarDelete)
+        }
     }
 
     private fun setupActionBar() {

@@ -61,7 +61,8 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:indeterminate="true"
         android:indeterminateTint="@color/textColorMaxContrast"
-        android:indeterminateTintMode="src_in" />
+        android:indeterminateTintMode="src_in"
+        tools:visibility="gone"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -100,7 +101,7 @@
                         android:layout_width="@dimen/avatar_size_big"
                         android:layout_height="@dimen/avatar_size_big"
                         android:layout_centerHorizontal="true"
-                        tools:background="@color/hwSecurityRed"
+                        tools:src="@drawable/account_circle_48dp"
                         android:contentDescription="@string/avatar" />
 
                 </RelativeLayout>
@@ -111,6 +112,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/standard_margin"
                     android:visibility="invisible"
                     tools:visibility="visible">
 
