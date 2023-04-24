@@ -34,6 +34,8 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -135,6 +137,9 @@ class ConversationInfoActivity :
     private var adapter: FlexibleAdapter<ParticipantItem>? = null
     private var userItems: MutableList<ParticipantItem> = ArrayList()
 
+    private lateinit var optionsMenu: Menu
+    private var edit = false
+
     private lateinit var pickImage: PickImage
 
     private val workerData: Data?
@@ -199,22 +204,18 @@ class ConversationInfoActivity :
     }
 
     private fun setupAvatarOptions() {
-        if (CapabilitiesUtilNew.isConversationAvatarEndpointAvailable(conversationUser)) {
-            pickImage = PickImage(this, conversationUser)
-            binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
-            binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
-            binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
-            binding.avatarDelete.setOnClickListener { deleteAvatar() }
-            binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
+        pickImage = PickImage(this, conversationUser)
+        binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
+        binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
+        binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
+        binding.avatarDelete.setOnClickListener { deleteAvatar() }
+        binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
 
-            binding.let {
-                viewThemeUtils.material.themeFAB(it.avatarUpload)
-                viewThemeUtils.material.themeFAB(it.avatarChoose)
-                viewThemeUtils.material.themeFAB(it.avatarCamera)
-                viewThemeUtils.material.themeFAB(it.avatarDelete)
-            }
-        } else {
-            binding.avatarButtons.visibility = GONE
+        binding.let {
+            viewThemeUtils.material.themeFAB(it.avatarUpload)
+            viewThemeUtils.material.themeFAB(it.avatarChoose)
+            viewThemeUtils.material.themeFAB(it.avatarCamera)
+            viewThemeUtils.material.themeFAB(it.avatarDelete)
         }
     }
 
@@ -232,6 +233,30 @@ class ConversationInfoActivity :
             resources!!.getString(R.string.nc_conversation_menu_conversation_info)
         }
         viewThemeUtils.material.themeToolbar(binding.conversationInfoToolbar)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        if (CapabilitiesUtilNew.isConversationAvatarEndpointAvailable(conversationUser)) {
+            menuInflater.inflate(R.menu.menu_conversation_info, menu)
+            optionsMenu = menu
+            return true
+        }
+        return false
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        // menu.findItem(R.id.edit).isVisible = editableFields.size > 0
+        setEditMode(false)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.edit) {
+            toggleEditMode()
+        }
+        return true
     }
 
     private fun themeSwitchPreferences() {
@@ -260,6 +285,33 @@ class ConversationInfoActivity :
                 binding.webinarInfoView.conversationInfoWebinar,
                 binding.notificationSettingsView.notificationSettingsCategory
             ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
+        }
+    }
+
+    private fun toggleEditMode() {
+        edit = !edit
+        if (edit) {
+            setEditMode(true)
+        } else {
+            setEditMode(false)
+        }
+    }
+
+    private fun setEditMode(editing: Boolean) {
+        if (editing) {
+            optionsMenu.findItem(R.id.edit).setTitle(R.string.save)
+            binding.avatarUpload.visibility = VISIBLE
+            binding.avatarChoose.visibility = VISIBLE
+            binding.avatarCamera.visibility = VISIBLE
+            binding.avatarDelete.visibility = VISIBLE
+            edit = true
+        } else {
+            optionsMenu.findItem(R.id.edit).setTitle(R.string.edit)
+            binding.avatarUpload.visibility = GONE
+            binding.avatarChoose.visibility = GONE
+            binding.avatarCamera.visibility = GONE
+            binding.avatarDelete.visibility = GONE
+            edit = false
         }
     }
 
@@ -325,7 +377,7 @@ class ConversationInfoActivity :
                 }
 
                 override fun onComplete() {
-                    // unused atm
+                    setEditMode(false)
                 }
             })
     }
@@ -360,7 +412,7 @@ class ConversationInfoActivity :
                 }
 
                 override fun onComplete() {
-                    // unused atm
+                    setEditMode(false)
                 }
             })
     }
