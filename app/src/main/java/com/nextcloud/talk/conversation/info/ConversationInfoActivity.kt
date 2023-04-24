@@ -27,7 +27,6 @@
 package com.nextcloud.talk.conversation.info
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -42,8 +41,6 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.net.toFile
-import androidx.core.view.ViewCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -52,7 +49,6 @@ import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.datetime.dateTimePicker
-import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -85,9 +81,6 @@ import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.Mimetype
-import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
@@ -97,12 +90,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.io.File
+import org.parceler.Parcels
 import java.util.Calendar
 import java.util.Collections
 import java.util.Locale
@@ -136,11 +126,6 @@ class ConversationInfoActivity :
 
     private var adapter: FlexibleAdapter<ParticipantItem>? = null
     private var userItems: MutableList<ParticipantItem> = ArrayList()
-
-    private lateinit var optionsMenu: Menu
-    private var edit = false
-
-    private lateinit var pickImage: PickImage
 
     private val workerData: Data?
         get() {
@@ -176,8 +161,6 @@ class ConversationInfoActivity :
             databaseStorageModule = DatabaseStorageModule(conversationUser, conversationToken)
         }
 
-        setupAvatarOptions()
-
         binding.notificationSettingsView.notificationSettings.setStorageModule(databaseStorageModule)
         binding.webinarInfoView.webinarSettings.setStorageModule(databaseStorageModule)
         binding.guestAccessView.guestAccessSettings.setStorageModule(databaseStorageModule)
@@ -203,22 +186,6 @@ class ConversationInfoActivity :
         binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it) }
     }
 
-    private fun setupAvatarOptions() {
-        pickImage = PickImage(this, conversationUser)
-        binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
-        binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
-        binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
-        binding.avatarDelete.setOnClickListener { deleteAvatar() }
-        binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
-
-        binding.let {
-            viewThemeUtils.material.themeFAB(it.avatarUpload)
-            viewThemeUtils.material.themeFAB(it.avatarChoose)
-            viewThemeUtils.material.themeFAB(it.avatarCamera)
-            viewThemeUtils.material.themeFAB(it.avatarDelete)
-        }
-    }
-
     private fun setupActionBar() {
         setSupportActionBar(binding.conversationInfoToolbar)
         binding.conversationInfoToolbar.setNavigationOnClickListener {
@@ -239,7 +206,6 @@ class ConversationInfoActivity :
         super.onCreateOptionsMenu(menu)
         if (CapabilitiesUtilNew.isConversationAvatarEndpointAvailable(conversationUser)) {
             menuInflater.inflate(R.menu.menu_conversation_info, menu)
-            optionsMenu = menu
             return true
         }
         return false
@@ -248,13 +214,23 @@ class ConversationInfoActivity :
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
         // menu.findItem(R.id.edit).isVisible = editableFields.size > 0
-        setEditMode(false)
+
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.edit) {
-            toggleEditMode()
+            val bundle = Bundle()
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
+            bundle.putParcelable(
+                BundleKeys.KEY_ACTIVE_CONVERSATION,
+                Parcels.wrap(conversation)
+            )
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
+
+            val intent = Intent(this, ConversationInfoEditActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
         return true
     }
@@ -286,135 +262,6 @@ class ConversationInfoActivity :
                 binding.notificationSettingsView.notificationSettingsCategory
             ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
         }
-    }
-
-    private fun toggleEditMode() {
-        edit = !edit
-        if (edit) {
-            setEditMode(true)
-        } else {
-            setEditMode(false)
-        }
-    }
-
-    private fun setEditMode(editing: Boolean) {
-        if (editing) {
-            optionsMenu.findItem(R.id.edit).setTitle(R.string.save)
-            binding.avatarUpload.visibility = VISIBLE
-            binding.avatarChoose.visibility = VISIBLE
-            binding.avatarCamera.visibility = VISIBLE
-            binding.avatarDelete.visibility = VISIBLE
-            edit = true
-        } else {
-            optionsMenu.findItem(R.id.edit).setTitle(R.string.edit)
-            binding.avatarUpload.visibility = GONE
-            binding.avatarChoose.visibility = GONE
-            binding.avatarCamera.visibility = GONE
-            binding.avatarDelete.visibility = GONE
-            edit = false
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                pickImage.handleActivityResult(
-                    requestCode,
-                    resultCode,
-                    data
-                ) { uploadAvatar(it.toFile()) }
-            }
-
-            ImagePicker.RESULT_ERROR -> {
-                Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
-            }
-
-            else -> {
-                Log.i(TAG, "Task Cancelled")
-            }
-        }
-    }
-
-    private fun uploadAvatar(file: File?) {
-        val builder = MultipartBody.Builder()
-        builder.setType(MultipartBody.FORM)
-        builder.addFormDataPart(
-            "file",
-            file!!.name,
-            file.asRequestBody(Mimetype.IMAGE_PREFIX_GENERIC.toMediaTypeOrNull())
-        )
-        val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
-            "file",
-            file.name,
-            file.asRequestBody(Mimetype.IMAGE_JPG.toMediaTypeOrNull())
-        )
-
-        // upload file
-        ncApi.uploadAvatar(
-            credentials,
-            ApiUtils.getUrlForConversationAvatar(1, conversationUser.baseUrl, conversation!!.token),
-            filePart
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    DisplayUtils.loadAvatarImage(conversationUser, binding.avatarImage, true)
-                }
-
-                override fun onError(e: Throwable) {
-                    Toast.makeText(
-                        applicationContext,
-                        context.getString(R.string.default_error_msg),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    Log.e(TAG, "Error uploading avatar", e)
-                }
-
-                override fun onComplete() {
-                    setEditMode(false)
-                }
-            })
-    }
-
-    private fun deleteAvatar() {
-        ncApi.deleteAvatar(
-            credentials,
-            ApiUtils.getUrlForConversationAvatar(1, conversationUser.baseUrl, conversationToken)
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    DisplayUtils.loadAvatarImage(
-                        conversationUser,
-                        binding.avatarImage,
-                        true
-                    )
-                }
-
-                override fun onError(e: Throwable) {
-                    Toast.makeText(
-                        applicationContext,
-                        context.getString(R.string.default_error_msg),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    Log.e(TAG, "Failed to delete avatar", e)
-                }
-
-                override fun onComplete() {
-                    setEditMode(false)
-                }
-            })
     }
 
     private fun showSharedItems() {
@@ -816,11 +663,9 @@ class ConversationInfoActivity :
                         } else {
                             binding?.clearConversationHistory?.visibility = GONE
                         }
-                        binding.avatarButtons.visibility = VISIBLE
                     } else {
                         binding?.addParticipantsAction?.visibility = GONE
                         binding?.clearConversationHistory?.visibility = GONE
-                        binding.avatarButtons.visibility = GONE
                     }
 
                     if (!isDestroyed) {
