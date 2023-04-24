@@ -230,12 +230,12 @@ class ConversationInfoActivity :
         val builder = MultipartBody.Builder()
         builder.setType(MultipartBody.FORM)
         builder.addFormDataPart(
-            "files[]",
+            "file",
             file!!.name,
             file.asRequestBody(Mimetype.IMAGE_PREFIX_GENERIC.toMediaTypeOrNull())
         )
         val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
-            "files[]",
+            "file",
             file.name,
             file.asRequestBody(Mimetype.IMAGE_JPG.toMediaTypeOrNull())
         )
@@ -243,7 +243,7 @@ class ConversationInfoActivity :
         // upload file
         ncApi.uploadAvatar(
             ApiUtils.getCredentials(conversationUser.username, conversationUser.token),
-            ApiUtils.getUrlForConversationAvatar(1,conversationUser.baseUrl, conversation!!.token),
+            ApiUtils.getUrlForConversationAvatar(1, conversationUser.baseUrl, conversation!!.token),
             filePart
         )
             .subscribeOn(Schedulers.io())
@@ -261,8 +261,7 @@ class ConversationInfoActivity :
                     Toast.makeText(
                         applicationContext,
                         context.getString(R.string.default_error_msg),
-                        Toast
-                            .LENGTH_LONG
+                        Toast.LENGTH_LONG
                     ).show()
                     Log.e(TAG, "Error uploading avatar", e)
                 }

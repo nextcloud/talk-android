@@ -162,10 +162,8 @@ class PickImage(
         if (resultCode != Activity.RESULT_OK) {
             Log.w(
                 TAG,
-                "Check result code before calling 'PickImage#handleActivtyResult'. It should be ${
-                Activity
-                    .RESULT_OK
-                }, but it is $resultCode!"
+                "Check result code before calling " +
+                    "'PickImage#handleActivtyResult'. It should be ${Activity.RESULT_OK}, but it is $resultCode!"
             )
             return
         }
