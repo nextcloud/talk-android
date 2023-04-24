@@ -203,7 +203,7 @@ class ConversationInfoActivity :
         binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
         binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
         binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
-        binding.avatarDelete.setOnClickListener {}
+        binding.avatarDelete.setOnClickListener { deleteAvatar() }
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
     }
 
@@ -242,7 +242,7 @@ class ConversationInfoActivity :
 
         // upload file
         ncApi.uploadAvatar(
-            ApiUtils.getCredentials(conversationUser.username, conversationUser.token),
+            credentials,
             ApiUtils.getUrlForConversationAvatar(1, conversationUser.baseUrl, conversation!!.token),
             filePart
         )
@@ -264,6 +264,41 @@ class ConversationInfoActivity :
                         Toast.LENGTH_LONG
                     ).show()
                     Log.e(TAG, "Error uploading avatar", e)
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
+    }
+
+    private fun deleteAvatar() {
+        ncApi.deleteAvatar(
+            credentials,
+            ApiUtils.getUrlForConversationAvatar(1, conversationUser.baseUrl, conversationToken)
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    DisplayUtils.loadAvatarImage(
+                        conversationUser,
+                        binding.avatarImage,
+                        true
+                    )
+                }
+
+                override fun onError(e: Throwable) {
+                    Toast.makeText(
+                        applicationContext,
+                        context.getString(R.string.default_error_msg),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Log.e(TAG, "Failed to delete avatar", e)
                 }
 
                 override fun onComplete() {
