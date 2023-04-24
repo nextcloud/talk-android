@@ -207,6 +207,51 @@ class ConversationInfoActivity :
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
     }
 
+    private fun setupActionBar() {
+        setSupportActionBar(binding.conversationInfoToolbar)
+        binding.conversationInfoToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.title = if (hasAvatarSpacing) {
+            " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)
+        } else {
+            resources!!.getString(R.string.nc_conversation_menu_conversation_info)
+        }
+        viewThemeUtils.material.themeToolbar(binding.conversationInfoToolbar)
+    }
+
+    private fun themeSwitchPreferences() {
+        binding.run {
+            listOf(
+                binding.webinarInfoView.conversationInfoLobby,
+                binding.notificationSettingsView.callNotifications,
+                binding.notificationSettingsView.conversationInfoPriorityConversation,
+                binding.guestAccessView.guestAccessAllowSwitch,
+                binding.guestAccessView.guestAccessPasswordSwitch
+            ).forEach(viewThemeUtils.talk::colorSwitchPreference)
+        }
+    }
+
+    private fun themeCategories() {
+        binding.run {
+            listOf(
+                conversationInfoName,
+                conversationDescription,
+                otherRoomOptions,
+                participantsListCategory,
+                ownOptions,
+                categorySharedItems,
+                categoryConversationSettings,
+                binding.guestAccessView.guestAccessCategory,
+                binding.webinarInfoView.conversationInfoWebinar,
+                binding.notificationSettingsView.notificationSettingsCategory
+            ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
@@ -305,51 +350,6 @@ class ConversationInfoActivity :
                     // unused atm
                 }
             })
-    }
-
-    private fun setupActionBar() {
-        setSupportActionBar(binding.conversationInfoToolbar)
-        binding.conversationInfoToolbar.setNavigationOnClickListener {
-            onBackPressed()
-        }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
-        supportActionBar?.title = if (hasAvatarSpacing) {
-            " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)
-        } else {
-            resources!!.getString(R.string.nc_conversation_menu_conversation_info)
-        }
-        viewThemeUtils.material.themeToolbar(binding.conversationInfoToolbar)
-    }
-
-    private fun themeSwitchPreferences() {
-        binding.run {
-            listOf(
-                binding.webinarInfoView.conversationInfoLobby,
-                binding.notificationSettingsView.callNotifications,
-                binding.notificationSettingsView.conversationInfoPriorityConversation,
-                binding.guestAccessView.guestAccessAllowSwitch,
-                binding.guestAccessView.guestAccessPasswordSwitch
-            ).forEach(viewThemeUtils.talk::colorSwitchPreference)
-        }
-    }
-
-    private fun themeCategories() {
-        binding.run {
-            listOf(
-                conversationInfoName,
-                conversationDescription,
-                otherRoomOptions,
-                participantsListCategory,
-                ownOptions,
-                categorySharedItems,
-                categoryConversationSettings,
-                binding.guestAccessView.guestAccessCategory,
-                binding.webinarInfoView.conversationInfoWebinar,
-                binding.notificationSettingsView.notificationSettingsCategory
-            ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
-        }
     }
 
     private fun showSharedItems() {
