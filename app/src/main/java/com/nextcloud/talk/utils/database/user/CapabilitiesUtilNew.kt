@@ -157,7 +157,7 @@ object CapabilitiesUtilNew {
                 capabilities.spreedCapability!!.config!!["call"] != null &&
                 capabilities.spreedCapability!!.config!!["call"]!!.containsKey("enabled")
             ) {
-                java.lang.Boolean.parseBoolean(capabilities.spreedCapability!!.config!!["call"]!!["enabled"] as? String)
+                java.lang.Boolean.parseBoolean(capabilities.spreedCapability!!.config!!["call"]!!["enabled"].toString())
             } else {
                 // older nextcloud versions without the capability can't disable the calls
                 true
