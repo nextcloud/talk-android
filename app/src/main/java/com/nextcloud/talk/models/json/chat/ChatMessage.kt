@@ -536,7 +536,9 @@ data class ChatMessage(
         AUDIO_RECORDING_STOPPED,
         RECORDING_FAILED,
         BREAKOUT_ROOMS_STARTED,
-        BREAKOUT_ROOMS_STOPPED
+        BREAKOUT_ROOMS_STOPPED,
+        AVATAR_SET,
+        AVATAR_REMOVED
     }
 
     companion object {

@@ -28,6 +28,8 @@ import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.AUDIO_RECORDING_STARTED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.AUDIO_RECORDING_STOPPED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.AVATAR_REMOVED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.AVATAR_SET
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.BREAKOUT_ROOMS_STARTED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.BREAKOUT_ROOMS_STOPPED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED
@@ -147,6 +149,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "recording_failed" -> RECORDING_FAILED
             "breakout_rooms_started" -> BREAKOUT_ROOMS_STARTED
             "breakout_rooms_stopped" -> BREAKOUT_ROOMS_STOPPED
+            "avatar_set" -> AVATAR_SET
+            "avatar_removed" -> AVATAR_REMOVED
             else -> DUMMY
         }
     }
@@ -211,6 +215,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             RECORDING_FAILED -> "recording_failed"
             BREAKOUT_ROOMS_STARTED -> "breakout_rooms_started"
             BREAKOUT_ROOMS_STOPPED -> "breakout_rooms_stopped"
+            AVATAR_SET -> "avatar_set"
+            AVATAR_REMOVED -> "avatar_removed"
             else -> ""
         }
     }
