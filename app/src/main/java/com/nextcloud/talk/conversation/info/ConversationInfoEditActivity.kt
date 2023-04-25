@@ -1,14 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Mario Danic
- * @author Andy Scherzinger
- * @author Tim Krüger
  * @author Marcel Hibbe
- * Copyright (C) 2022-2023 Marcel Hibbe (dev@mhibbe.de)
- * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
- * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2023 Marcel Hibbe (dev@mhibbe.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +27,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
@@ -51,11 +46,11 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -79,17 +74,11 @@ class ConversationInfoEditActivity :
     @Inject
     lateinit var conversationsRepository: ConversationsRepository
 
-    @Inject
-    lateinit var dateUtils: DateUtils
-
     private lateinit var conversationToken: String
     private lateinit var conversationUser: User
     private lateinit var credentials: String
 
     private var conversation: Conversation? = null
-
-    private lateinit var optionsMenu: Menu
-    private var edit = false
 
     private lateinit var pickImage: PickImage
 
@@ -111,6 +100,9 @@ class ConversationInfoEditActivity :
             conversation = Parcels.unwrap<Conversation>(extras.getParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION))
         }
 
+        viewThemeUtils.material.colorTextInputLayout(binding.conversationNameInputLayout)
+        viewThemeUtils.material.colorTextInputLayout(binding.conversationDescriptionInputLayout)
+
         credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
     }
 
@@ -119,10 +111,14 @@ class ConversationInfoEditActivity :
 
         loadConversationAvatar()
 
-        binding.displayNameText.text = conversation!!.displayName
+        binding.conversationName.setText(conversation!!.displayName)
 
         if (conversation!!.description != null && conversation!!.description!!.isNotEmpty()) {
-            binding.descriptionText.text = conversation!!.description
+            binding.conversationDescription.setText(conversation!!.description)
+        }
+
+        if (!CapabilitiesUtilNew.isConversationDescriptionEndpointAvailable(conversationUser)) {
+            binding.conversationDescription.isEnabled = false
         }
 
         setupAvatarOptions()
@@ -157,47 +153,105 @@ class ConversationInfoEditActivity :
         viewThemeUtils.material.themeToolbar(binding.conversationInfoEditToolbar)
     }
 
-    // override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    //     super.onCreateOptionsMenu(menu)
-    //
-    //     menuInflater.inflate(R.menu.menu_conversation_info, menu)
-    //     optionsMenu = menu
-    //     return true
-    // }
-    //
-    // override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-    //     super.onPrepareOptionsMenu(menu)
-    //     // menu.findItem(R.id.edit).isVisible = editableFields.size > 0
-    //     setEditMode(true)
-    //     return true
-    // }
-    //
-    // override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    //     if (item.itemId == R.id.edit) {
-    //         toggleEditMode()
-    //     }
-    //     return true
-    // }
-    //
-    //
-    // private fun toggleEditMode() {
-    //     edit = !edit
-    //     if (edit) {
-    //         setEditMode(true)
-    //     } else {
-    //         setEditMode(false)
-    //     }
-    // }
-    //
-    // private fun setEditMode(editing: Boolean) {
-    //     if (editing) {
-    //         optionsMenu.findItem(R.id.edit).setTitle(R.string.save)
-    //         edit = true
-    //     } else {
-    //         optionsMenu.findItem(R.id.edit).setTitle(R.string.edit)
-    //         edit = false
-    //     }
-    // }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.menu_conversation_info_edit, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.save) {
+            saveConversationNameAndDescription()
+        }
+        return true
+    }
+
+    private fun saveConversationNameAndDescription() {
+        val apiVersion =
+            ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+
+        ncApi.renameRoom(
+            credentials,
+            ApiUtils.getUrlForRoom(
+                apiVersion,
+                conversationUser.baseUrl,
+                conversation!!.token
+            ),
+            binding.conversationName.text.toString()
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    if (CapabilitiesUtilNew.isConversationDescriptionEndpointAvailable(conversationUser)) {
+                        saveConversationDescription()
+                    } else {
+                        finish()
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Toast.makeText(
+                        applicationContext,
+                        context.getString(R.string.default_error_msg),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Log.e(TAG, "Error while saving conversation name", e)
+                }
+
+                override fun onComplete() {
+                }
+            })
+    }
+
+    fun saveConversationDescription() {
+        val apiVersion =
+            ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+
+        ncApi.setConversationDescription(
+            credentials,
+            ApiUtils.getUrlForConversationDescription(
+                apiVersion,
+                conversationUser.baseUrl,
+                conversation!!.token
+            ),
+            binding.conversationDescription.text.toString()
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    finish()
+                }
+
+                override fun onError(e: Throwable) {
+                    Toast.makeText(
+                        applicationContext,
+                        context.getString(R.string.default_error_msg),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Log.e(TAG, "Error while saving conversation description", e)
+                }
+
+                override fun onComplete() {
+                }
+            })
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -322,6 +376,6 @@ class ConversationInfoEditActivity :
     }
 
     companion object {
-        private const val TAG = "ConversationEditInfo"
+        private val TAG = ConversationInfoEditActivity::class.simpleName
     }
 }

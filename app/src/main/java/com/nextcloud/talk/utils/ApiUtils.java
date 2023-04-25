@@ -506,4 +506,8 @@ public class ApiUtils {
     public static String getUrlForRequestAssistance(int version, String baseUrl, String token) {
         return getUrlForApi(version, baseUrl) + "/breakout-rooms/" + token + "/request-assistance";
     }
+
+    public static String getUrlForConversationDescription(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/description";
+    }
 }

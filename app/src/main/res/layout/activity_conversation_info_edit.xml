@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
-  ~ @author Mario Danic
-  ~ @author Andy Scherzinger
   ~ @author Marcel Hibbe
-  ~ @author Tim Krüger
-  ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
-  ~ Copyright (C) 2022-2023 Marcel Hibbe <dev@mhibbe.de>
-  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
-  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~ Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -122,23 +116,54 @@
                 app:srcCompat="@drawable/trashbin" />
         </LinearLayout>
 
-        <androidx.emoji2.widget.EmojiTextView
-            android:id="@+id/display_name_text"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/conversation_name_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_between_elements"
-            tools:text="Jane Doe" />
-
-        <androidx.emoji2.widget.EmojiTextView
-            android:id="@+id/description_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_margin="@dimen/standard_margin"
-            android:layout_marginTop="@dimen/margin_between_elements"
-            android:autoLink="web"
-            tools:text="Hello world!" />
+            android:minHeight="@dimen/min_size_clickable_area"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:errorTextAppearance="@style/ErrorAppearance"
+            app:hintTextColor="@color/colorPrimary"
+            android:hint="@string/nc_call_name">
+
+            <com.nextcloud.talk.utils.EmojiTextInputEditText
+                android:id="@+id/conversation_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:singleLine="true"
+                android:maxLength="255"
+                android:textAlignment="viewStart"
+                tools:text="Our conversation name" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/conversation_description_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/standard_margin"
+            android:minHeight="@dimen/min_size_clickable_area"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:errorTextAppearance="@style/ErrorAppearance"
+            app:hintTextColor="@color/colorPrimary"
+            android:hint="@string/nc_conversation_description">
+
+            <com.nextcloud.talk.utils.EmojiTextInputEditText
+                android:id="@+id/conversation_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text|textMultiLine"
+                android:singleLine="true"
+                android:textAlignment="viewStart"
+                tools:text="Our conversation description" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 

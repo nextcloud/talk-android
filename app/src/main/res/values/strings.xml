@@ -637,6 +637,7 @@ How to translate with transifex:
     <string name="set_avatar_from_camera">Set avatar from camera</string>
 
     <string name="nc_conversation_settings">Conversation settings</string>
+    <string name="nc_conversation_description">Conversation description</string>
 
     <!-- Expiring messages -->
     <string name="nc_expire_messages">Expire chat messages</string>

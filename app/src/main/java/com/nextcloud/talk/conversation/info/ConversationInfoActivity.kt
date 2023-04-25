@@ -219,8 +219,6 @@ class ConversationInfoActivity :
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
-        // menu.findItem(R.id.edit).isVisible = editableFields.size > 0
-
         return true
     }
 

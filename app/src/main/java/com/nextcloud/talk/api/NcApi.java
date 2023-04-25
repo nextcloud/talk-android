@@ -134,6 +134,12 @@ public interface NcApi {
                                           @Field("roomName") String roomName);
 
 
+    @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> setConversationDescription(@Header("Authorization") String authorization,
+                                                          @Url String url,
+                                          @Field("description") String description);
+
     /*
         QueryMap items are as follows:
             - "newParticipant" : "user"
