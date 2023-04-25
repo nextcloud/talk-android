@@ -127,6 +127,8 @@ class ConversationInfoActivity :
     private var adapter: FlexibleAdapter<ParticipantItem>? = null
     private var userItems: MutableList<ParticipantItem> = ArrayList()
 
+    private lateinit var optionsMenu: Menu
+
     private val workerData: Data?
         get() {
             if (!TextUtils.isEmpty(conversationToken) && conversationUser != null) {
@@ -204,11 +206,15 @@ class ConversationInfoActivity :
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
+        optionsMenu = menu
+        return true
+    }
+
+    fun showOptionsMenu() {
+        optionsMenu.clear()
         if (CapabilitiesUtilNew.isConversationAvatarEndpointAvailable(conversationUser)) {
-            menuInflater.inflate(R.menu.menu_conversation_info, menu)
-            return true
+            menuInflater.inflate(R.menu.menu_conversation_info, optionsMenu)
         }
-        return false
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
@@ -663,6 +669,7 @@ class ConversationInfoActivity :
                         } else {
                             binding?.clearConversationHistory?.visibility = GONE
                         }
+                        showOptionsMenu()
                     } else {
                         binding?.addParticipantsAction?.visibility = GONE
                         binding?.clearConversationHistory?.visibility = GONE
