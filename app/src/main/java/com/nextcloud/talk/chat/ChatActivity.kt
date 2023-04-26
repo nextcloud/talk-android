@@ -1040,6 +1040,7 @@ class ChatActivity :
                     .crossfade(true)
                     .target(target)
                     .memoryCachePolicy(CachePolicy.DISABLED)
+                    .diskCachePolicy(CachePolicy.DISABLED)
                     .build()
             )
         }

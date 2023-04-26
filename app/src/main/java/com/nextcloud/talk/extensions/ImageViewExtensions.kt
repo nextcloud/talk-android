@@ -33,6 +33,7 @@ import androidx.core.content.res.ResourcesCompat
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import coil.load
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.result
@@ -101,6 +102,12 @@ private fun ImageView.loadAvatarInternal(
     placeholder: Drawable?
 ): io.reactivex.disposables
 .Disposable {
+    val cachePolicy = if (replace) {
+        CachePolicy.DISABLED
+    } else {
+        CachePolicy.ENABLED
+    }
+
     if (replace && this.result is SuccessResult) {
         val result = this.result as SuccessResult
         val memoryCacheKey = result.memoryCacheKey
@@ -133,6 +140,8 @@ private fun ImageView.loadAvatarInternal(
             listener(onError = { _, result ->
                 Log.w(TAG, "Can't load avatar with URL: $url", result.throwable)
             })
+            memoryCachePolicy(cachePolicy)
+            diskCachePolicy(cachePolicy)
         }
     )
 }
