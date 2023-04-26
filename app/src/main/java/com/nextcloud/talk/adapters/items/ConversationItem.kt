@@ -68,6 +68,8 @@ class ConversationItem(
     IFilterable<String?> {
     private var header: GenericTextHeaderItem? = null
 
+    private var isInitialLoad = true
+
     constructor(
         conversation: Conversation,
         user: User,
@@ -179,11 +181,12 @@ class ConversationItem(
                 ConversationType.ROOM_GROUP_CALL,
                 ConversationType.FORMER_ONE_TO_ONE,
                 ConversationType.ROOM_PUBLIC_CALL ->
-                    holder.binding.dialogAvatar.loadConversationAvatar(user, model, true)
+                    holder.binding.dialogAvatar.loadConversationAvatar(user, model, isInitialLoad)
 
                 else -> holder.binding.dialogAvatar.visibility = View.GONE
             }
         }
+        isInitialLoad = false
     }
 
     private fun shouldLoadAvatar(
