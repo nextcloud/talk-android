@@ -88,6 +88,7 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.imageLoader
 import coil.load
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
@@ -1035,10 +1036,10 @@ class ChatActivity :
                 ImageRequest.Builder(context)
                     .data(url)
                     .addHeader("Authorization", credentials)
-                    .placeholder(R.drawable.ic_user)
                     .transformations(CircleCropTransformation())
                     .crossfade(true)
                     .target(target)
+                    .memoryCachePolicy(CachePolicy.DISABLED)
                     .build()
             )
         }
