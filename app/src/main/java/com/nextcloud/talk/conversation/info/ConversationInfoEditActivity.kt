@@ -46,7 +46,6 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -302,7 +301,7 @@ class ConversationInfoEditActivity :
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    DisplayUtils.loadAvatarImage(conversationUser, binding.avatarImage, true)
+                    loadConversationAvatar()
                 }
 
                 override fun onError(e: Throwable) {
@@ -315,7 +314,6 @@ class ConversationInfoEditActivity :
                 }
 
                 override fun onComplete() {
-                    // setEditMode(false)
                 }
             })
     }
@@ -333,11 +331,7 @@ class ConversationInfoEditActivity :
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    DisplayUtils.loadAvatarImage(
-                        conversationUser,
-                        binding.avatarImage,
-                        true
-                    )
+                    loadConversationAvatar()
                 }
 
                 override fun onError(e: Throwable) {
