@@ -43,30 +43,9 @@ data class User(
     var scheduledForDeletion: Boolean = FALSE
 ) : Parcelable {
 
-    fun getMaxMessageLength(): Int {
-        return (capabilities?.spreedCapability?.config?.get("chat")?.get("max-length") as? String)?.toInt()
-            ?: DEFAULT_CHAT_MESSAGE_LENGTH
-    }
-
-    fun getAttachmentsConfig(key: String): Any? {
-        return capabilities?.spreedCapability?.config?.get("attachments")?.get(key)
-    }
-
-    fun canUserCreateGroupConversations(): Boolean {
-        val canCreateValue = capabilities?.spreedCapability?.config?.get("conversations")?.get("can-create") as? String
-        canCreateValue?.let {
-            return it.toBoolean()
-        }
-        return true
-    }
-
     fun getCredentials(): String = ApiUtils.getCredentials(username, token)
 
     fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
         return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
-    }
-
-    companion object {
-        const val DEFAULT_CHAT_MESSAGE_LENGTH: Int = 1000
     }
 }

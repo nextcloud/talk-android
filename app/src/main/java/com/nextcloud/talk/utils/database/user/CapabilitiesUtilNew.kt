@@ -67,8 +67,8 @@ object CapabilitiesUtilNew {
         if (user?.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
             val chatConfigHashMap = user.capabilities!!.spreedCapability!!.config!!["chat"]
             if (chatConfigHashMap?.containsKey("max-length") == true) {
-                val chatSize = (chatConfigHashMap["max-length"]!! as? String)?.toInt()
-                return if (chatSize != null && chatSize > 0) {
+                val chatSize = (chatConfigHashMap["max-length"]!!.toString()).toInt()
+                return if (chatSize > 0) {
                     chatSize
                 } else {
                     DEFAULT_CHAT_SIZE
@@ -95,7 +95,7 @@ object CapabilitiesUtilNew {
         if (user.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
             val map = user.capabilities!!.spreedCapability!!.config!!["chat"]
             if (map?.containsKey("read-privacy") == true) {
-                return (map["read-privacy"]!! as? String)?.toInt() == 1
+                return (map["read-privacy"]!!.toString()).toInt() == 1
             }
         }
 
@@ -109,7 +109,7 @@ object CapabilitiesUtilNew {
         ) {
             val map: Map<String, Any>? = user.capabilities!!.spreedCapability!!.config!!["call"]
             if (map != null && map.containsKey("recording")) {
-                return (map["recording"] as? String).toBoolean()
+                return (map["recording"].toString()).toBoolean()
             }
         }
         return false
@@ -126,7 +126,7 @@ object CapabilitiesUtilNew {
         if (user.capabilities?.spreedCapability?.config?.containsKey("attachments") == true) {
             val map = user.capabilities!!.spreedCapability!!.config!!["attachments"]
             if (map?.containsKey("folder") == true) {
-                return map["folder"] as? String
+                return map["folder"].toString()
             }
         }
         return "/Talk"
@@ -157,7 +157,7 @@ object CapabilitiesUtilNew {
                 capabilities.spreedCapability!!.config!!["call"] != null &&
                 capabilities.spreedCapability!!.config!!["call"]!!.containsKey("enabled")
             ) {
-                java.lang.Boolean.parseBoolean(capabilities.spreedCapability!!.config!!["call"]!!["enabled"] as? String)
+                java.lang.Boolean.parseBoolean(capabilities.spreedCapability!!.config!!["call"]!!["enabled"].toString())
             } else {
                 // older nextcloud versions without the capability can't disable the calls
                 true
