@@ -26,8 +26,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionItemBinding
-import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
+import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.reactions.ReactionVoter
 
 class ReactionsViewHolder(
@@ -53,9 +53,10 @@ class ReactionsViewHolder(
             }
             binding.avatar.loadGuestAvatar(user!!.baseUrl!!, displayName!!, false)
         } else if (reactionItem.reactionVoter.actorType == ReactionVoter.ReactionActorType.USERS) {
-            binding.avatar.loadAvatar(
+            binding.avatar.loadUserAvatar(
                 user!!,
                 reactionItem.reactionVoter.actorId!!,
+                false,
                 false
             )
         }

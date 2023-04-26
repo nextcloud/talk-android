@@ -181,10 +181,11 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
                 displayName = "Guest";
             }
 
-            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, user, displayName, true);
+            ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, user, displayName, true, false);
         } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
             PARTICIPANT_SOURCE_USERS.equals(participant.getSource())) {
-            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, user, participant.getCalculatedActorId(), true);
+            ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, user, participant.getCalculatedActorId(),
+                                                 true, false);
         }
     }
 
@@ -203,7 +204,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
             avatar = fallbackImageResource;
         }
 
-        ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, avatar);
+        ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, avatar);
     }
 
     @Override

@@ -51,7 +51,8 @@ private const val TAG = "ImageViewExtensions"
 
 fun ImageView.loadConversationAvatar(
     user: User,
-    conversation: Conversation
+    conversation: Conversation,
+    replace: Boolean
 ): io.reactivex.disposables
 .Disposable {
     val imageRequestUri = ApiUtils.getUrlForConversationAvatar(
@@ -73,37 +74,23 @@ fun ImageView.loadConversationAvatar(
             else -> ContextCompat.getDrawable(context, R.drawable.account_circle_96dp)
         }
 
-    return loadAvatarInternal(user, imageRequestUri, false, placeholder)
+    return loadAvatarInternal(user, imageRequestUri, replace, placeholder)
 }
 
-fun ImageView.loadAvatar(
+fun ImageView.loadUserAvatar(
     user: User,
-    avatar: String,
-    requestBigSize: Boolean = true
+    avatarId: String,
+    requestBigSize: Boolean = true,
+    replace: Boolean
 ): io.reactivex.disposables
 .Disposable {
     val imageRequestUri = ApiUtils.getUrlForAvatar(
         user.baseUrl,
-        avatar,
+        avatarId,
         requestBigSize
     )
 
-    return loadAvatarInternal(user, imageRequestUri, false, null)
-}
-
-fun ImageView.replaceAvatar(
-    user: User,
-    avatar: String,
-    requestBigSize: Boolean = true
-): io.reactivex.disposables
-.Disposable {
-    val imageRequestUri = ApiUtils.getUrlForAvatar(
-        user.baseUrl,
-        avatar,
-        requestBigSize
-    )
-
-    return loadAvatarInternal(user, imageRequestUri, true, null)
+    return loadAvatarInternal(user, imageRequestUri, replace, null)
 }
 
 @OptIn(ExperimentalCoilApi::class)
@@ -218,7 +205,7 @@ fun ImageView.loadAvatarOrImagePreview(url: String, user: User, placeholder: Dra
     }
 }
 
-fun ImageView.loadAvatar(any: Any?): io.reactivex.disposables.Disposable {
+fun ImageView.loadUserAvatar(any: Any?): io.reactivex.disposables.Disposable {
     return DisposableWrapper(
         load(any) {
             transformations(CircleCropTransformation())
@@ -249,7 +236,7 @@ fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
-    return loadAvatar(
+    return loadUserAvatar(
         TextDrawable.builder()
             .beginConfig()
             .bold()
@@ -267,7 +254,7 @@ fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.rea
     } else {
         R.drawable.ic_circular_group
     }
-    return loadAvatar(data)
+    return loadUserAvatar(data)
 }
 
 fun ImageView.loadMailAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
@@ -276,7 +263,7 @@ fun ImageView.loadMailAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.dispo
     } else {
         R.drawable.ic_circular_mail
     }
-    return loadAvatar(data)
+    return loadUserAvatar(data)
 }
 
 fun ImageView.loadGuestAvatar(user: User, name: String, big: Boolean): io.reactivex.disposables.Disposable {

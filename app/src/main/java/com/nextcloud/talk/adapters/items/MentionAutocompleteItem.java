@@ -157,22 +157,22 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
 
         if (SOURCE_CALLS.equals(source) || SOURCE_GROUPS.equals(source)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                ImageViewExtensionsKt.loadAvatar(
+                ImageViewExtensionsKt.loadUserAvatar(
                     holder.binding.avatarView,
                     viewThemeUtils.talk.themePlaceholderAvatar(
                         holder.binding.avatarView,
                         R.drawable.ic_avatar_group
                                                               )
-                                                );
+                                                    );
             } else {
-                ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, R.drawable.ic_circular_group);
+                ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, R.drawable.ic_circular_group);
             }
         } else {
             String avatarId = objectId;
             if (SOURCE_GUESTS.equals(source)) {
                 avatarId = displayName;
             }
-            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView, currentUser, avatarId, true);
+            ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, currentUser, avatarId, true, false);
         }
 
         drawStatus(holder);

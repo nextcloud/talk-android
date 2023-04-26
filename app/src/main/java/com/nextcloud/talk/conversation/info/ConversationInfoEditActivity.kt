@@ -39,9 +39,9 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoEditBinding
-import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
+import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
@@ -352,11 +352,11 @@ class ConversationInfoEditActivity :
     private fun loadConversationAvatar() {
         when (conversation!!.type) {
             Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
-                conversation!!.name?.let { binding.avatarImage.loadAvatar(conversationUser, it) }
+                conversation!!.name?.let { binding.avatarImage.loadUserAvatar(conversationUser, it, true, false) }
             }
 
             Conversation.ConversationType.ROOM_GROUP_CALL, Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!)
+                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, true)
             }
 
             Conversation.ConversationType.ROOM_SYSTEM -> {

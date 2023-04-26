@@ -40,9 +40,9 @@ import com.nextcloud.talk.adapters.items.ConversationItem.ConversationItemViewHo
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationWithLastMessageBinding
-import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
+import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
@@ -170,7 +170,7 @@ class ConversationItem(
             when (model.type) {
                 ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> {
                     if (!TextUtils.isEmpty(model.name)) {
-                        holder.binding.dialogAvatar.loadAvatar(user, model.name!!)
+                        holder.binding.dialogAvatar.loadUserAvatar(user, model.name!!, true, false)
                     } else {
                         holder.binding.dialogAvatar.visibility = View.GONE
                     }
@@ -179,7 +179,7 @@ class ConversationItem(
                 ConversationType.ROOM_GROUP_CALL,
                 ConversationType.FORMER_ONE_TO_ONE,
                 ConversationType.ROOM_PUBLIC_CALL ->
-                    holder.binding.dialogAvatar.loadConversationAvatar(user, model)
+                    holder.binding.dialogAvatar.loadConversationAvatar(user, model, true)
 
                 else -> holder.binding.dialogAvatar.visibility = View.GONE
             }
@@ -202,14 +202,14 @@ class ConversationItem(
 
             Conversation.ObjectType.FILE -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    holder.binding.dialogAvatar.loadAvatar(
+                    holder.binding.dialogAvatar.loadUserAvatar(
                         viewThemeUtils.talk.themePlaceholderAvatar(
                             holder.binding.dialogAvatar,
                             R.drawable.ic_avatar_document
                         )
                     )
                 } else {
-                    holder.binding.dialogAvatar.loadAvatar(
+                    holder.binding.dialogAvatar.loadUserAvatar(
                         R.drawable.ic_circular_document
                     )
                 }

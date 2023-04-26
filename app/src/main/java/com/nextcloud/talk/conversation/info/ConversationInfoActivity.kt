@@ -62,9 +62,9 @@ import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
-import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
+import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -800,11 +800,11 @@ class ConversationInfoActivity :
     private fun loadConversationAvatar() {
         when (conversation!!.type) {
             Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
-                conversation!!.name?.let { binding.avatarImage.loadAvatar(conversationUser, it) }
+                conversation!!.name?.let { binding.avatarImage.loadUserAvatar(conversationUser, it, true, false) }
             }
 
             Conversation.ConversationType.ROOM_GROUP_CALL, Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!)
+                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, false)
             }
 
             Conversation.ConversationType.ROOM_SYSTEM -> {

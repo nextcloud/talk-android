@@ -168,10 +168,10 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
 
         } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
             "users".equals(participant.getSource())) {
-            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView,
-                                             user,
-                                             participant.getCalculatedActorId(),
-                                             true);
+            ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView,
+                                                 user,
+                                                 participant.getCalculatedActorId(),
+                                                 true, false);
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();

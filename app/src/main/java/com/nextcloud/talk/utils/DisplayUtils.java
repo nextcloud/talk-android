@@ -468,11 +468,7 @@ public class DisplayUtils {
             }
 
             if (avatarId != null) {
-                if (deleteCache) {
-                    ImageViewExtensionsKt.replaceAvatar(avatarImageView, user, avatarId, true);
-                } else {
-                    ImageViewExtensionsKt.loadAvatar(avatarImageView, user, avatarId, true);
-                }
+                ImageViewExtensionsKt.loadUserAvatar(avatarImageView, user, avatarId, true, deleteCache);
             }
         }
     }

@@ -39,7 +39,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding
-import com.nextcloud.talk.extensions.loadAvatar
+import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.participants.Participant
@@ -249,7 +249,7 @@ class CallNotificationActivity : CallBaseActivity() {
     private fun setUpAfterConversationIsKnown() {
         binding!!.conversationNameTextView.text = currentConversation!!.displayName
         if (currentConversation!!.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            binding!!.avatarImageView.loadAvatar(userBeingCalled!!, currentConversation!!.name!!)
+            binding!!.avatarImageView.loadUserAvatar(userBeingCalled!!, currentConversation!!.name!!, true, false)
         } else {
             binding!!.avatarImageView.setImageResource(R.drawable.ic_circular_group)
         }
