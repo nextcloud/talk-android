@@ -24,7 +24,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import com.github.spotbugs.snom.SpotBugsTask
-import com.nextcloud.talk.gradle.DownloadWebRtcTask
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -154,13 +153,6 @@ ext {
     espressoVersion = "3.5.1"
 }
 
-def webRtcVersion = "110.5481.0"
-tasks.register('downloadWebRtc', DownloadWebRtcTask){
-    version = webRtcVersion
-}
-
-preBuild.dependsOn('downloadWebRtc')
-
 configurations.all {
     exclude group: 'com.google.firebase', module: 'firebase-core'
     exclude group: 'com.google.firebase', module: 'firebase-analytics'
@@ -242,7 +234,6 @@ dependencies {
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-    implementation fileTree(downloadWebRtc.libFile.path)
     implementation 'com.yarolegovich:mp:1.1.6'
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
@@ -311,6 +302,8 @@ dependencies {
     // implementation 'androidx.activity:activity-ktx:1.4.0'
 
     implementation 'com.github.nextcloud.android-common:ui:0.8.0'
+
+    implementation 'com.github.nextcloud-deps:android-talk-webrtc:110.5481.0'
 }
 
 task installGitHooks(type: Copy, group: "development") {
