@@ -211,9 +211,11 @@ class ConversationInfoActivity :
     }
 
     fun showOptionsMenu() {
-        optionsMenu.clear()
-        if (CapabilitiesUtilNew.isConversationAvatarEndpointAvailable(conversationUser)) {
-            menuInflater.inflate(R.menu.menu_conversation_info, optionsMenu)
+        if (::optionsMenu.isInitialized) {
+            optionsMenu.clear()
+            if (CapabilitiesUtilNew.isConversationAvatarEndpointAvailable(conversationUser)) {
+                menuInflater.inflate(R.menu.menu_conversation_info, optionsMenu)
+            }
         }
     }
 
