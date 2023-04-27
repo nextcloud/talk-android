@@ -103,7 +103,7 @@ private fun ImageView.loadAvatarInternal(
 ): io.reactivex.disposables
 .Disposable {
     val cachePolicy = if (replace) {
-        CachePolicy.DISABLED
+        CachePolicy.WRITE_ONLY
     } else {
         CachePolicy.ENABLED
     }
