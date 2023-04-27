@@ -172,7 +172,7 @@ class ConversationItem(
             when (model.type) {
                 ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> {
                     if (!TextUtils.isEmpty(model.name)) {
-                        holder.binding.dialogAvatar.loadUserAvatar(user, model.name!!, true, false)
+                        holder.binding.dialogAvatar.loadUserAvatar(user, model.name!!, true, isInitialLoad)
                     } else {
                         holder.binding.dialogAvatar.visibility = View.GONE
                     }
