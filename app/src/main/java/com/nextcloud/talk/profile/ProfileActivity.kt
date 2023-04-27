@@ -40,6 +40,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -203,8 +204,10 @@ class ProfileActivity : BaseActivity() {
         menu.findItem(R.id.edit).isVisible = editableFields.size > 0
         if (edit) {
             menu.findItem(R.id.edit).setTitle(R.string.save)
+            menu.findItem(R.id.edit).icon = ContextCompat.getDrawable(this, R.drawable.ic_check)
         } else {
             menu.findItem(R.id.edit).setTitle(R.string.edit)
+            menu.findItem(R.id.edit).icon = ContextCompat.getDrawable(this, R.drawable.ic_edit)
         }
         return true
     }
@@ -217,6 +220,7 @@ class ProfileActivity : BaseActivity() {
             edit = !edit
             if (edit) {
                 item.setTitle(R.string.save)
+                item.icon = ContextCompat.getDrawable(this, R.drawable.ic_check)
                 binding.emptyList.root.visibility = View.GONE
                 binding.userinfoList.visibility = View.VISIBLE
                 if (CapabilitiesUtilNew.isAvatarEndpointAvailable(currentUser!!)) {
@@ -250,6 +254,8 @@ class ProfileActivity : BaseActivity() {
                     })
             } else {
                 item.setTitle(R.string.edit)
+                item.icon = ContextCompat.getDrawable(this, R.drawable.ic_edit)
+
                 binding.avatarButtons.visibility = View.INVISIBLE
                 if (adapter!!.filteredDisplayList.isEmpty()) {
                     binding.emptyList.root.visibility = View.VISIBLE
