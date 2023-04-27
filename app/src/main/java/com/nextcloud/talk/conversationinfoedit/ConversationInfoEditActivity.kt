@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.conversation.info
+package com.nextcloud.talk.conversationinfoedit
 
 import android.app.Activity
 import android.content.Intent
@@ -209,6 +209,7 @@ class ConversationInfoEditActivity :
                 }
 
                 override fun onComplete() {
+                    // unused atm
                 }
             })
     }
@@ -248,6 +249,7 @@ class ConversationInfoEditActivity :
                 }
 
                 override fun onComplete() {
+                    // unused atm
                 }
             })
     }
@@ -314,6 +316,7 @@ class ConversationInfoEditActivity :
                 }
 
                 override fun onComplete() {
+                    // unused atm
                 }
             })
     }
@@ -344,7 +347,7 @@ class ConversationInfoEditActivity :
                 }
 
                 override fun onComplete() {
-                    // setEditMode(false)
+                    // unused atm
                 }
             })
     }

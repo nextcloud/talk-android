@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Tim Krüger
+ * @author Marcel Hibbe
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2023 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2022 Nextcloud GmbH
  *
  * This program is free software: you can redistribute it and/or modify

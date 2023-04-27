@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.conversation.info
+package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -59,6 +59,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
+import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus

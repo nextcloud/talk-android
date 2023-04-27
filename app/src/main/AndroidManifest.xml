@@ -211,11 +211,11 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".conversation.info.ConversationInfoActivity"
+            android:name=".conversationinfo.ConversationInfoActivity"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".conversation.info.ConversationInfoEditActivity"
+            android:name=".conversationinfoedit.ConversationInfoEditActivity"
             android:theme="@style/AppTheme" />
 
         <activity

@@ -1,4 +1,4 @@
-package com.nextcloud.talk.conversation.info
+package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
 import android.content.Intent
