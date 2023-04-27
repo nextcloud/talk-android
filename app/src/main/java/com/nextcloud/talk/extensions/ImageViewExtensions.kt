@@ -134,7 +134,6 @@ private fun ImageView.loadAvatarInternal(
                 )
             }
             transformations(CircleCropTransformation())
-            placeholder(placeholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             error(placeholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             fallback(placeholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             listener(onError = { _, result ->
