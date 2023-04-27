@@ -160,6 +160,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
@@ -1004,6 +1005,10 @@ class ChatActivity :
                     conversationUser!!.baseUrl,
                     currentConversation!!.token
                 )
+            }
+
+            if (DisplayUtils.isDarkModeOn(supportActionBar?.themedContext)) {
+                url = "$url/dark"
             }
 
             val target = object : Target {
