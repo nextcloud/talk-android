@@ -66,6 +66,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.call.CallParticipant;
 import com.nextcloud.talk.call.CallParticipantList;
 import com.nextcloud.talk.call.CallParticipantModel;
+import com.nextcloud.talk.call.ReactionAnimator;
 import com.nextcloud.talk.chat.ChatActivity;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.CallActivityBinding;
@@ -251,7 +252,7 @@ public class CallActivity extends CallBaseActivity {
     private List<PeerConnection.IceServer> iceServers;
     private CameraEnumerator cameraEnumerator;
     private String roomToken;
-    private User conversationUser;
+    public User conversationUser;
     private String conversationName;
     private String callSession;
     private MediaStream localStream;
@@ -369,6 +370,8 @@ public class CallActivity extends CallBaseActivity {
     private boolean canPublishVideoStream;
 
     private boolean isModerator;
+
+    private ReactionAnimator reactionAnimator;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -506,6 +509,8 @@ public class CallActivity extends CallBaseActivity {
             initiateCall();
         }
         updateSelfVideoViewPosition();
+
+        reactionAnimator = new ReactionAnimator(context, binding.reactionAnimationWrapper, viewThemeUtils);
     }
 
     @Override
@@ -2723,6 +2728,10 @@ public class CallActivity extends CallBaseActivity {
                 mediaPlayer = null;
             }
         }
+    }
+
+    public void addCallReaction(String emoji, String displayName) {
+        reactionAnimator.addReaction(emoji, displayName);
     }
 
     /**
