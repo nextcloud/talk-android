@@ -54,14 +54,14 @@ private const val TAG = "ImageViewExtensions"
 
 fun ImageView.loadConversationAvatar(
     user: User,
-    conversation: Conversation,
-    replace: Boolean
+    conversation: Conversation
 ): io.reactivex.disposables
 .Disposable {
-    val imageRequestUri = ApiUtils.getUrlForConversationAvatar(
+    val imageRequestUri = ApiUtils.getUrlForConversationAvatarWithVersion(
         1,
         user.baseUrl,
-        conversation.token
+        conversation.token,
+        conversation.avatarVersion
     )
 
     // these placeholders are only used when the request fails completely. The server also return default avatars
@@ -77,7 +77,7 @@ fun ImageView.loadConversationAvatar(
             else -> ContextCompat.getDrawable(context, R.drawable.account_circle_96dp)
         }
 
-    return loadAvatarInternal(user, imageRequestUri, replace, placeholder)
+    return loadAvatarInternal(user, imageRequestUri, false, placeholder)
 }
 
 fun ImageView.loadUserAvatar(
@@ -100,17 +100,17 @@ fun ImageView.loadUserAvatar(
 private fun ImageView.loadAvatarInternal(
     user: User?,
     url: String,
-    replace: Boolean,
+    ignoreCache: Boolean,
     placeholder: Drawable?
 ): io.reactivex.disposables
 .Disposable {
-    val cachePolicy = if (replace) {
+    val cachePolicy = if (ignoreCache) {
         CachePolicy.WRITE_ONLY
     } else {
         CachePolicy.ENABLED
     }
 
-    if (replace && this.result is SuccessResult) {
+    if (ignoreCache && this.result is SuccessResult) {
         val result = this.result as SuccessResult
         val memoryCacheKey = result.memoryCacheKey
         val memoryCache = context.imageLoader.memoryCache

@@ -143,7 +143,10 @@ data class Conversation(
     var statusClearAt: Long? = 0,
 
     @JsonField(name = ["callRecording"])
-    var callRecording: Int = 0
+    var callRecording: Int = 0,
+
+    @JsonField(name = ["avatarVersion"])
+    var avatarVersion: String? = null
 
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

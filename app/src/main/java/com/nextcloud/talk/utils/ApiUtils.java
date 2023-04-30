@@ -379,6 +379,11 @@ public class ApiUtils {
         return getUrlForRoom(version, baseUrl, token) + "/avatar";
     }
 
+    public static String getUrlForConversationAvatarWithVersion(int version, String baseUrl, String token,
+                                                       String avatarVersion) {
+        return getUrlForRoom(version, baseUrl, token) + "/avatar?avatarVersion=" + avatarVersion;
+    }
+
     public static String getCredentials(String username, String token) {
         if (TextUtils.isEmpty(username) && TextUtils.isEmpty(token)) {
             return null;

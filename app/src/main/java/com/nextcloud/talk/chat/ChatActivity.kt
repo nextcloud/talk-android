@@ -1000,10 +1000,11 @@ class ChatActivity :
                     true
                 )
             } else if (isGroupConversation() || isPublicConversation()) {
-                url = ApiUtils.getUrlForConversationAvatar(
+                url = ApiUtils.getUrlForConversationAvatarWithVersion(
                     1,
                     conversationUser!!.baseUrl,
-                    currentConversation!!.token
+                    currentConversation!!.token,
+                    currentConversation!!.avatarVersion
                 )
             }
 

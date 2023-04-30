@@ -359,7 +359,7 @@ class ConversationInfoEditActivity :
             }
 
             Conversation.ConversationType.ROOM_GROUP_CALL, Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, true)
+                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!)
             }
 
             Conversation.ConversationType.ROOM_SYSTEM -> {
