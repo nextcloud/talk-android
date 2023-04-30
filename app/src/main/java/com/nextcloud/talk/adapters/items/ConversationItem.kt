@@ -184,7 +184,7 @@ class ConversationItem(
                 ConversationType.ROOM_GROUP_CALL,
                 ConversationType.FORMER_ONE_TO_ONE,
                 ConversationType.ROOM_PUBLIC_CALL ->
-                    holder.binding.dialogAvatar.loadConversationAvatar(user, model)
+                    holder.binding.dialogAvatar.loadConversationAvatar(user, model, false)
 
                 else -> holder.binding.dialogAvatar.visibility = View.GONE
             }

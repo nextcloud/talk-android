@@ -54,15 +54,22 @@ private const val TAG = "ImageViewExtensions"
 
 fun ImageView.loadConversationAvatar(
     user: User,
-    conversation: Conversation
+    conversation: Conversation,
+    ignoreCache: Boolean
 ): io.reactivex.disposables
 .Disposable {
+    var finalIgnoreCache = ignoreCache
+
     val imageRequestUri = ApiUtils.getUrlForConversationAvatarWithVersion(
         1,
         user.baseUrl,
         conversation.token,
         conversation.avatarVersion
     )
+
+    if (conversation.avatarVersion.isNullOrEmpty()) {
+        finalIgnoreCache = true
+    }
 
     // these placeholders are only used when the request fails completely. The server also return default avatars
     // when no own images are set. (although these default avatars can not be themed for the android app..)
@@ -77,7 +84,7 @@ fun ImageView.loadConversationAvatar(
             else -> ContextCompat.getDrawable(context, R.drawable.account_circle_96dp)
         }
 
-    return loadAvatarInternal(user, imageRequestUri, false, placeholder)
+    return loadAvatarInternal(user, imageRequestUri, finalIgnoreCache, placeholder)
 }
 
 fun ImageView.loadUserAvatar(
