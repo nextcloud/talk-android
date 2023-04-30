@@ -68,8 +68,6 @@ class ConversationItem(
     IFilterable<String?> {
     private var header: GenericTextHeaderItem? = null
 
-    private var isInitialLoad = true
-
     constructor(
         conversation: Conversation,
         user: User,
@@ -172,7 +170,12 @@ class ConversationItem(
             when (model.type) {
                 ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> {
                     if (!TextUtils.isEmpty(model.name)) {
-                        holder.binding.dialogAvatar.loadUserAvatar(user, model.name!!, true, isInitialLoad)
+                        holder.binding.dialogAvatar.loadUserAvatar(
+                            user,
+                            model.name!!,
+                            true,
+                            false
+                        )
                     } else {
                         holder.binding.dialogAvatar.visibility = View.GONE
                     }
@@ -186,7 +189,6 @@ class ConversationItem(
                 else -> holder.binding.dialogAvatar.visibility = View.GONE
             }
         }
-        isInitialLoad = false
     }
 
     private fun shouldLoadAvatar(

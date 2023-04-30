@@ -84,7 +84,7 @@ fun ImageView.loadUserAvatar(
     user: User,
     avatarId: String,
     requestBigSize: Boolean = true,
-    replace: Boolean
+    ignoreCache: Boolean
 ): io.reactivex.disposables
 .Disposable {
     val imageRequestUri = ApiUtils.getUrlForAvatar(
@@ -93,7 +93,7 @@ fun ImageView.loadUserAvatar(
         requestBigSize
     )
 
-    return loadAvatarInternal(user, imageRequestUri, replace, null)
+    return loadAvatarInternal(user, imageRequestUri, ignoreCache, null)
 }
 
 @OptIn(ExperimentalCoilApi::class)
