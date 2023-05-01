@@ -27,7 +27,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,8 +45,6 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
 import java.net.CookieManager
 import javax.inject.Inject
 
@@ -162,37 +159,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
             val user = userItems[position].user
             if (userManager!!.setUserAsActive(user).blockingGet()) {
                 cookieManager!!.cookieStore.removeAll()
-                // activity?.runOnUiThread { (activity as MainActivity?)!!.resetConversationsList() }
-
-                userManager!!.users.subscribe(object : SingleObserver<List<User>> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onSuccess(users: List<User>) {
-                        if (users.isNotEmpty()) {
-                            // runOnUiThread {
-                            //     setDefaultRootController()
-                            // }
-
-                            // val intent = Intent(activity, ConversationsListActivity::class.java)
-                            //
-                            // // val intent = Intent(context, ConversationsListActivity::class.java)
-                            // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                            // activity?.intent?.extras?.let { intent.putExtras(it) }
-                            // startActivity(intent)
-
-                            // startActivity(activity?.intent)
-
-                            activity?.recreate()
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "Error loading existing users", e)
-                    }
-                })
-
+                activity?.recreate()
                 dismiss()
             }
         }
