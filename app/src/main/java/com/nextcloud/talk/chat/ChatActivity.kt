@@ -991,22 +991,12 @@ class ChatActivity :
     }
 
     private fun loadAvatarForStatusBar() {
-        if (isOneToOneConversation() || isGroupConversation() || isPublicConversation()) {
-            var url = ""
-            if (isOneToOneConversation()) {
-                url = ApiUtils.getUrlForAvatar(
-                    conversationUser!!.baseUrl,
-                    currentConversation!!.name,
-                    true
-                )
-            } else if (isGroupConversation() || isPublicConversation()) {
-                url = ApiUtils.getUrlForConversationAvatarWithVersion(
-                    1,
-                    conversationUser!!.baseUrl,
-                    currentConversation!!.token,
-                    currentConversation!!.avatarVersion
-                )
-            }
+        if (isOneToOneConversation()) {
+            var url = ApiUtils.getUrlForAvatar(
+                conversationUser!!.baseUrl,
+                currentConversation!!.name,
+                true
+            )
 
             if (DisplayUtils.isDarkModeOn(supportActionBar?.themedContext)) {
                 url = "$url/dark"
