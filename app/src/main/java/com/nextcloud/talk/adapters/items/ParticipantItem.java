@@ -147,7 +147,7 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             "groups".equals(participant.getSource()) ||
             participant.getCalculatedActorType() == Participant.ActorType.CIRCLES ||
             "circles".equals(participant.getSource())) {
-            ImageViewExtensionsKt.loadGroupCallAvatar(holder.binding.avatarView, viewThemeUtils);
+            ImageViewExtensionsKt.loadDefaultGroupCallAvatar(holder.binding.avatarView, viewThemeUtils);
         } else if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
             ImageViewExtensionsKt.loadMailAvatar(holder.binding.avatarView, viewThemeUtils);
         } else if (participant.getCalculatedActorType() == Participant.ActorType.GUESTS ||
@@ -168,10 +168,10 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
 
         } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
             "users".equals(participant.getSource())) {
-            ImageViewExtensionsKt.loadAvatar(holder.binding.avatarView,
-                                             user,
-                                             participant.getCalculatedActorId(),
-                                             true);
+            ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView,
+                                                 user,
+                                                 participant.getCalculatedActorId(),
+                                                 true, false);
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();

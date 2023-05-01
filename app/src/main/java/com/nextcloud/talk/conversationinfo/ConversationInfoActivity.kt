@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.conversation.info
+package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -33,6 +33,8 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -57,13 +59,13 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
+import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
+import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
-import com.nextcloud.talk.extensions.loadAvatar
-import com.nextcloud.talk.extensions.loadGroupCallAvatar
-import com.nextcloud.talk.extensions.loadPublicCallAvatar
+import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
+import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -91,6 +93,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.parceler.Parcels
 import java.util.Calendar
 import java.util.Collections
 import java.util.Locale
@@ -101,7 +104,7 @@ class ConversationInfoActivity :
     BaseActivity(),
     FlexibleAdapter.OnItemClickListener {
 
-    private lateinit var binding: ControllerConversationInfoBinding
+    private lateinit var binding: ActivityConversationInfoBinding
 
     @Inject
     lateinit var ncApi: NcApi
@@ -125,6 +128,8 @@ class ConversationInfoActivity :
     private var adapter: FlexibleAdapter<ParticipantItem>? = null
     private var userItems: MutableList<ParticipantItem> = ArrayList()
 
+    private lateinit var optionsMenu: Menu
+
     private val workerData: Data?
         get() {
             if (!TextUtils.isEmpty(conversationToken) && conversationUser != null) {
@@ -141,7 +146,7 @@ class ConversationInfoActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        binding = ControllerConversationInfoBinding.inflate(layoutInflater)
+        binding = ActivityConversationInfoBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
@@ -198,6 +203,43 @@ class ConversationInfoActivity :
             resources!!.getString(R.string.nc_conversation_menu_conversation_info)
         }
         viewThemeUtils.material.themeToolbar(binding.conversationInfoToolbar)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        optionsMenu = menu
+        return true
+    }
+
+    fun showOptionsMenu() {
+        if (::optionsMenu.isInitialized) {
+            optionsMenu.clear()
+            if (CapabilitiesUtilNew.isConversationAvatarEndpointAvailable(conversationUser)) {
+                menuInflater.inflate(R.menu.menu_conversation_info, optionsMenu)
+            }
+        }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.edit) {
+            val bundle = Bundle()
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
+            bundle.putParcelable(
+                BundleKeys.KEY_ACTIVE_CONVERSATION,
+                Parcels.wrap(conversation)
+            )
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
+
+            val intent = Intent(this, ConversationInfoEditActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
+        return true
     }
 
     private fun themeSwitchPreferences() {
@@ -628,6 +670,7 @@ class ConversationInfoActivity :
                         } else {
                             binding?.clearConversationHistory?.visibility = GONE
                         }
+                        showOptionsMenu()
                     } else {
                         binding?.addParticipantsAction?.visibility = GONE
                         binding?.clearConversationHistory?.visibility = GONE
@@ -760,16 +803,15 @@ class ConversationInfoActivity :
     private fun loadConversationAvatar() {
         when (conversation!!.type) {
             Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
-                conversation!!.name?.let { binding?.avatarImage?.loadAvatar(conversationUser!!, it) }
+                conversation!!.name?.let { binding.avatarImage.loadUserAvatar(conversationUser, it, true, false) }
             }
-            Conversation.ConversationType.ROOM_GROUP_CALL -> {
-                binding?.avatarImage?.loadGroupCallAvatar(viewThemeUtils)
+
+            Conversation.ConversationType.ROOM_GROUP_CALL, Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
+                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, false, viewThemeUtils)
             }
-            Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                binding?.avatarImage?.loadPublicCallAvatar(viewThemeUtils)
-            }
+
             Conversation.ConversationType.ROOM_SYSTEM -> {
-                binding?.avatarImage?.loadSystemAvatar()
+                binding.avatarImage.loadSystemAvatar()
             }
 
             else -> {

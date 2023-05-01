@@ -128,7 +128,8 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         if (user != null &&
             user.getBaseUrl() != null &&
             (user.getBaseUrl().startsWith("http://") || user.getBaseUrl().startsWith("https://"))) {
-            ImageViewExtensionsKt.loadAvatar(holder.binding.userIcon, user, participant.getCalculatedActorId(), true);
+            ImageViewExtensionsKt.loadUserAvatar(holder.binding.userIcon, user, participant.getCalculatedActorId(),
+                                                 true, false);
         }
     }
 

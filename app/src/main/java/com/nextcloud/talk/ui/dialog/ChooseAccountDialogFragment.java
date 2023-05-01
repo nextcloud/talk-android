@@ -136,7 +136,8 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             if (user.getBaseUrl() != null &&
                 (user.getBaseUrl().startsWith("http://") || user.getBaseUrl().startsWith("https://"))) {
                 binding.currentAccount.userIcon.setVisibility(View.VISIBLE);
-                ImageViewExtensionsKt.loadAvatar(binding.currentAccount.userIcon, user, user.getUserId(), true);
+                ImageViewExtensionsKt.loadUserAvatar(binding.currentAccount.userIcon, user, user.getUserId(), true,
+                                                     false);
             } else {
                 binding.currentAccount.userIcon.setVisibility(View.INVISIBLE);
             }

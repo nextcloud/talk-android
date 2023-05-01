@@ -375,6 +375,15 @@ public class ApiUtils {
         return baseUrl + "/index.php/avatar/guest/" + Uri.encode(name) + "/" + avatarSize;
     }
 
+    public static String getUrlForConversationAvatar(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/avatar";
+    }
+
+    public static String getUrlForConversationAvatarWithVersion(int version, String baseUrl, String token,
+                                                       String avatarVersion) {
+        return getUrlForRoom(version, baseUrl, token) + "/avatar?avatarVersion=" + avatarVersion;
+    }
+
     public static String getCredentials(String username, String token) {
         if (TextUtils.isEmpty(username) && TextUtils.isEmpty(token)) {
             return null;
@@ -501,5 +510,9 @@ public class ApiUtils {
 
     public static String getUrlForRequestAssistance(int version, String baseUrl, String token) {
         return getUrlForApi(version, baseUrl) + "/breakout-rooms/" + token + "/request-assistance";
+    }
+
+    public static String getUrlForConversationDescription(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/description";
     }
 }

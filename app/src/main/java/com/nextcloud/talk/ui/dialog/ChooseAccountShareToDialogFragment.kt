@@ -40,7 +40,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogChooseAccountShareToBinding
-import com.nextcloud.talk.extensions.loadAvatar
+import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
@@ -95,7 +95,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
             if (user.baseUrl != null &&
                 (user.baseUrl!!.startsWith("http://") || user.baseUrl!!.startsWith("https://"))
             ) {
-                binding!!.currentAccount.userIcon.loadAvatar(user, user.userId!!)
+                binding!!.currentAccount.userIcon.loadUserAvatar(user, user.userId!!, true, false)
             } else {
                 binding!!.currentAccount.userIcon.visibility = View.INVISIBLE
             }

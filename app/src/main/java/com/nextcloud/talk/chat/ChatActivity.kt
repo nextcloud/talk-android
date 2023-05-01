@@ -88,6 +88,7 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.imageLoader
 import coil.load
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
@@ -120,7 +121,7 @@ import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
-import com.nextcloud.talk.conversation.info.ConversationInfoActivity
+import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerChatBinding
@@ -159,6 +160,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
@@ -755,6 +757,7 @@ class ChatActivity :
                         downX = event.x
                         showRecordAudioUi(true)
                     }
+
                     MotionEvent.ACTION_CANCEL -> {
                         Log.d(TAG, "ACTION_CANCEL. same as for UP")
                         if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
@@ -765,6 +768,7 @@ class ChatActivity :
                         showRecordAudioUi(false)
                         binding?.messageInputView?.slideToCancelDescription?.x = sliderInitX
                     }
+
                     MotionEvent.ACTION_UP -> {
                         Log.d(TAG, "ACTION_UP. stop recording??")
                         if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
@@ -791,6 +795,7 @@ class ChatActivity :
 
                         binding?.messageInputView?.slideToCancelDescription?.x = sliderInitX
                     }
+
                     MotionEvent.ACTION_MOVE -> {
                         Log.d(TAG, "ACTION_MOVE.")
 
@@ -987,11 +992,16 @@ class ChatActivity :
 
     private fun loadAvatarForStatusBar() {
         if (isOneToOneConversation()) {
-            val url = ApiUtils.getUrlForAvatar(
+            var url = ApiUtils.getUrlForAvatar(
                 conversationUser!!.baseUrl,
                 currentConversation!!.name,
                 true
             )
+
+            if (DisplayUtils.isDarkModeOn(supportActionBar?.themedContext)) {
+                url = "$url/dark"
+            }
+
             val target = object : Target {
 
                 private fun setIcon(drawable: Drawable?) {
@@ -1022,18 +1032,24 @@ class ChatActivity :
                 ImageRequest.Builder(context)
                     .data(url)
                     .addHeader("Authorization", credentials)
-                    .placeholder(R.drawable.ic_user)
                     .transformations(CircleCropTransformation())
                     .crossfade(true)
                     .target(target)
+                    .memoryCachePolicy(CachePolicy.DISABLED)
+                    .diskCachePolicy(CachePolicy.DISABLED)
                     .build()
             )
         }
     }
 
     fun isOneToOneConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == Conversation.ConversationType
-        .ROOM_TYPE_ONE_TO_ONE_CALL
+        currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+
+    private fun isGroupConversation() = currentConversation != null && currentConversation?.type != null &&
+        currentConversation?.type == Conversation.ConversationType.ROOM_GROUP_CALL
+
+    private fun isPublicConversation() = currentConversation != null && currentConversation?.type != null &&
+        currentConversation?.type == Conversation.ConversationType.ROOM_PUBLIC_CALL
 
     private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
         if (conversationUser != null) {
@@ -1585,6 +1601,7 @@ class ChatActivity :
                         }
                 }
             }
+
             REQUEST_CODE_CHOOSE_FILE -> {
                 try {
                     checkNotNull(intent)
@@ -1612,6 +1629,7 @@ class ChatActivity :
                         1 -> context.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
                             String.format(it, title.trim())
                         }
+
                         else -> context.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
                             String.format(it, title.trim())
                         }
@@ -1651,6 +1669,7 @@ class ChatActivity :
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 }
             }
+
             REQUEST_CODE_SELECT_CONTACT -> {
                 val contactUri = intent?.data ?: return
                 val cursor: Cursor? = contentResolver!!.query(contactUri, null, null, null, null)
@@ -1670,6 +1689,7 @@ class ChatActivity :
                 }
                 cursor?.close()
             }
+
             REQUEST_CODE_PICK_CAMERA -> {
                 if (resultCode == RESULT_OK) {
                     try {
@@ -1713,6 +1733,7 @@ class ChatActivity :
                     }
                 }
             }
+
             REQUEST_CODE_MESSAGE_SEARCH -> {
                 val messageId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
                 messageId?.let { id ->
@@ -2340,6 +2361,7 @@ class ChatActivity :
                                 pullChatMessages(true, setReadMarker, xChatLastCommonRead)
                             }
                         }
+
                         HTTP_CODE_PRECONDITION_FAILED -> {
                             Log.d(TAG, "pullChatMessages - HTTP_CODE_PRECONDITION_FAILED.")
 
@@ -2349,6 +2371,7 @@ class ChatActivity :
                                 pastPreconditionFailed = true
                             }
                         }
+
                         HTTP_CODE_OK -> {
                             Log.d(TAG, "pullChatMessages - HTTP_CODE_OK.")
 
@@ -2763,22 +2786,27 @@ class ChatActivity :
                 startACall(false, false)
                 true
             }
+
             R.id.conversation_voice_call -> {
                 startACall(true, false)
                 true
             }
+
             R.id.conversation_info -> {
                 showConversationInfoScreen()
                 true
             }
+
             R.id.shared_items -> {
                 showSharedItems()
                 true
             }
+
             R.id.conversation_search -> {
                 startMessageSearch()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

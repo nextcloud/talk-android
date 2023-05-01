@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Tim Krüger
+ * @author Marcel Hibbe
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2023 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2022 Nextcloud GmbH
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,6 +35,7 @@ import androidx.core.content.res.ResourcesCompat
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import coil.load
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.result
@@ -41,50 +44,87 @@ import coil.transform.RoundedCornersTransformation
 import com.amulyakhare.textdrawable.TextDrawable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 
 private const val ROUNDING_PIXEL = 16f
 private const val TAG = "ImageViewExtensions"
 
-fun ImageView.loadAvatar(
+fun ImageView.loadConversationAvatar(
     user: User,
-    avatar: String,
-    requestBigSize: Boolean = true
+    conversation: Conversation,
+    ignoreCache: Boolean,
+    viewThemeUtils: ViewThemeUtils?
 ): io.reactivex.disposables
 .Disposable {
-    val imageRequestUri = ApiUtils.getUrlForAvatar(
+    val imageRequestUri = ApiUtils.getUrlForConversationAvatarWithVersion(
+        1,
         user.baseUrl,
-        avatar,
-        requestBigSize
+        conversation.token,
+        conversation.avatarVersion
     )
 
-    return loadAvatarInternal(user, imageRequestUri, false)
+    if (conversation.avatarVersion.isNullOrEmpty() && viewThemeUtils != null) {
+        when (conversation.type) {
+            Conversation.ConversationType.ROOM_GROUP_CALL ->
+                return loadDefaultGroupCallAvatar(viewThemeUtils)
+
+            Conversation.ConversationType.ROOM_PUBLIC_CALL ->
+                return loadDefaultPublicCallAvatar(viewThemeUtils)
+
+            else -> {}
+        }
+    }
+
+    // these placeholders are only used when the request fails completely. The server also return default avatars
+    // when no own images are set. (although these default avatars can not be themed for the android app..)
+    val errorPlaceholder =
+        when (conversation.type) {
+            Conversation.ConversationType.ROOM_GROUP_CALL ->
+                ContextCompat.getDrawable(context, R.drawable.ic_circular_group)
+
+            Conversation.ConversationType.ROOM_PUBLIC_CALL ->
+                ContextCompat.getDrawable(context, R.drawable.ic_circular_link)
+
+            else -> ContextCompat.getDrawable(context, R.drawable.account_circle_96dp)
+        }
+
+    return loadAvatarInternal(user, imageRequestUri, ignoreCache, errorPlaceholder)
 }
 
-fun ImageView.replaceAvatar(
+fun ImageView.loadUserAvatar(
     user: User,
-    avatar: String,
-    requestBigSize: Boolean = true
+    avatarId: String,
+    requestBigSize: Boolean = true,
+    ignoreCache: Boolean
 ): io.reactivex.disposables
 .Disposable {
     val imageRequestUri = ApiUtils.getUrlForAvatar(
         user.baseUrl,
-        avatar,
+        avatarId,
         requestBigSize
     )
 
-    return loadAvatarInternal(user, imageRequestUri, true)
+    return loadAvatarInternal(user, imageRequestUri, ignoreCache, null)
 }
 
 @OptIn(ExperimentalCoilApi::class)
 private fun ImageView.loadAvatarInternal(
     user: User?,
     url: String,
-    replace: Boolean
+    ignoreCache: Boolean,
+    errorPlaceholder: Drawable?
 ): io.reactivex.disposables
 .Disposable {
-    if (replace && this.result is SuccessResult) {
+    val cachePolicy = if (ignoreCache) {
+        CachePolicy.WRITE_ONLY
+    } else {
+        CachePolicy.ENABLED
+    }
+
+    if (ignoreCache && this.result is SuccessResult) {
         val result = this.result as SuccessResult
         val memoryCacheKey = result.memoryCacheKey
         val memoryCache = context.imageLoader.memoryCache
@@ -95,8 +135,14 @@ private fun ImageView.loadAvatarInternal(
         diskCacheKey?.let { diskCache?.remove(it) }
     }
 
+    val finalUrl = if (DisplayUtils.isDarkModeOn(this.context)) {
+        "$url/dark"
+    } else {
+        url
+    }
+
     return DisposableWrapper(
-        load(url) {
+        load(finalUrl) {
             user?.let {
                 addHeader(
                     "Authorization",
@@ -104,17 +150,20 @@ private fun ImageView.loadAvatarInternal(
                 )
             }
             transformations(CircleCropTransformation())
-            placeholder(R.drawable.account_circle_96dp)
+            error(errorPlaceholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
+            fallback(errorPlaceholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             listener(onError = { _, result ->
                 Log.w(TAG, "Can't load avatar with URL: $url", result.throwable)
             })
+            memoryCachePolicy(cachePolicy)
+            diskCachePolicy(cachePolicy)
         }
     )
 }
 
 @Deprecated("Use function loadAvatar", level = DeprecationLevel.WARNING)
 fun ImageView.loadAvatarWithUrl(user: User? = null, url: String): io.reactivex.disposables.Disposable {
-    return loadAvatarInternal(user, url, false)
+    return loadAvatarInternal(user, url, false, null)
 }
 
 fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.Disposable {
@@ -174,13 +223,13 @@ fun ImageView.loadImage(url: String, user: User, placeholder: Drawable? = null):
 fun ImageView.loadAvatarOrImagePreview(url: String, user: User, placeholder: Drawable? = null): io.reactivex
 .disposables.Disposable {
     return if (url.contains("/avatar/")) {
-        loadAvatarInternal(user, url, false)
+        loadAvatarInternal(user, url, false, null)
     } else {
         loadImage(url, user, placeholder)
     }
 }
 
-fun ImageView.loadAvatar(any: Any?): io.reactivex.disposables.Disposable {
+fun ImageView.loadUserAvatar(any: Any?): io.reactivex.disposables.Disposable {
     return DisposableWrapper(
         load(any) {
             transformations(CircleCropTransformation())
@@ -211,7 +260,7 @@ fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
-    return loadAvatar(
+    return loadUserAvatar(
         TextDrawable.builder()
             .beginConfig()
             .bold()
@@ -223,22 +272,22 @@ fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
     )
 }
 
-fun ImageView.loadGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
+fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
     val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group) as Any
     } else {
         R.drawable.ic_circular_group
     }
-    return loadAvatar(data)
+    return loadUserAvatar(data)
 }
 
-fun ImageView.loadPublicCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
+fun ImageView.loadDefaultPublicCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
     val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_link) as Any
     } else {
         R.drawable.ic_circular_link
     }
-    return loadAvatar(data)
+    return loadUserAvatar(data)
 }
 
 fun ImageView.loadMailAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
@@ -247,7 +296,7 @@ fun ImageView.loadMailAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.dispo
     } else {
         R.drawable.ic_circular_mail
     }
-    return loadAvatar(data)
+    return loadUserAvatar(data)
 }
 
 fun ImageView.loadGuestAvatar(user: User, name: String, big: Boolean): io.reactivex.disposables.Disposable {

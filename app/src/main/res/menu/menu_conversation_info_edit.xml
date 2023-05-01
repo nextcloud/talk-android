@@ -3,7 +3,9 @@
   Nextcloud Android Talk application
 
   @author Tobias Kaminsky
+  @author Marcel Hibbe
   Copyright (C) 2021 Tobias Kaminsky
+  Copyright (C) 2023 Marcel Hibbe (dev@mhibbe.de)
   Copyright (C) 2021 Nextcloud GmbH
  
   This program is free software: you can redistribute it and/or modify
@@ -21,11 +23,10 @@
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item
-        android:id="@+id/edit"
-        android:icon="@drawable/ic_edit"
-        android:title="@string/edit"
-        app:showAsAction="ifRoom"
-        app:iconTint="@color/high_emphasis_text"/>
+        android:id="@+id/save"
+        android:icon="@drawable/ic_check"
+        android:title="@string/save"
+        app:iconTint="@color/high_emphasis_text"
+        app:showAsAction="ifRoom" />
 </menu>

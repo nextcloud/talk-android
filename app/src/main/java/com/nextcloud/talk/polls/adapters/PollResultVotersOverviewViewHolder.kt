@@ -31,8 +31,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.PollResultVotersOverviewItemBinding
-import com.nextcloud.talk.extensions.loadAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
+import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.polls.model.PollDetails
 
 class PollResultVotersOverviewViewHolder(
@@ -88,7 +88,7 @@ class PollResultVotersOverviewViewHolder(
             }
             avatar.loadGuestAvatar(user, displayName!!, false)
         } else if (pollDetail.actorType == "users") {
-            avatar.loadAvatar(user, pollDetail.actorId!!, false)
+            avatar.loadUserAvatar(user, pollDetail.actorId!!, false, false)
         }
     }
 
