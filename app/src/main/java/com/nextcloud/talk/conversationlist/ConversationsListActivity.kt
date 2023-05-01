@@ -374,10 +374,10 @@ class ConversationsListActivity :
 
         if (showShareToScreen) {
             hideSearchBar()
-            actionBar?.setTitle(R.string.send_to_three_dots)
+            supportActionBar?.setTitle(R.string.send_to_three_dots)
         } else if (forwardMessage) {
             hideSearchBar()
-            actionBar?.setTitle(R.string.nc_forward_to_three_dots)
+            supportActionBar?.setTitle(R.string.nc_forward_to_three_dots)
         } else {
             searchItem!!.isVisible = conversationItems.size > 0
             if (adapter!!.hasFilter()) {
@@ -1010,8 +1010,7 @@ class ConversationsListActivity :
                 )
             }
         } else {
-            // TODO
-            // requestStoragePermission(this@ConversationsListController)
+            UploadAndShareFilesWorker.requestStoragePermission(this)
         }
     }
 
