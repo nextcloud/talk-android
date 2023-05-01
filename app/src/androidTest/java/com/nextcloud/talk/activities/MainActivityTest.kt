@@ -35,7 +35,5 @@ class MainActivityTest {
         ).blockingGet()
 
         assertNotNull("Error creating user", user)
-
-        sut.runOnUiThread { sut.resetConversationsList() }
     }
 }

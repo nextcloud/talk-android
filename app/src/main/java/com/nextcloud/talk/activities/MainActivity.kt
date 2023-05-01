@@ -110,7 +110,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 override fun onSuccess(users: List<User>) {
                     if (users.isNotEmpty()) {
                         runOnUiThread {
-                            setDefaultRootController()
+                            openConversationList()
                         }
                     } else {
                         runOnUiThread {
@@ -166,31 +166,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         super.onStop()
     }
 
-    private fun setDefaultRootController() {
+    private fun openConversationList() {
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtras(Bundle())
         startActivity(intent)
-    }
-
-    fun resetConversationsList() {
-        userManager.users.subscribe(object : SingleObserver<List<User>> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
-
-            override fun onSuccess(users: List<User>) {
-                if (users.isNotEmpty()) {
-                    runOnUiThread {
-                        setDefaultRootController()
-                    }
-                }
-            }
-
-            override fun onError(e: Throwable) {
-                Log.e(TAG, "Error loading existing users", e)
-            }
-        })
     }
 
     fun addAccount() {
@@ -348,7 +328,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
                 if (!router!!.hasRootController()) {
-                    setDefaultRootController()
+                    openConversationList()
                 }
                 val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
                 intent.extras?.let { callNotificationIntent.putExtras(it) }
