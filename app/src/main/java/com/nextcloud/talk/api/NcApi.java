@@ -443,9 +443,19 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> deleteAvatar(@Header("Authorization") String authorization, @Url String url);
 
+    @DELETE
+    Observable<RoomOverall> deleteConversationAvatar(@Header("Authorization") String authorization, @Url String url);
+
+
     @Multipart
     @POST
     Observable<GenericOverall> uploadAvatar(@Header("Authorization") String authorization,
+                                            @Url String url,
+                                            @Part MultipartBody.Part attachment);
+
+    @Multipart
+    @POST
+    Observable<RoomOverall> uploadConversationAvatar(@Header("Authorization") String authorization,
                                             @Url String url,
                                             @Part MultipartBody.Part attachment);
 

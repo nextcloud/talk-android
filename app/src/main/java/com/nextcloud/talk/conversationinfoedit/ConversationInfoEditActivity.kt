@@ -43,6 +43,7 @@ import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
@@ -95,7 +96,7 @@ class ConversationInfoEditActivity :
         conversationUser = extras?.getParcelable(BundleKeys.KEY_USER_ENTITY)!!
         conversationToken = extras.getString(BundleKeys.KEY_ROOM_TOKEN)!!
 
-        if (intent.hasExtra(BundleKeys.KEY_ACTIVE_CONVERSATION)) {
+        if (conversation == null && intent.hasExtra(BundleKeys.KEY_ACTIVE_CONVERSATION)) {
             conversation = Parcels.unwrap<Conversation>(extras.getParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION))
         }
 
@@ -290,19 +291,20 @@ class ConversationInfoEditActivity :
         )
 
         // upload file
-        ncApi.uploadAvatar(
+        ncApi.uploadConversationAvatar(
             credentials,
             ApiUtils.getUrlForConversationAvatar(1, conversationUser.baseUrl, conversation!!.token),
             filePart
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<GenericOverall> {
+            .subscribe(object : Observer<RoomOverall> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
 
-                override fun onNext(genericOverall: GenericOverall) {
+                override fun onNext(roomOverall: RoomOverall) {
+                    conversation = roomOverall.ocs!!.data
                     loadConversationAvatar()
                 }
 
@@ -322,18 +324,19 @@ class ConversationInfoEditActivity :
     }
 
     private fun deleteAvatar() {
-        ncApi.deleteAvatar(
+        ncApi.deleteConversationAvatar(
             credentials,
             ApiUtils.getUrlForConversationAvatar(1, conversationUser.baseUrl, conversationToken)
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<GenericOverall> {
+            .subscribe(object : Observer<RoomOverall> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
 
-                override fun onNext(genericOverall: GenericOverall) {
+                override fun onNext(roomOverall: RoomOverall) {
+                    conversation = roomOverall.ocs!!.data
                     loadConversationAvatar()
                 }
 
@@ -359,7 +362,7 @@ class ConversationInfoEditActivity :
             }
 
             Conversation.ConversationType.ROOM_GROUP_CALL, Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, true)
+                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, false, viewThemeUtils)
             }
 
             Conversation.ConversationType.ROOM_SYSTEM -> {

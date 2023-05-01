@@ -55,11 +55,10 @@ private const val TAG = "ImageViewExtensions"
 fun ImageView.loadConversationAvatar(
     user: User,
     conversation: Conversation,
-    ignoreCache: Boolean
+    ignoreCache: Boolean,
+    viewThemeUtils: ViewThemeUtils?
 ): io.reactivex.disposables
 .Disposable {
-    var finalIgnoreCache = ignoreCache
-
     val imageRequestUri = ApiUtils.getUrlForConversationAvatarWithVersion(
         1,
         user.baseUrl,
@@ -67,13 +66,21 @@ fun ImageView.loadConversationAvatar(
         conversation.avatarVersion
     )
 
-    if (conversation.avatarVersion.isNullOrEmpty()) {
-        finalIgnoreCache = true
+    if (conversation.avatarVersion.isNullOrEmpty() && viewThemeUtils != null) {
+        when (conversation.type) {
+            Conversation.ConversationType.ROOM_GROUP_CALL ->
+                return loadDefaultGroupCallAvatar(viewThemeUtils)
+
+            Conversation.ConversationType.ROOM_PUBLIC_CALL ->
+                return loadDefaultPublicCallAvatar(viewThemeUtils)
+
+            else -> {}
+        }
     }
 
     // these placeholders are only used when the request fails completely. The server also return default avatars
     // when no own images are set. (although these default avatars can not be themed for the android app..)
-    val placeholder =
+    val errorPlaceholder =
         when (conversation.type) {
             Conversation.ConversationType.ROOM_GROUP_CALL ->
                 ContextCompat.getDrawable(context, R.drawable.ic_circular_group)
@@ -84,7 +91,7 @@ fun ImageView.loadConversationAvatar(
             else -> ContextCompat.getDrawable(context, R.drawable.account_circle_96dp)
         }
 
-    return loadAvatarInternal(user, imageRequestUri, finalIgnoreCache, placeholder)
+    return loadAvatarInternal(user, imageRequestUri, ignoreCache, errorPlaceholder)
 }
 
 fun ImageView.loadUserAvatar(
@@ -108,7 +115,7 @@ private fun ImageView.loadAvatarInternal(
     user: User?,
     url: String,
     ignoreCache: Boolean,
-    placeholder: Drawable?
+    errorPlaceholder: Drawable?
 ): io.reactivex.disposables
 .Disposable {
     val cachePolicy = if (ignoreCache) {
@@ -143,8 +150,8 @@ private fun ImageView.loadAvatarInternal(
                 )
             }
             transformations(CircleCropTransformation())
-            error(placeholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
-            fallback(placeholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
+            error(errorPlaceholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
+            fallback(errorPlaceholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             listener(onError = { _, result ->
                 Log.w(TAG, "Can't load avatar with URL: $url", result.throwable)
             })
@@ -270,6 +277,15 @@ fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.rea
         viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group) as Any
     } else {
         R.drawable.ic_circular_group
+    }
+    return loadUserAvatar(data)
+}
+
+fun ImageView.loadDefaultPublicCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
+    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_link) as Any
+    } else {
+        R.drawable.ic_circular_link
     }
     return loadUserAvatar(data)
 }
