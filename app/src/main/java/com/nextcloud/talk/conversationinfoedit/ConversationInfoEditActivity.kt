@@ -28,6 +28,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
@@ -104,6 +105,8 @@ class ConversationInfoEditActivity :
         viewThemeUtils.material.colorTextInputLayout(binding.conversationDescriptionInputLayout)
 
         credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
+
+        pickImage = PickImage(this, conversationUser)
     }
 
     override fun onResume() {
@@ -120,16 +123,19 @@ class ConversationInfoEditActivity :
         if (!CapabilitiesUtilNew.isConversationDescriptionEndpointAvailable(conversationUser)) {
             binding.conversationDescription.isEnabled = false
         }
-
-        setupAvatarOptions()
     }
 
     private fun setupAvatarOptions() {
-        pickImage = PickImage(this, conversationUser)
         binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
         binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
         binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
-        binding.avatarDelete.setOnClickListener { deleteAvatar() }
+        if (conversation?.hasCustomAvatar == true) {
+            binding.avatarDelete.visibility = View.VISIBLE
+            binding.avatarDelete.setOnClickListener { deleteAvatar() }
+        } else {
+            binding.avatarDelete.visibility = View.GONE
+        }
+
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
 
         binding.let {
@@ -356,13 +362,15 @@ class ConversationInfoEditActivity :
     }
 
     private fun loadConversationAvatar() {
+        setupAvatarOptions()
+
         when (conversation!!.type) {
             Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
                 conversation!!.name?.let { binding.avatarImage.loadUserAvatar(conversationUser, it, true, false) }
             }
 
             Conversation.ConversationType.ROOM_GROUP_CALL, Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, false, viewThemeUtils)
+                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, false)
             }
 
             Conversation.ConversationType.ROOM_SYSTEM -> {

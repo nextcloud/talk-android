@@ -146,7 +146,13 @@ data class Conversation(
     var callRecording: Int = 0,
 
     @JsonField(name = ["avatarVersion"])
-    var avatarVersion: String? = null
+    var avatarVersion: String? = null,
+
+    // Be aware that variables with "is" at the beginning will lead to the error:
+    // "@JsonField annotation can only be used on private fields if both getter and setter are present."
+    // Instead, name it with "has" at the beginning: isCustomAvatar -> hasCustomAvatar
+    @JsonField(name = ["isCustomAvatar"])
+    var hasCustomAvatar: Boolean? = null
 
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
