@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
+ * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2021 Andy Scherzinger (infoi@andy-scherzinger.de)
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *
@@ -28,6 +30,9 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.util.Log
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
@@ -40,13 +45,13 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
+import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
@@ -82,6 +87,13 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         Log.d(TAG, "onCreate: Activity: " + System.identityHashCode(this).toString())
 
         super.onCreate(savedInstanceState)
+
+        ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStart(owner: LifecycleOwner) {
+                lockScreenIfConditionsApply()
+            }
+        })
+
         // Set the default theme to replace the launch screen theme.
         setTheme(R.style.AppTheme)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -126,6 +138,16 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
     }
 
+    fun lockScreenIfConditionsApply() {
+        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {
+            if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
+                val lockIntent = Intent(context, LockedActivity::class.java)
+                startActivity(lockIntent)
+            }
+        }
+    }
+
     private fun launchLoginScreen() {
         if (!TextUtils.isEmpty(resources.getString(R.string.weblogin_url))) {
             router!!.pushController(
@@ -145,15 +167,18 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     override fun onStart() {
-        super.onStart()
         Log.d(TAG, "onStart: Activity: " + System.identityHashCode(this).toString())
+        super.onStart()
         logRouterBackStack(router!!)
-        lockScreenIfConditionsApply()
     }
 
     override fun onResume() {
         Log.d(TAG, "onResume: Activity: " + System.identityHashCode(this).toString())
         super.onResume()
+
+        if (appPreferences.isScreenLocked) {
+            SecurityUtils.createKey(appPreferences.screenLockTimeout)
+        }
     }
 
     override fun onPause() {
@@ -295,23 +320,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             })
     }
 
-    fun lockScreenIfConditionsApply() {
-        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {
-            if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
-                if (router != null && router!!.getControllerWithTag(LockedController.TAG) == null) {
-                    router!!.pushController(
-                        RouterTransaction.with(LockedController())
-                            .pushChangeHandler(VerticalChangeHandler())
-                            .popChangeHandler(VerticalChangeHandler())
-                            .tag(LockedController.TAG)
-                    )
-                    logRouterBackStack(router!!)
-                }
-            }
-        }
-    }
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
@@ -346,9 +354,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     override fun onBackPressed() {
-        if (router!!.getControllerWithTag(LockedController.TAG) != null) {
-            return
-        }
         if (!router!!.handleBack()) {
             super.onBackPressed()
         }

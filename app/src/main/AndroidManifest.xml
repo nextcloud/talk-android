@@ -234,6 +234,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".lock.LockedActivity"
+            android:theme="@style/AppTheme" />
+
         <receiver
             android:name=".receivers.PackageReplacedReceiver"
             android:exported="false">

@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Marcel Hibbe
+ * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,7 +39,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.ssl.TrustManager
 import org.greenrobot.eventbus.EventBus
@@ -78,6 +79,11 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
     }
 
+    public override fun onStart() {
+        super.onStart()
+        eventBus.register(this)
+    }
+
     public override fun onResume() {
         super.onResume()
 
@@ -86,10 +92,11 @@ open class BaseActivity : AppCompatActivity() {
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
+    }
 
-        if (appPreferences.isScreenLocked) {
-            SecurityUtils.createKey(appPreferences.screenLockTimeout)
-        }
+    public override fun onStop() {
+        super.onStop()
+        eventBus.unregister(this)
     }
 
     fun setupSystemColors() {
@@ -181,16 +188,6 @@ open class BaseActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: CertificateEvent) {
         showCertificateDialog(event.x509Certificate, event.magicTrustManager, event.sslErrorHandler)
-    }
-
-    public override fun onStart() {
-        super.onStart()
-        eventBus.register(this)
-    }
-
-    public override fun onStop() {
-        super.onStop()
-        eventBus.unregister(this)
     }
 
     companion object {
