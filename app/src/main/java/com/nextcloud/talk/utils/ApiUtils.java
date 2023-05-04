@@ -380,8 +380,19 @@ public class ApiUtils {
     }
 
     public static String getUrlForConversationAvatarWithVersion(int version, String baseUrl, String token,
-                                                       String avatarVersion) {
-        return getUrlForRoom(version, baseUrl, token) + "/avatar?avatarVersion=" + avatarVersion;
+                                                                boolean isDark,
+                                                                String avatarVersion) {
+        String isDarkString = "";
+        if (isDark) {
+            isDarkString = "/dark";
+        }
+
+        String avatarVersionString = "";
+        if (avatarVersion != null) {
+            avatarVersionString = "?avatarVersion=" + avatarVersion;
+        }
+
+        return getUrlForRoom(version, baseUrl, token) + "/avatar" + isDarkString + avatarVersionString;
     }
 
     public static String getCredentials(String username, String token) {

@@ -55,28 +55,16 @@ private const val TAG = "ImageViewExtensions"
 fun ImageView.loadConversationAvatar(
     user: User,
     conversation: Conversation,
-    ignoreCache: Boolean,
-    viewThemeUtils: ViewThemeUtils?
+    ignoreCache: Boolean
 ): io.reactivex.disposables
 .Disposable {
     val imageRequestUri = ApiUtils.getUrlForConversationAvatarWithVersion(
         1,
         user.baseUrl,
         conversation.token,
+        DisplayUtils.isDarkModeOn(this.context),
         conversation.avatarVersion
     )
-
-    if (conversation.avatarVersion.isNullOrEmpty() && viewThemeUtils != null) {
-        when (conversation.type) {
-            Conversation.ConversationType.ROOM_GROUP_CALL ->
-                return loadDefaultGroupCallAvatar(viewThemeUtils)
-
-            Conversation.ConversationType.ROOM_PUBLIC_CALL ->
-                return loadDefaultPublicCallAvatar(viewThemeUtils)
-
-            else -> {}
-        }
-    }
 
     // these placeholders are only used when the request fails completely. The server also return default avatars
     // when no own images are set. (although these default avatars can not be themed for the android app..)
@@ -135,14 +123,8 @@ private fun ImageView.loadAvatarInternal(
         diskCacheKey?.let { diskCache?.remove(it) }
     }
 
-    val finalUrl = if (DisplayUtils.isDarkModeOn(this.context)) {
-        "$url/dark"
-    } else {
-        url
-    }
-
     return DisposableWrapper(
-        load(finalUrl) {
+        load(url) {
             user?.let {
                 addHeader(
                     "Authorization",
@@ -277,15 +259,6 @@ fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.rea
         viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group) as Any
     } else {
         R.drawable.ic_circular_group
-    }
-    return loadUserAvatar(data)
-}
-
-fun ImageView.loadDefaultPublicCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
-    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_link) as Any
-    } else {
-        R.drawable.ic_circular_link
     }
     return loadUserAvatar(data)
 }
