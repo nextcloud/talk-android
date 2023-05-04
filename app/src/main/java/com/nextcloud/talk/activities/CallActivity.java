@@ -296,6 +296,10 @@ public class CallActivity extends CallBaseActivity {
 
     private Handler screenParticipantDisplayItemManagersHandler = new Handler(Looper.getMainLooper());
 
+    private Map<String, CallParticipantEventDisplayer> callParticipantEventDisplayers = new HashMap<>();
+
+    private Handler callParticipantEventDisplayersHandler = new Handler(Looper.getMainLooper());
+
     private CallParticipantList.Observer callParticipantListObserver = new CallParticipantList.Observer() {
         @Override
         public void onCallParticipantsChanged(Collection<Participant> joined, Collection<Participant> updated,
@@ -2248,6 +2252,11 @@ public class CallActivity extends CallBaseActivity {
         screenParticipantDisplayItemManagers.put(sessionId, screenParticipantDisplayItemManager);
         callParticipantModel.addObserver(screenParticipantDisplayItemManager, screenParticipantDisplayItemManagersHandler);
 
+        CallParticipantEventDisplayer callParticipantEventDisplayer =
+            new CallParticipantEventDisplayer(callParticipantModel);
+        callParticipantEventDisplayers.put(sessionId, callParticipantEventDisplayer);
+        callParticipantModel.addObserver(callParticipantEventDisplayer, callParticipantEventDisplayersHandler);
+
         runOnUiThread(() -> {
             addParticipantDisplayItem(callParticipantModel, "video");
         });
@@ -2287,6 +2296,10 @@ public class CallActivity extends CallBaseActivity {
         ScreenParticipantDisplayItemManager screenParticipantDisplayItemManager =
             screenParticipantDisplayItemManagers.remove(sessionId);
         callParticipant.getCallParticipantModel().removeObserver(screenParticipantDisplayItemManager);
+
+        CallParticipantEventDisplayer callParticipantEventDisplayer =
+            callParticipantEventDisplayers.remove(sessionId);
+        callParticipant.getCallParticipantModel().removeObserver(callParticipantEventDisplayer);
 
         callParticipant.destroy();
 
@@ -2793,16 +2806,6 @@ public class CallActivity extends CallBaseActivity {
 
         @Override
         public void onRaiseHand(boolean state, long timestamp) {
-            if (state) {
-                CallParticipant participant = callParticipants.get(sessionId);
-                if (participant != null) {
-                    String nick = participant.getCallParticipantModel().getNick();
-                    runOnUiThread(() -> Toast.makeText(
-                        context,
-                        String.format(context.getResources().getString(R.string.nc_call_raised_hand), nick),
-                        Toast.LENGTH_LONG).show());
-                }
-            }
         }
 
         @Override
@@ -2860,6 +2863,40 @@ public class CallActivity extends CallBaseActivity {
             if (!hasScreenParticipantDisplayItem) {
                 addParticipantDisplayItem(callParticipantModel, "screen");
             }
+        }
+
+        @Override
+        public void onReaction(String reaction) {
+        }
+    }
+
+    private class CallParticipantEventDisplayer implements CallParticipantModel.Observer {
+
+        private final CallParticipantModel callParticipantModel;
+
+        private boolean raisedHand;
+
+        private CallParticipantEventDisplayer(CallParticipantModel callParticipantModel) {
+            this.callParticipantModel = callParticipantModel;
+            this.raisedHand = callParticipantModel.getRaisedHand() != null ?
+                callParticipantModel.getRaisedHand().getState() : false;
+        }
+
+        @Override
+        public void onChange() {
+            if (callParticipantModel.getRaisedHand() == null || !callParticipantModel.getRaisedHand().getState()) {
+                raisedHand = false;
+
+                return;
+            }
+
+            if (raisedHand) {
+                return;
+            }
+            raisedHand = true;
+
+            String nick = callParticipantModel.getNick();
+            Toast.makeText(context, String.format(context.getResources().getString(R.string.nc_call_raised_hand), nick), Toast.LENGTH_LONG).show();
         }
 
         @Override
