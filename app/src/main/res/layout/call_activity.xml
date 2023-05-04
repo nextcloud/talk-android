@@ -175,22 +175,37 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/lower_hand_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/standard_margin"
-            android:layout_marginBottom="@dimen/standard_half_margin"
-            android:contentDescription="@string/lower_hand"
-            android:visibility="gone"
-            app:backgroundTint="@color/call_buttons_background"
-            app:borderWidth="0dp"
-            app:fabCustomSize="40dp"
-            app:shapeAppearance="@style/fab_3_rounded"
-            app:srcCompat="@drawable/ic_baseline_do_not_touch_24"
-            app:tint="@color/white"
-            tools:visibility="visible" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+
+            <RelativeLayout
+                android:id="@+id/reaction_animation_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="50dp"
+                android:layout_marginBottom="50dp">
+            </RelativeLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/lower_hand_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/standard_half_margin"
+                android:contentDescription="@string/lower_hand"
+                android:visibility="gone"
+                app:backgroundTint="@color/call_buttons_background"
+                app:borderWidth="0dp"
+                app:fabCustomSize="40dp"
+                app:shapeAppearance="@style/fab_3_rounded"
+                app:srcCompat="@drawable/ic_baseline_do_not_touch_24"
+                app:tint="@color/white"
+                tools:visibility="visible" />
+
+        </RelativeLayout>
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/callControls"

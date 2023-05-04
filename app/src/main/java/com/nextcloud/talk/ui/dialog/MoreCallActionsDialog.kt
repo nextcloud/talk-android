@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -34,7 +35,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogMoreCallActionsBinding
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
+import com.vanniktech.emoji.EmojiTextView
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -56,6 +59,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         viewThemeUtils.platform.themeDialogDark(binding.root)
 
         initItemsVisibility()
+        initEmojiBar()
         initClickListeners()
         initObservers()
     }
@@ -68,6 +72,12 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
     }
 
     private fun initItemsVisibility() {
+        if (CapabilitiesUtilNew.isCallReactionsSupported(callActivity.conversationUser)) {
+            binding.callEmojiBar.visibility = View.VISIBLE
+        } else {
+            binding.callEmojiBar.visibility = View.GONE
+        }
+
         if (callActivity.isAllowedToStartOrStopRecording) {
             binding.recordCall.visibility = View.VISIBLE
         } else {
@@ -91,6 +101,37 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         }
     }
 
+    private fun initEmojiBar() {
+        if (CapabilitiesUtilNew.isCallReactionsSupported(callActivity.conversationUser)) {
+            binding.advancedCallOptionsTitle.visibility = View.GONE
+
+            val capabilities = callActivity.conversationUser.capabilities
+            val availableReactions: ArrayList<*> =
+                capabilities?.spreedCapability?.config!!["call"]!!["supported-reactions"] as ArrayList<*>
+
+            val param = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                1.0f
+            )
+
+            availableReactions.forEach {
+                val emojiView = EmojiTextView(context)
+                emojiView.text = it.toString()
+                emojiView.textSize = 20f
+                emojiView.layoutParams = param
+
+                emojiView.setOnClickListener { view ->
+                    callActivity.sendReaction((view as EmojiTextView).text.toString())
+                    dismiss()
+                }
+                binding.callEmojiBar.addView(emojiView)
+            }
+        } else {
+            binding.callEmojiBar.visibility = View.GONE
+        }
+    }
+
     private fun initObservers() {
         callActivity.callRecordingViewModel.viewState.observe(this) { state ->
             when (state) {
@@ -102,12 +143,14 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                     )
                     dismiss()
                 }
+
                 is CallRecordingViewModel.RecordingStartingState -> {
                     binding.recordCallText.text = context.getText(R.string.record_cancel_start)
                     binding.recordCallIcon.setImageDrawable(
                         ContextCompat.getDrawable(context, R.drawable.record_stop)
                     )
                 }
+
                 is CallRecordingViewModel.RecordingStartedState -> {
                     binding.recordCallText.text = context.getText(R.string.record_stop_description)
                     binding.recordCallIcon.setImageDrawable(
@@ -115,12 +158,15 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                     )
                     dismiss()
                 }
+
                 is CallRecordingViewModel.RecordingStoppingState -> {
                     binding.recordCallText.text = context.getText(R.string.record_stopping)
                 }
+
                 is CallRecordingViewModel.RecordingConfirmStopState -> {
                     binding.recordCallText.text = context.getText(R.string.record_stop_description)
                 }
+
                 else -> {
                     Log.e(TAG, "unknown viewState for callRecordingViewModel")
                 }
@@ -136,6 +182,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                     )
                     dismiss()
                 }
+
                 is RaiseHandViewModel.LoweredHandState -> {
                     binding.raiseHandText.text = context.getText(R.string.raise_hand)
                     binding.raiseHandIcon.setImageDrawable(
@@ -143,6 +190,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                     )
                     dismiss()
                 }
+
                 else -> {}
             }
         }

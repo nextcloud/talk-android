@@ -27,7 +27,21 @@
     android:orientation="vertical"
     android:paddingBottom="@dimen/standard_half_padding">
 
+    <LinearLayout
+        android:id="@+id/call_emoji_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_half_margin"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:weightSum="10">
+    </LinearLayout>
+
     <TextView
+        android:id="@+id/advanced_call_options_title"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/bottom_sheet_item_height"
         android:gravity="start|center_vertical"

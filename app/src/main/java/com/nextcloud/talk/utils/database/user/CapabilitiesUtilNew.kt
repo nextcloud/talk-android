@@ -174,6 +174,16 @@ object CapabilitiesUtilNew {
         return false
     }
 
+    fun isCallReactionsSupported(user: User?): Boolean {
+        if (user?.capabilities != null) {
+            val capabilities = user.capabilities
+            return capabilities?.spreedCapability?.config?.containsKey("call") == true &&
+                capabilities.spreedCapability!!.config!!["call"] != null &&
+                capabilities.spreedCapability!!.config!!["call"]!!.containsKey("supported-reactions")
+        }
+        return false
+    }
+
     @JvmStatic
     fun isUnifiedSearchAvailable(user: User): Boolean {
         return hasSpreedFeatureCapability(user, "unified-search")
