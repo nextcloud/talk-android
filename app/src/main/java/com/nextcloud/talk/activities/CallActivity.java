@@ -513,6 +513,16 @@ public class CallActivity extends CallBaseActivity {
         reactionAnimator = new ReactionAnimator(context, binding.reactionAnimationWrapper, viewThemeUtils);
     }
 
+    public void sendReaction(String emoji) {
+        addReactionForAnimation(emoji, conversationUser.getDisplayName());
+
+        if (isConnectionEstablished() && peerConnectionWrapperList != null) {
+            for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+                peerConnectionWrapper.sendReaction(emoji);
+            }
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -2730,7 +2740,7 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    public void addCallReaction(String emoji, String displayName) {
+    public void addReactionForAnimation(String emoji, String displayName) {
         reactionAnimator.addReaction(emoji, displayName);
     }
 
@@ -2910,7 +2920,7 @@ public class CallActivity extends CallBaseActivity {
 
         @Override
         public void onReaction(String reaction) {
-            addCallReaction(reaction, callParticipantModel.getNick());
+            addReactionForAnimation(reaction, callParticipantModel.getNick());
         }
     }
 

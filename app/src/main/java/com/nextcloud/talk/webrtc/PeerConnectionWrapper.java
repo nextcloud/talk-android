@@ -204,6 +204,20 @@ public class PeerConnectionWrapper {
         signalingMessageSender.send(ncSignalingMessage);
     }
 
+    public void sendReaction(String emoji) {
+        NCMessagePayload ncMessagePayload = new NCMessagePayload();
+        ncMessagePayload.setReaction(emoji);
+        ncMessagePayload.setTimestamp(System.currentTimeMillis());
+
+        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+        ncSignalingMessage.setTo(sessionId);
+        ncSignalingMessage.setType("reaction");
+        ncSignalingMessage.setPayload(ncMessagePayload);
+        ncSignalingMessage.setRoomType(videoStreamType);
+
+        signalingMessageSender.send(ncSignalingMessage);
+    }
+
     /**
      * Adds a listener for data channel messages.
      *
