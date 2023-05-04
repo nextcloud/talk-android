@@ -83,4 +83,16 @@ class CallParticipantModelNotifier {
             }
         }
     }
+
+    public synchronized void notifyReaction(String reaction) {
+        for (CallParticipantModelObserverOn observerOn : new ArrayList<>(callParticipantModelObserversOn)) {
+            if (observerOn.handler == null || observerOn.handler.getLooper() == Looper.myLooper()) {
+                observerOn.observer.onReaction(reaction);
+            } else {
+                observerOn.handler.post(() -> {
+                    observerOn.observer.onReaction(reaction);
+                });
+            }
+        }
+    }
 }

@@ -55,4 +55,11 @@ class CallParticipantModelTest {
         callParticipantModel!!.setRaisedHand(true, 4815162342L)
         Mockito.verify(mockedCallParticipantModelObserver, Mockito.only())?.onChange()
     }
+
+    @Test
+    fun testEmitReaction() {
+        callParticipantModel!!.addObserver(mockedCallParticipantModelObserver)
+        callParticipantModel!!.emitReaction("theReaction")
+        Mockito.verify(mockedCallParticipantModelObserver, Mockito.only())?.onReaction("theReaction")
+    }
 }

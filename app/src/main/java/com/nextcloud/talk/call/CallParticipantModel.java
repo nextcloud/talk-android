@@ -42,11 +42,15 @@ import java.util.Objects;
  * Getters called after receiving a notification are guaranteed to provide at least the value that triggered the
  * notification, but it may return even a more up to date one (so getting the value again on the following
  * notification may return the same value as before).
+ *
+ * Besides onChange(), which notifies about changes in the model values, CallParticipantModel.Observer provides
+ * additional methods to be notified about one-time events that are not reflected in the model values, like reactions.
  */
 public class CallParticipantModel {
 
     public interface Observer {
         void onChange();
+        void onReaction(String reaction);
     }
 
     protected class Data<T> {
@@ -68,7 +72,7 @@ public class CallParticipantModel {
         }
     }
 
-    private final CallParticipantModelNotifier callParticipantModelNotifier = new CallParticipantModelNotifier();
+    protected final CallParticipantModelNotifier callParticipantModelNotifier = new CallParticipantModelNotifier();
 
     protected final String sessionId;
 

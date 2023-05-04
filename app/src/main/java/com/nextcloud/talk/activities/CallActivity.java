@@ -2861,6 +2861,10 @@ public class CallActivity extends CallBaseActivity {
                 addParticipantDisplayItem(callParticipantModel, "screen");
             }
         }
+
+        @Override
+        public void onReaction(String reaction) {
+        }
     }
 
     private class InternalSignalingMessageSender implements SignalingMessageSender {
