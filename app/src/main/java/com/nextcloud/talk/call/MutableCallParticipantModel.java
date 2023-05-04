@@ -72,4 +72,8 @@ public class MutableCallParticipantModel extends CallParticipantModel {
     public void setScreenMediaStream(MediaStream screenMediaStream) {
         this.screenMediaStream.setValue(screenMediaStream);
     }
+
+    public void emitReaction(String reaction) {
+        this.callParticipantModelNotifier.notifyReaction(reaction);
+    }
 }

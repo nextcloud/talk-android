@@ -42,8 +42,10 @@ data class NCMessagePayload(
     @JsonField(name = ["state"])
     var state: Boolean? = null,
     @JsonField(name = ["timestamp"])
-    var timestamp: Long? = null
+    var timestamp: Long? = null,
+    @JsonField(name = ["reaction"])
+    var reaction: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null, null)
 }

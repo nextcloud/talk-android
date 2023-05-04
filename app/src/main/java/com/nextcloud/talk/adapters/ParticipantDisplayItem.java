@@ -34,7 +34,16 @@ public class ParticipantDisplayItem {
 
     private final CallParticipantModel callParticipantModel;
 
-    private final CallParticipantModel.Observer callParticipantModelObserver = this::updateFromModel;
+    private final CallParticipantModel.Observer callParticipantModelObserver = new CallParticipantModel.Observer() {
+        @Override
+        public void onChange() {
+            updateFromModel();
+        }
+
+        @Override
+        public void onReaction(String reaction) {
+        }
+    };
 
     private String userId;
     private PeerConnection.IceConnectionState iceConnectionState;

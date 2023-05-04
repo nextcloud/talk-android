@@ -93,6 +93,12 @@ class CallParticipantMessageNotifier {
         }
     }
 
+    public void notifyReaction(String sessionId, String reaction) {
+        for (SignalingMessageReceiver.CallParticipantMessageListener listener : getListenersFor(sessionId)) {
+            listener.onReaction(reaction);
+        }
+    }
+
     public synchronized void notifyUnshareScreen(String sessionId) {
         for (SignalingMessageReceiver.CallParticipantMessageListener listener : getListenersFor(sessionId)) {
             listener.onUnshareScreen();

@@ -41,6 +41,11 @@ public class CallParticipant {
         }
 
         @Override
+        public void onReaction(String reaction) {
+            callParticipantModel.emitReaction(reaction);
+        }
+
+        @Override
         public void onUnshareScreen() {
         }
     };
