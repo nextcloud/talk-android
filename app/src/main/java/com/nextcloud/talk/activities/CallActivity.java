@@ -2910,6 +2910,7 @@ public class CallActivity extends CallBaseActivity {
 
         @Override
         public void onReaction(String reaction) {
+            addCallReaction(reaction, callParticipantModel.getNick());
         }
     }
 

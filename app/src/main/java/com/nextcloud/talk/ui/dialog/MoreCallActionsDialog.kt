@@ -122,6 +122,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                 emojiView.layoutParams = param
 
                 emojiView.setOnClickListener { view ->
+                    // TODO: send signaling messages instead to directly show reaction on own device
                     callActivity.addCallReaction(
                         (view as EmojiTextView).text.toString(),
                         callActivity.conversationUser.displayName
