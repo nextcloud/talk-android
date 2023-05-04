@@ -124,7 +124,7 @@ import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ControllerChatBinding
+import com.nextcloud.talk.databinding.ActivityChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.extensions.loadAvatarOrImagePreview
@@ -231,7 +231,7 @@ class ChatActivity :
 
     var active = false
 
-    private lateinit var binding: ControllerChatBinding
+    private lateinit var binding: ActivityChatBinding
 
     @Inject
     lateinit var ncApi: NcApi
@@ -315,7 +315,7 @@ class ChatActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        binding = ControllerChatBinding.inflate(layoutInflater)
+        binding = ActivityChatBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
