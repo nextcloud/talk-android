@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Дротова гарнітура</string>
     <string name="avatar">Світлина</string>
     <string name="away">Немає поряд</string>
+    <string name="call_without_notification">Дзвінок без сповіщення</string>
     <string name="choose_avatar_from_cloud">Обрати світлину в хмарі</string>
     <string name="clear_status_message">Очистити повідомлення про стан</string>
     <string name="clear_status_message_after">Очистити повідомлення про стан після</string>
@@ -89,6 +90,7 @@
     <string name="nc_conversation_menu_conversation_info">Інформація про розмову</string>
     <string name="nc_conversation_menu_video_call">Відеодзвінок</string>
     <string name="nc_conversation_menu_voice_call">Голосовий дзвінок</string>
+    <string name="nc_conversation_settings">Налаштування розмови</string>
     <string name="nc_conversations_empty">Приєднайтеся до розмови або почніть нову</string>
     <string name="nc_conversations_empty_details">Привітайтеся з вашими друзями та колегами!</string>
     <string name="nc_copy_message">Копіювати</string>
@@ -101,6 +103,7 @@
     <string name="nc_delete_conversation_more">Якщо ви вилучите розмову, її буде вилучено у всіх інших учасників цієї розмови.</string>
     <string name="nc_delete_message">Вилучити</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Повідомлення вилучено, але воно могло потрапити до інших сервісів</string>
+    <string name="nc_demote">Розжалування з модератора</string>
     <string name="nc_description_record_voice">Записати голосове повідомлення</string>
     <string name="nc_description_send_message_button">Надіслати повідомлення</string>
     <string name="nc_dialog_invalid_password">Invalid Password</string>
@@ -114,6 +117,7 @@
     <string name="nc_expire_message_one_day">1 день</string>
     <string name="nc_expire_message_one_hour">1 година</string>
     <string name="nc_expire_message_one_week">1 тиждень</string>
+    <string name="nc_expire_messages_explanation">Повідомлення чату можуть бути видалені після закінчення певного часу. Примітка: Файли, передані в чаті, не будуть видалені для власника, але більше не будуть доступні в обговоренні.</string>
     <string name="nc_external_server_failed">Помилка отримання налаштувань сповіщення</string>
     <string name="nc_failed_signaling_settings">Цільовий сервер не підтримує приєднання до публічних чатів через номер мобільного телефону. Ви можете спробувати приєднатися до розмови з бравзера.</string>
     <string name="nc_failed_to_perform_operation">Вибачте, щось пішло не так!</string>
@@ -265,6 +269,7 @@
     <string name="nc_settings_proxy_port_title">Порт проксі</string>
     <string name="nc_settings_proxy_type_title">Тип проксі</string>
     <string name="nc_settings_proxy_username_title">Ім\'я користувача проксі</string>
+    <string name="nc_settings_read_privacy_desc">Ділитися своїм статусом читання та показувати статус читання інших</string>
     <string name="nc_settings_reauthorize">Повторно авторизувати обліковий запис</string>
     <string name="nc_settings_remove">Вилучити</string>
     <string name="nc_settings_remove_account">Вилучити обліковий запис</string>
@@ -283,6 +288,8 @@
     <string name="nc_share_text_pass">\nПароль: %1$s</string>
     <string name="nc_share_this_location">Поділіться цим розташуванням</string>
     <string name="nc_share_to_choose_account">Оберіть обліковий запис</string>
+    <string name="nc_shared_items">Спільні елементи</string>
+    <string name="nc_shared_items_empty">Немає спільних елементів</string>
     <string name="nc_shared_items_location">Місце</string>
     <string name="nc_shared_location">Місце у спільному доступі</string>
     <string name="nc_sort_by">Впорядкувати за</string>
@@ -301,6 +308,7 @@
     <string name="polls_options">Параметри</string>
     <string name="polls_settings">Налаштування</string>
     <string name="polls_submit_vote">Голосувати</string>
+    <string name="raise_hand">Підняти руку</string>
     <string name="reactions_tab_all">Всі</string>
     <string name="save">Зберегти</string>
     <string name="scope_federated_description">Синхронізовувати лише з серверами, яким довіряємо</string>
