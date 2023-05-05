@@ -807,7 +807,7 @@ class ConversationInfoActivity :
             }
 
             Conversation.ConversationType.ROOM_GROUP_CALL, Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
-                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, false)
+                binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, false, viewThemeUtils)
             }
 
             Conversation.ConversationType.ROOM_SYSTEM -> {
