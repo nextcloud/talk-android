@@ -325,6 +325,7 @@
     <string name="nc_share_text_pass">\nPassword: %1$s</string>
     <string name="nc_share_this_location">Condividi questa posizione</string>
     <string name="nc_share_to_choose_account">Scegli account</string>
+    <string name="nc_shared_items">Oggetti condivisi</string>
     <string name="nc_shared_items_deck_card">Scheda di Deck</string>
     <string name="nc_shared_items_location">Posizione</string>
     <string name="nc_shared_location">Posizione condivisa</string>
@@ -355,6 +356,7 @@
     <string name="play_pause_voice_message">Riproduci/ferma messaggio vocale</string>
     <string name="polls_add_option">Aggiungi opzione</string>
     <string name="polls_options">Opzioni</string>
+    <string name="polls_private_poll">Sondaggio privato</string>
     <string name="polls_results_subtitle">Risultati</string>
     <string name="polls_settings">Impostazioni</string>
     <string name="polls_submit_vote">Votare</string>

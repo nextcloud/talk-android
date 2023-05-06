@@ -105,6 +105,7 @@
     <string name="nc_configure_cert_auth">Vyberte certifikát pro ověřování se</string>
     <string name="nc_connecting_call">Připojování…</string>
     <string name="nc_contacts_done">Hotovo</string>
+    <string name="nc_conversation_description">Popis konverzace</string>
     <string name="nc_conversation_link">Odkaz na konverzaci</string>
     <string name="nc_conversation_menu_conversation_info">Informace o konverzaci</string>
     <string name="nc_conversation_menu_video_call">Videohovor</string>
