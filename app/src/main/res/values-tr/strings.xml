@@ -105,6 +105,7 @@
     <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
     <string name="nc_connecting_call">Bağlantı kuruluyor …</string>
     <string name="nc_contacts_done">Tamam</string>
+    <string name="nc_conversation_description">Görüşme açıklaması</string>
     <string name="nc_conversation_link">Görüşme bağlantısı</string>
     <string name="nc_conversation_menu_conversation_info">Görüşme bilgileri</string>
     <string name="nc_conversation_menu_video_call">Görüntülü çağrı</string>
