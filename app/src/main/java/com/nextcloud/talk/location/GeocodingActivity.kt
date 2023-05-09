@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.location
 
+import android.app.ActivityOptions
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -27,9 +28,11 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.transition.Fade
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.Toast
@@ -80,6 +83,14 @@ class GeocodingActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        with(window) {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            // set set the transition to be shown when the user enters this activity
+            enterTransition = Fade()
+            // set the transition to be shown when the user leaves this activity
+            exitTransition = Fade()
+
+        }
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivityGeocodingBinding.inflate(layoutInflater)
@@ -116,7 +127,7 @@ class GeocodingActivity :
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
             intent.putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
     }
 

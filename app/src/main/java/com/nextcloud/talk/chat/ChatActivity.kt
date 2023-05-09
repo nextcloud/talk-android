@@ -28,6 +28,7 @@ package com.nextcloud.talk.chat
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -53,6 +54,7 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.transition.Fade
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -60,6 +62,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.Window
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
@@ -312,6 +315,14 @@ class ChatActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        with(window) {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            // set set the transition to be shown when the user enters this activity
+            enterTransition = Fade()
+            // set the transition to be shown when the user leaves this activity
+            exitTransition = Fade()
+
+        }
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ControllerChatBinding.inflate(layoutInflater)
@@ -584,7 +595,7 @@ class ChatActivity :
     override fun onBackPressed() {
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.putExtras(Bundle())
-        startActivity(intent)
+        startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun initAdapter() {
@@ -1903,7 +1914,7 @@ class ChatActivity :
 
         val intent = Intent(this, LocationPickerActivity::class.java)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-        startActivity(intent)
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun showConversationInfoScreen() {
@@ -1914,7 +1925,7 @@ class ChatActivity :
 
         val intent = Intent(this, ConversationInfoActivity::class.java)
         intent.putExtras(bundle)
-        startActivity(intent)
+        startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun setupMentionAutocomplete() {
@@ -2820,7 +2831,7 @@ class ChatActivity :
             SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
             currentConversation?.isParticipantOwnerOrModerator
         )
-        startActivity(intent)
+        startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun startMessageSearch() {
@@ -3182,7 +3193,7 @@ class ChatActivity :
 
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.putExtras(bundle)
-        startActivity(intent)
+        startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     fun markAsUnread(message: IMessage?) {

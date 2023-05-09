@@ -27,6 +27,7 @@ package com.nextcloud.talk.conversationlist
 
 import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -39,11 +40,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.InputType
 import android.text.TextUtils
+import android.transition.Fade
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -188,6 +191,17 @@ class ConversationsListActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        with(window) {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            // set set the transition to be shown when the user enters this activity
+            enterTransition = Fade()
+            // set the transition to be shown when the user leaves this activity
+            exitTransition = Fade()
+
+        }
+
+
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ControllerConversationsRvBinding.inflate(layoutInflater)
@@ -733,7 +747,7 @@ class ConversationsListActivity :
                 newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
             } else {
                 val intent = Intent(context, SettingsActivity::class.java)
-                startActivity(intent)
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
         }
 
@@ -781,7 +795,7 @@ class ConversationsListActivity :
     private fun showNewConversationsScreen() {
         val intent = Intent(context, ContactsActivity::class.java)
         intent.putExtra(KEY_NEW_CONVERSATION, true)
-        startActivity(intent)
+        startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun dispose(disposable: Disposable?) {
@@ -1149,7 +1163,7 @@ class ConversationsListActivity :
 
         val intent = Intent(context, ChatActivity::class.java)
         intent.putExtras(bundle)
-        startActivity(intent)
+        startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
 
         clearIntentAction()
     }
@@ -1241,7 +1255,7 @@ class ConversationsListActivity :
                     WorkManager.getInstance().enqueue(accountRemovalWork)
                     if (otherUserExists) {
                         finish()
-                        startActivity(intent)
+                        startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
                     } else if (!otherUserExists) {
                         Log.d(TAG, "No other users found. AccountRemovalWorker will restart the app.")
                     }
@@ -1282,7 +1296,7 @@ class ConversationsListActivity :
                     WorkManager.getInstance().enqueue(accountRemovalWork)
                     if (otherUserExists) {
                         finish()
-                        startActivity(intent)
+                        startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
                     } else if (!otherUserExists) {
                         restartApp(this)
                     }

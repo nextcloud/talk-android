@@ -22,6 +22,7 @@ package com.nextcloud.talk.location
 
 import android.Manifest
 import android.app.Activity
+import android.app.ActivityOptions
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -33,10 +34,12 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.transition.Fade
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -117,6 +120,14 @@ class LocationPickerActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        with(window) {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            // set set the transition to be shown when the user enters this activity
+            enterTransition = Fade()
+            // set the transition to be shown when the user leaves this activity
+            exitTransition = Fade()
+
+        }
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
@@ -232,7 +243,7 @@ class LocationPickerActivity :
             val intent = Intent(this, GeocodingActivity::class.java)
             intent.putExtra(BundleKeys.KEY_GEOCODING_QUERY, query)
             intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
         return true
     }
