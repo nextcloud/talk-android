@@ -32,14 +32,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.transition.Fade
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
@@ -103,14 +101,6 @@ class ProfileActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        with(window) {
-            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
-            // set set the transition to be shown when the user enters this activity
-            enterTransition = Fade()
-            // set the transition to be shown when the user leaves this activity
-            exitTransition = Fade()
-
-        }
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setupActionBar()

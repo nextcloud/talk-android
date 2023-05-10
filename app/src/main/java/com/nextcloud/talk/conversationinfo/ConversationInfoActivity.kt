@@ -27,21 +27,17 @@
 package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
-import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.TextUtils
-import android.transition.Explode
-import android.transition.Fade
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
@@ -148,14 +144,6 @@ class ConversationInfoActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        with(window) {
-            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
-            // set set the transition to be shown when the user enters this activity
-            enterTransition = Explode()
-            // set the transition to be shown when the user leaves this activity
-            exitTransition = Fade()
-
-        }
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivityConversationInfoBinding.inflate(layoutInflater)
@@ -249,7 +237,7 @@ class ConversationInfoActivity :
 
             val intent = Intent(this, ConversationInfoEditActivity::class.java)
             intent.putExtras(bundle)
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            startActivity(intent)
         }
         return true
     }
@@ -291,7 +279,7 @@ class ConversationInfoActivity :
         intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
         intent.putExtra(BundleKeys.KEY_USER_ENTITY, conversationUser as Parcelable)
         intent.putExtra(SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR, conversation?.isParticipantOwnerOrModerator)
-        startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(intent)
     }
 
     private fun setupWebinaryView() {
@@ -565,7 +553,7 @@ class ConversationInfoActivity :
 
         val intent = Intent(this, ContactsActivity::class.java)
         intent.putExtras(bundle)
-        startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(intent)
     }
 
     private fun leaveConversation() {
@@ -579,7 +567,7 @@ class ConversationInfoActivity :
 
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            startActivity(intent)
         }
     }
 
@@ -650,7 +638,7 @@ class ConversationInfoActivity :
             )
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            startActivity(intent)
         }
     }
 

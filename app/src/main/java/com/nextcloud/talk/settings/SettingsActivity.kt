@@ -26,7 +26,6 @@ package com.nextcloud.talk.settings
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
-import android.app.ActivityOptions
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.DialogInterface
@@ -46,10 +45,8 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.transition.Fade
 import android.util.Log
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.widget.Checkable
 import android.widget.EditText
@@ -131,14 +128,6 @@ class SettingsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        with(window) {
-            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
-            // set set the transition to be shown when the user enters this activity
-            enterTransition = Fade()
-            // set the transition to be shown when the user leaves this activity
-            exitTransition = Fade()
-
-        }
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivitySettingsBinding.inflate(layoutInflater)
@@ -228,7 +217,7 @@ class SettingsActivity : BaseActivity() {
 
         binding.avatarContainer.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            startActivity(intent)
         }
 
         themeCategories()
@@ -270,7 +259,7 @@ class SettingsActivity : BaseActivity() {
                     NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
                 )
 
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(intent)
             }
             binding.settingsMessageSound.setOnClickListener {
                 val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
@@ -279,7 +268,7 @@ class SettingsActivity : BaseActivity() {
                     Settings.EXTRA_CHANNEL_ID,
                     NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
                 )
-                startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(intent)
             }
         } else {
             Log.e(TAG, "setupSoundSettings currently not supported for versions < Build.VERSION_CODES.O")
@@ -454,7 +443,7 @@ class SettingsActivity : BaseActivity() {
         if (otherUserExists) {
             // TODO: find better solution once Conductor is removed
             finish()
-            startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+            startActivity(intent)
         } else if (!otherUserExists) {
             Log.d(TAG, "No other users found. AccountRemovalWorker will restart the app.")
         }
