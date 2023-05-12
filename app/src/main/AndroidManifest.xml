@@ -211,8 +211,6 @@
 
         <activity
             android:name=".chat.ChatActivity"
-            android:launchMode="singleInstance"
-            android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
