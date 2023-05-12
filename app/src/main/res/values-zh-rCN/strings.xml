@@ -105,6 +105,7 @@
     <string name="nc_configure_cert_auth">选择验证证书</string>
     <string name="nc_connecting_call">连接中 …</string>
     <string name="nc_contacts_done">完成</string>
+    <string name="nc_conversation_description">对话描述</string>
     <string name="nc_conversation_link">对话连接</string>
     <string name="nc_conversation_menu_conversation_info">会话信息</string>
     <string name="nc_conversation_menu_video_call">视频通话</string>
@@ -240,8 +241,8 @@
     <string name="nc_public_call">新的公共会话</string>
     <string name="nc_public_call_explanation">公共对话可以让你通过一个特别制作的链接邀请外面的人。</string>
     <string name="nc_push_disabled">通知推送已禁用</string>
-    <string name="nc_push_to_talk">按住以说话</string>
-    <string name="nc_push_to_talk_desc">在禁用麦克风的情况下，单击并按住即可使用 “按键发言” 功能</string>
+    <string name="nc_push_to_talk">按键讲话</string>
+    <string name="nc_push_to_talk_desc">禁用麦克风的情况下，点击&amp;并按住使用“按键讲话”功能</string>
     <string name="nc_remote_audio_off">远程音频关闭</string>
     <string name="nc_remove_circle_and_members">删除圈子和成员</string>
     <string name="nc_remove_from_favorites">取消收藏</string>
@@ -290,7 +291,7 @@
     <string name="nc_server_maintenance">请将您的 %1$s 退出维护模式</string>
     <string name="nc_server_not_installed">请完成您的 %1$s 安装</string>
     <string name="nc_server_testing_connection">测试连接中</string>
-    <string name="nc_server_unsupported">服务器没有安装受支持的 Talk 应用程序</string>
+    <string name="nc_server_unsupported">服务器没有安装受支持的通话应用程序</string>
     <string name="nc_server_url">服务器地址 https://…</string>
     <string name="nc_server_version">%1$s 仅支持 %2$s 13 及更高版本</string>
     <string name="nc_settings">设置</string>
@@ -301,11 +302,11 @@
     <string name="nc_settings_incognito_keyboard_desc">通知键盘禁用个性化学习（不保证键盘会执行）</string>
     <string name="nc_settings_incognito_keyboard_title">匿名键盘</string>
     <string name="nc_settings_no_ringtone">无声音</string>
-    <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装Talk应用</string>
+    <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装通话应用</string>
     <string name="nc_settings_notification_sounds">通知声音</string>
     <string name="nc_settings_notification_sounds_post_oreo">通知</string>
     <string name="nc_settings_other_notifications_ringtone">消息</string>
-    <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，以集成 Talk 快捷方式到系统联系人应用</string>
+    <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，以集成通话应用快捷方式到系统联系人应用</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">你可以设置你的电话号码，这样其他用户能够找到你 </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">无效电话号码</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">成功设置电话号码</string>
@@ -371,7 +372,7 @@
     <string name="nc_upload_video_from_cam">拍摄视频</string>
     <string name="nc_user">用户</string>
     <string name="nc_video_filename">来自 %1$s的视频录制</string>
-    <string name="nc_voice_message_filename">来自 %1$s 的 Talk 录音 (%2$s)</string>
+    <string name="nc_voice_message_filename">来自%1$s的通话录制（%2$s）</string>
     <string name="nc_voice_message_hold_to_record_info">按住录音，松开发送</string>
     <string name="nc_voice_message_missing_audio_permission">需要音频录制权限</string>
     <string name="nc_voice_message_slide_to_cancel">«滑动取消</string>
@@ -419,7 +420,7 @@
     <string name="scope_federated_title">联合云 </string>
     <string name="scope_local_description">仅对该实例用户和来宾可见 </string>
     <string name="scope_local_title">本地</string>
-    <string name="scope_private_description">只对通过手机上 Talk 应用的电话号码整合功能匹配的人可见 </string>
+    <string name="scope_private_description">只对通过手机上Talk应用的电话号码整合功能匹配的人可见 </string>
     <string name="scope_private_title">私有</string>
     <string name="scope_published_description">同步到受信任的服务器、全局和公共地址簿</string>
     <string name="scope_published_title">已发布</string>

@@ -387,6 +387,9 @@
     <string name="raise_hand">Поднять руку</string>
     <string name="reactions_tab_all">Все</string>
     <string name="read_storage_no_permission">Общий доступ к файлам из хранилища невозможен без разрешений</string>
+    <string name="record_cancel_start">Отменить начало записи</string>
+    <string name="record_failed_info">Не удалось записать звонок. Пожалуйста, свяжитесь с администратором.</string>
+    <string name="record_start_description">Начать запись</string>
     <string name="record_stop_description">Остановить запись</string>
     <string name="save">Сохранить</string>
     <string name="scope_federated_description">Выполнять синхронизацию только с доверенными серверами</string>
