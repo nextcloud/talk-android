@@ -542,7 +542,9 @@ class ChatActivity :
 
         initVoiceRecordButton()
 
-        binding?.messageInputView?.inputEditText?.setText(sharedText)
+        if (sharedText.isNotEmpty()) {
+            binding?.messageInputView?.inputEditText?.setText(sharedText)
+        }
         binding?.messageInputView?.setAttachmentsListener {
             AttachmentDialog(this, this).show()
         }
