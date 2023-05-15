@@ -88,6 +88,7 @@ class MessageActionsDialog(
         viewThemeUtils.platform.themeDialog(dialogMessageActionsBinding.root)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
+        initMenuItemTranslate(!message.isDeleted)
         initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(
             message.replyable &&
@@ -289,6 +290,17 @@ class MessageActionsDialog(
         if (visible) {
             dialogMessageActionsBinding.menuCopyMessage.setOnClickListener {
                 chatActivity.copyMessage(message)
+                dismiss()
+            }
+        }
+
+        dialogMessageActionsBinding.menuCopyMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuItemTranslate(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuTranslateMessage.setOnClickListener {
+                chatActivity.translateMessage(message)
                 dismiss()
             }
         }

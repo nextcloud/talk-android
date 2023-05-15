@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:weightSum="2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/translation_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/translation_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/appbar"
+            android:theme="?attr/actionBarPopupTheme"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIconTint="@color/fontAppbar"
+            app:popupTheme="@style/appActionBarPopupMenu"
+            app:titleTextColor="@color/fontAppbar"
+            tools:title="" >
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/fromLanguage"
+            android:layout_margin="@dimen/standard_margin"
+            android:textSize="@dimen/input_text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="From:"/>
+        <TextView
+            android:id="@+id/toLanguage"
+            android:layout_margin="@dimen/standard_margin"
+            android:textSize="@dimen/input_text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fromLanguage"
+            android:text="To:"/>
+
+        <Spinner
+            android:id="@+id/fromLanguageSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"
+            android:layout_toRightOf="@id/fromLanguage" />
+        <Spinner
+            android:id="@+id/toLanguageSpinner"
+            android:layout_margin="@dimen/standard_margin"
+            android:layout_toRightOf="@id/toLanguage"
+            android:layout_below="@id/fromLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/original_message_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="@dimen/message_text_size"
+        android:textColor="@color/nc_incoming_text_default"
+        android:padding="@dimen/dialog_padding"
+        android:layout_margin="@dimen/standard_margin"
+        android:background="@drawable/shape_incoming_message"
+        android:scrollbars="vertical"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/translated_message_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/standard_margin"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:text=""
+        android:textSize="@dimen/message_text_size"
+        android:visibility="visible" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+
+</LinearLayout>
