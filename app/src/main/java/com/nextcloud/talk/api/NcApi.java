@@ -44,6 +44,7 @@ import com.nextcloud.talk.models.json.search.ContactsByNumberOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.status.StatusOverall;
+import com.nextcloud.talk.models.json.translations.TranslationsOverall;
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
@@ -654,4 +655,18 @@ public interface NcApi {
 
     @DELETE
     Observable<GenericOverall> sendCommonDeleteRequest(@Header("Authorization") String authorization, @Url String url);
+
+    @POST
+    Observable<TranslationsOverall> translateMessage(@Header("Authorization") String authorization,
+                                                     @Url String url,
+                                                     @Field("text") String text,
+                                                     @Field("fromLanguage") String fromLanguage,
+                                                     @Field("toLanguage") String toLanguage);
+
+//    @GET
+//    Observable<TranslationsOverall> getLanguageOptions(@Header("Authorization") String authorization,
+//                                                     @Url String url,
+//                                                     @Field("languageDetection") String fromLanguage,
+//                                                     @Field("languages")  Object languages[]);
+    // TODO finish ^ function declaration
 }
