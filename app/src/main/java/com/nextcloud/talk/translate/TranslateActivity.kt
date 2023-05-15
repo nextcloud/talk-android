@@ -2,13 +2,11 @@ package com.nextcloud.talk.translate
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.view.View
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityTranslateBinding
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -30,9 +28,9 @@ class TranslateActivity : BaseActivity()
     @Inject
     lateinit var userManager: UserManager
 
-    lateinit var currentUser: User
+    // lateinit var currentUser: User
 
-    val url : String? = currentUser.baseUrl + "/translation"
+    // val url : String? = currentUser.baseUrl + "/translation"
 
     var text : String? = null
 
@@ -43,7 +41,9 @@ class TranslateActivity : BaseActivity()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTranslateBinding.inflate(layoutInflater)
-
+        val bundle = intent.extras
+        binding.originalMessageTextview.text = bundle?.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
+        text = binding.originalMessageTextview.text as String?
 
         setupTextViews()
         setupActionBar()
@@ -71,9 +71,7 @@ class TranslateActivity : BaseActivity()
         original.movementMethod = ScrollingMovementMethod()
         translation.movementMethod = ScrollingMovementMethod()
 
-        val bundle = intent.extras
-        binding.originalMessageTextview.text = bundle?.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
-        text = binding.originalMessageTextview.text as String?
+
     }
 
 
@@ -123,13 +121,13 @@ class TranslateActivity : BaseActivity()
         // TODO set spinner options to use array from getLanguageOptions()
 
         // TODO set onClickListener to call server using translate()
-        binding.toLanguageSpinner.setOnClickListener(View.OnClickListener {
-            // translate()
-        })
-
-        binding.fromLanguageSpinner.setOnClickListener(View.OnClickListener {
-            // translate()
-        })
+        // binding.toLanguageSpinner.setOnClickListener(View.OnClickListener {
+        //     // translate()
+        // })
+        //
+        // binding.fromLanguageSpinner.setOnClickListener(View.OnClickListener {
+        //     // translate()
+        // })
     }
 
 
