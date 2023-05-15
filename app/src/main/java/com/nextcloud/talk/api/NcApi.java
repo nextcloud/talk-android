@@ -656,12 +656,10 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> sendCommonDeleteRequest(@Header("Authorization") String authorization, @Url String url);
 
+
     @POST
     Observable<TranslationsOverall> translateMessage(@Header("Authorization") String authorization,
-                                                     @Url String url,
-                                                     @Field("text") String text,
-                                                     @Field("fromLanguage") String fromLanguage,
-                                                     @Field("toLanguage") String toLanguage);
+                                                     @Url String url);
 
 //    @GET
 //    Observable<TranslationsOverall> getLanguageOptions(@Header("Authorization") String authorization,

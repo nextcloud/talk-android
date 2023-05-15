@@ -27,43 +27,40 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/fromLanguage"
-            android:layout_margin="@dimen/standard_margin"
-            android:textSize="@dimen/input_text_size"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="From:"/>
-        <TextView
-            android:id="@+id/toLanguage"
-            android:layout_margin="@dimen/standard_margin"
-            android:textSize="@dimen/input_text_size"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/fromLanguage"
-            android:text="To:"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/standard_padding">
 
         <Spinner
             android:id="@+id/fromLanguageSpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/standard_margin"
-            android:layout_marginTop="@dimen/standard_margin"
-            android:layout_marginEnd="@dimen/standard_margin"
-            android:layout_marginBottom="@dimen/standard_margin"
-            android:layout_toRightOf="@id/fromLanguage" />
+            android:background="@color/grey_200"
+            android:layout_marginRight="@dimen/standard_margin"
+           />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/colorBackgroundDarker"
+            android:background="@drawable/ic_chevron_right"
+            />
+
+
+
         <Spinner
             android:id="@+id/toLanguageSpinner"
-            android:layout_margin="@dimen/standard_margin"
-            android:layout_toRightOf="@id/toLanguage"
-            android:layout_below="@id/fromLanguage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/fromLanguageSpinner"
+            android:background="@color/grey_200"
+            android:layout_marginLeft="@dimen/standard_margin"
+            />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/original_message_textview"
@@ -74,7 +71,7 @@
         android:textColor="@color/nc_incoming_text_default"
         android:padding="@dimen/dialog_padding"
         android:layout_margin="@dimen/standard_margin"
-        android:background="@drawable/shape_incoming_message"
+        android:background="@drawable/shape_grouped_incoming_message"
         android:scrollbars="vertical"
         android:text="" />
 
@@ -85,8 +82,11 @@
         android:layout_margin="@dimen/standard_margin"
         android:layout_weight="1"
         android:scrollbars="vertical"
+        android:padding="@dimen/dialog_padding"
+        android:background="@drawable/shape_grouped_incoming_message"
         android:text=""
         android:textSize="@dimen/message_text_size"
+        android:textColor="@color/nc_incoming_text_default"
         android:visibility="visible" />
 
     <ProgressBar
