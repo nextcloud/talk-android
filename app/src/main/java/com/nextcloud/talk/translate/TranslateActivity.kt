@@ -2,23 +2,14 @@ package com.nextcloud.talk.translate
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
-import android.view.View
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityTranslateBinding
-import com.nextcloud.talk.models.json.translations.TranslationsOverall
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 
@@ -37,8 +28,6 @@ class TranslateActivity : BaseActivity()
     @Inject
     lateinit var userManager: UserManager
 
-    lateinit var currentUser : User
-
     var text : String? = null
 
     var fromLanguage : String = "en"
@@ -48,7 +37,7 @@ class TranslateActivity : BaseActivity()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTranslateBinding.inflate(layoutInflater)
-        currentUser = userManager.currentUser.blockingGet()
+
         setupTextViews()
         setupActionBar()
         setupSpinners()
@@ -77,7 +66,7 @@ class TranslateActivity : BaseActivity()
 
         val bundle = intent.extras
         binding.originalMessageTextview.text = bundle?.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
-        text = binding.originalMessageTextview.text as String?
+        text = bundle?.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
 
 
     }
@@ -91,36 +80,38 @@ class TranslateActivity : BaseActivity()
 
     // TODO get this function working
     private fun translate() {
-        val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-        val translateURL = currentUser.baseUrl + "/translation" + "/translate"
+        // var currentUser = userManager.currentUser.blockingGet()
+        // Log.d("TranslateActivity Current User", currentUser.toString())
+        // val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+        // val translateURL = currentUser.baseUrl + "/translation" + "/translate"
 
 
 
-        ncApi.translateMessage(credentials, translateURL, text, fromLanguage, toLanguage)
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<TranslationsOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // TODO set progress bar to show
-                    binding.translatedMessageTextview.visibility = View.GONE
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-
-                override fun onNext(translationOverall: TranslationsOverall) {
-                    // TODO hide progress bar
-                    binding.progressBar.visibility = View.GONE
-                    binding.translatedMessageTextview.visibility = View.VISIBLE
-                    binding.translatedMessageTextview.text = translationOverall.ocs?.data?.text
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e("TranslateActivity", "Error")
-                }
-
-                override fun onComplete() {
-                    // not needed?
-                }
-            })
+        // ncApi.translateMessage(credentials, translateURL, text, fromLanguage, toLanguage)
+        //     ?.subscribeOn(Schedulers.io())
+        //     ?.observeOn(AndroidSchedulers.mainThread())
+        //     ?.subscribe(object : Observer<TranslationsOverall> {
+        //         override fun onSubscribe(d: Disposable) {
+        //             // TODO set progress bar to show
+        //             binding.translatedMessageTextview.visibility = View.GONE
+        //             binding.progressBar.visibility = View.VISIBLE
+        //         }
+        //
+        //         override fun onNext(translationOverall: TranslationsOverall) {
+        //             // TODO hide progress bar
+        //             binding.progressBar.visibility = View.GONE
+        //             binding.translatedMessageTextview.visibility = View.VISIBLE
+        //             binding.translatedMessageTextview.text = translationOverall.ocs?.data?.text
+        //         }
+        //
+        //         override fun onError(e: Throwable) {
+        //             Log.e("TranslateActivity", "Error")
+        //         }
+        //
+        //         override fun onComplete() {
+        //             // not needed?
+        //         }
+        //     })
 
     }
 
