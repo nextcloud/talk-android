@@ -44,6 +44,7 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Parcelable
 import android.os.SystemClock
@@ -302,6 +303,8 @@ class ChatActivity :
 
     private var videoURI: Uri? = null
 
+    var typingTimer: CountDownTimer? = null
+
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
             if (token != null) {
@@ -518,7 +521,7 @@ class ChatActivity :
 
             @Suppress("Detekt.TooGenericExceptionCaught")
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                sendTypingMessage()
+                sendStartTypingMessage()
 
                 if (s.length >= lengthFilter) {
                     binding?.messageInputView?.inputEditText?.error = String.format(
@@ -652,11 +655,35 @@ class ChatActivity :
         }
     }
 
-    fun sendTypingMessage() {
+    fun sendStartTypingMessage() {
+        if (typingTimer == null) {
+            for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+                val ncSignalingMessage = NCSignalingMessage()
+                ncSignalingMessage.to = sessionId
+                ncSignalingMessage.type = "startedTyping"
+                signalingMessageSender!!.send(ncSignalingMessage)
+            }
+
+            typingTimer = object : CountDownTimer(4000, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                }
+
+                override fun onFinish() {
+                    sendStopTypingMessage()
+                    typingTimer = null
+                }
+            }.start()
+        } else {
+            typingTimer?.cancel()
+            typingTimer?.start()
+        }
+    }
+
+    fun sendStopTypingMessage() {
         for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
             val ncSignalingMessage = NCSignalingMessage()
             ncSignalingMessage.to = sessionId
-            ncSignalingMessage.type = "startedTyping"
+            ncSignalingMessage.type = "stoppedTyping"
             signalingMessageSender!!.send(ncSignalingMessage)
         }
     }
