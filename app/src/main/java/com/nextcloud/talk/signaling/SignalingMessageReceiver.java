@@ -154,6 +154,14 @@ public abstract class SignalingMessageReceiver {
     }
 
     /**
+     * Listener for conversation messages.
+     */
+    public interface ConversationMessageListener {
+        void onStartTyping(String session);
+        void onStopTyping(String session);
+    }
+
+    /**
      * Listener for WebRTC offers.
      *
      * Unlike the WebRtcMessageListener, which is bound to a specific peer connection, an OfferMessageListener listens
@@ -184,6 +192,8 @@ public abstract class SignalingMessageReceiver {
     private final LocalParticipantMessageNotifier localParticipantMessageNotifier = new LocalParticipantMessageNotifier();
 
     private final CallParticipantMessageNotifier callParticipantMessageNotifier = new CallParticipantMessageNotifier();
+
+    private final ConversationMessageNotifier conversationMessageNotifier = new ConversationMessageNotifier();
 
     private final OfferMessageNotifier offerMessageNotifier = new OfferMessageNotifier();
 
@@ -234,6 +244,14 @@ public abstract class SignalingMessageReceiver {
 
     public void removeListener(CallParticipantMessageListener listener) {
         callParticipantMessageNotifier.removeListener(listener);
+    }
+
+    public void addListener(ConversationMessageListener listener) {
+        conversationMessageNotifier.addListener(listener);
+    }
+
+    public void removeListener(ConversationMessageListener listener) {
+        conversationMessageNotifier.removeListener(listener);
     }
 
     /**
@@ -561,6 +579,14 @@ public abstract class SignalingMessageReceiver {
             callParticipantMessageNotifier.notifyRaiseHand(sessionId, state, timestamp);
 
             return;
+        }
+
+        if ("startedTyping".equals(type)) {
+            conversationMessageNotifier.notifyStartTyping(sessionId);
+        }
+
+        if ("stoppedTyping".equals(type)) {
+            conversationMessageNotifier.notifyStopTyping(sessionId);
         }
 
         if ("reaction".equals(type)) {
