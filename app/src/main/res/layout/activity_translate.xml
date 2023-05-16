@@ -45,7 +45,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/colorBackgroundDarker"
+            android:backgroundTint="@color/medium_emphasis_text"
             android:background="@drawable/ic_chevron_right"
             />
 
