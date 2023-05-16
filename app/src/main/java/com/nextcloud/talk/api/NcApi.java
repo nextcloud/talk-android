@@ -660,11 +660,4 @@ public interface NcApi {
     @POST
     Observable<TranslationsOverall> translateMessage(@Header("Authorization") String authorization,
                                                      @Url String url);
-
-//    @GET
-//    Observable<TranslationsOverall> getLanguageOptions(@Header("Authorization") String authorization,
-//                                                     @Url String url,
-//                                                     @Field("languageDetection") String fromLanguage,
-//                                                     @Field("languages")  Object languages[]);
-    // TODO finish ^ function declaration
 }
