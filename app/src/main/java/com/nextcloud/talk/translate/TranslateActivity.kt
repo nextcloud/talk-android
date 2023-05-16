@@ -43,15 +43,13 @@ class TranslateActivity : BaseActivity()
     @Inject
     lateinit var userManager: UserManager
 
-
-
-
     var fromLanguages = arrayOf<String>()
 
     var toLanguages = arrayOf<String>()
 
     var text : String? = null
 
+    var check : Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +63,6 @@ class TranslateActivity : BaseActivity()
         setupSpinners()
         getLanguageOptions()
         translate(null, Locale.getDefault().language)
-
     }
 
     private fun setupActionBar() {
@@ -132,9 +129,9 @@ class TranslateActivity : BaseActivity()
         val credentials : String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val translateURL = currentUser.baseUrl +
             "/ocs/v2.php/translation/translate?text=$text&toLanguage=$toLanguage" +
-            if(fromLanguage != "") { "&fromLanguage=$fromLanguage" } else {""}
+            if(fromLanguage != null && fromLanguage != "") { "&fromLanguage=$fromLanguage" } else {""}
 
-
+        Log.i("TranslateActivity", "Url is: $translateURL")
         ncApi.translateMessage(credentials, translateURL)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -195,13 +192,15 @@ class TranslateActivity : BaseActivity()
         binding.toLanguageSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
             toLanguages)
 
-        // TODO set up onclickers make sure to deal with options becoming unavaliable in the spinner onClicker
         binding.fromLanguageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                var fromLabel : String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
-                var toLabel : String = getISOFromLanguage(binding.toLanguageSpinner.selectedItem.toString())
-                Log.i("TranslateActivity", "fromLanguageSpinner :: fromLabel = $fromLabel, toLabel = $toLabel")
-                translate(fromLabel, toLabel)
+                if(++check > 1) {
+                    var fromLabel : String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
+                    var toLabel : String = getISOFromLanguage(binding.toLanguageSpinner.selectedItem.toString())
+                    Log.i("TranslateActivity", "fromLanguageSpinner :: fromLabel = $fromLabel, toLabel = $ count: " +
+                        "$check")
+                    translate(fromLabel, toLabel)
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -211,18 +210,19 @@ class TranslateActivity : BaseActivity()
 
         binding.toLanguageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                var toLabel : String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
-                var fromLabel : String = getISOFromLanguage(binding.fromLanguageSpinner.selectedItem.toString())
-                Log.i("TranslateActivity", "toLanguageSpinner :: fromLabel = $fromLabel, toLabel = $toLabel")
-                translate(fromLabel, toLabel)
+                if(++check > 2) {
+                    var toLabel : String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
+                    var fromLabel : String = getISOFromLanguage(binding.fromLanguageSpinner.selectedItem.toString())
+                    Log.i("TranslateActivity", "toLanguageSpinner :: fromLabel = $fromLabel, toLabel = $toLabel " +
+                        "count: $check")
+                    translate(fromLabel, toLabel)
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // write code to perform some action
             }
         }
-
-
 
     }
 
