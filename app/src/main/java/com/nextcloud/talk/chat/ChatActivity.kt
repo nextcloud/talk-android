@@ -311,6 +311,24 @@ class ChatActivity :
         }
     }
 
+    private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
+        override fun onStartTyping(session: String?) {
+            val name = webSocketInstance?.getDisplayNameForSession(session)
+
+            runOnUiThread {
+                Toast.makeText(this@ChatActivity, name + " started typing", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onStopTyping(session: String?) {
+            val name = webSocketInstance?.getDisplayNameForSession(session)
+
+            runOnUiThread {
+                Toast.makeText(this@ChatActivity, name + " stopped typing", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -398,6 +416,7 @@ class ChatActivity :
 
         setupWebsocket()
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
+        webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
 
         if (conversationUser?.userId != "?" &&
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag")
@@ -1980,6 +1999,7 @@ class ChatActivity :
         eventBus.unregister(this)
 
         webSocketInstance?.getSignalingMessageReceiver()?.removeListener(localParticipantMessageListener)
+        webSocketInstance?.getSignalingMessageReceiver()?.removeListener(conversationMessageListener)
 
         findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
 
