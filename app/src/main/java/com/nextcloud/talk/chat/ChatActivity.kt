@@ -321,17 +321,13 @@ class ChatActivity :
         override fun onStartTyping(session: String?) {
             val name = webSocketInstance?.getDisplayNameForSession(session)
 
-            runOnUiThread {
-                Toast.makeText(this@ChatActivity, name + " started typing", Toast.LENGTH_SHORT).show()
-            }
+            // binding.typingIndicator.visibility = View.VISIBLE
+            binding.typingIndicator.text = name + " started typing"
         }
 
         override fun onStopTyping(session: String?) {
-            val name = webSocketInstance?.getDisplayNameForSession(session)
-
-            runOnUiThread {
-                Toast.makeText(this@ChatActivity, name + " stopped typing", Toast.LENGTH_SHORT).show()
-            }
+            // binding.typingIndicator.visibility = View.INVISIBLE
+            binding.typingIndicator.text = "x"
         }
     }
 
