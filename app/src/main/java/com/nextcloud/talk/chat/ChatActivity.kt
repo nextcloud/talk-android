@@ -656,6 +656,10 @@ class ChatActivity :
     }
 
     fun sendStartTypingMessage() {
+        if (webSocketInstance == null) {
+            return
+        }
+
         if (typingTimer == null) {
             for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
                 val ncSignalingMessage = NCSignalingMessage()
