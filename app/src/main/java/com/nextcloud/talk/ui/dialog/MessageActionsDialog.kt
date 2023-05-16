@@ -88,7 +88,7 @@ class MessageActionsDialog(
         viewThemeUtils.platform.themeDialog(dialogMessageActionsBinding.root)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
-        initMenuItemTranslate(!message.isDeleted)
+        initMenuItemTranslate(!message.isDeleted && CapabilitiesUtilNew.isTranslationsSupported(user))
         initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(
             message.replyable &&
@@ -305,7 +305,7 @@ class MessageActionsDialog(
             }
         }
 
-        dialogMessageActionsBinding.menuCopyMessage.visibility = getVisibility(visible)
+        dialogMessageActionsBinding.menuTranslateMessage.visibility = getVisibility(visible)
     }
 
     private fun getVisibility(visible: Boolean): Int {
