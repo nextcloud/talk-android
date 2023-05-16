@@ -144,12 +144,14 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
+import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.translate.TranslateActivity
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
@@ -278,7 +280,8 @@ class ChatActivity :
     private var conversationVideoMenuItem: MenuItem? = null
     private var conversationSharedItemsItem: MenuItem? = null
 
-    var webSocketInstance: WebSocketInstance? = null
+    private var webSocketInstance: WebSocketInstance? = null
+    private var signalingMessageSender: SignalingMessageSender? = null
 
     var getRoomInfoTimerHandler: Handler? = null
     var pastPreconditionFailed = false
@@ -515,6 +518,8 @@ class ChatActivity :
 
             @Suppress("Detekt.TooGenericExceptionCaught")
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                sendTypingMessage()
+
                 if (s.length >= lengthFilter) {
                     binding?.messageInputView?.inputEditText?.error = String.format(
                         Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
@@ -644,6 +649,15 @@ class ChatActivity :
             } else {
                 downloadFileToCache(message)
             }
+        }
+    }
+
+    fun sendTypingMessage() {
+        for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+            val ncSignalingMessage = NCSignalingMessage()
+            ncSignalingMessage.to = sessionId
+            ncSignalingMessage.type = "startedTyping"
+            signalingMessageSender!!.send(ncSignalingMessage)
         }
     }
 
@@ -2323,6 +2337,8 @@ class ChatActivity :
         if (webSocketInstance == null) {
             Log.d(TAG, "webSocketInstance not set up. This should only happen when not using the HPB")
         }
+
+        signalingMessageSender = webSocketInstance?.signalingMessageSender
     }
 
     fun pullChatMessages(

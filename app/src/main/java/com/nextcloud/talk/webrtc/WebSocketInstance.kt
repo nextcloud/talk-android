@@ -206,6 +206,8 @@ class WebSocketInstance internal constructor(
                             processRoomMessageMessage(eventOverallWebSocketMessage)
                         } else if ("join" == eventOverallWebSocketMessage.eventMap!!["type"]) {
                             processRoomJoinMessage(eventOverallWebSocketMessage)
+                        } else if ("leave" == eventOverallWebSocketMessage.eventMap!!["type"]) {
+                            processRoomLeaveMessage(eventOverallWebSocketMessage)
                         }
                         signalingMessageReceiver.process(eventOverallWebSocketMessage.eventMap)
                     }
@@ -269,6 +271,17 @@ class WebSocketInstance internal constructor(
             }
             usersHashMap[internalHashMap["sessionid"] as String?] = participant
         }
+    }
+
+    private fun processRoomLeaveMessage(eventOverallWebSocketMessage: EventOverallWebSocketMessage) {
+        val leaveEventList = eventOverallWebSocketMessage.eventMap?.get("leave") as List<String>?
+        for (i in leaveEventList!!.indices) {
+            usersHashMap.remove(leaveEventList[i])
+        }
+    }
+
+    fun getUserMap(): HashMap<String?, Participant> {
+        return usersHashMap
     }
 
     @Throws(IOException::class)
