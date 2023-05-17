@@ -112,12 +112,11 @@ class TranslateActivity : BaseActivity() {
     private fun getLanguageOptions() {
         val currentUser: User = userManager.currentUser.blockingGet()
         val json = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
-        Log.i(TAG, "json is: $json")
 
         val fromLanguagesSet = mutableSetOf(resources.getString(R.string.translation_detect_language))
         val toLanguagesSet = mutableSetOf(resources.getString(R.string.translation_device_settings))
 
-        for (i in 0..json.length() - 1) {
+        for (i in 0 until json.length()) {
             val current = json.getJSONObject(i)
             if (current.getString(FROM_ID) != Locale.getDefault().language) {
                 toLanguagesSet.add(current.getString(FROM_LABEL))
@@ -140,16 +139,15 @@ class TranslateActivity : BaseActivity() {
     private fun translate(fromLanguage: String?, toLanguage: String) {
         val currentUser: User = userManager.currentUser.blockingGet()
         val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-        val translateURL = currentUser.baseUrl +
-            "/ocs/v2.php/translation/translate?text=$text&toLanguage=$toLanguage" +
-            if (fromLanguage != null && fromLanguage != "") {
-                "&fromLanguage=$fromLanguage"
-            } else {
-                ""
-            }
+        val translateURL = ApiUtils.getUrlForTranslation(currentUser.baseUrl)
+        val calculatedFromLanguage = if (fromLanguage == null || fromLanguage == "") {
+            null
+        } else {
+            fromLanguage
+        }
 
         Log.i(TAG, "Url is: $translateURL")
-        ncApi.translateMessage(credentials, translateURL)
+        ncApi.translateMessage(credentials, translateURL, text, toLanguage, calculatedFromLanguage)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<TranslationsOverall> {
