@@ -60,26 +60,38 @@ class TranslateActivity : BaseActivity() {
     @Inject
     lateinit var userManager: UserManager
 
-    var fromLanguages = arrayOf<String>()
-
-    var toLanguages = arrayOf<String>()
-
-    var text: String? = null
-
-    var check: Int = 0
+    private var fromLanguages = arrayOf<String>()
+    private var toLanguages = arrayOf<String>()
+    private var text: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         binding = ActivityTranslateBinding.inflate(layoutInflater)
-
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
         setupTextViews()
         setupSpinners()
         getLanguageOptions()
-        translate(null, Locale.getDefault().language)
+
+        if (savedInstanceState == null) {
+            translate(null, Locale.getDefault().language)
+        } else {
+            binding.translatedMessageTextview.text = savedInstanceState.getString(BundleKeys.SAVED_TRANSLATED_MESSAGE)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setItems()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.run {
+            putString(BundleKeys.SAVED_TRANSLATED_MESSAGE, binding.translatedMessageTextview.text.toString())
+        }
+        super.onSaveInstanceState(outState)
     }
 
     private fun setupActionBar() {
@@ -127,7 +139,6 @@ class TranslateActivity : BaseActivity() {
 
         fromLanguages = fromLanguagesSet.toTypedArray()
         toLanguages = toLanguagesSet.toTypedArray()
-
         fillSpinners()
     }
 
@@ -146,7 +157,6 @@ class TranslateActivity : BaseActivity() {
             fromLanguage
         }
 
-        Log.i(TAG, "Url is: $translateURL")
         ncApi.translateMessage(credentials, translateURL, text, toLanguage, calculatedFromLanguage)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -197,7 +207,7 @@ class TranslateActivity : BaseActivity() {
     }
 
     private fun getISOFromLanguage(language: String): String {
-        if (resources.getString(R.string.translation_device_settings).equals(language)) {
+        if (resources.getString(R.string.translation_device_settings) == language) {
             return Locale.getDefault().language
         }
 
@@ -208,7 +218,7 @@ class TranslateActivity : BaseActivity() {
         val currentUser: User = userManager.currentUser.blockingGet()
         val json = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
 
-        for (i in 0..json.length() - 1) {
+        for (i in 0 until json.length()) {
             val current = json.getJSONObject(i)
             if (current.getString(FROM_LABEL) == language) {
                 return current.getString(FROM_ID)
@@ -223,34 +233,16 @@ class TranslateActivity : BaseActivity() {
         viewThemeUtils.material.colorTextInputLayout(binding.toLanguageInputLayout)
         fillSpinners()
 
-        binding.fromLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                if (++check > 1) {
-                    val fromLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
-                    val toLabel: String = getISOFromLanguage(binding.fromLanguage.text.toString())
-                    Log.i(TAG, "fromLanguageSpinner :: $FROM_LABEL = $fromLabel, $TO_LABEL = $ count: $check")
-                    translate(fromLabel, toLabel)
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // write code to perform some action
-            }
+        binding.fromLanguage.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
+            val fromLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
+            val toLabel: String = getISOFromLanguage(binding.toLanguage.text.toString())
+            translate(fromLabel, toLabel)
         }
 
-        binding.toLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                if (++check > 2) {
-                    val toLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
-                    val fromLabel: String = getISOFromLanguage(binding.fromLanguage.text.toString())
-                    Log.i(TAG, "toLanguageSpinner :: $FROM_LABEL = $fromLabel, $TO_LABEL = $toLabel count: $check")
-                    translate(fromLabel, toLabel)
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // write code to perform some action
-            }
+        binding.toLanguage.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
+            val toLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
+            val fromLabel: String = getISOFromLanguage(binding.fromLanguage.text.toString())
+            translate(fromLabel, toLabel)
         }
     }
 
@@ -268,6 +260,11 @@ class TranslateActivity : BaseActivity() {
         if (toLanguages.isNotEmpty()) {
             binding.toLanguage.setText(toLanguages[0])
         }
+    }
+
+    private fun setItems() {
+        binding.fromLanguage.setSimpleItems(fromLanguages)
+        binding.toLanguage.setSimpleItems(toLanguages)
     }
 
     companion object {
