@@ -80,7 +80,8 @@
             android:id="@+id/messagesListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="0dp"
+            android:paddingBottom="20dp"
+            android:clipToPadding="false"
             android:visibility="gone"
             app:dateHeaderTextSize="13sp"
             app:incomingBubblePaddingBottom="@dimen/message_bubble_corners_vertical_padding"
@@ -108,7 +109,8 @@
             app:outcomingTextLinkColor="@color/high_emphasis_text"
             app:outcomingTextSize="@dimen/chat_text_size"
             app:outcomingTimeTextSize="12sp"
-            app:textAutoLink="all" />
+            app:textAutoLink="all"
+            tools:visibility="visible"/>
 
         <com.nextcloud.ui.popupbubble.PopupBubble
             android:id="@+id/popupBubbleView"
@@ -148,28 +150,39 @@
             app:iconPadding="0dp"
             app:iconSize="24dp" />
 
+        <LinearLayout
+            android:id="@+id/typing_indicator_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="-20dp">
+
+            <View
+                android:id="@+id/separator_1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/controller_chat_separator" />
+
+            <TextView
+                android:id="@+id/typing_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginStart="@dimen/side_margin"
+                android:layout_marginEnd="@dimen/side_margin"
+                android:background="@color/bg_default"
+                android:textColor="@color/low_emphasis_text"
+                tools:text="Marcel is typing">
+            </TextView>
+
+        </LinearLayout>
+
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <View
-            android:id="@+id/separator_1"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/controller_chat_separator" />
-
-        <TextView
-            android:id="@+id/typing_indicator"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/side_margin"
-            android:layout_marginEnd="@dimen/side_margin"
-            android:textColor="@color/low_emphasis_text"
-            tools:text="Marcel is typing">
-        </TextView>
 
         <com.nextcloud.talk.ui.MessageInput
             android:id="@+id/messageInputView"

@@ -62,6 +62,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
@@ -344,15 +345,11 @@ class ChatActivity :
 
         val typingString: SpannableStringBuilder
         when (typingParticipants.size) {
-            0 -> {
-                typingString = SpannableStringBuilder().append("")
-            }
+            0 -> typingString = SpannableStringBuilder().append(binding.typingIndicator.text)
 
-            1 -> {
-                typingString = SpannableStringBuilder()
+            1 -> typingString = SpannableStringBuilder()
                     .bold { append(participantNames[0]) }
                     .append(WHITESPACE + context.resources?.getString(R.string.typing_is_typing))
-            }
 
             2 -> typingString = SpannableStringBuilder()
                 .bold { append(participantNames[0]) }
@@ -378,11 +375,9 @@ class ChatActivity :
 
             else -> {
                 val moreTypersAmount = typingParticipants.size - 3
-
                 val othersTyping = context.resources?.getString(R.string.typing_x_others)?.let {
                     String.format(it, moreTypersAmount)
                 }
-
                 typingString = SpannableStringBuilder()
                     .bold { append(participantNames[0]) }
                     .append(COMMA)
@@ -393,12 +388,22 @@ class ChatActivity :
             }
         }
 
+        val typingIndicatorHeight = DisplayUtils.convertDpToPixel(20f,context)
+
         runOnUiThread {
             if (participantNames.size > 0) {
-                binding.typingIndicator.visibility = View.VISIBLE
+                binding.typingIndicatorWrapper.animate()
+                    .translationY(binding.messageInputView.y - typingIndicatorHeight)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .duration = TYPING_INDICATOR_ANIMATION_DURATION
+
             } else {
-                binding.typingIndicator.visibility = View.GONE
+                binding.typingIndicatorWrapper.animate()
+                    .translationY(binding.messageInputView.y)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .duration = TYPING_INDICATOR_ANIMATION_DURATION
             }
+
             binding.typingIndicator.text = typingString
         }
     }
@@ -3765,5 +3770,6 @@ class ChatActivity :
 
         private const val WHITESPACE = " "
         private const val COMMA = ", "
+        private const val TYPING_INDICATOR_ANIMATION_DURATION = 200L
     }
 }
