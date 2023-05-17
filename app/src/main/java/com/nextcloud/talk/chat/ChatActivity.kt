@@ -52,6 +52,7 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputFilter
+import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
@@ -76,6 +77,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.text.bold
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.text.EmojiCompat
 import androidx.emoji2.widget.EmojiTextView
@@ -304,6 +306,7 @@ class ChatActivity :
     private var videoURI: Uri? = null
 
     var typingTimer: CountDownTimer? = null
+    val typingParticipants = HashMap<String, String>()
 
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
@@ -318,16 +321,85 @@ class ChatActivity :
     }
 
     private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
-        override fun onStartTyping(session: String?) {
-            val name = webSocketInstance?.getDisplayNameForSession(session)
+        override fun onStartTyping(session: String) {
+            var name = webSocketInstance?.getDisplayNameForSession(session)
 
-            // binding.typingIndicator.visibility = View.VISIBLE
-            binding.typingIndicator.text = name + " started typing"
+            if (name != null && !typingParticipants.contains(session)) {
+                if (name == "") {
+                    name = context.resources?.getString(R.string.nc_guest)!!
+                }
+                typingParticipants[session] = name
+                updateTypingIndicator()
+            }
         }
 
-        override fun onStopTyping(session: String?) {
-            // binding.typingIndicator.visibility = View.INVISIBLE
-            binding.typingIndicator.text = "x"
+        override fun onStopTyping(session: String) {
+            typingParticipants.remove(session)
+            updateTypingIndicator()
+        }
+    }
+
+    private fun updateTypingIndicator() {
+        val participantNames = ArrayList(typingParticipants.values)
+
+        val typingString: SpannableStringBuilder
+        when (typingParticipants.size) {
+            0 -> {
+                typingString = SpannableStringBuilder().append("")
+            }
+
+            1 -> {
+                typingString = SpannableStringBuilder()
+                    .bold { append(participantNames[0]) }
+                    .append(WHITESPACE + context.resources?.getString(R.string.typing_is_typing))
+            }
+
+            2 -> typingString = SpannableStringBuilder()
+                .bold { append(participantNames[0]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
+                .bold { append(participantNames[1]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
+
+            3 -> typingString = SpannableStringBuilder()
+                .bold { append(participantNames[0]) }
+                .append(COMMA)
+                .bold { append(participantNames[1]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
+                .bold { append(participantNames[2]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
+
+            4 -> typingString = SpannableStringBuilder()
+                .bold { append(participantNames[0]) }
+                .append(COMMA)
+                .bold { append(participantNames[1]) }
+                .append(COMMA)
+                .bold { append(participantNames[2]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_1_other))
+
+            else -> {
+                val moreTypersAmount = typingParticipants.size - 3
+
+                val othersTyping = context.resources?.getString(R.string.typing_x_others)?.let {
+                    String.format(it, moreTypersAmount)
+                }
+
+                typingString = SpannableStringBuilder()
+                    .bold { append(participantNames[0]) }
+                    .append(COMMA)
+                    .bold { append(participantNames[1]) }
+                    .append(COMMA)
+                    .bold { append(participantNames[2]) }
+                    .append(othersTyping)
+            }
+        }
+
+        runOnUiThread {
+            if (participantNames.size > 0) {
+                binding.typingIndicator.visibility = View.VISIBLE
+            } else {
+                binding.typingIndicator.visibility = View.GONE
+            }
+            binding.typingIndicator.text = typingString
         }
     }
 
@@ -3690,5 +3762,8 @@ class ChatActivity :
         private const val LOOKING_INTO_FUTURE_TIMEOUT = 30
         private const val CHUNK_SIZE: Int = 10
         private const val ONE_SECOND_IN_MILLIS = 1000
+
+        private const val WHITESPACE = " "
+        private const val COMMA = ", "
     }
 }
