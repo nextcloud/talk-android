@@ -658,5 +658,7 @@ How to translate with transifex:
     <string name="scroll_to_bottom">Scroll to bottom</string>
     <string name="translate">Translate</string>
     <string name="translation">Translation</string>
+    <string name="translation_error_title">Translation failed</string>
+    <string name="translation_error_message">Could not detect language</string>
 
 </resources>
