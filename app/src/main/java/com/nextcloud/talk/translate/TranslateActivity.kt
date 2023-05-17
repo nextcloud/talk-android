@@ -129,15 +129,7 @@ class TranslateActivity : BaseActivity() {
         fromLanguages = fromLanguagesSet.toTypedArray()
         toLanguages = toLanguagesSet.toTypedArray()
 
-        binding.fromLanguageSpinner.adapter = ArrayAdapter(
-            this, android.R.layout.simple_spinner_dropdown_item,
-            fromLanguages
-        )
-
-        binding.toLanguageSpinner.adapter = ArrayAdapter(
-            this, android.R.layout.simple_spinner_dropdown_item,
-            toLanguages
-        )
+        fillSpinners()
     }
 
     private fun enableSpinners(value: Boolean) {
@@ -174,6 +166,7 @@ class TranslateActivity : BaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
+                    Log.w(TAG, "Error while translating message", e)
                     binding.progressBar.visibility = View.GONE
                     val dialogBuilder = MaterialAlertDialogBuilder(this@TranslateActivity)
                         .setIcon(
@@ -210,6 +203,10 @@ class TranslateActivity : BaseActivity() {
             return Locale.getDefault().language
         }
 
+        return getISOFromServer(language)
+    }
+
+    private fun getISOFromServer(language: String): String {
         val currentUser: User = userManager.currentUser.blockingGet()
         val json = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
 
@@ -224,14 +221,7 @@ class TranslateActivity : BaseActivity() {
     }
 
     private fun setupSpinners() {
-        binding.fromLanguageSpinner.adapter = ArrayAdapter(
-            this, android.R.layout.simple_spinner_dropdown_item,
-            fromLanguages
-        )
-        binding.toLanguageSpinner.adapter = ArrayAdapter(
-            this, android.R.layout.simple_spinner_dropdown_item,
-            toLanguages
-        )
+        fillSpinners()
 
         binding.fromLanguageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
@@ -262,6 +252,19 @@ class TranslateActivity : BaseActivity() {
                 // write code to perform some action
             }
         }
+    }
+
+    private fun fillSpinners() {
+        binding.fromLanguageSpinner.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            fromLanguages
+        )
+        binding.toLanguageSpinner.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            toLanguages
+        )
     }
 
     companion object {
