@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="@dimen/standard_padding">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -64,17 +64,19 @@
                 android:id="@+id/fromLanguage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="middle"
-                android:inputType="none"
-                android:lines="1"
-                android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu" />
+                android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:layout_width="@dimen/standard_double_margin"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_chevron_right" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/toLanguageInputLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:paddingTop="@dimen/standard_padding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -84,10 +86,7 @@
                 android:id="@+id/toLanguage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="middle"
-                android:inputType="none"
-                android:lines="1"
-                android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu" />
+                android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,13 +94,13 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/standard_quarter_margin">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/standard_padding">
 
             <TextView
                 android:id="@+id/original_message_textview"
@@ -109,7 +108,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standard_margin"
                 android:layout_marginEnd="@dimen/standard_margin"
-                android:layout_marginBottom="@dimen/standard_margin"
                 android:layout_weight="1"
                 android:background="@drawable/shape_grouped_incoming_message"
                 android:padding="@dimen/dialog_padding"
@@ -124,7 +122,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standard_margin"
                 android:layout_marginEnd="@dimen/standard_margin"
-                android:layout_marginBottom="@dimen/standard_margin"
                 android:layout_weight="1"
                 android:background="@drawable/shape_grouped_incoming_message"
                 android:padding="@dimen/dialog_padding"

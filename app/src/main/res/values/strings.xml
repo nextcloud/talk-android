@@ -658,6 +658,8 @@ How to translate with transifex:
     <string name="scroll_to_bottom">Scroll to bottom</string>
     <string name="translate">Translate</string>
     <string name="translation">Translation</string>
+    <string name="translation_from">From</string>
+    <string name="translation_to">To</string>
     <string name="translation_detect_language">Detect language</string>
     <string name="translation_device_settings">Device settings</string>
     <string name="translation_error_title">Translation failed</string>
