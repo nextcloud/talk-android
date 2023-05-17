@@ -199,5 +199,24 @@ object CapabilitiesUtilNew {
         return false
     }
 
+    fun isTranslationsSupported(user: User?): Boolean {
+        if (user?.capabilities != null) {
+            val capabilities = user.capabilities
+            return capabilities?.spreedCapability?.config?.containsKey("chat") == true &&
+                capabilities.spreedCapability!!.config!!["chat"] != null &&
+                capabilities.spreedCapability!!.config!!["chat"]!!.containsKey("translations")
+        }
+
+        return false
+    }
+
+    fun getLanguages(user: User?): Any? {
+        return if (isTranslationsSupported(user)) {
+            user!!.capabilities!!.spreedCapability!!.config!!["chat"]!!["translations"]
+        } else {
+            null
+        }
+    }
+
     const val DEFAULT_CHAT_SIZE = 1000
 }

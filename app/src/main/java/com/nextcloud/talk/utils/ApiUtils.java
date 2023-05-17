@@ -526,4 +526,8 @@ public class ApiUtils {
     public static String getUrlForConversationDescription(int version, String baseUrl, String token) {
         return getUrlForRoom(version, baseUrl, token) + "/description";
     }
+
+    public static String getUrlForTranslation(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/translation/translate";
+    }
 }

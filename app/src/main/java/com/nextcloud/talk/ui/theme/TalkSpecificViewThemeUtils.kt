@@ -28,7 +28,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -65,7 +64,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     private val appcompat: AndroidXViewThemeUtils
 ) :
     ViewThemeUtilsBase(schemes) {
-    fun themeIncomingMessageBubble(bubble: ViewGroup, grouped: Boolean, deleted: Boolean) {
+    fun themeIncomingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean) {
         val resources = bubble.resources
 
         var bubbleResource = R.drawable.shape_incoming_message
@@ -88,7 +87,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         ViewCompat.setBackground(bubble, bubbleDrawable)
     }
 
-    fun themeOutgoingMessageBubble(bubble: ViewGroup, grouped: Boolean, deleted: Boolean) {
+    fun themeOutgoingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean) {
         withScheme(bubble) { scheme ->
             val bgBubbleColor = if (deleted) {
                 ColorUtils.setAlphaComponent(scheme.surfaceVariant, HALF_ALPHA_INT)
