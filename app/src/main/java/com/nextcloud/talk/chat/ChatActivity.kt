@@ -3239,7 +3239,6 @@ class ChatActivity :
         val intent = Intent(this, TranslateActivity::class.java)
         intent.putExtras(bundle)
         startActivity(intent)
-
     }
 
     private fun hasVisibleItems(message: ChatMessage): Boolean {
