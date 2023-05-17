@@ -664,5 +664,6 @@ How to translate with transifex:
     <string name="translation_device_settings">Device settings</string>
     <string name="translation_error_title">Translation failed</string>
     <string name="translation_error_message">Could not detect language</string>
+    <string name="translation_copy_translated_text">Copy translated text</string>
 
 </resources>
