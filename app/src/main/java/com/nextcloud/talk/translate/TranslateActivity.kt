@@ -1,4 +1,24 @@
+/*
+ * Nextcloud Talk application
+ *
+ * @author Julius Linus
+ * Copyright (C) 2023 Julius Linus <julius.linus@nextcloud.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.nextcloud.talk.translate
+
 import android.app.AlertDialog
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -27,14 +47,8 @@ import org.json.JSONArray
 import java.util.Locale
 import javax.inject.Inject
 
-
-
-// TODO include license at top of the file
-
-
 @AutoInjector(NextcloudTalkApplication::class)
-class TranslateActivity : BaseActivity()
-{
+class TranslateActivity : BaseActivity() {
     private lateinit var binding: ActivityTranslateBinding
 
     @Inject
@@ -47,10 +61,9 @@ class TranslateActivity : BaseActivity()
 
     var toLanguages = arrayOf<String>()
 
-    var text : String? = null
+    var text: String? = null
 
-    var check : Int = 0
-
+    var check: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +72,7 @@ class TranslateActivity : BaseActivity()
 
         setupActionBar()
         setContentView(binding.root)
+        setupSystemColors()
         setupTextViews()
         setupSpinners()
         getLanguageOptions()
@@ -73,13 +87,16 @@ class TranslateActivity : BaseActivity()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
-        supportActionBar?.title = "Translation"
+        supportActionBar?.title = resources!!.getString(R.string.translation)
         viewThemeUtils.material.themeToolbar(binding.translationToolbar)
     }
 
     private fun setupTextViews() {
         val original = binding.originalMessageTextview
         val translation = binding.translatedMessageTextview
+
+        viewThemeUtils.talk.themeIncomingMessageBubble(original, grouped = true, deleted = false)
+        viewThemeUtils.talk.themeIncomingMessageBubble(translation, grouped = true, deleted = false)
 
         original.movementMethod = ScrollingMovementMethod()
         translation.movementMethod = ScrollingMovementMethod()
@@ -89,19 +106,17 @@ class TranslateActivity : BaseActivity()
         text = bundle?.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
     }
 
-
     private fun getLanguageOptions() {
-        val currentUser : User = userManager.currentUser.blockingGet()
-        val json  = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
-        Log.i("TranslateActivity", "json is: ${json.toString()}")
+        val currentUser: User = userManager.currentUser.blockingGet()
+        val json = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
+        Log.i("TranslateActivity", "json is: $json")
 
-        var fromLanguagesSet = mutableSetOf<String>("Detect Language")
-        var toLanguagesSet = mutableSetOf<String>("Device Settings")
+        val fromLanguagesSet = mutableSetOf("Detect Language")
+        val toLanguagesSet = mutableSetOf("Device Settings")
 
-        for( i in 0..json.length()-1) {
+        for (i in 0..json.length() - 1) {
             val current = json.getJSONObject(i)
-            if(current.getString("from") != Locale.getDefault().language)
-            {
+            if (current.getString("from") != Locale.getDefault().language) {
                 toLanguagesSet.add(current.getString("fromLabel"))
             }
 
@@ -111,25 +126,32 @@ class TranslateActivity : BaseActivity()
         fromLanguages = fromLanguagesSet.toTypedArray()
         toLanguages = toLanguagesSet.toTypedArray()
 
-        binding.fromLanguageSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
-            fromLanguages)
+        binding.fromLanguageSpinner.adapter = ArrayAdapter(
+            this, android.R.layout.simple_spinner_dropdown_item,
+            fromLanguages
+        )
 
-        binding.toLanguageSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
-            toLanguages)
-
+        binding.toLanguageSpinner.adapter = ArrayAdapter(
+            this, android.R.layout.simple_spinner_dropdown_item,
+            toLanguages
+        )
     }
 
-    private fun enableSpinners(value : Boolean) {
+    private fun enableSpinners(value: Boolean) {
         binding.fromLanguageSpinner.isEnabled = value
         binding.toLanguageSpinner.isEnabled = value
     }
 
-    private fun translate(fromLanguage: String?, toLanguage : String) {
-        val currentUser : User = userManager.currentUser.blockingGet()
-        val credentials : String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+    private fun translate(fromLanguage: String?, toLanguage: String) {
+        val currentUser: User = userManager.currentUser.blockingGet()
+        val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val translateURL = currentUser.baseUrl +
             "/ocs/v2.php/translation/translate?text=$text&toLanguage=$toLanguage" +
-            if(fromLanguage != null && fromLanguage != "") { "&fromLanguage=$fromLanguage" } else {""}
+            if (fromLanguage != null && fromLanguage != "") {
+                "&fromLanguage=$fromLanguage"
+            } else {
+                ""
+            }
 
         Log.i("TranslateActivity", "Url is: $translateURL")
         ncApi.translateMessage(credentials, translateURL)
@@ -165,17 +187,15 @@ class TranslateActivity : BaseActivity()
         enableSpinners(true)
     }
 
-
-    private fun getISOFromLanguage(language: String) : String {
-        if(language == "Device Settings") {
+    private fun getISOFromLanguage(language: String): String {
+        if (language == "Device Settings") {
             return Locale.getDefault().language
         }
 
+        val currentUser: User = userManager.currentUser.blockingGet()
+        val json = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
 
-        val currentUser : User = userManager.currentUser.blockingGet()
-        val json  = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
-
-        for( i in 0..json.length()-1) {
+        for (i in 0..json.length() - 1) {
             val current = json.getJSONObject(i)
             if (current.getString("fromLabel") == language) {
                 return current.getString("from")
@@ -185,20 +205,25 @@ class TranslateActivity : BaseActivity()
         return ""
     }
 
-
     private fun setupSpinners() {
-        binding.fromLanguageSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
-            fromLanguages)
-        binding.toLanguageSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
-            toLanguages)
+        binding.fromLanguageSpinner.adapter = ArrayAdapter(
+            this, android.R.layout.simple_spinner_dropdown_item,
+            fromLanguages
+        )
+        binding.toLanguageSpinner.adapter = ArrayAdapter(
+            this, android.R.layout.simple_spinner_dropdown_item,
+            toLanguages
+        )
 
         binding.fromLanguageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                if(++check > 1) {
-                    var fromLabel : String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
-                    var toLabel : String = getISOFromLanguage(binding.toLanguageSpinner.selectedItem.toString())
-                    Log.i("TranslateActivity", "fromLanguageSpinner :: fromLabel = $fromLabel, toLabel = $ count: " +
-                        "$check")
+                if (++check > 1) {
+                    val fromLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
+                    val toLabel: String = getISOFromLanguage(binding.toLanguageSpinner.selectedItem.toString())
+                    Log.i(
+                        "TranslateActivity", "fromLanguageSpinner :: fromLabel = $fromLabel, toLabel = $ count: " +
+                            "$check"
+                    )
                     translate(fromLabel, toLabel)
                 }
             }
@@ -210,11 +235,13 @@ class TranslateActivity : BaseActivity()
 
         binding.toLanguageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                if(++check > 2) {
-                    var toLabel : String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
-                    var fromLabel : String = getISOFromLanguage(binding.fromLanguageSpinner.selectedItem.toString())
-                    Log.i("TranslateActivity", "toLanguageSpinner :: fromLabel = $fromLabel, toLabel = $toLabel " +
-                        "count: $check")
+                if (++check > 2) {
+                    val toLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
+                    val fromLabel: String = getISOFromLanguage(binding.fromLanguageSpinner.selectedItem.toString())
+                    Log.i(
+                        "TranslateActivity", "toLanguageSpinner :: fromLabel = $fromLabel, toLabel = $toLabel " +
+                            "count: $check"
+                    )
                     translate(fromLabel, toLabel)
                 }
             }
@@ -223,8 +250,5 @@ class TranslateActivity : BaseActivity()
                 // write code to perform some action
             }
         }
-
     }
-
-
 }

@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Julius Linus
+  ~ Copyright (C) 2023 Julius Linus <julius.linus@nextcloud.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:weightSum="2"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="2">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/translation_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/translation_toolbar"
             android:layout_width="match_parent"
@@ -21,44 +41,38 @@
             app:navigationIconTint="@color/fontAppbar"
             app:popupTheme="@style/appActionBarPopupMenu"
             app:titleTextColor="@color/fontAppbar"
-            tools:title="" >
+            tools:title="">
 
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
         android:padding="@dimen/standard_padding">
 
         <Spinner
             android:id="@+id/fromLanguageSpinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/grey_200"
-            android:layout_marginRight="@dimen/standard_margin"
-           />
+            android:layout_height="@dimen/min_size_clickable_area"
+            android:layout_weight="1"
+            android:background="@color/grey_200" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:backgroundTint="@color/medium_emphasis_text"
-            android:background="@drawable/ic_chevron_right"
-            />
-
-
+        <ImageView
+            android:layout_width="@dimen/min_size_clickable_area"
+            android:layout_height="@dimen/min_size_clickable_area"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_chevron_right" />
 
         <Spinner
             android:id="@+id/toLanguageSpinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/fromLanguageSpinner"
-            android:background="@color/grey_200"
-            android:layout_marginLeft="@dimen/standard_margin"
-            />
+            android:layout_height="@dimen/min_size_clickable_area"
+            android:layout_weight="1"
+            android:background="@color/grey_200" />
 
     </LinearLayout>
 
@@ -66,27 +80,31 @@
         android:id="@+id/original_message_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_margin"
         android:layout_weight="1"
-        android:textSize="@dimen/message_text_size"
-        android:textColor="@color/nc_incoming_text_default"
-        android:padding="@dimen/dialog_padding"
-        android:layout_margin="@dimen/standard_margin"
         android:background="@drawable/shape_grouped_incoming_message"
+        android:padding="@dimen/dialog_padding"
         android:scrollbars="vertical"
-        android:text="" />
+        android:text=""
+        android:textColor="@color/nc_incoming_text_default"
+        android:textSize="@dimen/message_text_size" />
 
     <TextView
         android:id="@+id/translated_message_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_margin"
         android:layout_weight="1"
-        android:scrollbars="vertical"
-        android:padding="@dimen/dialog_padding"
         android:background="@drawable/shape_grouped_incoming_message"
+        android:padding="@dimen/dialog_padding"
+        android:scrollbars="vertical"
         android:text=""
-        android:textSize="@dimen/message_text_size"
         android:textColor="@color/nc_incoming_text_default"
+        android:textSize="@dimen/message_text_size"
         android:visibility="visible" />
 
     <ProgressBar
@@ -95,6 +113,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
-
 
 </LinearLayout>

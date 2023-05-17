@@ -219,7 +219,5 @@ object CapabilitiesUtilNew {
         return null
     }
 
-
-
     const val DEFAULT_CHAT_SIZE = 1000
 }
