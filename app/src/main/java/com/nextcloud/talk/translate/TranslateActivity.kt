@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Julius Linus
+ * @author Andy Scherzinger
  * Copyright (C) 2023 Julius Linus <julius.linus@nextcloud.com>
+ * Copyright (C) 2023 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +21,6 @@
  */
 package com.nextcloud.talk.translate
 
-import android.app.AlertDialog
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
@@ -27,7 +28,9 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 import autodagger.AutoInjector
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -172,11 +175,26 @@ class TranslateActivity : BaseActivity() {
 
                 override fun onError(e: Throwable) {
                     binding.progressBar.visibility = View.GONE
-                    val builder = AlertDialog.Builder(this@TranslateActivity)
-                    builder.setTitle("Translation Failed")
-                    builder.setMessage("Could not detect language")
-                    val dialog = builder.create()
-                    dialog.show()
+                    val dialogBuilder = MaterialAlertDialogBuilder(this@TranslateActivity)
+                        .setIcon(
+                            viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                                context,
+                                R.drawable.ic_warning_white
+                            )
+                        )
+                        .setTitle(R.string.translation_error_title)
+                        .setMessage(R.string.translation_error_message)
+                        .setPositiveButton(R.string.nc_ok) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+
+                    viewThemeUtils.dialog.colorMaterialAlertDialogBackground(context, dialogBuilder)
+
+                    val dialog = dialogBuilder.show()
+
+                    viewThemeUtils.platform.colorTextButtons(
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    )
                 }
 
                 override fun onComplete() {
