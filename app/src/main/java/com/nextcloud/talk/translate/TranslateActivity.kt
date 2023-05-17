@@ -75,8 +75,7 @@ class TranslateActivity : BaseActivity() {
         setupSpinners()
         getLanguageOptions()
 
-        if(savedInstanceState == null)
-        {
+        if (savedInstanceState == null) {
             translate(null, Locale.getDefault().language)
         } else {
             binding.translatedMessageTextview.text = savedInstanceState.getString(BundleKeys.SAVED_TRANSLATED_MESSAGE)
@@ -245,8 +244,6 @@ class TranslateActivity : BaseActivity() {
             val fromLabel: String = getISOFromLanguage(binding.fromLanguage.text.toString())
             translate(fromLabel, toLabel)
         }
-
-
     }
 
     private fun fillSpinners() {
