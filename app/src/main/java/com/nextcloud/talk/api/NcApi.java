@@ -659,5 +659,8 @@ public interface NcApi {
 
     @POST
     Observable<TranslationsOverall> translateMessage(@Header("Authorization") String authorization,
-                                                     @Url String url);
+                                                     @Url String url,
+                                                     @Query("text") String text,
+                                                     @Query("toLanguage") String toLanguage,
+                                                     @Nullable @Query("fromLanguage") String fromLanguage);
 }
