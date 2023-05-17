@@ -133,8 +133,8 @@ class TranslateActivity : BaseActivity() {
     }
 
     private fun enableSpinners(value: Boolean) {
-        binding.fromLanguageSpinner.isEnabled = value
-        binding.toLanguageSpinner.isEnabled = value
+        binding.fromLanguageInputLayout.isEnabled = value
+        binding.toLanguageInputLayout.isEnabled = value
     }
 
     private fun translate(fromLanguage: String?, toLanguage: String) {
@@ -221,13 +221,15 @@ class TranslateActivity : BaseActivity() {
     }
 
     private fun setupSpinners() {
+        viewThemeUtils.material.colorTextInputLayout(binding.fromLanguageInputLayout)
+        viewThemeUtils.material.colorTextInputLayout(binding.toLanguageInputLayout)
         fillSpinners()
 
-        binding.fromLanguageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.fromLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 if (++check > 1) {
                     val fromLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
-                    val toLabel: String = getISOFromLanguage(binding.toLanguageSpinner.selectedItem.toString())
+                    val toLabel: String = getISOFromLanguage(binding.fromLanguage.text.toString())
                     Log.i(TAG, "fromLanguageSpinner :: $FROM_LABEL = $fromLabel, $TO_LABEL = $ count: $check")
                     translate(fromLabel, toLabel)
                 }
@@ -238,11 +240,11 @@ class TranslateActivity : BaseActivity() {
             }
         }
 
-        binding.toLanguageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.toLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 if (++check > 2) {
                     val toLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
-                    val fromLabel: String = getISOFromLanguage(binding.fromLanguageSpinner.selectedItem.toString())
+                    val fromLabel: String = getISOFromLanguage(binding.fromLanguage.text.toString())
                     Log.i(TAG, "toLanguageSpinner :: $FROM_LABEL = $fromLabel, $TO_LABEL = $toLabel count: $check")
                     translate(fromLabel, toLabel)
                 }
@@ -255,16 +257,19 @@ class TranslateActivity : BaseActivity() {
     }
 
     private fun fillSpinners() {
-        binding.fromLanguageSpinner.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_dropdown_item,
-            fromLanguages
+        binding.fromLanguage.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, fromLanguages)
         )
-        binding.toLanguageSpinner.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_dropdown_item,
-            toLanguages
+        if (fromLanguages.isNotEmpty()) {
+            binding.fromLanguage.setText(fromLanguages[0])
+        }
+
+        binding.toLanguage.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, toLanguages)
         )
+        if (toLanguages.isNotEmpty()) {
+            binding.toLanguage.setText(toLanguages[0])
+        }
     }
 
     companion object {
