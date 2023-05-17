@@ -112,18 +112,18 @@ class TranslateActivity : BaseActivity() {
     private fun getLanguageOptions() {
         val currentUser: User = userManager.currentUser.blockingGet()
         val json = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
-        Log.i("TranslateActivity", "json is: $json")
+        Log.i(TAG, "json is: $json")
 
-        val fromLanguagesSet = mutableSetOf("Detect Language")
-        val toLanguagesSet = mutableSetOf("Device Settings")
+        val fromLanguagesSet = mutableSetOf(resources.getString(R.string.translation_detect_language))
+        val toLanguagesSet = mutableSetOf(resources.getString(R.string.translation_device_settings))
 
         for (i in 0..json.length() - 1) {
             val current = json.getJSONObject(i)
-            if (current.getString("from") != Locale.getDefault().language) {
-                toLanguagesSet.add(current.getString("fromLabel"))
+            if (current.getString(FROM_ID) != Locale.getDefault().language) {
+                toLanguagesSet.add(current.getString(FROM_LABEL))
             }
 
-            fromLanguagesSet.add(current.getString("toLabel"))
+            fromLanguagesSet.add(current.getString(TO_LABEL))
         }
 
         fromLanguages = fromLanguagesSet.toTypedArray()
@@ -156,7 +156,7 @@ class TranslateActivity : BaseActivity() {
                 ""
             }
 
-        Log.i("TranslateActivity", "Url is: $translateURL")
+        Log.i(TAG, "Url is: $translateURL")
         ncApi.translateMessage(credentials, translateURL)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -206,7 +206,7 @@ class TranslateActivity : BaseActivity() {
     }
 
     private fun getISOFromLanguage(language: String): String {
-        if (language == "Device Settings") {
+        if (resources.getString(R.string.translation_device_settings).equals(language)) {
             return Locale.getDefault().language
         }
 
@@ -215,8 +215,8 @@ class TranslateActivity : BaseActivity() {
 
         for (i in 0..json.length() - 1) {
             val current = json.getJSONObject(i)
-            if (current.getString("fromLabel") == language) {
-                return current.getString("from")
+            if (current.getString(FROM_LABEL) == language) {
+                return current.getString(FROM_ID)
             }
         }
 
@@ -238,10 +238,7 @@ class TranslateActivity : BaseActivity() {
                 if (++check > 1) {
                     val fromLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
                     val toLabel: String = getISOFromLanguage(binding.toLanguageSpinner.selectedItem.toString())
-                    Log.i(
-                        "TranslateActivity", "fromLanguageSpinner :: fromLabel = $fromLabel, toLabel = $ count: " +
-                            "$check"
-                    )
+                    Log.i(TAG, "fromLanguageSpinner :: $FROM_LABEL = $fromLabel, $TO_LABEL = $ count: $check")
                     translate(fromLabel, toLabel)
                 }
             }
@@ -256,10 +253,7 @@ class TranslateActivity : BaseActivity() {
                 if (++check > 2) {
                     val toLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
                     val fromLabel: String = getISOFromLanguage(binding.fromLanguageSpinner.selectedItem.toString())
-                    Log.i(
-                        "TranslateActivity", "toLanguageSpinner :: fromLabel = $fromLabel, toLabel = $toLabel " +
-                            "count: $check"
-                    )
+                    Log.i(TAG, "toLanguageSpinner :: $FROM_LABEL = $fromLabel, $TO_LABEL = $toLabel count: $check")
                     translate(fromLabel, toLabel)
                 }
             }
@@ -268,5 +262,12 @@ class TranslateActivity : BaseActivity() {
                 // write code to perform some action
             }
         }
+    }
+
+    companion object {
+        private val TAG = TranslateActivity::class.simpleName
+        private const val FROM_ID = "from"
+        private const val FROM_LABEL = "fromLabel"
+        private const val TO_LABEL = "toLabel"
     }
 }
