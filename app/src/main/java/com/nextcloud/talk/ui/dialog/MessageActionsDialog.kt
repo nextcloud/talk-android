@@ -88,7 +88,11 @@ class MessageActionsDialog(
         viewThemeUtils.platform.themeDialog(dialogMessageActionsBinding.root)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
-        initMenuItemTranslate(!message.isDeleted && CapabilitiesUtilNew.isTranslationsSupported(user))
+        initMenuItemTranslate(
+            !message.isDeleted &&
+                ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
+                CapabilitiesUtilNew.isTranslationsSupported(user)
+        )
         initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(
             message.replyable &&
