@@ -150,6 +150,7 @@ import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
+import com.nextcloud.talk.translate.TranslateActivity
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
@@ -3229,6 +3230,15 @@ class ChatActivity :
             message?.text
         )
         clipboardManager.setPrimaryClip(clipData)
+    }
+
+    fun translateMessage(message: IMessage?) {
+        val bundle = Bundle()
+        bundle.putString(BundleKeys.KEY_TRANSLATE_MESSAGE, message?.text)
+
+        val intent = Intent(this, TranslateActivity::class.java)
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
 
     private fun hasVisibleItems(message: ChatMessage): Boolean {

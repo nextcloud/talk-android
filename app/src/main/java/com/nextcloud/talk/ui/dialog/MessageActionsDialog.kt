@@ -55,6 +55,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.json.JSONArray
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -88,6 +89,12 @@ class MessageActionsDialog(
         viewThemeUtils.platform.themeDialog(dialogMessageActionsBinding.root)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
+        initMenuItemTranslate(
+            !message.isDeleted &&
+                ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
+                CapabilitiesUtilNew.isTranslationsSupported(user) &&
+                JSONArray(CapabilitiesUtilNew.getLanguages(user).toString()).length() > 0
+        )
         initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(
             message.replyable &&
@@ -294,6 +301,17 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuCopyMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuItemTranslate(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuTranslateMessage.setOnClickListener {
+                chatActivity.translateMessage(message)
+                dismiss()
+            }
+        }
+
+        dialogMessageActionsBinding.menuTranslateMessage.visibility = getVisibility(visible)
     }
 
     private fun getVisibility(visible: Boolean): Int {

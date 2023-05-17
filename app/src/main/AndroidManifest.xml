@@ -190,6 +190,10 @@
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".translate.TranslateActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".profile.ProfileActivity"
             android:theme="@style/AppTheme" />
 
