@@ -210,13 +210,12 @@ object CapabilitiesUtilNew {
         return false
     }
 
-    fun getLanguages(user: User?) : Any? {
-
-        if(isTranslationsSupported(user)) {
-            return user!!.capabilities!!.spreedCapability!!.config!!["chat"]!!["translations"]
+    fun getLanguages(user: User?): Any? {
+        return if (isTranslationsSupported(user)) {
+            user!!.capabilities!!.spreedCapability!!.config!!["chat"]!!["translations"]
+        } else {
+            null
         }
-
-        return null
     }
 
     const val DEFAULT_CHAT_SIZE = 1000
