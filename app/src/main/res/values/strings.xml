@@ -448,10 +448,10 @@ How to translate with transifex:
     <string name="open_in_files_app">Open in Files app</string>
     <string name="send_to_forbidden">You are not allowed to share content to this chat</string>
 
-    <string name="typing_is_typing">is typing</string>
-    <string name="typing_are_typing">are typing</string>
-    <string name="typing_1_other">and 1 other is typing…</string>
-    <string name="typing_x_others">and %1$s others are typing…</string>
+    <string name="typing_is_typing">is typing …</string>
+    <string name="typing_are_typing">are typing …</string>
+    <string name="typing_1_other">and 1 other is typing …</string>
+    <string name="typing_x_others">and %1$s others are typing …</string>
 
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>
