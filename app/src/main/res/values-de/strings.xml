@@ -462,7 +462,9 @@
     <string name="thisWeek">Diese Woche</string>
     <string name="title_attachments">Anhänge</string>
     <string name="today">Heute</string>
-    <string name="translate">beim Übersetzen</string>
+    <string name="translate">Übersetzen</string>
+    <string name="translation">Übersetzung</string>
+    <string name="translation_copy_translated_text">Übersetzen Text kopieren</string>
     <string name="translation_detect_language">Sprache erkennen</string>
     <string name="translation_device_settings">Geräteeinstellungen</string>
     <string name="translation_error_message">Sprache konnte nicht erkannt werden</string>

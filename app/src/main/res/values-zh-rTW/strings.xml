@@ -105,6 +105,7 @@
     <string name="nc_configure_cert_auth">選擇驗證憑證</string>
     <string name="nc_connecting_call">連線中 …</string>
     <string name="nc_contacts_done">完成</string>
+    <string name="nc_conversation_description">對話描述</string>
     <string name="nc_conversation_link">對話的連結</string>
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
     <string name="nc_conversation_menu_video_call">視訊通話</string>
@@ -462,6 +463,8 @@
     <string name="title_attachments">附件</string>
     <string name="today">今天</string>
     <string name="translate">翻譯</string>
+    <string name="translation">翻譯</string>
+    <string name="translation_copy_translated_text">複製已翻譯的文字</string>
     <string name="translation_detect_language">偵測語言</string>
     <string name="translation_device_settings">裝置設定</string>
     <string name="translation_error_message">無法偵測語言</string>

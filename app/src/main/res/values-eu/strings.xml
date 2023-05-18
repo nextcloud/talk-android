@@ -462,6 +462,7 @@
     <string name="thisWeek">Aste honetan</string>
     <string name="title_attachments">Eranskinak</string>
     <string name="today">Gaur</string>
+    <string name="translate">Itzuli</string>
     <string name="translation_detect_language">Detektatu hizkuntza</string>
     <string name="translation_device_settings">Gailuaren ezarpenak</string>
     <string name="translation_error_message">Ezin izan da hizkuntza hauteman</string>

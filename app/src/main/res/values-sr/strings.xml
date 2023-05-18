@@ -463,6 +463,8 @@
     <string name="title_attachments">Прилози</string>
     <string name="today">Данас</string>
     <string name="translate">Превођење</string>
+    <string name="translation">Превод</string>
+    <string name="translation_copy_translated_text">Копирај преведени текст</string>
     <string name="translation_detect_language">Откриј језик</string>
     <string name="translation_device_settings">Подешавања уређаја</string>
     <string name="translation_error_message">Не може да се детектује језик</string>

@@ -463,6 +463,7 @@
     <string name="title_attachments">Přílohy</string>
     <string name="today">Dnes</string>
     <string name="translate">Překládání</string>
+    <string name="translation_copy_translated_text">Zkopírovat přeložený text</string>
     <string name="translation_detect_language">Zjistit jazyk</string>
     <string name="translation_device_settings">Nastavení zařízení</string>
     <string name="translation_error_message">Nepodařilo se zjistit jazyk</string>

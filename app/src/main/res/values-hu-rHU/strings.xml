@@ -462,6 +462,8 @@
     <string name="thisWeek">Ez a hét</string>
     <string name="title_attachments">Mellékletek</string>
     <string name="today">Ma</string>
+    <string name="translate">Lefordítás</string>
+    <string name="translation_copy_translated_text">Lefordított szöveg másolása</string>
     <string name="translation_detect_language">Nyelv észlelése</string>
     <string name="translation_device_settings">Eszközbeállítások</string>
     <string name="translation_error_message">Nem sikerült észlelni a nyelvet</string>

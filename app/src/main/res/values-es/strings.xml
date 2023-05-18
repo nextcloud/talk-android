@@ -464,6 +464,8 @@
     <string name="title_attachments">Adjuntos</string>
     <string name="today">Hoy</string>
     <string name="translate">Traduce</string>
+    <string name="translation">Traducción</string>
+    <string name="translation_copy_translated_text">Copiar texto traducido</string>
     <string name="translation_detect_language">Detectar idioma</string>
     <string name="translation_device_settings">Configuración del dispositivo</string>
     <string name="translation_error_message">No fue posible detectar el lenguaje</string>

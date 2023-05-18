@@ -462,6 +462,7 @@
     <string name="thisWeek">Cette semaine</string>
     <string name="title_attachments">Pièces jointes</string>
     <string name="today">Aujourd\'hui</string>
+    <string name="translate">Traduire</string>
     <string name="translation_detect_language">Détecter la langue</string>
     <string name="translation_device_settings">Paramètres de l\'appareil</string>
     <string name="translation_error_message">Impossible de détecter la langue</string>
