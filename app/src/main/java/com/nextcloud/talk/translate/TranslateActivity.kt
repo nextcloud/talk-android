@@ -21,6 +21,9 @@
  */
 package com.nextcloud.talk.translate
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
@@ -73,6 +76,7 @@ class TranslateActivity : BaseActivity() {
         setupSystemColors()
         setupTextViews()
         setupSpinners()
+        setupCopyButton()
         getLanguageOptions()
 
         if (savedInstanceState == null) {
@@ -94,6 +98,19 @@ class TranslateActivity : BaseActivity() {
         super.onSaveInstanceState(outState)
     }
 
+    private fun setupCopyButton() {
+        viewThemeUtils.material.colorMaterialButtonPrimaryFilled(binding.copyTranslatedMessage)
+        binding.copyTranslatedMessage.setOnClickListener {
+            val clipboardManager =
+                getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newPlainText(
+                resources?.getString(R.string.nc_app_product_name),
+                binding.translatedMessageTextview.text?.toString()
+            )
+            clipboardManager.setPrimaryClip(clipData)
+        }
+    }
+
     private fun setupActionBar() {
         setSupportActionBar(binding.translationToolbar)
         binding.translationToolbar.setNavigationOnClickListener {
@@ -107,14 +124,19 @@ class TranslateActivity : BaseActivity() {
     }
 
     private fun setupTextViews() {
-        val original = binding.originalMessageTextview
-        val translation = binding.translatedMessageTextview
+        viewThemeUtils.talk.themeIncomingMessageBubble(
+            binding.originalMessageTextview,
+            grouped = true,
+            deleted = false
+        )
+        viewThemeUtils.talk.themeIncomingMessageBubble(
+            binding.translatedMessageTextview,
+            grouped = true,
+            deleted = false
+        )
 
-        viewThemeUtils.talk.themeIncomingMessageBubble(original, grouped = true, deleted = false)
-        viewThemeUtils.talk.themeIncomingMessageBubble(translation, grouped = true, deleted = false)
-
-        original.movementMethod = ScrollingMovementMethod()
-        translation.movementMethod = ScrollingMovementMethod()
+        binding.originalMessageTextview.movementMethod = ScrollingMovementMethod()
+        binding.translatedMessageTextview.movementMethod = ScrollingMovementMethod()
 
         val bundle = intent.extras
         binding.originalMessageTextview.text = bundle?.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
@@ -163,13 +185,13 @@ class TranslateActivity : BaseActivity() {
             ?.subscribe(object : Observer<TranslationsOverall> {
                 override fun onSubscribe(d: Disposable) {
                     enableSpinners(false)
-                    binding.translatedMessageTextview.visibility = View.GONE
+                    binding.translatedMessageContainer.visibility = View.GONE
                     binding.progressBar.visibility = View.VISIBLE
                 }
 
                 override fun onNext(translationOverall: TranslationsOverall) {
                     binding.progressBar.visibility = View.GONE
-                    binding.translatedMessageTextview.visibility = View.VISIBLE
+                    binding.translatedMessageContainer.visibility = View.VISIBLE
                     binding.translatedMessageTextview.text = translationOverall.ocs?.data?.text
                 }
 
