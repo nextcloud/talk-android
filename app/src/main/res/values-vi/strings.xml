@@ -244,6 +244,10 @@
     <string name="thisWeek">Tuần này</string>
     <string name="title_attachments">Đính kèm</string>
     <string name="today">Hôm nay</string>
+    <string name="translate">Dịch</string>
+    <string name="translation_device_settings">Cài đặt thiết bị</string>
+    <string name="translation_from">Từ</string>
+    <string name="translation_to">Tới</string>
     <string name="user_info_address">Địa chỉ</string>
     <string name="user_info_displayname">Tên đầy đủ</string>
     <string name="user_info_email">Thư điện tử</string>

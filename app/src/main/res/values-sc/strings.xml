@@ -361,6 +361,10 @@
     <string name="thisWeek">Custa chida</string>
     <string name="title_attachments">Alligongiados</string>
     <string name="today">Oe</string>
+    <string name="translate">Borta</string>
+    <string name="translation_device_settings">Impostatziones de su dispositivu</string>
+    <string name="translation_from">Dae</string>
+    <string name="translation_to">A</string>
     <string name="upload_new_avatar_from_device">Càrriga un\'avatar nou dae dispositivu</string>
     <string name="user_info_address">Indiritzu</string>
     <string name="user_info_displayname">Nùmene e sambenadu</string>

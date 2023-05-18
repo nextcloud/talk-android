@@ -370,6 +370,12 @@
     <string name="thisWeek">Esta semana</string>
     <string name="title_attachments">Anexos</string>
     <string name="today">Hoxe</string>
+    <string name="translation_detect_language">Detectar a linguaxe</string>
+    <string name="translation_device_settings">Axustes do dispositivo</string>
+    <string name="translation_error_message">Non se puido detectar o idioma</string>
+    <string name="translation_error_title">Produciuse un erro na tradución</string>
+    <string name="translation_from">Dende:</string>
+    <string name="translation_to">Para</string>
     <string name="user_info_address">Enderezo</string>
     <string name="user_info_displayname">Nome completo</string>
     <string name="user_info_email">Correo-e</string>

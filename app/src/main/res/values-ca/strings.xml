@@ -453,6 +453,12 @@
     <string name="thisWeek">Aquesta setmana</string>
     <string name="title_attachments">Adjunts</string>
     <string name="today">Avui</string>
+    <string name="translate">Traducció</string>
+    <string name="translation_detect_language">Detectar idioma</string>
+    <string name="translation_device_settings">Paràmetres del dispositiu</string>
+    <string name="translation_error_title">La traducció ha fallat</string>
+    <string name="translation_from">De</string>
+    <string name="translation_to">A</string>
     <string name="upload_new_avatar_from_device">Puja l\'avatar nou des del dispositiu</string>
     <string name="user_info_address">Adreça</string>
     <string name="user_info_displayname">Nom complet</string>

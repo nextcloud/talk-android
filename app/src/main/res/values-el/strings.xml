@@ -370,6 +370,10 @@
     <string name="thisWeek">Αυτή την εβδομάδα</string>
     <string name="title_attachments">Συνημμένα</string>
     <string name="today">Σήμερα</string>
+    <string name="translate">Μετάφραση</string>
+    <string name="translation_device_settings">Ρυθμίσεις συσκευής</string>
+    <string name="translation_from">Από</string>
+    <string name="translation_to">Έως</string>
     <string name="upload_new_avatar_from_device">Μεταφόρτωση νέας εικόνας προφίλ από την συσκευή</string>
     <string name="user_info_address">Διεύθυνση</string>
     <string name="user_info_displayname">Πλήρες όνομα</string>

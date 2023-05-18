@@ -462,6 +462,10 @@
     <string name="thisWeek">本周</string>
     <string name="title_attachments">附件</string>
     <string name="today">今天</string>
+    <string name="translate">翻译</string>
+    <string name="translation_device_settings">设备设置</string>
+    <string name="translation_from">来自</string>
+    <string name="translation_to">给</string>
     <string name="upload_new_avatar_from_device">从设备上传新头像</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_displayname">全名</string>

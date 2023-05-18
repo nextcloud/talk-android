@@ -403,6 +403,9 @@
     <string name="thisWeek">Questa settimana</string>
     <string name="title_attachments">Allegati</string>
     <string name="today">Oggi</string>
+    <string name="translation_device_settings">Impostazioni dei dispositivi</string>
+    <string name="translation_from">Da</string>
+    <string name="translation_to">A</string>
     <string name="upload_new_avatar_from_device">Carica nuovo avatar dal dispositivo</string>
     <string name="user_info_address">Indirizzo</string>
     <string name="user_info_displayname">Nome completo</string>

@@ -462,6 +462,13 @@
     <string name="thisWeek">Tento týden</string>
     <string name="title_attachments">Přílohy</string>
     <string name="today">Dnes</string>
+    <string name="translate">Překládání</string>
+    <string name="translation_detect_language">Zjistit jazyk</string>
+    <string name="translation_device_settings">Nastavení zařízení</string>
+    <string name="translation_error_message">Nepodařilo se zjistit jazyk</string>
+    <string name="translation_error_title">Překlad se nezdařil</string>
+    <string name="translation_from">Od</string>
+    <string name="translation_to">Pro</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_displayname">Celé jméno</string>

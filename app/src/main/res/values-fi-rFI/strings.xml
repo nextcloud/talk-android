@@ -367,6 +367,13 @@
     <string name="thisWeek">Tämä viikko</string>
     <string name="title_attachments">Liitteet</string>
     <string name="today">Tänään</string>
+    <string name="translate">Käännä</string>
+    <string name="translation_detect_language">Havaitse kieli</string>
+    <string name="translation_device_settings">Laiteasetukset</string>
+    <string name="translation_error_message">Kielen havaitseminen ei onnistunut</string>
+    <string name="translation_error_title">Kääntäminen epäonnistui</string>
+    <string name="translation_from">Lähettäjä</string>
+    <string name="translation_to">Vastaanottaja</string>
     <string name="user_info_address">Osoite</string>
     <string name="user_info_displayname">Koko nimi</string>
     <string name="user_info_email">Sähköposti</string>

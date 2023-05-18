@@ -438,6 +438,10 @@
     <string name="thisWeek">Tento týždeň</string>
     <string name="title_attachments">Prílohy</string>
     <string name="today">Dnes</string>
+    <string name="translate">Preložiť</string>
+    <string name="translation_device_settings">Nastavenia zariadenia</string>
+    <string name="translation_from">Od</string>
+    <string name="translation_to">Pre</string>
     <string name="upload_new_avatar_from_device">Nahrať nového avatara zo zariadenia</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_displayname">Meno a priezvisko</string>

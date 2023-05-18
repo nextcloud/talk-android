@@ -434,6 +434,13 @@
     <string name="thisWeek">Эта неделя</string>
     <string name="title_attachments">Вложения</string>
     <string name="today">Сегодня</string>
+    <string name="translate">Помочь с переводом</string>
+    <string name="translation_detect_language">Определить язык</string>
+    <string name="translation_device_settings">Параметры устройства</string>
+    <string name="translation_error_message">Не удалось определить язык</string>
+    <string name="translation_error_title">Не удалось перевести</string>
+    <string name="translation_from">От</string>
+    <string name="translation_to">Кому</string>
     <string name="upload_new_avatar_from_device">Загрузить новый аватар с устройства</string>
     <string name="user_info_address">Адрес</string>
     <string name="user_info_displayname">Полное имя</string>

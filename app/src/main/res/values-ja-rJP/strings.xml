@@ -400,6 +400,11 @@
     <string name="thisWeek">今週</string>
     <string name="title_attachments">添付ファイル</string>
     <string name="today">今日</string>
+    <string name="translate">翻訳</string>
+    <string name="translation_device_settings">デバイスの設定</string>
+    <string name="translation_error_message">言語を検出できませんでした</string>
+    <string name="translation_from">差出人</string>
+    <string name="translation_to">宛先</string>
     <string name="upload_new_avatar_from_device">デバイスから新しいアバターをアップロード</string>
     <string name="user_info_address">住所</string>
     <string name="user_info_displayname">フルネーム</string>

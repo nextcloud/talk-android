@@ -376,6 +376,8 @@
     <string name="thisWeek">هذا الأسبوع</string>
     <string name="title_attachments">المرفقات</string>
     <string name="today">اليوم</string>
+    <string name="translate">ترجم</string>
+    <string name="translation_device_settings">إعدادات الجهاز</string>
     <string name="upload_new_avatar_from_device">رفم صورة رمزية جديده من الجهاز</string>
     <string name="user_info_address">العنوان</string>
     <string name="user_info_displayname">الاسم الكامل</string>

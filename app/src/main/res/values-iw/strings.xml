@@ -274,6 +274,9 @@
     <string name="thisWeek">השבוע</string>
     <string name="title_attachments">קבצים מצורפים</string>
     <string name="today">היום</string>
+    <string name="translation_device_settings">הגדרות מכשיר</string>
+    <string name="translation_from">מאת</string>
+    <string name="translation_to">אל</string>
     <string name="user_info_address">כתובת</string>
     <string name="user_info_displayname">שם מלא</string>
     <string name="user_info_email">דוא״ל</string>

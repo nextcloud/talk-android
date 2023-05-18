@@ -430,6 +430,13 @@
     <string name="thisWeek">Цього тижня</string>
     <string name="title_attachments">Вкладення</string>
     <string name="today">Сьогодні</string>
+    <string name="translate">Перекласти</string>
+    <string name="translation_detect_language">Визначити мову</string>
+    <string name="translation_device_settings">Налаштування пристрою</string>
+    <string name="translation_error_message">Не вдалося визначити мову</string>
+    <string name="translation_error_title">Не вдалося перекласти</string>
+    <string name="translation_from">Від</string>
+    <string name="translation_to">Кому</string>
     <string name="user_info_address">Адреса</string>
     <string name="user_info_displayname">Повна назва</string>
     <string name="user_info_email">Електронна пошта</string>

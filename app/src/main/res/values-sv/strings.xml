@@ -320,6 +320,12 @@
     <string name="thisWeek">Denna vecka</string>
     <string name="title_attachments">Bilagor</string>
     <string name="today">Idag</string>
+    <string name="translation_detect_language">Upptäck språk</string>
+    <string name="translation_device_settings">Enhetsinställningar</string>
+    <string name="translation_error_message">Kunde inte identifiera språk</string>
+    <string name="translation_error_title">Översättning misslyckades</string>
+    <string name="translation_from">Från</string>
+    <string name="translation_to">Till</string>
     <string name="upload_new_avatar_from_device">Ladda upp ny avatar från enheten</string>
     <string name="user_info_address">Adress</string>
     <string name="user_info_displayname">Fullständigt namn</string>

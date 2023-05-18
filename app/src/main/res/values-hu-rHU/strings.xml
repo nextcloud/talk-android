@@ -462,6 +462,12 @@
     <string name="thisWeek">Ez a hét</string>
     <string name="title_attachments">Mellékletek</string>
     <string name="today">Ma</string>
+    <string name="translation_detect_language">Nyelv észlelése</string>
+    <string name="translation_device_settings">Eszközbeállítások</string>
+    <string name="translation_error_message">Nem sikerült észlelni a nyelvet</string>
+    <string name="translation_error_title">A fordítás sikertelen</string>
+    <string name="translation_from">Feladó</string>
+    <string name="translation_to">Címzett</string>
     <string name="upload_new_avatar_from_device">Új profilkép feltöltése az eszközről</string>
     <string name="user_info_address">Cím</string>
     <string name="user_info_displayname">Teljes név</string>

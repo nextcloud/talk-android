@@ -310,6 +310,9 @@
     <string name="thisWeek">Denne uken</string>
     <string name="title_attachments">Vedlegg</string>
     <string name="today">I dag</string>
+    <string name="translation_device_settings">Enhetsinnstillinger</string>
+    <string name="translation_from">Fra</string>
+    <string name="translation_to">Til</string>
     <string name="upload_new_avatar_from_device">Last opp et nytt profilbilde fra enhet</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Fullt navn</string>

@@ -375,6 +375,9 @@
     <string name="thisWeek">Ovaj tjedan</string>
     <string name="title_attachments">Privici</string>
     <string name="today">Danas</string>
+    <string name="translation_device_settings">Postavke uređaja</string>
+    <string name="translation_from">Od</string>
+    <string name="translation_to">Do</string>
     <string name="upload_new_avatar_from_device">Otpremi novi avatar s uređaja</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_displayname">Puno ime</string>

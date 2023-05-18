@@ -462,6 +462,12 @@
     <string name="thisWeek">Aste honetan</string>
     <string name="title_attachments">Eranskinak</string>
     <string name="today">Gaur</string>
+    <string name="translation_detect_language">Detektatu hizkuntza</string>
+    <string name="translation_device_settings">Gailuaren ezarpenak</string>
+    <string name="translation_error_message">Ezin izan da hizkuntza hauteman</string>
+    <string name="translation_error_title">Itzulpenak huts egin du</string>
+    <string name="translation_from">Nork</string>
+    <string name="translation_to">Nori</string>
     <string name="upload_new_avatar_from_device">Kargatu avatar berria gailutik</string>
     <string name="user_info_address">Helbidea</string>
     <string name="user_info_displayname">Izen osoa</string>

@@ -462,6 +462,13 @@
     <string name="thisWeek">Diese Woche</string>
     <string name="title_attachments">Anhänge</string>
     <string name="today">Heute</string>
+    <string name="translate">beim Übersetzen</string>
+    <string name="translation_detect_language">Sprache erkennen</string>
+    <string name="translation_device_settings">Geräteeinstellungen</string>
+    <string name="translation_error_message">Sprache konnte nicht erkannt werden</string>
+    <string name="translation_error_title">Übersetzung fehlgeschlagen</string>
+    <string name="translation_from">Von</string>
+    <string name="translation_to">An</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Vollständiger Name</string>

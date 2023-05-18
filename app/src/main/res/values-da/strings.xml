@@ -285,6 +285,10 @@
     <string name="thisWeek">Denne uge</string>
     <string name="title_attachments">Vedhæftede filer</string>
     <string name="today">I dag</string>
+    <string name="translate">Oversæt</string>
+    <string name="translation_device_settings">Enhedsindstillinger</string>
+    <string name="translation_from">Fra</string>
+    <string name="translation_to">Til</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Fulde navn</string>
     <string name="user_info_email">E-mail</string>

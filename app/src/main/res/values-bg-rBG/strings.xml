@@ -461,6 +461,13 @@
     <string name="thisWeek">Тази седмица</string>
     <string name="title_attachments">Прикачени файлове</string>
     <string name="today">Днес</string>
+    <string name="translate">Превод</string>
+    <string name="translation_detect_language">Разпознаване на език</string>
+    <string name="translation_device_settings">Настройки за устройството</string>
+    <string name="translation_error_message">Не можа да се установи езика</string>
+    <string name="translation_error_title">Неуспешен превод</string>
+    <string name="translation_from">От</string>
+    <string name="translation_to">До</string>
     <string name="upload_new_avatar_from_device">Качеване на нов аватар от устройството</string>
     <string name="user_info_address">Адрес</string>
     <string name="user_info_displayname">Пълно име</string>

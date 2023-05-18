@@ -293,6 +293,10 @@
     <string name="thisWeek">Šią savaitę</string>
     <string name="title_attachments">Priedai</string>
     <string name="today">Šiandiena</string>
+    <string name="translate">Verskite</string>
+    <string name="translation_device_settings">Įrenginio nustatymai</string>
+    <string name="translation_from">Nuo</string>
+    <string name="translation_to">Kam</string>
     <string name="user_info_address">Adresas</string>
     <string name="user_info_displayname">Vardas, pavardė</string>
     <string name="user_info_email">El. paštas</string>
