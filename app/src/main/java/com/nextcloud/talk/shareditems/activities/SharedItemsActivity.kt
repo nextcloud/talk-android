@@ -4,9 +4,11 @@
  * @author Tim Krüger
  * @author Álvaro Brey
  * @author Marcel Hibbe
+ * @author Ezhil Shanmugham
  * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +30,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
@@ -52,6 +55,13 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class SharedItemsActivity : AppCompatActivity() {
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+        }
+
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -246,7 +256,7 @@ class SharedItemsActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
-            onBackPressed()
+            onBackPressedDispatcher.addCallback(this, callback)
             true
         } else {
             super.onOptionsItemSelected(item)

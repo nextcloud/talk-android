@@ -3,8 +3,10 @@
  *
  * @author Andy Scherzinger
  * @author Álvaro Brey
+ * @author Ezhil Shanmugham
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +32,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
@@ -192,9 +195,17 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     }
 
     override fun onBackPressed() {
-        setResult(Activity.RESULT_CANCELED)
-        super.onBackPressed()
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
+        }
+
+        onBackPressedDispatcher.addCallback(this, callback)
+        callback.handleOnBackPressed()
     }
+
 
     override fun onResume() {
         super.onResume()

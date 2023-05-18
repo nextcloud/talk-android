@@ -26,6 +26,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
@@ -45,6 +46,12 @@ import javax.inject.Inject
 class FullScreenTextViewerActivity : AppCompatActivity() {
     lateinit var binding: ActivityFullScreenTextBinding
 
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+        }
+    }
+
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
@@ -57,7 +64,8 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
-            onBackPressed()
+            // onBackPressed()
+            onBackPressedDispatcher.addCallback(this, callback)
             true
         } else if (item.itemId == R.id.share) {
             val shareUri = FileProvider.getUriForFile(

@@ -31,6 +31,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.nextcloud.talk.BuildConfig
@@ -43,6 +44,13 @@ import java.io.File
 
 class FullScreenImageActivity : AppCompatActivity() {
     lateinit var binding: ActivityFullScreenImageBinding
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+        }
+    }
+
     private lateinit var path: String
     private var showFullscreen = false
 
@@ -53,7 +61,8 @@ class FullScreenImageActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
-            onBackPressed()
+            // onBackPressed()
+            onBackPressedDispatcher.addCallback(this, callback)
             true
         } else if (item.itemId == R.id.share) {
             val shareUri = FileProvider.getUriForFile(

@@ -5,10 +5,12 @@
  * @author Andy Scherzinger
  * @author Tim Krüger
  * @author Marcel Hibbe
+ * @author Ezhil Shanmugham
  * Copyright (C) 2022-2023 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +41,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
 import androidx.work.Data
@@ -106,6 +109,13 @@ class ConversationInfoActivity :
     FlexibleAdapter.OnItemClickListener {
 
     private lateinit var binding: ActivityConversationInfoBinding
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+        }
+
+    }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -193,7 +203,7 @@ class ConversationInfoActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.conversationInfoToolbar)
         binding.conversationInfoToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.addCallback(this, callback)
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

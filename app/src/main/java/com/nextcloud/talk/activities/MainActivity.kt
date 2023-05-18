@@ -30,6 +30,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -73,6 +74,12 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class MainActivity : BaseActivity(), ActionBarProvider {
     lateinit var binding: ActivityMainBinding
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+        }
+    }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -355,7 +362,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     override fun onBackPressed() {
         if (!router!!.handleBack()) {
-            super.onBackPressed()
+            // super.onBackPressed()
+            onBackPressedDispatcher.addCallback(this, callback)
         }
     }
 

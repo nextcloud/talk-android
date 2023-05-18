@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Ezhil Shanmugham
  * Copyright (C) 2023 Marcel Hibbe (dev@mhibbe.de)
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +32,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
@@ -68,6 +71,12 @@ class ConversationInfoEditActivity :
     BaseActivity() {
 
     private lateinit var binding: ActivityConversationInfoEditBinding
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+        }
+    }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -149,7 +158,7 @@ class ConversationInfoEditActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.conversationInfoEditToolbar)
         binding.conversationInfoEditToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.addCallback(this, callback)
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

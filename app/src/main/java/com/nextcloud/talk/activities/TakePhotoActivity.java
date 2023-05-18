@@ -56,6 +56,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
@@ -76,7 +77,6 @@ import static com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class TakePhotoActivity extends AppCompatActivity {
-
     private static final String TAG = TakePhotoActivity.class.getSimpleName();
 
     private static final float MAX_SCALE = 6.0f;
@@ -223,20 +223,23 @@ public class TakePhotoActivity extends AppCompatActivity {
         }, ContextCompat.getMainExecutor(this));
     }
 
-    @Override
-    public void onBackPressed() {
-        Uri uri = (Uri) binding.photoPreview.getTag();
+    private OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            Uri uri = (Uri) binding.photoPreview.getTag();
 
-        if (uri != null) {
-            File photoFile = new File(uri.getPath());
-            if (!photoFile.delete()) {
-                Log.w(TAG, "Error deleting temp camera image");
+            if (uri != null) {
+                File photoFile = new File(uri.getPath());
+                if (!photoFile.delete()) {
+                    Log.w(TAG, "Error deleting temp camera image");
+                }
+                binding.photoPreview.setTag(null);
             }
-            binding.photoPreview.setTag(null);
-        }
 
-        super.onBackPressed();
-    }
+            finish();
+        }
+    };
+
 
     private void showCameraElements() {
         binding.send.setVisibility(View.GONE);

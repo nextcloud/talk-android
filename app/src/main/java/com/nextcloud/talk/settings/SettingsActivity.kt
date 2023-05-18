@@ -4,9 +4,11 @@
  * @author Andy Scherzinger
  * @author Mario Danic
  * @author Tim Krüger
+ * @author Ezhil Shanmugham
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021-2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +54,7 @@ import android.widget.Checkable
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -106,6 +109,12 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class SettingsActivity : BaseActivity() {
     private lateinit var binding: ActivitySettingsBinding
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+        }
+    }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -246,7 +255,7 @@ class SettingsActivity : BaseActivity() {
     private fun setupActionBar() {
         setSupportActionBar(binding.settingsToolbar)
         binding.settingsToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.addCallback(this, callback)
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

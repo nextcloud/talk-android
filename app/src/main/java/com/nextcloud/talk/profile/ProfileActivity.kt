@@ -4,9 +4,11 @@
  * @author Tobias Kaminsky
  * @author Andy Scherzinger
  * @author Tim Krüger
+ * @author Ezhil Shanmugham
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +41,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
@@ -85,6 +88,13 @@ import javax.inject.Inject
 @Suppress("Detekt.TooManyFunctions")
 class ProfileActivity : BaseActivity() {
     private lateinit var binding: ActivityProfileBinding
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+        }
+
+    }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -185,7 +195,7 @@ class ProfileActivity : BaseActivity() {
     private fun setupActionBar() {
         setSupportActionBar(binding.profileToolbar)
         binding.profileToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.addCallback(this, callback)
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
