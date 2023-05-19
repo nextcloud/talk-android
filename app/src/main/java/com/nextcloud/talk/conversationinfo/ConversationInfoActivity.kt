@@ -114,7 +114,6 @@ class ConversationInfoActivity :
         override fun handleOnBackPressed() {
             finish()
         }
-
     }
 
     @Inject

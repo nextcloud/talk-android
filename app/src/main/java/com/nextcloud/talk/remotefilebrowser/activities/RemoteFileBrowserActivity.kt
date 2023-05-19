@@ -206,7 +206,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         callback.handleOnBackPressed()
     }
 
-
     override fun onResume() {
         super.onResume()
         refreshCurrentPath()

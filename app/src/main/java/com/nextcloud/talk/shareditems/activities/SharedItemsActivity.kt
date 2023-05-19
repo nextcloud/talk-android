@@ -60,7 +60,6 @@ class SharedItemsActivity : AppCompatActivity() {
         override fun handleOnBackPressed() {
             finish()
         }
-
     }
 
     @Inject

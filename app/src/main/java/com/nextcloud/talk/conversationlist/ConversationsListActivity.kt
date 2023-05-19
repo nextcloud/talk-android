@@ -1367,7 +1367,6 @@ class ConversationsListActivity :
         showErrorDialog()
     }
 
-
     override fun onBackPressed() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -1383,7 +1382,6 @@ class ConversationsListActivity :
 
         finishAffinity()
     }
-
 
     companion object {
         const val TAG = "ConvListController"

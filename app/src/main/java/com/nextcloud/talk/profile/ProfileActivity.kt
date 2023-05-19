@@ -93,7 +93,6 @@ class ProfileActivity : BaseActivity() {
         override fun handleOnBackPressed() {
             finish()
         }
-
     }
 
     @Inject
