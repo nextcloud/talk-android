@@ -2,10 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Álvaro Brey
- * @author Ezhil Shanmugham
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Nextcloud GmbH
- * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
