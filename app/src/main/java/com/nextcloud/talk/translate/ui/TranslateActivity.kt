@@ -19,68 +19,83 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.translate
+package com.nextcloud.talk.translate.ui
 
+import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
-import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityTranslateBinding
-import com.nextcloud.talk.models.json.translations.TranslationsOverall
+import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class TranslateActivity : BaseActivity() {
-    private lateinit var binding: ActivityTranslateBinding
-
-    @Inject
-    lateinit var ncApi: NcApi
 
     @Inject
     lateinit var userManager: UserManager
 
-    private var fromLanguages = arrayOf<String>()
-    private var toLanguages = arrayOf<String>()
-    private var text: String? = null
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewModel: TranslateViewModel
+    private lateinit var binding: ActivityTranslateBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+
         binding = ActivityTranslateBinding.inflate(layoutInflater)
+        viewModel  = ViewModelProvider(this, viewModelFactory)[TranslateViewModel::class.java] // fixme bug here
+
+
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
         setupTextViews()
+        getLanguageOptions()
         setupSpinners()
         setupCopyButton()
-        getLanguageOptions()
+
+        val translateViewModelObserver = Observer<TranslateViewModel.TranslateUiState> { state ->
+            enableSpinners(state.enableSpinners)
+
+            binding.progressBar.visibility = if(state.showProgressBar) View.VISIBLE else View.GONE
+
+            binding.translatedMessageContainer.visibility =
+                if(state.showTranslatedMessageContainer) View.VISIBLE else View.GONE
+
+            if(state.translatedMessageText != null)
+                binding.translatedMessageTextview.text = state.translatedMessageText
+
+            if(state.errorOccurred)
+                showDialog()
+        }
+
+        viewModel.viewState.observe(this, translateViewModelObserver)
 
         if (savedInstanceState == null) {
-            translate(null, Locale.getDefault().language)
+            viewModel.translateMessage(Locale.getDefault().language, null)
         } else {
             binding.translatedMessageTextview.text = savedInstanceState.getString(BundleKeys.SAVED_TRANSLATED_MESSAGE)
         }
@@ -90,7 +105,6 @@ class TranslateActivity : BaseActivity() {
         super.onResume()
         setItems()
     }
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.run {
             putString(BundleKeys.SAVED_TRANSLATED_MESSAGE, binding.translatedMessageTextview.text.toString())
@@ -137,14 +151,14 @@ class TranslateActivity : BaseActivity() {
 
         binding.originalMessageTextview.movementMethod = ScrollingMovementMethod()
         binding.translatedMessageTextview.movementMethod = ScrollingMovementMethod()
-
         val bundle = intent.extras
-        binding.originalMessageTextview.text = bundle?.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
-        text = bundle?.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
+        val text = bundle?.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
+        binding.originalMessageTextview.text = text
+        viewModel.viewState.value!!.originalMessageText = text
     }
 
     private fun getLanguageOptions() {
-        val currentUser: User = userManager.currentUser.blockingGet()
+        val currentUser = userManager.currentUser.blockingGet()
         val json = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
 
         val fromLanguagesSet = mutableSetOf(resources.getString(R.string.translation_detect_language))
@@ -159,9 +173,8 @@ class TranslateActivity : BaseActivity() {
             fromLanguagesSet.add(current.getString(TO_LABEL))
         }
 
-        fromLanguages = fromLanguagesSet.toTypedArray()
-        toLanguages = toLanguagesSet.toTypedArray()
-        fillSpinners()
+        viewModel.viewState.value!!.toLanguages = toLanguagesSet.toTypedArray()
+        viewModel.viewState.value!!.fromLanguages = fromLanguagesSet.toTypedArray()
     }
 
     private fun enableSpinners(value: Boolean) {
@@ -169,64 +182,30 @@ class TranslateActivity : BaseActivity() {
         binding.toLanguageInputLayout.isEnabled = value
     }
 
-    private fun translate(fromLanguage: String?, toLanguage: String) {
-        val currentUser: User = userManager.currentUser.blockingGet()
-        val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-        val translateURL = ApiUtils.getUrlForTranslation(currentUser.baseUrl)
-        val calculatedFromLanguage = if (fromLanguage == null || fromLanguage == "") {
-            null
-        } else {
-            fromLanguage
-        }
+    private fun showDialog() {
+        val dialogBuilder = MaterialAlertDialogBuilder(this@TranslateActivity)
+            .setIcon(
+                viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                    context,
+                    R.drawable.ic_warning_white
+                )
+            )
+            .setTitle(R.string.translation_error_title)
+            .setMessage(R.string.translation_error_message)
+            .setPositiveButton(R.string.nc_ok) { dialog, _ ->
+                dialog.dismiss()
+            }
 
-        ncApi.translateMessage(credentials, translateURL, text, toLanguage, calculatedFromLanguage)
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<TranslationsOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    enableSpinners(false)
-                    binding.translatedMessageContainer.visibility = View.GONE
-                    binding.progressBar.visibility = View.VISIBLE
-                }
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(context, dialogBuilder)
 
-                override fun onNext(translationOverall: TranslationsOverall) {
-                    binding.progressBar.visibility = View.GONE
-                    binding.translatedMessageContainer.visibility = View.VISIBLE
-                    binding.translatedMessageTextview.text = translationOverall.ocs?.data?.text
-                }
+        val dialog = dialogBuilder.show()
 
-                override fun onError(e: Throwable) {
-                    Log.w(TAG, "Error while translating message", e)
-                    binding.progressBar.visibility = View.GONE
-                    val dialogBuilder = MaterialAlertDialogBuilder(this@TranslateActivity)
-                        .setIcon(
-                            viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                                context,
-                                R.drawable.ic_warning_white
-                            )
-                        )
-                        .setTitle(R.string.translation_error_title)
-                        .setMessage(R.string.translation_error_message)
-                        .setPositiveButton(R.string.nc_ok) { dialog, _ ->
-                            dialog.dismiss()
-                        }
-
-                    viewThemeUtils.dialog.colorMaterialAlertDialogBackground(context, dialogBuilder)
-
-                    val dialog = dialogBuilder.show()
-
-                    viewThemeUtils.platform.colorTextButtons(
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    )
-                }
-
-                override fun onComplete() {
-                    // nothing?
-                }
-            })
-
-        enableSpinners(true)
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        )
     }
+
+
 
     private fun getISOFromLanguage(language: String): String {
         if (resources.getString(R.string.translation_device_settings) == language) {
@@ -237,7 +216,7 @@ class TranslateActivity : BaseActivity() {
     }
 
     private fun getISOFromServer(language: String): String {
-        val currentUser: User = userManager.currentUser.blockingGet()
+        val currentUser = userManager.currentUser.blockingGet()
         val json = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
 
         for (i in 0 until json.length()) {
@@ -258,17 +237,20 @@ class TranslateActivity : BaseActivity() {
         binding.fromLanguage.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
             val fromLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
             val toLabel: String = getISOFromLanguage(binding.toLanguage.text.toString())
-            translate(fromLabel, toLabel)
+            viewModel.translateMessage(toLabel, fromLabel)
         }
 
         binding.toLanguage.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
             val toLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
             val fromLabel: String = getISOFromLanguage(binding.fromLanguage.text.toString())
-            translate(fromLabel, toLabel)
+            viewModel.translateMessage(toLabel, fromLabel)
         }
     }
 
     private fun fillSpinners() {
+        val fromLanguages = viewModel.viewState.value!!.fromLanguages!!
+        val toLanguages = viewModel.viewState.value!!.toLanguages!!
+
         binding.fromLanguage.setAdapter(
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, fromLanguages)
         )
@@ -285,14 +267,14 @@ class TranslateActivity : BaseActivity() {
     }
 
     private fun setItems() {
-        binding.fromLanguage.setSimpleItems(fromLanguages)
-        binding.toLanguage.setSimpleItems(toLanguages)
+        binding.fromLanguage.setSimpleItems(viewModel.viewState.value!!.fromLanguages!!)
+        binding.toLanguage.setSimpleItems(viewModel.viewState.value!!.toLanguages!!)
     }
 
     companion object {
-        private val TAG = TranslateActivity::class.simpleName
         private const val FROM_ID = "from"
         private const val FROM_LABEL = "fromLabel"
         private const val TO_LABEL = "toLabel"
     }
+
 }

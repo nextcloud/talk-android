@@ -150,7 +150,7 @@ import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
-import com.nextcloud.talk.translate.TranslateActivity
+import com.nextcloud.talk.translate.ui.TranslateActivity
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
