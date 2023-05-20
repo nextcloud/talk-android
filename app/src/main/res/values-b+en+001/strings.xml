@@ -463,6 +463,8 @@
     <string name="title_attachments">Attachments</string>
     <string name="today">Today</string>
     <string name="translate">Translate</string>
+    <string name="translation">Translation</string>
+    <string name="translation_copy_translated_text">Copy translated text</string>
     <string name="translation_detect_language">Detect language</string>
     <string name="translation_device_settings">Device settings</string>
     <string name="translation_error_message">Could not detect language</string>
