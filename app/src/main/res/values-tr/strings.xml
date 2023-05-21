@@ -463,13 +463,14 @@
     <string name="title_attachments">Ek dosyalar</string>
     <string name="today">Bugün</string>
     <string name="translate">Çevir</string>
+    <string name="translation">Çeviri</string>
     <string name="translation_copy_translated_text">Çevrilmiş metni kopyala</string>
     <string name="translation_detect_language">Dili algıla</string>
     <string name="translation_device_settings">Aygıt ayarları</string>
     <string name="translation_error_message">Dil algılanamadı</string>
     <string name="translation_error_title">Çeviri yapılamadı</string>
-    <string name="translation_from">Kimden</string>
-    <string name="translation_to">Kime</string>
+    <string name="translation_from">Kaynak dil</string>
+    <string name="translation_to">Hedef dil</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Tam ad</string>

@@ -26,7 +26,7 @@
     <string name="emoji_search">搜索 emoji</string>
     <string name="encrypted">已加密</string>
     <string name="error_loading_chats">加载聊天记录时出错</string>
-    <string name="failed_to_save">未能保存 %1$s</string>
+    <string name="failed_to_save">保存%1$s失败</string>
     <string name="file_list_folder">文件夹</string>
     <string name="file_list_loading">正在加载 …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -474,7 +474,7 @@
     <string name="user_info_twitter">推特账户</string>
     <string name="user_info_website">网站</string>
     <string name="user_status">状态</string>
-    <string name="userinfo_error_text">未能检索个人用户信息</string>
+    <string name="userinfo_error_text">检索个人用户信息失败</string>
     <string name="userinfo_no_info_headline">未设置个人信息</string>
     <string name="userinfo_no_info_text">在你的个人资料页上添加姓名、图片和联系方式。</string>
     <string name="whats_your_status">你什么状态？</string>
