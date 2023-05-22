@@ -749,7 +749,6 @@ class ChatActivity :
 
                     override fun onFinish() {
                         sendStopTypingMessage()
-                        typingTimer = null
                     }
                 }.start()
             } else {
@@ -760,11 +759,15 @@ class ChatActivity :
     }
 
     fun sendStopTypingMessage() {
-        for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
-            val ncSignalingMessage = NCSignalingMessage()
-            ncSignalingMessage.to = sessionId
-            ncSignalingMessage.type = "stoppedTyping"
-            signalingMessageSender!!.send(ncSignalingMessage)
+        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+            typingTimer = null
+
+            for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+                val ncSignalingMessage = NCSignalingMessage()
+                ncSignalingMessage.to = sessionId
+                ncSignalingMessage.type = "stoppedTyping"
+                signalingMessageSender!!.send(ncSignalingMessage)
+            }
         }
     }
 
@@ -2369,6 +2372,7 @@ class ChatActivity :
             }
 
             binding?.messageInputView?.inputEditText?.setText("")
+            sendStopTypingMessage()
             val replyMessageId: Int? = findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int?
             sendMessage(
                 editable,
