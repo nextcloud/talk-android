@@ -392,12 +392,10 @@ class ChatActivity :
             }
         }
 
-        val typingIndicatorHeight = DisplayUtils.convertDpToPixel(20f, context)
-
         runOnUiThread {
             if (participantNames.size > 0) {
                 binding.typingIndicatorWrapper.animate()
-                    .translationY(binding.messageInputView.y - typingIndicatorHeight)
+                    .translationY(binding.messageInputView.y - binding.typingIndicator.height)
                     .setInterpolator(AccelerateDecelerateInterpolator())
                     .duration = TYPING_INDICATOR_ANIMATION_DURATION
             } else {
