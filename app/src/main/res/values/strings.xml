@@ -151,6 +151,8 @@ How to translate with transifex:
     <string name="nc_locked">Locked</string>
     <string name="nc_settings_read_privacy_desc">Share my read-status and show the read-status of others</string>
     <string name="nc_settings_read_privacy_title">Read status</string>
+    <string name="nc_settings_typing_status_desc">Share my typing-status and show the typing-status of others</string>
+    <string name="nc_settings_typing_status_title">Typing status</string>
 
     <string name="nc_screen_lock_timeout_30">30 seconds</string>
     <string name="nc_screen_lock_timeout_60">1 minute</string>

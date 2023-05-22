@@ -312,6 +312,9 @@ public interface AppPreferences {
 
     @KeyByResource(R.string.nc_settings_read_privacy_key)
     void setReadPrivacy(boolean value);
+
+    @KeyByResource(R.string.nc_settings_read_privacy_key)
+    void setTypingStatus(boolean value);
     
     @KeyByResource(R.string.nc_settings_read_privacy_key)
     @RegisterChangeListenerMethod
@@ -320,6 +323,14 @@ public interface AppPreferences {
     @KeyByResource(R.string.nc_settings_read_privacy_key)
     @UnregisterChangeListenerMethod
     void unregisterReadPrivacyChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByResource(R.string.nc_settings_read_privacy_key)
+    @RegisterChangeListenerMethod
+    void registerTypingStatusChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByResource(R.string.nc_settings_read_privacy_key)
+    @UnregisterChangeListenerMethod
+    void unregisterTypingStatusChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
 
     @KeyByResource(R.string.nc_file_browser_sort_by_key)
     void setSorting(String value);
