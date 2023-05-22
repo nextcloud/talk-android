@@ -56,6 +56,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -69,6 +70,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppT
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySettingsBinding
 import com.nextcloud.talk.jobs.AccountRemovalWorker
+import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.checkPermission
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
@@ -172,6 +174,8 @@ class SettingsActivity : BaseActivity() {
         supportActionBar?.show()
         dispose(null)
 
+        loadCapabilitiesAndUpdateSettings()
+
         binding.settingsVersion.setOnClickListener {
             sendLogs()
         }
@@ -222,6 +226,19 @@ class SettingsActivity : BaseActivity() {
 
         themeCategories()
         themeSwitchPreferences()
+    }
+
+    private fun loadCapabilitiesAndUpdateSettings() {
+        val capabilitiesWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
+        WorkManager.getInstance(context).enqueue(capabilitiesWork)
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(capabilitiesWork.id)
+            .observe(this) { workInfo ->
+                if (workInfo?.state == WorkInfo.State.SUCCEEDED) {
+                    getCurrentUser()
+                    setupCheckables()
+                }
+            }
     }
 
     private fun setupActionBar() {
@@ -636,7 +653,7 @@ class SettingsActivity : BaseActivity() {
         (binding.settingsIncognitoKeyboard.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
             appPreferences.isKeyboardIncognito
 
-        if (CapabilitiesUtilNew.isReadStatusAvailable(userManager.currentUser.blockingGet())) {
+        if (CapabilitiesUtilNew.isReadStatusAvailable(currentUser!!)) {
             (binding.settingsReadPrivacy.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
                 !CapabilitiesUtilNew.isReadStatusPrivate(currentUser!!)
         } else {
@@ -993,7 +1010,7 @@ class SettingsActivity : BaseActivity() {
                     }
 
                     override fun onNext(genericOverall: GenericOverall) {
-                        // unused atm
+                        Log.d(TAG, "onNext")
                     }
 
                     override fun onError(e: Throwable) {
