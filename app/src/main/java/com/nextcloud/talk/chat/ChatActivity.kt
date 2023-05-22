@@ -909,30 +909,38 @@ class ChatActivity :
     }
 
     private fun updateTypingIndicator() {
+        fun ellipsize(text: String): String {
+            return DisplayUtils.ellipsize(text, TYPING_INDICATOR_MAX_NAME_LENGTH)
+        }
+
         val participantNames = ArrayList(typingParticipants.values)
 
         val typingString: SpannableStringBuilder
         when (typingParticipants.size) {
             0 -> typingString = SpannableStringBuilder().append(binding.typingIndicator.text)
 
+            // person1 is typing
             1 -> typingString = SpannableStringBuilder()
-                .bold { append(participantNames[0]) }
+                .bold { append(ellipsize(participantNames[0])) }
                 .append(WHITESPACE + context.resources?.getString(R.string.typing_is_typing))
 
+            // person1 and person2 are typing
             2 -> typingString = SpannableStringBuilder()
-                .bold { append(participantNames[0]) }
+                .bold { append(ellipsize(participantNames[0])) }
                 .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
-                .bold { append(participantNames[1]) }
+                .bold { append(ellipsize(participantNames[1])) }
                 .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
 
+            // person1, person2 and person3 are typing
             3 -> typingString = SpannableStringBuilder()
-                .bold { append(participantNames[0]) }
+                .bold { append(ellipsize(participantNames[0])) }
                 .append(COMMA)
-                .bold { append(participantNames[1]) }
+                .bold { append(ellipsize(participantNames[1])) }
                 .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
-                .bold { append(participantNames[2]) }
+                .bold { append(ellipsize(participantNames[2])) }
                 .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
 
+            // person1, person2, person3 and 1 other is typing
             4 -> typingString = SpannableStringBuilder()
                 .bold { append(participantNames[0]) }
                 .append(COMMA)
@@ -941,6 +949,7 @@ class ChatActivity :
                 .bold { append(participantNames[2]) }
                 .append(WHITESPACE + context.resources?.getString(R.string.typing_1_other))
 
+            // person1, person2, person3 and x others are typing
             else -> {
                 val moreTypersAmount = typingParticipants.size - 3
                 val othersTyping = context.resources?.getString(R.string.typing_x_others)?.let {
@@ -957,19 +966,26 @@ class ChatActivity :
         }
 
         runOnUiThread {
+            binding.typingIndicator.text = typingString
+
             if (participantNames.size > 0) {
                 binding.typingIndicatorWrapper.animate()
-                    .translationY(binding.messageInputView.y - binding.typingIndicator.height)
+                    .translationY(binding.messageInputView.y - DisplayUtils.convertDpToPixel(20f, context))
                     .setInterpolator(AccelerateDecelerateInterpolator())
                     .duration = TYPING_INDICATOR_ANIMATION_DURATION
             } else {
-                binding.typingIndicatorWrapper.animate()
-                    .translationY(binding.messageInputView.y)
-                    .setInterpolator(AccelerateDecelerateInterpolator())
-                    .duration = TYPING_INDICATOR_ANIMATION_DURATION
+                if (binding.typingIndicator.lineCount == 1) {
+                    binding.typingIndicatorWrapper.animate()
+                        .translationY(binding.messageInputView.y)
+                        .setInterpolator(AccelerateDecelerateInterpolator())
+                        .duration = TYPING_INDICATOR_ANIMATION_DURATION
+                } else if (binding.typingIndicator.lineCount == 2) {
+                    binding.typingIndicatorWrapper.animate()
+                        .translationY(binding.messageInputView.y + DisplayUtils.convertDpToPixel(15f, context))
+                        .setInterpolator(AccelerateDecelerateInterpolator())
+                        .duration = TYPING_INDICATOR_ANIMATION_DURATION
+                }
             }
-
-            binding.typingIndicator.text = typingString
         }
     }
 
@@ -3778,5 +3794,6 @@ class ChatActivity :
         private const val WHITESPACE = " "
         private const val COMMA = ", "
         private const val TYPING_INDICATOR_ANIMATION_DURATION = 200L
+        private const val TYPING_INDICATOR_MAX_NAME_LENGTH = 14
     }
 }

@@ -156,7 +156,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="-20dp">
+            android:layout_marginBottom="-19dp">
 
             <View
                 android:id="@+id/separator_1"
@@ -167,7 +167,9 @@
             <TextView
                 android:id="@+id/typing_indicator"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:layout_marginStart="@dimen/side_margin"
                 android:layout_marginEnd="@dimen/side_margin"
                 android:background="@color/bg_default"

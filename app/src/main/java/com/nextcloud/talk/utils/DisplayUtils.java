@@ -553,4 +553,11 @@ public class DisplayUtils {
         DateFormat df = DateFormat.getDateTimeInstance();
         return df.format(date);
     }
+
+    public static String ellipsize(String text, int maxLength) {
+        if (text.length() > maxLength) {
+            return text.substring(0, maxLength - 1) + "…";
+        }
+        return text;
+    }
 }
