@@ -13,7 +13,6 @@ class TranslateRepositoryImpl @Inject constructor(private val ncApi: NcApi) : Tr
         toLanguage: String,
         fromLanguage: String?
     ): Observable<String> {
-        return ncApi.translateMessage(authorization, url, text, toLanguage, fromLanguage).map { it.ocs?.data!!.text}
+        return ncApi.translateMessage(authorization, url, text, toLanguage, fromLanguage).map { it.ocs?.data!!.text }
     }
-
 }

@@ -14,8 +14,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class TranslateViewModel @Inject constructor(private val repository: TranslateRepository,
-    private val userManager: UserManager) : ViewModel() {
+class TranslateViewModel @Inject constructor(
+    private val repository: TranslateRepository,
+    private val userManager: UserManager
+) : ViewModel() {
 
     sealed interface ViewState
 
@@ -23,8 +25,8 @@ class TranslateViewModel @Inject constructor(private val repository: TranslateRe
     class TranslatedState(val msg: String) : ViewState
     object ErrorState : ViewState
 
-    private val _viewState : MutableLiveData<ViewState> = MutableLiveData(StartState)
-    val viewState : LiveData<ViewState>
+    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(StartState)
+    val viewState: LiveData<ViewState>
         get() = _viewState
 
     fun translateMessage(toLanguage: String, fromLanguage: String?, text: String) {
@@ -33,8 +35,13 @@ class TranslateViewModel @Inject constructor(private val repository: TranslateRe
         val url: String = ApiUtils.getUrlForTranslation(currentUser.baseUrl)
         val calculatedFromLanguage = if (fromLanguage == null || fromLanguage == "") { null } else { fromLanguage }
         Log.i(TAG, "translateMessage Called")
-        repository.translateMessage(authorization, url,text,toLanguage,
-            calculatedFromLanguage)
+        repository.translateMessage(
+            authorization,
+            url,
+            text,
+            toLanguage,
+            calculatedFromLanguage
+        )
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(TranslateObserver())
@@ -61,5 +68,4 @@ class TranslateViewModel @Inject constructor(private val repository: TranslateRe
     companion object {
         private val TAG = TranslateViewModel::class.simpleName
     }
-
 }

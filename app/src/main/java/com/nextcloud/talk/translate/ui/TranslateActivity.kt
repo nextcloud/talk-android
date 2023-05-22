@@ -58,8 +58,8 @@ class TranslateActivity : BaseActivity() {
     lateinit var viewModel: TranslateViewModel
     lateinit var binding: ActivityTranslateBinding
 
-    private var toLanguages : Array<String>? = null
-    private var fromLanguages : Array<String>? = null
+    private var toLanguages: Array<String>? = null
+    private var fromLanguages: Array<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,10 +67,10 @@ class TranslateActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivityTranslateBinding.inflate(layoutInflater)
-        viewModel  = ViewModelProvider(this, viewModelFactory)[TranslateViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[TranslateViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
-            when(state) {
+            when (state) {
                 is TranslateViewModel.StartState -> {
                     onStartState()
                 }
@@ -93,7 +93,7 @@ class TranslateActivity : BaseActivity() {
         setupCopyButton()
 
         if (savedInstanceState == null) {
-            val text = intent.extras !!.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
+            val text = intent.extras!!.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
             viewModel.translateMessage(Locale.getDefault().language, null, text!!)
         } else {
             binding.translatedMessageTextview.text = savedInstanceState.getString(BundleKeys.SAVED_TRANSLATED_MESSAGE)
@@ -150,7 +150,7 @@ class TranslateActivity : BaseActivity() {
 
         binding.originalMessageTextview.movementMethod = ScrollingMovementMethod()
         binding.translatedMessageTextview.movementMethod = ScrollingMovementMethod()
-        val text =intent.extras !!.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
+        val text = intent.extras!!.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
         binding.originalMessageTextview.text = text
     }
 
@@ -228,7 +228,7 @@ class TranslateActivity : BaseActivity() {
         viewThemeUtils.material.colorTextInputLayout(binding.fromLanguageInputLayout)
         viewThemeUtils.material.colorTextInputLayout(binding.toLanguageInputLayout)
         fillSpinners()
-        val text = intent.extras !!.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
+        val text = intent.extras!!.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
 
         binding.fromLanguage.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
             val fromLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
@@ -271,7 +271,7 @@ class TranslateActivity : BaseActivity() {
         binding.copyTranslatedMessage.visibility = View.GONE
     }
 
-    private fun onTranslatedState(msg : String) {
+    private fun onTranslatedState(msg: String) {
         binding.progressBar.visibility = View.GONE
         binding.translatedMessageContainer.visibility = View.VISIBLE
         binding.translatedMessageTextview.text = msg
@@ -290,5 +290,4 @@ class TranslateActivity : BaseActivity() {
         private const val FROM_LABEL = "fromLabel"
         private const val TO_LABEL = "toLabel"
     }
-
 }

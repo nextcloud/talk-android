@@ -5,10 +5,10 @@ import io.reactivex.Observable
 interface TranslateRepository {
 
     fun translateMessage(
-        authorization : String,
+        authorization: String,
         url: String,
         text: String,
         toLanguage: String,
         fromLanguage: String?
-    ) : Observable<String>
+    ): Observable<String>
 }
