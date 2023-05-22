@@ -323,20 +323,24 @@ class ChatActivity :
 
     private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
         override fun onStartTyping(session: String) {
-            var name = webSocketInstance?.getDisplayNameForSession(session)
+            if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+                var name = webSocketInstance?.getDisplayNameForSession(session)
 
-            if (name != null && !typingParticipants.contains(session)) {
-                if (name == "") {
-                    name = context.resources?.getString(R.string.nc_guest)!!
+                if (name != null && !typingParticipants.contains(session)) {
+                    if (name == "") {
+                        name = context.resources?.getString(R.string.nc_guest)!!
+                    }
+                    typingParticipants[session] = name
+                    updateTypingIndicator()
                 }
-                typingParticipants[session] = name
-                updateTypingIndicator()
             }
         }
 
         override fun onStopTyping(session: String) {
-            typingParticipants.remove(session)
-            updateTypingIndicator()
+            if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+                typingParticipants.remove(session)
+                updateTypingIndicator()
+            }
         }
     }
 
@@ -348,8 +352,8 @@ class ChatActivity :
             0 -> typingString = SpannableStringBuilder().append(binding.typingIndicator.text)
 
             1 -> typingString = SpannableStringBuilder()
-                    .bold { append(participantNames[0]) }
-                    .append(WHITESPACE + context.resources?.getString(R.string.typing_is_typing))
+                .bold { append(participantNames[0]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_is_typing))
 
             2 -> typingString = SpannableStringBuilder()
                 .bold { append(participantNames[0]) }
@@ -388,7 +392,7 @@ class ChatActivity :
             }
         }
 
-        val typingIndicatorHeight = DisplayUtils.convertDpToPixel(20f,context)
+        val typingIndicatorHeight = DisplayUtils.convertDpToPixel(20f, context)
 
         runOnUiThread {
             if (participantNames.size > 0) {
@@ -396,7 +400,6 @@ class ChatActivity :
                     .translationY(binding.messageInputView.y - typingIndicatorHeight)
                     .setInterpolator(AccelerateDecelerateInterpolator())
                     .duration = TYPING_INDICATOR_ANIMATION_DURATION
-
             } else {
                 binding.typingIndicatorWrapper.animate()
                     .translationY(binding.messageInputView.y)
@@ -733,26 +736,28 @@ class ChatActivity :
             return
         }
 
-        if (typingTimer == null) {
-            for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
-                val ncSignalingMessage = NCSignalingMessage()
-                ncSignalingMessage.to = sessionId
-                ncSignalingMessage.type = "startedTyping"
-                signalingMessageSender!!.send(ncSignalingMessage)
+        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+            if (typingTimer == null) {
+                for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+                    val ncSignalingMessage = NCSignalingMessage()
+                    ncSignalingMessage.to = sessionId
+                    ncSignalingMessage.type = "startedTyping"
+                    signalingMessageSender!!.send(ncSignalingMessage)
+                }
+
+                typingTimer = object : CountDownTimer(4000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                    }
+
+                    override fun onFinish() {
+                        sendStopTypingMessage()
+                        typingTimer = null
+                    }
+                }.start()
+            } else {
+                typingTimer?.cancel()
+                typingTimer?.start()
             }
-
-            typingTimer = object : CountDownTimer(4000, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                }
-
-                override fun onFinish() {
-                    sendStopTypingMessage()
-                    typingTimer = null
-                }
-            }.start()
-        } else {
-            typingTimer?.cancel()
-            typingTimer?.start()
         }
     }
 
