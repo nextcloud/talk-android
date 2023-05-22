@@ -27,6 +27,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import autodagger.AutoInjector
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollLoadingBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -55,7 +56,7 @@ class PollLoadingFragment : Fragment() {
     ): View {
         binding = DialogPollLoadingBinding.inflate(inflater, container, false)
         binding.root.layoutParams.height = fragmentHeight
-        viewThemeUtils.platform.colorCircularProgressBar(binding.pollLoadingProgressbar)
+        viewThemeUtils.platform.colorCircularProgressBar(binding.pollLoadingProgressbar, ColorRole.PRIMARY)
         return binding.root
     }
 

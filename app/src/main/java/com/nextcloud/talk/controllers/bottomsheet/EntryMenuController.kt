@@ -38,6 +38,7 @@ import autodagger.AutoInjector
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.google.android.material.textfield.TextInputLayout
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -125,7 +126,7 @@ class EntryMenuController(args: Bundle) :
                         rootView = view,
                         editText = it.textEdit,
                         onEmojiPopupShownListener = {
-                            viewThemeUtils.platform.colorImageView(it.smileyButton)
+                            viewThemeUtils.platform.colorImageView(it.smileyButton, ColorRole.PRIMARY)
                         },
                         onEmojiPopupDismissListener = {
                             it.smileyButton.imageTintList = ColorStateList.valueOf(

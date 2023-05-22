@@ -127,7 +127,7 @@ class GeocodingActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
         supportActionBar?.title = ""
         viewThemeUtils.material.themeToolbar(binding.geocodingToolbar)
     }

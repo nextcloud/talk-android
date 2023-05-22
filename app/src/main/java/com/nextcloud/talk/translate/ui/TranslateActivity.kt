@@ -131,7 +131,7 @@ class TranslateActivity : BaseActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
         supportActionBar?.title = resources!!.getString(R.string.translation)
         viewThemeUtils.material.themeToolbar(binding.translationToolbar)
     }

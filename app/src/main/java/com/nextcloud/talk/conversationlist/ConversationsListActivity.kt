@@ -248,7 +248,7 @@ class ConversationsListActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
         supportActionBar?.title = resources!!.getString(R.string.nc_app_product_name)
         viewThemeUtils.material.themeToolbar(binding.conversationListToolbar)
     }
@@ -386,7 +386,7 @@ class ConversationsListActivity :
             }
             binding.searchText.setOnClickListener {
                 showSearchView(searchView, searchItem)
-                viewThemeUtils.platform.themeStatusBar(this, searchView!!)
+                viewThemeUtils.platform.themeStatusBar(this)
             }
             searchView!!.setOnCloseListener {
                 if (TextUtils.isEmpty(searchView!!.query.toString())) {

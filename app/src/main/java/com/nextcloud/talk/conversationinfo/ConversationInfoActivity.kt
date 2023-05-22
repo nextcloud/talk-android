@@ -50,6 +50,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.datetime.dateTimePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.MainActivity
@@ -186,7 +187,7 @@ class ConversationInfoActivity :
 
         binding.addParticipantsAction.visibility = GONE
 
-        binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it) }
+        binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it, ColorRole.PRIMARY) }
     }
 
     private fun setupActionBar() {
@@ -196,7 +197,7 @@ class ConversationInfoActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
         supportActionBar?.title = if (hasAvatarSpacing) {
             " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)
         } else {

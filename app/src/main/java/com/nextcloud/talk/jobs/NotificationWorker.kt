@@ -441,7 +441,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setShowWhen(true)
             .setContentIntent(pendingIntent)
             .setAutoCancel(autoCancelOnClick)
-            .setColor(context!!.resources.getColor(R.color.colorPrimary))
+            .setColor(context!!.resources.getColor(R.color.colorPrimary, null))
 
         val notificationInfoBundle = Bundle()
         notificationInfoBundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)

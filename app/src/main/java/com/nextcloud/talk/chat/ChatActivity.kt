@@ -98,6 +98,7 @@ import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -598,7 +599,7 @@ class ChatActivity :
         binding?.messageInputView?.button?.contentDescription =
             resources?.getString(R.string.nc_description_send_message_button)
 
-        binding?.messageInputView?.button?.let { viewThemeUtils.platform.colorImageView(it) }
+        binding?.messageInputView?.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
 
         if (currentConversation != null && currentConversation?.roomId != null) {
             loadAvatarForStatusBar()
@@ -615,7 +616,7 @@ class ChatActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent)))
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
         setActionBarTitle()
         viewThemeUtils.material.themeToolbar(binding.chatToolbar)
     }
@@ -2087,7 +2088,7 @@ class ChatActivity :
     private fun setupMentionAutocomplete() {
         val elevation = MENTION_AUTO_COMPLETE_ELEVATION
         resources?.let {
-            val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default))
+            val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default, null))
             val presenter = MentionAutocompletePresenter(this, roomToken)
             val callback = MentionAutocompleteCallback(
                 this,

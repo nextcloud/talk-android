@@ -178,10 +178,10 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
             binding.messageQuote.quotedMessageAuthor
-                .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
+                .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast, null))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.platform.colorPrimaryView(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

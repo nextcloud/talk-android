@@ -192,7 +192,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) : MessageHolde
         binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
         if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-            viewThemeUtils.platform.colorPrimaryView(binding.messageQuote.quoteColoredView)
+            viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView)
         } else {
             binding.messageQuote.quoteColoredView.setBackgroundColor(
                 ContextCompat.getColor(binding.messageQuote.quoteColoredView.context, R.color.high_emphasis_text)

@@ -74,13 +74,13 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
 
         val bgBubbleColor = if (deleted) {
-            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
+            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted, null)
         } else {
-            resources.getColor(R.color.bg_message_list_incoming_bubble)
+            resources.getColor(R.color.bg_message_list_incoming_bubble, null)
         }
         val bubbleDrawable = DisplayUtils.getMessageSelector(
             bgBubbleColor,
-            resources.getColor(R.color.transparent),
+            resources.getColor(R.color.transparent, null),
             bgBubbleColor,
             bubbleResource
         )

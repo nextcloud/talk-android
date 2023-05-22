@@ -180,7 +180,7 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) : M
                 .setTextColor(ContextCompat.getColor(context, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.platform.colorPrimaryView(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

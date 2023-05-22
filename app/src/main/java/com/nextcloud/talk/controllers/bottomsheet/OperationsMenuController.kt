@@ -30,6 +30,7 @@ import android.view.View
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -117,7 +118,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
         sharedApplication!!.componentApplication.inject(this)
         currentUser = userManager.currentUser.blockingGet()
 
-        binding?.progressBar?.let { viewThemeUtils.platform.colorCircularProgressBar(it) }
+        binding?.progressBar?.let { viewThemeUtils.platform.colorCircularProgressBar(it, ColorRole.PRIMARY) }
 
         if (!TextUtils.isEmpty(callUrl) && callUrl.contains("/call")) {
             conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1)
@@ -517,7 +518,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
             if (everythingOK) {
                 binding?.resultTextView?.setText(R.string.nc_all_ok_operation)
             } else {
-                binding?.resultTextView?.setTextColor(resources!!.getColor(R.color.nc_darkRed))
+                binding?.resultTextView?.setTextColor(resources!!.getColor(R.color.nc_darkRed, null))
                 if (!isGuestSupportError) {
                     binding?.resultTextView?.setText(R.string.nc_failed_to_perform_operation)
                 } else {

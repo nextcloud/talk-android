@@ -35,6 +35,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.load
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -96,7 +97,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
         viewThemeUtils.platform.themeHorizontalSeekBar(binding.seekbar)
-        viewThemeUtils.platform.colorCircularProgressBarOnSurfaceVariant(binding.progressBar)
+        viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
 
         handleIsPlayingVoiceMessageState(message)
 
