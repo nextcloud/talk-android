@@ -146,12 +146,6 @@ class ConversationsListActivity :
 
     private lateinit var binding: ControllerConversationsRvBinding
 
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
-
     @Inject
     lateinit var userManager: UserManager
 
@@ -195,6 +189,8 @@ class ConversationsListActivity :
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
 
+    private lateinit var callback: OnBackPressedCallback
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -207,6 +203,13 @@ class ConversationsListActivity :
         viewThemeUtils.material.themeSearchBarText(binding.searchText)
 
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
+
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onResume() {
@@ -1365,22 +1368,6 @@ class ConversationsListActivity :
         handleHttpExceptions(throwable)
         binding?.swipeRefreshLayoutView?.isRefreshing = false
         showErrorDialog()
-    }
-
-    override fun onBackPressed() {
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        }
-
-        onBackPressedDispatcher.addCallback(this, callback)
-
-        // TODO: replace this when conductor is removed. For now it avoids loading the MainActivity which has no UI.
-        callback.isEnabled = true
-        callback.handleOnBackPressed()
-
-        finishAffinity()
     }
 
     companion object {

@@ -4,6 +4,8 @@
  * @author Marcel Hibbe
  * @author Dariusz Olszewski
  * @author Andy Scherzinger
+ * @author Ezhil Shanmugham
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2021 Dariusz Olszewski
@@ -45,12 +47,6 @@ import java.io.File
 class FullScreenImageActivity : AppCompatActivity() {
     lateinit var binding: ActivityFullScreenImageBinding
 
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
-
     private lateinit var path: String
     private var showFullscreen = false
 
@@ -61,8 +57,7 @@ class FullScreenImageActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
-            // onBackPressed()
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
             true
         } else if (item.itemId == R.id.share) {
             val shareUri = FileProvider.getUriForFile(
@@ -125,6 +120,13 @@ class FullScreenImageActivity : AppCompatActivity() {
             binding.photoView.visibility = View.VISIBLE
             displayImage(path)
         }
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun displayImage(path: String) {

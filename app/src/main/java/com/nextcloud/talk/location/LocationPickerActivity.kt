@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Ezhil Shanmugham
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,7 +177,7 @@ class LocationPickerActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.locationPickerToolbar)
         binding.locationPickerToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            handleOnBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -572,9 +574,9 @@ class LocationPickerActivity :
         // empty
     }
 
-    override fun onBackPressed() {
+    fun handleOnBackPressed() {
         setResult(Activity.RESULT_CANCELED)
-        finish()
+        finishAffinity()
     }
 
     companion object {

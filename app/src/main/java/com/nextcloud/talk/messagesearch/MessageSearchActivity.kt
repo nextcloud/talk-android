@@ -2,8 +2,10 @@
  * Nextcloud Talk application
  *
  * @author Álvaro Brey
+ * @author Ezhil Shanmugham
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Nextcloud GmbH
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -210,7 +212,7 @@ class MessageSearchActivity : BaseActivity() {
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                onBackPressed()
+                handleOnBackPressed()
                 return false
             }
         })
@@ -236,15 +238,15 @@ class MessageSearchActivity : BaseActivity() {
             .subscribe { newText -> viewModel.onQueryTextChange(newText) }
     }
 
-    override fun onBackPressed() {
+     fun handleOnBackPressed() {
         setResult(Activity.RESULT_CANCELED)
-        finish()
+         finishAffinity()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                handleOnBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)

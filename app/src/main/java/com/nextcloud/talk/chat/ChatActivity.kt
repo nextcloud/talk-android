@@ -5,10 +5,12 @@
  * @author Marcel Hibbe
  * @author Andy Scherzinger
  * @author Tim Krüger
+ * @author Ezhil Shanmugham
  * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021-2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -612,7 +614,7 @@ class ChatActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.chatToolbar)
         binding.chatToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            handleOnBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -621,7 +623,7 @@ class ChatActivity :
         viewThemeUtils.material.themeToolbar(binding.chatToolbar)
     }
 
-    override fun onBackPressed() {
+    fun handleOnBackPressed() {
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.putExtras(Bundle())
         startActivity(intent)

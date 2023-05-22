@@ -194,7 +194,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         return true
     }
 
-    override fun onBackPressed() {
+    fun handleOnBackPressed() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 setResult(Activity.RESULT_CANCELED)
@@ -223,7 +223,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                handleOnBackPressed()
                 true
             }
             R.id.files_selection_done -> {

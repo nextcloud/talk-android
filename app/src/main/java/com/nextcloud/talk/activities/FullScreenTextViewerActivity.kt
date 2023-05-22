@@ -3,8 +3,10 @@
  *
  * @author Marcel Hibbe
  * @author Andy Scherzinger
+ * @author Ezhil Shanmugham
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,12 +48,6 @@ import javax.inject.Inject
 class FullScreenTextViewerActivity : AppCompatActivity() {
     lateinit var binding: ActivityFullScreenTextBinding
 
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
-
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
@@ -64,8 +60,7 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
-            // onBackPressed()
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
             true
         } else if (item.itemId == R.id.share) {
             val shareUri = FileProvider.getUriForFile(
@@ -122,6 +117,13 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
                 ResourcesCompat.getColor(resources, R.color.bg_default, null)
             )
         }
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun readFile(fileName: String) = File(fileName).inputStream().readBytes().toString(Charsets.UTF_8)

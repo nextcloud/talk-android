@@ -4,9 +4,11 @@
  * @author Mario Danic
  * @author Andy Scherzinger
  * @author Marcel Hibbe
+ * @author Ezhil Shanmugham
  * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2021 Andy Scherzinger (infoi@andy-scherzinger.de)
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,12 +77,6 @@ import javax.inject.Inject
 class MainActivity : BaseActivity(), ActionBarProvider {
     lateinit var binding: ActivityMainBinding
 
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
-
     @Inject
     lateinit var ncApi: NcApi
 
@@ -143,6 +139,13 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 }
             })
         }
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     fun lockScreenIfConditionsApply() {
@@ -360,10 +363,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
     }
 
-    override fun onBackPressed() {
+   fun handleOnBackPressed() {
         if (!router!!.handleBack()) {
-            // super.onBackPressed()
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 

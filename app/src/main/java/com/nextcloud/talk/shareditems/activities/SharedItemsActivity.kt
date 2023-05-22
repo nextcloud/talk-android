@@ -56,12 +56,6 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class SharedItemsActivity : AppCompatActivity() {
 
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -112,6 +106,13 @@ class SharedItemsActivity : AppCompatActivity() {
         })
 
         viewModel.initialize(user, roomToken)
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun handleModelChange(
@@ -255,7 +256,7 @@ class SharedItemsActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
             true
         } else {
             super.onOptionsItemSelected(item)
