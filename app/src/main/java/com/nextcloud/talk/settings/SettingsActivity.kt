@@ -124,6 +124,7 @@ class SettingsActivity : BaseActivity() {
     private var screenLockTimeoutChangeListener: OnPreferenceValueChangedListener<String?>? = null
     private var themeChangeListener: OnPreferenceValueChangedListener<String?>? = null
     private var readPrivacyChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
+    private var typingStatusChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
     private var phoneBookIntegrationChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
@@ -419,6 +420,11 @@ class SettingsActivity : BaseActivity() {
                 readPrivacyChangeListener = it
             }
         )
+        appPreferences.registerTypingStatusChangeListener(
+            TypingStatusChangeListener().also {
+                typingStatusChangeListener = it
+            }
+        )
     }
 
     fun sendLogs() {
@@ -487,6 +493,7 @@ class SettingsActivity : BaseActivity() {
                 settingsIncognitoKeyboard,
                 settingsPhoneBookIntegration,
                 settingsReadPrivacy,
+                settingsTypingStatus,
                 settingsProxyUseCredentials
             ).forEach(viewThemeUtils.talk::colorSwitchPreference)
         }
@@ -660,6 +667,13 @@ class SettingsActivity : BaseActivity() {
             binding.settingsReadPrivacy.visibility = View.GONE
         }
 
+        if (CapabilitiesUtilNew.isTypingStatusAvailable(currentUser!!)) {
+            (binding.settingsTypingStatus.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+                !CapabilitiesUtilNew.isTypingStatusPrivate(currentUser!!)
+        } else {
+            binding.settingsTypingStatus.visibility = View.GONE
+        }
+
         (binding.settingsPhoneBookIntegration.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
             appPreferences.isPhoneBookIntegrationEnabled
     }
@@ -697,6 +711,7 @@ class SettingsActivity : BaseActivity() {
         appPreferences.unregisterScreenLockTimeoutListener(screenLockTimeoutChangeListener)
         appPreferences.unregisterThemeChangeListener(themeChangeListener)
         appPreferences.unregisterReadPrivacyChangeListener(readPrivacyChangeListener)
+        appPreferences.unregisterTypingStatusChangeListener(typingStatusChangeListener)
         appPreferences.unregisterPhoneBookIntegrationChangeListener(phoneBookIntegrationChangeListener)
 
         super.onDestroy()
@@ -1010,12 +1025,45 @@ class SettingsActivity : BaseActivity() {
                     }
 
                     override fun onNext(genericOverall: GenericOverall) {
-                        Log.d(TAG, "onNext")
+                        // unused atm
                     }
 
                     override fun onError(e: Throwable) {
                         appPreferences.setReadPrivacy(!newValue)
                         (binding.settingsReadPrivacy.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+                            !newValue
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        }
+    }
+
+    private inner class TypingStatusChangeListener : OnPreferenceValueChangedListener<Boolean> {
+        override fun onChanged(newValue: Boolean) {
+            val booleanValue = if (newValue) "0" else "1"
+            val json = "{\"key\": \"typing_privacy\", \"value\" : $booleanValue}"
+            ncApi.setTypingStatusPrivacy(
+                ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
+                ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl),
+                RequestBody.create("application/json".toMediaTypeOrNull(), json)
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<GenericOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(genericOverall: GenericOverall) {
+                        // unused atm
+                    }
+
+                    override fun onError(e: Throwable) {
+                        appPreferences.setTypingStatus(!newValue)
+                        (binding.settingsTypingStatus.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
                             !newValue
                     }
 
