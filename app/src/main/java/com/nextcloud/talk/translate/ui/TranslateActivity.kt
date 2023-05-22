@@ -31,7 +31,6 @@ import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -56,9 +55,11 @@ class TranslateActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewModel: TranslateViewModel
-    private lateinit var binding: ActivityTranslateBinding
+    lateinit var viewModel: TranslateViewModel
+    lateinit var binding: ActivityTranslateBinding
 
+    private var toLanguages : Array<String>? = null
+    private var fromLanguages : Array<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +67,23 @@ class TranslateActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivityTranslateBinding.inflate(layoutInflater)
-        viewModel  = ViewModelProvider(this, viewModelFactory)[TranslateViewModel::class.java] // fixme bug here
+        viewModel  = ViewModelProvider(this, viewModelFactory)[TranslateViewModel::class.java]
 
+        viewModel.viewState.observe(this) { state ->
+            when(state) {
+                is TranslateViewModel.StartState -> {
+                    onStartState()
+                }
 
+                is TranslateViewModel.TranslatedState -> {
+                    onTranslatedState(state.msg)
+                }
+
+                is TranslateViewModel.ErrorState -> {
+                    onErrorState()
+                }
+            }
+        }
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
@@ -77,25 +92,9 @@ class TranslateActivity : BaseActivity() {
         setupSpinners()
         setupCopyButton()
 
-        val translateViewModelObserver = Observer<TranslateViewModel.TranslateUiState> { state ->
-            enableSpinners(state.enableSpinners)
-
-            binding.progressBar.visibility = if(state.showProgressBar) View.VISIBLE else View.GONE
-
-            binding.translatedMessageContainer.visibility =
-                if(state.showTranslatedMessageContainer) View.VISIBLE else View.GONE
-
-            if(state.translatedMessageText != null)
-                binding.translatedMessageTextview.text = state.translatedMessageText
-
-            if(state.errorOccurred)
-                showDialog()
-        }
-
-        viewModel.viewState.observe(this, translateViewModelObserver)
-
         if (savedInstanceState == null) {
-            viewModel.translateMessage(Locale.getDefault().language, null)
+            val text = intent.extras !!.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
+            viewModel.translateMessage(Locale.getDefault().language, null, text!!)
         } else {
             binding.translatedMessageTextview.text = savedInstanceState.getString(BundleKeys.SAVED_TRANSLATED_MESSAGE)
         }
@@ -151,10 +150,8 @@ class TranslateActivity : BaseActivity() {
 
         binding.originalMessageTextview.movementMethod = ScrollingMovementMethod()
         binding.translatedMessageTextview.movementMethod = ScrollingMovementMethod()
-        val bundle = intent.extras
-        val text = bundle?.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
+        val text =intent.extras !!.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
         binding.originalMessageTextview.text = text
-        viewModel.viewState.value!!.originalMessageText = text
     }
 
     private fun getLanguageOptions() {
@@ -173,8 +170,8 @@ class TranslateActivity : BaseActivity() {
             fromLanguagesSet.add(current.getString(TO_LABEL))
         }
 
-        viewModel.viewState.value!!.toLanguages = toLanguagesSet.toTypedArray()
-        viewModel.viewState.value!!.fromLanguages = fromLanguagesSet.toTypedArray()
+        toLanguages = toLanguagesSet.toTypedArray()
+        fromLanguages = fromLanguagesSet.toTypedArray()
     }
 
     private fun enableSpinners(value: Boolean) {
@@ -205,8 +202,6 @@ class TranslateActivity : BaseActivity() {
         )
     }
 
-
-
     private fun getISOFromLanguage(language: String): String {
         if (resources.getString(R.string.translation_device_settings) == language) {
             return Locale.getDefault().language
@@ -233,42 +228,61 @@ class TranslateActivity : BaseActivity() {
         viewThemeUtils.material.colorTextInputLayout(binding.fromLanguageInputLayout)
         viewThemeUtils.material.colorTextInputLayout(binding.toLanguageInputLayout)
         fillSpinners()
+        val text = intent.extras !!.getString(BundleKeys.KEY_TRANSLATE_MESSAGE)
 
         binding.fromLanguage.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
             val fromLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
             val toLabel: String = getISOFromLanguage(binding.toLanguage.text.toString())
-            viewModel.translateMessage(toLabel, fromLabel)
+            viewModel.translateMessage(toLabel, fromLabel, text!!)
         }
 
         binding.toLanguage.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
             val toLabel: String = getISOFromLanguage(parent.getItemAtPosition(position).toString())
             val fromLabel: String = getISOFromLanguage(binding.fromLanguage.text.toString())
-            viewModel.translateMessage(toLabel, fromLabel)
+            viewModel.translateMessage(toLabel, fromLabel, text!!)
         }
     }
 
     private fun fillSpinners() {
-        val fromLanguages = viewModel.viewState.value!!.fromLanguages!!
-        val toLanguages = viewModel.viewState.value!!.toLanguages!!
-
         binding.fromLanguage.setAdapter(
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, fromLanguages)
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, fromLanguages!!)
         )
-        if (fromLanguages.isNotEmpty()) {
-            binding.fromLanguage.setText(fromLanguages[0])
+        if (fromLanguages!!.isNotEmpty()) {
+            binding.fromLanguage.setText(fromLanguages!![0])
         }
 
         binding.toLanguage.setAdapter(
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, toLanguages)
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, toLanguages!!)
         )
-        if (toLanguages.isNotEmpty()) {
-            binding.toLanguage.setText(toLanguages[0])
+        if (toLanguages!!.isNotEmpty()) {
+            binding.toLanguage.setText(toLanguages!![0])
         }
     }
 
     private fun setItems() {
-        binding.fromLanguage.setSimpleItems(viewModel.viewState.value!!.fromLanguages!!)
-        binding.toLanguage.setSimpleItems(viewModel.viewState.value!!.toLanguages!!)
+        binding.fromLanguage.setSimpleItems(fromLanguages!!)
+        binding.toLanguage.setSimpleItems(toLanguages!!)
+    }
+
+    private fun onStartState() {
+        enableSpinners(false)
+        binding.translatedMessageContainer.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.copyTranslatedMessage.visibility = View.GONE
+    }
+
+    private fun onTranslatedState(msg : String) {
+        binding.progressBar.visibility = View.GONE
+        binding.translatedMessageContainer.visibility = View.VISIBLE
+        binding.translatedMessageTextview.text = msg
+        binding.copyTranslatedMessage.visibility = View.VISIBLE
+        enableSpinners(true)
+    }
+
+    private fun onErrorState() {
+        binding.progressBar.visibility = View.GONE
+        enableSpinners(true)
+        showDialog()
     }
 
     companion object {

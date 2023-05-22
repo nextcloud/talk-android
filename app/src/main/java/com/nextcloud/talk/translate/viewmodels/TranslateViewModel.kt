@@ -14,33 +14,26 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class TranslateViewModel @Inject constructor(private val repository: TranslateRepository) : ViewModel() {
+class TranslateViewModel @Inject constructor(private val repository: TranslateRepository,
+    private val userManager: UserManager) : ViewModel() {
 
-    @Inject
-    lateinit var userManager: UserManager
+    sealed interface ViewState
 
-    data class TranslateUiState(
-        var enableSpinners : Boolean = false,
-        var showProgressBar : Boolean = false,
-        var showTranslatedMessageContainer : Boolean = false,
-        var translatedMessageText : String? = null,
-        var originalMessageText : String? = null,
-        var errorOccurred : Boolean = false,
-        var toLanguages : Array<String>? = null,
-        var fromLanguages : Array<String>? = null
-    )
+    object StartState : ViewState
+    class TranslatedState(val msg: String) : ViewState
+    object ErrorState : ViewState
 
-    private val _viewState = MutableLiveData(TranslateUiState())
-    val viewState : LiveData<TranslateUiState>
+    private val _viewState : MutableLiveData<ViewState> = MutableLiveData(StartState)
+    val viewState : LiveData<ViewState>
         get() = _viewState
 
-    fun translateMessage(toLanguage: String, fromLanguage: String?) {
+    fun translateMessage(toLanguage: String, fromLanguage: String?, text: String) {
         val currentUser: User = userManager.currentUser.blockingGet()
         val authorization: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val url: String = ApiUtils.getUrlForTranslation(currentUser.baseUrl)
         val calculatedFromLanguage = if (fromLanguage == null || fromLanguage == "") { null } else { fromLanguage }
-
-        repository.translateMessage(authorization, url,_viewState.value!!.originalMessageText!!,toLanguage,
+        Log.i(TAG, "translateMessage Called")
+        repository.translateMessage(authorization, url,text,toLanguage,
             calculatedFromLanguage)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -49,23 +42,16 @@ class TranslateViewModel @Inject constructor(private val repository: TranslateRe
 
     inner class TranslateObserver() : Observer<String> {
         override fun onSubscribe(d: Disposable) {
-            _viewState.value!!.enableSpinners = false
-            _viewState.value!!.showTranslatedMessageContainer = false
-            _viewState.value!!.showProgressBar = true
+            _viewState.value = StartState
         }
 
         override fun onNext(translatedMessage: String) {
-            _viewState.value!!.showProgressBar = false
-            _viewState.value!!.showTranslatedMessageContainer = true
-            _viewState.value!!.translatedMessageText = translatedMessage
-            _viewState.value!!.enableSpinners = true
+            _viewState.value = TranslatedState(translatedMessage)
         }
 
         override fun onError(e: Throwable) {
-            _viewState.value!!.showProgressBar = false
-            _viewState.value!!.errorOccurred = true
-            _viewState.value!!.enableSpinners = true
-            Log.w(TAG, "Error while translating message", e)
+            _viewState.value = ErrorState
+            Log.e(TAG, "Error while translating message", e)
         }
 
         override fun onComplete() {
