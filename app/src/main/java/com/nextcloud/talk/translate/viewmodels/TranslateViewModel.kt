@@ -47,7 +47,7 @@ class TranslateViewModel @Inject constructor(
             ?.subscribe(TranslateObserver())
     }
 
-    inner class TranslateObserver() : Observer<String> {
+    inner class TranslateObserver : Observer<String> {
         override fun onSubscribe(d: Disposable) {
             _viewState.value = StartState
         }
