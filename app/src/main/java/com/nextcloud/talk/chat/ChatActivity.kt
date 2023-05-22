@@ -344,71 +344,6 @@ class ChatActivity :
         }
     }
 
-    private fun updateTypingIndicator() {
-        val participantNames = ArrayList(typingParticipants.values)
-
-        val typingString: SpannableStringBuilder
-        when (typingParticipants.size) {
-            0 -> typingString = SpannableStringBuilder().append(binding.typingIndicator.text)
-
-            1 -> typingString = SpannableStringBuilder()
-                .bold { append(participantNames[0]) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_is_typing))
-
-            2 -> typingString = SpannableStringBuilder()
-                .bold { append(participantNames[0]) }
-                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
-                .bold { append(participantNames[1]) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
-
-            3 -> typingString = SpannableStringBuilder()
-                .bold { append(participantNames[0]) }
-                .append(COMMA)
-                .bold { append(participantNames[1]) }
-                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
-                .bold { append(participantNames[2]) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
-
-            4 -> typingString = SpannableStringBuilder()
-                .bold { append(participantNames[0]) }
-                .append(COMMA)
-                .bold { append(participantNames[1]) }
-                .append(COMMA)
-                .bold { append(participantNames[2]) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_1_other))
-
-            else -> {
-                val moreTypersAmount = typingParticipants.size - 3
-                val othersTyping = context.resources?.getString(R.string.typing_x_others)?.let {
-                    String.format(it, moreTypersAmount)
-                }
-                typingString = SpannableStringBuilder()
-                    .bold { append(participantNames[0]) }
-                    .append(COMMA)
-                    .bold { append(participantNames[1]) }
-                    .append(COMMA)
-                    .bold { append(participantNames[2]) }
-                    .append(othersTyping)
-            }
-        }
-
-        runOnUiThread {
-            if (participantNames.size > 0) {
-                binding.typingIndicatorWrapper.animate()
-                    .translationY(binding.messageInputView.y - binding.typingIndicator.height)
-                    .setInterpolator(AccelerateDecelerateInterpolator())
-                    .duration = TYPING_INDICATOR_ANIMATION_DURATION
-            } else {
-                binding.typingIndicatorWrapper.animate()
-                    .translationY(binding.messageInputView.y)
-                    .setInterpolator(AccelerateDecelerateInterpolator())
-                    .duration = TYPING_INDICATOR_ANIMATION_DURATION
-            }
-
-            binding.typingIndicator.text = typingString
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -729,48 +664,6 @@ class ChatActivity :
         }
     }
 
-    fun sendStartTypingMessage() {
-        if (webSocketInstance == null) {
-            return
-        }
-
-        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
-            if (typingTimer == null) {
-                for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
-                    val ncSignalingMessage = NCSignalingMessage()
-                    ncSignalingMessage.to = sessionId
-                    ncSignalingMessage.type = "startedTyping"
-                    signalingMessageSender!!.send(ncSignalingMessage)
-                }
-
-                typingTimer = object : CountDownTimer(4000, 1000) {
-                    override fun onTick(millisUntilFinished: Long) {
-                    }
-
-                    override fun onFinish() {
-                        sendStopTypingMessage()
-                    }
-                }.start()
-            } else {
-                typingTimer?.cancel()
-                typingTimer?.start()
-            }
-        }
-    }
-
-    fun sendStopTypingMessage() {
-        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
-            typingTimer = null
-
-            for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
-                val ncSignalingMessage = NCSignalingMessage()
-                ncSignalingMessage.to = sessionId
-                ncSignalingMessage.type = "stoppedTyping"
-                signalingMessageSender!!.send(ncSignalingMessage)
-            }
-        }
-    }
-
     private fun initMessageHolders(): MessageHolders {
         val messageHolders = MessageHolders()
         val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!)
@@ -1012,6 +905,113 @@ class ChatActivity :
 
         smileyButton?.setOnClickListener {
             emojiPopup?.toggle()
+        }
+    }
+
+    private fun updateTypingIndicator() {
+        val participantNames = ArrayList(typingParticipants.values)
+
+        val typingString: SpannableStringBuilder
+        when (typingParticipants.size) {
+            0 -> typingString = SpannableStringBuilder().append(binding.typingIndicator.text)
+
+            1 -> typingString = SpannableStringBuilder()
+                .bold { append(participantNames[0]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_is_typing))
+
+            2 -> typingString = SpannableStringBuilder()
+                .bold { append(participantNames[0]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
+                .bold { append(participantNames[1]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
+
+            3 -> typingString = SpannableStringBuilder()
+                .bold { append(participantNames[0]) }
+                .append(COMMA)
+                .bold { append(participantNames[1]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
+                .bold { append(participantNames[2]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
+
+            4 -> typingString = SpannableStringBuilder()
+                .bold { append(participantNames[0]) }
+                .append(COMMA)
+                .bold { append(participantNames[1]) }
+                .append(COMMA)
+                .bold { append(participantNames[2]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_1_other))
+
+            else -> {
+                val moreTypersAmount = typingParticipants.size - 3
+                val othersTyping = context.resources?.getString(R.string.typing_x_others)?.let {
+                    String.format(it, moreTypersAmount)
+                }
+                typingString = SpannableStringBuilder()
+                    .bold { append(participantNames[0]) }
+                    .append(COMMA)
+                    .bold { append(participantNames[1]) }
+                    .append(COMMA)
+                    .bold { append(participantNames[2]) }
+                    .append(othersTyping)
+            }
+        }
+
+        runOnUiThread {
+            if (participantNames.size > 0) {
+                binding.typingIndicatorWrapper.animate()
+                    .translationY(binding.messageInputView.y - binding.typingIndicator.height)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .duration = TYPING_INDICATOR_ANIMATION_DURATION
+            } else {
+                binding.typingIndicatorWrapper.animate()
+                    .translationY(binding.messageInputView.y)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .duration = TYPING_INDICATOR_ANIMATION_DURATION
+            }
+
+            binding.typingIndicator.text = typingString
+        }
+    }
+
+    fun sendStartTypingMessage() {
+        if (webSocketInstance == null) {
+            return
+        }
+
+        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+            if (typingTimer == null) {
+                for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+                    val ncSignalingMessage = NCSignalingMessage()
+                    ncSignalingMessage.to = sessionId
+                    ncSignalingMessage.type = "startedTyping"
+                    signalingMessageSender!!.send(ncSignalingMessage)
+                }
+
+                typingTimer = object : CountDownTimer(4000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                    }
+
+                    override fun onFinish() {
+                        sendStopTypingMessage()
+                    }
+                }.start()
+            } else {
+                typingTimer?.cancel()
+                typingTimer?.start()
+            }
+        }
+    }
+
+    fun sendStopTypingMessage() {
+        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+            typingTimer = null
+
+            for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+                val ncSignalingMessage = NCSignalingMessage()
+                ncSignalingMessage.to = sessionId
+                ncSignalingMessage.type = "stoppedTyping"
+                signalingMessageSender!!.send(ncSignalingMessage)
+            }
         }
     }
 
