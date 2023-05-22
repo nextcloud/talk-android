@@ -363,7 +363,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
     }
 
-   fun handleOnBackPressed() {
+    fun handleOnBackPressed() {
         if (!router!!.handleBack()) {
             onBackPressedDispatcher.onBackPressed()
         }

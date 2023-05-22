@@ -238,9 +238,9 @@ class MessageSearchActivity : BaseActivity() {
             .subscribe { newText -> viewModel.onQueryTextChange(newText) }
     }
 
-     fun handleOnBackPressed() {
+    fun handleOnBackPressed() {
         setResult(Activity.RESULT_CANCELED)
-         finishAffinity()
+        finishAffinity()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
