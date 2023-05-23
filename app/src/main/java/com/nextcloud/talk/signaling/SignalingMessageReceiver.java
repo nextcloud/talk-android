@@ -50,6 +50,18 @@ import java.util.Map;
  */
 public abstract class SignalingMessageReceiver {
 
+    private final ParticipantListMessageNotifier participantListMessageNotifier = new ParticipantListMessageNotifier();
+
+    private final LocalParticipantMessageNotifier localParticipantMessageNotifier = new LocalParticipantMessageNotifier();
+
+    private final CallParticipantMessageNotifier callParticipantMessageNotifier = new CallParticipantMessageNotifier();
+
+    private final ConversationMessageNotifier conversationMessageNotifier = new ConversationMessageNotifier();
+
+    private final OfferMessageNotifier offerMessageNotifier = new OfferMessageNotifier();
+
+    private final WebRtcMessageNotifier webRtcMessageNotifier = new WebRtcMessageNotifier();
+
     /**
      * Listener for participant list messages.
      *
@@ -186,18 +198,6 @@ public abstract class SignalingMessageReceiver {
         void onCandidate(String sdpMid, int sdpMLineIndex, String sdp);
         void onEndOfCandidates();
     }
-
-    private final ParticipantListMessageNotifier participantListMessageNotifier = new ParticipantListMessageNotifier();
-
-    private final LocalParticipantMessageNotifier localParticipantMessageNotifier = new LocalParticipantMessageNotifier();
-
-    private final CallParticipantMessageNotifier callParticipantMessageNotifier = new CallParticipantMessageNotifier();
-
-    private final ConversationMessageNotifier conversationMessageNotifier = new ConversationMessageNotifier();
-
-    private final OfferMessageNotifier offerMessageNotifier = new OfferMessageNotifier();
-
-    private final WebRtcMessageNotifier webRtcMessageNotifier = new WebRtcMessageNotifier();
 
     /**
      * Adds a listener for participant list messages.
