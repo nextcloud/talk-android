@@ -98,7 +98,24 @@ object CapabilitiesUtilNew {
                 return (map["read-privacy"]!!.toString()).toInt() == 1
             }
         }
+        return false
+    }
 
+    fun isTypingStatusAvailable(user: User): Boolean {
+        if (user.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
+            val map = user.capabilities!!.spreedCapability!!.config!!["chat"]
+            return map != null && map.containsKey("typing-privacy")
+        }
+        return false
+    }
+
+    fun isTypingStatusPrivate(user: User): Boolean {
+        if (user.capabilities?.spreedCapability?.config?.containsKey("chat") == true) {
+            val map = user.capabilities!!.spreedCapability!!.config!!["chat"]
+            if (map?.containsKey("typing-privacy") == true) {
+                return (map["typing-privacy"]!!.toString()).toInt() == 1
+            }
+        }
         return false
     }
 
