@@ -323,7 +323,7 @@ class ChatActivity :
 
     private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
         override fun onStartTyping(session: String) {
-            if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+            if (isTypingStatusEnabled()) {
                 var name = webSocketInstance?.getDisplayNameForSession(session)
 
                 if (name != null && !typingParticipants.contains(session)) {
@@ -337,7 +337,7 @@ class ChatActivity :
         }
 
         override fun onStopTyping(session: String) {
-            if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+            if (isTypingStatusEnabled()) {
                 typingParticipants.remove(session)
                 updateTypingIndicator()
             }
@@ -991,11 +991,7 @@ class ChatActivity :
     }
 
     fun sendStartTypingMessage() {
-        if (webSocketInstance == null) {
-            return
-        }
-
-        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+        if (isTypingStatusEnabled()) {
             if (typingTimer == null) {
                 for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
                     val ncSignalingMessage = NCSignalingMessage()
@@ -1024,7 +1020,7 @@ class ChatActivity :
     }
 
     fun sendStopTypingMessage() {
-        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+        if (isTypingStatusEnabled()) {
             typingTimer = null
 
             for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
@@ -1034,6 +1030,11 @@ class ChatActivity :
                 signalingMessageSender!!.send(ncSignalingMessage)
             }
         }
+    }
+
+    private fun isTypingStatusEnabled(): Boolean {
+        return webSocketInstance != null &&
+            !CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)
     }
 
     private fun getRoomInfo() {
