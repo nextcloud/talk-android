@@ -37,6 +37,7 @@ import net.orange_box.storebox.annotations.option.SaveOption;
 import net.orange_box.storebox.enums.SaveMode;
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
 
+
 @SaveOption(SaveMode.APPLY)
 public interface AppPreferences {
 
@@ -313,7 +314,7 @@ public interface AppPreferences {
     @KeyByResource(R.string.nc_settings_read_privacy_key)
     void setReadPrivacy(boolean value);
 
-    @KeyByResource(R.string.nc_settings_read_privacy_key)
+    @KeyByString("typing_status")
     void setTypingStatus(boolean value);
     
     @KeyByResource(R.string.nc_settings_read_privacy_key)
@@ -324,11 +325,11 @@ public interface AppPreferences {
     @UnregisterChangeListenerMethod
     void unregisterReadPrivacyChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
 
-    @KeyByResource(R.string.nc_settings_read_privacy_key)
+    @KeyByString("typing_status")
     @RegisterChangeListenerMethod
     void registerTypingStatusChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
 
-    @KeyByResource(R.string.nc_settings_read_privacy_key)
+    @KeyByString("typing_status")
     @UnregisterChangeListenerMethod
     void unregisterTypingStatusChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
 
