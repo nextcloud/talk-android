@@ -971,7 +971,7 @@ class ChatActivity :
 
             if (participantNames.size > 0) {
                 binding.typingIndicatorWrapper.animate()
-                    .translationY(binding.messageInputView.y - DisplayUtils.convertDpToPixel(20f, context))
+                    .translationY(binding.messageInputView.y - DisplayUtils.convertDpToPixel(18f, context))
                     .setInterpolator(AccelerateDecelerateInterpolator())
                     .duration = TYPING_INDICATOR_ANIMATION_DURATION
             } else {
