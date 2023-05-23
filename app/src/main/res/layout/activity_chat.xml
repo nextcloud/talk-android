@@ -174,7 +174,8 @@
                 android:layout_marginEnd="@dimen/side_margin"
                 android:background="@color/bg_default"
                 android:textColor="@color/low_emphasis_text"
-                tools:text="Marcel is typing">
+                tools:text="Marcel is typing"
+                tools:ignore="Overdraw">
             </TextView>
 
         </LinearLayout>
