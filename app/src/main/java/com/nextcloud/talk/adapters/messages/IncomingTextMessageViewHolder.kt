@@ -171,7 +171,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     }
 
     private fun processParentMessage(message: ChatMessage) {
-        val maxReplyLength = 250
         val parentChatMessage = message.parentMessage
         parentChatMessage!!.activeUser = message.activeUser
         parentChatMessage.imageUrl?.let {
@@ -190,7 +189,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         } else {
             parentChatMessage.actorDisplayName
         }
-        binding.messageQuote.quotedMessage.text = DisplayUtils.ellipsize(parentChatMessage.text, maxReplyLength)
+        binding.messageQuote.quotedMessage.text = DisplayUtils.ellipsize(parentChatMessage.text, MAX_REPLY_LENGTH)
 
         if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
             viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView)
@@ -263,5 +262,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
+        const val MAX_REPLY_LENGTH = 250
     }
 }

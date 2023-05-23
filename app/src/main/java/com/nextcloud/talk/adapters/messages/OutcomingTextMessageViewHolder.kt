@@ -148,7 +148,6 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
     }
 
     private fun processParentMessage(message: ChatMessage) {
-        val maxReplyLength = 250
         val parentChatMessage = message.parentMessage
         val textColor = viewThemeUtils.getScheme(binding.messageQuote.quotedMessage.context).onSurfaceVariant
         parentChatMessage!!.activeUser = message.activeUser
@@ -165,7 +164,7 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         }
         binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
             ?: context!!.getText(R.string.nc_nick_guest)
-        binding.messageQuote.quotedMessage.text = DisplayUtils.ellipsize(parentChatMessage.text, maxReplyLength)
+        binding.messageQuote.quotedMessage.text = DisplayUtils.ellipsize(parentChatMessage.text, MAX_REPLY_LENGTH)
 
         binding.messageQuote.quotedMessageAuthor.setTextColor(textColor)
         binding.messageQuote.quotedMessage.setTextColor(textColor)
@@ -227,5 +226,6 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
 
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
+        const val MAX_REPLY_LENGTH = 250
     }
 }
