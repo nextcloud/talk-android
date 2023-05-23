@@ -44,6 +44,7 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Parcelable
 import android.os.SystemClock
@@ -51,6 +52,7 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputFilter
+import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
@@ -60,6 +62,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
@@ -75,6 +78,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.text.bold
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.text.EmojiCompat
 import androidx.emoji2.widget.EmojiTextView
@@ -124,7 +128,7 @@ import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ControllerChatBinding
+import com.nextcloud.talk.databinding.ActivityChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.extensions.loadAvatarOrImagePreview
@@ -144,12 +148,14 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
+import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.translate.TranslateActivity
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
@@ -231,7 +237,7 @@ class ChatActivity :
 
     var active = false
 
-    private lateinit var binding: ControllerChatBinding
+    private lateinit var binding: ActivityChatBinding
 
     @Inject
     lateinit var ncApi: NcApi
@@ -278,7 +284,8 @@ class ChatActivity :
     private var conversationVideoMenuItem: MenuItem? = null
     private var conversationSharedItemsItem: MenuItem? = null
 
-    var webSocketInstance: WebSocketInstance? = null
+    private var webSocketInstance: WebSocketInstance? = null
+    private var signalingMessageSender: SignalingMessageSender? = null
 
     var getRoomInfoTimerHandler: Handler? = null
     var pastPreconditionFailed = false
@@ -299,6 +306,9 @@ class ChatActivity :
 
     private var videoURI: Uri? = null
 
+    var typingTimer: CountDownTimer? = null
+    val typingParticipants = HashMap<String, String>()
+
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
             if (token != null) {
@@ -311,11 +321,34 @@ class ChatActivity :
         }
     }
 
+    private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
+        override fun onStartTyping(session: String) {
+            if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+                var name = webSocketInstance?.getDisplayNameForSession(session)
+
+                if (name != null && !typingParticipants.contains(session)) {
+                    if (name == "") {
+                        name = context.resources?.getString(R.string.nc_guest)!!
+                    }
+                    typingParticipants[session] = name
+                    updateTypingIndicator()
+                }
+            }
+        }
+
+        override fun onStopTyping(session: String) {
+            if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+                typingParticipants.remove(session)
+                updateTypingIndicator()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        binding = ControllerChatBinding.inflate(layoutInflater)
+        binding = ActivityChatBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
@@ -398,6 +431,7 @@ class ChatActivity :
 
         setupWebsocket()
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
+        webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
 
         if (conversationUser?.userId != "?" &&
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag")
@@ -496,6 +530,8 @@ class ChatActivity :
 
             @Suppress("Detekt.TooGenericExceptionCaught")
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                sendStartTypingMessage()
+
                 if (s.length >= lengthFilter) {
                     binding?.messageInputView?.inputEditText?.error = String.format(
                         Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
@@ -869,6 +905,134 @@ class ChatActivity :
 
         smileyButton?.setOnClickListener {
             emojiPopup?.toggle()
+        }
+    }
+
+    @Suppress("MagicNumber")
+    private fun updateTypingIndicator() {
+        fun ellipsize(text: String): String {
+            return DisplayUtils.ellipsize(text, TYPING_INDICATOR_MAX_NAME_LENGTH)
+        }
+
+        val participantNames = ArrayList(typingParticipants.values)
+
+        val typingString: SpannableStringBuilder
+        when (typingParticipants.size) {
+            0 -> typingString = SpannableStringBuilder().append(binding.typingIndicator.text)
+
+            // person1 is typing
+            1 -> typingString = SpannableStringBuilder()
+                .bold { append(ellipsize(participantNames[0])) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_is_typing))
+
+            // person1 and person2 are typing
+            2 -> typingString = SpannableStringBuilder()
+                .bold { append(ellipsize(participantNames[0])) }
+                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
+                .bold { append(ellipsize(participantNames[1])) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
+
+            // person1, person2 and person3 are typing
+            3 -> typingString = SpannableStringBuilder()
+                .bold { append(ellipsize(participantNames[0])) }
+                .append(COMMA)
+                .bold { append(ellipsize(participantNames[1])) }
+                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
+                .bold { append(ellipsize(participantNames[2])) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
+
+            // person1, person2, person3 and 1 other is typing
+            4 -> typingString = SpannableStringBuilder()
+                .bold { append(participantNames[0]) }
+                .append(COMMA)
+                .bold { append(participantNames[1]) }
+                .append(COMMA)
+                .bold { append(participantNames[2]) }
+                .append(WHITESPACE + context.resources?.getString(R.string.typing_1_other))
+
+            // person1, person2, person3 and x others are typing
+            else -> {
+                val moreTypersAmount = typingParticipants.size - 3
+                val othersTyping = context.resources?.getString(R.string.typing_x_others)?.let {
+                    String.format(it, moreTypersAmount)
+                }
+                typingString = SpannableStringBuilder()
+                    .bold { append(participantNames[0]) }
+                    .append(COMMA)
+                    .bold { append(participantNames[1]) }
+                    .append(COMMA)
+                    .bold { append(participantNames[2]) }
+                    .append(othersTyping)
+            }
+        }
+
+        runOnUiThread {
+            binding.typingIndicator.text = typingString
+
+            if (participantNames.size > 0) {
+                binding.typingIndicatorWrapper.animate()
+                    .translationY(binding.messageInputView.y - DisplayUtils.convertDpToPixel(18f, context))
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .duration = TYPING_INDICATOR_ANIMATION_DURATION
+            } else {
+                if (binding.typingIndicator.lineCount == 1) {
+                    binding.typingIndicatorWrapper.animate()
+                        .translationY(binding.messageInputView.y)
+                        .setInterpolator(AccelerateDecelerateInterpolator())
+                        .duration = TYPING_INDICATOR_ANIMATION_DURATION
+                } else if (binding.typingIndicator.lineCount == 2) {
+                    binding.typingIndicatorWrapper.animate()
+                        .translationY(binding.messageInputView.y + DisplayUtils.convertDpToPixel(15f, context))
+                        .setInterpolator(AccelerateDecelerateInterpolator())
+                        .duration = TYPING_INDICATOR_ANIMATION_DURATION
+                }
+            }
+        }
+    }
+
+    fun sendStartTypingMessage() {
+        if (webSocketInstance == null) {
+            return
+        }
+
+        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+            if (typingTimer == null) {
+                for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+                    val ncSignalingMessage = NCSignalingMessage()
+                    ncSignalingMessage.to = sessionId
+                    ncSignalingMessage.type = TYPING_STARTED_SIGNALING_MESSAGE_TYPE
+                    signalingMessageSender!!.send(ncSignalingMessage)
+                }
+
+                typingTimer = object : CountDownTimer(
+                    TYPING_DURATION_BEFORE_SENDING_STOP,
+                    TYPING_DURATION_BEFORE_SENDING_STOP
+                ) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        // unused atm
+                    }
+
+                    override fun onFinish() {
+                        sendStopTypingMessage()
+                    }
+                }.start()
+            } else {
+                typingTimer?.cancel()
+                typingTimer?.start()
+            }
+        }
+    }
+
+    fun sendStopTypingMessage() {
+        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+            typingTimer = null
+
+            for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+                val ncSignalingMessage = NCSignalingMessage()
+                ncSignalingMessage.to = sessionId
+                ncSignalingMessage.type = TYPING_STOPPED_SIGNALING_MESSAGE_TYPE
+                signalingMessageSender!!.send(ncSignalingMessage)
+            }
         }
     }
 
@@ -1980,6 +2144,7 @@ class ChatActivity :
         eventBus.unregister(this)
 
         webSocketInstance?.getSignalingMessageReceiver()?.removeListener(localParticipantMessageListener)
+        webSocketInstance?.getSignalingMessageReceiver()?.removeListener(conversationMessageListener)
 
         findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
 
@@ -2228,6 +2393,7 @@ class ChatActivity :
             }
 
             binding?.messageInputView?.inputEditText?.setText("")
+            sendStopTypingMessage()
             val replyMessageId: Int? = findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int?
             sendMessage(
                 editable,
@@ -2303,6 +2469,8 @@ class ChatActivity :
         if (webSocketInstance == null) {
             Log.d(TAG, "webSocketInstance not set up. This should only happen when not using the HPB")
         }
+
+        signalingMessageSender = webSocketInstance?.signalingMessageSender
     }
 
     fun pullChatMessages(
@@ -3627,5 +3795,13 @@ class ChatActivity :
         private const val LOOKING_INTO_FUTURE_TIMEOUT = 30
         private const val CHUNK_SIZE: Int = 10
         private const val ONE_SECOND_IN_MILLIS = 1000
+
+        private const val WHITESPACE = " "
+        private const val COMMA = ", "
+        private const val TYPING_INDICATOR_ANIMATION_DURATION = 200L
+        private const val TYPING_INDICATOR_MAX_NAME_LENGTH = 14
+        private const val TYPING_DURATION_BEFORE_SENDING_STOP = 4000L
+        private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
+        private const val TYPING_STOPPED_SIGNALING_MESSAGE_TYPE = "stoppedTyping"
     }
 }
