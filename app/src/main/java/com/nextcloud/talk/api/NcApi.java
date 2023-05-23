@@ -454,6 +454,11 @@ public interface NcApi {
                                                     @Body RequestBody body);
 
     @POST
+    Observable<GenericOverall> setTypingStatusPrivacy(@Header("Authorization") String authorization,
+                                                    @Url String url,
+                                                    @Body RequestBody body);
+
+    @POST
     Observable<ContactsByNumberOverall> searchContactsByPhoneNumber(@Header("Authorization") String authorization,
                                                                     @Url String url,
                                                                     @Body RequestBody search);
