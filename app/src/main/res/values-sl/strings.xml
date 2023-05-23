@@ -444,6 +444,7 @@
     <string name="today">Danes</string>
     <string name="translate">Prevodi</string>
     <string name="translation_device_settings">Nastavitve naprave</string>
+    <string name="translation_error_message">Ni mogoče zaznati jezika.</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Za</string>
     <string name="upload_new_avatar_from_device">Posodobi podobo z naprave</string>
