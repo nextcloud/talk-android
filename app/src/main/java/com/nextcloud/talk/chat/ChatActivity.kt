@@ -908,6 +908,7 @@ class ChatActivity :
         }
     }
 
+    @Suppress("MagicNumber")
     private fun updateTypingIndicator() {
         fun ellipsize(text: String): String {
             return DisplayUtils.ellipsize(text, TYPING_INDICATOR_MAX_NAME_LENGTH)
@@ -999,12 +1000,16 @@ class ChatActivity :
                 for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
                     val ncSignalingMessage = NCSignalingMessage()
                     ncSignalingMessage.to = sessionId
-                    ncSignalingMessage.type = "startedTyping"
+                    ncSignalingMessage.type = TYPING_STARTED_SIGNALING_MESSAGE_TYPE
                     signalingMessageSender!!.send(ncSignalingMessage)
                 }
 
-                typingTimer = object : CountDownTimer(4000, 1000) {
+                typingTimer = object : CountDownTimer(
+                    TYPING_DURATION_BEFORE_SENDING_STOP,
+                    TYPING_DURATION_BEFORE_SENDING_STOP
+                ) {
                     override fun onTick(millisUntilFinished: Long) {
+                        // unused atm
                     }
 
                     override fun onFinish() {
@@ -1025,7 +1030,7 @@ class ChatActivity :
             for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
                 val ncSignalingMessage = NCSignalingMessage()
                 ncSignalingMessage.to = sessionId
-                ncSignalingMessage.type = "stoppedTyping"
+                ncSignalingMessage.type = TYPING_STOPPED_SIGNALING_MESSAGE_TYPE
                 signalingMessageSender!!.send(ncSignalingMessage)
             }
         }
@@ -3795,5 +3800,8 @@ class ChatActivity :
         private const val COMMA = ", "
         private const val TYPING_INDICATOR_ANIMATION_DURATION = 200L
         private const val TYPING_INDICATOR_MAX_NAME_LENGTH = 14
+        private const val TYPING_DURATION_BEFORE_SENDING_STOP = 4000L
+        private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
+        private const val TYPING_STOPPED_SIGNALING_MESSAGE_TYPE = "stoppedTyping"
     }
 }
