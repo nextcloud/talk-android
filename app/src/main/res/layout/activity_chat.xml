@@ -30,7 +30,8 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/bg_default"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="Overdraw">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/chat_appbar"
