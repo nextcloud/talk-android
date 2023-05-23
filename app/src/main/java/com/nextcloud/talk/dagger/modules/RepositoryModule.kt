@@ -47,6 +47,8 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
+import com.nextcloud.talk.translate.repositories.TranslateRepository
+import com.nextcloud.talk.translate.repositories.TranslateRepositoryImpl
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import dagger.Module
@@ -106,5 +108,11 @@ class RepositoryModule {
     fun provideRequestAssistanceRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew):
         RequestAssistanceRepository {
         return RequestAssistanceRepositoryImpl(ncApi, userProvider)
+    }
+
+    @Provides
+    fun translateRepository(ncApi: NcApi):
+        TranslateRepository {
+        return TranslateRepositoryImpl(ncApi)
     }
 }

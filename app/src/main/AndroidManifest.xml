@@ -190,7 +190,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".translate.TranslateActivity"
+            android:name=".translate.ui.TranslateActivity"
             android:theme="@style/AppTheme" />
 
         <activity

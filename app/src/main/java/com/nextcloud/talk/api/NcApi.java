@@ -44,7 +44,7 @@ import com.nextcloud.talk.models.json.search.ContactsByNumberOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.status.StatusOverall;
-import com.nextcloud.talk.models.json.translations.TranslationsOverall;
+import com.nextcloud.talk.translate.repositories.model.TranslationsOverall;
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;

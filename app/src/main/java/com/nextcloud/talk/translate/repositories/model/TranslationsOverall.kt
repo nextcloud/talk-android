@@ -17,22 +17,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.translations
+package com.nextcloud.talk.translate.repositories.model
 
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericMeta
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject
-data class TranslateOCS( // TODO finish this model
-    @JsonField(name = ["meta"])
-    var meta: GenericMeta?,
-    @JsonField(name = ["data"])
-    var data: TranslateData?
+class TranslationsOverall(
+    @JsonField(name = ["ocs"])
+    var ocs: TranslateOCS?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, TranslateData())
+    constructor() : this(null)
 }
