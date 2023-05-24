@@ -30,6 +30,7 @@ package com.nextcloud.talk.chat
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -159,8 +160,8 @@ import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
-import com.nextcloud.talk.translate.ui.TranslateActivity
 import com.nextcloud.talk.signaling.SignalingMessageSender
+import com.nextcloud.talk.translate.ui.TranslateActivity
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
@@ -313,8 +314,9 @@ class ChatActivity :
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
+            val bundle = ActivityOptions.makeSceneTransitionAnimation(this@ChatActivity).toBundle()
             intent.putExtras(Bundle())
-            startActivity(intent)
+            startActivity(intent, bundle)
         }
     }
 

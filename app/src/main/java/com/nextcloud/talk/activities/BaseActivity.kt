@@ -25,8 +25,11 @@ package com.nextcloud.talk.activities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.transition.Slide
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.webkit.SslErrorHandler
 import androidx.appcompat.app.AlertDialog
@@ -76,6 +79,11 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        with(window) {
+            requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+            window.enterTransition = Slide(Gravity.LEFT)
+            window.exitTransition = Slide(Gravity.RIGHT)
+        }
         super.onCreate(savedInstanceState)
     }
 
