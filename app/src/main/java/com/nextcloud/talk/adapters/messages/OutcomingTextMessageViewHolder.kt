@@ -164,7 +164,7 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         }
         binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
             ?: context!!.getText(R.string.nc_nick_guest)
-        binding.messageQuote.quotedMessage.text = parentChatMessage.text
+        binding.messageQuote.quotedMessage.text = DisplayUtils.ellipsize(parentChatMessage.text, MAX_REPLY_LENGTH)
 
         binding.messageQuote.quotedMessageAuthor.setTextColor(textColor)
         binding.messageQuote.quotedMessage.setTextColor(textColor)
@@ -226,5 +226,6 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
 
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
+        const val MAX_REPLY_LENGTH = 250
     }
 }
