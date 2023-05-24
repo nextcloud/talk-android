@@ -43,6 +43,7 @@ import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.PredefinedStatusClickListener
 import com.nextcloud.talk.adapters.PredefinedStatusListAdapter
@@ -424,15 +425,15 @@ class SetStatusDialogFragment :
             }
         }
         views.first.isChecked = true
-        viewThemeUtils.platform.colorOnSecondaryContainerTextViewElement(views.second)
+        viewThemeUtils.platform.colorTextView(views.second, ColorRole.ON_SECONDARY_CONTAINER)
     }
 
     private fun clearTopStatus() {
         context?.let {
-            binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
-            binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
-            binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
-            binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
+            binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
+            binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
+            binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
+            binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
 
             binding.onlineIcon.imageTintList = null
             binding.awayIcon.imageTintList = null

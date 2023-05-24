@@ -148,7 +148,7 @@ class ConversationItem(
                     model.status,
                     model.statusIcon,
                     size,
-                    context.resources.getColor(R.color.bg_default),
+                    context.resources.getColor(R.color.bg_default, null),
                     appContext
                 )
             )

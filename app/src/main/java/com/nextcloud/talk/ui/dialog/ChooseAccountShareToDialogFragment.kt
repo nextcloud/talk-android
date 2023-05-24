@@ -34,6 +34,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.adapters.items.AdvancedUserItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -90,7 +91,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
             binding!!.currentAccount.userName.text = user.displayName
             binding!!.currentAccount.ticker.visibility = View.GONE
             binding!!.currentAccount.account.text = Uri.parse(user.baseUrl).host
-            viewThemeUtils!!.platform.colorImageView(binding!!.currentAccount.accountMenu)
+            viewThemeUtils!!.platform.colorImageView(binding!!.currentAccount.accountMenu, ColorRole.PRIMARY)
             if (user.baseUrl != null &&
                 (user.baseUrl!!.startsWith("http://") || user.baseUrl!!.startsWith("https://"))
             ) {

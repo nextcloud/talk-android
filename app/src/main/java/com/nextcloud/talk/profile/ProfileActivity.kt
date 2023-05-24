@@ -47,6 +47,7 @@ import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getError
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -188,7 +189,7 @@ class ProfileActivity : BaseActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
         supportActionBar?.title = context.getString(R.string.nc_profile_personal_info_title)
         viewThemeUtils.material.themeToolbar(binding.profileToolbar)
     }
@@ -651,7 +652,7 @@ class ProfileActivity : BaseActivity() {
             initUserInfoEditText(holder, item)
 
             holder.binding.icon.contentDescription = item.hint
-            viewThemeUtils.platform.colorImageView(holder.binding.icon)
+            viewThemeUtils.platform.colorImageView(holder.binding.icon, ColorRole.PRIMARY)
             if (!TextUtils.isEmpty(item.text) || controller.edit) {
                 holder.binding.userInfoDetailContainer.visibility = View.VISIBLE
                 controller.viewThemeUtils.material.colorTextInputLayout(holder.binding.userInfoInputLayout)

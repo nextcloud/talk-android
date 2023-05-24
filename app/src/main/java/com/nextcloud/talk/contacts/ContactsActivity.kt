@@ -192,7 +192,7 @@ class ContactsActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
         supportActionBar?.title = when {
             isAddingParticipantsView -> {
                 resources!!.getString(R.string.nc_add_participants)
@@ -669,7 +669,9 @@ class ContactsActivity :
                 PorterDuff.Mode.SRC_IN
             )
 
-        binding?.conversationPrivacyToggle?.let { viewThemeUtils.platform.colorImageViewButton(it.publicCallLink) }
+        binding?.conversationPrivacyToggle?.let {
+            viewThemeUtils.platform.colorImageViewBackgroundAndIcon(it.publicCallLink)
+        }
         disengageProgressBar()
     }
 

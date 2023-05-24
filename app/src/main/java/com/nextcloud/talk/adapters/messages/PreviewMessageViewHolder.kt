@@ -45,6 +45,7 @@ import androidx.core.content.ContextCompat
 import androidx.emoji2.widget.EmojiTextView
 import autodagger.AutoInjector
 import com.google.android.material.card.MaterialCardView
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -109,7 +110,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
 
         time.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
-        viewThemeUtils!!.platform.colorCircularProgressBar(progressBar!!)
+        viewThemeUtils!!.platform.colorCircularProgressBar(progressBar!!, ColorRole.PRIMARY)
         clickView = image
         messageText.visibility = View.VISIBLE
         if (message.getCalculateMessageType() === ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
@@ -211,7 +212,10 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             clickView = previewContactContainer
             viewThemeUtils!!.talk.colorContactChatItemBackground(previewContactContainer)
             viewThemeUtils!!.talk.colorContactChatItemName(previewContactName)
-            viewThemeUtils!!.platform.colorCircularProgressBarOnPrimaryContainer(previewContactProgressBar!!)
+            viewThemeUtils!!.platform.colorCircularProgressBar(
+                previewContactProgressBar!!,
+                ColorRole.ON_PRIMARY_CONTAINER
+            )
 
             if (message.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_PHOTO)) {
                 image = previewContactPhoto

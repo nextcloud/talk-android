@@ -75,7 +75,7 @@ class SharedItemsActivity : AppCompatActivity() {
         setSupportActionBar(binding.sharedItemsToolbar)
         setContentView(binding.root)
 
-        viewThemeUtils.platform.themeStatusBar(this, binding.sharedItemsToolbar)
+        viewThemeUtils.platform.themeStatusBar(this)
         viewThemeUtils.material.themeToolbar(binding.sharedItemsToolbar)
         viewThemeUtils.material.themeTabLayoutOnSurface(binding.sharedItemsTabs)
 

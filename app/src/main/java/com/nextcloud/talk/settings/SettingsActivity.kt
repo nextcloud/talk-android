@@ -61,6 +61,7 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -249,7 +250,7 @@ class SettingsActivity : BaseActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
         supportActionBar?.title = context.getString(R.string.nc_settings)
         viewThemeUtils.material.themeToolbar(binding.settingsToolbar)
     }
@@ -532,9 +533,7 @@ class SettingsActivity : BaseActivity() {
             when (ApplicationWideMessageHolder.getInstance().messageType) {
                 ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED -> {
                     binding.messageText.let {
-                        it.setTextColor(
-                            viewThemeUtils.getScheme(it.context).primary
-                        )
+                        viewThemeUtils.platform.colorTextView(it, ColorRole.PRIMARY)
                         it.text = resources!!.getString(R.string.nc_settings_account_updated)
                         binding.messageView.visibility = View.VISIBLE
                     }
@@ -542,12 +541,10 @@ class SettingsActivity : BaseActivity() {
 
                 ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK -> {
                     binding.messageText.let {
-                        it.setTextColor(resources!!.getColor(R.color.nc_darkRed))
+                        it.setTextColor(resources!!.getColor(R.color.nc_darkRed, null))
                         it.text = resources!!.getString(R.string.nc_settings_wrong_account)
                         binding.messageView.visibility = View.VISIBLE
-                        it.setTextColor(
-                            viewThemeUtils.getScheme(it.context).primary
-                        )
+                        viewThemeUtils.platform.colorTextView(it, ColorRole.PRIMARY)
                         it.text = resources!!.getString(R.string.nc_Server_account_imported)
                         binding.messageView.visibility = View.VISIBLE
                     }
@@ -555,9 +552,7 @@ class SettingsActivity : BaseActivity() {
 
                 ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED -> {
                     binding.messageText.let {
-                        it.setTextColor(
-                            viewThemeUtils.getScheme(it.context).primary
-                        )
+                        viewThemeUtils.platform.colorTextView(it, ColorRole.PRIMARY)
                         it.text = resources!!.getString(R.string.nc_Server_account_imported)
                         binding.messageView.visibility = View.VISIBLE
                     }
@@ -565,7 +560,7 @@ class SettingsActivity : BaseActivity() {
 
                 ApplicationWideMessageHolder.MessageType.FAILED_TO_IMPORT_ACCOUNT -> {
                     binding.messageText.let {
-                        it.setTextColor(resources!!.getColor(R.color.nc_darkRed))
+                        it.setTextColor(resources!!.getColor(R.color.nc_darkRed, null))
                         it.text = resources!!.getString(R.string.nc_server_failed_to_import_account)
                         binding.messageView.visibility = View.VISIBLE
                     }
@@ -915,7 +910,9 @@ class SettingsActivity : BaseActivity() {
         phoneNumberLayoutWrapper.setPadding(PHONE_NUMBER_SIDE_PADDING, 0, PHONE_NUMBER_SIDE_PADDING, 0)
         val phoneNumberInputLayout = TextInputLayout(context)
         val phoneNumberField = EditText(context)
-        phoneNumberInputLayout.setHelperTextColor(ColorStateList.valueOf(resources!!.getColor(R.color.nc_darkRed)))
+        phoneNumberInputLayout.setHelperTextColor(
+            ColorStateList.valueOf(resources!!.getColor(R.color.nc_darkRed, null))
+        )
         phoneNumberField.inputType = InputType.TYPE_CLASS_PHONE
         phoneNumberField.setText("+")
         phoneNumberField.addTextChangedListener(object : TextWatcher {

@@ -104,7 +104,7 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
         supportActionBar?.title = fileName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewThemeUtils.platform.themeStatusBar(this, binding.textviewToolbar)
+        viewThemeUtils.platform.themeStatusBar(this)
         viewThemeUtils.material.themeToolbar(binding.textviewToolbar)
         viewThemeUtils.material.colorToolbarOverflowIcon(binding.textviewToolbar)
 

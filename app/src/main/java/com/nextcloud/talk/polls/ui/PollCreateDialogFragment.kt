@@ -101,9 +101,9 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
     }
 
     private fun themeDialog() {
-        viewThemeUtils.platform.colorPrimaryTextViewElement(binding.pollQuestion)
-        viewThemeUtils.platform.colorPrimaryTextViewElement(binding.pollOptions)
-        viewThemeUtils.platform.colorPrimaryTextViewElement(binding.pollSettings)
+        viewThemeUtils.platform.colorTextView(binding.pollQuestion)
+        viewThemeUtils.platform.colorTextView(binding.pollOptions)
+        viewThemeUtils.platform.colorTextView(binding.pollSettings)
 
         viewThemeUtils.material.colorTextInputLayout(binding.pollCreateQuestionTextInputLayout)
 

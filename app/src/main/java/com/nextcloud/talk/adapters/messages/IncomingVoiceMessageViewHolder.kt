@@ -39,6 +39,7 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -99,7 +100,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
         viewThemeUtils.platform.themeHorizontalSeekBar(binding.seekbar)
-        viewThemeUtils.platform.colorCircularProgressBarOnSurfaceVariant(binding.progressBar)
+        viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
 
         if (message.isPlayingVoiceMessage) {
             showPlayButton()
@@ -291,7 +292,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
                 .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.platform.colorPrimaryView(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }

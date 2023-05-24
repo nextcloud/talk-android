@@ -145,7 +145,7 @@ class ReactionAnimator(
         nameView.layoutParams = nameViewParams
 
         nameView.text = "  " + callReaction.userName + "  "
-        nameView.setTextColor(context.resources.getColor(R.color.white))
+        nameView.setTextColor(context.resources.getColor(R.color.white, null))
 
         val backgroundColor = ContextCompat.getColor(
             context,

@@ -179,7 +179,7 @@ class LocationPickerActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
         supportActionBar?.title = context.getString(R.string.nc_share_location)
         viewThemeUtils.material.themeToolbar(binding.locationPickerToolbar)
     }

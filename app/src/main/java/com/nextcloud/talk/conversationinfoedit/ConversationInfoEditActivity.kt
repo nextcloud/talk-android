@@ -153,7 +153,7 @@ class ConversationInfoEditActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
         supportActionBar?.title = resources!!.getString(R.string.nc_conversation_menu_conversation_info)
 
         viewThemeUtils.material.themeToolbar(binding.conversationInfoEditToolbar)
