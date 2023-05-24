@@ -79,10 +79,12 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class AccountVerificationController(args: Bundle? = null) : BaseController(
-    R.layout.controller_account_verification, args
+    R.layout.controller_account_verification,
+    args
 ) {
-    private val binding: ControllerAccountVerificationBinding? by
-        viewBinding(ControllerAccountVerificationBinding::bind)
+    private val binding: ControllerAccountVerificationBinding? by viewBinding(
+        ControllerAccountVerificationBinding::bind
+    )
 
     @Inject
     lateinit var ncApi: NcApi
@@ -289,10 +291,8 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
 
                 @SuppressLint("SetTextI18n")
                 override fun onError(e: Throwable) {
-                    binding?.progressText?.text =
-                        """ ${binding?.progressText?.text}
-                        """
-                            .trimIndent() + resources!!.getString(R.string.nc_display_name_not_stored)
+                    binding?.progressText?.text = """ ${binding?.progressText?.text}""".trimIndent() +
+                        resources!!.getString(R.string.nc_display_name_not_stored)
                     abortVerification()
                 }
 

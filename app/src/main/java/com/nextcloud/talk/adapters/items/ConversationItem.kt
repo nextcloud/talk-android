@@ -244,13 +244,14 @@ class ConversationItem(
             } else {
                 model.lastMessage!!.activeUser = user
 
-                val text = if (model.lastMessage!!.getCalculateMessageType() === ChatMessage.MessageType
-                        .REGULAR_TEXT_MESSAGE
-                ) {
-                    calculateRegularLastMessageText(appContext)
-                } else {
-                    model.lastMessage!!.lastMessageDisplayText
-                }
+                val text =
+                    if (
+                        model.lastMessage!!.getCalculateMessageType() === ChatMessage.MessageType.REGULAR_TEXT_MESSAGE
+                    ) {
+                        calculateRegularLastMessageText(appContext)
+                    } else {
+                        model.lastMessage!!.lastMessageDisplayText
+                    }
                 holder.binding.dialogLastMessage.text = text
             }
         } else {

@@ -298,7 +298,8 @@ class ProfileActivity : BaseActivity() {
         }
         binding.loadingContent.visibility = View.VISIBLE
         adapter!!.setData(createUserInfoDetails(userInfo))
-        if (isAllEmpty(
+        if (
+            isAllEmpty(
                 arrayOf(
                     userInfo?.displayName,
                     userInfo?.phone,
