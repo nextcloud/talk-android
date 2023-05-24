@@ -57,8 +57,8 @@ import java.net.URLEncoder
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : MessageHolders
-.IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
+class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
+    MessageHolders.IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
     private val binding: ItemCustomIncomingLocationMessageBinding =
         ItemCustomIncomingLocationMessageBinding.bind(itemView)
 

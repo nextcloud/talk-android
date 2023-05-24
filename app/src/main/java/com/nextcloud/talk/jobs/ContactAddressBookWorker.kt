@@ -451,40 +451,26 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         const val DELETE_ALL = "DELETE_ALL"
 
         fun run(context: Context) {
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.WRITE_CONTACTS
-                ) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.READ_CONTACTS
-                    ) == PackageManager.PERMISSION_GRANTED
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CONTACTS) ==
+                PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) ==
+                PackageManager.PERMISSION_GRANTED
             ) {
-                WorkManager
-                    .getInstance()
-                    .enqueue(
-                        OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
-                            .setInputData(Data.Builder().putBoolean(KEY_FORCE, false).build())
-                            .build()
-                    )
+                WorkManager.getInstance().enqueue(
+                    OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
+                        .setInputData(Data.Builder().putBoolean(KEY_FORCE, false).build()).build()
+                )
             }
         }
 
         fun checkPermission(activity: Activity, context: Context): Boolean {
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.WRITE_CONTACTS
-                ) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.READ_CONTACTS
-                    ) != PackageManager.PERMISSION_GRANTED
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CONTACTS) !=
+                PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) !=
+                PackageManager.PERMISSION_GRANTED
             ) {
                 activity.requestPermissions(
-                    arrayOf(
-                        Manifest.permission.WRITE_CONTACTS,
-                        Manifest.permission.READ_CONTACTS
-                    ),
+                    arrayOf(Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_CONTACTS),
                     REQUEST_PERMISSION
                 )
                 return false

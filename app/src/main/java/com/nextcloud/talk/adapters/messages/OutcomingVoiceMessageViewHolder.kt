@@ -51,11 +51,10 @@ import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
-.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView) {
+class OutcomingVoiceMessageViewHolder(outcomingView: View) :
+    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView) {
 
-    private val binding: ItemCustomOutcomingVoiceMessageBinding =
-        ItemCustomOutcomingVoiceMessageBinding.bind(itemView)
+    private val binding: ItemCustomOutcomingVoiceMessageBinding = ItemCustomOutcomingVoiceMessageBinding.bind(itemView)
 
     @JvmField
     @Inject

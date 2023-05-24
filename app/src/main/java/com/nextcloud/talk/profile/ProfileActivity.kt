@@ -298,15 +298,16 @@ class ProfileActivity : BaseActivity() {
         }
         binding.loadingContent.visibility = View.VISIBLE
         adapter!!.setData(createUserInfoDetails(userInfo))
-        if (isAllEmpty(
+        if (
+            isAllEmpty(
                 arrayOf(
-                        userInfo?.displayName,
-                        userInfo?.phone,
-                        userInfo?.email,
-                        userInfo?.address,
-                        userInfo?.twitter,
-                        userInfo?.website
-                    )
+                    userInfo?.displayName,
+                    userInfo?.phone,
+                    userInfo?.email,
+                    userInfo?.address,
+                    userInfo?.twitter,
+                    userInfo?.website
+                )
             )
         ) {
             binding.userinfoList.visibility = View.GONE
@@ -755,7 +756,7 @@ class ProfileActivity : BaseActivity() {
         PHONE("phone", "phoneScope"),
         ADDRESS("address", "addressScope"),
         WEBSITE("website", "websiteScope"),
-        TWITTER("twitter", "twitterScope");
+        TWITTER("twitter", "twitterScope")
     }
 
     companion object {

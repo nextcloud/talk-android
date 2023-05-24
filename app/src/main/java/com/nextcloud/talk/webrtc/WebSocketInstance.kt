@@ -289,8 +289,8 @@ class WebSocketInstance internal constructor(
         val (_, roomWebSocketMessage) = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage::class.java)
         if (roomWebSocketMessage != null) {
             currentRoomToken = roomWebSocketMessage.roomId
-            if (roomWebSocketMessage
-                .roomPropertiesWebSocketMessage != null &&
+            if (
+                roomWebSocketMessage.roomPropertiesWebSocketMessage != null &&
                 !TextUtils.isEmpty(currentRoomToken)
             ) {
                 sendRoomJoinedEvent()
