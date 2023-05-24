@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Ezhil Shanmugham
  * Copyright (C) 2023 Marcel Hibbe (dev@mhibbe.de)
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,7 +151,7 @@ class ConversationInfoEditActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.conversationInfoEditToolbar)
         binding.conversationInfoEditToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

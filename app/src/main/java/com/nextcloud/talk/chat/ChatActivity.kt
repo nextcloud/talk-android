@@ -5,10 +5,12 @@
  * @author Marcel Hibbe
  * @author Andy Scherzinger
  * @author Tim Krüger
+ * @author Ezhil Shanmugham
  * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021-2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +74,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
@@ -307,6 +310,14 @@ class ChatActivity :
 
     private var videoURI: Uri? = null
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
+            intent.putExtras(Bundle())
+            startActivity(intent)
+        }
+    }
+
     var typingTimer: CountDownTimer? = null
     val typingParticipants = HashMap<String, String>()
 
@@ -360,6 +371,8 @@ class ChatActivity :
 
         initAdapter()
         binding.messagesListView.setAdapter(adapter)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -612,19 +625,13 @@ class ChatActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.chatToolbar)
         binding.chatToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
         setActionBarTitle()
         viewThemeUtils.material.themeToolbar(binding.chatToolbar)
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this, ConversationsListActivity::class.java)
-        intent.putExtras(Bundle())
-        startActivity(intent)
     }
 
     private fun initAdapter() {

@@ -188,7 +188,7 @@ class ContactsActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.contactsToolbar)
         binding.contactsToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

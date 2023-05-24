@@ -4,9 +4,11 @@
  * @author Tim Krüger
  * @author Álvaro Brey
  * @author Marcel Hibbe
+ * @author Ezhil Shanmugham
  * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -246,7 +248,7 @@ class SharedItemsActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
             true
         } else {
             super.onOptionsItemSelected(item)

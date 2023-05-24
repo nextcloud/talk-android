@@ -5,10 +5,12 @@
  * @author Andy Scherzinger
  * @author Marcel Hibbe
  * @author Mario Danic
+ * @author Ezhil Shanmugham
  * Copyright (C) 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
  * Copyright (C) 2022 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2017-2020 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +49,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
@@ -186,6 +189,13 @@ class ConversationsListActivity :
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            // TODO: replace this when conductor is removed. For now it avoids to load the MainActiviy which has no UI.
+            finishAffinity()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -198,6 +208,8 @@ class ConversationsListActivity :
         viewThemeUtils.material.themeSearchBarText(binding.searchText)
 
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onResume() {
@@ -244,7 +256,7 @@ class ConversationsListActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.conversationListToolbar)
         binding.conversationListToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -1356,13 +1368,6 @@ class ConversationsListActivity :
         handleHttpExceptions(throwable)
         binding?.swipeRefreshLayoutView?.isRefreshing = false
         showErrorDialog()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-        // TODO: replace this when conductor is removed. For now it avoids to load the MainActiviy which has no UI.
-        finishAffinity()
     }
 
     companion object {

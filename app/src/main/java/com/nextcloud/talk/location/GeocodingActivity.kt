@@ -123,7 +123,7 @@ class GeocodingActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.geocodingToolbar)
         binding.geocodingToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

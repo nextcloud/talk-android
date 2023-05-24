@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Ezhil Shanmugham
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +41,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.PermissionChecker
 import androidx.core.content.res.ResourcesCompat
@@ -115,6 +118,13 @@ class LocationPickerActivity :
     var searchItem: MenuItem? = null
     var searchView: SearchView? = null
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -135,6 +145,8 @@ class LocationPickerActivity :
         setupSystemColors()
 
         getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onStart() {
@@ -175,7 +187,7 @@ class LocationPickerActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.locationPickerToolbar)
         binding.locationPickerToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -570,11 +582,6 @@ class LocationPickerActivity :
 
     override fun onProviderDisabled(provider: String) {
         // empty
-    }
-
-    override fun onBackPressed() {
-        setResult(Activity.RESULT_CANCELED)
-        finish()
     }
 
     companion object {

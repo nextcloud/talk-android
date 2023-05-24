@@ -4,9 +4,11 @@
  * @author Andy Scherzinger
  * @author Mario Danic
  * @author Tim Krüger
+ * @author Ezhil Shanmugham
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021-2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -246,7 +248,7 @@ class SettingsActivity : BaseActivity() {
     private fun setupActionBar() {
         setSupportActionBar(binding.settingsToolbar)
         binding.settingsToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

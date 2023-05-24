@@ -4,9 +4,11 @@
  * @author Tobias Kaminsky
  * @author Andy Scherzinger
  * @author Tim Krüger
+ * @author Ezhil Shanmugham
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -185,7 +187,7 @@ class ProfileActivity : BaseActivity() {
     private fun setupActionBar() {
         setSupportActionBar(binding.profileToolbar)
         binding.profileToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

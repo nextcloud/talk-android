@@ -2,8 +2,10 @@
  * Nextcloud Talk application
  *
  * @author Álvaro Brey
+ * @author Ezhil Shanmugham
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Nextcloud GmbH
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +31,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -72,6 +75,13 @@ class MessageSearchActivity : BaseActivity() {
     private var searchViewDisposable: Disposable? = null
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -90,6 +100,8 @@ class MessageSearchActivity : BaseActivity() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh(searchView.query?.toString())
         }
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     private fun setupActionBar() {
@@ -210,7 +222,7 @@ class MessageSearchActivity : BaseActivity() {
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
                 return false
             }
         })
@@ -236,15 +248,10 @@ class MessageSearchActivity : BaseActivity() {
             .subscribe { newText -> viewModel.onQueryTextChange(newText) }
     }
 
-    override fun onBackPressed() {
-        setResult(Activity.RESULT_CANCELED)
-        finish()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)

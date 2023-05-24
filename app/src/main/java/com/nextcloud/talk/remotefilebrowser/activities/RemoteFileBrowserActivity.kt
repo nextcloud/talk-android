@@ -3,8 +3,10 @@
  *
  * @author Andy Scherzinger
  * @author Álvaro Brey
+ * @author Ezhil Shanmugham
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +32,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
@@ -73,6 +76,13 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
     private var filesSelectionDoneMenuItem: MenuItem? = null
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -110,6 +120,8 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         binding.sortButton.setOnClickListener { changeSorting() }
 
         viewModel.loadItems()
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     private fun initViewModel(mimeTypeSelectionFilter: String?) {
@@ -191,11 +203,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         return true
     }
 
-    override fun onBackPressed() {
-        setResult(Activity.RESULT_CANCELED)
-        super.onBackPressed()
-    }
-
     override fun onResume() {
         super.onResume()
         refreshCurrentPath()
@@ -213,7 +220,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
                 true
             }
             R.id.files_selection_done -> {

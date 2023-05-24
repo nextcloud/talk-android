@@ -5,10 +5,12 @@
  * @author Andy Scherzinger
  * @author Tim Krüger
  * @author Marcel Hibbe
+ * @author Ezhil Shanmugham
  * Copyright (C) 2022-2023 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,7 +195,7 @@ class ConversationInfoActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.conversationInfoToolbar)
         binding.conversationInfoToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

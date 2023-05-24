@@ -4,9 +4,11 @@
  * @author Mario Danic
  * @author Andy Scherzinger
  * @author Marcel Hibbe
+ * @author Ezhil Shanmugham
  * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2021 Andy Scherzinger (infoi@andy-scherzinger.de)
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +32,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -81,6 +84,14 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     lateinit var userManager: UserManager
 
     private var router: Router? = null
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (!router!!.handleBack()) {
+                finish()
+            }
+        }
+    }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,6 +147,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 }
             })
         }
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     fun lockScreenIfConditionsApply() {
@@ -350,12 +363,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
                 logRouterBackStack(router!!)
             }
-        }
-    }
-
-    override fun onBackPressed() {
-        if (!router!!.handleBack()) {
-            super.onBackPressed()
         }
     }
 
