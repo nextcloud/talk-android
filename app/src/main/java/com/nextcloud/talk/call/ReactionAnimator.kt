@@ -124,7 +124,7 @@ class ReactionAnimator(
 
         val emojiView = EmojiTextView(context)
         emojiView.text = callReaction.emoji
-        emojiView.textSize = 20f
+        emojiView.textSize = TEXT_SIZE
 
         val nameView = getNameView(callReaction)
         reactionWrapper.addView(emojiView)
@@ -141,7 +141,7 @@ class ReactionAnimator(
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
-        nameViewParams.setMargins(20, 0, 20, 5)
+        nameViewParams.setMargins(HORIZONTAL_MARGIN, 0, HORIZONTAL_MARGIN, BOTTOM_MARGIN)
         nameView.layoutParams = nameViewParams
 
         nameView.text = "  " + callReaction.userName + "  "
@@ -176,6 +176,10 @@ class ReactionAnimator(
 
         private const val ZERO_ALPHA = 0f
         private const val ALPHA_PROPERTY = "alpha"
+
+        private const val TEXT_SIZE = 20f
+        private const val HORIZONTAL_MARGIN: Int = 20
+        private const val BOTTOM_MARGIN: Int = 5
     }
 }
 data class CallReaction(

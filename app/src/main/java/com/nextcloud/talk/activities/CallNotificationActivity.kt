@@ -258,7 +258,7 @@ class CallNotificationActivity : CallBaseActivity() {
         notificationHandler.post(object : Runnable {
             override fun run() {
                 if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
-                    notificationHandler.postDelayed(this, 1000)
+                    notificationHandler.postDelayed(this, ONE_SECOND)
                 } else {
                     finish()
                 }
@@ -320,5 +320,6 @@ class CallNotificationActivity : CallBaseActivity() {
     companion object {
         const val TAG = "CallNotificationActivity"
         const val GET_ROOM_RETRY_COUNT: Long = 3
+        const val ONE_SECOND: Long = 1000
     }
 }

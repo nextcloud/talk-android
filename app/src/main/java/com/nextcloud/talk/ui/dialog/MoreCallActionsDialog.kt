@@ -118,7 +118,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
             availableReactions.forEach {
                 val emojiView = EmojiTextView(context)
                 emojiView.text = it.toString()
-                emojiView.textSize = 20f
+                emojiView.textSize = TEXT_SIZE
                 emojiView.layoutParams = param
 
                 emojiView.setOnClickListener { view ->
@@ -198,5 +198,6 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
 
     companion object {
         private const val TAG = "MoreCallActionsDialog"
+        private const val TEXT_SIZE = 20f
     }
 }
