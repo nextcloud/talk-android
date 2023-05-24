@@ -98,6 +98,7 @@
     <string name="nc_clear_history_warning">Сигурни ли сте, че искате да изтриете всички съобщения в този разговор?</string>
     <string name="nc_client_cert_change">Промяна на сертификата на клиент</string>
     <string name="nc_client_cert_setup">Задаване/настройки на сертификат на клиент</string>
+    <string name="nc_common_and">и</string>
     <string name="nc_common_dismiss">Отхвърляне</string>
     <string name="nc_common_error_sorry">Съжалявам нещо се обърка!</string>
     <string name="nc_common_set">Настройка</string>

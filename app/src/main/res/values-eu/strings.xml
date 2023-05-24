@@ -98,6 +98,7 @@
     <string name="nc_clear_history_warning">Ziur zaude elkarrizketa honen mezu guztiak ezabatu nahi dituzula?</string>
     <string name="nc_client_cert_change">Aldatu bezeroaren ziurtagiria</string>
     <string name="nc_client_cert_setup">Konfiguratu bezeroaren ziurtagiria</string>
+    <string name="nc_common_and">eta</string>
     <string name="nc_common_dismiss">Baztertu</string>
     <string name="nc_common_error_sorry">Sentitzen dugu, zerbait gaizki joan da!</string>
     <string name="nc_common_set">Ezarri</string>

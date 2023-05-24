@@ -91,6 +91,7 @@
     <string name="nc_clear_history_warning">Vuoi davvero eliminare tutti i messaggi in questa conversazione?</string>
     <string name="nc_client_cert_change">Cambia certificato client</string>
     <string name="nc_client_cert_setup">Configura certificato client</string>
+    <string name="nc_common_and">e</string>
     <string name="nc_common_dismiss">Annulla</string>
     <string name="nc_common_error_sorry">Spiacenti, qualcosa non ha funzionato!</string>
     <string name="nc_common_set">Imposta</string>

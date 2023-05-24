@@ -92,6 +92,7 @@
     <string name="nc_clear_history_warning">Wil je echt dit alle andere berichten in dit gesprek echt verwijderen?</string>
     <string name="nc_client_cert_change">Wijzig clientcertificaat</string>
     <string name="nc_client_cert_setup">Instellen clientcertificaat</string>
+    <string name="nc_common_and">en</string>
     <string name="nc_common_dismiss">Wissen</string>
     <string name="nc_common_error_sorry">Sorry, er is iets fout gegaan!</string>
     <string name="nc_common_set">Instellen</string>

@@ -97,6 +97,7 @@
     <string name="nc_clear_history_warning">Ви дійсно бажаєте вилучити усі повідомлення у цій розмові?</string>
     <string name="nc_client_cert_change">Змінити сертифікат клієнта</string>
     <string name="nc_client_cert_setup">Встановити сертифікат клієнта</string>
+    <string name="nc_common_and">та</string>
     <string name="nc_common_dismiss">Припинити</string>
     <string name="nc_common_error_sorry">Вибачте, щось пішло не так!</string>
     <string name="nc_common_set">Встановити</string>

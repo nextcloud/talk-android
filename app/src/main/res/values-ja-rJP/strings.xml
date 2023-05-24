@@ -85,6 +85,7 @@
     <string name="nc_clear_history_warning">本当にこの会話の全てのメッセージを削除してもよろしいですか？</string>
     <string name="nc_client_cert_change">クライアント証明書を変更する</string>
     <string name="nc_client_cert_setup">クライアント証明書を設定する</string>
+    <string name="nc_common_and">かつ</string>
     <string name="nc_common_dismiss">閉じる</string>
     <string name="nc_common_error_sorry">不明なエラーが発生しました。</string>
     <string name="nc_common_set">設定</string>

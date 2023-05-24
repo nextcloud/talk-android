@@ -74,6 +74,7 @@
     <string name="nc_clear_history_warning">A beru boles cantzellare totu is messàgios in custa resonada?</string>
     <string name="nc_client_cert_change">Càmbia tzertificadu cliente</string>
     <string name="nc_client_cert_setup">Imposta tzertificadu cliente</string>
+    <string name="nc_common_and">e</string>
     <string name="nc_common_dismiss">Iscarta</string>
     <string name="nc_common_error_sorry">Ddoe at àpidu un\'errore!</string>
     <string name="nc_common_set">Imposta</string>

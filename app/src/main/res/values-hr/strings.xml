@@ -79,6 +79,7 @@
     <string name="nc_clear_history_warning">Želite li zaista izbrisati sve poruke u ovom razgovoru?</string>
     <string name="nc_client_cert_change">Promijeni klijentsku vjerodajnicu</string>
     <string name="nc_client_cert_setup">Postavi klijentsku vjerodajnicu</string>
+    <string name="nc_common_and">i</string>
     <string name="nc_common_dismiss">Zanemari</string>
     <string name="nc_common_error_sorry">Oprostite, nešto je pošlo po krivu!</string>
     <string name="nc_common_set">Postavi</string>

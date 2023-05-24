@@ -98,6 +98,7 @@
     <string name="nc_clear_history_warning">Czy na pewno chcesz usunąć wszystkie wiadomości z tej rozmowy?</string>
     <string name="nc_client_cert_change">Zmień certyfikat klienta</string>
     <string name="nc_client_cert_setup">Skonfiguruj certyfikat klienta</string>
+    <string name="nc_common_and">i</string>
     <string name="nc_common_dismiss">Odrzuć</string>
     <string name="nc_common_error_sorry">Przepraszamy, coś poszło nie tak!</string>
     <string name="nc_common_set">Ustaw</string>

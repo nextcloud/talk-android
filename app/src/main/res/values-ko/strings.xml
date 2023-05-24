@@ -89,6 +89,7 @@
     <string name="nc_clear_history_warning">이 대화에서 모든 메시지를 삭제하시겠습니까?</string>
     <string name="nc_client_cert_change">클라이언트 인증서 병경</string>
     <string name="nc_client_cert_setup">클라이언트 인증서 설정</string>
+    <string name="nc_common_and">그리고</string>
     <string name="nc_common_dismiss">무시</string>
     <string name="nc_common_error_sorry">죄송합니다, 무언가 잘못되었습니다!</string>
     <string name="nc_common_set">설정</string>

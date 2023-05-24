@@ -66,6 +66,7 @@
     <string name="nc_clear_history">Radera alla meddelanden</string>
     <string name="nc_client_cert_change">Ändra klientcertifikat</string>
     <string name="nc_client_cert_setup">Konfigurera klientcertifikat</string>
+    <string name="nc_common_and">och</string>
     <string name="nc_common_dismiss">Avfärda</string>
     <string name="nc_common_error_sorry">Ledsen, någonting gick fel!</string>
     <string name="nc_common_set">Sätt</string>

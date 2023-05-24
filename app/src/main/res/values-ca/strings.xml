@@ -96,6 +96,7 @@
     <string name="nc_clear_history_warning">Segur que voleu suprimir tots els missatges d\'aquesta conversa?</string>
     <string name="nc_client_cert_change">Canvia el certificat del client</string>
     <string name="nc_client_cert_setup">Configureu el certificat del client</string>
+    <string name="nc_common_and">i</string>
     <string name="nc_common_dismiss">Descarta</string>
     <string name="nc_common_error_sorry">Disculpeu, alguna cosa ha anat malament!</string>
     <string name="nc_common_set">Estableix</string>

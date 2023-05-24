@@ -98,6 +98,7 @@
     <string name="nc_clear_history_warning">Bu görüşmedeki tüm iletileri silmek istediğinize emin misiniz?</string>
     <string name="nc_client_cert_change">İstemci sertifikasını değiştir</string>
     <string name="nc_client_cert_setup">İstemci sertifikası kurulumu</string>
+    <string name="nc_common_and">ve</string>
     <string name="nc_common_dismiss">Yok say</string>
     <string name="nc_common_error_sorry">Ne yazık ki bir sorun çıktı!</string>
     <string name="nc_common_set">Ayarla</string>
@@ -338,6 +339,7 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Açık</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_typing_status_desc">Yazıyor durumumu paylaş ve diğerlerinin yazıyor durumunu görüntüle</string>
     <string name="nc_settings_use_credentials_title">Vekil sunucu için kimlik doğrulaması gerekli</string>
     <string name="nc_settings_warning">Uyarı</string>
     <string name="nc_settings_wrong_account">Yalnızca geçerli hesaba yeniden izin verilebilir</string>

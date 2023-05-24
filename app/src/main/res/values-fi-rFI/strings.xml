@@ -73,6 +73,7 @@
     <string name="nc_clear_history_warning">Haluatko varmasti poistaa kaikki viestit tästä keskustelusta?</string>
     <string name="nc_client_cert_change">Vaihda asiakasvarmenne</string>
     <string name="nc_client_cert_setup">Aseta asiakasvarmenne</string>
+    <string name="nc_common_and">ja</string>
     <string name="nc_common_dismiss">Hylkää</string>
     <string name="nc_common_error_sorry">Pahoittelut, jokin meni vikaan!</string>
     <string name="nc_common_set">Aseta</string>

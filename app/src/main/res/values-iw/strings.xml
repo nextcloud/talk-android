@@ -53,6 +53,7 @@
     <string name="nc_circles">מעגלים</string>
     <string name="nc_client_cert_change">החלפת אישור לקוח</string>
     <string name="nc_client_cert_setup">הגדרת אישור לקוח</string>
+    <string name="nc_common_and">וגם</string>
     <string name="nc_common_dismiss">התעלמות</string>
     <string name="nc_common_error_sorry">משהו השתבש, עמך הסליחה!</string>
     <string name="nc_common_set">הגדרה</string>

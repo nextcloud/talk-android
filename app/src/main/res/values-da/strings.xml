@@ -55,6 +55,7 @@
     <string name="nc_clear_history_success">Alle beskeder blev slettet</string>
     <string name="nc_client_cert_change">Skift kliencertifikat</string>
     <string name="nc_client_cert_setup">Indstil klientcertifikat</string>
+    <string name="nc_common_and">og</string>
     <string name="nc_common_dismiss">Afvis</string>
     <string name="nc_common_error_sorry">Noget gik galt, undskyld!</string>
     <string name="nc_common_set">Sæt</string>

@@ -97,6 +97,7 @@
     <string name="nc_clear_history_warning">Ali res želite izbrisati vsa sporočila tega pogovora?</string>
     <string name="nc_client_cert_change">Spremeni potrdilo odjemalca</string>
     <string name="nc_client_cert_setup">Nastavi potrdilo odjemalca</string>
+    <string name="nc_common_and">in</string>
     <string name="nc_common_dismiss">Opusti</string>
     <string name="nc_common_error_sorry">Prišlo je do napake …</string>
     <string name="nc_common_set">Nastavi</string>

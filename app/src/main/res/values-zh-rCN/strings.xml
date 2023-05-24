@@ -98,6 +98,7 @@
     <string name="nc_clear_history_warning">你真想删除对话中的所有信息吗?</string>
     <string name="nc_client_cert_change">修改客户端证书</string>
     <string name="nc_client_cert_setup">设置客户端证书</string>
+    <string name="nc_common_and">和</string>
     <string name="nc_common_dismiss">不予理会</string>
     <string name="nc_common_error_sorry">抱歉，出问题了！</string>
     <string name="nc_common_set">设置</string>
