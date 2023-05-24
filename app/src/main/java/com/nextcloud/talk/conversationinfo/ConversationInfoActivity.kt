@@ -41,7 +41,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
 import androidx.work.Data
@@ -109,12 +108,6 @@ class ConversationInfoActivity :
     FlexibleAdapter.OnItemClickListener {
 
     private lateinit var binding: ActivityConversationInfoBinding
-
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -202,7 +195,7 @@ class ConversationInfoActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.conversationInfoToolbar)
         binding.conversationInfoToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

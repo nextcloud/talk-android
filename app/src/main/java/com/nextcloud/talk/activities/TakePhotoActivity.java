@@ -95,6 +95,23 @@ public class TakePhotoActivity extends AppCompatActivity {
     @Inject
     ViewThemeUtils viewThemeUtils;
 
+    private OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            Uri uri = (Uri) binding.photoPreview.getTag();
+
+            if (uri != null) {
+                File photoFile = new File(uri.getPath());
+                if (!photoFile.delete()) {
+                    Log.w(TAG, "Error deleting temp camera image");
+                }
+                binding.photoPreview.setTag(null);
+            }
+
+            finish();
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -221,25 +238,9 @@ public class TakePhotoActivity extends AppCompatActivity {
                 finish();
             }
         }, ContextCompat.getMainExecutor(this));
+
+        getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
     }
-
-    private OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-        @Override
-        public void handleOnBackPressed() {
-            Uri uri = (Uri) binding.photoPreview.getTag();
-
-            if (uri != null) {
-                File photoFile = new File(uri.getPath());
-                if (!photoFile.delete()) {
-                    Log.w(TAG, "Error deleting temp camera image");
-                }
-                binding.photoPreview.setTag(null);
-            }
-
-            finish();
-        }
-    };
-
 
     private void showCameraElements() {
         binding.send.setVisibility(View.GONE);

@@ -32,7 +32,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
@@ -71,12 +70,6 @@ class ConversationInfoEditActivity :
     BaseActivity() {
 
     private lateinit var binding: ActivityConversationInfoEditBinding
-
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -158,7 +151,7 @@ class ConversationInfoEditActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.conversationInfoEditToolbar)
         binding.conversationInfoEditToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

@@ -76,6 +76,13 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
     private var filesSelectionDoneMenuItem: MenuItem? = null
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -113,6 +120,8 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         binding.sortButton.setOnClickListener { changeSorting() }
 
         viewModel.loadItems()
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     private fun initViewModel(mimeTypeSelectionFilter: String?) {
@@ -194,18 +203,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         return true
     }
 
-    fun handleOnBackPressed() {
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                setResult(Activity.RESULT_CANCELED)
-                finish()
-            }
-        }
-
-        onBackPressedDispatcher.addCallback(this, callback)
-        callback.handleOnBackPressed()
-    }
-
     override fun onResume() {
         super.onResume()
         refreshCurrentPath()
@@ -223,7 +220,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                handleOnBackPressed()
+                onBackPressedDispatcher.onBackPressed()
                 true
             }
             R.id.files_selection_done -> {

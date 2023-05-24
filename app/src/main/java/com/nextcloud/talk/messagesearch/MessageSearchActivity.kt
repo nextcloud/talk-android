@@ -31,6 +31,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -74,6 +75,13 @@ class MessageSearchActivity : BaseActivity() {
     private var searchViewDisposable: Disposable? = null
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -92,6 +100,8 @@ class MessageSearchActivity : BaseActivity() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh(searchView.query?.toString())
         }
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     private fun setupActionBar() {
@@ -212,7 +222,7 @@ class MessageSearchActivity : BaseActivity() {
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                handleOnBackPressed()
+                onBackPressedDispatcher.onBackPressed()
                 return false
             }
         })
@@ -238,15 +248,10 @@ class MessageSearchActivity : BaseActivity() {
             .subscribe { newText -> viewModel.onQueryTextChange(newText) }
     }
 
-    fun handleOnBackPressed() {
-        setResult(Activity.RESULT_CANCELED)
-        finishAffinity()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                handleOnBackPressed()
+                onBackPressedDispatcher.onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)

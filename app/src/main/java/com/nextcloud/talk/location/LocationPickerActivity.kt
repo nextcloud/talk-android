@@ -41,6 +41,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.PermissionChecker
 import androidx.core.content.res.ResourcesCompat
@@ -117,6 +118,13 @@ class LocationPickerActivity :
     var searchItem: MenuItem? = null
     var searchView: SearchView? = null
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -137,6 +145,8 @@ class LocationPickerActivity :
         setupSystemColors()
 
         getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onStart() {
@@ -177,7 +187,7 @@ class LocationPickerActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.locationPickerToolbar)
         binding.locationPickerToolbar.setNavigationOnClickListener {
-            handleOnBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -572,11 +582,6 @@ class LocationPickerActivity :
 
     override fun onProviderDisabled(provider: String) {
         // empty
-    }
-
-    fun handleOnBackPressed() {
-        setResult(Activity.RESULT_CANCELED)
-        finishAffinity()
     }
 
     companion object {

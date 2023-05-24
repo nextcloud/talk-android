@@ -85,6 +85,14 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     private var router: Router? = null
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (!router!!.handleBack()) {
+                finish()
+            }
+        }
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: Activity: " + System.identityHashCode(this).toString())
@@ -140,12 +148,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             })
         }
 
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        }
-        onBackPressedDispatcher.addCallback(this, callback)
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     fun lockScreenIfConditionsApply() {
@@ -360,12 +363,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
                 logRouterBackStack(router!!)
             }
-        }
-    }
-
-    fun handleOnBackPressed() {
-        if (!router!!.handleBack()) {
-            onBackPressedDispatcher.onBackPressed()
         }
     }
 

@@ -30,7 +30,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import autodagger.AutoInjector
@@ -115,13 +114,6 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
                 }
             }
         )
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        }
-        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onStart() {

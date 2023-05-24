@@ -33,7 +33,6 @@ import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
@@ -78,12 +77,6 @@ class GeocodingActivity :
 
     lateinit var adapter: GeocodingAdapter
     private var geocodingResults: List<Address> = ArrayList()
-
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,7 +123,7 @@ class GeocodingActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.geocodingToolbar)
         binding.geocodingToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

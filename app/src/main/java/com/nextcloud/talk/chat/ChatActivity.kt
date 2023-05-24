@@ -74,6 +74,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
@@ -309,6 +310,14 @@ class ChatActivity :
 
     private var videoURI: Uri? = null
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
+            intent.putExtras(Bundle())
+            startActivity(intent)
+        }
+    }
+
     var typingTimer: CountDownTimer? = null
     val typingParticipants = HashMap<String, String>()
 
@@ -362,6 +371,8 @@ class ChatActivity :
 
         initAdapter()
         binding.messagesListView.setAdapter(adapter)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -614,19 +625,13 @@ class ChatActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.chatToolbar)
         binding.chatToolbar.setNavigationOnClickListener {
-            handleOnBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
         setActionBarTitle()
         viewThemeUtils.material.themeToolbar(binding.chatToolbar)
-    }
-
-    fun handleOnBackPressed() {
-        val intent = Intent(this, ConversationsListActivity::class.java)
-        intent.putExtras(Bundle())
-        startActivity(intent)
     }
 
     private fun initAdapter() {

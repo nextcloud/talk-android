@@ -35,6 +35,8 @@ import android.view.WindowManager;
 
 import com.nextcloud.talk.BuildConfig;
 
+import androidx.activity.OnBackPressedCallback;
+
 public abstract class CallBaseActivity extends BaseActivity {
 
     public static final String TAG = "CallBaseActivity";
@@ -42,6 +44,16 @@ public abstract class CallBaseActivity extends BaseActivity {
     public PictureInPictureParams.Builder mPictureInPictureParamsBuilder;
     public Boolean isInPipMode = Boolean.FALSE;
     long onCreateTime;
+
+
+    private OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            if (isPipModePossible()) {
+                enterPipMode();
+            }
+        }
+    };
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -58,6 +70,8 @@ public abstract class CallBaseActivity extends BaseActivity {
         if (isGreaterEqualOreo() && isPipModePossible()) {
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
         }
+
+        getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
     }
 
     void hideNavigationIfNoPipAvailable(){
@@ -98,13 +112,6 @@ public abstract class CallBaseActivity extends BaseActivity {
         super.onStop();
         if (isInPipMode) {
             finish();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isPipModePossible()) {
-            enterPipMode();
         }
     }
 

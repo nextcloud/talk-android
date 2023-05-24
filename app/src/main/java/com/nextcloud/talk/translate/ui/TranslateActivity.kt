@@ -127,7 +127,7 @@ class TranslateActivity : BaseActivity() {
     private fun setupActionBar() {
         setSupportActionBar(binding.translationToolbar)
         binding.translationToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

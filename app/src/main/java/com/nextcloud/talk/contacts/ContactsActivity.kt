@@ -36,7 +36,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
@@ -92,12 +91,6 @@ class ContactsActivity :
     SearchView.OnQueryTextListener,
     FlexibleAdapter.OnItemClickListener {
     private lateinit var binding: ControllerContactsRvBinding
-
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
 
     @Inject
     lateinit var userManager: UserManager
@@ -195,7 +188,7 @@ class ContactsActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.contactsToolbar)
         binding.contactsToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

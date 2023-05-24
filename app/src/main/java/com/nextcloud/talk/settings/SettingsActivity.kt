@@ -54,7 +54,6 @@ import android.widget.Checkable
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -109,12 +108,6 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class SettingsActivity : BaseActivity() {
     private lateinit var binding: ActivitySettingsBinding
-
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -255,7 +248,7 @@ class SettingsActivity : BaseActivity() {
     private fun setupActionBar() {
         setSupportActionBar(binding.settingsToolbar)
         binding.settingsToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

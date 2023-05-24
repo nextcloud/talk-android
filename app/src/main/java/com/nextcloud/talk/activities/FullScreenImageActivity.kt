@@ -33,7 +33,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.nextcloud.talk.BuildConfig
@@ -120,13 +119,6 @@ class FullScreenImageActivity : AppCompatActivity() {
             binding.photoView.visibility = View.VISIBLE
             displayImage(path)
         }
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        }
-        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun displayImage(path: String) {

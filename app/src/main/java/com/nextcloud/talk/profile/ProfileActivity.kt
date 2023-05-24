@@ -41,7 +41,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
@@ -88,12 +87,6 @@ import javax.inject.Inject
 @Suppress("Detekt.TooManyFunctions")
 class ProfileActivity : BaseActivity() {
     private lateinit var binding: ActivityProfileBinding
-
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-        }
-    }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -194,7 +187,7 @@ class ProfileActivity : BaseActivity() {
     private fun setupActionBar() {
         setSupportActionBar(binding.profileToolbar)
         binding.profileToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

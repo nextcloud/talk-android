@@ -189,7 +189,12 @@ class ConversationsListActivity :
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
 
-    private lateinit var callback: OnBackPressedCallback
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            // TODO: replace this when conductor is removed. For now it avoids to load the MainActiviy which has no UI.
+            finishAffinity()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -204,12 +209,7 @@ class ConversationsListActivity :
 
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
 
-        callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        }
-        onBackPressedDispatcher.addCallback(this, callback)
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onResume() {
@@ -256,7 +256,7 @@ class ConversationsListActivity :
     private fun setupActionBar() {
         setSupportActionBar(binding.conversationListToolbar)
         binding.conversationListToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.addCallback(this, callback)
+            onBackPressedDispatcher.onBackPressed()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
