@@ -57,8 +57,7 @@ fun ImageView.loadConversationAvatar(
     conversation: Conversation,
     ignoreCache: Boolean,
     viewThemeUtils: ViewThemeUtils?
-): io.reactivex.disposables
-.Disposable {
+): io.reactivex.disposables.Disposable {
     val imageRequestUri = ApiUtils.getUrlForConversationAvatarWithVersion(
         1,
         user.baseUrl,
@@ -100,8 +99,7 @@ fun ImageView.loadUserAvatar(
     avatarId: String,
     requestBigSize: Boolean = true,
     ignoreCache: Boolean
-): io.reactivex.disposables
-.Disposable {
+): io.reactivex.disposables.Disposable {
     val imageRequestUri = ApiUtils.getUrlForAvatar(
         user.baseUrl,
         avatarId,
@@ -117,8 +115,7 @@ private fun ImageView.loadAvatarInternal(
     url: String,
     ignoreCache: Boolean,
     errorPlaceholder: Drawable?
-): io.reactivex.disposables
-.Disposable {
+): io.reactivex.disposables.Disposable {
     val cachePolicy = if (ignoreCache) {
         CachePolicy.WRITE_ONLY
     } else {
@@ -215,8 +212,11 @@ fun ImageView.loadImage(url: String, user: User, placeholder: Drawable? = null):
     return DisposableWrapper(context.imageLoader.enqueue(requestBuilder.build()))
 }
 
-fun ImageView.loadAvatarOrImagePreview(url: String, user: User, placeholder: Drawable? = null): io.reactivex
-.disposables.Disposable {
+fun ImageView.loadAvatarOrImagePreview(
+    url: String,
+    user: User,
+    placeholder: Drawable? = null
+): io.reactivex.disposables.Disposable {
     return if (url.contains("/avatar/")) {
         loadAvatarInternal(user, url, false, null)
     } else {

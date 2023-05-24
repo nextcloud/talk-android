@@ -456,9 +456,9 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                     Manifest.permission.WRITE_CONTACTS
                 ) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.READ_CONTACTS
-                    ) == PackageManager.PERMISSION_GRANTED
+                    context,
+                    Manifest.permission.READ_CONTACTS
+                ) == PackageManager.PERMISSION_GRANTED
             ) {
                 WorkManager
                     .getInstance()
@@ -476,9 +476,9 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                     Manifest.permission.WRITE_CONTACTS
                 ) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.READ_CONTACTS
-                    ) != PackageManager.PERMISSION_GRANTED
+                    context,
+                    Manifest.permission.READ_CONTACTS
+                ) != PackageManager.PERMISSION_GRANTED
             ) {
                 activity.requestPermissions(
                     arrayOf(

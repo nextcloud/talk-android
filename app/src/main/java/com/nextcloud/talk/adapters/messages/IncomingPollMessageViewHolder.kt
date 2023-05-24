@@ -45,11 +45,10 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageHolders
-.IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
+class IncomingPollMessageViewHolder(incomingView: View, payload: Any) :
+    MessageHolders.IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
 
-    private val binding: ItemCustomIncomingPollMessageBinding =
-        ItemCustomIncomingPollMessageBinding.bind(itemView)
+    private val binding: ItemCustomIncomingPollMessageBinding = ItemCustomIncomingPollMessageBinding.bind(itemView)
 
     @Inject
     lateinit var context: Context

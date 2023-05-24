@@ -54,8 +54,8 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
-class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
-.OutcomingTextMessageViewHolder<ChatMessage>(incomingView) {
+class OutcomingLocationMessageViewHolder(incomingView: View) :
+    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(incomingView) {
     private val binding: ItemCustomOutcomingLocationMessageBinding =
         ItemCustomOutcomingLocationMessageBinding.bind(itemView)
     private val realView: View = itemView

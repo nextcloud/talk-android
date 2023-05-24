@@ -45,8 +45,8 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) : MessageHolders
-.IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
+class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
+    MessageHolders.IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
 
     private val binding: ItemCustomIncomingLinkPreviewMessageBinding =
         ItemCustomIncomingLinkPreviewMessageBinding.bind(itemView)

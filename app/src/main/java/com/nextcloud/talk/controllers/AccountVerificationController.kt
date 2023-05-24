@@ -78,13 +78,11 @@ import java.net.CookieManager
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class AccountVerificationController(args: Bundle? = null) :
-    BaseController(
-        R.layout.controller_account_verification,
-        args
-    ) {
+class AccountVerificationController(args: Bundle? = null) : BaseController(
+    R.layout.controller_account_verification, args
+) {
     private val binding: ControllerAccountVerificationBinding? by
-    viewBinding(ControllerAccountVerificationBinding::bind)
+        viewBinding(ControllerAccountVerificationBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
@@ -294,7 +292,7 @@ class AccountVerificationController(args: Bundle? = null) :
                     binding?.progressText?.text =
                         """ ${binding?.progressText?.text}
                         """
-                        .trimIndent() + resources!!.getString(R.string.nc_display_name_not_stored)
+                            .trimIndent() + resources!!.getString(R.string.nc_display_name_not_stored)
                     abortVerification()
                 }
 

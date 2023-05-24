@@ -245,7 +245,7 @@ class ConversationItem(
                 model.lastMessage!!.activeUser = user
 
                 val text = if (model.lastMessage!!.getCalculateMessageType() === ChatMessage.MessageType
-                    .REGULAR_TEXT_MESSAGE
+                        .REGULAR_TEXT_MESSAGE
                 ) {
                     calculateRegularLastMessageText(appContext)
                 } else {

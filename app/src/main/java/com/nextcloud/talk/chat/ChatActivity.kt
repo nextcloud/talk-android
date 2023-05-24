@@ -3136,6 +3136,7 @@ class ChatActivity :
 
     inner class ReactionAddedObserver : Observer<ReactionAddedModel> {
         override fun onSubscribe(d: Disposable) {
+            // unused atm
         }
 
         override fun onNext(reactionAddedModel: ReactionAddedModel) {
@@ -3159,6 +3160,7 @@ class ChatActivity :
 
     inner class ReactionDeletedObserver : Observer<ReactionDeletedModel> {
         override fun onSubscribe(d: Disposable) {
+            // unused atm
         }
 
         override fun onNext(reactionDeletedModel: ReactionDeletedModel) {

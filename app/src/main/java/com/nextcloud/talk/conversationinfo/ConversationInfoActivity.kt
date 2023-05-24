@@ -309,8 +309,7 @@ class ConversationInfoActivity :
                         requireFutureDateTime = true,
                         currentDateTime = currentTimeCalendar,
                         show24HoursView = true,
-                        dateTimeCallback = { _,
-                            dateTime ->
+                        dateTimeCallback = { _, dateTime ->
                             reconfigureLobbyTimerView(dateTime)
                             submitLobbyChanges()
                         }
