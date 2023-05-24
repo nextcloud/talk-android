@@ -25,6 +25,7 @@
  */
 package com.nextcloud.talk.activities
 
+import android.app.ActivityOptions
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
@@ -208,7 +209,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtras(Bundle())
-        startActivity(intent)
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     fun addAccount() {

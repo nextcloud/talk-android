@@ -58,6 +58,7 @@ import android.text.InputFilter
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.transition.Slide
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -360,7 +361,7 @@ class ChatActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-
+        window.exitTransition = Slide(Gravity.RIGHT)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
@@ -2079,7 +2080,7 @@ class ChatActivity :
 
         val intent = Intent(this, LocationPickerActivity::class.java)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-        startActivity(intent)
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun showConversationInfoScreen() {
@@ -2090,7 +2091,7 @@ class ChatActivity :
 
         val intent = Intent(this, ConversationInfoActivity::class.java)
         intent.putExtras(bundle)
-        startActivity(intent)
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun setupMentionAutocomplete() {
@@ -3000,7 +3001,7 @@ class ChatActivity :
             SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
             currentConversation?.isParticipantOwnerOrModerator
         )
-        startActivity(intent)
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun startMessageSearch() {
@@ -3364,7 +3365,7 @@ class ChatActivity :
 
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.putExtras(bundle)
-        startActivity(intent)
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     fun markAsUnread(message: IMessage?) {
@@ -3417,7 +3418,7 @@ class ChatActivity :
 
         val intent = Intent(this, TranslateActivity::class.java)
         intent.putExtras(bundle)
-        startActivity(intent)
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun hasVisibleItems(message: ChatMessage): Boolean {

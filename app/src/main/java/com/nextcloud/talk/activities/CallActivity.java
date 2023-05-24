@@ -28,6 +28,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.content.BroadcastReceiver;
@@ -1973,7 +1974,8 @@ public class CallActivity extends CallBaseActivity {
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser);
                         bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall);
                         intent.putExtras(bundle);
-                        startActivity(intent);
+                        startActivity(intent,
+                                      ActivityOptions.makeSceneTransitionAnimation(CallActivity.this).toBundle());
                         finish();
                     } else if (shutDownView) {
                         finish();

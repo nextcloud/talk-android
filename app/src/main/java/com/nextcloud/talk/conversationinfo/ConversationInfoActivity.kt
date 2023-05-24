@@ -29,6 +29,7 @@
 package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -240,7 +241,7 @@ class ConversationInfoActivity :
 
             val intent = Intent(this, ConversationInfoEditActivity::class.java)
             intent.putExtras(bundle)
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
         return true
     }
@@ -282,7 +283,7 @@ class ConversationInfoActivity :
         intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
         intent.putExtra(BundleKeys.KEY_USER_ENTITY, conversationUser as Parcelable)
         intent.putExtra(SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR, conversation?.isParticipantOwnerOrModerator)
-        startActivity(intent)
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun setupWebinaryView() {
@@ -555,7 +556,7 @@ class ConversationInfoActivity :
 
         val intent = Intent(this, ContactsActivity::class.java)
         intent.putExtras(bundle)
-        startActivity(intent)
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun leaveConversation() {
@@ -569,7 +570,7 @@ class ConversationInfoActivity :
 
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
     }
 
@@ -640,7 +641,7 @@ class ConversationInfoActivity :
             )
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
     }
 

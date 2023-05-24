@@ -22,6 +22,7 @@
 package com.nextcloud.talk.activities
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
@@ -183,7 +184,7 @@ class CallNotificationActivity : CallBaseActivity() {
 
             val intent = Intent(this, CallActivity::class.java)
             intent.putExtras(originalBundle!!)
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         } else {
             Log.w(TAG, "conversation was still null when clicked to answer call. User has to click another time.")
         }

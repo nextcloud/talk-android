@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.location
 
+import android.app.ActivityOptions
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -116,7 +117,7 @@ class GeocodingActivity :
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
             intent.putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
     }
 
@@ -184,7 +185,7 @@ class GeocodingActivity :
                     val intent = Intent(context, LocationPickerActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-                    startActivity(intent)
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@GeocodingActivity).toBundle())
                     return true
                 }
             })

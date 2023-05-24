@@ -24,6 +24,7 @@ package com.nextcloud.talk.location
 
 import android.Manifest
 import android.app.Activity
+import android.app.ActivityOptions
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -244,7 +245,7 @@ class LocationPickerActivity :
             val intent = Intent(this, GeocodingActivity::class.java)
             intent.putExtra(BundleKeys.KEY_GEOCODING_QUERY, query)
             intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
         return true
     }
