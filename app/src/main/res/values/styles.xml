@@ -44,6 +44,9 @@
         <item name="popupMenuStyle">@style/ChatSendButtonMenu</item>
         <item name="dialogCornerRadius">@dimen/dialogBorderRadius</item>
         <item name="android:windowBackground">@color/bg_default</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowEnterTransition">@android:transition/slide_left</item>
+        <item name="android:windowExitTransition">@android:transition/slide_right</item>
     </style>
 
     <style name="ThemeOverlay.AppTheme.PopupMenu" parent="ThemeOverlay.Material3.Dark">

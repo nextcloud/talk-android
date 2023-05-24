@@ -314,9 +314,8 @@ class ChatActivity :
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
-            val bundle = ActivityOptions.makeSceneTransitionAnimation(this@ChatActivity).toBundle()
             intent.putExtras(Bundle())
-            startActivity(intent, bundle)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@ChatActivity).toBundle())
         }
     }
 
