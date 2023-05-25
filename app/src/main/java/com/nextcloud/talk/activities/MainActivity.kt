@@ -208,7 +208,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtras(Bundle())
-        startActivity(intent)
+        startActivity(intent) // no transition else it messes up loading ConversationListActivity
     }
 
     fun addAccount() {
