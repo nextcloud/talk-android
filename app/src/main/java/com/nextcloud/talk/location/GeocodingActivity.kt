@@ -168,7 +168,7 @@ class GeocodingActivity :
             searchView?.maxWidth = Int.MAX_VALUE
             searchView?.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
             var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
                 imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
             }
             searchView?.imeOptions = imeOptions
@@ -185,7 +185,10 @@ class GeocodingActivity :
                     val intent = Intent(context, LocationPickerActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@GeocodingActivity).toBundle())
+                    startActivity(
+                        intent,
+                        ActivityOptions.makeSceneTransitionAnimation(this@GeocodingActivity).toBundle()
+                    )
                     return true
                 }
             })
