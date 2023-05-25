@@ -25,6 +25,7 @@
  */
 package com.nextcloud.talk.activities
 
+import android.app.ActivityOptions
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
@@ -156,7 +157,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {
             if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
                 val lockIntent = Intent(context, LockedActivity::class.java)
-                startActivity(lockIntent)
+                startActivity(lockIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
         }
     }
@@ -221,7 +222,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     private fun handleActionFromContact(intent: Intent) {
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
-            val cursor = contentResolver.query(intent.data!!, null, null, null, null)
+            val cursor =
+                contentResolver.query(intent.data!!, null, null, null, null)
 
             var userId = ""
             if (cursor != null) {
@@ -310,7 +312,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
                                 val chatIntent = Intent(context, ChatActivity::class.java)
                                 chatIntent.putExtras(bundle)
-                                startActivity(chatIntent)
+                                startActivity(
+                                    chatIntent,
+                                    ActivityOptions.makeSceneTransitionAnimation(this@MainActivity)
+                                        .toBundle()
+                                )
                             }
 
                             override fun onError(e: Throwable) {
@@ -353,13 +359,13 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 }
                 val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
                 intent.extras?.let { callNotificationIntent.putExtras(it) }
-                startActivity(callNotificationIntent)
+                startActivity(callNotificationIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             } else {
                 logRouterBackStack(router!!)
 
                 val chatIntent = Intent(context, ChatActivity::class.java)
                 chatIntent.putExtras(intent.extras!!)
-                startActivity(chatIntent)
+                startActivity(chatIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
 
                 logRouterBackStack(router!!)
             }

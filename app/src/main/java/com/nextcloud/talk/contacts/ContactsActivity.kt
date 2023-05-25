@@ -23,6 +23,7 @@
  */
 package com.nextcloud.talk.contacts
 
+import android.app.ActivityOptions
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -363,7 +364,11 @@ class ContactsActivity :
                                 val chatIntent = Intent(context, ChatActivity::class.java)
                                 chatIntent.putExtras(bundle)
                                 chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                startActivity(chatIntent)
+                                startActivity(
+                                    chatIntent,
+                                    ActivityOptions.makeSceneTransitionAnimation(this@ContactsActivity)
+                                        .toBundle()
+                                )
                             }
 
                             override fun onError(e: Throwable) {
@@ -746,7 +751,7 @@ class ContactsActivity :
         val chatIntent = Intent(context, ChatActivity::class.java)
         chatIntent.putExtras(openConversationEvent.bundle!!)
         chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(chatIntent)
+        startActivity(chatIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
 
         contactsBottomDialog?.dismiss()
     }
@@ -822,7 +827,10 @@ class ContactsActivity :
                     val chatIntent = Intent(context, ChatActivity::class.java)
                     chatIntent.putExtras(bundle)
                     chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    startActivity(chatIntent)
+                    startActivity(
+                        chatIntent,
+                        ActivityOptions.makeSceneTransitionAnimation(this@ContactsActivity).toBundle()
+                    )
                 }
 
                 override fun onError(e: Throwable) {

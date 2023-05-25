@@ -1259,7 +1259,7 @@ class ChatActivity :
                 val chatIntent = Intent(context, ChatActivity::class.java)
                 chatIntent.putExtras(bundle)
                 chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(chatIntent)
+                startActivity(chatIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
             }
         }
     }
@@ -3071,7 +3071,7 @@ class ChatActivity :
                     ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
                     val callIntent = getIntentForCall(isVoiceOnlyCall, callWithoutNotification)
                     if (callIntent != null) {
-                        startActivity(callIntent)
+                        startActivity(callIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
                     }
                 }
             }
@@ -3333,7 +3333,11 @@ class ChatActivity :
                                     val chatIntent = Intent(context, ChatActivity::class.java)
                                     chatIntent.putExtras(bundle)
                                     chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                    startActivity(chatIntent)
+                                    startActivity(
+                                        chatIntent,
+                                        ActivityOptions.makeSceneTransitionAnimation(this@ChatActivity)
+                                            .toBundle()
+                                    )
                                 }
                             }
 
@@ -3658,11 +3662,19 @@ class ChatActivity :
                                 val chatIntent = Intent(context, ChatActivity::class.java)
                                 chatIntent.putExtras(bundle)
                                 chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                startActivity(chatIntent)
+                                startActivity(
+                                    chatIntent,
+                                    ActivityOptions.makeSceneTransitionAnimation(this@ChatActivity)
+                                        .toBundle()
+                                )
                             }
                         } else {
                             conversationIntent.putExtras(bundle)
-                            startActivity(conversationIntent)
+                            startActivity(
+                                conversationIntent,
+                                ActivityOptions.makeSceneTransitionAnimation(this@ChatActivity)
+                                    .toBundle()
+                            )
                             Handler().postDelayed(
                                 {
                                     if (!isDestroyed) {
