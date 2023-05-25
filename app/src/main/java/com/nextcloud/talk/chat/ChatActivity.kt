@@ -58,7 +58,6 @@ import android.text.InputFilter
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.transition.Slide
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -361,7 +360,6 @@ class ChatActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        window.exitTransition = Slide(Gravity.END) // weird but needed for consistent transitions
         binding = ActivityChatBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
