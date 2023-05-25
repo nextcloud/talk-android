@@ -25,6 +25,7 @@
 package com.nextcloud.talk.ui.dialog;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -189,12 +190,12 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             // TODO: change this when conductor is removed
             Intent intent = new Intent(getContext(), MainActivity.class);
             intent.putExtra(ADD_ACCOUNT, true);
-            startActivity(intent);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
             dismiss();
         });
         binding.manageSettings.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), SettingsActivity.class);
-            startActivity(intent);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
             dismiss();
         });
 
@@ -310,7 +311,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                         // have a smoother transition. However the handling in onNewIntent() in
                         // ConversationListActivity must be improved for this.
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
 
                         dismiss();
                     }
