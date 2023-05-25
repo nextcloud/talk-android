@@ -80,8 +80,8 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
-        window.enterTransition = Slide(Gravity.RIGHT)
-        window.exitTransition = Slide(Gravity.LEFT)
+        window.enterTransition = Slide(Gravity.END)
+        window.exitTransition = Slide(Gravity.START)
         super.onCreate(savedInstanceState)
     }
 

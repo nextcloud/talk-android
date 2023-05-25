@@ -361,7 +361,7 @@ class ChatActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        window.exitTransition = Slide(Gravity.RIGHT) // weird but needed for consistent transitions
+        window.exitTransition = Slide(Gravity.END) // weird but needed for consistent transitions
         binding = ActivityChatBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
