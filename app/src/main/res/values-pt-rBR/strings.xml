@@ -106,6 +106,7 @@
     <string name="nc_configure_cert_auth">Selecionar certificado de autenticação</string>
     <string name="nc_connecting_call">Conectando …</string>
     <string name="nc_contacts_done">Concluído</string>
+    <string name="nc_conversation_description">Descrição da conversa</string>
     <string name="nc_conversation_link">Link de conversação</string>
     <string name="nc_conversation_menu_conversation_info">Informação da conversa</string>
     <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>

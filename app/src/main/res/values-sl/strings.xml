@@ -105,6 +105,7 @@
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
     <string name="nc_connecting_call">Poteka vzpostavljanje povezave …</string>
     <string name="nc_contacts_done">Začni pogovor</string>
+    <string name="nc_conversation_description">Opis pogovora</string>
     <string name="nc_conversation_link">Povezava pogovora</string>
     <string name="nc_conversation_menu_conversation_info">Podrobnosti pogovora</string>
     <string name="nc_conversation_menu_video_call">Video klic</string>
@@ -204,6 +205,8 @@
     <string name="nc_no">Ne</string>
     <string name="nc_no_messages_yet">Ni še sporočil</string>
     <string name="nc_no_proxy">Brez posredniškega strežnika</string>
+    <string name="nc_not_allowed_to_activate_audio">Ni ustreznih dovoljenj za omogočanje zvoka</string>
+    <string name="nc_not_allowed_to_activate_video">Ni ustreznih dovoljenj za omogočanje slike</string>
     <string name="nc_notification_channel">%1$s na kanalu za obveščanje %2$s</string>
     <string name="nc_notification_channel_calls">Klici</string>
     <string name="nc_notification_channel_calls_description">Obvesti o prejetih klicih</string>
@@ -393,6 +396,8 @@
     <string name="raise_hand">Dvigni roko</string>
     <string name="reactions_tab_all">Vse</string>
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>
+    <string name="record_active_info">Klic se snema.</string>
+    <string name="record_cancel_start">Prekliči začenjanje snemanja</string>
     <string name="record_start_description">Začni s snemanjem</string>
     <string name="record_stop_confirm_message">Ali res želite ustaviti snemanje?</string>
     <string name="record_stop_confirm_title">Ustavi snemanje klica</string>
@@ -412,6 +417,7 @@
     <string name="secondsAgo">pred nekaj sekundami</string>
     <string name="selected_list_item">Izbrano</string>
     <string name="send_to">Pošlji</string>
+    <string name="send_to_forbidden">Ni ustreznih dovoljenj za objavljanje vsebine v ta klepet</string>
     <string name="send_to_three_dots">Pošlji …</string>
     <string name="send_without_notification">Pošlji brez obvestila</string>
     <string name="set_avatar_from_camera">Nastavi sličico s kamero</string>
@@ -426,7 +432,7 @@
     <string name="shared_items_recording">Posnetek klica</string>
     <string name="shared_items_voice">Glasovna pošta</string>
     <string name="starred">Priljubljeno</string>
-    <string name="startCallForbidden">Ni ustreznih dovoljenj za klicanje</string>
+    <string name="startCallForbidden">Ni ustreznih dovoljenj za začetek klica</string>
     <string name="status_message">Sporočilo stanja</string>
     <string name="switch_to_breakout_room">Preklopi na ločene skupine</string>
     <string name="switch_to_main_room">Preklopi na skupno mesto</string>
@@ -444,8 +450,12 @@
     <string name="title_attachments">Priloge</string>
     <string name="today">Danes</string>
     <string name="translate">Prevodi</string>
+    <string name="translation">Prevod</string>
+    <string name="translation_copy_translated_text">Kopiraj prevedeno besedilo</string>
+    <string name="translation_detect_language">Zaznava jezika</string>
     <string name="translation_device_settings">Nastavitve naprave</string>
     <string name="translation_error_message">Ni mogoče zaznati jezika.</string>
+    <string name="translation_error_title">Prevajanje je spodletelo</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Za</string>
     <string name="upload_new_avatar_from_device">Posodobi podobo z naprave</string>

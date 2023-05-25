@@ -340,6 +340,7 @@
     <string name="nc_settings_theme_light">Světlý</string>
     <string name="nc_settings_theme_title">Motiv vzhledu</string>
     <string name="nc_settings_typing_status_desc">Sdílet můj stav píše a zobrazovat stav píší u ostatních</string>
+    <string name="nc_settings_typing_status_title">Stav psaní</string>
     <string name="nc_settings_use_credentials_title">Proxy vyžaduje přihlašovací údaje</string>
     <string name="nc_settings_warning">Varování</string>
     <string name="nc_settings_wrong_account">Pověření může být znovuzískáno pouze pro stávající účet</string>
@@ -473,6 +474,10 @@
     <string name="translation_error_title">Překlad se nezdařil</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Pro</string>
+    <string name="typing_1_other">a 1 další píše…</string>
+    <string name="typing_are_typing">píší…</string>
+    <string name="typing_is_typing">píše…</string>
+    <string name="typing_x_others">a %1$s ostatní píší…</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_displayname">Celé jméno</string>
