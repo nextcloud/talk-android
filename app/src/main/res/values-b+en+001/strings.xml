@@ -340,6 +340,7 @@
     <string name="nc_settings_theme_light">Light</string>
     <string name="nc_settings_theme_title">Theme</string>
     <string name="nc_settings_typing_status_desc">Share my typing-status and show the typing-status of others</string>
+    <string name="nc_settings_typing_status_title">Typing status</string>
     <string name="nc_settings_use_credentials_title">Proxy requires credentials</string>
     <string name="nc_settings_warning">Warning</string>
     <string name="nc_settings_wrong_account">Only current account can be reauthorised</string>
@@ -473,6 +474,10 @@
     <string name="translation_error_title">Translation failed</string>
     <string name="translation_from">From</string>
     <string name="translation_to">To</string>
+    <string name="typing_1_other">and 1 other is typing …</string>
+    <string name="typing_are_typing">are typing …</string>
+    <string name="typing_is_typing">is typing …</string>
+    <string name="typing_x_others">and %1$s others are typing …</string>
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
     <string name="user_info_address">Address</string>
     <string name="user_info_displayname">Full name</string>

@@ -159,10 +159,13 @@
     <string name="nc_guest_access_allow_title">Dovoli udeležbo gostov</string>
     <string name="nc_guest_access_password_dialog_hint">Vpis gesla</string>
     <string name="nc_guest_access_password_dialog_title">Dostopno geslo za goste</string>
+    <string name="nc_guest_access_password_failed">Prišlo je do napake med nastavljanjem ali onemogočanjem gesla.</string>
     <string name="nc_guest_access_password_summary">Nastavi geslo za omejitev uporabe javne povezave.</string>
     <string name="nc_guest_access_password_title">Zaščita z geslom</string>
     <string name="nc_guest_access_password_weak_alert_title">Šibko geslo</string>
     <string name="nc_guest_access_resend_invitations">Ponovno pošlji vabila</string>
+    <string name="nc_guest_access_resend_invitations_failed">Vabila niso bila poslana zaradi napake.</string>
+    <string name="nc_guest_access_resend_invitations_successful">Vabila so bila ponovno poslana.</string>
     <string name="nc_guest_access_share_link">Omogoči souporabo povezave pogovora</string>
     <string name="nc_hint_enter_a_message">Vpis sporočila …</string>
     <string name="nc_important_conversation">Pomemben pogovor</string>
@@ -194,6 +197,7 @@
     <string name="nc_message_read">Sporočilo je prebrano</string>
     <string name="nc_message_sent">Sporočilo je poslano</string>
     <string name="nc_microphone_permission_permanently_denied">Za omogočanje zvočnega pogovora je treba dodeliti ustrezna dovoljenja za dostop do »Mikrofona« med nastavitvami sistema.</string>
+    <string name="nc_missed_call">Zgrešili ste klic stika %s</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nikoli pridružen</string>
     <string name="nc_new_conversation">Nov pogovor</string>
@@ -213,6 +217,7 @@
     <string name="nc_notification_channel_messages">Sporočila</string>
     <string name="nc_notification_channel_messages_description">Obvesti o prejetih sporočilih</string>
     <string name="nc_notification_channel_uploads">Poslano</string>
+    <string name="nc_notification_channel_uploads_description">Obvesti o napredku pošiljanja</string>
     <string name="nc_notification_settings">Nastavitve obveščanja</string>
     <string name="nc_notify_me_always">Vedno obvesti</string>
     <string name="nc_notify_me_mention">Obvesti ob omembi</string>
@@ -271,6 +276,7 @@
     <string name="nc_sent_an_image_you">Pošljete sliko</string>
     <string name="nc_sent_location" formatted="true">%1$s pošlje podatek trenutnega mesta.</string>
     <string name="nc_sent_location_you">Poslali ste podatke o trenutnem mestu.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s pošlje anketo.</string>
     <string name="nc_sent_poll_you">Poslali ste anketo.</string>
     <string name="nc_sent_voice" formatted="true">%1$s pošilja glasovno sporočilo.</string>
     <string name="nc_sent_voice_you">Poslali te zvočno sporočilo.</string>
@@ -332,6 +338,7 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Svetla</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_typing_status_title">Stanje tipkanja</string>
     <string name="nc_settings_use_credentials_title">Posredniški strežnik zahteva ustrezna poverila</string>
     <string name="nc_settings_warning">Opozorilo</string>
     <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
@@ -357,6 +364,7 @@
     <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko osebi %1$s?</string>
     <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
     <string name="nc_upload_failed_notification_text">Pošiljanje %1$s je spodletelo</string>
+    <string name="nc_upload_failed_notification_title">Spodletelo</string>
     <string name="nc_upload_from_cloud">Souporaba %1$s</string>
     <string name="nc_upload_from_device">Pošlji z naprave</string>
     <string name="nc_upload_in_progess">Poteka pošiljanje</string>
@@ -382,6 +390,8 @@
     <string name="polls_add_option">Dodaj možnost</string>
     <string name="polls_edit_vote">Uredi glasovanje</string>
     <string name="polls_end_poll">Končaj anketo</string>
+    <string name="polls_end_poll_confirm">Ali res želite končati anketo? Dejanja ni mogoče povrniti.</string>
+    <string name="polls_max_votes_reached">Ni mogoče izbrati več možnosti te ankete.</string>
     <string name="polls_multiple_answers">Več odgovorov</string>
     <string name="polls_option_delete">Izbriši možnost %1$s</string>
     <string name="polls_option_hint">Možnost %1$s</string>
@@ -398,6 +408,7 @@
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>
     <string name="record_active_info">Klic se snema.</string>
     <string name="record_cancel_start">Prekliči začenjanje snemanja</string>
+    <string name="record_failed_info">Snemanje je spodletelo. Stopite v stik s skrbnikom sistema.</string>
     <string name="record_start_description">Začni s snemanjem</string>
     <string name="record_stop_confirm_message">Ali res želite ustaviti snemanje?</string>
     <string name="record_stop_confirm_title">Ustavi snemanje klica</string>

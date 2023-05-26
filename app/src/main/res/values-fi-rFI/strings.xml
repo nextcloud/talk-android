@@ -369,6 +369,7 @@
     <string name="title_attachments">Liitteet</string>
     <string name="today">Tänään</string>
     <string name="translate">Käännä</string>
+    <string name="translation_copy_translated_text">Kopioi käännetty teksti</string>
     <string name="translation_detect_language">Havaitse kieli</string>
     <string name="translation_device_settings">Laiteasetukset</string>
     <string name="translation_error_message">Kielen havaitseminen ei onnistunut</string>
