@@ -126,6 +126,7 @@
     <string name="nc_new_password">Nýtt lykilorð</string>
     <string name="nc_nick_guest">Gestur</string>
     <string name="nc_no">Nei</string>
+    <string name="nc_no_messages_yet">Engin skilaboð ennþá</string>
     <string name="nc_no_proxy">Enginn milliþjónn</string>
     <string name="nc_notification_channel">%1$s á %2$s tilkynningarásinni</string>
     <string name="nc_notification_channel_calls">Samtöl</string>

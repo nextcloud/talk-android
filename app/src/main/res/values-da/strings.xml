@@ -130,6 +130,7 @@
     <string name="nc_new_password">Ny adgangskode</string>
     <string name="nc_nick_guest">Gæst</string>
     <string name="nc_no">Nej</string>
+    <string name="nc_no_messages_yet">Ingen beskeder endnu</string>
     <string name="nc_no_proxy">Ikke proxy</string>
     <string name="nc_notification_channel">%1$s på %2$s notifikationskanal</string>
     <string name="nc_notification_channel_calls">Opkald</string>

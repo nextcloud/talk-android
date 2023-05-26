@@ -135,6 +135,7 @@
     <string name="nc_new_password">Nytt passord</string>
     <string name="nc_nick_guest">Gjest</string>
     <string name="nc_no">Nei</string>
+    <string name="nc_no_messages_yet">Ingen meldingar til no</string>
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_notification_channel">%1$s på %2$s varsel kanal</string>
     <string name="nc_notification_channel_calls">Samtalar</string>

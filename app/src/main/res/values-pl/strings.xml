@@ -207,6 +207,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s niedostępne (niezainstalowane lub ograniczone przez administratora)</string>
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_no">Nie</string>
+    <string name="nc_no_messages_yet">Nie ma nowych wiadomości</string>
     <string name="nc_no_proxy">Brak proxy</string>
     <string name="nc_not_allowed_to_activate_audio">Nie możesz aktywować dźwięku!</string>
     <string name="nc_not_allowed_to_activate_video">Nie możesz aktywować wideo!</string>
