@@ -208,7 +208,6 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s није доступно (није инсталирано или је ограничио админ)</string>
     <string name="nc_nick_guest">Гост</string>
     <string name="nc_no">Не</string>
-    <string name="nc_no_messages_yet">Још нема порука</string>
     <string name="nc_no_proxy">Без посредника</string>
     <string name="nc_not_allowed_to_activate_audio">Није вам дозвољено да активирате аудио!</string>
     <string name="nc_not_allowed_to_activate_video">Није вам дозвољено да активирате видео!</string>

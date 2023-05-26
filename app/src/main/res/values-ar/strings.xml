@@ -173,7 +173,6 @@
     <string name="nc_new_password">كلمة سرية جديدة</string>
     <string name="nc_nick_guest">ضيف</string>
     <string name="nc_no">لا</string>
-    <string name="nc_no_messages_yet">ليس لديك رسائل بعد</string>
     <string name="nc_no_proxy">بدون بروكسي</string>
     <string name="nc_notification_channel">قناة إشعار %1$s في %2$s </string>
     <string name="nc_notification_channel_calls">مكالمات</string>

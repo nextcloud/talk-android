@@ -208,7 +208,6 @@
     <string name="nc_nextcloud_talk_app_not_installed">A(z) %1$s nem érhető el (nincs telepítve vagy egy rendszergazda korlátozta) </string>
     <string name="nc_nick_guest">Vendég</string>
     <string name="nc_no">Nem</string>
-    <string name="nc_no_messages_yet">Nincs még üzenet</string>
     <string name="nc_no_proxy">Nincs proxy</string>
     <string name="nc_not_allowed_to_activate_audio">Nem kapcsolhatja be a hangot.</string>
     <string name="nc_not_allowed_to_activate_video">Nem kapcsolhatja be a videót.</string>

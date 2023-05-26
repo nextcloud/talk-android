@@ -208,7 +208,6 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s 不可用（管理員未安裝或限制）</string>
     <string name="nc_nick_guest">訪客</string>
     <string name="nc_no">否</string>
-    <string name="nc_no_messages_yet">目前無任何訊息</string>
     <string name="nc_no_proxy">無proxy代理</string>
     <string name="nc_not_allowed_to_activate_audio">你無權啟動語音！</string>
     <string name="nc_not_allowed_to_activate_video">你無權啟動視像！</string>
