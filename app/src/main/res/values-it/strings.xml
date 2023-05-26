@@ -188,7 +188,6 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$snon disponibile (non installato o limitato dall\'amministratore)</string>
     <string name="nc_nick_guest">Ospite</string>
     <string name="nc_no">No</string>
-    <string name="nc_no_messages_yet">Ancora nessun messaggio</string>
     <string name="nc_no_proxy">Nessun proxy</string>
     <string name="nc_notification_channel">%1$s sul canale di notifica %2$s</string>
     <string name="nc_notification_channel_calls">Chiamate</string>

@@ -208,7 +208,6 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s不可用（尚未安装或被管理员限制使用）</string>
     <string name="nc_nick_guest">来宾</string>
     <string name="nc_no">不</string>
-    <string name="nc_no_messages_yet">暂无消息</string>
     <string name="nc_no_proxy">无代理</string>
     <string name="nc_not_allowed_to_activate_audio">您没有开启语音的权限！</string>
     <string name="nc_not_allowed_to_activate_video">您没有开启视频的权限！</string>

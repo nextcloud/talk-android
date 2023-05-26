@@ -207,7 +207,6 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ni na voljo (ni nameščen ali pa je dostop skrbniško omejen)</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_no">Ne</string>
-    <string name="nc_no_messages_yet">Ni še sporočil</string>
     <string name="nc_no_proxy">Brez posredniškega strežnika</string>
     <string name="nc_not_allowed_to_activate_audio">Ni ustreznih dovoljenj za omogočanje zvoka</string>
     <string name="nc_not_allowed_to_activate_video">Ni ustreznih dovoljenj za omogočanje slike</string>

@@ -196,7 +196,6 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s nie je dostupné (nie je nainštalované alebo je obmedzené administrátorom)</string>
     <string name="nc_nick_guest">Hosť</string>
     <string name="nc_no">Nie</string>
-    <string name="nc_no_messages_yet">Ešte žiadne správy</string>
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_not_allowed_to_activate_audio">Nemáte oprávnenie povoliť zvuk!</string>
     <string name="nc_not_allowed_to_activate_video">Nemáte oprávnenie povoliť video!</string>
