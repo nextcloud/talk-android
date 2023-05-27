@@ -341,6 +341,7 @@
     <string name="nc_settings_theme_light">Brillante</string>
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_typing_status_desc">Compartir mi estado de escritura y mostrar el estado de escritura de otros</string>
+    <string name="nc_settings_typing_status_title">Estado de la escritura</string>
     <string name="nc_settings_use_credentials_title">El proxy requiere credenciales</string>
     <string name="nc_settings_warning">Alerta</string>
     <string name="nc_settings_wrong_account">Solo la cuenta actual puede ser reautorizada</string>
@@ -474,6 +475,10 @@
     <string name="translation_error_title">La traducción falló</string>
     <string name="translation_from">De</string>
     <string name="translation_to">A</string>
+    <string name="typing_1_other">y 1 otro está escribiendo ...</string>
+    <string name="typing_are_typing">están escribiendo ...</string>
+    <string name="typing_is_typing">está escribiendo ...</string>
+    <string name="typing_x_others">y %1$s otros están escribiendo ...</string>
     <string name="upload_new_avatar_from_device">Subir avatar desde dispositivo</string>
     <string name="user_info_address">Dirección</string>
     <string name="user_info_displayname">Nombre completo</string>
