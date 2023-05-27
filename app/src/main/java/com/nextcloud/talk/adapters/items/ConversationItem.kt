@@ -255,7 +255,7 @@ class ConversationItem(
             }
         } else {
             holder.binding.dialogDate.visibility = View.GONE
-            holder.binding.dialogLastMessage.setText(R.string.nc_no_messages_yet)
+            holder.binding.dialogLastMessage.text = ""
         }
     }
 
