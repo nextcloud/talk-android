@@ -339,7 +339,8 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Açık</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_typing_status_desc">Yazıyor durumumu paylaş ve diğerlerinin yazıyor durumunu görüntüle</string>
+    <string name="nc_settings_typing_status_desc">Yazıyor durumum paylaşılsın ve diğerlerinin yazıyor durumu görüntülensin</string>
+    <string name="nc_settings_typing_status_title">Yazma durumu</string>
     <string name="nc_settings_use_credentials_title">Vekil sunucu için kimlik doğrulaması gerekli</string>
     <string name="nc_settings_warning">Uyarı</string>
     <string name="nc_settings_wrong_account">Yalnızca geçerli hesaba yeniden izin verilebilir</string>
@@ -473,6 +474,10 @@
     <string name="translation_error_title">Çeviri yapılamadı</string>
     <string name="translation_from">Kaynak dil</string>
     <string name="translation_to">Hedef dil</string>
+    <string name="typing_1_other">ve 1 diğer kişi yazıyor…</string>
+    <string name="typing_are_typing">kişi yazıyor…</string>
+    <string name="typing_is_typing">yazıyor…</string>
+    <string name="typing_x_others">ve %1$s diğer kişi yazıyor…</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Tam ad</string>

@@ -438,6 +438,7 @@
     <string name="today">오늘</string>
     <string name="translate">번역:</string>
     <string name="translation_device_settings">디바이스 설정</string>
+    <string name="translation_error_message">언어를 감지할 수 없음</string>
     <string name="translation_from">보낸사람</string>
     <string name="translation_to">받는사람</string>
     <string name="upload_new_avatar_from_device">장치에서 새로운 아바타를 업로드하다</string>
