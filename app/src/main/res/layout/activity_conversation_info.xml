@@ -78,10 +78,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:visibility="gone"
+                android:visibility="visible"
                 apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp"
-                tools:visibility="visible">
+                apc:cardElevation="0dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -161,24 +160,24 @@
                     layout="@layout/notification_settings_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    android:visibility="visible"
+                     />
 
                 <include
                     android:id="@+id/webinar_info_view"
                     layout="@layout/webinar_info_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    android:visibility="visible"
+                     />
 
                 <include
                     android:id="@+id/guest_access_view"
                     layout="@layout/guest_access_settings_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    android:visibility="visible"
+                     />
 
             </LinearLayout>
 

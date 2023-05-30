@@ -42,7 +42,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.InputType
 import android.text.TextUtils
+import android.transition.Slide
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -200,7 +202,8 @@ class ConversationsListActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-
+        // weird but needed for consistent <-- --> sliding n/c of onBackPressedCallBack in ChatActivity
+        window.enterTransition = Slide(Gravity.START)
         binding = ControllerConversationsRvBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
