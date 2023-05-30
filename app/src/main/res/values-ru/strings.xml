@@ -437,6 +437,7 @@
     <string name="title_attachments">Вложения</string>
     <string name="today">Сегодня</string>
     <string name="translate">Помочь с переводом</string>
+    <string name="translation_copy_translated_text">Копировать переведенный текст</string>
     <string name="translation_detect_language">Определить язык</string>
     <string name="translation_device_settings">Параметры устройства</string>
     <string name="translation_error_message">Не удалось определить язык</string>

@@ -43,8 +43,8 @@
     <string name="menu_item_sort_by_size_smallest_first">Més petit primer</string>
     <string name="message_poll_tap_to_open">Toqueu per obrir l\'enquesta</string>
     <string name="message_search_begin_empty">No s\'han trobat resultats</string>
-    <string name="message_search_begin_typing">Comença a escriure per cercar ...</string>
-    <string name="message_search_hint">Cerca ...</string>
+    <string name="message_search_begin_typing">Comença a escriure per cercar …</string>
+    <string name="message_search_hint">Cerca …</string>
     <string name="messages">Missatges</string>
     <string name="nc_Server_account_imported">El compte que heu seleccionat s\'ha importat i ja és disponible</string>
     <string name="nc_about">Quant a</string>
