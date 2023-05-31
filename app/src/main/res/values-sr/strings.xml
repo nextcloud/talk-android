@@ -340,6 +340,7 @@
     <string name="nc_settings_theme_light">Светла</string>
     <string name="nc_settings_theme_title">Тема</string>
     <string name="nc_settings_typing_status_desc">Дели мој статус куцања и приказуј статус куцања осталих</string>
+    <string name="nc_settings_typing_status_title">Статус куцања</string>
     <string name="nc_settings_use_credentials_title">Прокси захтева креденцијале</string>
     <string name="nc_settings_warning">Упозорење</string>
     <string name="nc_settings_wrong_account">Само тренутни налог се може поново ауторизовати</string>
@@ -473,6 +474,10 @@
     <string name="translation_error_title">Превођење није успело</string>
     <string name="translation_from">Од</string>
     <string name="translation_to">За</string>
+    <string name="typing_1_other">and и још 1 куцају…</string>
+    <string name="typing_are_typing">куцају...</string>
+    <string name="typing_is_typing">куца...</string>
+    <string name="typing_x_others">и %1$s других куцају…</string>
     <string name="upload_new_avatar_from_device">Отпреми нови аватар са уређаја</string>
     <string name="user_info_address">Адреса</string>
     <string name="user_info_displayname">Пуно име</string>
