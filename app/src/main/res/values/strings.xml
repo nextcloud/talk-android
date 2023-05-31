@@ -153,7 +153,6 @@ How to translate with transifex:
     <string name="nc_settings_read_privacy_title">Read status</string>
     <string name="nc_settings_typing_status_desc">Share my typing-status and show the typing-status of others</string>
     <string name="nc_settings_typing_status_title">Typing status</string>
-    <string name="nc_settings_typing_status_hpb_description">Typing status is only available when using a high performance backend (HPB)</string>
 
     <string name="nc_screen_lock_timeout_30">30 seconds</string>
     <string name="nc_screen_lock_timeout_60">1 minute</string>
@@ -197,7 +196,6 @@ How to translate with transifex:
 
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_join_via_link">Join with a link</string>
-    <string name="nc_list_open_conversations">List open conversations</string>
     <string name="nc_join_via_web">Join via web</string>
     <string name="nc_mark_as_read">Mark as read</string>
     <string name="nc_mark_as_unread">Mark as unread</string>
@@ -205,10 +203,6 @@ How to translate with transifex:
     <string name="nc_remove_from_favorites">Remove from favorites</string>
 
     <string name="nc_forward_to_three_dots">Forward to …</string>
-
-    <!-- Open conversations -->
-    <string name="nc_no_open_conversations_headline">No open conversations</string>
-    <string name="nc_no_open_conversations_text">No open conversations that you can join.\nEither there are no open conversations or you already joined all of them.</string>
 
     <!-- Contacts -->
     <string name="nc_select_participants">Select participants</string>
@@ -565,14 +559,6 @@ How to translate with transifex:
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
 
-    <string name="nc_dialog_outdated_client">App is outdated</string>
-    <string name="nc_dialog_outdated_client_description">The app is too old and no longer supported by this server. Please update.</string>
-    <string name="nc_dialog_outdated_client_option_update">Update</string>
-    <string name="nc_switch_account">Switch account</string>
-    <string name="nc_dialog_maintenance_mode">Maintenance mode</string>
-    <string name="nc_dialog_maintenance_mode_description">Server is currently in maintenance mode.</string>
-    <string name="nc_close_app">Close app</string>
-
     <!-- Take photo -->
     <string name="take_photo">Take a photo</string>
     <string name="take_photo_switch_camera">Switch camera</string>
@@ -685,8 +671,6 @@ How to translate with transifex:
     <string name="translation_error_title">Translation failed</string>
     <string name="translation_error_message">Could not detect language</string>
     <string name="translation_copy_translated_text">Copy translated text</string>
-    <string name="nc_filter">Filter Conversations</string>
-    <string name="mentioned">Mentioned</string>
-    <string name="unread">Unread</string>
+    <string name="danger_zone">Danger Zone</string>
 
 </resources>

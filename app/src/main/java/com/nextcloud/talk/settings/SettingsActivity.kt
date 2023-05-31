@@ -228,8 +228,8 @@ class SettingsActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        themeCategories()
-        themeSwitchPreferences()
+        // themeCategories()
+        // themeSwitchPreferences()
     }
 
     private fun loadCapabilitiesAndUpdateSettings() {
@@ -488,31 +488,31 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
-    private fun themeSwitchPreferences() {
-        binding.run {
-            listOf(
-                settingsScreenLock,
-                settingsScreenSecurity,
-                settingsIncognitoKeyboard,
-                settingsPhoneBookIntegration,
-                settingsReadPrivacy,
-                settingsTypingStatus,
-                settingsProxyUseCredentials
-            ).forEach(viewThemeUtils.talk::colorSwitchPreference)
-        }
-    }
-
-    private fun themeCategories() {
-        binding.run {
-            listOf(
-                settingsNotificationsCategory,
-                settingsAboutCategory,
-                settingsAdvancedCategory,
-                settingsAppearanceCategory,
-                settingsPrivacyCategory
-            ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
-        }
-    }
+    // private fun themeSwitchPreferences() {
+    //     binding.run {
+    //         listOf(
+    //             settingsScreenLock,
+    //             settingsScreenSecurity,
+    //             settingsIncognitoKeyboard,
+    //             settingsPhoneBookIntegration,
+    //             settingsReadPrivacy,
+    //             settingsTypingStatus,
+    //             settingsProxyUseCredentials
+    //         ).forEach(viewThemeUtils.talk::colorSwitchPreference)
+    //     }
+    // }
+    //
+    // private fun themeCategories() {
+    //     binding.run {
+    //         listOf(
+    //             settingsNotificationsCategory,
+    //             settingsAboutCategory,
+    //             settingsAdvancedCategory,
+    //             settingsAppearanceCategory,
+    //             settingsPrivacyCategory
+    //         ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
+    //     }
+    // }
 
     private fun setupProxyTypeSettings() {
         if (("No proxy" == appPreferences.proxyType) || appPreferences.proxyType == null) {

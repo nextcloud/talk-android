@@ -24,7 +24,6 @@
 
 package com.nextcloud.talk.utils.preferences.preferencestorage;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -37,9 +36,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.UserIdUtils;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
-import com.yarolegovich.mp.io.StorageModule;
-
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -51,7 +47,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class DatabaseStorageModule implements StorageModule {
+public class DatabaseStorageModule {
     private static final String TAG = "DatabaseStorageModule";
     @Inject
     ArbitraryStorageManager arbitraryStorageManager;
@@ -76,9 +72,8 @@ public class DatabaseStorageModule implements StorageModule {
         this.conversationToken = conversationToken;
     }
 
-    @Override
     public void saveBoolean(String key, boolean value) {
-        if ("call_notifications".equals(key)) {
+        if ("call_notifications_switch".equals(key)) {
             int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{4});
             ncApi.notificationCalls(ApiUtils.getCredentials(conversationUser.getUsername(),
                                                             conversationUser.getToken()),
@@ -112,7 +107,7 @@ public class DatabaseStorageModule implements StorageModule {
                           );
         }
 
-        if (!"conversation_lobby".equals(key)) {
+        if (!"lobby_switch".equals(key)) {
             arbitraryStorageManager.storeStorageSetting(accountIdentifier,
                                                         key,
                                                         Boolean.toString(value),
@@ -122,9 +117,8 @@ public class DatabaseStorageModule implements StorageModule {
         }
     }
 
-    @Override
     public void saveString(String key, String value) {
-        if ("message_expire_key".equals(key)) {
+        if ("conversation_settings_dropdown".equals(key)) {
             int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{4});
 
             String trimmedValue = value.replace("expire_", "");
@@ -163,7 +157,7 @@ public class DatabaseStorageModule implements StorageModule {
                     }
                 });
 
-        } else if ("message_notification_level".equals(key)) {
+        } else if ("conversation_info_message_notifications_dropdown".equals(key)) {
             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
                 if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(value)) {
                     int intValue;
@@ -198,6 +192,7 @@ public class DatabaseStorageModule implements StorageModule {
 
                             @Override
                             public void onNext(GenericOverall genericOverall) {
+                                Log.i(TAG, "onNext called");
                                 messageNotificationLevel = value;
                             }
 
@@ -219,20 +214,8 @@ public class DatabaseStorageModule implements StorageModule {
             arbitraryStorageManager.storeStorageSetting(accountIdentifier, key, value, conversationToken);
         }
     }
-
-    @Override
-    public void saveInt(String key, int value) {
-        arbitraryStorageManager.storeStorageSetting(accountIdentifier, key, Integer.toString(value), conversationToken);
-    }
-
-    @Override
-    public void saveStringSet(String key, Set<String> value) {
-        // unused atm
-    }
-
-    @Override
     public boolean getBoolean(String key, boolean defaultVal) {
-        if ("conversation_lobby".equals(key)) {
+        if ("lobby_switch".equals(key)) {
             return lobbyValue;
         } else {
             return arbitraryStorageManager
@@ -242,9 +225,8 @@ public class DatabaseStorageModule implements StorageModule {
         }
     }
 
-    @Override
     public String getString(String key, String defaultVal) {
-        if ("message_expire_key".equals(key)) {
+        if ("conversation_settings_dropdown".equals(key)) {
             switch (messageExpiration) {
                 case 2419200:
                     return "expire_2419200";
@@ -259,7 +241,7 @@ public class DatabaseStorageModule implements StorageModule {
                 default:
                     return "expire_0";
             }
-        } else if ("message_notification_level".equals(key)) {
+        } else if ("conversation_info_message_notifications_dropdown".equals(key)) {
             return messageNotificationLevel;
         } else {
             return arbitraryStorageManager
@@ -267,35 +249,6 @@ public class DatabaseStorageModule implements StorageModule {
                 .map(ArbitraryStorage::getValue)
                 .blockingGet(defaultVal);
         }
-    }
-
-    @Override
-    public int getInt(String key, int defaultVal) {
-        return arbitraryStorageManager
-            .getStorageSetting(accountIdentifier, key, conversationToken)
-            .map(arbitraryStorage -> {
-                if (arbitraryStorage.getValue() != null) {
-                    return Integer.parseInt(arbitraryStorage.getValue());
-                } else {
-                    return defaultVal;
-                }
-            })
-            .blockingGet(defaultVal);
-    }
-
-    @Override
-    public Set<String> getStringSet(String key, Set<String> defaultVal) {
-        return null;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        // unused atm
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedState) {
-        // unused atm
     }
 
     public void setMessageExpiration(int messageExpiration) {

@@ -35,18 +35,18 @@ class GuestAccessHelper(
 
     fun setupGuestAccess() {
         val guestAccessAllowSwitch = (
-            binding.guestAccessView.guestAccessAllowSwitch.findViewById<View>(R.id.mp_checkable)
+            binding.guestAccessView.allowGuestsSwitch
                 as SwitchCompat
             )
         val guestAccessPasswordSwitch = (
-            binding.guestAccessView.guestAccessPasswordSwitch.findViewById<View>(R.id.mp_checkable)
+            binding.guestAccessView.passwordProtectionSwitch
                 as SwitchCompat
             )
 
         if (conversation.canModerate(conversationUser)) {
             binding.guestAccessView.guestAccessSettings.visibility = View.VISIBLE
         } else {
-            return
+            binding.guestAccessView.guestAccessSettings.visibility = View.GONE
         }
 
         if (conversation.type == Conversation.ConversationType.ROOM_PUBLIC_CALL) {
@@ -59,7 +59,7 @@ class GuestAccessHelper(
             guestAccessAllowSwitch.isChecked = false
         }
 
-        binding.guestAccessView.guestAccessAllowSwitch.setOnClickListener {
+        binding.guestAccessView.allowGuestsSwitch.setOnClickListener {
             conversationsRepository.allowGuests(
                 conversation.token!!,
                 !guestAccessAllowSwitch.isChecked
@@ -67,7 +67,7 @@ class GuestAccessHelper(
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(AllowGuestsResultObserver())
         }
 
-        binding.guestAccessView.guestAccessPasswordSwitch.setOnClickListener {
+        binding.guestAccessView.passwordProtectionSwitch.setOnClickListener {
             if (guestAccessPasswordSwitch.isChecked) {
                 conversationsRepository.password("", conversation.token!!).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(PasswordResultObserver(false))
@@ -76,11 +76,11 @@ class GuestAccessHelper(
             }
         }
 
-        binding.guestAccessView.guestAccessCopyUrl.setOnClickListener {
+        binding.guestAccessView.shareConversationButton.setOnClickListener {
             shareUrl()
         }
 
-        binding.guestAccessView.guestAccessResendInvitations.setOnClickListener {
+        binding.guestAccessView.resendInvitationsButton.setOnClickListener {
             conversationsRepository.resendInvitations(conversation.token!!).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(ResendInvitationsObserver())
         }
@@ -180,7 +180,7 @@ class GuestAccessHelper(
 
         override fun onComplete() {
             (
-                binding.guestAccessView.guestAccessAllowSwitch.findViewById<View>(R.id.mp_checkable)
+                binding.guestAccessView.allowGuestsSwitch
                     as SwitchCompat
                 ).isChecked = allowGuestsResult.allow
             if (allowGuestsResult.allow) {
@@ -194,17 +194,17 @@ class GuestAccessHelper(
     }
 
     private fun showAllOptions() {
-        binding.guestAccessView.guestAccessPasswordSwitch.visibility = View.VISIBLE
-        binding.guestAccessView.guestAccessCopyUrl.visibility = View.VISIBLE
+        binding.guestAccessView.guestAccessSettingsPasswordProtection.visibility = View.VISIBLE
+        binding.guestAccessView.shareConversationButton.visibility = View.VISIBLE
         if (conversationUser.capabilities?.spreedCapability?.features?.contains("sip-support") == true) {
-            binding.guestAccessView.guestAccessResendInvitations.visibility = View.VISIBLE
+            binding.guestAccessView.resendInvitationsButton.visibility = View.VISIBLE
         }
     }
 
     private fun hideAllOptions() {
-        binding.guestAccessView.guestAccessPasswordSwitch.visibility = View.GONE
-        binding.guestAccessView.guestAccessCopyUrl.visibility = View.GONE
-        binding.guestAccessView.guestAccessResendInvitations.visibility = View.GONE
+        binding.guestAccessView.guestAccessSettingsPasswordProtection.visibility = View.GONE
+        binding.guestAccessView.shareConversationButton.visibility = View.GONE
+        binding.guestAccessView.resendInvitationsButton.visibility = View.GONE
     }
 
     inner class PasswordResultObserver(private val setPassword: Boolean) :
@@ -226,7 +226,7 @@ class GuestAccessHelper(
 
         override fun onComplete() {
             val guestAccessPasswordSwitch = (
-                binding.guestAccessView.guestAccessPasswordSwitch.findViewById<View>(R.id.mp_checkable)
+                binding.guestAccessView.passwordProtectionSwitch
                     as SwitchCompat
                 )
             guestAccessPasswordSwitch.isChecked = passwordResult.passwordSet && setPassword
