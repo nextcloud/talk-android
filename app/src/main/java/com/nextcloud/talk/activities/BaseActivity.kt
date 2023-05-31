@@ -80,8 +80,12 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
-        window.enterTransition = Slide(Gravity.END)
-        window.exitTransition = Slide(Gravity.START)
+        val startAnimation = Slide(Gravity.END)
+        startAnimation.duration = ANIMATION_DURATION
+        val endAnimation = Slide(Gravity.START)
+        endAnimation.duration = ANIMATION_DURATION
+        window.enterTransition = startAnimation
+        window.exitTransition = endAnimation
         super.onCreate(savedInstanceState)
     }
 
@@ -197,6 +201,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     companion object {
-        private val TAG = "BaseActivity"
+        private const val TAG = "BaseActivity"
+        private const val ANIMATION_DURATION: Long = 50
     }
 }
