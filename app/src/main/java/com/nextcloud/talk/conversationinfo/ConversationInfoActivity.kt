@@ -97,6 +97,7 @@ import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.parceler.Parcels
+import java.lang.Long
 import java.util.Calendar
 import java.util.Collections
 import java.util.Locale
@@ -106,7 +107,6 @@ import javax.inject.Inject
 class ConversationInfoActivity :
     BaseActivity(),
     FlexibleAdapter.OnItemClickListener {
-
     private lateinit var binding: ActivityConversationInfoBinding
 
     @Inject
@@ -166,18 +166,14 @@ class ConversationInfoActivity :
         if (databaseStorageModule == null) {
             databaseStorageModule = DatabaseStorageModule(conversationUser, conversationToken)
         }
-
-        binding.notificationSettingsView.notificationSettings.setStorageModule(databaseStorageModule)
-        binding.webinarInfoView.webinarSettings.setStorageModule(databaseStorageModule)
-        binding.guestAccessView.guestAccessSettings.setStorageModule(databaseStorageModule)
-
+        setUpNotificationSettings(databaseStorageModule!!)
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
 
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
-            binding.showSharedItemsAction.setOnClickListener { showSharedItems() }
+            binding.sharedItemsButton.setOnClickListener { showSharedItems() }
         } else {
             binding.categorySharedItems.visibility = GONE
         }
@@ -248,12 +244,12 @@ class ConversationInfoActivity :
     private fun themeSwitchPreferences() {
         binding.run {
             listOf(
-                binding.webinarInfoView.conversationInfoLobby,
-                binding.notificationSettingsView.callNotifications,
-                binding.notificationSettingsView.conversationInfoPriorityConversation,
-                binding.guestAccessView.guestAccessAllowSwitch,
-                binding.guestAccessView.guestAccessPasswordSwitch
-            ).forEach(viewThemeUtils.talk::colorSwitchPreference)
+                binding.webinarInfoView.lobbySwitch,
+                binding.notificationSettingsView.callNotificationsSwitch,
+                binding.notificationSettingsView.importantConversationSwitch,
+                binding.guestAccessView.allowGuestsSwitch,
+                binding.guestAccessView.passwordProtectionSwitch
+            ).forEach(viewThemeUtils.talk::colorSwitch)
         }
     }
 
@@ -262,15 +258,28 @@ class ConversationInfoActivity :
             listOf(
                 conversationInfoName,
                 conversationDescription,
-                otherRoomOptions,
+                addToFavoritesButton,
                 participantsListCategory,
-                ownOptions,
+                addParticipantsAction,
+                dangerZoneOptions,
                 categorySharedItems,
-                categoryConversationSettings,
-                binding.guestAccessView.guestAccessCategory,
-                binding.webinarInfoView.conversationInfoWebinar,
-                binding.notificationSettingsView.notificationSettingsCategory
-            ).forEach(viewThemeUtils.talk::colorPreferenceCategory)
+                conversationSettings,
+                leaveConversationAction,
+                deleteConversationAction,
+                clearConversationHistory,
+                sharedItemsButton,
+                binding.guestAccessView.guestAccessSettings,
+                binding.guestAccessView.guestAccessSettingsAllowGuest,
+                binding.guestAccessView.guestAccessSettingsPasswordProtection,
+                binding.guestAccessView.shareConversationButton,
+                binding.guestAccessView.resendInvitationsButton,
+                binding.webinarInfoView.webinarSettings,
+                binding.webinarInfoView.webinarSettingsLobby,
+                binding.webinarInfoView.startTimeButton,
+                binding.notificationSettingsView.notificationSettings,
+                binding.notificationSettingsView.notificationSettingsImportantConversation,
+                binding.notificationSettingsView.notificationSettingsCallNotifications
+            ).forEach(viewThemeUtils.talk::ConversationInfoCardView)
         }
     }
 
@@ -294,12 +303,12 @@ class ConversationInfoActivity :
 
             val isLobbyOpenToModeratorsOnly =
                 conversation!!.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY
-            (binding?.webinarInfoView?.conversationInfoLobby?.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+            (binding?.webinarInfoView?.lobbySwitch as SwitchCompat)
                 .isChecked = isLobbyOpenToModeratorsOnly
 
             reconfigureLobbyTimerView()
 
-            binding?.webinarInfoView?.startTimePreferences?.setOnClickListener {
+            binding?.webinarInfoView?.startTimeButton?.setOnClickListener {
                 MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
                     val currentTimeCalendar = Calendar.getInstance()
                     if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
@@ -319,7 +328,7 @@ class ConversationInfoActivity :
                 }
             }
 
-            (binding?.webinarInfoView?.conversationInfoLobby?.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+            (binding?.webinarInfoView?.lobbySwitch as SwitchCompat)
                 .setOnCheckedChangeListener { _, _ ->
                     reconfigureLobbyTimerView()
                     submitLobbyChanges()
@@ -336,7 +345,7 @@ class ConversationInfoActivity :
 
     private fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
         val isChecked =
-            (binding?.webinarInfoView?.conversationInfoLobby?.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+            (binding?.webinarInfoView?.lobbySwitch as SwitchCompat)
                 .isChecked
 
         if (dateTime != null && isChecked) {
@@ -355,28 +364,28 @@ class ConversationInfoActivity :
 
         if (
             conversation!!.lobbyTimer != null &&
-            conversation!!.lobbyTimer != java.lang.Long.MIN_VALUE &&
+            conversation!!.lobbyTimer != Long.MIN_VALUE &&
             conversation!!.lobbyTimer != 0L
         ) {
-            binding?.webinarInfoView?.startTimePreferences?.setSummary(
+            binding?.webinarInfoView?.startTimeButtonSummary?.text = (
                 dateUtils.getLocalDateTimeStringFromTimestamp(
                     conversation!!.lobbyTimer!! * DateConstants.SECOND_DIVIDER
                 )
-            )
+                )
         } else {
-            binding?.webinarInfoView?.startTimePreferences?.setSummary(R.string.nc_manual)
+            binding?.webinarInfoView?.startTimeButtonSummary?.setText(R.string.nc_manual)
         }
 
         if (isChecked) {
-            binding?.webinarInfoView?.startTimePreferences?.visibility = VISIBLE
+            binding?.webinarInfoView?.startTimeButton?.visibility = VISIBLE
         } else {
-            binding?.webinarInfoView?.startTimePreferences?.visibility = GONE
+            binding?.webinarInfoView?.startTimeButton?.visibility = GONE
         }
     }
 
     fun submitLobbyChanges() {
         val state = if (
-            (binding?.webinarInfoView?.conversationInfoLobby?.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+            (binding?.webinarInfoView?.lobbySwitch as SwitchCompat)
                 .isChecked
         ) {
             1
@@ -679,7 +688,7 @@ class ConversationInfoActivity :
                     }
 
                     if (!isDestroyed) {
-                        binding?.ownOptions?.visibility = VISIBLE
+                        binding?.dangerZoneOptions?.visibility = VISIBLE
 
                         setupWebinaryView()
 
@@ -696,14 +705,14 @@ class ConversationInfoActivity :
                         }
 
                         if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
-                            binding?.notificationSettingsView?.callNotifications?.visibility = GONE
+                            binding?.notificationSettingsView?.callNotificationsSwitch?.visibility = GONE
                         }
 
                         if (conversation!!.notificationCalls === null) {
-                            binding?.notificationSettingsView?.callNotifications?.visibility = GONE
+                            binding?.notificationSettingsView?.callNotificationsSwitch?.visibility = GONE
                         } else {
-                            binding?.notificationSettingsView?.callNotifications?.value =
-                                conversationCopy.notificationCalls == 1
+                            binding?.notificationSettingsView?.callNotificationsSwitch?.isChecked =
+                                (conversationCopy.notificationCalls == 1)
                         }
 
                         getListOfParticipants()
@@ -751,11 +760,21 @@ class ConversationInfoActivity :
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")
         ) {
             databaseStorageModule?.setMessageExpiration(conversation!!.messageExpiration)
-            binding?.conversationInfoExpireMessages?.setStorageModule(databaseStorageModule)
-            binding?.conversationInfoExpireMessages?.visibility = VISIBLE
+            val value = databaseStorageModule!!.getString("conversation_settings_dropdown", "")
+            val pos = resources.getStringArray(R.array.message_expiring_values).indexOf(value)
+            val text = resources.getStringArray(R.array.message_expiring_descriptions)[pos]
+            binding.conversationSettingsDropdown.setText(text)
+            binding.conversationSettingsDropdown
+                .setSimpleItems(resources.getStringArray(R.array.message_expiring_descriptions))
+            binding.conversationSettingsDropdown.setOnItemClickListener { _, _, position, _ ->
+                val value = resources.getStringArray(R.array.message_expiring_values)[position]
+                databaseStorageModule!!.saveString("conversation_settings_dropdown", value)
+            }
+
+            binding?.conversationSettingsDropdown?.visibility = VISIBLE
             binding?.conversationInfoExpireMessagesExplanation?.visibility = VISIBLE
         } else {
-            binding?.categoryConversationSettings?.visibility = GONE
+            binding?.conversationSettings?.visibility = GONE
         }
     }
 
@@ -765,40 +784,49 @@ class ConversationInfoActivity :
                 conversationUser != null &&
                 CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")
             ) {
-                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.isEnabled = true
-                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.alpha = 1.0f
+                binding?.notificationSettingsView?.conversationInfoMessageNotificationsDropdown?.isEnabled = true
+                binding?.notificationSettingsView?.conversationInfoMessageNotificationsDropdown?.alpha = 1.0f
 
                 if (conversation!!.notificationLevel != Conversation.NotificationLevel.DEFAULT) {
                     val stringValue: String =
                         when (EnumNotificationLevelConverter().convertToInt(conversation!!.notificationLevel)) {
-                            NOTIFICATION_LEVEL_ALWAYS -> "always"
-                            NOTIFICATION_LEVEL_MENTION -> "mention"
-                            NOTIFICATION_LEVEL_NEVER -> "never"
-                            else -> "mention"
+                            NOTIFICATION_LEVEL_ALWAYS -> resources.getString(R.string.nc_notify_me_always)
+                            NOTIFICATION_LEVEL_MENTION -> resources.getString(R.string.nc_notify_me_mention)
+                            NOTIFICATION_LEVEL_NEVER -> resources.getString(R.string.nc_notify_me_never)
+                            else -> resources.getString(R.string.nc_notify_me_mention)
                         }
 
-                    binding?.notificationSettingsView?.conversationInfoMessageNotifications?.value = stringValue
+                    binding?.notificationSettingsView?.conversationInfoMessageNotificationsDropdown?.setText(
+                        stringValue
+                    )
                 } else {
                     setProperNotificationValue(conversation)
                 }
             } else {
-                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.isEnabled = false
-                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.alpha = LOW_EMPHASIS_OPACITY
+                binding?.notificationSettingsView?.conversationInfoMessageNotificationsDropdown?.isEnabled = false
+                binding?.notificationSettingsView?.conversationInfoMessageNotificationsDropdown?.alpha = LOW_EMPHASIS_OPACITY
                 setProperNotificationValue(conversation)
             }
+            binding?.notificationSettingsView?.conversationInfoMessageNotificationsDropdown
+                ?.setSimpleItems(resources.getStringArray(R.array.message_notification_levels))
         }
     }
 
     private fun setProperNotificationValue(conversation: Conversation?) {
         if (conversation!!.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            // hack to see if we get mentioned always or just on mention
             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag")) {
-                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.value = "always"
+                binding?.notificationSettingsView?.conversationInfoMessageNotificationsDropdown?.setText(
+                    resources.getString(R.string.nc_notify_me_always)
+                )
             } else {
-                binding?.notificationSettingsView?.conversationInfoMessageNotifications?.value = "mention"
+                binding?.notificationSettingsView?.conversationInfoMessageNotificationsDropdown?.setText(
+                    resources.getString(R.string.nc_notify_me_mention)
+                )
             }
         } else {
-            binding?.notificationSettingsView?.conversationInfoMessageNotifications?.value = "mention"
+            binding?.notificationSettingsView?.conversationInfoMessageNotificationsDropdown?.setText(
+                resources.getString(R.string.nc_notify_me_mention)
+            )
         }
     }
 
@@ -1167,6 +1195,29 @@ class ConversationInfoActivity :
             }
         }
         return true
+    }
+
+    fun setUpNotificationSettings(module: DatabaseStorageModule) {
+        // set up listeners
+        binding.notificationSettingsView?.importantConversationSwitch?.setOnCheckedChangeListener { _, isChecked ->
+            module.saveBoolean("important_conversation_switch", isChecked)
+        }
+
+        binding.notificationSettingsView?.callNotificationsSwitch?.setOnCheckedChangeListener { _, isChecked ->
+            module.saveBoolean("call_notifications_switch", isChecked)
+        }
+
+        binding.notificationSettingsView?.conversationInfoMessageNotificationsDropdown?.setOnItemClickListener {
+                _, _, position, _ ->
+            val value = resources.getStringArray(R.array.message_notification_levels_entry_values)[position]
+            module.saveString("conversation_info_message_notifications_dropdown", value)
+        }
+
+        binding.notificationSettingsView?.importantConversationSwitch?.isChecked = module
+            .getBoolean("important_conversation_switch", false)
+
+        binding.notificationSettingsView?.callNotificationsSwitch?.isChecked = module
+            .getBoolean("call_notifications_switch", true)
     }
 
     companion object {

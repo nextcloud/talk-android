@@ -40,8 +40,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.children
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
@@ -50,7 +50,6 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.vanniktech.emoji.EmojiTextView
 import com.yarolegovich.mp.MaterialPreferenceCategory
-import com.yarolegovich.mp.MaterialSwitchPreference
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -146,12 +145,10 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    fun colorSwitchPreference(preference: MaterialSwitchPreference) {
-        val children = preference.children
-        val switch = children.find { it is SwitchCompat }
+    fun colorSwitch(preference: MaterialSwitch) {
+        val switch = preference as SwitchCompat
         if (switch != null) {
-            val switchCompat = (switch as SwitchCompat)
-            appcompat.colorSwitchCompat(switchCompat)
+            appcompat.colorSwitchCompat(switch)
         }
     }
 
@@ -249,6 +246,35 @@ class TalkSpecificViewThemeUtils @Inject constructor(
                     intArrayOf(
                         scheme.onSecondaryContainer,
                         scheme.surface
+                    )
+                )
+            )
+        }
+    }
+
+    fun ConversationInfoCardView(cardView: MaterialCardView) {
+        withScheme(cardView) { scheme ->
+            val background = cardView.context.getColor(R.color.bg_default)
+            cardView.backgroundTintList =
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                    ),
+                    intArrayOf(
+                        scheme.primary,
+                        background
+                    )
+                )
+            cardView.setStrokeColor(
+                ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                    ),
+                    intArrayOf(
+                        scheme.primary,
+                        background
                     )
                 )
             )

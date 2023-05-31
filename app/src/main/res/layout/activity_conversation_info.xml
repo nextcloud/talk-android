@@ -31,12 +31,14 @@
     android:id="@+id/parent_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:visibility="visible">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/conversation_info_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/conversation_info_toolbar"
             android:layout_width="match_parent"
@@ -62,7 +64,7 @@
         android:indeterminate="true"
         android:indeterminateTint="@color/textColorMaxContrast"
         android:indeterminateTintMode="src_in"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -73,27 +75,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.yarolegovich.mp.MaterialPreferenceCategory
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/conversation_info_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
                 android:animateLayoutChanges="true"
                 android:visibility="gone"
-                apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp"
                 tools:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
 
                     <ImageView
                         android:id="@+id/avatar_image"
                         android:layout_width="@dimen/avatar_size_big"
                         android:layout_height="@dimen/avatar_size_big"
+                        android:layout_marginTop="@dimen/standard_margin"
                         android:layout_centerHorizontal="true"
-                        tools:src="@drawable/account_circle_48dp"
-                        android:contentDescription="@string/avatar" />
+                        android:contentDescription="@string/avatar"
+                        tools:src="@drawable/account_circle_48dp" />
 
                     <androidx.emoji2.widget.EmojiTextView
                         android:id="@+id/display_name_text"
@@ -106,16 +108,15 @@
 
                 </RelativeLayout>
 
-            </com.yarolegovich.mp.MaterialPreferenceCategory>
+            </com.google.android.material.card.MaterialCardView>
 
-            <com.yarolegovich.mp.MaterialPreferenceCategory
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/conversation_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
                 android:animateLayoutChanges="true"
                 android:visibility="gone"
-                apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp"
                 tools:visibility="visible">
 
                 <androidx.emoji2.widget.EmojiTextView
@@ -123,32 +124,53 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_margin="@dimen/standard_margin"
-                    android:layout_marginTop="@dimen/margin_between_elements"
+                    android:layout_margin="@dimen/standard_half_margin"
                     android:autoLink="web"
+                    android:padding="@dimen/standard_half_padding"
                     tools:text="Hello world!" />
-            </com.yarolegovich.mp.MaterialPreferenceCategory>
+            </com.google.android.material.card.MaterialCardView>
 
-            <com.yarolegovich.mp.MaterialPreferenceCategory
-                android:id="@+id/otherRoomOptions"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/add_to_favorites_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp"
-                tools:visibility="visible">
+                android:layout_marginTop="@dimen/standard_quarter_margin">
 
-                <com.yarolegovich.mp.MaterialStandardPreference
-                    android:id="@+id/favoriteConversationAction"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    apc:mp_icon="@drawable/ic_star_black_24dp"
-                    apc:mp_icon_tint="@color/grey_600"
-                    apc:mp_title="@string/nc_add_to_favorites">
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_half_padding"
+                    android:visibility="gone"
+                    tools:visibility="gone">
 
-                </com.yarolegovich.mp.MaterialStandardPreference>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
-            </com.yarolegovich.mp.MaterialPreferenceCategory>
+                        <com.google.android.material.button.MaterialButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/transparent"
+                            app:icon="@drawable/ic_star_black_24dp"
+                            app:iconGravity="textStart"
+                            app:iconSize="@dimen/sm_icon_height"
+                            app:iconTint="@color/grey_600" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="@string/nc_add_to_favorites"
+                            android:textSize="@dimen/two_line_primary_text_size" />
+
+
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
                 android:id="@+id/settings"
@@ -158,144 +180,358 @@
 
                 <include
                     android:id="@+id/notification_settings_view"
-                    layout="@layout/notification_settings_item"
+                    layout="@layout/item_notification_settings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    android:layout_marginTop="@dimen/standard_quarter_margin" />
 
                 <include
                     android:id="@+id/webinar_info_view"
-                    layout="@layout/webinar_info_item"
+                    layout="@layout/item_webinar_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    android:layout_marginTop="@dimen/standard_quarter_margin" />
 
                 <include
                     android:id="@+id/guest_access_view"
-                    layout="@layout/guest_access_settings_item"
+                    layout="@layout/item_guest_access_settings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    android:layout_marginTop="@dimen/standard_quarter_margin" />
 
             </LinearLayout>
 
-            <com.yarolegovich.mp.MaterialPreferenceCategory
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/category_shared_items"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp"
-                apc:mpc_title="@string/nc_shared_items">
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:elevation="0dp">
 
-                <com.yarolegovich.mp.MaterialStandardPreference
-                    android:id="@+id/show_shared_items_action"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    apc:mp_icon="@drawable/ic_folder_multiple_image"
-                    apc:mp_icon_tint="@color/grey_600"
-                    apc:mp_title="@string/nc_shared_items_description" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
 
-            </com.yarolegovich.mp.MaterialPreferenceCategory>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nc_shared_items"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/md_title_textsize"
+                        android:textStyle="bold"
+                        android:padding="@dimen/standard_padding"/>
 
-            <com.yarolegovich.mp.MaterialPreferenceCategory
-                android:id="@+id/category_conversation_settings"
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/shared_items_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/standard_half_padding">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/transparent"
+                                    app:icon="@drawable/ic_folder_multiple_image"
+                                    app:iconGravity="textStart"
+                                    app:iconSize="@dimen/sm_icon_height"
+                                    app:iconTint="@color/grey_600" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/nc_shared_items_description"
+                                    android:textSize="@dimen/two_line_primary_text_size" />
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/conversation_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp"
-                apc:mpc_title="@string/nc_conversation_settings">
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:elevation="0dp">
 
-                <com.yarolegovich.mp.MaterialChoicePreference
-                    android:id="@+id/conversation_info_expire_messages"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    apc:mp_entry_descriptions="@array/message_expiring_descriptions"
-                    apc:mp_entry_values="@array/message_expiring_values"
-                    apc:mp_key="message_expire_key"
-                    apc:mp_show_value="onBottom"
-                    apc:mp_title="@string/nc_expire_messages">
-                </com.yarolegovich.mp.MaterialChoicePreference>
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
 
-                <TextView
-                    android:id="@+id/conversation_info_expire_messages_explanation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:layout_marginStart="@dimen/standard_margin"
-                    android:layout_marginEnd="@dimen/standard_margin"
-                    android:textColor="@color/disabled_text"
-                    android:text="@string/nc_expire_messages_explanation">
-                </TextView>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nc_conversation_settings"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/md_title_textsize"
+                        android:textStyle="bold"
+                        android:padding="@dimen/standard_padding"/>
 
-            </com.yarolegovich.mp.MaterialPreferenceCategory>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/conversation_info_chat_settings_input_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standard_half_margin"
+                        android:layout_marginHorizontal="@dimen/standard_half_margin"
+                        android:hint="@string/nc_expire_messages"
+                        app:boxStrokeWidth="@dimen/zero">
 
-            <com.yarolegovich.mp.MaterialPreferenceCategory
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/conversation_settings_dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:lines="1"
+                            android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
+                            android:text="" />
+
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/conversation_info_expire_messages_explanation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_margin"
+                        android:text="@string/nc_expire_messages_explanation"
+                        android:textColor="@color/disabled_text" />
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/participants_list_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
                 android:visibility="gone"
-                apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp"
-                apc:mpc_title="@string/nc_participants"
                 tools:ignore="UnknownIdInLayout"
                 tools:visibility="visible">
 
-                <com.yarolegovich.mp.MaterialStandardPreference
-                    android:id="@+id/addParticipantsAction"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    apc:mp_icon="@drawable/ic_account_plus"
-                    apc:mp_icon_tint="@color/grey_600"
-                    apc:mp_title="@string/nc_participants_add" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:listitem="@layout/rv_item_conversation_info_participant" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/standard_padding"
+                        android:text="@string/nc_participants"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/md_title_textsize"
+                        android:textStyle="bold" />
 
-            </com.yarolegovich.mp.MaterialPreferenceCategory>
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/addParticipantsAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standard_quarter_margin">
 
-            <com.yarolegovich.mp.MaterialPreferenceCategory
-                android:id="@+id/ownOptions"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/standard_half_padding">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/transparent"
+                                app:icon="@drawable/ic_account_plus"
+                                app:iconGravity="textStart"
+                                app:iconSize="@dimen/sm_icon_height"
+                                app:iconTint="@color/grey_600" />
+
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:text="@string/nc_participants_add"
+                                android:textSize="@dimen/two_line_primary_text_size" />
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/standard_half_padding"
+                        tools:listitem="@layout/rv_item_conversation_info_participant" />
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/danger_zone_options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp"
-                tools:visibility="visible">
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:elevation="0dp">
 
-                <com.yarolegovich.mp.MaterialStandardPreference
-                    android:id="@+id/leaveConversationAction"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    apc:mp_icon="@drawable/ic_exit_to_app_black_24dp"
-                    apc:mp_icon_tint="@color/grey_600"
-                    apc:mp_title="@string/nc_leave" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
 
-                <com.yarolegovich.mp.MaterialStandardPreference
-                    android:id="@+id/clearConversationHistory"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    apc:mp_icon="@drawable/ic_delete_black_24dp"
-                    apc:mp_icon_tint="@color/grey_600"
-                    apc:mp_title="@string/nc_clear_history" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/danger_zone"
+                        android:textColor="@color/design_default_color_error"
+                        android:textSize="@dimen/md_title_textsize"
+                        android:textStyle="bold"
+                        android:padding="@dimen/standard_padding"/>
 
-                <com.yarolegovich.mp.MaterialStandardPreference
-                    android:id="@+id/deleteConversationAction"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    apc:mp_icon="@drawable/ic_delete_black_24dp"
-                    apc:mp_icon_tint="@color/grey_600"
-                    apc:mp_title="@string/nc_delete_call" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/leaveConversationAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standard_quarter_margin">
 
-            </com.yarolegovich.mp.MaterialPreferenceCategory>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/standard_half_padding">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/transparent"
+                                    app:icon="@drawable/ic_exit_to_app_black_24dp"
+                                    app:iconGravity="textStart"
+                                    app:iconSize="@dimen/sm_icon_height"
+                                    app:iconTint="@color/design_default_color_error" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/nc_leave"
+                                    android:textColor="@color/design_default_color_error"
+                                    android:textSize="@dimen/two_line_primary_text_size" />
+
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/clearConversationHistory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standard_quarter_margin">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/standard_half_padding">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/transparent"
+                                    app:icon="@drawable/ic_delete_black_24dp"
+                                    app:iconGravity="textStart"
+                                    app:iconSize="@dimen/sm_icon_height"
+                                    app:iconTint="@color/design_default_color_error" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/nc_clear_history"
+                                    android:textColor="@color/design_default_color_error"
+                                    android:textSize="@dimen/two_line_primary_text_size" />
+
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/deleteConversationAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standard_quarter_margin">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/standard_half_padding">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/transparent"
+                                    app:icon="@drawable/ic_delete_black_24dp"
+                                    app:iconGravity="textStart"
+                                    app:iconSize="@dimen/sm_icon_height"
+                                    app:iconTint="@color/design_default_color_error" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/nc_delete_call"
+                                    android:textColor="@color/design_default_color_error"
+                                    android:textSize="@dimen/two_line_primary_text_size" />
+
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>
