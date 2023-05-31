@@ -149,11 +149,13 @@ object FileUtils {
         // if it was no content uri, read filename from path
         if (filename == null) {
             filename = uri.path
-            val lastIndexOfSlash = filename!!.lastIndexOf('/')
-            if (lastIndexOfSlash != -1) {
-                filename = filename.substring(lastIndexOfSlash + 1)
-            }
         }
+
+        val lastIndexOfSlash = filename!!.lastIndexOf('/')
+        if (lastIndexOfSlash != -1) {
+            filename = filename.substring(lastIndexOfSlash + 1)
+        }
+
         return filename
     }
 
