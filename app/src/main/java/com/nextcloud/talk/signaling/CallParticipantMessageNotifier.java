@@ -25,11 +25,13 @@ import java.util.List;
 
 /**
  * Helper class to register and notify CallParticipantMessageListeners.
- *
+ * <p>
  * This class is only meant for internal use by SignalingMessageReceiver; listeners must register themselves against
  * a SignalingMessageReceiver rather than against a CallParticipantMessageNotifier.
  */
 class CallParticipantMessageNotifier {
+
+    private final List<CallParticipantMessageListenerFrom> callParticipantMessageListenersFrom = new ArrayList<>();
 
     /**
      * Helper class to associate a CallParticipantMessageListener with a session ID.
@@ -44,8 +46,6 @@ class CallParticipantMessageNotifier {
             this.sessionId = sessionId;
         }
     }
-
-    private final List<CallParticipantMessageListenerFrom> callParticipantMessageListenersFrom = new ArrayList<>();
 
     public synchronized void addListener(SignalingMessageReceiver.CallParticipantMessageListener listener, String sessionId) {
         if (listener == null) {

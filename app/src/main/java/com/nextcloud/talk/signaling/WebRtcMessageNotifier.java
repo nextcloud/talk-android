@@ -25,11 +25,13 @@ import java.util.List;
 
 /**
  * Helper class to register and notify WebRtcMessageListeners.
- *
+ * <p>
  * This class is only meant for internal use by SignalingMessageReceiver; listeners must register themselves against
  * a SignalingMessageReceiver rather than against a WebRtcMessageNotifier.
  */
 class WebRtcMessageNotifier {
+
+    private final List<WebRtcMessageListenerFrom> webRtcMessageListenersFrom = new ArrayList<>();
 
     /**
      * Helper class to associate a WebRtcMessageListener with a session ID and room type.
@@ -47,8 +49,6 @@ class WebRtcMessageNotifier {
             this.roomType = roomType;
         }
     }
-
-    private final List<WebRtcMessageListenerFrom> webRtcMessageListenersFrom = new ArrayList<>();
 
     public synchronized void addListener(SignalingMessageReceiver.WebRtcMessageListener listener, String sessionId, String roomType) {
         if (listener == null) {

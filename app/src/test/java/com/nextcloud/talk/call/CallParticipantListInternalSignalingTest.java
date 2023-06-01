@@ -58,6 +58,15 @@ public class CallParticipantListInternalSignalingTest {
     private Collection<Participant> expectedLeft;
     private Collection<Participant> expectedUnchanged;
 
+    // The order of the left participants in some tests depends on how they are internally sorted by the map, so the
+    // list of left participants needs to be checked ignoring the sorting (or, rather, sorting by session ID as in
+    // expectedLeft).
+    // Other tests can just relay on the not guaranteed, but known internal sorting of the elements.
+    private final ArgumentMatcher<List<Participant>> matchesExpectedLeftIgnoringOrder = left -> {
+        Collections.sort(left, Comparator.comparing(Participant::getSessionId));
+        return expectedLeft.equals(left);
+    };
+
     private static class UsersInRoomParticipantBuilder {
         private Participant newUser(long inCall, long lastPing, String sessionId, String userId) {
             Participant participant = new Participant();
@@ -78,15 +87,6 @@ public class CallParticipantListInternalSignalingTest {
             return participant;
         }
     }
-
-    // The order of the left participants in some tests depends on how they are internally sorted by the map, so the
-    // list of left participants needs to be checked ignoring the sorting (or, rather, sorting by session ID as in
-    // expectedLeft).
-    // Other tests can just relay on the not guaranteed, but known internal sorting of the elements.
-    private final ArgumentMatcher<List<Participant>> matchesExpectedLeftIgnoringOrder = left -> {
-        Collections.sort(left, Comparator.comparing(Participant::getSessionId));
-        return expectedLeft.equals(left);
-    };
 
     @Before
     public void setUp() {
@@ -529,7 +529,9 @@ public class CallParticipantListInternalSignalingTest {
         // Last ping is not seen as changed, even if it did.
         expectedUnchanged.add(builder.newUser(IN_CALL | WITH_AUDIO, 42, "theSessionId9", "theUserId9"));
 
-        verify(mockedCallParticipantListObserver).onCallParticipantsChanged(eq(expectedJoined), eq(expectedUpdated),
-                                                                            argThat(matchesExpectedLeftIgnoringOrder), eq(expectedUnchanged));
+        verify(mockedCallParticipantListObserver).onCallParticipantsChanged(eq(expectedJoined),
+                                                                            eq(expectedUpdated),
+                                                                            argThat(matchesExpectedLeftIgnoringOrder),
+                                                                            eq(expectedUnchanged));
     }
 }
