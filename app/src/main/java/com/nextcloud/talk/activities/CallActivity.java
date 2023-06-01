@@ -2762,6 +2762,13 @@ public class CallActivity extends CallBaseActivity {
 
     private class OfferAnswerNickProvider {
 
+        private final WebRtcMessageListener videoWebRtcMessageListener = new WebRtcMessageListener();
+        private final WebRtcMessageListener screenWebRtcMessageListener = new WebRtcMessageListener();
+
+        private final String sessionId;
+
+        private String nick;
+
         private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
 
             @Override
@@ -2782,13 +2789,6 @@ public class CallActivity extends CallBaseActivity {
             public void onEndOfCandidates() {
             }
         }
-
-        private final WebRtcMessageListener videoWebRtcMessageListener = new WebRtcMessageListener();
-        private final WebRtcMessageListener screenWebRtcMessageListener = new WebRtcMessageListener();
-
-        private final String sessionId;
-
-        private String nick;
 
         private OfferAnswerNickProvider(String sessionId) {
             this.sessionId = sessionId;

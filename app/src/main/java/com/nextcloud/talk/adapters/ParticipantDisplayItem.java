@@ -14,10 +14,6 @@ import org.webrtc.PeerConnection;
 
 public class ParticipantDisplayItem {
 
-    public interface Observer {
-        void onChange();
-    }
-
     /**
      * Shared handler to receive change notifications from the model on the main thread.
      */
@@ -34,6 +30,19 @@ public class ParticipantDisplayItem {
 
     private final CallParticipantModel callParticipantModel;
 
+    private String userId;
+    private PeerConnection.IceConnectionState iceConnectionState;
+    private String nick;
+    private String urlForAvatar;
+    private MediaStream mediaStream;
+    private boolean streamEnabled;
+    private boolean isAudioEnabled;
+    private RaisedHand raisedHand;
+
+    public interface Observer {
+        void onChange();
+    }
+
     private final CallParticipantModel.Observer callParticipantModelObserver = new CallParticipantModel.Observer() {
         @Override
         public void onChange() {
@@ -44,15 +53,6 @@ public class ParticipantDisplayItem {
         public void onReaction(String reaction) {
         }
     };
-
-    private String userId;
-    private PeerConnection.IceConnectionState iceConnectionState;
-    private String nick;
-    private String urlForAvatar;
-    private MediaStream mediaStream;
-    private boolean streamEnabled;
-    private boolean isAudioEnabled;
-    private RaisedHand raisedHand;
 
     public ParticipantDisplayItem(String baseUrl, String defaultGuestNick, EglBase rootEglBase, String streamType,
                                   CallParticipantModel callParticipantModel) {

@@ -65,37 +65,8 @@ import autodagger.AutoInjector;
 @AutoInjector(NextcloudTalkApplication.class)
 public class PeerConnectionWrapper {
 
-    /**
-     * Listener for data channel messages.
-     *
-     * The messages are bound to a specific peer connection, so each listener is expected to handle messages only for
-     * a single peer connection.
-     *
-     * All methods are called on the so called "signaling" thread of WebRTC, which is an internal thread created by the
-     * WebRTC library and NOT the same thread where signaling messages are received.
-     */
-    public interface DataChannelMessageListener {
-        void onAudioOn();
-        void onAudioOff();
-        void onVideoOn();
-        void onVideoOff();
-        void onNickChanged(String nick);
-    }
-
-    /**
-     * Observer for changes on the peer connection.
-     *
-     * The changes are bound to a specific peer connection, so each observer is expected to handle messages only for
-     * a single peer connection.
-     *
-     * All methods are called on the so called "signaling" thread of WebRTC, which is an internal thread created by the
-     * WebRTC library and NOT the same thread where signaling messages are received.
-     */
-    public interface PeerConnectionObserver {
-        void onStreamAdded(MediaStream mediaStream);
-        void onStreamRemoved(MediaStream mediaStream);
-        void onIceConnectionStateChanged(PeerConnection.IceConnectionState iceConnectionState);
-    }
+    @Inject
+    Context context;
 
     private static final String TAG = PeerConnectionWrapper.class.getCanonicalName();
 
@@ -124,8 +95,37 @@ public class PeerConnectionWrapper {
     // It is assumed that there will be at most one remote stream at each time.
     private MediaStream stream;
 
-    @Inject
-    Context context;
+    /**
+     * Listener for data channel messages.
+     * <p>
+     * The messages are bound to a specific peer connection, so each listener is expected to handle messages only for
+     * a single peer connection.
+     * <p>
+     * All methods are called on the so called "signaling" thread of WebRTC, which is an internal thread created by the
+     * WebRTC library and NOT the same thread where signaling messages are received.
+     */
+    public interface DataChannelMessageListener {
+        void onAudioOn();
+        void onAudioOff();
+        void onVideoOn();
+        void onVideoOff();
+        void onNickChanged(String nick);
+    }
+
+    /**
+     * Observer for changes on the peer connection.
+     * <p>
+     * The changes are bound to a specific peer connection, so each observer is expected to handle messages only for
+     * a single peer connection.
+     * <p>
+     * All methods are called on the so called "signaling" thread of WebRTC, which is an internal thread created by the
+     * WebRTC library and NOT the same thread where signaling messages are received.
+     */
+    public interface PeerConnectionObserver {
+        void onStreamAdded(MediaStream mediaStream);
+        void onStreamRemoved(MediaStream mediaStream);
+        void onIceConnectionStateChanged(PeerConnection.IceConnectionState iceConnectionState);
+    }
 
     public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                  List<PeerConnection.IceServer> iceServerList,
@@ -220,7 +220,7 @@ public class PeerConnectionWrapper {
 
     /**
      * Adds a listener for data channel messages.
-     *
+     * <p>
      * A listener is expected to be added only once. If the same listener is added again it will be notified just once.
      *
      * @param listener the DataChannelMessageListener
@@ -235,7 +235,7 @@ public class PeerConnectionWrapper {
 
     /**
      * Adds an observer for peer connection changes.
-     *
+     * <p>
      * An observer is expected to be added only once. If the same observer is added again it will be notified just once.
      *
      * @param observer the PeerConnectionObserver

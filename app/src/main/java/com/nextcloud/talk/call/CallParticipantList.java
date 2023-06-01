@@ -37,6 +37,10 @@ import java.util.Map;
  */
 public class CallParticipantList {
 
+    private final CallParticipantListNotifier callParticipantListNotifier = new CallParticipantListNotifier();
+
+    private final SignalingMessageReceiver signalingMessageReceiver;
+
     public interface Observer {
         void onCallParticipantsChanged(Collection<Participant> joined, Collection<Participant> updated,
                                        Collection<Participant> left, Collection<Participant> unchanged);
@@ -141,10 +145,6 @@ public class CallParticipantList {
             return copiedParticipant;
         }
     };
-
-    private final CallParticipantListNotifier callParticipantListNotifier = new CallParticipantListNotifier();
-
-    private final SignalingMessageReceiver signalingMessageReceiver;
 
     public CallParticipantList(SignalingMessageReceiver signalingMessageReceiver) {
         this.signalingMessageReceiver = signalingMessageReceiver;
