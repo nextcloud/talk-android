@@ -19,15 +19,13 @@
  */
 package com.nextcloud.talk.adapters;
 
-import com.nextcloud.talk.signaling.SignalingMessageReceiver;
-
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
  * Helper class to register and notify ParticipantDisplayItem.Observers.
- *
+ * <p>
  * This class is only meant for internal use by ParticipantDisplayItem; observers must register themselves against a
  * ParticipantDisplayItem rather than against a ParticipantDisplayItemNotifier.
  */
