@@ -126,7 +126,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
             initNotificationSetup()
 
-            if (file != null && file.length() > CHUNK_UPLOAD_THRESHOLD_SIZE) {
+            if (file == null) {
+                uploadSuccess = false
+            } else if (file.length() > CHUNK_UPLOAD_THRESHOLD_SIZE) {
                 Log.d(TAG, "starting chunked upload because size is " + file.length())
 
                 initNotificationWithPercentage()
