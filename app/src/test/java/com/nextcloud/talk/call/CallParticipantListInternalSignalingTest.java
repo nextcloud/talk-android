@@ -46,6 +46,18 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 public class CallParticipantListInternalSignalingTest {
 
+    private final UsersInRoomParticipantBuilder builder = new UsersInRoomParticipantBuilder();
+
+    private CallParticipantList callParticipantList;
+    private SignalingMessageReceiver.ParticipantListMessageListener participantListMessageListener;
+
+    private CallParticipantList.Observer mockedCallParticipantListObserver;
+
+    private Collection<Participant> expectedJoined;
+    private Collection<Participant> expectedUpdated;
+    private Collection<Participant> expectedLeft;
+    private Collection<Participant> expectedUnchanged;
+
     private static class UsersInRoomParticipantBuilder {
         private Participant newUser(long inCall, long lastPing, String sessionId, String userId) {
             Participant participant = new Participant();
@@ -66,18 +78,6 @@ public class CallParticipantListInternalSignalingTest {
             return participant;
         }
     }
-
-    private final UsersInRoomParticipantBuilder builder = new UsersInRoomParticipantBuilder();
-
-    private CallParticipantList callParticipantList;
-    private SignalingMessageReceiver.ParticipantListMessageListener participantListMessageListener;
-
-    private CallParticipantList.Observer mockedCallParticipantListObserver;
-
-    private Collection<Participant> expectedJoined;
-    private Collection<Participant> expectedUpdated;
-    private Collection<Participant> expectedLeft;
-    private Collection<Participant> expectedUnchanged;
 
     // The order of the left participants in some tests depends on how they are internally sorted by the map, so the
     // list of left participants needs to be checked ignoring the sorting (or, rather, sorting by session ID as in

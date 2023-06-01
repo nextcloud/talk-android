@@ -48,6 +48,25 @@ import java.util.Objects;
  */
 public class CallParticipantModel {
 
+    protected final CallParticipantModelNotifier callParticipantModelNotifier = new CallParticipantModelNotifier();
+
+    protected final String sessionId;
+
+    protected Data<String> userId;
+    protected Data<String> nick;
+
+    protected Data<Boolean> internal;
+
+    protected Data<RaisedHand> raisedHand;
+
+    protected Data<PeerConnection.IceConnectionState> iceConnectionState;
+    protected Data<MediaStream> mediaStream;
+    protected Data<Boolean> audioAvailable;
+    protected Data<Boolean> videoAvailable;
+
+    protected Data<PeerConnection.IceConnectionState> screenIceConnectionState;
+    protected Data<MediaStream> screenMediaStream;
+
     public interface Observer {
         void onChange();
         void onReaction(String reaction);
@@ -71,25 +90,6 @@ public class CallParticipantModel {
             callParticipantModelNotifier.notifyChange();
         }
     }
-
-    protected final CallParticipantModelNotifier callParticipantModelNotifier = new CallParticipantModelNotifier();
-
-    protected final String sessionId;
-
-    protected Data<String> userId;
-    protected Data<String> nick;
-
-    protected Data<Boolean> internal;
-
-    protected Data<RaisedHand> raisedHand;
-
-    protected Data<PeerConnection.IceConnectionState> iceConnectionState;
-    protected Data<MediaStream> mediaStream;
-    protected Data<Boolean> audioAvailable;
-    protected Data<Boolean> videoAvailable;
-
-    protected Data<PeerConnection.IceConnectionState> screenIceConnectionState;
-    protected Data<MediaStream> screenMediaStream;
 
     public CallParticipantModel(String sessionId) {
         this.sessionId = sessionId;
