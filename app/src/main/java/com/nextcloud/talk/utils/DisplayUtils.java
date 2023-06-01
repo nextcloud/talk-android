@@ -98,7 +98,6 @@ import static com.nextcloud.talk.utils.FileSortOrder.sort_z_to_a_id;
 
 public class DisplayUtils {
 
-    private static final String TAG = "DisplayUtils";
     private static final int INDEX_LUMINATION = 2;
     private static final double MAX_LIGHTNESS = 0.92;
 
