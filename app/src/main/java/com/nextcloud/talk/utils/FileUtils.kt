@@ -112,8 +112,14 @@ object FileUtils {
     }
 
     @Suppress("NestedBlockDepth")
-    fun copyFileToCache(context: Context, sourceFileUri: Uri, filename: String): File {
+    fun copyFileToCache(context: Context, sourceFileUri: Uri, filename: String): File? {
         val cachedFile = File(context.cacheDir, filename)
+
+        if (!cachedFile.canonicalPath.startsWith(context.cacheDir.canonicalPath, true)) {
+            Log.w(TAG, "cachedFile was not created in cacheDir. Aborting for security reasons.")
+            cachedFile.delete()
+            return null
+        }
 
         if (cachedFile.exists()) {
             Log.d(TAG, "file is already in cache")
@@ -149,11 +155,13 @@ object FileUtils {
         // if it was no content uri, read filename from path
         if (filename == null) {
             filename = uri.path
-            val lastIndexOfSlash = filename!!.lastIndexOf('/')
-            if (lastIndexOfSlash != -1) {
-                filename = filename.substring(lastIndexOfSlash + 1)
-            }
         }
+
+        val lastIndexOfSlash = filename!!.lastIndexOf('/')
+        if (lastIndexOfSlash != -1) {
+            filename = filename.substring(lastIndexOfSlash + 1)
+        }
+
         return filename
     }
 
