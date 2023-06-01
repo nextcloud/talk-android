@@ -28,11 +28,13 @@ import java.util.List;
 
 /**
  * Helper class to register and notify CallParticipantModel.Observers.
- *
+ * <p>
  * This class is only meant for internal use by CallParticipantModel; observers must register themselves against a
  * CallParticipantModel rather than against a CallParticipantModelNotifier.
  */
 class CallParticipantModelNotifier {
+
+    private final List<CallParticipantModelObserverOn> callParticipantModelObserversOn = new ArrayList<>();
 
     /**
      * Helper class to associate a CallParticipantModel.Observer with a Handler.
@@ -46,8 +48,6 @@ class CallParticipantModelNotifier {
             this.handler = handler;
         }
     }
-
-    private final List<CallParticipantModelObserverOn> callParticipantModelObserversOn = new ArrayList<>();
 
     public synchronized void addObserver(CallParticipantModel.Observer observer, Handler handler) {
         if (observer == null) {
