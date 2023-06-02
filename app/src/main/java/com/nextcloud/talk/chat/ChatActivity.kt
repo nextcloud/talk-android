@@ -307,7 +307,8 @@ class ChatActivity :
     private var videoURI: Uri? = null
 
     var typingTimer: CountDownTimer? = null
-    val typingParticipants = HashMap<String, String>()
+    var typedWhileTypingTimerIsRunning: Boolean = false
+    val typingParticipants = HashMap<String, TypingParticipant>()
 
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
@@ -322,23 +323,38 @@ class ChatActivity :
     }
 
     private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
-        override fun onStartTyping(session: String) {
-            if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
-                var name = webSocketInstance?.getDisplayNameForSession(session)
+        override fun onStartTyping(userId: String?, session: String?) {
+            val userIdOrGuestSession = userId ?: session
 
-                if (name != null && !typingParticipants.contains(session)) {
-                    if (name == "") {
-                        name = context.resources?.getString(R.string.nc_guest)!!
+            if (isTypingStatusEnabled() && conversationUser?.userId != userIdOrGuestSession) {
+                var displayName = webSocketInstance?.getDisplayNameForSession(session)
+
+                if (displayName != null && !typingParticipants.contains(userIdOrGuestSession)) {
+                    if (displayName == "") {
+                        displayName = context.resources?.getString(R.string.nc_guest)!!
                     }
-                    typingParticipants[session] = name
-                    updateTypingIndicator()
+
+                    runOnUiThread {
+                        val typingParticipant = TypingParticipant(userIdOrGuestSession!!, displayName) {
+                            typingParticipants.remove(userIdOrGuestSession)
+                            updateTypingIndicator()
+                        }
+
+                        typingParticipants[userIdOrGuestSession] = typingParticipant
+                        updateTypingIndicator()
+                    }
+                } else if (typingParticipants.contains(userIdOrGuestSession)) {
+                    typingParticipants[userIdOrGuestSession]?.restartTimer()
                 }
             }
         }
 
-        override fun onStopTyping(session: String) {
-            if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
-                typingParticipants.remove(session)
+        override fun onStopTyping(userId: String?, session: String?) {
+            val userIdOrGuestSession = userId ?: session
+
+            if (isTypingStatusEnabled() && conversationUser?.userId != userId) {
+                typingParticipants[userIdOrGuestSession]?.cancelTimer()
+                typingParticipants.remove(userIdOrGuestSession)
                 updateTypingIndicator()
             }
         }
@@ -530,7 +546,7 @@ class ChatActivity :
 
             @Suppress("Detekt.TooGenericExceptionCaught")
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                sendStartTypingMessage()
+                updateOwnTypingStatus(s)
 
                 if (s.length >= lengthFilter) {
                     binding?.messageInputView?.inputEditText?.error = String.format(
@@ -914,7 +930,11 @@ class ChatActivity :
             return DisplayUtils.ellipsize(text, TYPING_INDICATOR_MAX_NAME_LENGTH)
         }
 
-        val participantNames = ArrayList(typingParticipants.values)
+        val participantNames = ArrayList<String>()
+
+        for (typingParticipant in typingParticipants.values) {
+            participantNames.add(typingParticipant.name)
+        }
 
         val typingString: SpannableStringBuilder
         when (typingParticipants.size) {
@@ -990,42 +1010,51 @@ class ChatActivity :
         }
     }
 
-    fun sendStartTypingMessage() {
-        if (webSocketInstance == null) {
-            return
+    fun updateOwnTypingStatus(typedText: CharSequence) {
+        fun sendStartTypingSignalingMessage() {
+            for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+                val ncSignalingMessage = NCSignalingMessage()
+                ncSignalingMessage.to = sessionId
+                ncSignalingMessage.type = TYPING_STARTED_SIGNALING_MESSAGE_TYPE
+                signalingMessageSender!!.send(ncSignalingMessage)
+            }
         }
 
-        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
-            if (typingTimer == null) {
-                for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
-                    val ncSignalingMessage = NCSignalingMessage()
-                    ncSignalingMessage.to = sessionId
-                    ncSignalingMessage.type = TYPING_STARTED_SIGNALING_MESSAGE_TYPE
-                    signalingMessageSender!!.send(ncSignalingMessage)
-                }
+        if (isTypingStatusEnabled()) {
+            if (typedText.isEmpty()) {
+                sendStopTypingMessage()
+            } else if (typingTimer == null) {
+                sendStartTypingSignalingMessage()
 
                 typingTimer = object : CountDownTimer(
-                    TYPING_DURATION_BEFORE_SENDING_STOP,
-                    TYPING_DURATION_BEFORE_SENDING_STOP
+                    TYPING_DURATION_TO_SEND_NEXT_TYPING_MESSAGE,
+                    TYPING_INTERVAL_TO_SEND_NEXT_TYPING_MESSAGE
                 ) {
                     override fun onTick(millisUntilFinished: Long) {
-                        // unused atm
+                        // unused
                     }
 
                     override fun onFinish() {
-                        sendStopTypingMessage()
+                        if (typedWhileTypingTimerIsRunning) {
+                            sendStartTypingSignalingMessage()
+                            cancel()
+                            start()
+                            typedWhileTypingTimerIsRunning = false
+                        } else {
+                            sendStopTypingMessage()
+                        }
                     }
                 }.start()
             } else {
-                typingTimer?.cancel()
-                typingTimer?.start()
+                typedWhileTypingTimerIsRunning = true
             }
         }
     }
 
-    fun sendStopTypingMessage() {
-        if (!CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)) {
+    private fun sendStopTypingMessage() {
+        if (isTypingStatusEnabled()) {
             typingTimer = null
+            typedWhileTypingTimerIsRunning = false
 
             for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
                 val ncSignalingMessage = NCSignalingMessage()
@@ -1034,6 +1063,11 @@ class ChatActivity :
                 signalingMessageSender!!.send(ncSignalingMessage)
             }
         }
+    }
+
+    private fun isTypingStatusEnabled(): Boolean {
+        return webSocketInstance != null &&
+            !CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)
     }
 
     private fun getRoomInfo() {
@@ -2338,6 +2372,8 @@ class ChatActivity :
                 override fun onNext(genericOverall: GenericOverall) {
                     Log.d(TAG, "leaveRoom - leaveRoom - got response: $startNanoTime")
                     logConversationInfos("leaveRoom#onNext")
+
+                    sendStopTypingMessage()
 
                     checkingLobbyStatus = false
 
@@ -3800,7 +3836,8 @@ class ChatActivity :
         private const val COMMA = ", "
         private const val TYPING_INDICATOR_ANIMATION_DURATION = 200L
         private const val TYPING_INDICATOR_MAX_NAME_LENGTH = 14
-        private const val TYPING_DURATION_BEFORE_SENDING_STOP = 4000L
+        private const val TYPING_DURATION_TO_SEND_NEXT_TYPING_MESSAGE = 10000L
+        private const val TYPING_INTERVAL_TO_SEND_NEXT_TYPING_MESSAGE = 1000L
         private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
         private const val TYPING_STOPPED_SIGNALING_MESSAGE_TYPE = "stoppedTyping"
     }

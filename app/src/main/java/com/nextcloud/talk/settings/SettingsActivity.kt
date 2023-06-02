@@ -632,6 +632,7 @@ class SettingsActivity : BaseActivity() {
                     PorterDuff.Mode.SRC_IN
                 )
             }
+
             CapabilitiesUtilNew.isServerAlmostEOL(currentUser!!) -> {
                 binding.serverAgeWarningText.setTextColor(
                     ContextCompat.getColor((context), R.color.nc_darkYellow)
@@ -642,6 +643,7 @@ class SettingsActivity : BaseActivity() {
                     PorterDuff.Mode.SRC_IN
                 )
             }
+
             else -> {
                 binding.serverAgeWarningTextCard.visibility = View.GONE
             }
@@ -667,15 +669,29 @@ class SettingsActivity : BaseActivity() {
             binding.settingsReadPrivacy.visibility = View.GONE
         }
 
-        if (CapabilitiesUtilNew.isTypingStatusAvailable(currentUser!!)) {
-            (binding.settingsTypingStatus.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-                !CapabilitiesUtilNew.isTypingStatusPrivate(currentUser!!)
-        } else {
-            binding.settingsTypingStatus.visibility = View.GONE
-        }
+        setupTypingStatusSetting()
 
         (binding.settingsPhoneBookIntegration.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
             appPreferences.isPhoneBookIntegrationEnabled
+    }
+
+    private fun setupTypingStatusSetting() {
+        if (currentUser!!.externalSignalingServer?.externalSignalingServer?.isNotEmpty() == true) {
+            binding.settingsTypingStatusOnlyWithHpb.visibility = View.GONE
+
+            if (CapabilitiesUtilNew.isTypingStatusAvailable(currentUser!!)) {
+                (binding.settingsTypingStatus.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
+                    !CapabilitiesUtilNew.isTypingStatusPrivate(currentUser!!)
+            } else {
+                binding.settingsTypingStatus.visibility = View.GONE
+            }
+        } else {
+            (binding.settingsTypingStatus.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked = false
+            binding.settingsTypingStatusOnlyWithHpb.visibility = View.VISIBLE
+            binding.settingsTypingStatus.isEnabled = false
+            binding.settingsTypingStatusOnlyWithHpb.alpha = DISABLED_ALPHA
+            binding.settingsTypingStatus.alpha = DISABLED_ALPHA
+        }
     }
 
     private fun setupScreenLockSetting() {
@@ -849,10 +865,13 @@ class SettingsActivity : BaseActivity() {
                 when (newValue) {
                     "HTTP" ->
                         binding.settingsProxyPortEdit.value = "3128"
+
                     "DIRECT" ->
                         binding.settingsProxyPortEdit.value = "8080"
+
                     "SOCKS" ->
                         binding.settingsProxyPortEdit.value = "1080"
+
                     else -> {
                     }
                 }

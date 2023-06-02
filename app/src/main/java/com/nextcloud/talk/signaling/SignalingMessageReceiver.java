@@ -24,6 +24,7 @@ import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.websocket.CallWebSocketMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -169,8 +170,8 @@ public abstract class SignalingMessageReceiver {
      * Listener for conversation messages.
      */
     public interface ConversationMessageListener {
-        void onStartTyping(String session);
-        void onStopTyping(String session);
+        void onStartTyping(String userId, String session);
+        void onStopTyping(String userId,String session);
     }
 
     /**
@@ -515,6 +516,26 @@ public abstract class SignalingMessageReceiver {
         return participant;
     }
 
+    protected void processCallWebSocketMessage(CallWebSocketMessage callWebSocketMessage) {
+
+        NCSignalingMessage signalingMessage = callWebSocketMessage.getNcSignalingMessage();
+
+        if (callWebSocketMessage.getSenderWebSocketMessage() != null && signalingMessage != null) {
+            String type = signalingMessage.getType();
+
+            String userId = callWebSocketMessage.getSenderWebSocketMessage().getUserid();
+            String sessionId = signalingMessage.getFrom();
+
+            if ("startedTyping".equals(type)) {
+                conversationMessageNotifier.notifyStartTyping(userId, sessionId);
+            }
+
+            if ("stoppedTyping".equals(type)) {
+                conversationMessageNotifier.notifyStopTyping(userId, sessionId);
+            }
+        }
+    }
+
     protected void processSignalingMessage(NCSignalingMessage signalingMessage) {
         // Note that in the internal signaling server message "data" is the String representation of a JSON
         // object, although it is already decoded when used here.
@@ -579,14 +600,6 @@ public abstract class SignalingMessageReceiver {
             callParticipantMessageNotifier.notifyRaiseHand(sessionId, state, timestamp);
 
             return;
-        }
-
-        if ("startedTyping".equals(type)) {
-            conversationMessageNotifier.notifyStartTyping(sessionId);
-        }
-
-        if ("stoppedTyping".equals(type)) {
-            conversationMessageNotifier.notifyStopTyping(sessionId);
         }
 
         if ("reaction".equals(type)) {
