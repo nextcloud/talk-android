@@ -36,15 +36,15 @@ internal class ConversationMessageNotifier {
     }
 
     @Synchronized
-    fun notifyStartTyping(sessionId: String?) {
+    fun notifyStartTyping(userId: String?, sessionId: String?) {
         for (listener in ArrayList(conversationMessageListeners)) {
-            listener.onStartTyping(sessionId)
+            listener.onStartTyping(userId, sessionId)
         }
     }
 
-    fun notifyStopTyping(sessionId: String?) {
+    fun notifyStopTyping(userId: String?, sessionId: String?) {
         for (listener in ArrayList(conversationMessageListeners)) {
-            listener.onStopTyping(sessionId)
+            listener.onStopTyping(userId, sessionId)
         }
     }
 }

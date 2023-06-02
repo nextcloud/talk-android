@@ -35,6 +35,7 @@ import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage
+import com.nextcloud.talk.models.json.websocket.CallWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage
@@ -182,15 +183,16 @@ class WebSocketInstance internal constructor(
     private fun processMessage(text: String) {
         val (_, callWebSocketMessage) = LoganSquare.parse(text, CallOverallWebSocketMessage::class.java)
         if (callWebSocketMessage != null) {
-            val ncSignalingMessage = callWebSocketMessage
-                .ncSignalingMessage
+            val ncSignalingMessage = callWebSocketMessage.ncSignalingMessage
+
             if (ncSignalingMessage != null &&
                 TextUtils.isEmpty(ncSignalingMessage.from) &&
                 callWebSocketMessage.senderWebSocketMessage != null
             ) {
                 ncSignalingMessage.from = callWebSocketMessage.senderWebSocketMessage!!.sessionId
             }
-            signalingMessageReceiver.process(ncSignalingMessage)
+
+            signalingMessageReceiver.process(callWebSocketMessage)
         }
     }
 
@@ -453,8 +455,14 @@ class WebSocketInstance internal constructor(
             processEvent(eventMap)
         }
 
-        fun process(message: NCSignalingMessage?) {
-            processSignalingMessage(message)
+        fun process(message: CallWebSocketMessage?) {
+            if (message?.ncSignalingMessage?.type == "startedTyping" ||
+                message?.ncSignalingMessage?.type == "stoppedTyping"
+            ) {
+                processCallWebSocketMessage(message)
+            } else {
+                processSignalingMessage(message?.ncSignalingMessage)
+            }
         }
     }
 
