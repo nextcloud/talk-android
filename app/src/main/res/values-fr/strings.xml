@@ -416,7 +416,7 @@
     <string name="record_stop_confirm_title">Arrêter l\'enregistrement de l\'appel</string>
     <string name="record_stop_description">Arrêter l\'enregistrement</string>
     <string name="record_stopping">Arrêt de l\'enregistrement…</string>
-    <string name="restrict_join_other_room_while_call">Il est impossible de rejoindre un autre salon pendant un appel</string>
+    <string name="restrict_join_other_room_while_call">Il est impossible de rejoindre une autre salle pendant un appel</string>
     <string name="save">Sauvegarder</string>
     <string name="scope_federated_description">Synchronisation avec les serveurs de confiance uniquement</string>
     <string name="scope_federated_title">Fédéré</string>
@@ -450,7 +450,7 @@
     <string name="startCallForbidden">Vous n\'êtes pas autorisé à commencer un appel</string>
     <string name="status_message">Message d\'état</string>
     <string name="switch_to_breakout_room">Basculer vers le salon dérivé</string>
-    <string name="switch_to_main_room">Basculer vers le salon principal</string>
+    <string name="switch_to_main_room">Basculer vers la salle principale</string>
     <string name="take_photo">Prendre une photo</string>
     <string name="take_photo_error_deleting_picture">Erreur en prenant la photo</string>
     <string name="take_photo_permission">Impossible de prendre une photo sans permissions</string>

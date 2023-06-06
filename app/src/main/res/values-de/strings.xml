@@ -340,6 +340,7 @@
     <string name="nc_settings_theme_light">Hell</string>
     <string name="nc_settings_theme_title">Design</string>
     <string name="nc_settings_typing_status_desc">Meinen Tippstatus teilen und den Tippstatus anderer anzeigen</string>
+    <string name="nc_settings_typing_status_hpb_description">Der Eingabestatus ist nur verfügbar, wenn ein Hochleistungs-Backend (HPB) verwendet wird.</string>
     <string name="nc_settings_typing_status_title">Schreibstatus</string>
     <string name="nc_settings_use_credentials_title">Proxy erfordert eine Authentifizierung</string>
     <string name="nc_settings_warning">Warnung</string>
