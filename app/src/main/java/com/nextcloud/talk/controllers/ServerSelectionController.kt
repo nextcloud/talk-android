@@ -203,7 +203,6 @@ class ServerSelectionController :
     private fun checkServerAndProceed() {
         dispose()
         var url: String = binding?.serverEntryTextInputEditText?.text.toString().trim { it <= ' ' }
-        binding?.serverEntryTextInputEditText?.isEnabled = false
         showserverEntryProgressBar()
         if (binding?.importOrChooseProviderText?.visibility != View.INVISIBLE) {
             binding?.importOrChooseProviderText?.visibility = View.INVISIBLE
@@ -281,8 +280,6 @@ class ServerSelectionController :
                         hideserverEntryProgressBar()
                     }
 
-                    binding?.serverEntryTextInputEditText?.isEnabled = true
-
                     if (binding?.importOrChooseProviderText?.visibility != View.INVISIBLE) {
                         binding?.importOrChooseProviderText?.visibility = View.VISIBLE
                         binding?.certTextView?.visibility = View.VISIBLE
@@ -304,18 +301,17 @@ class ServerSelectionController :
     }
 
     private fun setErrorText(text: String) {
+        binding?.errorWrapper?.visibility = View.VISIBLE
         binding?.errorText?.text = text
-        binding?.errorText?.visibility = View.VISIBLE
-        binding?.serverEntryProgressBar?.visibility = View.GONE
+        hideserverEntryProgressBar()
     }
 
     private fun showserverEntryProgressBar() {
-        binding?.errorText?.visibility = View.GONE
+        binding?.errorWrapper?.visibility = View.INVISIBLE
         binding?.serverEntryProgressBar?.visibility = View.VISIBLE
     }
 
     private fun hideserverEntryProgressBar() {
-        binding?.errorText?.visibility = View.GONE
         binding?.serverEntryProgressBar?.visibility = View.INVISIBLE
     }
 

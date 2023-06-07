@@ -133,23 +133,37 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/error_text"
+            <LinearLayout
+                android:id="@+id/error_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawablePadding="5dp"
-                android:ellipsize="end"
-                android:gravity="start|center_vertical"
-                android:lineSpacingMultiplier="1.2"
-                android:lines="2"
+                android:layout_height="match_parent"
                 android:paddingStart="16dp"
-                android:paddingEnd="8dp"
-                android:text="@string/nc_server_unsupported"
-                android:textAlignment="viewStart"
-                android:textColor="@color/white"
+                android:paddingEnd="2dp"
                 android:visibility="invisible"
-                app:drawableStartCompat="@android:drawable/stat_sys_warning"
-                tools:visibility="visible" />
+                android:orientation="horizontal"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@android:drawable/stat_sys_warning">
+                </ImageView>
+
+                <TextView
+                    android:id="@+id/error_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="5dp"
+                    android:ellipsize="end"
+                    android:gravity="start|center_vertical"
+                    android:lineSpacingMultiplier="1.2"
+                    android:lines="2"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="8dp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/white"
+                    tools:text="@string/nc_server_unsupported" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/import_or_choose_provider_text"
