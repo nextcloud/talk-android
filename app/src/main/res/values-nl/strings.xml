@@ -425,6 +425,7 @@ Kies er eentje van een provider.</string>
     <string name="title_attachments">Bijlagen</string>
     <string name="today">Vandaag</string>
     <string name="translation_device_settings">Apparaatinstellingen</string>
+    <string name="translation_error_message">Kan taal niet detecteren</string>
     <string name="translation_from">Van</string>
     <string name="translation_to">Naar</string>
     <string name="upload_new_avatar_from_device">Upload nieuwe avatar van apparaat</string>

@@ -449,7 +449,7 @@
     <string name="starred">Favori</string>
     <string name="startCallForbidden">Vous n\'êtes pas autorisé à commencer un appel</string>
     <string name="status_message">Message d\'état</string>
-    <string name="switch_to_breakout_room">Basculer vers le salon dérivé</string>
+    <string name="switch_to_breakout_room">Basculer vers la salle de sous-groupe</string>
     <string name="switch_to_main_room">Basculer vers la salle principale</string>
     <string name="take_photo">Prendre une photo</string>
     <string name="take_photo_error_deleting_picture">Erreur en prenant la photo</string>

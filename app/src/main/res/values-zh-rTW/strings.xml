@@ -340,6 +340,7 @@
     <string name="nc_settings_theme_light">亮色</string>
     <string name="nc_settings_theme_title">佈景主題</string>
     <string name="nc_settings_typing_status_desc">分享我的打字狀態並顯示其他人的打字狀態</string>
+    <string name="nc_settings_typing_status_hpb_description">輸入狀態僅在使用高效能後端 (HPB) 時可用</string>
     <string name="nc_settings_typing_status_title">輸入狀態</string>
     <string name="nc_settings_use_credentials_title">代理伺服器需要憑證</string>
     <string name="nc_settings_warning">警告</string>
