@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/webinar_settings"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/webinar_settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="0dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/webinar_settings_category"
@@ -26,25 +17,23 @@
                 android:paddingBottom="@dimen/standard_half_padding"
                 android:text="@string/nc_webinar"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/webinar_settings_lobby"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:textStyle="bold"
+                android:textSize="@dimen/headline_text_size"/>
 
                 <LinearLayout
+                    android:id="@+id/webinar_settings_lobby"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/standard_margin"
-                    android:layout_marginEnd="@dimen/standard_margin"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/standard_margin"
+                    android:paddingEnd="@dimen/standard_margin"
+                    android:orientation="horizontal"
+                    android:background="?android:attr/selectableItemBackground">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_half_margin"
-                        android:layout_marginBottom="@dimen/standard_half_margin"
+                        android:paddingTop="@dimen/standard_half_margin"
+                        android:paddingBottom="@dimen/standard_half_margin"
                         android:layout_weight="1"
                         android:orientation="horizontal">
 
@@ -73,25 +62,22 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/standard_margin"
                         android:layout_marginEnd="1dp"
-                        android:checked="true" />
+                        android:checked="true"
+                        android:clickable="false" />
 
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/start_time_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
                 <LinearLayout
+                    android:id="@+id/start_time_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/standard_margin"
-                    android:layout_marginTop="@dimen/standard_half_margin"
-                    android:layout_marginEnd="@dimen/standard_margin"
-                    android:layout_marginBottom="@dimen/standard_half_margin"
+                    android:paddingStart="@dimen/standard_margin"
+                    android:paddingTop="@dimen/standard_half_margin"
+                    android:paddingEnd="@dimen/standard_margin"
+                    android:paddingBottom="@dimen/standard_half_margin"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:background="?android:attr/selectableItemBackground">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -126,11 +112,4 @@
                     </LinearLayout>
 
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
 </LinearLayout>

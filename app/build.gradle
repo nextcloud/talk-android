@@ -160,6 +160,7 @@ configurations.all {
 }
 
 dependencies {
+    implementation 'androidx.preference:preference-ktx:1.2.0'
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
 	
     implementation fileTree(include: ['*'], dir: 'libs')
@@ -236,7 +237,6 @@ dependencies {
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-    implementation 'com.yarolegovich:mp:1.1.6'
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'com.github.wooplr:Spotlight:1.3'

@@ -159,7 +159,7 @@ public class DatabaseStorageModule {
 
         } else if ("conversation_info_message_notifications_dropdown".equals(key)) {
             if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
-                if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(value)) {
+                if (TextUtils.isEmpty(messageNotificationLevel) || !messageNotificationLevel.equals(value)) {
                     int intValue;
                     switch (value) {
                         case "never":
@@ -191,10 +191,7 @@ public class DatabaseStorageModule {
                             }
 
                             @Override
-                            public void onNext(GenericOverall genericOverall) {
-                                Log.i(TAG, "onNext called");
-                                messageNotificationLevel = value;
-                            }
+                            public void onNext(GenericOverall genericOverall) {messageNotificationLevel = value;}
 
                             @Override
                             public void onError(Throwable e) {

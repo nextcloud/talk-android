@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/notification_settings"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/notification_settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="0dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/notification_settings_category"
@@ -26,21 +16,19 @@
                 android:paddingBottom="@dimen/standard_half_padding"
                 android:text="@string/nc_notification_settings"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/notification_settings_important_conversation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:textStyle="bold"
+                android:textSize="@dimen/headline_text_size"/>
 
                 <LinearLayout
+                    android:id="@+id/notification_settings_important_conversation"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/standard_margin"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/standard_margin"
                     android:layout_marginTop="@dimen/standard_half_margin"
-                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:paddingEnd="@dimen/standard_margin"
                     android:layout_marginBottom="@dimen/standard_half_margin"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:background="?android:attr/selectableItemBackground">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -67,10 +55,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/standard_margin" />
+                        android:layout_marginStart="@dimen/standard_margin"
+                        android:clickable="false" />
 
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/notification_settings_messages_input_layout"
@@ -81,8 +69,7 @@
                 android:layout_marginTop="@dimen/standard_half_margin"
                 android:layout_marginEnd="@dimen/standard_margin"
                 android:layout_marginBottom="@dimen/standard_half_margin"
-                android:hint="@string/nc_plain_old_messages"
-                app:boxStrokeWidth="1dp">
+                android:hint="@string/nc_plain_old_messages">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/conversation_info_message_notifications_dropdown"
@@ -92,23 +79,18 @@
                     android:lines="1"
                     android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
                     android:text="" />
-
-
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/notification_settings_call_notifications"
-                android:layout_width="match_parent"
-                android:layout_height="56dp">
-
                 <LinearLayout
+                    android:id="@+id/notification_settings_call_notifications"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingTop="@dimen/standard_half_padding"
                     android:paddingBottom="@dimen/standard_half_padding"
-                    android:layout_marginStart="@dimen/standard_margin"
-                    android:layout_marginEnd="@dimen/standard_margin">
+                    android:paddingStart="@dimen/standard_margin"
+                    android:paddingEnd="@dimen/standard_margin"
+                    android:background="?android:attr/selectableItemBackground">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="0dp"
@@ -122,15 +104,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/standard_margin"
-                        android:checked="true" />
-
+                        android:checked="true"
+                        android:clickable="false" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-
 </LinearLayout>

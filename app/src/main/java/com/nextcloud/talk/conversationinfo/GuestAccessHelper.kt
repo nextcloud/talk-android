@@ -1,13 +1,11 @@
 package com.nextcloud.talk.conversationinfo
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.SwitchCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
@@ -34,15 +32,6 @@ class GuestAccessHelper(
     private val context = activity.context
 
     fun setupGuestAccess() {
-        val guestAccessAllowSwitch = (
-            binding.guestAccessView.allowGuestsSwitch
-                as SwitchCompat
-            )
-        val guestAccessPasswordSwitch = (
-            binding.guestAccessView.passwordProtectionSwitch
-                as SwitchCompat
-            )
-
         if (conversation.canModerate(conversationUser)) {
             binding.guestAccessView.guestAccessSettings.visibility = View.VISIBLE
         } else {
@@ -50,29 +39,34 @@ class GuestAccessHelper(
         }
 
         if (conversation.type == Conversation.ConversationType.ROOM_PUBLIC_CALL) {
-            guestAccessAllowSwitch.isChecked = true
+            binding.guestAccessView.allowGuestsSwitch.isChecked = true
             showAllOptions()
             if (conversation.hasPassword) {
-                guestAccessPasswordSwitch.isChecked = true
+                binding.guestAccessView.passwordProtectionSwitch.isChecked = true
             }
         } else {
-            guestAccessAllowSwitch.isChecked = false
+            binding.guestAccessView.allowGuestsSwitch.isChecked = false
+            hideAllOptions()
         }
 
-        binding.guestAccessView.allowGuestsSwitch.setOnClickListener {
+        binding.guestAccessView.guestAccessSettingsAllowGuest.setOnClickListener {
+            val isChecked = binding.guestAccessView.allowGuestsSwitch.isChecked
+            binding.guestAccessView.allowGuestsSwitch.isChecked = !isChecked
             conversationsRepository.allowGuests(
                 conversation.token!!,
-                !guestAccessAllowSwitch.isChecked
+                !isChecked
             ).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(AllowGuestsResultObserver())
         }
 
-        binding.guestAccessView.passwordProtectionSwitch.setOnClickListener {
-            if (guestAccessPasswordSwitch.isChecked) {
+        binding.guestAccessView.guestAccessSettingsPasswordProtection.setOnClickListener {
+            val isChecked = binding.guestAccessView.passwordProtectionSwitch.isChecked
+            binding.guestAccessView.passwordProtectionSwitch.isChecked = !isChecked
+            if (isChecked) {
                 conversationsRepository.password("", conversation.token!!).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(PasswordResultObserver(false))
             } else {
-                showPasswordDialog(guestAccessPasswordSwitch)
+                showPasswordDialog()
             }
         }
 
@@ -86,8 +80,7 @@ class GuestAccessHelper(
         }
     }
 
-    @SuppressLint("InflateParams")
-    private fun showPasswordDialog(guestAccessPasswordSwitch: SwitchCompat) {
+    private fun showPasswordDialog() {
         val builder = MaterialAlertDialogBuilder(activity)
         builder.apply {
             val dialogPassword = DialogPasswordBinding.inflate(LayoutInflater.from(context))
@@ -102,7 +95,7 @@ class GuestAccessHelper(
                     .subscribe(PasswordResultObserver(true))
             }
             setNegativeButton(R.string.nc_cancel) { _, _ ->
-                guestAccessPasswordSwitch.isChecked = false
+                binding.guestAccessView.passwordProtectionSwitch.isChecked = false
             }
         }
         createDialog(builder)
@@ -179,10 +172,7 @@ class GuestAccessHelper(
         }
 
         override fun onComplete() {
-            (
-                binding.guestAccessView.allowGuestsSwitch
-                    as SwitchCompat
-                ).isChecked = allowGuestsResult.allow
+            binding.guestAccessView.allowGuestsSwitch.isChecked = allowGuestsResult.allow
             if (allowGuestsResult.allow) {
                 showAllOptions()
             } else {
@@ -225,12 +215,7 @@ class GuestAccessHelper(
         }
 
         override fun onComplete() {
-            val guestAccessPasswordSwitch = (
-                binding.guestAccessView.passwordProtectionSwitch
-                    as SwitchCompat
-                )
-            guestAccessPasswordSwitch.isChecked = passwordResult.passwordSet && setPassword
-
+            binding.guestAccessView.passwordProtectionSwitch.isChecked = passwordResult.passwordSet && setPassword
             if (passwordResult.passwordIsWeak) {
                 val builder = MaterialAlertDialogBuilder(activity)
                 builder.apply {

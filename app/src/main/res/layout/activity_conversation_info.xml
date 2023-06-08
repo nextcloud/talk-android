@@ -75,18 +75,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/conversation_info_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_quarter_margin"
-                android:animateLayoutChanges="true"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <RelativeLayout
+            <RelativeLayout
+                    android:id="@+id/conversation_info_name"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin"
+                    android:animateLayoutChanges="true"
+                    android:visibility="gone"
+                    tools:visibility="visible"
                     android:layout_marginStart="@dimen/standard_margin"
                     android:layout_marginEnd="@dimen/standard_margin">
 
@@ -111,9 +107,7 @@
 
                 </RelativeLayout>
 
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:id="@+id/conversation_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -126,35 +120,24 @@
                     android:id="@+id/description_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/standard_half_margin"
                     android:layout_marginBottom="@dimen/standard_half_margin"
                     android:layout_marginStart="@dimen/standard_margin"
                     android:layout_marginEnd="@dimen/standard_margin"
                     android:autoLink="web"
                     tools:text="Hello world!" />
-            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/add_to_favorites_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_quarter_margin">
-
-                <LinearLayout
+            <LinearLayout
+                    android:id="@+id/add_to_favorites_button"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin"
                     android:orientation="horizontal"
                     android:padding="@dimen/standard_half_padding"
                     android:visibility="gone"
                     tools:visibility="gone">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
 
                         <com.google.android.material.button.MaterialButton
                             android:layout_width="wrap_content"
@@ -173,9 +156,7 @@
                             android:textSize="@dimen/two_line_primary_text_size" />
 
 
-                    </LinearLayout>
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
                 android:id="@+id/settings"
@@ -206,47 +187,37 @@
 
             </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/category_shared_items"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_quarter_margin"
-                android:elevation="0dp">
-
-                <LinearLayout
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin"
                     android:orientation="vertical"
                     >
 
                     <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/category_shared_items"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/nc_shared_items"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/md_title_textsize"
+                        android:textSize="@dimen/headline_text_size"
                         android:textStyle="bold"
                         android:padding="@dimen/standard_padding"/>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/shared_items_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
+                    <LinearLayout
+                            android:id="@+id/shared_items_button"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:padding="@dimen/standard_half_padding">
+                            android:padding="@dimen/standard_padding"
+                            android:background="?android:attr/selectableItemBackground">
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@color/transparent"
-                                    app:icon="@drawable/ic_folder_multiple_image"
-                                    app:iconGravity="textStart"
-                                    app:iconSize="@dimen/sm_icon_height"
-                                    app:iconTint="@color/grey_600" />
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="@dimen/standard_margin"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_folder_multiple_image"
+                            app:tint="@color/grey_600" />
 
                                 <com.google.android.material.textview.MaterialTextView
                                     android:layout_width="wrap_content"
@@ -256,31 +227,22 @@
                                     android:textSize="@dimen/two_line_primary_text_size" />
 
                         </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/conversation_settings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_quarter_margin"
-                android:elevation="0dp">
-
-                <LinearLayout
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin"
                     android:orientation="vertical"
                     >
 
                     <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/conversation_settings"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/nc_conversation_settings"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/md_title_textsize"
+                        android:textSize="@dimen/headline_text_size"
                         android:textStyle="bold"
                         android:padding="@dimen/standard_padding"/>
 
@@ -290,9 +252,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/standard_half_margin"
-                        android:layout_marginHorizontal="@dimen/standard_half_margin"
-                        android:hint="@string/nc_expire_messages"
-                        app:boxStrokeWidth="@dimen/zero">
+                        android:layout_marginHorizontal="@dimen/standard_margin"
+                        android:hint="@string/nc_expire_messages">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/conversation_settings_dropdown"
@@ -312,56 +273,46 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/standard_margin"
                         android:text="@string/nc_expire_messages_explanation"
-                        android:textColor="@color/disabled_text" />
-
-
+                        android:textColor="@color/disabled_text"
+                        android:textSize="@dimen/supporting_text_text_size"/>
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/participants_list_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_quarter_margin"
-                android:visibility="gone"
-                tools:ignore="UnknownIdInLayout"
-                tools:visibility="visible">
-
-                <LinearLayout
+            <LinearLayout
+                    android:id="@+id/participants"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin"
+                    android:visibility="gone"
+                    tools:ignore="UnknownIdInLayout"
+                    tools:visibility="visible"
                     android:orientation="vertical">
 
                     <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/participants_list_category"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/standard_padding"
                         android:text="@string/nc_participants"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/md_title_textsize"
+                        android:textSize="@dimen/headline_text_size"
                         android:textStyle="bold" />
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/addParticipantsAction"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_quarter_margin">
-
-                        <LinearLayout
+                    <LinearLayout
+                            android:id="@+id/addParticipantsAction"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/standard_quarter_margin"
                             android:orientation="horizontal"
-                            android:padding="@dimen/standard_half_padding">
+                            android:padding="@dimen/standard_padding"
+                            android:background="?android:attr/selectableItemBackground">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@color/transparent"
-                                app:icon="@drawable/ic_account_plus"
-                                app:iconGravity="textStart"
-                                app:iconSize="@dimen/sm_icon_height"
-                                app:iconTint="@color/grey_600" />
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="@dimen/standard_margin"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_account_plus"
+                            app:tint="@color/grey_600" />
 
 
                             <com.google.android.material.textview.MaterialTextView
@@ -372,28 +323,19 @@
                                 android:textSize="@dimen/two_line_primary_text_size" />
 
                         </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/standard_half_padding"
                         tools:listitem="@layout/rv_item_conversation_info_participant" />
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/danger_zone_options"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_quarter_margin"
-                android:elevation="0dp">
-
-                <LinearLayout
+            <LinearLayout
+                    android:id="@+id/danger_zone_options"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin"
                     android:orientation="vertical"
                     >
 
@@ -402,140 +344,93 @@
                         android:layout_height="wrap_content"
                         android:text="@string/danger_zone"
                         android:textColor="@color/design_default_color_error"
-                        android:textSize="@dimen/md_title_textsize"
+                        android:textSize="@dimen/headline_text_size"
                         android:textStyle="bold"
                         android:padding="@dimen/standard_padding"/>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/leaveConversationAction"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_quarter_margin">
-
-                        <LinearLayout
+                    <LinearLayout
+                            android:id="@+id/leaveConversationAction"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/standard_quarter_margin"
                             android:orientation="horizontal"
-                            android:padding="@dimen/standard_half_padding">
+                            android:padding="@dimen/standard_padding"
+                            android:background="?android:attr/selectableItemBackground">
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="@dimen/standard_margin"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_exit_to_app_black_24dp"
+                            app:tint="@color/design_default_color_error" />
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@color/transparent"
-                                    app:icon="@drawable/ic_exit_to_app_black_24dp"
-                                    app:iconGravity="textStart"
-                                    app:iconSize="@dimen/sm_icon_height"
-                                    app:iconTint="@color/design_default_color_error" />
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/nc_leave"
-                                    android:textColor="@color/design_default_color_error"
-                                    android:textSize="@dimen/two_line_primary_text_size" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="@string/nc_leave"
+                            android:textColor="@color/design_default_color_error"
+                            android:textSize="@dimen/two_line_primary_text_size" />
 
 
-                            </LinearLayout>
 
 
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/clearConversationHistory"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_quarter_margin">
-
-                        <LinearLayout
+                    <LinearLayout
+                            android:id="@+id/clearConversationHistory"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/standard_quarter_margin"
                             android:orientation="horizontal"
-                            android:padding="@dimen/standard_half_padding">
+                            android:padding="@dimen/standard_padding"
+                            android:background="?android:attr/selectableItemBackground">
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="@dimen/standard_margin"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_delete_black_24dp"
+                            app:tint="@color/design_default_color_error" />
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@color/transparent"
-                                    app:icon="@drawable/ic_delete_black_24dp"
-                                    app:iconGravity="textStart"
-                                    app:iconSize="@dimen/sm_icon_height"
-                                    app:iconTint="@color/design_default_color_error" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="@string/nc_clear_history"
+                            android:textColor="@color/design_default_color_error"
+                            android:textSize="@dimen/two_line_primary_text_size" />
+                    </LinearLayout>
 
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/nc_clear_history"
-                                    android:textColor="@color/design_default_color_error"
-                                    android:textSize="@dimen/two_line_primary_text_size" />
-
-
-                            </LinearLayout>
-
-
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/deleteConversationAction"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_quarter_margin">
-
-                        <LinearLayout
+                    <LinearLayout
+                            android:id="@+id/deleteConversationAction"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/standard_quarter_margin"
                             android:orientation="horizontal"
-                            android:padding="@dimen/standard_half_padding">
+                            android:padding="@dimen/standard_padding"
+                            android:background="?android:attr/selectableItemBackground">
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="@dimen/standard_margin"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_delete_black_24dp"
+                            app:tint="@color/design_default_color_error" />
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@color/transparent"
-                                    app:icon="@drawable/ic_delete_black_24dp"
-                                    app:iconGravity="textStart"
-                                    app:iconSize="@dimen/sm_icon_height"
-                                    app:iconTint="@color/design_default_color_error" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="@string/nc_delete_call"
+                            android:textColor="@color/design_default_color_error"
+                            android:textSize="@dimen/two_line_primary_text_size" />
 
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/nc_delete_call"
-                                    android:textColor="@color/design_default_color_error"
-                                    android:textSize="@dimen/two_line_primary_text_size" />
-
-
-                            </LinearLayout>
-
-
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
+                    </LinearLayout>
                 </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
