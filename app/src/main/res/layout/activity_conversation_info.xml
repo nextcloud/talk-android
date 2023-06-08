@@ -86,7 +86,9 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/standard_margin"
+                    android:layout_marginEnd="@dimen/standard_margin">
 
                     <ImageView
                         android:id="@+id/avatar_image"
@@ -104,6 +106,7 @@
                         android:layout_below="@id/avatar_image"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/margin_between_elements"
+                        android:textSize="@dimen/headline_text_size"
                         tools:text="Jane Doe" />
 
                 </RelativeLayout>
@@ -124,9 +127,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_margin="@dimen/standard_half_margin"
+                    android:layout_marginTop="@dimen/standard_half_margin"
+                    android:layout_marginBottom="@dimen/standard_half_margin"
+                    android:layout_marginStart="@dimen/standard_margin"
+                    android:layout_marginEnd="@dimen/standard_margin"
                     android:autoLink="web"
-                    android:padding="@dimen/standard_half_padding"
                     tools:text="Hello world!" />
             </com.google.android.material.card.MaterialCardView>
 
@@ -223,7 +228,6 @@
                         android:textStyle="bold"
                         android:padding="@dimen/standard_padding"/>
 
-
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/shared_items_button"
                         android:layout_width="match_parent"
@@ -253,7 +257,6 @@
 
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
-
 
                 </LinearLayout>
 

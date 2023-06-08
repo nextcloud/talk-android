@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/webinar_settings"
@@ -12,54 +12,56 @@
         android:elevation="0dp">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
+            android:orientation="vertical">
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/webinar_settings_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:paddingTop="@dimen/standard_padding"
+                android:paddingBottom="@dimen/standard_half_padding"
                 android:text="@string/nc_webinar"
-                android:textSize="@dimen/md_title_textsize"
                 android:textColor="@color/colorPrimary"
-                android:textStyle="bold"
-                android:padding="@dimen/standard_padding"/>
+                android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/webinar_settings_lobby"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_quarter_margin"
-                >
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/standard_half_padding">
+                    android:layout_marginStart="@dimen/standard_margin"
+                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_weight="1">
+                        android:layout_marginTop="@dimen/standard_half_margin"
+                        android:layout_marginBottom="@dimen/standard_half_margin"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@color/transparent"
-                            app:iconTint="@color/grey_600"
-                            app:iconSize="@dimen/sm_icon_height"
-                            app:icon="@drawable/ic_room_service_black_24dp"
-                            app:iconGravity="textStart"/>
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="@dimen/standard_margin"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_room_service_black_24dp"
+                            app:tint="@color/grey_600" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:gravity="center_vertical"
                             android:text="@string/nc_lobby"
-                            android:textSize="@dimen/two_line_primary_text_size"
-                            android:gravity="center_vertical"/>
+                            android:textSize="@dimen/headline_text_size" />
 
 
                     </LinearLayout>
@@ -67,10 +69,11 @@
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/lobby_switch"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
-                        android:checked="true"
-                        />
+                        android:layout_marginStart="@dimen/standard_margin"
+                        android:layout_marginEnd="1dp"
+                        android:checked="true" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -78,53 +81,52 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/start_time_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_quarter_margin"
-                >
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/standard_half_padding">
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/standard_margin"
+                    android:layout_marginTop="@dimen/standard_half_margin"
+                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:layout_marginBottom="@dimen/standard_half_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/transparent"
-                        app:iconTint="@color/grey_600"
-                        app:iconSize="@dimen/sm_icon_height"
-                        app:icon="@drawable/ic_timer_black_24dp"
-                        app:iconGravity="textStart"/>
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="56dp"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_timer_black_24dp"
+                        app:tint="@color/grey_600" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="start"
                             android:text="@string/nc_start_time"
-                            android:textSize="@dimen/two_line_primary_text_size"
-                            android:layout_gravity="start"/>
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/start_time_button_summary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="start"
                             android:hint="@string/nc_manual"
-                            android:textSize="@dimen/two_line_primary_text_size"
-                            android:layout_gravity="start"/>
+                            android:textSize="@dimen/supporting_text_text_size" />
 
 
                     </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-
 
 
         </LinearLayout>
