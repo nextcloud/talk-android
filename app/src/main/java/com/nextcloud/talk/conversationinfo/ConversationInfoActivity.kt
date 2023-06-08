@@ -281,6 +281,13 @@ class ConversationInfoActivity :
                 binding.notificationSettingsView.notificationSettingsCallNotifications
             ).forEach(viewThemeUtils.talk::ConversationInfoCardView)
         }
+        binding.run {
+            listOf(
+                binding.notificationSettingsView.notificationSettingsCategory,
+                binding.webinarInfoView.webinarSettingsCategory,
+                binding.guestAccessView.guestAccessSettingsCategory
+            )
+        }.forEach(viewThemeUtils.platform::colorTextView)
     }
 
     private fun showSharedItems() {
