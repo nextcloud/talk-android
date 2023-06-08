@@ -340,6 +340,8 @@
     <string name="nc_settings_theme_light">Clair</string>
     <string name="nc_settings_theme_title">Thème</string>
     <string name="nc_settings_typing_status_desc">Partager mon statut de saisie et montrer le statut de saisie des autres</string>
+    <string name="nc_settings_typing_status_hpb_description">L\'état de saisie n\'est disponible que lors de l\'utilisation d\'un backend haute performance (HPB).</string>
+    <string name="nc_settings_typing_status_title">État de saisie</string>
     <string name="nc_settings_use_credentials_title">Le proxy requiert les informations d\'identification</string>
     <string name="nc_settings_warning">Attention</string>
     <string name="nc_settings_wrong_account">Seul le compte courant peut être ré-autorisé</string>
@@ -473,6 +475,10 @@
     <string name="translation_error_title">Échec de la traduction</string>
     <string name="translation_from">De</string>
     <string name="translation_to">À</string>
+    <string name="typing_1_other">et 1 autre sont en train de taper…</string>
+    <string name="typing_are_typing">sont en train de taper...</string>
+    <string name="typing_is_typing">est en train de taper...</string>
+    <string name="typing_x_others">et %1$s autres sont en train de taper…</string>
     <string name="upload_new_avatar_from_device">Téléverser un nouvel avatar depuis l\'appareil</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Nom complet</string>

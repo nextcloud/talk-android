@@ -71,8 +71,9 @@
     <string name="nc_conversation_menu_conversation_info">اطلاعات مکالمه</string>
     <string name="nc_conversation_menu_video_call">تماس تصویری</string>
     <string name="nc_conversation_menu_voice_call">تماس صوتی</string>
+    <string name="nc_conversation_settings">تنظیمات گفتگو</string>
     <string name="nc_conversations_empty">عضو یک گفتگو شوید یا یک گفتگو جدید شروع کنید</string>
-    <string name="nc_conversations_empty_details">به رفقا و همدرس‌هایتان سلام کنید!</string>
+    <string name="nc_conversations_empty_details">به رفقا و هم‌قطاران‌تان سلام کنید!</string>
     <string name="nc_copy_message">کپی کردن</string>
     <string name="nc_date_header_today">امروز</string>
     <string name="nc_date_header_yesterday">دیروز</string>

@@ -457,6 +457,7 @@
     <string name="translate">Traducció</string>
     <string name="translation_detect_language">Detectar idioma</string>
     <string name="translation_device_settings">Paràmetres del dispositiu</string>
+    <string name="translation_error_message">No s\'ha pogut detectar la llengua</string>
     <string name="translation_error_title">La traducció ha fallat</string>
     <string name="translation_from">De</string>
     <string name="translation_to">A</string>
