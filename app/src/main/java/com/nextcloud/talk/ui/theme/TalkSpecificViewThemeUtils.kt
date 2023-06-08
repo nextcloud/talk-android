@@ -49,7 +49,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.vanniktech.emoji.EmojiTextView
-import com.yarolegovich.mp.MaterialPreferenceCategory
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -139,17 +138,9 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    fun colorPreferenceCategory(category: MaterialPreferenceCategory) {
-        withScheme(category) { scheme ->
-            category.setTitleColor(scheme.primary)
-        }
-    }
-
     fun colorSwitch(preference: MaterialSwitch) {
         val switch = preference as SwitchCompat
-        if (switch != null) {
-            appcompat.colorSwitchCompat(switch)
-        }
+        appcompat.colorSwitchCompat(switch)
     }
 
     fun setCheckedBackground(emoji: EmojiTextView) {
@@ -252,35 +243,6 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    fun ConversationInfoCardView(cardView: MaterialCardView) {
-        withScheme(cardView) { scheme ->
-            val background = cardView.context.getColor(R.color.bg_default)
-            cardView.backgroundTintList =
-                ColorStateList(
-                    arrayOf(
-                        intArrayOf(android.R.attr.state_checked),
-                        intArrayOf(-android.R.attr.state_checked)
-                    ),
-                    intArrayOf(
-                        scheme.primary,
-                        background
-                    )
-                )
-            cardView.setStrokeColor(
-                ColorStateList(
-                    arrayOf(
-                        intArrayOf(android.R.attr.state_checked),
-                        intArrayOf(-android.R.attr.state_checked)
-                    ),
-                    intArrayOf(
-                        scheme.primary,
-                        background
-                    )
-                )
-            )
-        }
-    }
-
     companion object {
         private val THEMEABLE_PLACEHOLDER_IDS = listOf(
             R.drawable.ic_mimetype_package_x_generic,
@@ -290,6 +252,5 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
 
         private const val HALF_ALPHA_INT: Int = 255 / 2
-        private const val SEARCH_TEXT_SIZE: Float = 16f
     }
 }

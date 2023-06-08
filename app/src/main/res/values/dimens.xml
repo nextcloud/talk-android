@@ -91,5 +91,6 @@
 
     <dimen name="fab_small">40dp</dimen>
     <dimen name="sm_icon_height">30dp</dimen>
+    <dimen name="side_margin">16dp</dimen>
 
 </resources>

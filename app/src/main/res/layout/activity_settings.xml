@@ -1,40 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Nextcloud Talk application
-  ~
-  ~ @author Mario Danic
-  ~ @author Andy Scherzinger
-  ~ @author Tim Krüger
-  ~ Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
-  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
-  ~ Copyright (C) 2017 Mario Danic
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:apc="http://schemas.android.com/apk/res-auto"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:background="@color/white"
-    android:id="@+id/settings_screen"
+    android:id="@+id/parent_container"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/settings_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/settings_toolbar"
             android:layout_width="match_parent"
@@ -48,58 +26,70 @@
             tools:title="@string/nc_app_product_name" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.yarolegovich.mp.MaterialPreferenceCategory
-        android:id="@+id/message_view"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        apc:cardBackgroundColor="@color/bg_default"
-        apc:cardElevation="0dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/message_text"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:text="This is a test message"
-            android:gravity="center" />
-    </com.yarolegovich.mp.MaterialPreferenceCategory>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <com.yarolegovich.mp.MaterialPreferenceCategory
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        apc:cardBackgroundColor="@color/bg_default"
-        apc:cardElevation="0dp">
-
-        <RelativeLayout
-            android:id="@+id/avatarContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.emoji2.widget.EmojiTextView
-                android:id="@+id/display_name_text"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/message_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/avatar_image"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/margin_between_elements"
-                tools:text="Jane Doe" />
+                android:gravity="center"
+                android:text="@string/this_is_a_test_message"/>
 
-            <TextView
-                android:id="@+id/base_url_text"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/settings_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/display_name_text"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="4dp"
-                android:textColor="@color/medium_emphasis_text"
-                tools:text="nextcloud.com" />
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:animateLayoutChanges="true"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:background="?android:attr/selectableItemBackground">
+
+                <ImageView
+                    android:id="@+id/avatar_image"
+                    android:layout_width="@dimen/avatar_size_big"
+                    android:layout_height="@dimen/avatar_size_big"
+                    android:layout_marginTop="@dimen/standard_margin"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@string/avatar"
+                    tools:src="@drawable/account_circle_48dp" />
+
+                <androidx.emoji2.widget.EmojiTextView
+                    android:id="@+id/name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/avatar_image"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/margin_between_elements"
+                    android:textSize="@dimen/headline_text_size"
+                    tools:text="Jane Doe" />
+
+                <androidx.emoji2.widget.EmojiTextView
+                    android:id="@+id/domain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/name_text"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/margin_between_elements"
+                    android:textSize="@dimen/headline_text_size"
+                    tools:text="nextcloud.com" />
+
+            </RelativeLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/server_age_warning_text_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/base_url_text"
                 android:layout_margin="@dimen/standard_margin"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="2dp"
@@ -132,262 +122,641 @@
                         tools:text="@string/nc_settings_server_almost_eol" />
 
                 </RelativeLayout>
-
             </com.google.android.material.card.MaterialCardView>
 
-            <ImageView
-                android:id="@+id/avatar_image"
-                android:layout_width="@dimen/avatar_size_big"
-                android:layout_height="@dimen/avatar_size_big"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/account_circle_96dp"
-                android:transitionName="userAvatar.transitionTag"
-                android:contentDescription="@string/avatar" />
-
-            <com.yarolegovich.mp.MaterialStandardPreference
+            <LinearLayout
                 android:id="@+id/settings_remove_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/server_age_warning_text_card"
-                apc:mp_title="@string/nc_settings_remove_account" />
+                android:orientation="horizontal"
+                android:background="?android:attr/selectableItemBackground">
 
-        </RelativeLayout>
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    android:text="@string/nc_settings_remove_account"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textColor="@color/design_default_color_error"/>
 
-    </com.yarolegovich.mp.MaterialPreferenceCategory>
+            </LinearLayout>
 
-    <com.yarolegovich.mp.MaterialPreferenceCategory
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/settings_appearance_category"
-        android:animateLayoutChanges="true"
-        apc:cardBackgroundColor="@color/bg_default"
-        apc:cardElevation="0dp"
-        apc:mpc_title="@string/nc_settings_appearance">
+            <LinearLayout
+                android:id="@+id/settings_appearance_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <com.yarolegovich.mp.MaterialChoicePreference
-            android:id="@+id/settings_theme"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_default_value="@string/nc_default_theme"
-            apc:mp_entry_descriptions="@array/theme_descriptions"
-            apc:mp_entry_values="@array/theme_entry_values"
-            apc:mp_key="@string/nc_settings_theme_key"
-            apc:mp_show_value="onBottom"
-            apc:mp_title="@string/nc_settings_theme_title" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/settings_appearance_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    android:text="@string/nc_settings_appearance"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textStyle="bold"/>
 
-    </com.yarolegovich.mp.MaterialPreferenceCategory>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/theme_settings_input_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_half_margin"
+                    android:layout_marginHorizontal="@dimen/standard_margin"
+                    android:hint="@string/nc_settings_theme_title">
 
-    <com.yarolegovich.mp.MaterialPreferenceCategory
-        android:id="@+id/settings_notifications_category"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        apc:cardBackgroundColor="@color/bg_default"
-        apc:cardElevation="0dp"
-        apc:mpc_title="@string/nc_settings_notification_sounds">
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/settings_theme"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:lines="1"
+                        android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
+                        android:text=""
+                        tools:ignore="SpeakableTextPresentCheck" />
 
-        <com.yarolegovich.mp.MaterialStandardPreference
-            android:id="@+id/settings_call_sound"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_key="@string/nc_settings_call_ringtone_key"
-            apc:mp_title="@string/nc_settings_call_ringtone" />
 
-        <com.yarolegovich.mp.MaterialStandardPreference
-            android:id="@+id/settings_message_sound"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_key="@string/nc_settings_message_ringtone_key"
-            apc:mp_title="@string/nc_settings_other_notifications_ringtone" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-    </com.yarolegovich.mp.MaterialPreferenceCategory>
+            </LinearLayout>
 
-    <com.yarolegovich.mp.MaterialPreferenceCategory
-        android:id="@+id/settings_privacy_category"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        apc:cardBackgroundColor="@color/bg_default"
-        apc:cardElevation="0dp"
-        apc:mpc_title="@string/nc_settings_privacy">
+            <LinearLayout
+                android:id="@+id/settings_notifications_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/settings_screen_lock"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_default_value="@bool/value_false"
-            apc:mp_key="@string/nc_settings_screen_lock_key"
-            apc:mp_title="@string/nc_settings_screen_lock_title" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/settings_notifications_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    android:text="@string/nc_settings_notification_sounds"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textStyle="bold"/>
 
-        <com.yarolegovich.mp.MaterialChoicePreference
-            android:id="@+id/settings_screen_lock_timeout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_default_value="@string/nc_screen_lock_timeout_sixty"
-            apc:mp_entry_descriptions="@array/screen_lock_timeout_descriptions"
-            apc:mp_entry_values="@array/screen_lock_timeout_entry_values"
-            apc:mp_key="@string/nc_settings_screen_lock_timeout_key"
-            apc:mp_show_value="onBottom"
-            apc:mp_title="@string/nc_settings_screen_lock_timeout_title" />
+                <LinearLayout
+                    android:id="@+id/settings_call_sound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-        <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/settings_screen_security"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_default_value="@bool/value_false"
-            apc:mp_key="@string/nc_settings_screen_security_key"
-            apc:mp_summary="@string/nc_settings_screen_security_desc"
-            apc:mp_title="@string/nc_settings_screen_security_title" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_margin"
+                        android:text="@string/nc_settings_call_ringtone"
+                        android:textSize="@dimen/headline_text_size"/>
 
-        <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/settings_incognito_keyboard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_default_value="@bool/value_true"
-            apc:mp_key="@string/nc_settings_incognito_keyboard_key"
-            apc:mp_summary="@string/nc_settings_incognito_keyboard_desc"
-            apc:mp_title="@string/nc_settings_incognito_keyboard_title" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/calls_ringtone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/standard_margin"
+                        android:layout_marginBottom="@dimen/standard_margin"
+                        android:text="@string/nc_settings_default_ringtone"
+                        android:textSize="@dimen/supporting_text_text_size"/>
+                </LinearLayout>
 
-        <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/settings_phone_book_integration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_default_value="@bool/value_false"
-            apc:mp_key="@string/nc_settings_phone_book_integration_key"
-            apc:mp_summary="@string/nc_settings_phone_book_integration_desc"
-            apc:mp_title="@string/nc_settings_phone_book_integration_title" />
+                <LinearLayout
+                    android:id="@+id/settings_message_sound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="?android:attr/selectableItemBackground">
 
-        <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/settings_read_privacy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_key="@string/nc_settings_read_privacy_key"
-            apc:mp_summary="@string/nc_settings_read_privacy_desc"
-            apc:mp_title="@string/nc_settings_read_privacy_title" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_margin"
+                        android:text="@string/nc_settings_other_notifications_ringtone"
+                        android:textSize="@dimen/headline_text_size"/>
 
-        <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/settings_typing_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_key="@string/nc_settings_read_privacy_key"
-            apc:mp_summary="@string/nc_settings_typing_status_desc"
-            apc:mp_title="@string/nc_settings_typing_status_title" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/messages_ringtone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/standard_margin"
+                        android:layout_marginBottom="@dimen/standard_margin"
+                        android:text="@string/nc_settings_default_ringtone"
+                        android:textSize="@dimen/supporting_text_text_size"/>
 
-        <TextView
-            android:id="@+id/settings_typing_status_only_with_hpb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/standard_margin"
-            android:layout_marginEnd="@dimen/standard_margin"
-            android:textColor="@color/disabled_text"
-            android:text="@string/nc_settings_typing_status_hpb_description">
-        </TextView>
-    </com.yarolegovich.mp.MaterialPreferenceCategory>
+                </LinearLayout>
+            </LinearLayout>
 
-    <com.yarolegovich.mp.MaterialPreferenceCategory
-        android:id="@+id/settings_advanced_category"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        apc:cardBackgroundColor="@color/bg_default"
-        apc:cardElevation="0dp"
-        apc:mpc_title="@string/nc_settings_advanced_title">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <com.yarolegovich.mp.MaterialStandardPreference
-            android:id="@+id/settings_client_cert"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_title="@string/nc_client_cert_setup" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/settings_privacy_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    android:text="@string/nc_settings_privacy"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textStyle="bold"/>
 
-        <com.yarolegovich.mp.MaterialChoicePreference
-            android:id="@+id/settings_proxy_choice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_default_value="@string/nc_no_proxy"
-            apc:mp_entry_descriptions="@array/proxy_type_descriptions"
-            apc:mp_key="@string/nc_settings_proxy_type_key"
-            apc:mp_show_value="onBottom"
-            apc:mp_title="@string/nc_settings_proxy_type_title" />
+                <LinearLayout
+                    android:id="@+id/settings_screen_lock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding"
+                    android:background="?android:attr/selectableItemBackground">
 
-        <com.yarolegovich.mp.MaterialEditTextPreference
-            android:id="@+id/settings_proxy_host_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_key="@string/nc_settings_proxy_host_key"
-            apc:mp_show_value="onBottom"
-            apc:mp_title="@string/nc_settings_proxy_host_title" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-        <com.yarolegovich.mp.MaterialEditTextPreference
-            android:id="@+id/settings_proxy_port_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_key="@string/nc_settings_proxy_port_key"
-            apc:mp_show_value="onBottom"
-            apc:mp_title="@string/nc_settings_proxy_port_title" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/headline_text_size"
+                            android:text="@string/nc_settings_screen_lock_title"/>
 
-        <com.yarolegovich.mp.MaterialEditTextPreference
-            android:id="@+id/settings_proxy_username_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_key="@string/nc_settings_proxy_username_key"
-            apc:mp_show_value="onBottom"
-            apc:mp_title="@string/nc_settings_proxy_username_title" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/settings_screen_lock_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_settings_screen_lock_desc"/>
+                    </LinearLayout>
 
-        <com.yarolegovich.mp.MaterialEditTextPreference
-            android:id="@+id/settings_proxy_password_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_key="@string/nc_settings_proxy_password_key"
-            apc:mp_show_value="onBottom"
-            apc:mp_title="@string/nc_settings_proxy_password_title" />
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/settings_screen_lock_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:clickable="false"/>
+                </LinearLayout>
 
-        <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/settings_proxy_use_credentials"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_default_value="false"
-            apc:mp_key="@string/nc_settings_use_credentials_key"
-            apc:mp_show_value="onBottom"
-            apc:mp_title="@string/nc_settings_use_credentials_title">
+                <LinearLayout
+                    android:id="@+id/settings_screen_lock_timeout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-        </com.yarolegovich.mp.MaterialSwitchPreference>
-    </com.yarolegovich.mp.MaterialPreferenceCategory>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/settings_screen_lock_timeout_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standard_half_margin"
+                        android:layout_marginHorizontal="@dimen/standard_margin"
+                        android:hint="@string/nc_settings_screen_lock_timeout_title">
 
-    <com.yarolegovich.mp.MaterialPreferenceCategory
-        android:id="@+id/settings_about_category"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        apc:cardBackgroundColor="@color/bg_default"
-        apc:cardElevation="0dp"
-        apc:mpc_title="@string/nc_about">
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/settings_screen_lock_timeout_layout_dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:lines="1"
+                            android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
+                            android:text="" />
 
-        <com.yarolegovich.mp.MaterialStandardPreference
-            android:id="@+id/settings_privacy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_title="@string/nc_privacy" />
 
-        <com.yarolegovich.mp.MaterialStandardPreference
-            android:id="@+id/settings_source_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_title="@string/nc_get_source_code" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-        <com.yarolegovich.mp.MaterialStandardPreference
-            android:id="@+id/settings_licence"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_summary="@string/nc_license_summary"
-            apc:mp_title="@string/nc_license_title" />
+                </LinearLayout>
 
-        <com.yarolegovich.mp.MaterialStandardPreference
-            android:id="@+id/settings_version"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_summary="v0.1"
-            apc:mp_title="@string/nc_app_product_name" />
+                <LinearLayout
+                    android:id="@+id/settings_screen_security"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding"
+                    android:background="?android:attr/selectableItemBackground">
 
-    </com.yarolegovich.mp.MaterialPreferenceCategory>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-</com.yarolegovich.mp.MaterialPreferenceScreen>
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/headline_text_size"
+                            android:text="@string/nc_settings_screen_security_title"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_settings_screen_security_desc"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/settings_screen_security_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:clickable="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_incognito_keyboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/headline_text_size"
+                            android:text="@string/nc_settings_incognito_keyboard_title"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_settings_incognito_keyboard_desc"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/settings_incognito_keyboard_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:clickable="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_phone_book_integration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/headline_text_size"
+                            android:text="@string/nc_settings_phone_book_integration_title"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_settings_phone_book_integration_desc"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/settings_phone_book_integration_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:clickable="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_read_privacy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/headline_text_size"
+                            android:text="@string/nc_settings_read_privacy_title"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_settings_read_privacy_desc"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/settings_read_privacy_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:clickable="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_typing_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/headline_text_size"
+                            android:text="@string/nc_settings_typing_status_title"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_settings_typing_status_desc"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/settings_typing_status_only_with_hpb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/standard_half_margin"
+                            android:hint="@string/nc_settings_typing_status_hpb_description"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/settings_typing_status_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:clickable="false"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/settings_advanced_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/settings_advanced_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    android:text="@string/nc_settings_advanced_title"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:id="@+id/settings_client_cert"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/settings_client_cert_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_margin"
+                        android:text="@string/nc_client_cert_setup"
+                        android:textSize="@dimen/headline_text_size"/>
+
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/standard_margin"
+                    android:hint="@string/nc_settings_proxy_type_title">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/settings_proxy_choice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:lines="1"
+                        android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/settings_proxy_host_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/standard_margin"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/settings_proxy_host_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/nc_settings_proxy_host_title"
+                        android:inputType="text"
+                        />
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/settings_proxy_port_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/standard_margin"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/settings_proxy_port_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/nc_settings_proxy_port_title"
+                        android:inputType="number"/>
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/settings_proxy_username_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/standard_margin"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/settings_proxy_username_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/nc_settings_proxy_username_title"
+                        android:inputType="text"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/settings_proxy_password_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/standard_margin"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/settings_proxy_password_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/nc_settings_proxy_password_title"
+                        android:inputType="textPassword"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_proxy_use_credentials"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/standard_half_padding"
+                    android:orientation="horizontal"
+                    android:background="?android:attr/selectableItemBackground">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/standard_half_margin"
+                            android:layout_weight="1"
+                            android:textSize="@dimen/headline_text_size"
+                            android:text="@string/nc_settings_use_credentials_title"/>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/settings_proxy_use_credentials_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:clickable="false"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/settings_about_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/settings_about_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    android:text="@string/nc_about"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:id="@+id/settings_privacy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_margin"
+                        android:text="@string/nc_settings_privacy"
+                        android:textSize="@dimen/headline_text_size"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_source_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_margin"
+                        android:text="@string/nc_get_source_code"
+                        android:textSize="@dimen/headline_text_size"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_licence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        tools:ignore="UselessParent">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/standard_margin"
+                            android:text="@string/nc_license_title"
+                            android:textSize="@dimen/headline_text_size"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/standard_margin"
+                            android:hint="@string/nc_license_summary"
+                            android:textSize="@dimen/supporting_text_text_size"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/standard_double_padding"
+                    android:orientation="horizontal"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        tools:ignore="UselessParent">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/standard_margin"
+                            android:text="@string/nc_app_product_name"
+                            android:textSize="@dimen/headline_text_size"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/settings_version_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/standard_margin"
+                            android:hint="@string/v0_1"
+                            android:textSize="@dimen/supporting_text_text_size"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

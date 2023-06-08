@@ -24,6 +24,8 @@
 
 package com.nextcloud.talk.utils.preferences;
 
+import android.annotation.SuppressLint;
+
 import com.nextcloud.talk.R;
 
 import net.orange_box.storebox.annotations.method.ClearMethod;
@@ -37,7 +39,7 @@ import net.orange_box.storebox.annotations.option.SaveOption;
 import net.orange_box.storebox.enums.SaveMode;
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
 
-
+@SuppressLint("NonConstantResourceId")
 @SaveOption(SaveMode.APPLY)
 public interface AppPreferences {
 
@@ -253,7 +255,7 @@ public interface AppPreferences {
     String getScreenLockTimeout();
 
     @KeyByString("screen_lock_timeout")
-    void setScreenLockTimeout(int value);
+    void setScreenLockTimeout(String value);
 
     @KeyByString("screen_lock_timeout")
     @RemoveMethod
@@ -270,6 +272,9 @@ public interface AppPreferences {
     @KeyByResource(R.string.nc_settings_theme_key)
     @DefaultValue(R.string.nc_default_theme)
     String getTheme();
+
+    @KeyByResource(R.string.nc_settings_theme_key)
+    void setTheme(String newValue);
 
     @KeyByResource(R.string.nc_settings_theme_key)
     @RemoveMethod
