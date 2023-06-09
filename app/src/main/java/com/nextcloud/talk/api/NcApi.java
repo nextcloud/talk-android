@@ -44,11 +44,11 @@ import com.nextcloud.talk.models.json.search.ContactsByNumberOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.status.StatusOverall;
-import com.nextcloud.talk.translate.repositories.model.TranslationsOverall;
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.polls.repositories.model.PollOverall;
+import com.nextcloud.talk.translate.repositories.model.TranslationsOverall;
 
 import java.util.List;
 import java.util.Map;
@@ -357,6 +357,9 @@ public interface NcApi {
 
     @GET
     Observable<CapabilitiesOverall> getCapabilities(@Header("Authorization") String authorization, @Url String url);
+
+    @GET
+    Observable<CapabilitiesOverall> getCapabilities(@Url String url);
 
     /*
        QueryMap items are as follows:

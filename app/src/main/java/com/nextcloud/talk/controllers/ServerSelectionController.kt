@@ -29,6 +29,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.security.KeyChain
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -44,6 +45,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerServerSelectionBinding
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.AccountUtils
@@ -51,7 +53,9 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -211,33 +215,27 @@ class ServerSelectionController :
         if (url.endsWith("/")) {
             url = url.substring(0, url.length - 1)
         }
-        val queryUrl = url + ApiUtils.getUrlPostfixForStatus()
+
         if (UriUtils.hasHttpProtocollPrefixed(url)) {
-            checkServer(queryUrl, false)
+            checkServer(url, false)
         } else {
-            checkServer("https://$queryUrl", true)
+            checkServer("https://$url", true)
         }
     }
 
-    private fun checkServer(queryUrl: String, checkForcedHttps: Boolean) {
-        statusQueryDisposable = ncApi.getServerStatus(queryUrl)
+    private fun checkServer(url: String, checkForcedHttps: Boolean) {
+        val queryStatusUrl = url + ApiUtils.getUrlPostfixForStatus()
+
+        statusQueryDisposable = ncApi.getServerStatus(queryStatusUrl)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ status: Status ->
                 val productName = resources!!.getString(R.string.nc_server_product_name)
                 val versionString: String = status.version!!.substring(0, status.version!!.indexOf("."))
                 val version: Int = versionString.toInt()
+
                 if (isServerStatusQueryable(status) && version >= MIN_SERVER_MAJOR_VERSION) {
-                    router.pushController(
-                        RouterTransaction.with(
-                            WebViewLoginController(
-                                queryUrl.replace("/status.php", ""),
-                                false
-                            )
-                        )
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler())
-                    )
+                    findServerTalkApp(url)
                 } else if (!status.installed) {
                     setErrorText(
                         String.format(
@@ -270,7 +268,7 @@ class ServerSelectionController :
                 }
             }, { throwable: Throwable ->
                 if (checkForcedHttps) {
-                    checkServer(queryUrl.replace("https://", "http://"), false)
+                    checkServer(queryStatusUrl.replace("https://", "http://"), false)
                 } else {
                     if (throwable.localizedMessage != null) {
                         setErrorText(throwable.localizedMessage)
@@ -294,6 +292,66 @@ class ServerSelectionController :
                 }
                 dispose()
             }
+    }
+
+    private fun findServerTalkApp(queryUrl: String) {
+        ncApi.getCapabilities(ApiUtils.getUrlForCapabilities(queryUrl))
+            .subscribeOn(Schedulers.io())
+            .subscribe(object : Observer<CapabilitiesOverall> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(capabilitiesOverall: CapabilitiesOverall) {
+                    val capabilities = capabilitiesOverall.ocs?.data?.capabilities
+
+                    val hasTalk =
+                        capabilities?.spreedCapability != null &&
+                            capabilities.spreedCapability?.features != null &&
+                            capabilities.spreedCapability?.features?.isNotEmpty() == true
+
+                    if (hasTalk) {
+                        activity?.runOnUiThread {
+                            if (CapabilitiesUtilNew.isServerEOL(capabilities)) {
+                                if (resources != null) {
+                                    activity!!.runOnUiThread {
+                                        setErrorText(resources!!.getString(R.string.nc_settings_server_eol))
+                                    }
+                                }
+                            } else {
+                                router.pushController(
+                                    RouterTransaction.with(
+                                        WebViewLoginController(
+                                            queryUrl.replace("/status.php", ""),
+                                            false
+                                        )
+                                    )
+                                        .pushChangeHandler(HorizontalChangeHandler())
+                                        .popChangeHandler(HorizontalChangeHandler())
+                                )
+                            }
+                        }
+                    } else {
+                        if (activity != null && resources != null) {
+                            activity!!.runOnUiThread {
+                                setErrorText(resources!!.getString(R.string.nc_server_unsupported))
+                            }
+                        }
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Error while checking capabilities", e)
+                    if (activity != null && resources != null) {
+                        activity!!.runOnUiThread {
+                            setErrorText(resources!!.getString(R.string.nc_common_error_sorry))
+                        }
+                    }
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
     }
 
     private fun isServerStatusQueryable(status: Status): Boolean {

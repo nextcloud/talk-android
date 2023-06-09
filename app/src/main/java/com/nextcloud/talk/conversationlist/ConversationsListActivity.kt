@@ -233,7 +233,7 @@ class ConversationsListActivity :
         }
         currentUser = userManager.currentUser.blockingGet()
         if (currentUser != null) {
-            if (isServerEOL(currentUser!!)) {
+            if (isServerEOL(currentUser!!.capabilities)) {
                 showServerEOLDialog()
                 return
             }
