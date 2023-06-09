@@ -30,6 +30,7 @@ package com.nextcloud.talk.conversationlist
 import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.app.SearchManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -562,7 +563,6 @@ class ConversationsListActivity :
             }, { throwable: Throwable ->
                 handleHttpExceptions(throwable)
                 binding?.swipeRefreshLayoutView?.isRefreshing = false
-                showErrorDialog()
                 dispose(roomsQueryDisposable)
             }) {
                 dispose(roomsQueryDisposable)
@@ -627,7 +627,7 @@ class ConversationsListActivity :
     }
 
     private fun showErrorDialog() {
-        binding?.floatingActionButton?.let {
+        binding.floatingActionButton.let {
             val dialogBuilder = MaterialAlertDialogBuilder(it.context)
                 .setIcon(
                     viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
@@ -638,6 +638,13 @@ class ConversationsListActivity :
                 .setTitle(R.string.error_loading_chats)
                 .setCancelable(false)
                 .setNegativeButton(R.string.close, null)
+
+            if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
+                dialogBuilder.setPositiveButton(R.string.nc_switch_account) { _, _ ->
+                    val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
+                    newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
+                }
+            }
 
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
             val dialog = dialogBuilder.show()
@@ -701,9 +708,11 @@ class ConversationsListActivity :
         if (throwable is HttpException) {
             when (throwable.code()) {
                 HTTP_UNAUTHORIZED -> showUnauthorizedDialog()
+                HTTP_CLIENT_UPGRADE_REQUIRED -> showOutdatedClientDialog()
+                HTTP_SERVICE_UNAVAILABLE -> showServiceUnavailableDialog(throwable)
                 else -> {
                     Log.e(TAG, "Http exception in ConversationListActivity", throwable)
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    showErrorDialog()
                 }
             }
         }
@@ -1279,6 +1288,83 @@ class ConversationsListActivity :
         }
     }
 
+    private fun showOutdatedClientDialog() {
+        binding.floatingActionButton.let {
+            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
+                .setIcon(
+                    viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                        context,
+                        R.drawable.ic_info_white_24dp
+                    )
+                )
+                .setTitle(R.string.nc_dialog_outdated_client)
+                .setMessage(R.string.nc_dialog_outdated_client_description)
+                .setCancelable(false)
+                .setPositiveButton(R.string.nc_dialog_outdated_client_option_update) { _, _ ->
+                    try {
+                        startActivity(
+                            Intent(Intent.ACTION_VIEW, Uri.parse(CLIENT_UPGRADE_MARKET_LINK + packageName))
+                        )
+                    } catch (e: ActivityNotFoundException) {
+                        startActivity(
+                            Intent(Intent.ACTION_VIEW, Uri.parse(CLIENT_UPGRADE_GPLAY_LINK + packageName))
+                        )
+                    }
+                }
+
+            if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
+                dialogBuilder.setNegativeButton(R.string.nc_switch_account) { _, _ ->
+                    val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
+                    newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
+                }
+            }
+
+            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
+        }
+    }
+
+    private fun showServiceUnavailableDialog(httpException: HttpException) {
+        if (httpException.response()?.headers()?.get(MAINTENANCE_MODE_HEADER_KEY) == "1") {
+            binding.floatingActionButton.let {
+                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
+                    .setIcon(
+                        viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                            context,
+                            R.drawable.ic_info_white_24dp
+                        )
+                    )
+                    .setTitle(R.string.nc_dialog_maintenance_mode)
+                    .setMessage(R.string.nc_dialog_maintenance_mode_description)
+                    .setCancelable(false)
+
+                if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
+                    dialogBuilder.setPositiveButton(R.string.nc_switch_account) { _, _ ->
+                        val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
+                        newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
+                    }
+                } else {
+                    dialogBuilder.setPositiveButton(R.string.nc_close_app) { _, _ ->
+                        finishAffinity()
+                        finish()
+                    }
+                }
+
+                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
+                val dialog = dialogBuilder.show()
+                viewThemeUtils.platform.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                )
+            }
+        } else {
+            showErrorDialog()
+        }
+    }
+
     private fun showServerEOLDialog() {
         binding?.floatingActionButton?.let {
             val dialogBuilder = MaterialAlertDialogBuilder(it.context)
@@ -1378,5 +1464,10 @@ class ConversationsListActivity :
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
         const val SEARCH_MIN_CHARS = 2
         const val HTTP_UNAUTHORIZED = 401
+        const val HTTP_CLIENT_UPGRADE_REQUIRED = 426
+        const val CLIENT_UPGRADE_MARKET_LINK = "market://details?id="
+        const val CLIENT_UPGRADE_GPLAY_LINK = "https://play.google.com/store/apps/details?id="
+        const val HTTP_SERVICE_UNAVAILABLE = 503
+        const val MAINTENANCE_MODE_HEADER_KEY = "X-Nextcloud-Maintenance-Mode"
     }
 }
