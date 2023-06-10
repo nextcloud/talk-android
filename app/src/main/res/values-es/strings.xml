@@ -128,6 +128,8 @@
     <string name="nc_description_record_voice">Grabar mensaje de voz</string>
     <string name="nc_description_send_message_button">Enviar mensaje</string>
     <string name="nc_dialog_invalid_password">Contraseña no válida</string>
+    <string name="nc_dialog_maintenance_mode">Modo mantenimiento</string>
+    <string name="nc_dialog_outdated_client_option_update">Actualizar</string>
     <string name="nc_dialog_reauth_or_delete">¿Quieres volver a autorizar o eliminar esta cuenta?</string>
     <string name="nc_display_name_not_fetched">Nombre para mostrar no pudo ser obtenido, abortando</string>
     <string name="nc_display_name_not_stored">No se ha podido almacenar el nombre para mostrar. Abortando</string>
@@ -363,6 +365,7 @@
     <string name="nc_shared_location">Ubicación compartida</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de inicio</string>
+    <string name="nc_switch_account">Cambiar cuenta</string>
     <string name="nc_upload_choose_local_files">Seleccionar archivos</string>
     <string name="nc_upload_confirm_send_multiple">¿Enviar estos archivos a %1$s?</string>
     <string name="nc_upload_confirm_send_single">¿Enviar este archivo a %1$s?</string>

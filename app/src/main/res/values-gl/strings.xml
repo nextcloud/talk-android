@@ -127,6 +127,7 @@
     <string name="nc_description_record_voice">Gravar mensaxe de voz</string>
     <string name="nc_description_send_message_button">Enviar a mensaxe</string>
     <string name="nc_dialog_invalid_password">Contrasinal incorrecto </string>
+    <string name="nc_dialog_maintenance_mode">Modo de mantemento</string>
     <string name="nc_dialog_reauth_or_delete">Quere volver autorizar ou eliminar esta conta?</string>
     <string name="nc_display_name_not_fetched">Non foi posíbel obter o nome para amosar, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
@@ -316,6 +317,7 @@
     <string name="nc_shared_items_location">Localización</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de comezo</string>
+    <string name="nc_switch_account">Cambiar de conta</string>
     <string name="nc_upload_choose_local_files">Escolla os ficheiros</string>
     <string name="nc_upload_confirm_send_multiple">Quere enviar estes ficheiros a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>

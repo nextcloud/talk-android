@@ -127,6 +127,8 @@
     <string name="nc_description_record_voice">Nagraj wiadomość głosową</string>
     <string name="nc_description_send_message_button">Wyślij wiadomość</string>
     <string name="nc_dialog_invalid_password">Nieprawidłowe hasło</string>
+    <string name="nc_dialog_maintenance_mode">Tryb konserwacji</string>
+    <string name="nc_dialog_outdated_client_option_update">Aktualizuj</string>
     <string name="nc_dialog_reauth_or_delete">Czy chcesz ponownie autoryzować lub usunąć konto?</string>
     <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerwano żądanie</string>
     <string name="nc_display_name_not_stored">Nie można zapisać wyświetlanej nazwy, przerwano żądanie</string>
@@ -358,6 +360,7 @@
     <string name="nc_shared_location">Udostępniona lokalizacja</string>
     <string name="nc_sort_by">Sortuj według</string>
     <string name="nc_start_time">Czas rozpoczęcia</string>
+    <string name="nc_switch_account">Przełącz konto</string>
     <string name="nc_upload_choose_local_files">Wybierz pliki</string>
     <string name="nc_upload_confirm_send_multiple">Wysłać te pliki do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Wysłać ten plik do %1$s?</string>

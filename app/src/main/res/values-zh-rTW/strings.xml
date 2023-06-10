@@ -128,6 +128,8 @@
     <string name="nc_description_record_voice">錄製語音訊息</string>
     <string name="nc_description_send_message_button">傳送訊息</string>
     <string name="nc_dialog_invalid_password">無效的密碼</string>
+    <string name="nc_dialog_maintenance_mode">維護模式</string>
+    <string name="nc_dialog_outdated_client_option_update">更新</string>
     <string name="nc_dialog_reauth_or_delete">您要重新授權或刪除此帳號嗎？</string>
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止動作。</string>
     <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
@@ -362,6 +364,7 @@
     <string name="nc_shared_location">共享的位置</string>
     <string name="nc_sort_by">排序</string>
     <string name="nc_start_time">開始時間</string>
+    <string name="nc_switch_account">切換帳號</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">傳送這些檔案給 %1$s？</string>
     <string name="nc_upload_confirm_send_single">傳送檔案給 %1$s？</string>

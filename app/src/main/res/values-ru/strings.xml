@@ -128,6 +128,8 @@
     <string name="nc_description_record_voice">Запись голосового сообщения</string>
     <string name="nc_description_send_message_button">Отправить сообщение</string>
     <string name="nc_dialog_invalid_password">Неверный пароль</string>
+    <string name="nc_dialog_maintenance_mode">Режим обслуживания</string>
+    <string name="nc_dialog_outdated_client_option_update">Обновить</string>
     <string name="nc_dialog_reauth_or_delete">Вы хотите повторно авторизоваться или удалить эту учётную запись?</string>
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
     <string name="nc_display_name_not_stored">Не удалось сохранить отображаемое имя, продолжение невозможно</string>
@@ -362,6 +364,7 @@
     <string name="nc_shared_location">Местоположением поделились</string>
     <string name="nc_sort_by">Сортировать по</string>
     <string name="nc_start_time">Время начала</string>
+    <string name="nc_switch_account">Сменить аккаунт</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
     <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>
     <string name="nc_upload_confirm_send_single">Отправить этот файл %1$s?</string>

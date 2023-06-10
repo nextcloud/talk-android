@@ -89,6 +89,8 @@
     <string name="nc_demote">Hạ uy tín từ người kiểm duyệt</string>
     <string name="nc_description_send_message_button">Gửi thông điệp</string>
     <string name="nc_dialog_invalid_password">Invalid Password</string>
+    <string name="nc_dialog_maintenance_mode">Chế độ bảo trì</string>
+    <string name="nc_dialog_outdated_client_option_update">Cập nhật</string>
     <string name="nc_display_name_not_fetched">Không thể lấy dữ liệu Tên hiển thị, hủy bỏ</string>
     <string name="nc_display_name_not_stored">Không thể lưu Tên hiển thị, hủy bỏ</string>
     <string name="nc_email">Thư điện tử</string>
@@ -206,6 +208,7 @@
     <string name="nc_shared_items_deck_card">Thẻ Deck</string>
     <string name="nc_shared_items_location">Vị trí</string>
     <string name="nc_sort_by">Sắp xếp theo</string>
+    <string name="nc_switch_account">Chuyển tài khoản</string>
     <string name="nc_upload_in_progess">Đang tải lên</string>
     <string name="nc_upload_picture_from_cam">Chụp ảnh</string>
     <string name="nc_user">Người dùng</string>

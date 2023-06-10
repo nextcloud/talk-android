@@ -128,6 +128,8 @@
     <string name="nc_description_record_voice">Сними гласовну поруку</string>
     <string name="nc_description_send_message_button">Пошаљи поруку</string>
     <string name="nc_dialog_invalid_password">Неисправна лозинка</string>
+    <string name="nc_dialog_maintenance_mode">Режим одржавања</string>
+    <string name="nc_dialog_outdated_client_option_update">Ажурирај</string>
     <string name="nc_dialog_reauth_or_delete">Да ли желите поново да ауторизујете или обришете овај налог?</string>
     <string name="nc_display_name_not_fetched">Име за приказ се не може добавити. Прекидам</string>
     <string name="nc_display_name_not_stored">Не могу да сачувам име за приказ. Прекидам</string>
@@ -362,6 +364,7 @@
     <string name="nc_shared_location">Дељена локација</string>
     <string name="nc_sort_by">Разврстај</string>
     <string name="nc_start_time">Време почетка</string>
+    <string name="nc_switch_account">Пребаци налог</string>
     <string name="nc_upload_choose_local_files">Изаберите фајлове</string>
     <string name="nc_upload_confirm_send_multiple">Да ли да пошаљем ове фајлове %1$s?</string>
     <string name="nc_upload_confirm_send_single">Да ли да пошаљем овај фајл %1$s?</string>

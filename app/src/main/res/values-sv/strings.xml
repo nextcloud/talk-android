@@ -93,6 +93,8 @@
     <string name="nc_demote">Degradera från moderator</string>
     <string name="nc_description_send_message_button">Skicka meddelande</string>
     <string name="nc_dialog_invalid_password">Felaktigt lösenord</string>
+    <string name="nc_dialog_maintenance_mode">Underhållsläge</string>
+    <string name="nc_dialog_outdated_client_option_update">Uppdatera</string>
     <string name="nc_display_name_not_fetched">Visningsnamn kunde inte hämtas, avbryter</string>
     <string name="nc_display_name_not_stored">Kunde inte lagra visningsnamnet, avbryter</string>
     <string name="nc_email">E-post</string>
@@ -273,6 +275,7 @@
     <string name="nc_shared_items_location">Plats</string>
     <string name="nc_sort_by">Sortera efter</string>
     <string name="nc_start_time">Starttid</string>
+    <string name="nc_switch_account">Växla konto</string>
     <string name="nc_upload_from_device">Ladda upp från enheten</string>
     <string name="nc_upload_in_progess">Laddar upp</string>
     <string name="nc_upload_picture_from_cam">Ta en bild</string>

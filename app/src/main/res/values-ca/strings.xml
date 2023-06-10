@@ -125,6 +125,8 @@
     <string name="nc_description_record_voice">Grava un missatge de veu</string>
     <string name="nc_description_send_message_button">Envia un missatge</string>
     <string name="nc_dialog_invalid_password">Contrasenya no vàlida</string>
+    <string name="nc_dialog_maintenance_mode">Mode de manteniment</string>
+    <string name="nc_dialog_outdated_client_option_update">Actualització</string>
     <string name="nc_dialog_reauth_or_delete">Voleu reautoritzar o suprimir aquest compte?</string>
     <string name="nc_display_name_not_fetched">No s’ha pogut obtenir el nom de visualització, s\'està avortant</string>
     <string name="nc_display_name_not_stored">No s\'ha pogut emmagatzemar el nom de visualització, s\'està avortant</string>
@@ -355,6 +357,7 @@
     <string name="nc_shared_location">Ubicació compartida</string>
     <string name="nc_sort_by">Ordena per</string>
     <string name="nc_start_time">Hora d\'inici</string>
+    <string name="nc_switch_account">Canvia el compte</string>
     <string name="nc_upload_choose_local_files">Trieu els fitxers</string>
     <string name="nc_upload_confirm_send_multiple">Voleu enviar aquests fitxers a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Voleu enviar aquest fitxer a %1$s?</string>

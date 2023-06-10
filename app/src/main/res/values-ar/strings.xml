@@ -109,6 +109,8 @@
     <string name="nc_description_record_voice">تسجيل رسالة صوتية</string>
     <string name="nc_description_send_message_button">أرسل رسالة</string>
     <string name="nc_dialog_invalid_password">الكلمة السرية خاطئة</string>
+    <string name="nc_dialog_maintenance_mode">وضع الصيانة</string>
+    <string name="nc_dialog_outdated_client_option_update">تحديث</string>
     <string name="nc_dialog_reauth_or_delete">هل تريد إعادة تفويض أو مسح هذا الحساب</string>
     <string name="nc_display_name_not_fetched">لايمكن عرض الاسم، جارِ إلالغاء</string>
     <string name="nc_display_name_not_stored">تعذر تخزين اسم العرض ، جارِ إلالغاء</string>
@@ -311,6 +313,7 @@
     <string name="nc_shared_location">الموقع المشارك</string>
     <string name="nc_sort_by">رتب حسب</string>
     <string name="nc_start_time">وقت البدء</string>
+    <string name="nc_switch_account">تبديل الحساب</string>
     <string name="nc_upload_choose_local_files">اختر الملفات</string>
     <string name="nc_upload_confirm_send_multiple">إرسال هذه الملفات إلى %1$s؟</string>
     <string name="nc_upload_confirm_send_single">إرسال هذا الملف إلى %1$s؟</string>

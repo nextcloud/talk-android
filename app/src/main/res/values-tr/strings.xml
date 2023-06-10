@@ -128,6 +128,8 @@
     <string name="nc_description_record_voice">Ses iletisi kaydet</string>
     <string name="nc_description_send_message_button">İleti gönder</string>
     <string name="nc_dialog_invalid_password">Parola geçersiz</string>
+    <string name="nc_dialog_maintenance_mode">Bakım kipi</string>
+    <string name="nc_dialog_outdated_client_option_update">Güncelle</string>
     <string name="nc_dialog_reauth_or_delete">Bu hesabı yeniden etkinleştirmek ya da silmek ister misiniz?</string>
     <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>
     <string name="nc_display_name_not_stored">Görüntülenecek ad kaydedilemedi, vazgeçiliyor</string>
@@ -362,6 +364,7 @@
     <string name="nc_shared_location">Paylaşılan konum</string>
     <string name="nc_sort_by">Sıralama</string>
     <string name="nc_start_time">Başlangıç zamanı</string>
+    <string name="nc_switch_account">Hesabı değiştir</string>
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
     <string name="nc_upload_confirm_send_multiple">Bu dosyalar %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>

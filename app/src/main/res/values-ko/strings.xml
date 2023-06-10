@@ -118,6 +118,8 @@
     <string name="nc_description_record_voice">음성 메시지 녹음</string>
     <string name="nc_description_send_message_button">메시지 보내기</string>
     <string name="nc_dialog_invalid_password">잘못된 암호</string>
+    <string name="nc_dialog_maintenance_mode">유지 보수 모드</string>
+    <string name="nc_dialog_outdated_client_option_update">업데이트</string>
     <string name="nc_dialog_reauth_or_delete">이 계정을 재인증하거나 삭제하시겠습니까?</string>
     <string name="nc_display_name_not_fetched">표시 이름을 가져올 수 없음, 중단함</string>
     <string name="nc_display_name_not_stored">표시 이름을 저장할 수 없음, 중단함</string>
@@ -346,6 +348,7 @@
     <string name="nc_shared_location">공유된 위치</string>
     <string name="nc_sort_by">정렬</string>
     <string name="nc_start_time">시작 시간</string>
+    <string name="nc_switch_account">계정 전환</string>
     <string name="nc_upload_choose_local_files">파일을 선택하시오</string>
     <string name="nc_upload_confirm_send_multiple">%1$s에게 이 파일들을 전송하시겠습니까?</string>
     <string name="nc_upload_confirm_send_single">%1$s에게 이 파일을 전송하시겠습니까?</string>

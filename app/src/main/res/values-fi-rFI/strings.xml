@@ -101,6 +101,7 @@
     <string name="nc_description_record_voice">Äänitä ääniviesti</string>
     <string name="nc_description_send_message_button">Lähetä viesti</string>
     <string name="nc_dialog_invalid_password">Virheellinen salasana</string>
+    <string name="nc_dialog_maintenance_mode">Huoltotila</string>
     <string name="nc_dialog_reauth_or_delete">Haluatko valtuuttaa tämän tilin uudelleen vai poistaa tilin?</string>
     <string name="nc_email">Sähköposti</string>
     <string name="nc_expire_message_eight_hours">8 tuntia</string>
@@ -298,6 +299,7 @@
     <string name="nc_shared_location">Jaettu sijainti</string>
     <string name="nc_sort_by">Lajittelujärjestys</string>
     <string name="nc_start_time">Aloitusaika</string>
+    <string name="nc_switch_account">Vaihda tiliä</string>
     <string name="nc_upload_choose_local_files">Valitse tiedostot</string>
     <string name="nc_upload_failed">Lähetys epäonnistui</string>
     <string name="nc_upload_from_device">Lähetä laitteelta</string>

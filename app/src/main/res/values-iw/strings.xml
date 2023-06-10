@@ -79,6 +79,8 @@
     <string name="nc_demote">הורדה מדרגת פיקוח</string>
     <string name="nc_description_send_message_button">שליחת הודעה</string>
     <string name="nc_dialog_invalid_password">ססמה שגויה</string>
+    <string name="nc_dialog_maintenance_mode">מצב תחזוקה</string>
+    <string name="nc_dialog_outdated_client_option_update">עדכון</string>
     <string name="nc_display_name_not_fetched">לא ניתן לאחזר את שם התצוגה, התהליך נפסק</string>
     <string name="nc_display_name_not_stored">לא ניתן לאחסן את שם התצוגה, התהליך נפסק</string>
     <string name="nc_email">דוא״ל</string>
@@ -240,6 +242,7 @@
     <string name="nc_shared_items_location">מיקום</string>
     <string name="nc_sort_by">מיון על בסיס</string>
     <string name="nc_start_time">מועד התחלה</string>
+    <string name="nc_switch_account">החלף חשבון</string>
     <string name="nc_upload_in_progess">מתבצעת העלאה</string>
     <string name="nc_user">משתמש</string>
     <string name="nc_webinar">סמינר מקוון</string>

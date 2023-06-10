@@ -85,6 +85,7 @@
     <string name="nc_description_record_voice">Ta opp lyd melding </string>
     <string name="nc_description_send_message_button">Send melding</string>
     <string name="nc_dialog_invalid_password">Feil passord</string>
+    <string name="nc_dialog_outdated_client_option_update">Oppdater</string>
     <string name="nc_dialog_reauth_or_delete">Vil du godkjenne på ny eller slette denne konto?</string>
     <string name="nc_display_name_not_fetched">Synt namn kunne ikkje bli henta, avbryter</string>
     <string name="nc_display_name_not_stored">Kunne ikkje lagra synt namn, avbryter</string>
@@ -230,6 +231,7 @@
     <string name="nc_share_to_choose_account">Vel konto</string>
     <string name="nc_shared_items_location">Stad</string>
     <string name="nc_sort_by">Sorter på</string>
+    <string name="nc_switch_account">Bytt konto</string>
     <string name="nc_upload_in_progess">Uploading</string>
     <string name="nc_user">Bruker</string>
     <string name="nc_wrong_password">Wrong password</string>

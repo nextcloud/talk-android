@@ -113,6 +113,8 @@
     <string name="nc_description_record_voice">ボイスメッセージを録音</string>
     <string name="nc_description_send_message_button">メッセージを送信</string>
     <string name="nc_dialog_invalid_password">無効なパスワード</string>
+    <string name="nc_dialog_maintenance_mode">メンテナンスモード</string>
+    <string name="nc_dialog_outdated_client_option_update">更新</string>
     <string name="nc_dialog_reauth_or_delete">このアカウントを再認証しますか、それとも削除しますか?</string>
     <string name="nc_display_name_not_fetched">表示名を取得できませんでした。</string>
     <string name="nc_display_name_not_stored">表示名を保存できませんでした。</string>
@@ -327,6 +329,7 @@
     <string name="nc_shared_location">共有された位置情報</string>
     <string name="nc_sort_by">ソート: </string>
     <string name="nc_start_time">開始時刻</string>
+    <string name="nc_switch_account">アカウントの切り替え</string>
     <string name="nc_upload_choose_local_files">ファイルを選択</string>
     <string name="nc_upload_confirm_send_multiple">%1$sへこれらのファイルを送信しますか?</string>
     <string name="nc_upload_confirm_send_single">%1$sへこのファイルを送信しますか?</string>

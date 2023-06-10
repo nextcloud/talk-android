@@ -127,6 +127,8 @@
     <string name="nc_description_record_voice">Posnemi glasovno sporočilo</string>
     <string name="nc_description_send_message_button">Pošlji sporočilo</string>
     <string name="nc_dialog_invalid_password">Neveljavno geslo</string>
+    <string name="nc_dialog_maintenance_mode">Vzdrževalni način</string>
+    <string name="nc_dialog_outdated_client_option_update">Posodobi</string>
     <string name="nc_dialog_reauth_or_delete">Ali želite ponovno overiti ali odstraniti račun?</string>
     <string name="nc_display_name_not_fetched">Prikaznega imena ni mogoče pridobiti; opravilo je prekinjeno.</string>
     <string name="nc_display_name_not_stored">Prikaznega imena ni mogoče shraniti; opravilo je prekinjeno.</string>
@@ -359,6 +361,7 @@
     <string name="nc_shared_location">Objavljeno trenutno mesto</string>
     <string name="nc_sort_by">Razvrsti po</string>
     <string name="nc_start_time">Čas začetka</string>
+    <string name="nc_switch_account">Preklopi račun</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
     <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke osebi %1$s?</string>
     <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko osebi %1$s?</string>

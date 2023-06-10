@@ -87,6 +87,8 @@
     <string name="nc_demote">Fjern moderatorstatus</string>
     <string name="nc_description_send_message_button">Send melding</string>
     <string name="nc_dialog_invalid_password">Ugyldig passord</string>
+    <string name="nc_dialog_maintenance_mode">Modus for vedlikehold</string>
+    <string name="nc_dialog_outdated_client_option_update">Oppdater</string>
     <string name="nc_display_name_not_fetched">Kunne ikke hente visningsnavn, avbryter</string>
     <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
     <string name="nc_email">E-post</string>
@@ -258,6 +260,7 @@
     <string name="nc_shared_items_location">Sted</string>
     <string name="nc_sort_by">Sorter etter</string>
     <string name="nc_start_time">Start tidspunkt</string>
+    <string name="nc_switch_account">Bytt konto</string>
     <string name="nc_upload_choose_local_files">Velg filer</string>
     <string name="nc_upload_from_device">Last opp fra enhet</string>
     <string name="nc_upload_in_progess">Laster opp</string>

@@ -81,6 +81,8 @@
     <string name="nc_demote">Degrader fra moderator</string>
     <string name="nc_description_send_message_button">Send besked</string>
     <string name="nc_dialog_invalid_password">Ugyldigt kodeord</string>
+    <string name="nc_dialog_maintenance_mode">Vedligeholdelsestilstand</string>
+    <string name="nc_dialog_outdated_client_option_update">Opdatér</string>
     <string name="nc_display_name_not_fetched">Display navn kunne ikke hentes, afbrydes</string>
     <string name="nc_display_name_not_stored">Kunne ikke opbevare skærmnavn, afbryder</string>
     <string name="nc_email">E-mail</string>
@@ -240,6 +242,7 @@
     <string name="nc_shared_items_location">Sted</string>
     <string name="nc_sort_by">Sortér efter</string>
     <string name="nc_start_time">Start tid</string>
+    <string name="nc_switch_account">Skift konto</string>
     <string name="nc_upload_from_device">Upload fra enhed</string>
     <string name="nc_upload_in_progess">Uploader</string>
     <string name="nc_upload_picture_from_cam">Tag et billede</string>

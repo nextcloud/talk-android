@@ -120,6 +120,8 @@
     <string name="nc_description_record_voice">Registra messaggio vocale</string>
     <string name="nc_description_send_message_button">Invia messaggio</string>
     <string name="nc_dialog_invalid_password">Password non valida</string>
+    <string name="nc_dialog_maintenance_mode">Modalità Manutenzione</string>
+    <string name="nc_dialog_outdated_client_option_update">Aggiorna</string>
     <string name="nc_dialog_reauth_or_delete">Vuoi autorizzare nuovamente o eliminare questo account?</string>
     <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
     <string name="nc_display_name_not_stored">Nome visualizzato non memorizzato, interruzione in corso</string>
@@ -332,6 +334,7 @@
     <string name="nc_shared_location">Posizione condivisa</string>
     <string name="nc_sort_by">Ordina per</string>
     <string name="nc_start_time">Ora di inizio</string>
+    <string name="nc_switch_account">Cambia account</string>
     <string name="nc_upload_choose_local_files">Scegli i file</string>
     <string name="nc_upload_confirm_send_multiple">Inviare questi file a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Inviare questo file a %1$s?</string>

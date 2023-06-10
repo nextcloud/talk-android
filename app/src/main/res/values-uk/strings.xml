@@ -127,6 +127,8 @@
     <string name="nc_description_record_voice">Записати голосове повідомлення</string>
     <string name="nc_description_send_message_button">Надіслати повідомлення</string>
     <string name="nc_dialog_invalid_password">Invalid Password</string>
+    <string name="nc_dialog_maintenance_mode">Режим технічного обслуговування</string>
+    <string name="nc_dialog_outdated_client_option_update">Оновлення</string>
     <string name="nc_dialog_reauth_or_delete">Чи хочете ви повторно авторизувати чи вилучити цей акаунт?</string>
     <string name="nc_display_name_not_fetched">Ім\'я для показу не вдалося розпізнати. Скасування</string>
     <string name="nc_display_name_not_stored">Неможливо отримати ім\'я для показу. Скасування</string>
@@ -358,6 +360,7 @@
     <string name="nc_shared_location">Місце у спільному доступі</string>
     <string name="nc_sort_by">Впорядкувати за</string>
     <string name="nc_start_time">Час початку</string>
+    <string name="nc_switch_account">Перемкнути обліковий запис</string>
     <string name="nc_upload_choose_local_files">Виберіть файли</string>
     <string name="nc_upload_failed">Вибачте, помилка завантаження</string>
     <string name="nc_upload_failed_notification_title">Невдача</string>

@@ -107,6 +107,8 @@
     <string name="nc_description_record_voice">Snimi glasovnu poruku</string>
     <string name="nc_description_send_message_button">Pošalji poruku</string>
     <string name="nc_dialog_invalid_password">Netočna zaporka</string>
+    <string name="nc_dialog_maintenance_mode">Način održavanja</string>
+    <string name="nc_dialog_outdated_client_option_update">Ažuriraj</string>
     <string name="nc_dialog_reauth_or_delete">Želite li ponovno autorizirati ili izbrisati ovaj račun?</string>
     <string name="nc_display_name_not_fetched">Neuspješno dohvaćanje imena za prikaz, prekid</string>
     <string name="nc_display_name_not_stored">Nije moguće pohraniti ime za prikaz, prekid</string>
@@ -312,6 +314,7 @@
     <string name="nc_shared_location">Dijeljena lokacija</string>
     <string name="nc_sort_by">Razvrstaj prema</string>
     <string name="nc_start_time">Vrijeme početka</string>
+    <string name="nc_switch_account">Zamijeni račun</string>
     <string name="nc_upload_choose_local_files">Odaberi datoteke</string>
     <string name="nc_upload_confirm_send_multiple">Poslati ove datoteke na %1$s?</string>
     <string name="nc_upload_confirm_send_single">Poslati ovu datoteku na %1$s?</string>

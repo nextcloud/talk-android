@@ -117,6 +117,8 @@
     <string name="nc_description_record_voice">Nahrať hlasovú správu</string>
     <string name="nc_description_send_message_button">Odoslať správu</string>
     <string name="nc_dialog_invalid_password">Neplatné heslo</string>
+    <string name="nc_dialog_maintenance_mode">Mód údržby</string>
+    <string name="nc_dialog_outdated_client_option_update">Aktualizovať</string>
     <string name="nc_dialog_reauth_or_delete">Prajete si znova autorizovať alebo zmazať tento účet?</string>
     <string name="nc_display_name_not_fetched">Zobrazované meno sa nedalo načítať, ruším</string>
     <string name="nc_display_name_not_stored">Nedá sa uložiť zobrazované meno, ruším</string>
@@ -347,6 +349,7 @@
     <string name="nc_shared_location">Zdieľaná poloha</string>
     <string name="nc_sort_by">Zoradiť podľa</string>
     <string name="nc_start_time">Čas začiatku</string>
+    <string name="nc_switch_account">Prepnúť účet</string>
     <string name="nc_upload_choose_local_files">Vyberte súbory</string>
     <string name="nc_upload_confirm_send_multiple">Poslať tieto súbory do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Poslať tento súbor do %1$s?</string>

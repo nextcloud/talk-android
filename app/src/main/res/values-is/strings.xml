@@ -80,6 +80,8 @@
     <string name="nc_demote">Láta hætta sem umsjónarmann</string>
     <string name="nc_description_send_message_button">Senda skilaboð</string>
     <string name="nc_dialog_invalid_password">Ógilt lykilorð</string>
+    <string name="nc_dialog_maintenance_mode">Viðhaldshamur</string>
+    <string name="nc_dialog_outdated_client_option_update">Uppfæra</string>
     <string name="nc_display_name_not_fetched">Gat ekki náð í birtingarnafn, hætti</string>
     <string name="nc_display_name_not_stored">Gat ekki geymt birtingarnafn, hætti</string>
     <string name="nc_email">Tölvupóstur</string>
@@ -227,6 +229,7 @@
     <string name="nc_shared_items_location">Staðsetning</string>
     <string name="nc_sort_by">Raða sem</string>
     <string name="nc_start_time">Upphafstími</string>
+    <string name="nc_switch_account">Skipta um notandaaðgang</string>
     <string name="nc_upload_in_progess">Sendi inn</string>
     <string name="nc_user">Notandi</string>
     <string name="nc_webinar">Webinar</string>

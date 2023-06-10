@@ -128,6 +128,8 @@
     <string name="nc_description_record_voice">Sprachnachricht aufnehmen</string>
     <string name="nc_description_send_message_button">Nachricht senden</string>
     <string name="nc_dialog_invalid_password">Ungültiges Passwort</string>
+    <string name="nc_dialog_maintenance_mode">Wartungsmodus</string>
+    <string name="nc_dialog_outdated_client_option_update">Aktualisieren</string>
     <string name="nc_dialog_reauth_or_delete">Möchten Sie das Konto erneut autorisieren oder löschen?</string>
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden. Breche ab.</string>
     <string name="nc_display_name_not_stored">Der Anzeigename konnte nicht gespeichert werden. Breche ab.</string>
@@ -362,6 +364,7 @@
     <string name="nc_shared_location">Geteilter Ort</string>
     <string name="nc_sort_by">Sortiere nach</string>
     <string name="nc_start_time">Startzeit</string>
+    <string name="nc_switch_account">Konto wechseln</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
     <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>

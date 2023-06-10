@@ -240,6 +240,7 @@
     <string name="nc_shared_items_location">محل</string>
     <string name="nc_sort_by">مرتب‌سازی بر اساس</string>
     <string name="nc_start_time">زمان شروع</string>
+    <string name="nc_switch_account">تعویض حساب</string>
     <string name="nc_upload_in_progess">در حال آپلود</string>
     <string name="nc_upload_picture_from_cam">عکس گرفتن</string>
     <string name="nc_user">کاربر</string>

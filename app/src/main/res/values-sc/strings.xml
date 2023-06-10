@@ -102,6 +102,8 @@
     <string name="nc_description_record_voice">Registra messàgiu de boghe</string>
     <string name="nc_description_send_message_button">Imbia messàgiu</string>
     <string name="nc_dialog_invalid_password">Crae non bàlida</string>
+    <string name="nc_dialog_maintenance_mode">Modalidade de mantenidura</string>
+    <string name="nc_dialog_outdated_client_option_update">Agiorna</string>
     <string name="nc_dialog_reauth_or_delete">Boles torrare a autorizare o cantzellare custu contu?</string>
     <string name="nc_display_name_not_fetched">Errore in su recùperu de su nùmene ammustradu, annullende</string>
     <string name="nc_display_name_not_stored">No at fatu a sarvare su nùmene ammustradu, annullende</string>
@@ -299,6 +301,7 @@
     <string name="nc_shared_location">Positzione cumpartzida</string>
     <string name="nc_sort_by">Assenta segundu</string>
     <string name="nc_start_time">Ora de cumintzu</string>
+    <string name="nc_switch_account">Passa a àteru contu</string>
     <string name="nc_upload_choose_local_files">Sèbera documentos</string>
     <string name="nc_upload_confirm_send_multiple">Imbiare custos archìvios a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Imbiare custu archìviu a %1$s?</string>

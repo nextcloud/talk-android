@@ -121,6 +121,8 @@
     <string name="nc_description_record_voice">Opnemen gesproken bericht</string>
     <string name="nc_description_send_message_button">Verstuur bericht</string>
     <string name="nc_dialog_invalid_password">Ongeldig wachtwoord</string>
+    <string name="nc_dialog_maintenance_mode">Onderhoudsmodus</string>
+    <string name="nc_dialog_outdated_client_option_update">Update</string>
     <string name="nc_dialog_reauth_or_delete">Wil je dit account opnieuw authenticeren of verwijderen?</string>
     <string name="nc_display_name_not_fetched">Weergave kon niet worden opgehaald, afgebroken</string>
     <string name="nc_display_name_not_stored">Kon weergavenaam niet opslaan, afbreken</string>
@@ -338,6 +340,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_shared_location">Gedeelde locatie</string>
     <string name="nc_sort_by">Sorteren op</string>
     <string name="nc_start_time">Begintijd</string>
+    <string name="nc_switch_account">Account wisselen</string>
     <string name="nc_upload_choose_local_files">Kies bestanden</string>
     <string name="nc_upload_confirm_send_multiple">Bestanden versturen naar %1$s?</string>
     <string name="nc_upload_confirm_send_single">Bestand versturen naar %1$s?</string>
