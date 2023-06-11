@@ -98,6 +98,7 @@
     <string name="nc_clear_history_warning">Möchten Sie wirklich alle Nachrichten dieser Unterhaltung löschen?</string>
     <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
     <string name="nc_client_cert_setup">Client-Zertifikat einrichten</string>
+    <string name="nc_close_app">App schließen</string>
     <string name="nc_common_and">und</string>
     <string name="nc_common_dismiss">Ablehnen</string>
     <string name="nc_common_error_sorry">Leider ist etwas schiefgelaufen!</string>
@@ -129,6 +130,9 @@
     <string name="nc_description_send_message_button">Nachricht senden</string>
     <string name="nc_dialog_invalid_password">Ungültiges Passwort</string>
     <string name="nc_dialog_maintenance_mode">Wartungsmodus</string>
+    <string name="nc_dialog_maintenance_mode_description">Server befindet sich derzeit im Wartungsmodus.</string>
+    <string name="nc_dialog_outdated_client">App ist veraltet</string>
+    <string name="nc_dialog_outdated_client_description">Die App ist zu alt und wird von diesem Server nicht mehr unterstützt. Bitte aktualisieren.</string>
     <string name="nc_dialog_outdated_client_option_update">Aktualisieren</string>
     <string name="nc_dialog_reauth_or_delete">Möchten Sie das Konto erneut autorisieren oder löschen?</string>
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden. Breche ab.</string>

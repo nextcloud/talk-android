@@ -56,7 +56,7 @@
     <string name="nc_add_emojis">Додати емоційки</string>
     <string name="nc_add_file">Додати до розмови</string>
     <string name="nc_add_participants">Додати учасників</string>
-    <string name="nc_add_to_favorites">Додати до улюбленого</string>
+    <string name="nc_add_to_favorites">Додати зірочку</string>
     <string name="nc_all_ok_operation">ОК, все готово!</string>
     <string name="nc_allow_guests">Дозволити гостей</string>
     <string name="nc_attendee_pin">ПІН: %1$s</string>

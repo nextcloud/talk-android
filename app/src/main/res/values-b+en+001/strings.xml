@@ -98,6 +98,7 @@
     <string name="nc_clear_history_warning">Do you really want to delete all messages in this conversation?</string>
     <string name="nc_client_cert_change">Change client certificate</string>
     <string name="nc_client_cert_setup">Set up client certificate</string>
+    <string name="nc_close_app">Close app</string>
     <string name="nc_common_and">and</string>
     <string name="nc_common_dismiss">Dismiss</string>
     <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
@@ -129,6 +130,9 @@
     <string name="nc_description_send_message_button">Send message</string>
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_maintenance_mode">Maintenance mode</string>
+    <string name="nc_dialog_maintenance_mode_description">Server is currently in maintenance mode.</string>
+    <string name="nc_dialog_outdated_client">App is outdated</string>
+    <string name="nc_dialog_outdated_client_description">The app is too old and no longer supported by this server. Please update.</string>
     <string name="nc_dialog_outdated_client_option_update">Update</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorise or delete this account?</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>

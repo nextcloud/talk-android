@@ -86,6 +86,7 @@
     <string name="nc_description_record_voice">ضبط پیام صوتی</string>
     <string name="nc_description_send_message_button">فرستادن پیام</string>
     <string name="nc_dialog_invalid_password">گذرواژه نادرست</string>
+    <string name="nc_dialog_outdated_client_option_update">به‌روز رسانی</string>
     <string name="nc_display_name_not_fetched">امکان دریافت نام وجود ندارد. درحال لغو</string>
     <string name="nc_display_name_not_stored">"امکان ذخیره نام وجود ندارد، درحال لغو "</string>
     <string name="nc_email">رایانامه</string>
@@ -253,6 +254,7 @@
     <string name="online_status">وضعیت آنلاین</string>
     <string name="openConversations">مکالمه جدید</string>
     <string name="polls_options">گزینه‌ها</string>
+    <string name="polls_results_subtitle">نتایج</string>
     <string name="polls_settings">تنظیمات</string>
     <string name="reactions_tab_all">همه</string>
     <string name="save">ذخیره</string>
