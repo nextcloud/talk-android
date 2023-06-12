@@ -22,6 +22,7 @@
 package com.nextcloud.talk.utils.database.user
 
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.capabilities.Capabilities
 
 @Suppress("TooManyFunctions")
 object CapabilitiesUtilNew {
@@ -37,9 +38,9 @@ object CapabilitiesUtilNew {
     }
 
     @JvmStatic
-    fun isServerEOL(user: User): Boolean {
+    fun isServerEOL(capabilities: Capabilities?): Boolean {
         // Capability is available since Talk 4 => Nextcloud 14 => Autmn 2018
-        return !hasSpreedFeatureCapability(user, "no-ping")
+        return !hasSpreedFeatureCapability(capabilities, "no-ping")
     }
 
     fun isServerAlmostEOL(user: User): Boolean {
@@ -57,8 +58,13 @@ object CapabilitiesUtilNew {
 
     @JvmStatic
     fun hasSpreedFeatureCapability(user: User?, capabilityName: String): Boolean {
-        if (user?.capabilities?.spreedCapability?.features != null) {
-            return user.capabilities!!.spreedCapability!!.features!!.contains(capabilityName)
+        return hasSpreedFeatureCapability(user?.capabilities, capabilityName)
+    }
+
+    @JvmStatic
+    fun hasSpreedFeatureCapability(capabilities: Capabilities?, capabilityName: String): Boolean {
+        if (capabilities?.spreedCapability?.features != null) {
+            return capabilities.spreedCapability!!.features!!.contains(capabilityName)
         }
         return false
     }

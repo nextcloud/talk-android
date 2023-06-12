@@ -621,7 +621,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun setupServerAgeWarning() {
         when {
-            CapabilitiesUtilNew.isServerEOL(currentUser!!) -> {
+            CapabilitiesUtilNew.isServerEOL(currentUser!!.capabilities) -> {
                 binding.serverAgeWarningText.setTextColor(ContextCompat.getColor((context), R.color.nc_darkRed))
                 binding.serverAgeWarningText.setText(R.string.nc_settings_server_eol)
                 binding.serverAgeWarningIcon.setColorFilter(
