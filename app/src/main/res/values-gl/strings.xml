@@ -26,7 +26,7 @@
     <string name="emoji_search">Buscar «emoji»</string>
     <string name="encrypted">Cifrado</string>
     <string name="error_loading_chats">Produciuse un problema ao cargar as súas conversas</string>
-    <string name="failed_to_save">Produciuse un erro ao gardar %1$s</string>
+    <string name="failed_to_save">Produciuse un fallo ao gardar %1$s</string>
     <string name="file_list_folder">cartafol</string>
     <string name="file_list_loading">Cargando…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -44,7 +44,7 @@
     <string name="message_poll_tap_to_open">Toque para abrir a enquisa</string>
     <string name="message_search_begin_empty">Sen resultados de busca</string>
     <string name="message_search_begin_typing">Comece a escribir para buscar</string>
-    <string name="message_search_hint">Busca…</string>
+    <string name="message_search_hint">Buscar…</string>
     <string name="messages">Mensaxes</string>
     <string name="nc_Server_account_imported">A conta seleccionada foi importada e xa está dispoñíbel</string>
     <string name="nc_about">Sobre</string>
@@ -128,6 +128,7 @@
     <string name="nc_description_send_message_button">Enviar a mensaxe</string>
     <string name="nc_dialog_invalid_password">Contrasinal incorrecto </string>
     <string name="nc_dialog_maintenance_mode">Modo de mantemento</string>
+    <string name="nc_dialog_outdated_client_option_update">Actualizar</string>
     <string name="nc_dialog_reauth_or_delete">Quere volver autorizar ou eliminar esta conta?</string>
     <string name="nc_display_name_not_fetched">Non foi posíbel obter o nome para amosar, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
@@ -322,7 +323,7 @@
     <string name="nc_upload_confirm_send_multiple">Quere enviar estes ficheiros a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>
     <string name="nc_upload_failed">Sentímolo, produciuse un fallo no envío</string>
-    <string name="nc_upload_from_device">Cargar desde o dispositivo</string>
+    <string name="nc_upload_from_device">Cargar dende o dispositivo</string>
     <string name="nc_upload_in_progess">Enviando</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_webinar">Seminario web</string>
@@ -374,10 +375,12 @@
     <string name="title_attachments">Anexos</string>
     <string name="today">Hoxe</string>
     <string name="translate">Traducir</string>
-    <string name="translation_detect_language">Detectar a linguaxe</string>
+    <string name="translation">Tradución</string>
+    <string name="translation_copy_translated_text">Copiar o texto traducido</string>
+    <string name="translation_detect_language">Detectar o idioma</string>
     <string name="translation_device_settings">Axustes do dispositivo</string>
-    <string name="translation_error_message">Non se puido detectar o idioma</string>
-    <string name="translation_error_title">Produciuse un erro na tradución</string>
+    <string name="translation_error_message">Non foi posíbel detectar o idioma</string>
+    <string name="translation_error_title">Produciuse un fallo na tradución</string>
     <string name="translation_from">Dende:</string>
     <string name="translation_to">Para</string>
     <string name="user_info_address">Enderezo</string>

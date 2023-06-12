@@ -98,6 +98,7 @@
     <string name="nc_clear_history_warning">Bu görüşmedeki tüm iletileri silmek istediğinize emin misiniz?</string>
     <string name="nc_client_cert_change">İstemci sertifikasını değiştir</string>
     <string name="nc_client_cert_setup">İstemci sertifikası kurulumu</string>
+    <string name="nc_close_app">Uygulamayı kapat</string>
     <string name="nc_common_and">ve</string>
     <string name="nc_common_dismiss">Yok say</string>
     <string name="nc_common_error_sorry">Ne yazık ki bir sorun çıktı!</string>
@@ -129,6 +130,9 @@
     <string name="nc_description_send_message_button">İleti gönder</string>
     <string name="nc_dialog_invalid_password">Parola geçersiz</string>
     <string name="nc_dialog_maintenance_mode">Bakım kipi</string>
+    <string name="nc_dialog_maintenance_mode_description">Şu anda sunucuda bakım yapılıyor.</string>
+    <string name="nc_dialog_outdated_client">Uygulama sürümü çok eski</string>
+    <string name="nc_dialog_outdated_client_description">Uygulama çok eski ve artık bu sunucu tarafından desteklenmiyor. Lütfen güncelleyin.</string>
     <string name="nc_dialog_outdated_client_option_update">Güncelle</string>
     <string name="nc_dialog_reauth_or_delete">Bu hesabı yeniden etkinleştirmek ya da silmek ister misiniz?</string>
     <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>

@@ -98,6 +98,7 @@
     <string name="nc_clear_history_warning">您確定要刪除對話內所有的訊息嗎？</string>
     <string name="nc_client_cert_change">變更客戶端憑證</string>
     <string name="nc_client_cert_setup">設定客戶端憑證</string>
+    <string name="nc_close_app">關閉應用程式</string>
     <string name="nc_common_and">與</string>
     <string name="nc_common_dismiss">取消</string>
     <string name="nc_common_error_sorry">抱歉，發生了一些問題！</string>
@@ -129,6 +130,9 @@
     <string name="nc_description_send_message_button">傳送訊息</string>
     <string name="nc_dialog_invalid_password">無效的密碼</string>
     <string name="nc_dialog_maintenance_mode">維護模式</string>
+    <string name="nc_dialog_maintenance_mode_description">伺服器目前正處於維護模式。</string>
+    <string name="nc_dialog_outdated_client">應用程式已過時</string>
+    <string name="nc_dialog_outdated_client_description">應用程式太舊了，不再被此伺服器支援。請更新。</string>
     <string name="nc_dialog_outdated_client_option_update">更新</string>
     <string name="nc_dialog_reauth_or_delete">您要重新授權或刪除此帳號嗎？</string>
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止動作。</string>
