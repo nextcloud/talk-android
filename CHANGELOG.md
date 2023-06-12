@@ -5,6 +5,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [17.0.0] - 2023-06-12
+
+### Added
+- Typing indicator (requires NC27 and high performance backend)
+- Conversation avatars (requires NC27)
+- Reactions in calls (requires NC27)
+- Translate chat messages (requires NC27 and translation provider)
+- Group mentions in a conversation
+- Set conversation description
+
+### Fixed
+- Avatars gone in conversation list (e.g. after screen rotation)
+
+Minimum: NC 14 Server, Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/70?closed=1
+
 ## [16.0.1] - 2023-04-21
 
 ### Fixed
