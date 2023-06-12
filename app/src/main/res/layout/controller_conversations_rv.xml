@@ -83,9 +83,26 @@
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/menu_button"
-                    app:layout_constraintEnd_toStartOf="@id/rightContainer"
+                    app:layout_constraintEnd_toStartOf="@id/filter_conversations_button"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Search in Nextcloud" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filter_conversations_button"
+                    style="@style/Widget.AppTheme.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="start"
+                    android:contentDescription="@string/nc_filter"
+                    android:scaleType="fitCenter"
+                    android:transitionName="userAvatar.transitionTag"
+                    app:cornerRadius="@dimen/button_corner_radius"
+                    app:icon="@drawable/ic_baseline_filter_list_24"
+                    app:iconTint="@color/disabled_text"
+                    app:iconSize="@dimen/avatar_size_app_bar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/rightContainer"
+                    tools:visibility="visible" />
 
                 <FrameLayout
                     android:id="@+id/rightContainer"

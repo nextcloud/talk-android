@@ -97,6 +97,7 @@ import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
+import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -756,6 +757,11 @@ class ConversationsListActivity :
                 val intent = Intent(context, SettingsActivity::class.java)
                 startActivity(intent)
             }
+        }
+
+        binding.filterConversationsButton.setOnClickListener {
+            val newFragment: DialogFragment = FilterConversationFragment.newInstance(adapter!!)
+            newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 
         binding?.newMentionPopupBubble?.hide()
