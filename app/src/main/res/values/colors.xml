@@ -105,4 +105,6 @@
     possible?! don't use this to set the background of dialogs -->
     <color name="dialog_background">#FFFFFF</color>
 
+    <color name="icon_on_bg_default">#99000000</color>
+
 </resources>

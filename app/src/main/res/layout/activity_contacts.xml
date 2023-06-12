@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Andy Scherzinger
+  ~ @author Marcel Hibbe
+  ~ Copyright (C) 2018 Andy Scherzinger
+  ~ Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/contacts_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/contacts_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/appbar"
+            android:theme="?attr/actionBarPopupTheme"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIconTint="@color/fontAppbar"
+            app:popupTheme="@style/appActionBarPopupMenu"
+            app:titleTextColor="@color/fontAppbar"
+            tools:title="@string/nc_app_product_name" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/loading_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:visibility="gone">
+
+        <include layout="@layout/rv_item_contact_shimmer" />
+        <include layout="@layout/rv_item_contact_shimmer" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/title_text_view"
+                android:layout_width="16dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="72dp"
+                android:layout_marginTop="@dimen/standard_half_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/standard_half_margin"
+                app:custom_color="@color/nc_shimmer_default_color" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?android:attr/listDivider" />
+
+        </LinearLayout>
+
+        <include layout="@layout/rv_item_contact_shimmer" />
+        <include layout="@layout/rv_item_contact_shimmer" />
+        <include layout="@layout/rv_item_contact_shimmer" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/call_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_half_margin"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/initial_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/public_call_link"
+                android:layout_width="@dimen/avatar_size"
+                android:layout_height="@dimen/avatar_size"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:background="@drawable/round_bgnd"
+                android:contentDescription="@null"
+                android:padding="@dimen/standard_half_padding"
+                android:src="@drawable/ic_add_white_24px"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/public_call_link"
+                android:ellipsize="middle"
+                android:singleLine="true"
+                android:text="@string/nc_public_call"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/ListItem"
+                tools:text="@string/nc_public_call" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/secondary_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:minHeight="@dimen/small_item_height"
+            android:visibility="gone"
+            tools:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/nc_public_call_explanation"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                tools:text="@string/nc_public_call_explanation" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/list_open_conversations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_half_margin"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/list_open_conversations_image"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:background="@drawable/round_bgnd"
+            android:contentDescription="@null"
+            android:padding="@dimen/standard_half_padding"
+            android:src="@drawable/baseline_format_list_bulleted_24"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/list_open_conversations_image"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:text="@string/nc_list_open_conversations"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/ListItem" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/join_conversation_via_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_half_margin"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/join_conversation_via_link_image"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:background="@drawable/round_bgnd"
+            android:contentDescription="@null"
+            android:padding="@dimen/standard_half_padding"
+            android:src="@drawable/ic_public_black_24px"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/join_conversation_via_link_image"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:text="@string/nc_join_via_link"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/ListItem" />
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/controller_generic_rv"
+        layout="@layout/controller_generic_rv" />
+</LinearLayout>

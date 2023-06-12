@@ -31,6 +31,8 @@ import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
+import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
+import com.nextcloud.talk.openconversations.data.OpenConversationsRepositoryImpl
 import com.nextcloud.talk.polls.repositories.PollRepository
 import com.nextcloud.talk.polls.repositories.PollRepositoryImpl
 import com.nextcloud.talk.raisehand.RequestAssistanceRepository
@@ -108,6 +110,12 @@ class RepositoryModule {
     fun provideRequestAssistanceRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew):
         RequestAssistanceRepository {
         return RequestAssistanceRepositoryImpl(ncApi, userProvider)
+    }
+
+    @Provides
+    fun provideOpenConversationsRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew):
+        OpenConversationsRepository {
+        return OpenConversationsRepositoryImpl(ncApi, userProvider)
     }
 
     @Provides

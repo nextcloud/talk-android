@@ -53,7 +53,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ControllerContactsRvBinding
+import com.nextcloud.talk.databinding.ActivityContactsBinding
 import com.nextcloud.talk.events.OpenConversationEvent
 import com.nextcloud.talk.jobs.AddParticipantsToConversation
 import com.nextcloud.talk.models.RetrofitBucket
@@ -63,6 +63,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.openconversations.ListOpenConversationsActivity
 import com.nextcloud.talk.ui.dialog.ContactsBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
@@ -90,7 +91,7 @@ class ContactsActivity :
     BaseActivity(),
     SearchView.OnQueryTextListener,
     FlexibleAdapter.OnItemClickListener {
-    private lateinit var binding: ControllerContactsRvBinding
+    private lateinit var binding: ActivityContactsBinding
 
     @Inject
     lateinit var userManager: UserManager
@@ -125,7 +126,7 @@ class ContactsActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        binding = ControllerContactsRvBinding.inflate(layoutInflater)
+        binding = ActivityContactsBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
@@ -159,13 +160,16 @@ class ContactsActivity :
             toggleConversationPrivacyLayout(!isPublicCall)
         }
         if (isAddingParticipantsView) {
-            binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.visibility = View.GONE
-            binding.conversationPrivacyToggle.callHeaderLayout.visibility = View.GONE
+            binding.joinConversationViaLink.visibility = View.GONE
+            binding.callHeaderLayout.visibility = View.GONE
         } else {
-            binding.joinConversationViaLink.joinConversationViaLinkRelativeLayout.setOnClickListener {
+            binding.joinConversationViaLink.setOnClickListener {
                 joinConversationViaLink()
             }
-            binding.conversationPrivacyToggle.callHeaderLayout.setOnClickListener {
+            binding.listOpenConversations.setOnClickListener {
+                listOpenConversations()
+            }
+            binding.callHeaderLayout.setOnClickListener {
                 toggleCallHeader()
             }
         }
@@ -662,14 +666,17 @@ class ContactsActivity :
 
         binding?.controllerGenericRv?.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it.swipeRefreshLayout) }
 
-        binding?.joinConversationViaLink?.joinConversationViaLinkImageView
-            ?.background
-            ?.setColorFilter(
-                ResourcesCompat.getColor(resources!!, R.color.colorBackgroundDarker, null),
-                PorterDuff.Mode.SRC_IN
-            )
+        binding.listOpenConversationsImage.background?.setColorFilter(
+            ResourcesCompat.getColor(resources!!, R.color.colorBackgroundDarker, null),
+            PorterDuff.Mode.SRC_IN
+        )
 
-        binding?.conversationPrivacyToggle?.let {
+        binding.joinConversationViaLinkImage.background?.setColorFilter(
+            ResourcesCompat.getColor(resources!!, R.color.colorBackgroundDarker, null),
+            PorterDuff.Mode.SRC_IN
+        )
+
+        binding?.let {
             viewThemeUtils.platform.colorImageViewBackgroundAndIcon(it.publicCallLink)
         }
         disengageProgressBar()
@@ -677,11 +684,11 @@ class ContactsActivity :
 
     private fun disengageProgressBar() {
         if (!alreadyFetching) {
-            binding?.loadingContent?.visibility = View.GONE
-            binding?.controllerGenericRv?.root?.visibility = View.VISIBLE
+            binding.loadingContent.visibility = View.GONE
+            binding.controllerGenericRv.root.visibility = View.VISIBLE
             if (isNewConversationView) {
-                binding?.conversationPrivacyToggle?.callHeaderLayout?.visibility = View.VISIBLE
-                binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.VISIBLE
+                binding.callHeaderLayout.visibility = View.VISIBLE
+                binding.joinConversationViaLink.visibility = View.VISIBLE
             }
         }
     }
@@ -715,7 +722,7 @@ class ContactsActivity :
             adapter?.updateDataSet(contactItems as List<Nothing>?)
         }
 
-        binding?.controllerGenericRv?.swipeRefreshLayout?.isEnabled = !adapter!!.hasFilter()
+        binding.controllerGenericRv?.swipeRefreshLayout?.isEnabled = !adapter!!.hasFilter()
 
         return true
     }
@@ -877,6 +884,11 @@ class ContactsActivity :
         prepareAndShowBottomSheetWithBundle(bundle)
     }
 
+    private fun listOpenConversations() {
+        val intent = Intent(this, ListOpenConversationsActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun toggleCallHeader() {
         toggleConversationPrivacyLayout(isPublicCall)
         isPublicCall = !isPublicCall
@@ -917,25 +929,25 @@ class ContactsActivity :
 
     private fun toggleConversationPrivacyLayout(showInitialLayout: Boolean) {
         if (showInitialLayout) {
-            binding?.conversationPrivacyToggle?.initialRelativeLayout?.visibility = View.VISIBLE
-            binding?.conversationPrivacyToggle?.secondaryRelativeLayout?.visibility = View.GONE
+            binding.initialRelativeLayout.visibility = View.VISIBLE
+            binding.secondaryRelativeLayout.visibility = View.GONE
         } else {
-            binding?.conversationPrivacyToggle?.initialRelativeLayout?.visibility = View.GONE
-            binding?.conversationPrivacyToggle?.secondaryRelativeLayout?.visibility = View.VISIBLE
+            binding.initialRelativeLayout.visibility = View.GONE
+            binding.secondaryRelativeLayout.visibility = View.VISIBLE
         }
     }
 
     private fun toggleConversationViaLinkVisibility(isPublicCall: Boolean) {
         if (isPublicCall) {
-            binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.GONE
+            binding.joinConversationViaLink.visibility = View.GONE
             updateGroupParticipantSelection()
         } else {
-            binding?.joinConversationViaLink?.joinConversationViaLinkRelativeLayout?.visibility = View.VISIBLE
+            binding.joinConversationViaLink.visibility = View.VISIBLE
         }
     }
 
     companion object {
-        const val TAG = "ContactsController"
+        private val TAG = ContactsActivity::class.simpleName
         const val RETRIES: Long = 3
         const val CONTACTS_BATCH_SIZE: Int = 50
         const val HEADER_ELEVATION: Int = 5

@@ -219,6 +219,10 @@
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".openconversations.ListOpenConversationsActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".conversationlist.ConversationsListActivity"
             android:theme="@style/AppTheme"
             android:exported="true">

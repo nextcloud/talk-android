@@ -197,6 +197,7 @@ How to translate with transifex:
 
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_join_via_link">Join with a link</string>
+    <string name="nc_list_open_conversations">List open conversations</string>
     <string name="nc_join_via_web">Join via web</string>
     <string name="nc_mark_as_read">Mark as read</string>
     <string name="nc_mark_as_unread">Mark as unread</string>
@@ -204,6 +205,10 @@ How to translate with transifex:
     <string name="nc_remove_from_favorites">Remove from favorites</string>
 
     <string name="nc_forward_to_three_dots">Forward to …</string>
+
+    <!-- Open conversations -->
+    <string name="nc_no_open_conversations_headline">No open conversations</string>
+    <string name="nc_no_open_conversations_text">No open conversations that you can join.\nEither there are no open conversations or you already joined all of them.</string>
 
     <!-- Contacts -->
     <string name="nc_select_participants">Select participants</string>
