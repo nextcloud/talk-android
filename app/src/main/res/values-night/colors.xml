@@ -76,4 +76,6 @@
 
     <color name="dialog_background">#353535</color>
 
+    <color name="icon_on_bg_default">#99FFFFFF</color>
+
 </resources>
