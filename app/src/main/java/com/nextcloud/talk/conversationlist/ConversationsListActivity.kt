@@ -34,6 +34,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -765,6 +766,8 @@ class ConversationsListActivity :
             }
         }
 
+        updateFilterConversationButtonColor()
+
         binding.filterConversationsButton.setOnClickListener {
             val newFragment: DialogFragment = FilterConversationFragment.newInstance(
                 adapter!!,
@@ -782,6 +785,17 @@ class ConversationsListActivity :
             )
         }
         binding?.newMentionPopupBubble?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
+    }
+
+    fun updateFilterConversationButtonColor() {
+        val colorInt: Int = if (filterState[NONE]!!) {
+            context.getColor(R.color.grey_200)
+        } else {
+            context.getColor(R.color.colorPrimary)
+        }
+
+        val csl = ColorStateList.valueOf(colorInt)
+        binding.filterConversationsButton.iconTint = csl
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")

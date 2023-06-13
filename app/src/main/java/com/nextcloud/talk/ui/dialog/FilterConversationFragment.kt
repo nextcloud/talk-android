@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -105,29 +106,22 @@ class FilterConversationFragment(
     }
 
     private fun changeMentionFilter() {
-        if (filterState[MENTION]!!) {
-            binding.mentionedFilterButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-        } else
-            binding.mentionedFilterButton.setBackgroundColor(resources.getColor(R.color.grey_200))
+        val colorInt = if (filterState[MENTION]!!) R.color.colorPrimary else R.color.grey_200
+        binding.mentionedFilterButton.setBackgroundColor(ContextCompat.getColor(requireContext(), colorInt))
     }
 
     private fun changeUnreadFilter() {
-        if (filterState[UNREAD]!!) {
-            binding.unreadFilterButton.setBackgroundColor(
-                resources.getColor(R.color.colorPrimary)
-            )
-        } else binding.unreadFilterButton.setBackgroundColor(resources.getColor(R.color.grey_200))
+        val colorInt = if (filterState[UNREAD]!!) R.color.colorPrimary else R.color.grey_200
+        binding.unreadFilterButton.setBackgroundColor(ContextCompat.getColor(requireContext(), colorInt))
     }
 
     private fun changeNoneFilter() {
-        if (filterState[NONE]!!) {
-            binding.noFilterButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-        } else
-            binding.noFilterButton.setBackgroundColor(resources.getColor(R.color.grey_200))
+        val colorInt = if (filterState[NONE]!!) R.color.colorPrimary else R.color.grey_200
+        binding.noFilterButton.setBackgroundColor(ContextCompat.getColor(requireContext(), colorInt))
     }
 
     private fun processSubmit() {
-        var newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+        val newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
         if (filterState[NONE]!!) {
             currentAdapter.updateDataSet(currentItems, true)
         } else {
@@ -145,6 +139,8 @@ class FilterConversationFragment(
             filterState[MENTION]!!,
             filterState[UNREAD]!!
         )
+
+        conversationsList.updateFilterConversationButtonColor()
     }
     private fun filter(conversation: Conversation): Boolean {
         var result = true
