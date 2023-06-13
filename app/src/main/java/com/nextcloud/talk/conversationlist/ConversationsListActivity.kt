@@ -190,6 +190,12 @@ class ConversationsListActivity :
     private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
+    private var filterState =
+        mutableMapOf(
+            NONE to true,
+            MENTION to false,
+            UNREAD to false
+        )
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -760,7 +766,12 @@ class ConversationsListActivity :
         }
 
         binding.filterConversationsButton.setOnClickListener {
-            val newFragment: DialogFragment = FilterConversationFragment.newInstance(adapter!!)
+            val newFragment: DialogFragment = FilterConversationFragment.newInstance(
+                adapter!!,
+                conversationItems,
+                filterState,
+                this
+            )
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 
@@ -1462,6 +1473,12 @@ class ConversationsListActivity :
         showErrorDialog()
     }
 
+    fun updateFilterState(none: Boolean, mention: Boolean, unread: Boolean) {
+        filterState[NONE] = none
+        filterState[MENTION] = mention
+        filterState[UNREAD] = unread
+    }
+
     companion object {
         const val TAG = "ConvListController"
         const val UNREAD_BUBBLE_DELAY = 2500
@@ -1475,5 +1492,8 @@ class ConversationsListActivity :
         const val CLIENT_UPGRADE_GPLAY_LINK = "https://play.google.com/store/apps/details?id="
         const val HTTP_SERVICE_UNAVAILABLE = 503
         const val MAINTENANCE_MODE_HEADER_KEY = "X-Nextcloud-Maintenance-Mode"
+        const val NONE: String = "none"
+        const val MENTION: String = "mention"
+        const val UNREAD: String = "unread"
     }
 }
