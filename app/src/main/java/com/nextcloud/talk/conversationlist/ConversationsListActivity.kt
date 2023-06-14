@@ -34,7 +34,6 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -68,6 +67,7 @@ import coil.transform.CircleCropTransformation
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
@@ -194,8 +194,8 @@ class ConversationsListActivity :
     private var searchViewDisposable: Disposable? = null
     private var filterState =
         mutableMapOf(
-            MENTION to false,
-            UNREAD to false
+            FilterConversationFragment.MENTION to false,
+            FilterConversationFragment.UNREAD to false
         )
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -787,17 +787,6 @@ class ConversationsListActivity :
             )
         }
         binding?.newMentionPopupBubble?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
-    }
-
-    fun updateFilterConversationButtonColor() {
-        val colorInt: Int = if (filterState.containsValue(true)) {
-            context.getColor(R.color.colorPrimary)
-        } else {
-            context.getColor(R.color.grey_200)
-        }
-
-        val csl = ColorStateList.valueOf(colorInt)
-        binding.filterConversationsButton.iconTint = csl
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -1490,11 +1479,22 @@ class ConversationsListActivity :
     }
 
     fun updateFilterState(mention: Boolean, unread: Boolean) {
-        filterState[MENTION] = mention
-        filterState[UNREAD] = unread
+        filterState[FilterConversationFragment.MENTION] = mention
+        filterState[FilterConversationFragment.UNREAD] = unread
     }
 
     fun setFilterableItems(items: MutableList<AbstractFlexibleItem<*>>) { filterableConversationItems = items }
+
+    fun updateFilterConversationButtonColor() {
+        if (filterState.containsValue(true)) {
+            binding.filterConversationsButton.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
+        } else {
+            binding.filterConversationsButton.let { viewThemeUtils.platform.colorImageView(
+                it,
+                ColorRole.ON_SURFACE_VARIANT
+            ) }
+        }
+    }
 
     companion object {
         const val TAG = "ConvListController"
@@ -1509,7 +1509,5 @@ class ConversationsListActivity :
         const val CLIENT_UPGRADE_GPLAY_LINK = "https://play.google.com/store/apps/details?id="
         const val HTTP_SERVICE_UNAVAILABLE = 503
         const val MAINTENANCE_MODE_HEADER_KEY = "X-Nextcloud-Maintenance-Mode"
-        const val MENTION: String = "mention"
-        const val UNREAD: String = "unread"
     }
 }
