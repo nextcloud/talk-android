@@ -193,7 +193,6 @@ class ConversationsListActivity :
     private var searchViewDisposable: Disposable? = null
     private var filterState =
         mutableMapOf(
-            NONE to true,
             MENTION to false,
             UNREAD to false
         )
@@ -788,10 +787,10 @@ class ConversationsListActivity :
     }
 
     fun updateFilterConversationButtonColor() {
-        val colorInt: Int = if (filterState[NONE]!!) {
-            context.getColor(R.color.grey_200)
-        } else {
+        val colorInt: Int = if (filterState.containsValue(true)) {
             context.getColor(R.color.colorPrimary)
+        } else {
+            context.getColor(R.color.grey_200)
         }
 
         val csl = ColorStateList.valueOf(colorInt)
@@ -1487,8 +1486,7 @@ class ConversationsListActivity :
         showErrorDialog()
     }
 
-    fun updateFilterState(none: Boolean, mention: Boolean, unread: Boolean) {
-        filterState[NONE] = none
+    fun updateFilterState(mention: Boolean, unread: Boolean) {
         filterState[MENTION] = mention
         filterState[UNREAD] = unread
     }
@@ -1506,7 +1504,6 @@ class ConversationsListActivity :
         const val CLIENT_UPGRADE_GPLAY_LINK = "https://play.google.com/store/apps/details?id="
         const val HTTP_SERVICE_UNAVAILABLE = 503
         const val MAINTENANCE_MODE_HEADER_KEY = "X-Nextcloud-Maintenance-Mode"
-        const val NONE: String = "none"
         const val MENTION: String = "mention"
         const val UNREAD: String = "unread"
     }

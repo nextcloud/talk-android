@@ -5,13 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ConversationItem
-import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.databinding.DialogFilterConversationBinding
@@ -35,9 +33,6 @@ class FilterConversationFragment(
     private var currentItems = currentConversations
     private var filterState = savedFilterState
     private var conversationsList = conversationsListActivity
-
-    @Inject
-    lateinit var ncApi: NcApi
 
     @Inject
     lateinit var userManager: UserManager
@@ -68,61 +63,39 @@ class FilterConversationFragment(
                 binding.root,
             )
         }.forEach(viewThemeUtils.platform::colorViewBackground)
-        updateFilters()
+
+        binding.run {
+            listOf(
+                unreadFilterChip,
+                mentionedFilterChip
+            )
+        }.forEach(viewThemeUtils.material::colorChipBackground)
+
+        setUpChips()
     }
 
     private fun setUpListeners() {
-        binding.noFilterButton.setOnClickListener {
-            filterState[NONE] = !filterState[NONE]!!
-            filterState[UNREAD] = false
-            filterState[MENTION] = false
-            updateFilters()
-        }
-
-        binding.unreadFilterButton.setOnClickListener {
-            filterState[UNREAD] = !filterState[UNREAD]!!
-            changeUnreadFilter()
-            filterState[NONE] = false
-            changeNoneFilter()
-        }
-
-        binding.mentionedFilterButton.setOnClickListener {
-            filterState[MENTION] = !filterState[MENTION]!!
-            changeMentionFilter()
-            filterState[NONE] = false
-            changeNoneFilter()
-        }
-
-        binding.filterButton.setOnClickListener {
+        binding.unreadFilterChip.setOnCheckedChangeListener { _, isChecked ->
+            filterState[UNREAD] = isChecked
+            binding.unreadFilterChip.isChecked = isChecked
             processSubmit()
-            dismiss()
+        }
+
+        binding.mentionedFilterChip.setOnCheckedChangeListener { _, isChecked ->
+            filterState[MENTION] = isChecked
+            binding.mentionedFilterChip.isChecked = isChecked
+            processSubmit()
         }
     }
 
-    private fun updateFilters() {
-        changeNoneFilter()
-        changeUnreadFilter()
-        changeMentionFilter()
-    }
-
-    private fun changeMentionFilter() {
-        val colorInt = if (filterState[MENTION]!!) R.color.colorPrimary else R.color.grey_200
-        binding.mentionedFilterButton.setBackgroundColor(ContextCompat.getColor(requireContext(), colorInt))
-    }
-
-    private fun changeUnreadFilter() {
-        val colorInt = if (filterState[UNREAD]!!) R.color.colorPrimary else R.color.grey_200
-        binding.unreadFilterButton.setBackgroundColor(ContextCompat.getColor(requireContext(), colorInt))
-    }
-
-    private fun changeNoneFilter() {
-        val colorInt = if (filterState[NONE]!!) R.color.colorPrimary else R.color.grey_200
-        binding.noFilterButton.setBackgroundColor(ContextCompat.getColor(requireContext(), colorInt))
+    private fun setUpChips() {
+        binding.unreadFilterChip.isChecked = filterState[UNREAD]!!
+        binding.mentionedFilterChip.isChecked = filterState[MENTION]!!
     }
 
     private fun processSubmit() {
         val newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-        if (filterState[NONE]!!) {
+        if (!filterState.containsValue(true)) {
             currentAdapter.updateDataSet(currentItems, true)
         } else {
             val items = currentItems
@@ -135,7 +108,6 @@ class FilterConversationFragment(
             currentAdapter.updateDataSet(newItems, true)
         }
         conversationsList.updateFilterState(
-            filterState[NONE]!!,
             filterState[MENTION]!!,
             filterState[UNREAD]!!
         )
@@ -145,7 +117,7 @@ class FilterConversationFragment(
     private fun filter(conversation: Conversation): Boolean {
         var result = true
         for ((k, v) in filterState) {
-            if (k != NONE && v) {
+            if (v) {
                 when (k) {
                     MENTION -> result = result && conversation.unreadMention
                     UNREAD -> result = result && (conversation.unreadMessages > 0)
@@ -165,7 +137,6 @@ class FilterConversationFragment(
             conversationsListActivity: ConversationsListActivity
         ) = FilterConversationFragment(adapter, currentConversations, savedFilterState, conversationsListActivity)
         val TAG: String = FilterConversationFragment::class.java.simpleName
-        const val NONE: String = "none"
         const val MENTION: String = "mention"
         const val UNREAD: String = "unread"
     }
