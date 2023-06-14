@@ -171,6 +171,7 @@ class ConversationsListActivity :
     private var conversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var conversationItemsWithHeader: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private val searchableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    private var filterableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var searchItem: MenuItem? = null
     private var chooseAccountItem: MenuItem? = null
     private var searchView: SearchView? = null
@@ -420,7 +421,8 @@ class ConversationsListActivity :
             searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                     adapter!!.setHeadersShown(true)
-                    adapter!!.updateDataSet(searchableConversationItems, false)
+                    if (!filterState.containsValue(true)) filterableConversationItems = searchableConversationItems
+                    adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.showAllHeaders()
                     binding?.swipeRefreshLayoutView?.isEnabled = false
                     return true
@@ -428,7 +430,8 @@ class ConversationsListActivity :
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                     adapter!!.setHeadersShown(false)
-                    adapter!!.updateDataSet(conversationItems, false)
+                    if (!filterState.containsValue(true)) filterableConversationItems = searchableConversationItems
+                    adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.hideAllHeaders()
                     if (searchHelper != null) {
                         // cancel any pending searches
@@ -1490,6 +1493,8 @@ class ConversationsListActivity :
         filterState[MENTION] = mention
         filterState[UNREAD] = unread
     }
+
+    fun setFilterableItems(items: MutableList<AbstractFlexibleItem<*>>) { filterableConversationItems = items }
 
     companion object {
         const val TAG = "ConvListController"

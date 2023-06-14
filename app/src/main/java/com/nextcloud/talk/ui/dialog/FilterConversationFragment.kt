@@ -106,6 +106,7 @@ class FilterConversationFragment(
                 }
             }
             currentAdapter.updateDataSet(newItems, true)
+            conversationsList.setFilterableItems(newItems)
         }
         conversationsList.updateFilterState(
             filterState[MENTION]!!,
