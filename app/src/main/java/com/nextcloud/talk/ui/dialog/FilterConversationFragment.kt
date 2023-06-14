@@ -79,7 +79,7 @@ class FilterConversationFragment(
     private fun setUpColors() {
         binding.run {
             listOf(
-                binding.root,
+                binding.root
             )
         }.forEach(viewThemeUtils.platform::colorViewBackground)
 
@@ -104,6 +104,10 @@ class FilterConversationFragment(
             filterState[MENTION] = isChecked
             binding.mentionedFilterChip.isChecked = isChecked
             processSubmit()
+        }
+
+        binding.closeButton.setOnClickListener {
+            dismiss()
         }
     }
 

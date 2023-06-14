@@ -1489,10 +1489,12 @@ class ConversationsListActivity :
         if (filterState.containsValue(true)) {
             binding.filterConversationsButton.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
         } else {
-            binding.filterConversationsButton.let { viewThemeUtils.platform.colorImageView(
-                it,
-                ColorRole.ON_SURFACE_VARIANT
-            ) }
+            binding.filterConversationsButton.let {
+                viewThemeUtils.platform.colorImageView(
+                    it,
+                    ColorRole.ON_SURFACE_VARIANT
+                )
+            }
         }
     }
 

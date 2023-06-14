@@ -26,13 +26,29 @@
     tools:background="@color/white"
     tools:visibility="visible">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/standard_margin"
-        android:text="@string/nc_filter"
-        android:textSize="@dimen/md_title_textsize" />
+        android:orientation="horizontal">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/standard_margin"
+            android:text="@string/nc_filter"
+            android:textSize="@dimen/md_title_textsize" />
+
+        <ImageView
+            android:id="@+id/close_button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_close_search"
+            android:layout_margin="@dimen/standard_margin"
+            />
+
+    </LinearLayout>
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
