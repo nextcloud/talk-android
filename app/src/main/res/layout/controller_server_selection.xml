@@ -137,17 +137,18 @@
                 android:id="@+id/error_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:orientation="horizontal"
                 android:paddingStart="16dp"
                 android:paddingEnd="2dp"
                 android:visibility="invisible"
-                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables"
                 tools:visibility="visible">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:src="@android:drawable/stat_sys_warning">
-                </ImageView>
+                    android:contentDescription="@null"
+                    android:src="@android:drawable/stat_sys_warning" />
 
                 <TextView
                     android:id="@+id/error_text"
