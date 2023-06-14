@@ -299,6 +299,7 @@ class ServerSelectionController :
             .subscribeOn(Schedulers.io())
             .subscribe(object : Observer<CapabilitiesOverall> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(capabilitiesOverall: CapabilitiesOverall) {
