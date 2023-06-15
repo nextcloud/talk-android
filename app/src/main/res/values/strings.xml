@@ -681,9 +681,7 @@ How to translate with transifex:
     <string name="translation_error_message">Could not detect language</string>
     <string name="translation_copy_translated_text">Copy translated text</string>
     <string name="nc_filter">Filter Conversations</string>
-    <string name="nc_filter_short">Filter</string>
     <string name="mentioned">Mentioned</string>
     <string name="unread">Unread</string>
-    <string name="no_filter">No Filter</string>
 
 </resources>
