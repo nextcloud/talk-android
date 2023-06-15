@@ -67,6 +67,7 @@ import coil.transform.CircleCropTransformation
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
@@ -97,6 +98,7 @@ import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
+import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -169,6 +171,7 @@ class ConversationsListActivity :
     private var conversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var conversationItemsWithHeader: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private val searchableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    private var filterableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var searchItem: MenuItem? = null
     private var chooseAccountItem: MenuItem? = null
     private var searchView: SearchView? = null
@@ -189,6 +192,11 @@ class ConversationsListActivity :
     private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
+    private var filterState =
+        mutableMapOf(
+            FilterConversationFragment.MENTION to false,
+            FilterConversationFragment.UNREAD to false
+        )
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -413,7 +421,8 @@ class ConversationsListActivity :
             searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                     adapter!!.setHeadersShown(true)
-                    adapter!!.updateDataSet(searchableConversationItems, false)
+                    if (!filterState.containsValue(true)) filterableConversationItems = searchableConversationItems
+                    adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.showAllHeaders()
                     binding?.swipeRefreshLayoutView?.isEnabled = false
                     return true
@@ -421,7 +430,8 @@ class ConversationsListActivity :
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                     adapter!!.setHeadersShown(false)
-                    adapter!!.updateDataSet(conversationItems, false)
+                    if (!filterState.containsValue(true)) filterableConversationItems = searchableConversationItems
+                    adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.hideAllHeaders()
                     if (searchHelper != null) {
                         // cancel any pending searches
@@ -756,6 +766,18 @@ class ConversationsListActivity :
                 val intent = Intent(context, SettingsActivity::class.java)
                 startActivity(intent)
             }
+        }
+
+        updateFilterConversationButtonColor()
+
+        binding.filterConversationsButton.setOnClickListener {
+            val newFragment: DialogFragment = FilterConversationFragment.newInstance(
+                adapter!!,
+                conversationItems,
+                filterState,
+                this
+            )
+            newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 
         binding?.newMentionPopupBubble?.hide()
@@ -1454,6 +1476,26 @@ class ConversationsListActivity :
         handleHttpExceptions(throwable)
         binding?.swipeRefreshLayoutView?.isRefreshing = false
         showErrorDialog()
+    }
+
+    fun updateFilterState(mention: Boolean, unread: Boolean) {
+        filterState[FilterConversationFragment.MENTION] = mention
+        filterState[FilterConversationFragment.UNREAD] = unread
+    }
+
+    fun setFilterableItems(items: MutableList<AbstractFlexibleItem<*>>) { filterableConversationItems = items }
+
+    fun updateFilterConversationButtonColor() {
+        if (filterState.containsValue(true)) {
+            binding.filterConversationsButton.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
+        } else {
+            binding.filterConversationsButton.let {
+                viewThemeUtils.platform.colorImageView(
+                    it,
+                    ColorRole.ON_SURFACE_VARIANT
+                )
+            }
+        }
     }
 
     companion object {
