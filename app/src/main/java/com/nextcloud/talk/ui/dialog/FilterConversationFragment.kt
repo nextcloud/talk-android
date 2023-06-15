@@ -90,7 +90,7 @@ class FilterConversationFragment(
                 unreadFilterChip,
                 mentionedFilterChip
             )
-        }.forEach(viewThemeUtils.talk::themeChipFilter)
+        }.forEach(viewThemeUtils.material::themeChipFilter)
 
         setUpChips()
     }
