@@ -19,6 +19,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,29 +27,12 @@
     tools:background="@color/white"
     tools:visibility="visible">
 
-    <LinearLayout
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/standard_margin"
-            android:text="@string/nc_filter"
-            android:textSize="@dimen/md_title_textsize" />
-
-        <ImageView
-            android:id="@+id/close_button"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:src="@drawable/ic_close_search"
-            android:layout_margin="@dimen/standard_margin"
-            />
-
-    </LinearLayout>
+        android:layout_margin="@dimen/standard_margin"
+        android:text="@string/nc_filter"
+        android:textSize="@dimen/md_title_textsize" />
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
@@ -57,7 +41,11 @@
     <com.google.android.material.chip.ChipGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_margin">
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_half_margin"
+        app:chipSpacingHorizontal="@dimen/standard_margin">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/unread_filter_chip"
@@ -74,4 +62,29 @@
             android:text="@string/mentioned" />
 
     </com.google.android.material.chip.ChipGroup>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/dialog_padding"
+        android:paddingEnd="@dimen/dialog_padding"
+        android:paddingBottom="@dimen/dialog_padding_top_bottom">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_close"
+            style="@style/Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:text="@string/close" />
+
+    </LinearLayout>
+
 </LinearLayout>

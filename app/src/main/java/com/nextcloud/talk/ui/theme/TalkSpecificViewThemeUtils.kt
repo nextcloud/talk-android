@@ -24,6 +24,7 @@ package com.nextcloud.talk.ui.theme
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
@@ -42,9 +43,11 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
+import com.nextcloud.android.common.ui.util.buildColorStateList
 import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
@@ -85,6 +88,39 @@ class TalkSpecificViewThemeUtils @Inject constructor(
             bubbleResource
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
+    }
+
+    fun themeChipFilter(chip: Chip) {
+        withScheme(chip.context) { scheme ->
+            val backgroundColors = buildColorStateList(
+                android.R.attr.state_checked to scheme.secondaryContainer,
+                -android.R.attr.state_checked to scheme.surface,
+                android.R.attr.state_focused to scheme.secondaryContainer,
+                android.R.attr.state_hovered to scheme.secondaryContainer,
+                android.R.attr.state_pressed to scheme.secondaryContainer
+            )
+
+            val iconColors = buildColorStateList(
+                android.R.attr.state_checked to scheme.onSecondaryContainer,
+                -android.R.attr.state_checked to scheme.onSurfaceVariant,
+                android.R.attr.state_focused to scheme.onSecondaryContainer,
+                android.R.attr.state_hovered to scheme.onSecondaryContainer,
+                android.R.attr.state_pressed to scheme.onSecondaryContainer
+            )
+
+            val textColors = buildColorStateList(
+                android.R.attr.state_checked to scheme.onSecondaryContainer,
+                -android.R.attr.state_checked to scheme.onSurfaceVariant,
+                android.R.attr.state_hovered to scheme.onSecondaryContainer,
+                android.R.attr.state_focused to scheme.onSecondaryContainer,
+                android.R.attr.state_pressed to scheme.onSecondaryContainer
+            )
+
+            chip.chipBackgroundColor = backgroundColors
+            //chip.chipStrokeColor = chipOutlineFilterColorList(scheme)
+            chip.setTextColor(textColors)
+            chip.checkedIconTint = iconColors
+        }
     }
 
     fun themeOutgoingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean) {

@@ -77,6 +77,8 @@ class FilterConversationFragment(
     }
 
     private fun setUpColors() {
+        viewThemeUtils.material.colorMaterialButtonPrimaryBorderless(binding.buttonClose)
+
         binding.run {
             listOf(
                 binding.root
@@ -88,7 +90,7 @@ class FilterConversationFragment(
                 unreadFilterChip,
                 mentionedFilterChip
             )
-        }.forEach(viewThemeUtils.material::colorChipBackground)
+        }.forEach(viewThemeUtils.talk::themeChipFilter)
 
         setUpChips()
     }
@@ -106,7 +108,7 @@ class FilterConversationFragment(
             processSubmit()
         }
 
-        binding.closeButton.setOnClickListener {
+        binding.buttonClose.setOnClickListener {
             dismiss()
         }
     }
