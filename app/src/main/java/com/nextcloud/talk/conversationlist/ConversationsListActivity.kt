@@ -659,6 +659,7 @@ class ConversationsListActivity :
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
             val dialog = dialogBuilder.show()
             viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
         }
@@ -721,10 +722,13 @@ class ConversationsListActivity :
                 HTTP_CLIENT_UPGRADE_REQUIRED -> showOutdatedClientDialog()
                 HTTP_SERVICE_UNAVAILABLE -> showServiceUnavailableDialog(throwable)
                 else -> {
-                    Log.e(TAG, "Http exception in ConversationListActivity", throwable)
+                    Log.e(TAG, "Http Exception in ConversationListActivity", throwable)
                     showErrorDialog()
                 }
             }
+        } else {
+            Log.e(TAG, "Exception in ConversationListActivity", throwable)
+            showErrorDialog()
         }
     }
 
