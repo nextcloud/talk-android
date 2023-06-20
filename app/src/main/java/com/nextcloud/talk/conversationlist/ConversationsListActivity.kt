@@ -566,7 +566,8 @@ class ConversationsListActivity :
                 }
                 sortConversations(conversationItems)
                 sortConversations(conversationItemsWithHeader)
-                adapter!!.updateDataSet(conversationItems, false)
+                if (!filterState.containsValue(true)) filterableConversationItems = conversationItems
+                adapter!!.updateDataSet(filterableConversationItems, false)
                 Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
                 fetchOpenConversations(apiVersion)
                 binding?.swipeRefreshLayoutView?.isRefreshing = false
