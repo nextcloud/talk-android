@@ -145,7 +145,11 @@ class FilterConversationFragment(
         for ((k, v) in filterState) {
             if (v) {
                 when (k) {
-                    MENTION -> result = result && conversation.unreadMention
+                    MENTION -> result = (result && conversation.unreadMention) || (
+                        result &&
+                            (conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) &&
+                            (conversation.unreadMessages > 0)
+                        )
                     UNREAD -> result = result && (conversation.unreadMessages > 0)
                 }
             }
