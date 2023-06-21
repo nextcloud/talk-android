@@ -158,39 +158,47 @@ data class Conversation(
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)
 
+    @Deprecated("Use ConversationUtil")
     val isPublic: Boolean
         get() = ConversationType.ROOM_PUBLIC_CALL == type
 
+    @Deprecated("Use ConversationUtil")
     val isGuest: Boolean
         get() = ParticipantType.GUEST == participantType ||
             ParticipantType.GUEST_MODERATOR == participantType ||
             ParticipantType.USER_FOLLOWING_LINK == participantType
 
+    @Deprecated("Use ConversationUtil")
     val isParticipantOwnerOrModerator: Boolean
         get() = ParticipantType.OWNER == participantType ||
             ParticipantType.GUEST_MODERATOR == participantType ||
             ParticipantType.MODERATOR == participantType
 
+    @Deprecated("Use ConversationUtil")
     private fun isLockedOneToOne(conversationUser: User): Boolean {
         return type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "locked-one-to-one-rooms")
     }
 
+    @Deprecated("Use ConversationUtil")
     fun canModerate(conversationUser: User): Boolean {
         return isParticipantOwnerOrModerator &&
             !isLockedOneToOne(conversationUser) &&
             type != ConversationType.FORMER_ONE_TO_ONE
     }
 
+    @Deprecated("Use ConversationUtil")
     fun isLobbyViewApplicable(conversationUser: User): Boolean {
         return !canModerate(conversationUser) &&
             (type == ConversationType.ROOM_GROUP_CALL || type == ConversationType.ROOM_PUBLIC_CALL)
     }
 
+    @Deprecated("Use ConversationUtil")
     fun isNameEditable(conversationUser: User): Boolean {
         return canModerate(conversationUser) && ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != type
     }
 
+    @Deprecated("Use ConversationUtil")
     fun canLeave(): Boolean {
         return if (canLeaveConversation != null) {
             // Available since APIv2
@@ -200,6 +208,7 @@ data class Conversation(
         }
     }
 
+    @Deprecated("Use ConversationUtil")
     fun canDelete(conversationUser: User): Boolean {
         return if (canDeleteConversation != null) {
             // Available since APIv2

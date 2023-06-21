@@ -25,7 +25,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -38,7 +37,7 @@ class ReactionsRepositoryImpl(private val ncApi: NcApi, currentUserProvider: Cur
     val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
 
     override fun addReaction(
-        currentConversation: Conversation,
+        roomToken: String,
         message: ChatMessage,
         emoji: String
     ): Observable<ReactionAddedModel> {
@@ -46,7 +45,7 @@ class ReactionsRepositoryImpl(private val ncApi: NcApi, currentUserProvider: Cur
             credentials,
             ApiUtils.getUrlForMessageReaction(
                 currentUser.baseUrl,
-                currentConversation.token,
+                roomToken,
                 message.id
             ),
             emoji
@@ -54,7 +53,7 @@ class ReactionsRepositoryImpl(private val ncApi: NcApi, currentUserProvider: Cur
     }
 
     override fun deleteReaction(
-        currentConversation: Conversation,
+        roomToken: String,
         message: ChatMessage,
         emoji: String
     ): Observable<ReactionDeletedModel> {
@@ -62,7 +61,7 @@ class ReactionsRepositoryImpl(private val ncApi: NcApi, currentUserProvider: Cur
             credentials,
             ApiUtils.getUrlForMessageReaction(
                 currentUser.baseUrl,
-                currentConversation.token,
+                roomToken,
                 message.id
             ),
             emoji

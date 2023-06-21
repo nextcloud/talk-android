@@ -23,19 +23,18 @@ package com.nextcloud.talk.repositories.reactions
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.models.json.conversations.Conversation
 import io.reactivex.Observable
 
 interface ReactionsRepository {
 
     fun addReaction(
-        currentConversation: Conversation,
+        roomToken: String,
         message: ChatMessage,
         emoji: String
     ): Observable<ReactionAddedModel>
 
     fun deleteReaction(
-        currentConversation: Conversation,
+        roomToken: String,
         message: ChatMessage,
         emoji: String
     ): Observable<ReactionDeletedModel>

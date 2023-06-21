@@ -49,11 +49,14 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class SharedItemsActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -70,7 +73,9 @@ class SharedItemsActivity : AppCompatActivity() {
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
-        val user = intent.getParcelableExtra<User>(KEY_USER_ENTITY)!!
+
+        val user = currentUserProvider.currentUser.blockingGet()
+
         val isUserConversationOwnerOrModerator = intent.getBooleanExtra(KEY_USER_IS_OWNER_OR_MODERATOR, false)
 
         binding = ActivitySharedItemsBinding.inflate(layoutInflater)

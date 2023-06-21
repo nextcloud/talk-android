@@ -79,10 +79,7 @@ class ListOpenConversationsActivity : BaseActivity() {
     }
 
     private fun adapterOnClick(conversation: OpenConversation) {
-        val user = userProvider.currentUser.blockingGet()
-
         val bundle = Bundle()
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, user)
         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.roomToken)
 
         val chatIntent = Intent(context, ChatActivity::class.java)

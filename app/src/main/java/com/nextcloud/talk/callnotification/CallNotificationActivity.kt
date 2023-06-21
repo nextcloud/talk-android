@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.activities
+package com.nextcloud.talk.callnotification
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -30,36 +30,36 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.CallActivity
+import com.nextcloud.talk.activities.CallBaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.callnotification.viewmodel.CallNotificationViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import okhttp3.Cache
-import org.parceler.Parcels
 import java.io.IOException
 import javax.inject.Inject
 
@@ -77,13 +77,18 @@ class CallNotificationActivity : CallBaseActivity() {
     @Inject
     lateinit var userManager: UserManager
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    lateinit var callNotificationViewModel: CallNotificationViewModel
+
     private val disposablesList: MutableList<Disposable> = ArrayList()
     private var originalBundle: Bundle? = null
     private var roomToken: String? = null
     private var notificationTimestamp: Int? = null
     private var userBeingCalled: User? = null
     private var credentials: String? = null
-    private var currentConversation: Conversation? = null
+    var currentConversation: ConversationModel? = null
     private var leavingScreen = false
     private var handler: Handler? = null
     private var binding: CallNotificationActivityBinding? = null
@@ -98,19 +103,20 @@ class CallNotificationActivity : CallBaseActivity() {
         val extras = intent.extras
         roomToken = extras!!.getString(KEY_ROOM_TOKEN, "")
         notificationTimestamp = extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
-        currentConversation = Parcels.unwrap(extras.getParcelable(KEY_ROOM))
-        userBeingCalled = extras.getParcelable(KEY_USER_ENTITY)
+
+        val internalUserId = extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
+        userBeingCalled = userManager.getUserWithId(internalUserId).blockingGet()
+
         originalBundle = extras
         credentials = ApiUtils.getCredentials(userBeingCalled!!.username, userBeingCalled!!.token)
 
+        callNotificationViewModel = ViewModelProvider(this, viewModelFactory)[CallNotificationViewModel::class.java]
+
+        initObservers()
+
         if (userManager.setUserAsActive(userBeingCalled!!).blockingGet()) {
             setCallDescriptionText()
-            if (currentConversation == null) {
-                handleFromNotification()
-            } else {
-                setUpAfterConversationIsKnown()
-            }
-            initClickListeners()
+            callNotificationViewModel.getRoom(userBeingCalled!!, roomToken!!)
         }
     }
 
@@ -138,6 +144,78 @@ class CallNotificationActivity : CallBaseActivity() {
             proceedToCall()
         }
         binding!!.hangupButton.setOnClickListener { hangup() }
+    }
+
+    private fun initObservers() {
+        val apiVersion = ApiUtils.getConversationApiVersion(
+            userBeingCalled,
+            intArrayOf(
+                ApiUtils.APIv4,
+                ApiUtils.APIv3,
+                1
+            )
+        )
+
+        callNotificationViewModel.getRoomViewState.observe(this) { state ->
+            when (state) {
+                is CallNotificationViewModel.GetRoomSuccessState -> {
+                    currentConversation = state.conversationModel
+
+                    binding!!.conversationNameTextView.text = currentConversation!!.displayName
+                    if (currentConversation!!.type === ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+                        binding!!.avatarImageView.loadUserAvatar(
+                            userBeingCalled!!,
+                            currentConversation!!.name!!,
+                            true,
+                            false
+                        )
+                    } else {
+                        binding!!.avatarImageView.setImageResource(R.drawable.ic_circular_group)
+                    }
+
+                    val notificationHandler = Handler(Looper.getMainLooper())
+                    notificationHandler.post(object : Runnable {
+                        override fun run() {
+                            if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
+                                notificationHandler.postDelayed(this, ONE_SECOND)
+                            } else {
+                                finish()
+                            }
+                        }
+                    })
+
+                    showAnswerControls()
+
+                    if (apiVersion >= ApiUtils.APIv3) {
+                        val hasCallFlags = hasSpreedFeatureCapability(
+                            userBeingCalled,
+                            "conversation-call-flags"
+                        )
+                        if (hasCallFlags) {
+                            if (isInCallWithVideo(currentConversation!!.callFlag)) {
+                                binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
+                                    resources.getString(R.string.nc_call_video),
+                                    resources.getString(R.string.nc_app_product_name)
+                                )
+                            } else {
+                                binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
+                                    resources.getString(R.string.nc_call_voice),
+                                    resources.getString(R.string.nc_app_product_name)
+                                )
+                            }
+                        }
+                    }
+
+                    initClickListeners()
+                }
+
+                is CallNotificationViewModel.GetRoomErrorState -> {
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
     }
 
     private fun setCallDescriptionText() {
@@ -178,7 +256,7 @@ class CallNotificationActivity : CallBaseActivity() {
             )
             originalBundle!!.putBoolean(
                 BundleKeys.KEY_IS_MODERATOR,
-                currentConversation!!.isParticipantOwnerOrModerator
+                ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
             )
 
             val intent = Intent(this, CallActivity::class.java)
@@ -189,83 +267,8 @@ class CallNotificationActivity : CallBaseActivity() {
         }
     }
 
-    @Suppress("MagicNumber")
-    private fun handleFromNotification() {
-        val apiVersion = ApiUtils.getConversationApiVersion(
-            userBeingCalled,
-            intArrayOf(
-                ApiUtils.APIv4,
-                ApiUtils.APIv3,
-                1
-            )
-        )
-        ncApi!!.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, userBeingCalled!!.baseUrl, roomToken))
-            .subscribeOn(Schedulers.io())
-            .retry(GET_ROOM_RETRY_COUNT)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<RoomOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposablesList.add(d)
-                }
-
-                override fun onNext(roomOverall: RoomOverall) {
-                    currentConversation = roomOverall.ocs!!.data
-                    setUpAfterConversationIsKnown()
-                    if (apiVersion >= 3) {
-                        val hasCallFlags = hasSpreedFeatureCapability(
-                            userBeingCalled,
-                            "conversation-call-flags"
-                        )
-                        if (hasCallFlags) {
-                            if (isInCallWithVideo(currentConversation!!.callFlag)) {
-                                binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
-                                    resources.getString(R.string.nc_call_video),
-                                    resources.getString(R.string.nc_app_product_name)
-                                )
-                            } else {
-                                binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
-                                    resources.getString(R.string.nc_call_voice),
-                                    resources.getString(R.string.nc_app_product_name)
-                                )
-                            }
-                        }
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, e.message, e)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
-    }
-
     private fun isInCallWithVideo(callFlag: Int): Boolean {
         return (callFlag and Participant.InCallFlags.WITH_VIDEO) > 0
-    }
-
-    private fun setUpAfterConversationIsKnown() {
-        binding!!.conversationNameTextView.text = currentConversation!!.displayName
-        if (currentConversation!!.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            binding!!.avatarImageView.loadUserAvatar(userBeingCalled!!, currentConversation!!.name!!, true, false)
-        } else {
-            binding!!.avatarImageView.setImageResource(R.drawable.ic_circular_group)
-        }
-
-        val notificationHandler = Handler(Looper.getMainLooper())
-        notificationHandler.post(object : Runnable {
-            override fun run() {
-                if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
-                    notificationHandler.postDelayed(this, ONE_SECOND)
-                } else {
-                    finish()
-                }
-            }
-        })
-
-        showAnswerControls()
     }
 
     override fun onStop() {
@@ -303,23 +306,22 @@ class CallNotificationActivity : CallBaseActivity() {
         }
     }
 
-    public override fun updateUiForPipMode() {
+    override fun updateUiForPipMode() {
         binding!!.callAnswerButtons.visibility = View.INVISIBLE
         binding!!.incomingCallRelativeLayout.visibility = View.INVISIBLE
     }
 
-    public override fun updateUiForNormalMode() {
+    override fun updateUiForNormalMode() {
         binding!!.callAnswerButtons.visibility = View.VISIBLE
         binding!!.incomingCallRelativeLayout.visibility = View.VISIBLE
     }
 
-    public override fun suppressFitsSystemWindows() {
+    override fun suppressFitsSystemWindows() {
         binding!!.controllerCallNotificationLayout.fitsSystemWindows = false
     }
 
     companion object {
         const val TAG = "CallNotificationActivity"
-        const val GET_ROOM_RETRY_COUNT: Long = 3
         const val ONE_SECOND: Long = 1000
     }
 }

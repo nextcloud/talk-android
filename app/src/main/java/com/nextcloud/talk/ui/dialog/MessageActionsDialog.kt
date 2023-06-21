@@ -40,10 +40,12 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
+import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationReadOnlyState
+import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
@@ -63,7 +65,7 @@ class MessageActionsDialog(
     private val chatActivity: ChatActivity,
     private val message: ChatMessage,
     private val user: User?,
-    private val currentConversation: Conversation?,
+    private val currentConversation: ConversationModel?,
     private val showMessageDeletionButton: Boolean,
     private val hasChatPermission: Boolean
 ) : BottomSheetDialog(chatActivity) {
@@ -100,7 +102,7 @@ class MessageActionsDialog(
             message.replyable &&
                 hasUserId(user) &&
                 hasUserActorId(message) &&
-                currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                currentConversation?.type != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
         initMenuDeleteMessage(showMessageDeletionButton)
         initMenuForwardMessage(
@@ -226,7 +228,7 @@ class MessageActionsDialog(
     }
 
     private fun isPermitted(hasChatPermission: Boolean): Boolean {
-        return hasChatPermission && Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
+        return hasChatPermission && ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
             currentConversation?.conversationReadOnlyState
     }
 
@@ -338,12 +340,12 @@ class MessageActionsDialog(
 
     private fun clickOnEmoji(message: ChatMessage, emoji: String) {
         if (message.reactionsSelf?.contains(emoji) == true) {
-            reactionsRepository.deleteReaction(currentConversation!!, message, emoji)
+            reactionsRepository.deleteReaction(currentConversation!!.token!!, message, emoji)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(ReactionDeletedObserver())
         } else {
-            reactionsRepository.addReaction(currentConversation!!, message, emoji)
+            reactionsRepository.addReaction(currentConversation!!.token!!, message, emoji)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(ReactionAddedObserver())

@@ -23,6 +23,7 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 
@@ -31,8 +32,14 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
  */
 class ParticipantPermissions(
     private val user: User,
-    private val conversation: Conversation
+    private val conversation: ConversationModel
 ) {
+
+    @Deprecated("Use ChatRepository.ConversationModel")
+    constructor(user: User, conversation: Conversation) : this(
+        user,
+        ConversationModel.mapToConversationModel(conversation)
+    )
 
     val isDefault = (conversation.permissions and DEFAULT) == DEFAULT
     val isCustom = (conversation.permissions and CUSTOM) == CUSTOM

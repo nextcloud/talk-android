@@ -48,7 +48,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
-import android.os.Parcelable
 import android.os.SystemClock
 import android.provider.ContactsContract
 import android.provider.MediaStore
@@ -85,6 +84,7 @@ import androidx.core.text.bold
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.text.EmojiCompat
 import androidx.emoji2.widget.EmojiTextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -130,6 +130,7 @@ import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
@@ -142,15 +143,18 @@ import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.messagesearch.MessageSearchActivity
+import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationReadOnlyState
+import com.nextcloud.talk.models.domain.ConversationType
+import com.nextcloud.talk.models.domain.LobbyState
+import com.nextcloud.talk.models.domain.ObjectType
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
-import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
@@ -170,6 +174,7 @@ import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -181,7 +186,6 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.VibrationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
@@ -193,8 +197,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -215,7 +219,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.parceler.Parcels
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.File
@@ -249,6 +252,9 @@ class ChatActivity :
     lateinit var ncApi: NcApi
 
     @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
+
+    @Inject
     lateinit var reactionsRepository: ReactionsRepository
 
     @Inject
@@ -256,6 +262,11 @@ class ChatActivity :
 
     @Inject
     lateinit var dateUtils: DateUtils
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    lateinit var chatViewModel: ChatViewModel
 
     override val view: View
         get() = binding.root
@@ -267,7 +278,7 @@ class ChatActivity :
     var conversationUser: User? = null
     private var roomPassword: String = ""
     var credentials: String? = null
-    var currentConversation: Conversation? = null
+    var currentConversation: ConversationModel? = null
     private var globalLastKnownFutureMessageId = -1
     private var globalLastKnownPastMessageId = -1
     var adapter: TalkMessagesListAdapter<ChatMessage>? = null
@@ -383,14 +394,17 @@ class ChatActivity :
         setContentView(binding.root)
         setupSystemColors()
 
+        conversationUser = currentUserProvider.currentUser.blockingGet()
+
         handleIntent(intent)
+
+        chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
 
         binding.progressBar.visibility = View.VISIBLE
 
-        initAdapter()
-        binding.messagesListView.setAdapter(adapter)
-
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        initObservers()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -415,7 +429,6 @@ class ChatActivity :
     private fun handleIntent(intent: Intent) {
         val extras: Bundle? = intent.extras
 
-        conversationUser = extras?.getParcelable(KEY_USER_ENTITY)
         roomId = extras?.getString(KEY_ROOM_ID).orEmpty()
         roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
 
@@ -424,11 +437,6 @@ class ChatActivity :
         Log.d(TAG, "   roomToken = $roomToken")
         if (roomToken.isEmpty()) {
             Log.d(TAG, "   roomToken was null or empty!")
-        }
-
-        if (intent.hasExtra(KEY_ACTIVE_CONVERSATION)) {
-            currentConversation = Parcels.unwrap<Conversation>(extras?.getParcelable(KEY_ACTIVE_CONVERSATION))
-            participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
         }
 
         roomPassword = extras?.getString(BundleKeys.KEY_CONVERSATION_PASSWORD).orEmpty()
@@ -453,6 +461,106 @@ class ChatActivity :
     override fun onStop() {
         super.onStop()
         active = false
+    }
+
+    private fun initObservers() {
+        chatViewModel.getRoomViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.GetRoomSuccessState -> {
+                    currentConversation = state.conversationModel
+                    logConversationInfos("GetRoomSuccessState")
+
+                    if (adapter == null) {
+                        initAdapter()
+                        binding.messagesListView.setAdapter(adapter)
+                    }
+
+                    layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
+
+                    loadAvatarForStatusBar()
+                    setActionBarTitle()
+                    participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
+
+                    setupSwipeToReply()
+                    setupMentionAutocomplete()
+                    checkShowCallButtons()
+                    checkShowMessageInputView()
+                    checkLobbyState()
+
+                    if (!validSessionId()) {
+                        joinRoomWithPassword()
+                    } else {
+                        Log.d(TAG, "already inConversation. joinRoomWithPassword is skipped")
+                    }
+
+                    val delayForRecursiveCall = if (shouldShowLobby()) {
+                        GET_ROOM_INFO_DELAY_LOBBY
+                    } else {
+                        GET_ROOM_INFO_DELAY_NORMAL
+                    }
+
+                    if (getRoomInfoTimerHandler == null) {
+                        getRoomInfoTimerHandler = Handler()
+                    }
+                    getRoomInfoTimerHandler?.postDelayed(
+                        {
+                            chatViewModel.getRoom(conversationUser!!, roomToken)
+                        },
+                        delayForRecursiveCall
+                    )
+                }
+
+                is ChatViewModel.GetRoomErrorState -> {
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
+
+        chatViewModel.joinRoomViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.JoinRoomSuccessState -> {
+                    currentConversation = state.conversationModel
+
+                    sessionIdAfterRoomJoined = currentConversation!!.sessionId
+                    ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation!!.sessionId
+                    ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = currentConversation!!.roomId
+                    ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = currentConversation!!.token
+                    ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
+
+                    logConversationInfos("joinRoomWithPassword#onNext")
+
+                    if (isFirstMessagesProcessing) {
+                        pullChatMessages(false)
+                    } else {
+                        pullChatMessages(true, false)
+                    }
+
+                    if (webSocketInstance != null) {
+                        webSocketInstance?.joinRoomWithRoomTokenAndSession(
+                            roomToken,
+                            sessionIdAfterRoomJoined
+                        )
+                    }
+                    if (startCallFromNotification != null && startCallFromNotification ?: false) {
+                        startCallFromNotification = false
+                        startACall(voiceOnly, false)
+                    }
+
+                    if (startCallFromRoomSwitch) {
+                        startCallFromRoomSwitch = false
+                        startACall(voiceOnly, true)
+                    }
+                }
+
+                is ChatViewModel.JoinRoomErrorState -> {
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -484,17 +592,11 @@ class ChatActivity :
 
         cancelNotificationsForCurrentConversation()
 
-        if (TextUtils.isEmpty(roomToken)) {
-            handleFromNotification()
-        } else {
-            getRoomInfo()
-        }
+        chatViewModel.getRoom(conversationUser!!, roomToken)
 
         actionBar?.show()
 
         setupSwipeToReply()
-
-        layoutManager = binding?.messagesListView?.layoutManager as LinearLayoutManager?
 
         binding?.popupBubbleView?.setRecyclerView(binding?.messagesListView)
 
@@ -632,10 +734,8 @@ class ChatActivity :
 
         binding?.messageInputView?.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
 
-        if (currentConversation != null && currentConversation?.roomId != null) {
-            loadAvatarForStatusBar()
-            setActionBarTitle()
-        }
+        loadAvatarForStatusBar()
+        setActionBarTitle()
 
         viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
     }
@@ -694,8 +794,11 @@ class ChatActivity :
         val messageHolders = MessageHolders()
         val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!)
 
-        val payload =
-            MessagePayload(roomToken!!, currentConversation?.isParticipantOwnerOrModerator, profileBottomSheet)
+        val payload = MessagePayload(
+            roomToken,
+            ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!),
+            profileBottomSheet
+        )
 
         messageHolders.setIncomingTextConfig(
             IncomingTextMessageViewHolder::class.java,
@@ -1080,68 +1183,6 @@ class ChatActivity :
             !CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)
     }
 
-    private fun getRoomInfo() {
-        logConversationInfos("getRoomInfo")
-
-        conversationUser?.let {
-            val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
-
-            val startNanoTime = System.nanoTime()
-            Log.d(TAG, "getRoomInfo - getRoom - calling: $startNanoTime")
-            ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, it.baseUrl, roomToken))
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<RoomOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        disposables.add(d)
-                    }
-
-                    @Suppress("Detekt.TooGenericExceptionCaught")
-                    override fun onNext(roomOverall: RoomOverall) {
-                        Log.d(TAG, "getRoomInfo - getRoom - got response: $startNanoTime")
-                        currentConversation = roomOverall.ocs!!.data
-
-                        logConversationInfos("getRoomInfo#onNext")
-
-                        loadAvatarForStatusBar()
-                        setActionBarTitle()
-                        participantPermissions = ParticipantPermissions(it, currentConversation!!)
-
-                        setupSwipeToReply()
-                        setupMentionAutocomplete()
-                        checkShowCallButtons()
-                        checkShowMessageInputView()
-                        checkLobbyState()
-
-                        if (!validSessionId()) {
-                            joinRoomWithPassword()
-                        } else {
-                            Log.d(TAG, "already inConversation. joinRoomWithPassword is skipped")
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "getRoomInfo - getRoom - ERROR", e)
-                    }
-
-                    override fun onComplete() {
-                        Log.d(TAG, "getRoomInfo - getRoom - onComplete: $startNanoTime")
-
-                        val delayForRecursiveCall = if (shouldShowLobby()) {
-                            GET_ROOM_INFO_DELAY_LOBBY
-                        } else {
-                            GET_ROOM_INFO_DELAY_NORMAL
-                        }
-
-                        if (getRoomInfoTimerHandler == null) {
-                            getRoomInfoTimerHandler = Handler()
-                        }
-                        getRoomInfoTimerHandler?.postDelayed({ getRoomInfo() }, delayForRecursiveCall)
-                    }
-                })
-        }
-    }
-
     private fun setupSwipeToReply() {
         if (this::participantPermissions.isInitialized &&
             participantPermissions.hasChatPermission() &&
@@ -1162,46 +1203,11 @@ class ChatActivity :
         }
     }
 
-    private fun handleFromNotification() {
-        var apiVersion = 1
-        // FIXME Can this be called for guests?
-        if (conversationUser != null) {
-            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+    private fun loadAvatarForStatusBar() {
+        if (currentConversation == null) {
+            return
         }
 
-        Log.d(TAG, "handleFromNotification - getRooms - calling")
-        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl), false)
-            ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<RoomsOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposables.add(d)
-                }
-
-                override fun onNext(roomsOverall: RoomsOverall) {
-                    Log.d(TAG, "handleFromNotification - getRooms - got response")
-                    for (conversation in roomsOverall.ocs!!.data!!) {
-                        if (roomId == conversation.roomId) {
-                            roomToken = conversation.token!!
-                            currentConversation = conversation
-                            participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
-                            setActionBarTitle()
-                            getRoomInfo()
-                            break
-                        }
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "handleFromNotification - getRooms - ERROR: ", e)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
-    }
-
-    private fun loadAvatarForStatusBar() {
         if (isOneToOneConversation()) {
             var url = ApiUtils.getUrlForAvatar(
                 conversationUser!!.baseUrl,
@@ -1254,18 +1260,18 @@ class ChatActivity :
     }
 
     fun isOneToOneConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun isGroupConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == Conversation.ConversationType.ROOM_GROUP_CALL
+        currentConversation?.type == ConversationType.ROOM_GROUP_CALL
 
     private fun isPublicConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == Conversation.ConversationType.ROOM_PUBLIC_CALL
+        currentConversation?.type == ConversationType.ROOM_PUBLIC_CALL
 
     private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
         if (conversationUser != null) {
             runOnUiThread {
-                if (currentConversation?.objectType == Conversation.ObjectType.ROOM) {
+                if (currentConversation?.objectType == ObjectType.ROOM) {
                     Toast.makeText(
                         context,
                         context.resources.getString(R.string.switch_to_main_room),
@@ -1281,7 +1287,6 @@ class ChatActivity :
             }
 
             val bundle = Bundle()
-            bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
             bundle.putString(KEY_ROOM_TOKEN, token)
 
             if (startCallAfterRoomSwitch) {
@@ -1697,8 +1702,8 @@ class ChatActivity :
     private fun shouldShowLobby(): Boolean {
         if (currentConversation != null) {
             return CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") &&
-                currentConversation?.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
-                currentConversation?.canModerate(conversationUser!!) == false &&
+                currentConversation?.lobbyState == LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
+                !ConversationUtils.canModerate(currentConversation!!, conversationUser!!) &&
                 !participantPermissions.canIgnoreLobby()
         }
         return false
@@ -1733,12 +1738,12 @@ class ChatActivity :
     private fun isReadOnlyConversation(): Boolean {
         return currentConversation?.conversationReadOnlyState != null &&
             currentConversation?.conversationReadOnlyState ==
-            Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
+            ConversationReadOnlyState.CONVERSATION_READ_ONLY
     }
 
     private fun checkLobbyState() {
         if (currentConversation != null &&
-            currentConversation?.isLobbyViewApplicable(conversationUser!!) == true
+            ConversationUtils.isLobbyViewApplicable(currentConversation!!, conversationUser!!)
         ) {
             if (shouldShowLobby()) {
                 binding?.lobby?.lobbyView?.visibility = View.VISIBLE
@@ -2119,7 +2124,7 @@ class ChatActivity :
 
     private fun showConversationInfoScreen() {
         val bundle = Bundle()
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
+
         bundle.putString(KEY_ROOM_TOKEN, roomToken)
         bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, isOneToOneConversation())
 
@@ -2274,65 +2279,8 @@ class ChatActivity :
 
             val startNanoTime = System.nanoTime()
             Log.d(TAG, "joinRoomWithPassword - joinRoom - calling: $startNanoTime")
-            ncApi.joinRoom(
-                credentials,
-                ApiUtils.getUrlForParticipantsActive(apiVersion, conversationUser?.baseUrl, roomToken),
-                roomPassword
-            )
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.retry(RETRIES)
-                ?.subscribe(object : Observer<RoomOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        disposables.add(d)
-                    }
 
-                    @Suppress("Detekt.TooGenericExceptionCaught")
-                    override fun onNext(roomOverall: RoomOverall) {
-                        Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: $startNanoTime")
-
-                        val conversation = roomOverall.ocs!!.data!!
-                        currentConversation = conversation
-
-                        sessionIdAfterRoomJoined = conversation.sessionId
-                        ApplicationWideCurrentRoomHolder.getInstance().session = conversation.sessionId
-                        ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = conversation.roomId
-                        ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = conversation.token
-                        ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
-
-                        logConversationInfos("joinRoomWithPassword#onNext")
-
-                        if (isFirstMessagesProcessing) {
-                            pullChatMessages(false)
-                        } else {
-                            pullChatMessages(true, false)
-                        }
-
-                        if (webSocketInstance != null) {
-                            webSocketInstance?.joinRoomWithRoomTokenAndSession(
-                                roomToken!!,
-                                sessionIdAfterRoomJoined
-                            )
-                        }
-                        if (startCallFromNotification != null && startCallFromNotification ?: false) {
-                            startCallFromNotification = false
-                            startACall(voiceOnly, false)
-                        }
-
-                        if (startCallFromRoomSwitch) {
-                            startCallFromRoomSwitch = false
-                            startACall(voiceOnly, true)
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "joinRoomWithPassword - joinRoom - ERROR", e)
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
+            chatViewModel.joinRoom(conversationUser!!, roomToken, roomPassword)
         } else {
             Log.d(TAG, "sessionID was valid -> skip joinRoom")
 
@@ -2801,9 +2749,9 @@ class ChatActivity :
                         GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
                     )
                 chatMessage.isOneToOneConversation =
-                    (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
+                    (currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
                 chatMessage.isFormerOneToOneConversation =
-                    (currentConversation?.type == Conversation.ConversationType.FORMER_ONE_TO_ONE)
+                    (currentConversation?.type == ConversationType.FORMER_ONE_TO_ONE)
                 it.addToStart(chatMessage, shouldScroll)
             }
         }
@@ -2845,9 +2793,9 @@ class ChatActivity :
 
             val chatMessage = chatMessageList[i]
             chatMessage.isOneToOneConversation =
-                currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
             chatMessage.isFormerOneToOneConversation =
-                (currentConversation?.type == Conversation.ConversationType.FORMER_ONE_TO_ONE)
+                (currentConversation?.type == ConversationType.FORMER_ONE_TO_ONE)
             chatMessage.activeUser = conversationUser
         }
 
@@ -3032,10 +2980,9 @@ class ChatActivity :
         val intent = Intent(this, SharedItemsActivity::class.java)
         intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-        intent.putExtra(KEY_USER_ENTITY, conversationUser as Parcelable)
         intent.putExtra(
             SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
-            currentConversation?.isParticipantOwnerOrModerator
+            ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
         )
         startActivity(intent)
     }
@@ -3119,12 +3066,11 @@ class ChatActivity :
             val bundle = Bundle()
             bundle.putString(KEY_ROOM_TOKEN, roomToken)
             bundle.putString(KEY_ROOM_ID, roomId)
-            bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl)
             bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
             bundle.putInt(KEY_RECORDING_STATE, it.callRecording)
-            bundle.putBoolean(KEY_IS_MODERATOR, it.isParticipantOwnerOrModerator)
+            bundle.putBoolean(KEY_IS_MODERATOR, ConversationUtils.isParticipantOwnerOrModerator(it))
             bundle.putBoolean(
                 BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
                 participantPermissions.canPublishAudio()
@@ -3141,7 +3087,7 @@ class ChatActivity :
                 bundle.putBoolean(BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION, true)
             }
 
-            if (it.objectType == Conversation.ObjectType.ROOM) {
+            if (it.objectType == ObjectType.ROOM) {
                 bundle.putBoolean(KEY_IS_BREAKOUT_ROOM, true)
             }
 
@@ -3156,12 +3102,12 @@ class ChatActivity :
     override fun onClickReaction(chatMessage: ChatMessage, emoji: String) {
         VibrationUtils.vibrateShort(context)
         if (chatMessage.reactionsSelf?.contains(emoji) == true) {
-            reactionsRepository.deleteReaction(currentConversation!!, chatMessage, emoji)
+            reactionsRepository.deleteReaction(roomToken, chatMessage, emoji)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(ReactionDeletedObserver())
         } else {
-            reactionsRepository.addReaction(currentConversation!!, chatMessage, emoji)
+            reactionsRepository.addReaction(roomToken, chatMessage, emoji)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(ReactionAddedObserver())
@@ -3171,7 +3117,7 @@ class ChatActivity :
     override fun onLongClickReactions(chatMessage: ChatMessage) {
         ShowReactionsDialog(
             this,
-            currentConversation,
+            roomToken,
             chatMessage,
             conversationUser,
             participantPermissions.hasChatPermission(),
@@ -3339,48 +3285,15 @@ class ChatActivity :
 
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
-                    bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
                     bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
                     bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
-                    // FIXME once APIv2+ is used only, the createRoom already returns all the data
-                    ncApi.getRoom(
-                        credentials,
-                        ApiUtils.getUrlForRoom(
-                            apiVersion,
-                            conversationUser?.baseUrl,
-                            roomOverall.ocs!!.data!!.token
-                        )
-                    )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Observer<RoomOverall> {
-                            override fun onSubscribe(d: Disposable) {
-                                // unused atm
-                            }
-
-                            override fun onNext(roomOverall: RoomOverall) {
-                                bundle.putParcelable(
-                                    KEY_ACTIVE_CONVERSATION,
-                                    Parcels.wrap(roomOverall.ocs!!.data!!)
-                                )
-
-                                leaveRoom {
-                                    val chatIntent = Intent(context, ChatActivity::class.java)
-                                    chatIntent.putExtras(bundle)
-                                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                    startActivity(chatIntent)
-                                }
-                            }
-
-                            override fun onError(e: Throwable) {
-                                Log.e(TAG, e.message, e)
-                            }
-
-                            override fun onComplete() {
-                                // unused atm
-                            }
-                        })
+                    leaveRoom {
+                        val chatIntent = Intent(context, ChatActivity::class.java)
+                        chatIntent.putExtras(bundle)
+                        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        startActivity(chatIntent)
+                    }
                 }
 
                 override fun onError(e: Throwable) {
@@ -3471,7 +3384,7 @@ class ChatActivity :
             conversationUser?.userId?.isNotEmpty() == true && conversationUser!!.userId != "?" &&
             message.user.id.startsWith("users/") &&
             message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
-            currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
+            currentConversation?.type != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
             isShowMessageDeletionButton(message) || // delete
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() || // forward
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID && // mark as unread
@@ -3540,7 +3453,7 @@ class ChatActivity :
         messageTemp.isDeleted = true
 
         messageTemp.isOneToOneConversation =
-            currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         messageTemp.activeUser = conversationUser
 
         adapter?.update(messageTemp)
@@ -3550,7 +3463,7 @@ class ChatActivity :
         val messageTemp = message as ChatMessage
 
         messageTemp.isOneToOneConversation =
-            currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         messageTemp.activeUser = conversationUser
 
         adapter?.update(messageTemp)
@@ -3598,7 +3511,7 @@ class ChatActivity :
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser!!.userId) {
             true
         } else {
-            currentConversation!!.canModerate(conversationUser!!)
+            ConversationUtils.canModerate(currentConversation!!, conversationUser!!)
         }
 
         val isOlderThanSixHours = message
@@ -3652,7 +3565,7 @@ class ChatActivity :
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(userMentionClickEvent: UserMentionClickEvent) {
-        if (currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
+        if (currentConversation?.type != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
             currentConversation?.name != userMentionClickEvent.userId
         ) {
             var apiVersion = 1
@@ -3683,42 +3596,21 @@ class ChatActivity :
                     }
 
                     override fun onNext(roomOverall: RoomOverall) {
-                        val conversationIntent = Intent(context, CallActivity::class.java)
                         val bundle = Bundle()
-                        bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
                         bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
                         bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
-                        bundle.putBoolean(KEY_IS_MODERATOR, roomOverall.ocs!!.data!!.isParticipantOwnerOrModerator)
 
-                        if (conversationUser != null) {
-                            bundle.putParcelable(
-                                KEY_ACTIVE_CONVERSATION,
-                                Parcels.wrap(roomOverall.ocs!!.data)
-                            )
-                            conversationIntent.putExtras(bundle)
-
-                            leaveRoom {
-                                val chatIntent = Intent(context, ChatActivity::class.java)
-                                chatIntent.putExtras(bundle)
-                                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                startActivity(chatIntent)
-                            }
-                        } else {
-                            conversationIntent.putExtras(bundle)
-                            startActivity(conversationIntent)
-                            Handler().postDelayed(
-                                {
-                                    if (!isDestroyed) {
-                                        finish()
-                                    }
-                                },
-                                POP_CURRENT_CONTROLLER_DELAY
-                            )
+                        leaveRoom {
+                            val chatIntent = Intent(context, ChatActivity::class.java)
+                            chatIntent.putExtras(bundle)
+                            chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            startActivity(chatIntent)
                         }
                     }
 
                     override fun onError(e: Throwable) {
-                        // unused atm
+                        Log.e(TAG, "error after clicking on user mention chip", e)
+                        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
                     }
 
                     override fun onComplete() {

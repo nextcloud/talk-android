@@ -37,6 +37,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogPollMainBinding
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -48,8 +49,13 @@ class PollMainDialogFragment : DialogFragment() {
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
+    var currentUserProvider: CurrentUserProviderNew? = null
+        @Inject set
+
     private lateinit var binding: DialogPollMainBinding
     private lateinit var viewModel: PollMainViewModel
+
+    lateinit var user: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +63,8 @@ class PollMainDialogFragment : DialogFragment() {
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollMainViewModel::class.java]
 
-        val user: User = arguments?.getParcelable(KEY_USER_ENTITY)!!
+        user = currentUserProvider?.currentUser?.blockingGet()!!
+
         val roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
         val isOwnerOrModerator = arguments?.getBoolean(KEY_OWNER_OR_MODERATOR)!!
         val pollId = arguments?.getString(KEY_POLL_ID)!!

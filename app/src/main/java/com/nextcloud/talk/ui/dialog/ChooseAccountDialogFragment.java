@@ -203,7 +203,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             dismiss();
 
             if (status != null) {
-                SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(user, status);
+                SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(status);
                 setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
             } else {
                 Log.w(TAG, "status was null");

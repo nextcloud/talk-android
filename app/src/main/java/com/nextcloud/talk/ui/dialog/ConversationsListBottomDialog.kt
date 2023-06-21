@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.ui.dialog
 
-import android.app.Activity
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -55,16 +54,13 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPERATION_CODE
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
-import org.parceler.Parcels
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationsListBottomDialog(
-    val activity: Activity,
-    val controller: ConversationsListActivity,
+    val activity: ConversationsListActivity,
     val currentUser: User,
     val conversation: Conversation
 ) : BottomSheetDialog(activity) {
@@ -175,9 +171,8 @@ class ConversationsListBottomDialog(
             if (!TextUtils.isEmpty(conversation.token)) {
                 val bundle = Bundle()
                 bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
-                bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-
-                controller.showDeleteConversationDialog(bundle)
+                bundle.putString(KEY_ROOM_TOKEN, conversation.token)
+                activity.showDeleteConversationDialog(bundle)
             }
 
             dismiss()
@@ -198,8 +193,8 @@ class ConversationsListBottomDialog(
 
     private fun executeOperationsMenuController(operation: ConversationOperationEnum) {
         val bundle = Bundle()
-        bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
         bundle.putSerializable(KEY_OPERATION_CODE, operation)
+        bundle.putString(KEY_ROOM_TOKEN, conversation.token)
 
         binding.operationItemsLayout.visibility = View.GONE
 
@@ -211,13 +206,13 @@ class ConversationsListBottomDialog(
                 .popChangeHandler(HorizontalChangeHandler())
         )
 
-        controller.fetchRooms()
+        activity.fetchRooms()
     }
 
     private fun executeEntryMenuController(operation: ConversationOperationEnum) {
         val bundle = Bundle()
-        bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
         bundle.putSerializable(KEY_OPERATION_CODE, operation)
+        bundle.putString(KEY_ROOM_TOKEN, conversation.token)
 
         binding.operationItemsLayout.visibility = View.GONE
 
