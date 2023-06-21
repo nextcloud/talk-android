@@ -21,8 +21,6 @@
  */
 package com.nextcloud.talk.controllers.bottomsheet
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -42,7 +40,6 @@ import com.nextcloud.talk.databinding.ControllerOperationsMenuBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.events.OpenConversationEvent
 import com.nextcloud.talk.models.RetrofitBucket
-import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
@@ -53,19 +50,17 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NoSupportedApiException
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_TYPE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INVITED_GROUP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INVITED_PARTICIPANTS
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_ROOM_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPERATION_CODE
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SERVER_CAPABILITIES
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import io.reactivex.Observer
@@ -100,13 +95,14 @@ class OperationsMenuController(args: Bundle) : BaseController(
     private var currentUser: User? = null
     private val callPassword: String
     private val callUrl: String
+    private var roomToken: String
+    private val roomNameNew: String
     private var baseUrl: String? = null
     private var conversationToken: String? = null
     private var disposable: Disposable? = null
     private var conversationType: ConversationType? = null
     private var invitedUsers: ArrayList<String>? = ArrayList()
     private var invitedGroups: ArrayList<String>? = ArrayList()
-    private var serverCapabilities: Capabilities? = null
     private var credentials: String? = null
     private val conversationName: String
 
@@ -128,39 +124,41 @@ class OperationsMenuController(args: Bundle) : BaseController(
                 baseUrl = callUrl.substring(0, callUrl.indexOf("/call"))
             }
         }
-        if (!TextUtils.isEmpty(baseUrl) && baseUrl != currentUser!!.baseUrl) {
-            if (serverCapabilities != null) {
-                try {
-                    useBundledCapabilitiesForGuest()
-                } catch (e: IOException) {
-                    // Fall back to fetching capabilities again
-                    fetchCapabilitiesForGuest()
-                }
-            } else {
-                fetchCapabilitiesForGuest()
-            }
+
+        if (roomToken.isNotEmpty()) {
+            val apiVersion = apiVersion()
+            ncApi.getRoom(
+                credentials,
+                ApiUtils.getUrlForRoom(apiVersion, currentUser!!.baseUrl, roomToken)
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(1)
+                .subscribe(object : Observer<RoomOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        disposable = d
+                    }
+
+                    override fun onNext(roomOverall: RoomOverall) {
+                        conversation = roomOverall.ocs!!.data
+
+                        if (!TextUtils.isEmpty(baseUrl) && baseUrl != currentUser!!.baseUrl) {
+                            fetchCapabilitiesForGuest()
+                        } else {
+                            processOperation()
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "error while fetching room", e)
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
         } else {
             processOperation()
-        }
-    }
-
-    @Throws(IOException::class)
-    private fun useBundledCapabilitiesForGuest() {
-        currentUser = User()
-        currentUser!!.baseUrl = baseUrl
-        currentUser!!.userId = "?"
-        try {
-            currentUser!!.capabilities = serverCapabilities
-        } catch (e: IOException) {
-            Log.e("OperationsMenu", "Failed to serialize capabilities")
-            throw e
-        }
-        try {
-            checkCapabilities(currentUser!!)
-            processOperation()
-        } catch (e: NoSupportedApiException) {
-            showResultImage(everythingOK = false, isGuestSupportError = false)
-            Log.d(TAG, "No supported server version found", e)
         }
     }
 
@@ -218,6 +216,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
             ConversationOperationEnum.OPS_CODE_MARK_AS_UNREAD -> operationMarkAsUnread()
             ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE,
             ConversationOperationEnum.OPS_CODE_ADD_FAVORITE -> operationToggleFavorite()
+
             ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> operationJoinRoom()
             else -> {
             }
@@ -287,7 +286,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
                 currentUser!!.baseUrl,
                 conversation!!.token
             ),
-            conversation!!.name
+            roomNameNew
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -427,17 +426,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
                     if (conversation!!.hasPassword && conversation!!.isGuest) {
                         eventBus.post(ConversationsListFetchDataEvent())
                         val bundle = Bundle()
-                        bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-                        bundle.putString(KEY_CALL_URL, callUrl)
-                        try {
-                            bundle.putParcelable(
-                                KEY_SERVER_CAPABILITIES,
-                                Parcels.wrap<Capabilities>(currentUser!!.capabilities)
-                            )
-                        } catch (e: IOException) {
-                            Log.e(TAG, "Failed to parse capabilities for guest")
-                            showResultImage(everythingOK = false, isGuestSupportError = false)
-                        }
+                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
                         bundle.putSerializable(KEY_OPERATION_CODE, ConversationOperationEnum.OPS_CODE_JOIN_ROOM)
                         router.pushController(
                             RouterTransaction.with(EntryMenuController(bundle))
@@ -519,16 +508,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
                 binding?.resultTextView?.setText(R.string.nc_all_ok_operation)
             } else {
                 binding?.resultTextView?.setTextColor(resources!!.getColor(R.color.nc_darkRed, null))
-                if (!isGuestSupportError) {
-                    binding?.resultTextView?.setText(R.string.nc_failed_to_perform_operation)
-                } else {
-                    binding?.resultTextView?.setText(R.string.nc_failed_signaling_settings)
-                    binding?.webButton?.setOnClickListener {
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(callUrl))
-                        startActivity(browserIntent)
-                    }
-                    binding?.webButton?.visibility = View.VISIBLE
-                }
+                binding?.resultTextView?.setText(R.string.nc_failed_to_perform_operation)
             }
             binding?.resultTextView?.visibility = View.VISIBLE
             if (everythingOK) {
@@ -608,6 +588,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
                     override fun onSubscribe(d: Disposable) {
                         // unused atm
                     }
+
                     override fun onNext(addParticipantOverall: AddParticipantOverall) {
                         // unused atm
                     }
@@ -653,6 +634,7 @@ class OperationsMenuController(args: Bundle) : BaseController(
                         override fun onSubscribe(d: Disposable) {
                             // unused atm
                         }
+
                         override fun onNext(addParticipantOverall: AddParticipantOverall) {
                             // unused atm
                         }
@@ -679,8 +661,6 @@ class OperationsMenuController(args: Bundle) : BaseController(
         bundle.putString(KEY_ROOM_TOKEN, conversation!!.token)
         bundle.putString(KEY_ROOM_ID, conversation!!.roomId)
         bundle.putString(KEY_CONVERSATION_NAME, conversation!!.displayName)
-        bundle.putParcelable(KEY_USER_ENTITY, currentUser)
-        bundle.putParcelable(KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
         bundle.putString(KEY_CONVERSATION_PASSWORD, callPassword)
         eventBus.post(OpenConversationEvent(conversation, bundle))
     }
@@ -755,11 +735,10 @@ class OperationsMenuController(args: Bundle) : BaseController(
 
     init {
         operation = args.getSerializable(KEY_OPERATION_CODE) as ConversationOperationEnum?
-        if (args.containsKey(KEY_ROOM)) {
-            conversation = Parcels.unwrap(args.getParcelable(KEY_ROOM))
-        }
         callPassword = args.getString(KEY_CONVERSATION_PASSWORD, "")
         callUrl = args.getString(KEY_CALL_URL, "")
+        roomToken = args.getString(KEY_ROOM_TOKEN, "")
+        roomNameNew = args.getString(KEY_NEW_ROOM_NAME, "")
         if (args.containsKey(KEY_INVITED_PARTICIPANTS)) {
             invitedUsers = args.getStringArrayList(KEY_INVITED_PARTICIPANTS)
         }
@@ -768,9 +747,6 @@ class OperationsMenuController(args: Bundle) : BaseController(
         }
         if (args.containsKey(KEY_CONVERSATION_TYPE)) {
             conversationType = Parcels.unwrap(args.getParcelable(KEY_CONVERSATION_TYPE))
-        }
-        if (args.containsKey(KEY_SERVER_CAPABILITIES)) {
-            serverCapabilities = Parcels.unwrap(args.getParcelable(KEY_SERVER_CAPABILITIES))
         }
         conversationName = args.getString(KEY_CONVERSATION_NAME, "")
     }

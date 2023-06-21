@@ -46,7 +46,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import org.parceler.Parcels
 
 private const val TAG = "ProfileBottomSheet"
 
@@ -144,46 +143,13 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User) {
 
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
-                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, userModel)
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
                     bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
-                    // FIXME once APIv2+ is used only, the createRoom already returns all the data
-                    ncApi.getRoom(
-                        credentials,
-                        ApiUtils.getUrlForRoom(
-                            apiVersion,
-                            userModel.baseUrl,
-                            roomOverall.ocs!!.data!!.token
-                        )
-                    )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Observer<RoomOverall> {
-                            override fun onSubscribe(d: Disposable) {
-                                // unused atm
-                            }
-
-                            override fun onNext(roomOverall: RoomOverall) {
-                                bundle.putParcelable(
-                                    BundleKeys.KEY_ACTIVE_CONVERSATION,
-                                    Parcels.wrap(roomOverall.ocs!!.data)
-                                )
-
-                                val chatIntent = Intent(context, ChatActivity::class.java)
-                                chatIntent.putExtras(bundle)
-                                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                context.startActivity(chatIntent)
-                            }
-
-                            override fun onError(e: Throwable) {
-                                Log.e(TAG, e.message, e)
-                            }
-
-                            override fun onComplete() {
-                                // unused atm
-                            }
-                        })
+                    val chatIntent = Intent(context, ChatActivity::class.java)
+                    chatIntent.putExtras(bundle)
+                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    context.startActivity(chatIntent)
                 }
 
                 override fun onError(e: Throwable) {

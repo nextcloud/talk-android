@@ -74,7 +74,7 @@ public abstract class CallBaseActivity extends BaseActivity {
         getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
     }
 
-    void hideNavigationIfNoPipAvailable(){
+    public void hideNavigationIfNoPipAvailable(){
         if (!isPipModePossible()) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                                                                  View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
@@ -160,9 +160,9 @@ public abstract class CallBaseActivity extends BaseActivity {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 
-    abstract void updateUiForPipMode();
+    public abstract void updateUiForPipMode();
 
-    abstract void updateUiForNormalMode();
+    public abstract void updateUiForNormalMode();
 
-    abstract void suppressFitsSystemWindows();
+    public abstract void suppressFitsSystemWindows();
 }

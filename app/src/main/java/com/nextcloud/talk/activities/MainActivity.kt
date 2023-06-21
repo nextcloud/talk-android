@@ -47,6 +47,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.WebViewLoginController
@@ -61,16 +62,13 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ACCOUNT
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import io.reactivex.Observer
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import org.parceler.Parcels
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -282,45 +280,12 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
-                    bundle.putParcelable(KEY_USER_ENTITY, currentUser)
                     bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
                     bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
-                    // FIXME once APIv2 or later is used only, the createRoom already returns all the data
-                    ncApi.getRoom(
-                        credentials,
-                        ApiUtils.getUrlForRoom(
-                            apiVersion,
-                            currentUser?.baseUrl,
-                            roomOverall.ocs!!.data!!.token
-                        )
-                    )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Observer<RoomOverall> {
-                            override fun onSubscribe(d: Disposable) {
-                                // unused atm
-                            }
-
-                            override fun onNext(roomOverall: RoomOverall) {
-                                bundle.putParcelable(
-                                    KEY_ACTIVE_CONVERSATION,
-                                    Parcels.wrap(roomOverall.ocs!!.data)
-                                )
-
-                                val chatIntent = Intent(context, ChatActivity::class.java)
-                                chatIntent.putExtras(bundle)
-                                startActivity(chatIntent)
-                            }
-
-                            override fun onError(e: Throwable) {
-                                // unused atm
-                            }
-
-                            override fun onComplete() {
-                                // unused atm
-                            }
-                        })
+                    val chatIntent = Intent(context, ChatActivity::class.java)
+                    chatIntent.putExtras(bundle)
+                    startActivity(chatIntent)
                 }
 
                 override fun onError(e: Throwable) {
@@ -337,7 +302,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
 
-        val user = intent.getParcelableExtra<User>(KEY_USER_ENTITY)
+        val internalUserId = intent.extras?.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
+        val user = userManager.getUserWithId(internalUserId!!).blockingGet()
+
         if (user != null && userManager.setUserAsActive(user).blockingGet()) {
             handleIntent(intent)
         }

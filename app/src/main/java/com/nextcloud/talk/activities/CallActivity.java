@@ -100,6 +100,7 @@ import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.VibrationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew;
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
@@ -186,7 +187,6 @@ import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM;
-import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends CallBaseActivity {
@@ -198,6 +198,9 @@ public class CallActivity extends CallBaseActivity {
 
     @Inject
     NcApi ncApi;
+
+    @Inject
+    CurrentUserProviderNew currentUserProvider;
 
     @Inject
     UserManager userManager;
@@ -386,10 +389,11 @@ public class CallActivity extends CallBaseActivity {
 
         hideNavigationIfNoPipAvailable();
 
+        conversationUser = currentUserProvider.getCurrentUser().blockingGet();
+
         Bundle extras = getIntent().getExtras();
         roomId = extras.getString(KEY_ROOM_ID, "");
         roomToken = extras.getString(KEY_ROOM_TOKEN, "");
-        conversationUser = extras.getParcelable(KEY_USER_ENTITY);
         conversationPassword = extras.getString(KEY_CONVERSATION_PASSWORD, "");
         conversationName = extras.getString(KEY_CONVERSATION_NAME, "");
         isVoiceOnlyCall = extras.getBoolean(KEY_CALL_VOICE_ONLY, false);
@@ -1970,7 +1974,6 @@ public class CallActivity extends CallBaseActivity {
                         bundle.putBoolean(KEY_SWITCH_TO_ROOM, true);
                         bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true);
                         bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken);
-                        bundle.putParcelable(KEY_USER_ENTITY, conversationUser);
                         bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall);
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -3151,7 +3154,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     @Override
-    void suppressFitsSystemWindows() {
+    public void suppressFitsSystemWindows() {
         binding.controllerCallLayout.setFitsSystemWindows(false);
     }
 

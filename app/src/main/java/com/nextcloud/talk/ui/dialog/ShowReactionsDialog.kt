@@ -44,7 +44,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageReactionsBinding
 import com.nextcloud.talk.databinding.ItemReactionsTabBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -59,7 +58,7 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class ShowReactionsDialog(
     activity: Activity,
-    private val currentConversation: Conversation?,
+    private val roomToken: String,
     private val chatMessage: ChatMessage,
     private val user: User?,
     private val hasChatPermission: Boolean,
@@ -156,7 +155,7 @@ class ShowReactionsDialog(
             credentials,
             ApiUtils.getUrlForMessageReaction(
                 user?.baseUrl,
-                currentConversation!!.token,
+                roomToken,
                 chatMessage.id
             ),
             emoji
@@ -211,7 +210,7 @@ class ShowReactionsDialog(
             credentials,
             ApiUtils.getUrlForMessageReaction(
                 user?.baseUrl,
-                currentConversation!!.token,
+                roomToken,
                 message.id
             ),
             emoji

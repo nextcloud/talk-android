@@ -53,8 +53,8 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -244,7 +244,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
 
         bundle.putString(KEY_ROOM_TOKEN, roomToken)
-        bundle.putParcelable(KEY_USER_ENTITY, currentUser)
+        bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
         bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
 
         intent.putExtras(bundle)

@@ -56,8 +56,6 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
     lateinit var currentUser: User
     private var systemNotificationId: Int? = null
     private var link: String? = null
-    var roomToken: String? = null
-    var conversationOfShareTarget: User? = null
 
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -67,9 +65,6 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
         context = receiveContext
         systemNotificationId = intent!!.getIntExtra(KEY_SYSTEM_NOTIFICATION_ID, 0)
         link = intent.getStringExtra(BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL)
-
-        roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)
-        conversationOfShareTarget = intent.getParcelableExtra<User>(BundleKeys.KEY_USER_ENTITY)
 
         val id = intent.getLongExtra(KEY_INTERNAL_USER_ID, userManager.currentUser.blockingGet().id!!)
         currentUser = userManager.getUserWithId(id).blockingGet()

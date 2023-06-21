@@ -55,12 +55,12 @@ import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.CallNotificationActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -94,7 +94,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import io.reactivex.Observable
@@ -197,7 +196,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
         bundle.putInt(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
-        bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
+        bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
         bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
         fullScreenIntent.putExtras(bundle)
         fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -680,7 +679,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         shareRecordingIntent.putExtra(KEY_SYSTEM_NOTIFICATION_ID, systemNotificationId)
         shareRecordingIntent.putExtra(KEY_SHARE_RECORDING_TO_CHAT_URL, shareToChatUrl)
         shareRecordingIntent.putExtra(KEY_ROOM_TOKEN, pushMessage.id)
-        shareRecordingIntent.putExtra(KEY_USER_ENTITY, signatureVerification.user)
 
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
@@ -924,7 +922,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
-        bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
+        bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
         bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
         intent.putExtras(bundle)
         return intent
@@ -935,7 +933,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
-        bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.user)
+        bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
         bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
         intent.putExtras(bundle)
 

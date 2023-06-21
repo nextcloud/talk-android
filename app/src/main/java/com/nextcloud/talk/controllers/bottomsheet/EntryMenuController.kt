@@ -23,14 +23,13 @@
  */
 package com.nextcloud.talk.controllers.bottomsheet
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.res.ResourcesCompat
@@ -40,21 +39,28 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
+import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerEntryMenuBinding
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.vanniktech.emoji.EmojiPopup
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import okhttp3.internal.immutableListOf
 import org.greenrobot.eventbus.EventBus
-import org.parceler.Parcels
-import org.parceler.Parcels.unwrap
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -66,6 +72,9 @@ class EntryMenuController(args: Bundle) :
     private val binding: ControllerEntryMenuBinding? by viewBinding(ControllerEntryMenuBinding::bind)
 
     @Inject
+    lateinit var ncApi: NcApi
+
+    @Inject
     lateinit var eventBus: EventBus
 
     @Inject
@@ -73,12 +82,13 @@ class EntryMenuController(args: Bundle) :
 
     private val operation: ConversationOperationEnum
     private var conversation: Conversation? = null
-    private var shareIntent: Intent? = null
     private val packageName: String
     private val name: String
-    private val callUrl: String
+
     private var emojiPopup: EmojiPopup? = null
     private val originalBundle: Bundle
+    private var currentUser: User? = null
+    private val roomToken: String
 
     override val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.SEARCH_BAR
@@ -100,74 +110,121 @@ class EntryMenuController(args: Bundle) :
     override fun onViewBound(view: View) {
         super.onViewBound(view)
 
-        if (conversation != null && operation === ConversationOperationEnum.OPS_CODE_RENAME_ROOM) {
-            binding?.textEdit?.setText(conversation!!.name)
-        }
+        currentUser = userManager.currentUser.blockingGet()
 
-        binding?.textEdit?.setOnEditorActionListener { v, actionId, event ->
-            @Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS")
-            if (actionId === EditorInfo.IME_ACTION_DONE && binding?.okButton?.isEnabled == true) {
-                binding?.okButton?.callOnClick()
-                return@setOnEditorActionListener true
-            }
-            false
-        }
+        if (operation == ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM) {
+            var labelText = ""
+            labelText = resources!!.getString(R.string.nc_conversation_link)
+            binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
 
-        textEditAddChangedListener()
+            textEditAddChangedListener()
 
-        var labelText = ""
-        when (operation) {
-            ConversationOperationEnum.OPS_CODE_INVITE_USERS, ConversationOperationEnum.OPS_CODE_RENAME_ROOM -> {
-                labelText = resources!!.getString(R.string.nc_call_name)
-                binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT
-                binding?.smileyButton?.visibility = View.VISIBLE
-                emojiPopup = binding?.let {
-                    EmojiPopup(
-                        rootView = view,
-                        editText = it.textEdit,
-                        onEmojiPopupShownListener = {
-                            viewThemeUtils.platform.colorImageView(it.smileyButton, ColorRole.PRIMARY)
-                        },
-                        onEmojiPopupDismissListener = {
-                            it.smileyButton.imageTintList = ColorStateList.valueOf(
-                                ResourcesCompat.getColor(resources!!, R.color.medium_emphasis_text, context.theme)
-                            )
-                        },
-                        onEmojiClickListener = {
-                            binding?.textEdit?.editableText?.append(" ")
-                        }
-                    )
-                }
-            }
+            binding?.textInputLayout?.let { viewThemeUtils.material.colorTextInputLayout(it) }
+            binding?.okButton?.let { viewThemeUtils.material.colorMaterialButtonText(it) }
 
-            ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> {
-                // 99 is joining a conversation via password
-                labelText = resources!!.getString(R.string.nc_password)
-                binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            }
+            binding?.textInputLayout?.hint = labelText
+            binding?.textInputLayout?.requestFocus()
 
-            ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM -> {
-                labelText = resources!!.getString(R.string.nc_conversation_link)
-                binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
-            }
-
-            else -> {
-            }
-        }
-        if (PASSWORD_ENTRY_OPERATIONS.contains(operation)) {
-            binding?.textInputLayout?.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+            binding?.smileyButton?.setOnClickListener { onSmileyClick() }
+            binding?.okButton?.setOnClickListener { onOkButtonClick() }
         } else {
-            binding?.textInputLayout?.endIconMode = TextInputLayout.END_ICON_NONE
+            val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+            ncApi.getRoom(
+                ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
+                ApiUtils.getUrlForRoom(apiVersion, currentUser!!.baseUrl, roomToken)
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(1)
+                .subscribe(object : Observer<RoomOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    @Suppress("Detekt.LongMethod")
+                    override fun onNext(roomOverall: RoomOverall) {
+                        conversation = roomOverall.ocs!!.data
+
+                        if (conversation != null && operation === ConversationOperationEnum.OPS_CODE_RENAME_ROOM) {
+                            binding?.textEdit?.setText(conversation!!.name)
+                        }
+
+                        binding?.textEdit?.setOnEditorActionListener { v, actionId, event ->
+                            @Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS")
+                            if (actionId === EditorInfo.IME_ACTION_DONE && binding?.okButton?.isEnabled == true) {
+                                binding?.okButton?.callOnClick()
+                                return@setOnEditorActionListener true
+                            }
+                            false
+                        }
+
+                        textEditAddChangedListener()
+
+                        var labelText = ""
+                        when (operation) {
+                            ConversationOperationEnum.OPS_CODE_INVITE_USERS,
+                            ConversationOperationEnum.OPS_CODE_RENAME_ROOM -> {
+                                labelText = resources!!.getString(R.string.nc_call_name)
+                                binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT
+                                binding?.smileyButton?.visibility = View.VISIBLE
+                                emojiPopup = binding?.let {
+                                    EmojiPopup(
+                                        rootView = view,
+                                        editText = it.textEdit,
+                                        onEmojiPopupShownListener = {
+                                            viewThemeUtils.platform.colorImageView(it.smileyButton, ColorRole.PRIMARY)
+                                        },
+                                        onEmojiPopupDismissListener = {
+                                            it.smileyButton.imageTintList = ColorStateList.valueOf(
+                                                ResourcesCompat.getColor(
+                                                    resources!!,
+                                                    R.color.medium_emphasis_text,
+                                                    context.theme
+                                                )
+                                            )
+                                        },
+                                        onEmojiClickListener = {
+                                            binding?.textEdit?.editableText?.append(" ")
+                                        }
+                                    )
+                                }
+                            }
+
+                            ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> {
+                                // 99 is joining a conversation via password
+                                labelText = resources!!.getString(R.string.nc_password)
+                                binding?.textEdit?.inputType =
+                                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                            }
+
+                            else -> {
+                            }
+                        }
+                        if (PASSWORD_ENTRY_OPERATIONS.contains(operation)) {
+                            binding?.textInputLayout?.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+                        } else {
+                            binding?.textInputLayout?.endIconMode = TextInputLayout.END_ICON_NONE
+                        }
+
+                        binding?.textInputLayout?.let { viewThemeUtils.material.colorTextInputLayout(it) }
+                        binding?.okButton?.let { viewThemeUtils.material.colorMaterialButtonText(it) }
+
+                        binding?.textInputLayout?.hint = labelText
+                        binding?.textInputLayout?.requestFocus()
+
+                        binding?.smileyButton?.setOnClickListener { onSmileyClick() }
+                        binding?.okButton?.setOnClickListener { onOkButtonClick() }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e("EntryMenuController", "error")
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
         }
-
-        binding?.textInputLayout?.let { viewThemeUtils.material.colorTextInputLayout(it) }
-        binding?.okButton?.let { viewThemeUtils.material.colorMaterialButtonText(it) }
-
-        binding?.textInputLayout?.hint = labelText
-        binding?.textInputLayout?.requestFocus()
-
-        binding?.smileyButton?.setOnClickListener { onSmileyClick() }
-        binding?.okButton?.setOnClickListener { onOkButtonClick() }
     }
 
     private fun textEditAddChangedListener() {
@@ -242,7 +299,8 @@ class EntryMenuController(args: Bundle) :
         ) {
             val bundle = Bundle()
             conversation!!.name = binding?.textEdit?.text.toString()
-            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap<Any>(conversation))
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+            bundle.putString(BundleKeys.KEY_NEW_ROOM_NAME, binding?.textEdit?.text.toString())
             bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)
             router.pushController(
                 RouterTransaction.with(OperationsMenuController(bundle))
@@ -274,16 +332,9 @@ class EntryMenuController(args: Bundle) :
 
     private fun joinRoom() {
         val bundle = Bundle()
-        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap<Any>(conversation))
-        bundle.putString(BundleKeys.KEY_CALL_URL, callUrl)
+        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
         bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, binding?.textEdit?.text.toString())
         bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)
-        if (originalBundle.containsKey(BundleKeys.KEY_SERVER_CAPABILITIES)) {
-            bundle.putParcelable(
-                BundleKeys.KEY_SERVER_CAPABILITIES,
-                originalBundle.getParcelable(BundleKeys.KEY_SERVER_CAPABILITIES)
-            )
-        }
         router.pushController(
             RouterTransaction.with(OperationsMenuController(bundle))
                 .pushChangeHandler(HorizontalChangeHandler())
@@ -296,15 +347,10 @@ class EntryMenuController(args: Bundle) :
 
         originalBundle = args
         operation = args.getSerializable(BundleKeys.KEY_OPERATION_CODE) as ConversationOperationEnum
-        if (args.containsKey(BundleKeys.KEY_ROOM)) {
-            conversation = unwrap<Conversation>(args.getParcelable<Parcelable>(BundleKeys.KEY_ROOM))
-        }
-        if (args.containsKey(BundleKeys.KEY_SHARE_INTENT)) {
-            shareIntent = unwrap<Intent>(args.getParcelable<Parcelable>(BundleKeys.KEY_SHARE_INTENT))
-        }
+        roomToken = args.getString(KEY_ROOM_TOKEN, "")
         name = args.getString(BundleKeys.KEY_APP_ITEM_NAME, "")
         packageName = args.getString(BundleKeys.KEY_APP_ITEM_PACKAGE_NAME, "")
-        callUrl = args.getString(BundleKeys.KEY_CALL_URL, "")
+        // callUrl = args.getString(BundleKeys.KEY_CALL_URL, "")
     }
 
     companion object {

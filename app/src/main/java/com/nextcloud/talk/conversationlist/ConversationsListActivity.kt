@@ -106,17 +106,14 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_FLAG
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_CONVERSATION
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
@@ -134,7 +131,6 @@ import io.reactivex.schedulers.Schedulers
 import org.apache.commons.lang3.builder.CompareToBuilder
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.parceler.Parcels
 import retrofit2.HttpException
 import java.util.Objects
 import java.util.concurrent.TimeUnit
@@ -1075,7 +1071,6 @@ class ConversationsListActivity :
                 val conversation = (clickedItem as ConversationItem).model
                 conversationsListBottomDialog = ConversationsListBottomDialog(
                     this,
-                    this,
                     userManager.currentUser.blockingGet(),
                     conversation
                 )
@@ -1185,8 +1180,6 @@ class ConversationsListActivity :
         }
 
         val bundle = Bundle()
-        bundle.putParcelable(KEY_USER_ENTITY, currentUser)
-        bundle.putParcelable(KEY_ACTIVE_CONVERSATION, Parcels.wrap(selectedConversation))
         bundle.putString(KEY_ROOM_TOKEN, selectedConversation!!.token)
         bundle.putString(KEY_ROOM_ID, selectedConversation!!.roomId)
         bundle.putString(KEY_SHARED_TEXT, textToPaste)
@@ -1229,38 +1222,35 @@ class ConversationsListActivity :
         if (conversationMenuBundle != null &&
             isInternalUserEqualsCurrentUser(currentUser, conversationMenuBundle)
         ) {
-            val conversation = Parcels.unwrap<Conversation>(conversationMenuBundle!!.getParcelable(KEY_ROOM))
-            if (conversation != null) {
-                binding?.floatingActionButton?.let {
-                    val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                        .setIcon(
-                            viewThemeUtils.dialog
-                                .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
-                        )
-                        .setTitle(R.string.nc_delete_call)
-                        .setMessage(R.string.nc_delete_conversation_more)
-                        .setPositiveButton(R.string.nc_delete) { _, _ ->
-                            val data = Data.Builder()
-                            data.putLong(
-                                KEY_INTERNAL_USER_ID,
-                                conversationMenuBundle!!.getLong(KEY_INTERNAL_USER_ID)
-                            )
-                            data.putString(KEY_ROOM_TOKEN, conversation.token)
-                            conversationMenuBundle = null
-                            deleteConversation(data.build())
-                        }
-                        .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                            conversationMenuBundle = null
-                        }
-
-                    viewThemeUtils.dialog
-                        .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-                    val dialog = dialogBuilder.show()
-                    viewThemeUtils.platform.colorTextButtons(
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            binding?.floatingActionButton?.let {
+                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
+                    .setIcon(
+                        viewThemeUtils.dialog
+                            .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
                     )
-                }
+                    .setTitle(R.string.nc_delete_call)
+                    .setMessage(R.string.nc_delete_conversation_more)
+                    .setPositiveButton(R.string.nc_delete) { _, _ ->
+                        val data = Data.Builder()
+                        data.putLong(
+                            KEY_INTERNAL_USER_ID,
+                            conversationMenuBundle!!.getLong(KEY_INTERNAL_USER_ID)
+                        )
+                        data.putString(KEY_ROOM_TOKEN, bundle.getString(KEY_ROOM_TOKEN))
+                        conversationMenuBundle = null
+                        deleteConversation(data.build())
+                    }
+                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                        conversationMenuBundle = null
+                    }
+
+                viewThemeUtils.dialog
+                    .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
+                val dialog = dialogBuilder.show()
+                viewThemeUtils.platform.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                )
             }
         }
     }

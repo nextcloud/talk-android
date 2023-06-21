@@ -60,6 +60,7 @@ import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.installDisableKeyboardInput
 import com.vanniktech.emoji.installForceSingleEmoji
@@ -113,6 +114,9 @@ class SetStatusDialogFragment :
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
+    var currentUserProvider: CurrentUserProviderNew? = null
+        @Inject set
+
     lateinit var credentials: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,7 +125,7 @@ class SetStatusDialogFragment :
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         arguments?.let {
-            currentUser = it.getParcelable(ARG_CURRENT_USER_PARAM)
+            currentUser = currentUserProvider?.currentUser?.blockingGet()
             currentStatus = it.getParcelable(ARG_CURRENT_STATUS_PARAM)
 
             credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
@@ -559,9 +563,8 @@ class SetStatusDialogFragment :
         private val TAG = SetStatusDialogFragment::class.simpleName
 
         @JvmStatic
-        fun newInstance(user: User, status: Status): SetStatusDialogFragment {
+        fun newInstance(status: Status): SetStatusDialogFragment {
             val args = Bundle()
-            args.putParcelable(ARG_CURRENT_USER_PARAM, user)
             args.putParcelable(ARG_CURRENT_STATUS_PARAM, status)
 
             val dialogFragment = SetStatusDialogFragment()

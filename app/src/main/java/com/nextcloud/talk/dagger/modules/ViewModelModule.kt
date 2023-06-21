@@ -23,6 +23,9 @@ package com.nextcloud.talk.dagger.modules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.nextcloud.talk.callnotification.viewmodel.CallNotificationViewModel
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
 import com.nextcloud.talk.messagesearch.MessageSearchViewModel
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
@@ -112,5 +115,20 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(OpenConversationsViewModel::class)
-    abstract fun openConversationsViewModelModel(viewModel: OpenConversationsViewModel): ViewModel
+    abstract fun openConversationsViewModel(viewModel: OpenConversationsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChatViewModel::class)
+    abstract fun chatViewModel(viewModel: ChatViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CallNotificationViewModel::class)
+    abstract fun callNotificationViewModel(viewModel: CallNotificationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ConversationInfoEditViewModel::class)
+    abstract fun conversationInfoEditViewModel(viewModel: ConversationInfoEditViewModel): ViewModel
 }

@@ -32,7 +32,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
@@ -86,6 +85,7 @@ import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -95,7 +95,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.parceler.Parcels
 import java.util.Calendar
 import java.util.Collections
 import java.util.Locale
@@ -109,6 +108,9 @@ class ConversationInfoActivity :
 
     @Inject
     lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @Inject
     lateinit var conversationsRepository: ConversationsRepository
@@ -152,7 +154,8 @@ class ConversationInfoActivity :
         setContentView(binding.root)
         setupSystemColors()
 
-        conversationUser = intent.getParcelableExtra(BundleKeys.KEY_USER_ENTITY)!!
+        conversationUser = currentUserProvider.currentUser.blockingGet()
+
         conversationToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
         credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
@@ -225,11 +228,6 @@ class ConversationInfoActivity :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.edit) {
             val bundle = Bundle()
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
-            bundle.putParcelable(
-                BundleKeys.KEY_ACTIVE_CONVERSATION,
-                Parcels.wrap(conversation)
-            )
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
 
             val intent = Intent(this, ConversationInfoEditActivity::class.java)
@@ -270,7 +268,6 @@ class ConversationInfoActivity :
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(BundleKeys.KEY_CONVERSATION_NAME, conversation?.displayName)
         intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
-        intent.putExtra(BundleKeys.KEY_USER_ENTITY, conversationUser as Parcelable)
         intent.putExtra(SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR, conversation?.isParticipantOwnerOrModerator)
         startActivity(intent)
     }

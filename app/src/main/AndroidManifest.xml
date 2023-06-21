@@ -140,7 +140,7 @@
             android:theme="@style/AppTheme.CallLauncher" />
 
         <activity
-            android:name=".activities.CallNotificationActivity"
+            android:name=".callnotification.CallNotificationActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
