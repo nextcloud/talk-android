@@ -39,7 +39,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-serialization:${kotlinVersion}"
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.14'
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.0"
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:11.4.0"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:11.4.1"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
