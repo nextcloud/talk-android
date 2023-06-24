@@ -52,6 +52,19 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
+        <androidx.emoji2.widget.EmojiTextView
+            android:id="@+id/messageAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:alpha="0.6"
+            android:textAlignment="viewStart"
+            android:textColor="@color/no_emphasis_text"
+            android:textIsSelectable="false"
+            android:textSize="12sp"
+            tools:ignore="TextContrastCheck"
+            tools:text="Jane Doe" />
+
         <FrameLayout
             android:id="@+id/preview_container"
             android:layout_width="wrap_content"
@@ -160,6 +173,7 @@
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true"
+            tools:ignore="TextContrastCheck"
             tools:text="A simple message" />
 
         <TextView
@@ -173,6 +187,7 @@
             android:gravity="end"
             android:textColor="@color/no_emphasis_text"
             app:layout_alignSelf="center"
+            tools:ignore="TextContrastCheck"
             tools:text="12:38" />
 
         <include

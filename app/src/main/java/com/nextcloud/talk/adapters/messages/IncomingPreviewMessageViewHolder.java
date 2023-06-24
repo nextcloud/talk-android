@@ -34,6 +34,7 @@ import com.nextcloud.talk.databinding.ItemCustomIncomingPreviewMessageBinding;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.emoji2.widget.EmojiTextView;
 
@@ -46,15 +47,17 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
     }
 
     @Override
-    public void onBind(ChatMessage message) {
+    public void onBind(@NonNull ChatMessage message) {
         super.onBind(message);
 
+        binding.messageAuthor.setText(message.getActorDisplayName());
         binding.messageText.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
                                                                 R.color.no_emphasis_text));
         binding.messageTime.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
                                                                 R.color.no_emphasis_text));
     }
 
+    @NonNull
     @Override
     public EmojiTextView getMessageText() {
         return binding.messageText;
@@ -65,21 +68,25 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
         return binding.progressBar;
     }
 
+    @NonNull
     @Override
     public View getPreviewContainer() {
         return binding.previewContainer;
     }
 
+    @NonNull
     @Override
     public MaterialCardView getPreviewContactContainer() {
         return binding.contactContainer;
     }
 
+    @NonNull
     @Override
     public ImageView getPreviewContactPhoto() {
         return binding.contactPhoto;
     }
 
+    @NonNull
     @Override
     public EmojiTextView getPreviewContactName() {
         return binding.contactName;
