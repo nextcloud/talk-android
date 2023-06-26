@@ -156,7 +156,7 @@ class TranslateActivity : BaseActivity() {
 
     private fun getLanguageOptions() {
         val currentUser = userManager.currentUser.blockingGet()
-        val json = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
+        val json = JSONArray((CapabilitiesUtilNew.getLanguages(currentUser) as ArrayList<*>).toArray())
 
         val fromLanguagesSet = mutableSetOf(resources.getString(R.string.translation_detect_language))
         val toLanguagesSet = mutableSetOf(resources.getString(R.string.translation_device_settings))
@@ -212,7 +212,7 @@ class TranslateActivity : BaseActivity() {
 
     private fun getISOFromServer(language: String): String {
         val currentUser = userManager.currentUser.blockingGet()
-        val json = JSONArray(CapabilitiesUtilNew.getLanguages(currentUser).toString())
+        val json = JSONArray((CapabilitiesUtilNew.getLanguages(currentUser) as ArrayList<*>).toArray())
 
         for (i in 0 until json.length()) {
             val current = json.getJSONObject(i)
