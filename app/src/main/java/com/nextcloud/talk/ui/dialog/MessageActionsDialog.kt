@@ -95,7 +95,7 @@ class MessageActionsDialog(
             !message.isDeleted &&
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
                 CapabilitiesUtilNew.isTranslationsSupported(user) &&
-                JSONArray(CapabilitiesUtilNew.getLanguages(user).toString()).length() > 0
+                JSONArray((CapabilitiesUtilNew.getLanguages(user) as ArrayList<*>).toArray()).length() > 0
         )
         initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(
