@@ -122,6 +122,7 @@ import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
+import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.SystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
 import com.nextcloud.talk.adapters.messages.UnreadNoticeMessageViewHolder
@@ -173,6 +174,7 @@ import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
+import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.NotificationUtils
@@ -3453,6 +3455,13 @@ class ChatActivity :
         val intent = Intent(this, TranslateActivity::class.java)
         intent.putExtras(bundle)
         startActivity(intent)
+    }
+
+    fun openInFilesApp(message: ChatMessage) {
+        val keyID = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_ID]
+        val link = message.selectedIndividualHashMap!!["link"]
+        val fileViewerUtils = FileViewerUtils(this, message.activeUser!!)
+        fileViewerUtils.openFileInFilesApp(link!!, keyID!!)
     }
 
     private fun hasVisibleItems(message: ChatMessage): Boolean {

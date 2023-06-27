@@ -111,6 +111,9 @@ class MessageActionsDialog(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType()
         )
+        initMenuItemOpenNcApp(
+            ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType()
+        )
     }
 
     override fun onStart() {
@@ -312,6 +315,17 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuTranslateMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuItemOpenNcApp(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuOpenInNcApp.setOnClickListener {
+                chatActivity.openInFilesApp(message)
+                dismiss()
+            }
+        }
+
+        dialogMessageActionsBinding.menuOpenInNcApp.visibility = getVisibility(visible)
     }
 
     private fun getVisibility(visible: Boolean): Int {

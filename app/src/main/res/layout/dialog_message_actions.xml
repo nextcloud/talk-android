@@ -321,6 +321,39 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/menu_open_in_nc_app"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_sheet_item_height"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/menu_icon_open_in_nc_app"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/zero"
+                android:src="@drawable/ic_exit_to_app_black_24dp"
+                app:tint="@color/high_emphasis_menu_icon" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/menu_text_open_in_nc_app"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                android:text="@string/open_in_files_app"
+                android:textAlignment="viewStart"
+                android:textColor="@color/high_emphasis_text"
+                android:textSize="@dimen/bottom_sheet_text_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/menu_delete_message"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_sheet_item_height"
