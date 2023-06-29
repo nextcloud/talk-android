@@ -173,7 +173,7 @@ class ConversationInfoActivity :
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
             binding.sharedItemsButton.setOnClickListener { showSharedItems() }
         } else {
-            binding.categorySharedItems.visibility = GONE
+            binding.sharedItems.visibility = GONE
         }
 
         fetchRoomInfo()
@@ -257,8 +257,8 @@ class ConversationInfoActivity :
                 binding.notificationSettingsView.notificationSettingsCategory,
                 binding.webinarInfoView.webinarSettingsCategory,
                 binding.guestAccessView.guestAccessSettingsCategory,
-                binding.categorySharedItems,
-                binding.conversationSettings,
+                binding.sharedItemsTitle,
+                binding.conversationSettingsTitle,
                 binding.participantsListCategory
             )
         }.forEach(viewThemeUtils.platform::colorTextView)

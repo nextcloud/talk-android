@@ -25,7 +25,6 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:apc="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_container"
@@ -188,6 +187,7 @@
             </LinearLayout>
 
             <LinearLayout
+                    android:id="@+id/shared_items"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/standard_quarter_margin"
@@ -195,7 +195,7 @@
                     >
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/category_shared_items"
+                        android:id="@+id/shared_items_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/nc_shared_items"
@@ -231,6 +231,7 @@
 
 
             <LinearLayout
+                    android:id="@+id/conversation_settings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/standard_quarter_margin"
@@ -238,7 +239,7 @@
                     >
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/conversation_settings"
+                        android:id="@+id/conversation_settings_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/nc_conversation_settings"
