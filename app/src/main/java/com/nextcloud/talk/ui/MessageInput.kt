@@ -25,8 +25,10 @@ import android.util.AttributeSet
 import android.widget.Chronometer
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.TextView
 import androidx.emoji2.widget.EmojiEditText
+import com.google.android.material.button.MaterialButton
 import com.nextcloud.talk.R
 import com.stfalcon.chatkit.messages.MessageInput
 
@@ -37,6 +39,11 @@ class MessageInput : MessageInput {
     lateinit var microphoneEnabledInfo: ImageView
     lateinit var microphoneEnabledInfoBackground: ImageView
     lateinit var smileyButton: ImageButton
+    lateinit var deleteVoiceRecording: ImageView
+    lateinit var sendVoiceRecording: ImageView
+    lateinit var micInputCloud: MicInputCloud
+    lateinit var playPauseBtn: MaterialButton
+    lateinit var seekBar: SeekBar
 
     constructor(context: Context?) : super(context) {
         init()
@@ -57,6 +64,11 @@ class MessageInput : MessageInput {
         microphoneEnabledInfo = findViewById(R.id.microphoneEnabledInfo)
         microphoneEnabledInfoBackground = findViewById(R.id.microphoneEnabledInfoBackground)
         smileyButton = findViewById(R.id.smileyButton)
+        deleteVoiceRecording = findViewById(R.id.deleteVoiceRecording)
+        sendVoiceRecording = findViewById(R.id.sendVoiceRecording)
+        micInputCloud = findViewById(R.id.micInputCloud)
+        playPauseBtn = findViewById(R.id.playPauseBtn)
+        seekBar = findViewById(R.id.seekbar)
     }
 
     var messageInput: EmojiEditText

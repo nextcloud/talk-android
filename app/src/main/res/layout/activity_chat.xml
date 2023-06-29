@@ -132,6 +132,18 @@
             app:cornerRadius="@dimen/button_corner_radius"
             app:icon="@drawable/ic_baseline_arrow_downward_24px" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/voice_recording_lock"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            style="?attr/floatingActionButtonSmallStyle"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            app:srcCompat="@drawable/ic_lock_open_grey600_24dp"
+            android:visibility="gone" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/scrollDownButton"
             style="@style/Widget.AppTheme.Button.ElevatedButton"

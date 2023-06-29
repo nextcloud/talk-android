@@ -46,6 +46,7 @@ import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
 import com.nextcloud.talk.R
+import com.nextcloud.talk.ui.MicInputCloud
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.vanniktech.emoji.EmojiTextView
@@ -240,6 +241,12 @@ class TalkSpecificViewThemeUtils @Inject constructor(
                     )
                 )
             )
+        }
+    }
+
+    fun themeMicInputCloud(micInputCloud: MicInputCloud) {
+        withScheme(micInputCloud) { scheme ->
+            micInputCloud.setColor(scheme.primary)
         }
     }
 
