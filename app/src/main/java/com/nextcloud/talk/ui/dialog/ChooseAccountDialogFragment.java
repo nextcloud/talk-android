@@ -176,6 +176,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             }
 
             adapter.addListener(onSwitchItemClickListener);
+            adapter.addListener(onSwitchItemLongClickListener);
             adapter.updateDataSet(userItems, false);
         }
     }
@@ -319,6 +320,11 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 return true;
             }
         };
+
+        private final FlexibleAdapter.OnItemLongClickListener onSwitchItemLongClickListener =
+            position -> {
+                // do nothing. OnItemLongClickListener is necessary anyway so the activity won't handle the event
+            };
 
     private void drawStatus() {
         float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, getContext());
