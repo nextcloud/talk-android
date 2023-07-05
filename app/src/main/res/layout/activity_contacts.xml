@@ -152,7 +152,8 @@
         android:layout_marginTop="@dimen/standard_half_margin"
         android:layout_marginEnd="@dimen/standard_margin"
         android:layout_marginBottom="@dimen/standard_half_margin"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/list_open_conversations_image"
