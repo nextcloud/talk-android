@@ -569,6 +569,8 @@ class ChatActivity :
 
         logConversationInfos("onResume")
 
+        pullChatMessagesPending = false
+
         setupWebsocket()
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
