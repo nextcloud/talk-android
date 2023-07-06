@@ -29,8 +29,7 @@ package com.nextcloud.talk.adapters.messages
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.text.Spannable
-import android.text.SpannableString
+import android.text.Spanned
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
@@ -84,13 +83,13 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
         itemView.isSelected = false
 
-        var messageString: Spannable = SpannableString(message.message)
-
         var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
+
+        var processedMessageText = DisplayUtils.getRenderedMarkdownText(context, message.message)
 
         val messageParameters = message.messageParameters
         if (messageParameters != null && messageParameters.size > 0) {
-            messageString = processMessageParameters(messageParameters, message, messageString)
+            processedMessageText = processMessageParameters(messageParameters, message, processedMessageText)
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
             textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
             itemView.isSelected = true
@@ -98,7 +97,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         }
 
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        binding.messageText.text = messageString
+        binding.messageText.text = processedMessageText
 
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
@@ -219,8 +218,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     private fun processMessageParameters(
         messageParameters: HashMap<String?, HashMap<String?, String?>>,
         message: ChatMessage,
-        messageString: Spannable
-    ): Spannable {
+        messageString: Spanned
+    ): Spanned {
         var messageStringInternal = messageString
         for (key in messageParameters.keys) {
             val individualHashMap = message.messageParameters!![key]
@@ -253,6 +252,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 }
             }
         }
+
         return messageStringInternal
     }
 

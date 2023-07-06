@@ -27,8 +27,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
-import android.text.Spannable
-import android.text.SpannableString
+import android.text.Spanned
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
@@ -70,15 +69,17 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
         val messageParameters: HashMap<String?, HashMap<String?, String?>>? = message.messageParameters
-        var messageString: Spannable = SpannableString(message.message)
         realView.isSelected = false
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
         var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
         val textColor = viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant
+
+        var processedMessageText = DisplayUtils.getRenderedMarkdownText(context, message.message)
+
         binding.messageTime.setTextColor(textColor)
         if (messageParameters != null && messageParameters.size > 0) {
-            messageString = processMessageParameters(messageParameters, message, messageString)
+            processedMessageText = processMessageParameters(messageParameters, message, processedMessageText)
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
             textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
             layoutParams.isWrapBefore = true
@@ -90,7 +91,7 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
         binding.messageText.setTextColor(textColor)
-        binding.messageText.text = messageString
+        binding.messageText.text = processedMessageText
 
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
@@ -183,8 +184,8 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
     private fun processMessageParameters(
         messageParameters: HashMap<String?, HashMap<String?, String?>>,
         message: ChatMessage,
-        messageString: Spannable
-    ): Spannable {
+        messageString: Spanned
+    ): Spanned {
         var messageStringInternal = messageString
         for (key in messageParameters.keys) {
             val individualHashMap: HashMap<String?, String?>? = message.messageParameters!![key]
