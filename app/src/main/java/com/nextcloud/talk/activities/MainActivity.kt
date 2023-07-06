@@ -62,7 +62,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ACCOUNT
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import io.reactivex.Observer
 import io.reactivex.SingleObserver
@@ -114,37 +113,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         router = Conductor.attachRouter(this, binding.controllerContainer, savedInstanceState)
 
-        if (intent.hasExtra(ADD_ACCOUNT) && intent.getBooleanExtra(ADD_ACCOUNT, false)) {
-            addAccount()
-        } else if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            onNewIntent(intent)
-        } else if (!router!!.hasRootController()) {
-            if (!appPreferences.isDbRoomMigrated) {
-                appPreferences.isDbRoomMigrated = true
-            }
-
-            userManager.users.subscribe(object : SingleObserver<List<User>> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onSuccess(users: List<User>) {
-                    if (users.isNotEmpty()) {
-                        runOnUiThread {
-                            openConversationList()
-                        }
-                    } else {
-                        runOnUiThread {
-                            launchLoginScreen()
-                        }
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "Error loading existing users", e)
-                }
-            })
-        }
+        handleIntent(intent)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
@@ -281,7 +250,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-                    bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     val chatIntent = Intent(context, ChatActivity::class.java)
                     chatIntent.putExtras(bundle)
@@ -301,35 +269,67 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
-
-        val internalUserId = intent.extras?.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
-        val user = userManager.getUserWithId(internalUserId!!).blockingGet()
-
-        if (user != null && userManager.setUserAsActive(user).blockingGet()) {
-            handleIntent(intent)
-        }
+        handleIntent(intent)
     }
 
     private fun handleIntent(intent: Intent) {
         handleActionFromContact(intent)
 
-        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
-                if (!router!!.hasRootController()) {
-                    openConversationList()
+        val internalUserId = intent.extras?.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
+
+        var user: User? = null
+        if (internalUserId != null) {
+            user = userManager.getUserWithId(internalUserId).blockingGet()
+        }
+
+        if (user != null && userManager.setUserAsActive(user).blockingGet()) {
+            // this should be avoided (it's still from conductor architecture). activities should be opened directly.
+            if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+                if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
+                    if (!router!!.hasRootController()) {
+                        openConversationList()
+                    }
+                    val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
+                    intent.extras?.let { callNotificationIntent.putExtras(it) }
+                    startActivity(callNotificationIntent)
+                } else {
+                    logRouterBackStack(router!!)
+
+                    val chatIntent = Intent(context, ChatActivity::class.java)
+                    chatIntent.putExtras(intent.extras!!)
+                    startActivity(chatIntent)
+
+                    logRouterBackStack(router!!)
                 }
-                val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
-                intent.extras?.let { callNotificationIntent.putExtras(it) }
-                startActivity(callNotificationIntent)
-            } else {
-                logRouterBackStack(router!!)
-
-                val chatIntent = Intent(context, ChatActivity::class.java)
-                chatIntent.putExtras(intent.extras!!)
-                startActivity(chatIntent)
-
-                logRouterBackStack(router!!)
             }
+        } else if (intent.hasExtra(ADD_ACCOUNT) && intent.getBooleanExtra(ADD_ACCOUNT, false)) {
+            addAccount()
+        } else if (!router!!.hasRootController()) {
+            if (!appPreferences.isDbRoomMigrated) {
+                appPreferences.isDbRoomMigrated = true
+            }
+
+            userManager.users.subscribe(object : SingleObserver<List<User>> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onSuccess(users: List<User>) {
+                    if (users.isNotEmpty()) {
+                        runOnUiThread {
+                            openConversationList()
+                        }
+                    } else {
+                        runOnUiThread {
+                            launchLoginScreen()
+                        }
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Error loading existing users", e)
+                }
+            })
         }
     }
 
