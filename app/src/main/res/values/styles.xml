@@ -233,6 +233,10 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="TextInputLayoutTheme" parent="Theme.AppCompat">
+        <item name="colorSurface">@color/bg_default</item>
+    </style>
+
     <style name="FullScreenTextTheme" parent="AppTheme">
         <item name="android:navigationBarColor">@color/bg_default</item>
     </style>
