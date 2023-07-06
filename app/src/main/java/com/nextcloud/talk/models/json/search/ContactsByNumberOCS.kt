@@ -25,7 +25,6 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.models.json.generic.GenericMeta
-import java.util.HashMap
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -34,7 +33,7 @@ data class ContactsByNumberOCS(
     @JsonField(name = ["meta"])
     var meta: GenericMeta?,
     @JsonField(name = ["data"])
-    var map: Map<String, String> = HashMap()
+    var map: Map<String, String>? = HashMap()
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, HashMap())
