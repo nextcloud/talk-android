@@ -181,29 +181,7 @@ class SetStatusDialogFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currentStatus?.let {
-            binding.emoji.setText(it.icon)
-            binding.customStatusInput.text?.clear()
-            binding.customStatusInput.setText(it.message?.trim())
-            binding.setStatus.isEnabled = it.message?.isEmpty() == false
-            visualizeStatus(it.status)
-
-            if (it.clearAt > 0) {
-                binding.clearStatusAfterSpinner.visibility = View.GONE
-                binding.remainingClearTime.apply {
-                    binding.clearStatusMessageTextView.text = getString(R.string.clear_status_message)
-                    visibility = View.VISIBLE
-                    text = DisplayUtils.getRelativeTimestamp(context, it.clearAt * ONE_SECOND_IN_MILLIS, true)
-                        .toString()
-                        .decapitalize(Locale.getDefault())
-                    setOnClickListener {
-                        visibility = View.GONE
-                        binding.clearStatusAfterSpinner.visibility = View.VISIBLE
-                        binding.clearStatusMessageTextView.text = getString(R.string.clear_status_message_after)
-                    }
-                }
-            }
-        }
+        setupCurrentStatus()
 
         adapter = PredefinedStatusListAdapter(this, requireContext())
         adapter.list = predefinedStatusesList
@@ -211,15 +189,7 @@ class SetStatusDialogFragment :
         binding.predefinedStatusList.adapter = adapter
         binding.predefinedStatusList.layoutManager = LinearLayoutManager(context)
 
-        binding.onlineStatus.setOnClickListener { setStatus(StatusType.ONLINE) }
-        binding.dndStatus.setOnClickListener { setStatus(StatusType.DND) }
-        binding.awayStatus.setOnClickListener { setStatus(StatusType.AWAY) }
-        binding.invisibleStatus.setOnClickListener { setStatus(StatusType.INVISIBLE) }
-
-        viewThemeUtils.talk.themeStatusCardView(binding.onlineStatus)
-        viewThemeUtils.talk.themeStatusCardView(binding.dndStatus)
-        viewThemeUtils.talk.themeStatusCardView(binding.awayStatus)
-        viewThemeUtils.talk.themeStatusCardView(binding.invisibleStatus)
+        setupGeneralStatusOptions()
 
         binding.clearStatus.setOnClickListener { clearStatus() }
         binding.setStatus.setOnClickListener { setStatusMessage() }
@@ -262,6 +232,44 @@ class SetStatusDialogFragment :
         binding.customStatusInput.doAfterTextChanged { text ->
             binding.setStatus.isEnabled = !text.isNullOrEmpty()
         }
+    }
+
+    private fun setupCurrentStatus() {
+        currentStatus?.let {
+            binding.emoji.setText(it.icon)
+            binding.customStatusInput.text?.clear()
+            binding.customStatusInput.setText(it.message?.trim())
+            binding.setStatus.isEnabled = it.message?.isEmpty() == false
+            visualizeStatus(it.status)
+
+            if (it.clearAt > 0) {
+                binding.clearStatusAfterSpinner.visibility = View.GONE
+                binding.remainingClearTime.apply {
+                    binding.clearStatusMessageTextView.text = getString(R.string.clear_status_message)
+                    visibility = View.VISIBLE
+                    text = DisplayUtils.getRelativeTimestamp(context, it.clearAt * ONE_SECOND_IN_MILLIS, true)
+                        .toString()
+                        .decapitalize(Locale.getDefault())
+                    setOnClickListener {
+                        visibility = View.GONE
+                        binding.clearStatusAfterSpinner.visibility = View.VISIBLE
+                        binding.clearStatusMessageTextView.text = getString(R.string.clear_status_message_after)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupGeneralStatusOptions() {
+        binding.onlineStatus.setOnClickListener { setStatus(StatusType.ONLINE) }
+        binding.dndStatus.setOnClickListener { setStatus(StatusType.DND) }
+        binding.awayStatus.setOnClickListener { setStatus(StatusType.AWAY) }
+        binding.invisibleStatus.setOnClickListener { setStatus(StatusType.INVISIBLE) }
+
+        viewThemeUtils.talk.themeStatusCardView(binding.onlineStatus)
+        viewThemeUtils.talk.themeStatusCardView(binding.dndStatus)
+        viewThemeUtils.talk.themeStatusCardView(binding.awayStatus)
+        viewThemeUtils.talk.themeStatusCardView(binding.invisibleStatus)
     }
 
     private fun createClearTimesArrayAdapter(): ArrayAdapter<String> {

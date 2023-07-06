@@ -57,6 +57,7 @@ class ViewModelFactory @Inject constructor(
 internal annotation class ViewModelKey(val value: KClass<out ViewModel>)
 
 @Module
+@Suppress("TooManyFunctions")
 abstract class ViewModelModule {
 
     @Binds
