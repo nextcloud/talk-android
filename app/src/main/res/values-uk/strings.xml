@@ -324,7 +324,7 @@
     <string name="nc_settings_reauthorize">Повторно авторизувати обліковий запис</string>
     <string name="nc_settings_remove">Вилучити</string>
     <string name="nc_settings_remove_account">Вилучити обліковий запис</string>
-    <string name="nc_settings_remove_confirmation">Будь ласка, підтвердіть видалення поточного акаунта.</string>
+    <string name="nc_settings_remove_confirmation">Будь ласка, підтвердіть вилучення поточного облікового запису.</string>
     <string name="nc_settings_screen_lock_desc">Захищати %1$s за допомогою системи блокування Android або підтримуваного біометричного методу</string>
     <string name="nc_settings_screen_lock_timeout_title">Затримка блокування екрана під час бездіяльності</string>
     <string name="nc_settings_screen_lock_title">Блокування екрана</string>
