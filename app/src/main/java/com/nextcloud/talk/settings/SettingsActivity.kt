@@ -54,6 +54,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.work.OneTimeWorkRequest
@@ -1012,7 +1013,7 @@ class SettingsActivity : BaseActivity() {
         val phoneNumberLayoutWrapper = LinearLayout(context)
         phoneNumberLayoutWrapper.orientation = LinearLayout.VERTICAL
         phoneNumberLayoutWrapper.setPadding(PHONE_NUMBER_SIDE_PADDING, 0, PHONE_NUMBER_SIDE_PADDING, 0)
-        val phoneNumberInputLayout = TextInputLayout(context)
+        val phoneNumberInputLayout = TextInputLayout(ContextThemeWrapper(this, R.style.TextInputLayoutTheme))
         val phoneNumberField = EditText(context)
         phoneNumberInputLayout.setHelperTextColor(
             ColorStateList.valueOf(resources!!.getColor(R.color.nc_darkRed, null))
