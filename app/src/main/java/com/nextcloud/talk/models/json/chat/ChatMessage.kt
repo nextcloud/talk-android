@@ -267,26 +267,6 @@ data class ChatMessage(
             ""
         }
     }
-
-    /*} else if (getCalculateMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
-                if (actorId.equals(activeUser.getUserId())) {
-                    return (
-                    NextcloudTalkApplication
-                    .Companion.getSharedApplication()
-                    .getString(R.string.nc_sent_a_link_you)
-                    );
-                } else {
-                    return (String.format(NextcloudTalkApplication.
-                    Companion.
-                    getSharedApplication().
-                    getResources().
-                    getString(R.string.nc_sent_a_link),
-                            !TextUtils.isEmpty(actorDisplayName) ? actorDisplayName : NextcloudTalkApplication.
-                            Companion.
-                            getSharedApplication().
-                            getString(R.string.nc_guest))
-                            );
-                }*/
     val lastMessageDisplayText: String
         get() {
             if (getCalculateMessageType() == MessageType.REGULAR_TEXT_MESSAGE ||
@@ -334,27 +314,6 @@ data class ChatMessage(
                             getNullsafeActorDisplayName()
                         )
                     }
-                    /*} else if (getCalculateMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
-                if (actorId.equals(activeUser.getUserId())) {
-                    return (
-                    NextcloudTalkApplication
-                    .Companion
-                    .getSharedApplication()
-                    .getString(R.string.nc_sent_a_link_you)
-                    );
-                } else {
-                    return (String.format(
-                    NextcloudTalkApplication
-                    .Companion
-                    .getSharedApplication()
-                    .getResources()
-                    .getString(R.string.nc_sent_a_link),
-                            !TextUtils.isEmpty(actorDisplayName) ? actorDisplayName : NextcloudTalkApplication.
-                            Companion.
-                            getSharedApplication().
-                            getString(R.string.nc_guest))
-                            );
-                }*/
                 } else if (MessageType.SINGLE_LINK_AUDIO_MESSAGE == getCalculateMessageType()) {
                     return if (actorId == activeUser!!.userId) {
                         sharedApplication!!.getString(R.string.nc_sent_an_audio_you)
@@ -387,7 +346,7 @@ data class ChatMessage(
                         sharedApplication!!.getString(R.string.nc_sent_poll_you)
                     } else {
                         String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_an_image),
+                            sharedApplication!!.resources.getString(R.string.nc_sent_poll),
                             getNullsafeActorDisplayName()
                         )
                     }

@@ -343,7 +343,6 @@ How to translate with transifex:
     <string name="nc_conversation_menu_video_call">Video call</string>
     <string name="nc_conversation_menu_conversation_info">Conversation info</string>
     <string name="nc_new_messages">Unread messages</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s sent a link.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sent a GIF.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s sent an attachment.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s sent an audio.</string>
@@ -352,7 +351,6 @@ How to translate with transifex:
     <string name="nc_sent_poll" formatted="true">%1$s sent a poll.</string>
     <string name="nc_sent_location" formatted="true">%1$s sent a location.</string>
     <string name="nc_sent_voice" formatted="true">%1$s sent a voice message.</string>
-    <string name="nc_sent_a_link_you">You sent a link.</string>
     <string name="nc_sent_a_gif_you">You sent a GIF.</string>
     <string name="nc_sent_an_attachment_you">You sent an attachment.</string>
     <string name="nc_sent_an_audio_you">You sent an audio.</string>
