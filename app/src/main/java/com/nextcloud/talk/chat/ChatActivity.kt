@@ -463,6 +463,7 @@ class ChatActivity :
         active = false
     }
 
+    @Suppress("LongMethod")
     private fun initObservers() {
         chatViewModel.getRoomViewState.observe(this) { state ->
             when (state) {
@@ -1039,7 +1040,7 @@ class ChatActivity :
         }
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber", "LongMethod")
     private fun updateTypingIndicator() {
         fun ellipsize(text: String): String {
             return DisplayUtils.ellipsize(text, TYPING_INDICATOR_MAX_NAME_LENGTH)
