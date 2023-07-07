@@ -1195,8 +1195,10 @@ class ChatActivity :
                 this,
                 object : MessageSwipeActions {
                     override fun showReplyUI(position: Int) {
-                        val chatMessage = adapter?.items?.get(position)?.item as ChatMessage?
-                        replyToMessage(chatMessage)
+                        val chatMessage = adapter?.items?.getOrNull(position)?.item as ChatMessage?
+                        if (chatMessage != null) {
+                            replyToMessage(chatMessage)
+                        }
                     }
                 }
             )
