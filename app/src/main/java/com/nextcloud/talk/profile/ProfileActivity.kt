@@ -434,7 +434,7 @@ class ProfileActivity : BaseActivity() {
     private fun save() {
         for (item in adapter!!.displayList!!) {
             // Text
-            if (item.text != userInfo!!.getValueByField(item.field)) {
+            if (item.text != userInfo?.getValueByField(item.field)) {
                 val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
                 ncApi.setUserData(
                     credentials,
@@ -458,7 +458,7 @@ class ProfileActivity : BaseActivity() {
                         }
 
                         override fun onError(e: Throwable) {
-                            item.text = userInfo!!.getValueByField(item.field)!!
+                            item.text = userInfo?.getValueByField(item.field)
                             Toast.makeText(
                                 applicationContext,
                                 String.format(
@@ -479,7 +479,7 @@ class ProfileActivity : BaseActivity() {
             }
 
             // Scope
-            if (item.scope != userInfo!!.getScopeByField(item.field)) {
+            if (item.scope != userInfo?.getScopeByField(item.field)) {
                 saveScope(item, userInfo)
             }
             adapter!!.updateFilteredList()
@@ -586,7 +586,7 @@ class ProfileActivity : BaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    item.scope = userInfo!!.getScopeByField(item.field)
+                    item.scope = userInfo?.getScopeByField(item.field)
                     Log.e(TAG, "Failed to saved: " + item.scope + " as " + item.field, e)
                 }
 
