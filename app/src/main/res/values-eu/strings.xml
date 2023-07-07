@@ -17,6 +17,7 @@
     <string name="clear_status_message_after">Garbitu egoera mezua ondoren</string>
     <string name="close">Itxi</string>
     <string name="conversations">Elkarrizketak</string>
+    <string name="danger_zone">Arrisku eremua</string>
     <string name="delete_avatar">Ezabatu avatarra</string>
     <string name="dnd">Ez molestatu</string>
     <string name="dontClear">Ez garbitu</string>
@@ -35,6 +36,7 @@
     <string name="load_more_results">Kargatu emaitza gehiago </string>
     <string name="lock_symbol">Blokeo sinboloa</string>
     <string name="lower_hand">Jaitsi eskua</string>
+    <string name="mentioned">Aipatuta</string>
     <string name="menu_item_sort_by_date_newest_first">Berrienak lehenengo </string>
     <string name="menu_item_sort_by_date_oldest_first">Zaharrenak lehenengo</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
@@ -98,6 +100,7 @@
     <string name="nc_clear_history_warning">Ziur zaude elkarrizketa honen mezu guztiak ezabatu nahi dituzula?</string>
     <string name="nc_client_cert_change">Aldatu bezeroaren ziurtagiria</string>
     <string name="nc_client_cert_setup">Konfiguratu bezeroaren ziurtagiria</string>
+    <string name="nc_close_app">Itxi aplikazioa</string>
     <string name="nc_common_and">eta</string>
     <string name="nc_common_dismiss">Baztertu</string>
     <string name="nc_common_error_sorry">Sentitzen dugu, zerbait gaizki joan da!</string>
@@ -129,6 +132,9 @@
     <string name="nc_description_send_message_button">Bidali mezua</string>
     <string name="nc_dialog_invalid_password">Pasahitz baliogabea</string>
     <string name="nc_dialog_maintenance_mode">Mantentze modua</string>
+    <string name="nc_dialog_maintenance_mode_description">Zerbitzaria mantentze moduan dago.</string>
+    <string name="nc_dialog_outdated_client">Aplikazioa zaharkituta dago</string>
+    <string name="nc_dialog_outdated_client_description">Aplikazio hau zaharregia da eta ez dago zerbitzari honengatik onartuta. Mesedez eguneratu.</string>
     <string name="nc_dialog_outdated_client_option_update">Eguneratu</string>
     <string name="nc_dialog_reauth_or_delete">Kontu hau birbaimendu edo ezabatu nahi duzu?</string>
     <string name="nc_display_name_not_fetched">Ezin izan da erakusteko izena lortu, bertan behera uzten</string>
@@ -147,6 +153,7 @@
     <string name="nc_failed_to_perform_operation">Barkatu, zerbait gaizki joan da!</string>
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_file_storage_permission">Fitxategietan sartzeko baimena behar da</string>
+    <string name="nc_filter">Filtratu elkarrizketa</string>
     <string name="nc_following_link">Erabiltzailea esteka publiko bat jarraitzen ari da</string>
     <string name="nc_formatted_message_you">Zu: %1$s</string>
     <string name="nc_forward_message">Birbidali</string>
@@ -183,6 +190,7 @@
     <string name="nc_license_summary">GNU General Public Lizentzia, 3. bertsioa</string>
     <string name="nc_license_title">Lizentzia</string>
     <string name="nc_limit_hit">%s karaktere limitera iritsi da</string>
+    <string name="nc_list_open_conversations">Zerrendatu irekitako elkarrizketak</string>
     <string name="nc_lobby">Sarrera</string>
     <string name="nc_lobby_start_date">Bilera hau %1$s(r)etarako programatuta dago</string>
     <string name="nc_lobby_start_soon">Bilera laster hasiko da</string>
@@ -210,6 +218,8 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ez dago erabilgarri (administratzaileak instalatu edo mugatu gabe)</string>
     <string name="nc_nick_guest">Gonbidatua</string>
     <string name="nc_no">Ez</string>
+    <string name="nc_no_open_conversations_headline">Ez ireki elkarrizketak</string>
+    <string name="nc_no_open_conversations_text">Ez dago sartu ahal zaren elkarrizketa irekirik.\nEz dago elkarrizketa irekirik edo dagoeneko denetara sartu zara.</string>
     <string name="nc_no_proxy">Proxyrik ez</string>
     <string name="nc_not_allowed_to_activate_audio">Ez duzu baimenik audioa gaitzeko!</string>
     <string name="nc_not_allowed_to_activate_video">Ez duzu baimenik bideoa gaitzeko!</string>
@@ -301,6 +311,8 @@
     <string name="nc_settings_advanced_title">Aurreratua</string>
     <string name="nc_settings_appearance">Itxura</string>
     <string name="nc_settings_call_ringtone">Deiak</string>
+    <string name="nc_settings_direct_value">8080</string>
+    <string name="nc_settings_http_value">3128</string>
     <string name="nc_settings_incognito_keyboard_desc">Teklatuaren ikasketa pertsonalizatua desgaitzen du (bermerik gabe)</string>
     <string name="nc_settings_incognito_keyboard_title">Teklatu ezkutua</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
@@ -334,12 +346,16 @@
     <string name="nc_settings_server_almost_eol">Zerbitzariaren bertsioa zaharregia da eta ez da hurrengo argitalpenean onartuko!</string>
     <string name="nc_settings_server_eol">Zerbitzariaren bertsioa zaharregia da eta Android aplikazio honek ez du onartzen</string>
     <string name="nc_settings_server_eol_title">Ez da zerbitzaria onartzen</string>
+    <string name="nc_settings_socks_value">1080</string>
     <string name="nc_settings_theme_battery_saver">Bateria aurrezleak ezarrita</string>
     <string name="nc_settings_theme_dark">Iluna</string>
     <string name="nc_settings_theme_follow_system">Erabili sistemaren lehenetsia</string>
     <string name="nc_settings_theme_key">Gaia</string>
     <string name="nc_settings_theme_light">Argia</string>
     <string name="nc_settings_theme_title">Gaia</string>
+    <string name="nc_settings_typing_status_desc">Partekatu nire idazte-egoera eta erakutsi besteen idazte-egoera</string>
+    <string name="nc_settings_typing_status_hpb_description">Idazte egoera errendimendu handiko azpiegituretan (HPB) soilik dago eskuragarri</string>
+    <string name="nc_settings_typing_status_title">Idazte egoera</string>
     <string name="nc_settings_use_credentials_title">Proxyak egiaztagiriak behar ditu</string>
     <string name="nc_settings_warning">Oharra</string>
     <string name="nc_settings_wrong_account">Oraingo kontua baino ezin da berrbaimendu</string>
@@ -463,15 +479,22 @@
     <string name="take_photo_toggle_torch">Txandakatu linterna</string>
     <string name="thirtyMinutes">30 minutu</string>
     <string name="thisWeek">Aste honetan</string>
+    <string name="this_is_a_test_message">Hau test mezu bat da</string>
     <string name="title_attachments">Eranskinak</string>
     <string name="today">Gaur</string>
     <string name="translate">Itzuli</string>
+    <string name="translation">Itzulpena</string>
+    <string name="translation_copy_translated_text">Kopiatu itzulitako testua</string>
     <string name="translation_detect_language">Detektatu hizkuntza</string>
     <string name="translation_device_settings">Gailuaren ezarpenak</string>
     <string name="translation_error_message">Ezin izan da hizkuntza hauteman</string>
     <string name="translation_error_title">Itzulpenak huts egin du</string>
     <string name="translation_from">Nork</string>
     <string name="translation_to">Nori</string>
+    <string name="typing_1_other">eta beste 1 idazten ari dira ...</string>
+    <string name="typing_are_typing">idazten ari dira ...</string>
+    <string name="typing_is_typing">idazten ari da ...</string>
+    <string name="typing_x_others">eta beste %1$s idazten ari dira ...</string>
     <string name="unread">Irakurri gabe</string>
     <string name="upload_new_avatar_from_device">Kargatu avatar berria gailutik</string>
     <string name="user_info_address">Helbidea</string>
@@ -484,6 +507,7 @@
     <string name="userinfo_error_text">Erabiltzailearen informazio pertsonala eskuratzeak huts egin du</string>
     <string name="userinfo_no_info_headline">Ez da informazio pertsonalik ezarri</string>
     <string name="userinfo_no_info_text">Gehitu izena, irudia eta kontaktuko xehetasunak zure profilaren orrian</string>
+    <string name="v0_1">v0.1</string>
     <string name="whats_your_status">Zein da zure egoera?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">Boto %d</item>
