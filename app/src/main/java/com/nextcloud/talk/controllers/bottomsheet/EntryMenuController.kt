@@ -105,6 +105,28 @@ class EntryMenuController(args: Bundle) :
                 binding?.okButton?.alpha = OPACITY_BUTTON_DISABLED
             }
         }
+
+        emojiPopup = binding?.let {
+            EmojiPopup(
+                rootView = view,
+                editText = it.textEdit,
+                onEmojiPopupShownListener = {
+                    viewThemeUtils.platform.colorImageView(it.smileyButton, ColorRole.PRIMARY)
+                },
+                onEmojiPopupDismissListener = {
+                    it.smileyButton.imageTintList = ColorStateList.valueOf(
+                        ResourcesCompat.getColor(
+                            resources!!,
+                            R.color.medium_emphasis_text,
+                            context.theme
+                        )
+                    )
+                },
+                onEmojiClickListener = {
+                    binding?.textEdit?.editableText?.append(" ")
+                }
+            )
+        }
     }
 
     override fun onViewBound(view: View) {
@@ -113,8 +135,6 @@ class EntryMenuController(args: Bundle) :
         currentUser = userManager.currentUser.blockingGet()
 
         if (operation == ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM) {
-            var labelText = ""
-            labelText = resources!!.getString(R.string.nc_conversation_link)
             binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
 
             textEditAddChangedListener()
@@ -122,7 +142,21 @@ class EntryMenuController(args: Bundle) :
             binding?.textInputLayout?.let { viewThemeUtils.material.colorTextInputLayout(it) }
             binding?.okButton?.let { viewThemeUtils.material.colorMaterialButtonText(it) }
 
-            binding?.textInputLayout?.hint = labelText
+            binding?.textInputLayout?.hint = resources!!.getString(R.string.nc_conversation_link)
+
+            binding?.textInputLayout?.requestFocus()
+
+            binding?.smileyButton?.setOnClickListener { onSmileyClick() }
+            binding?.okButton?.setOnClickListener { onOkButtonClick() }
+        } else if (operation == ConversationOperationEnum.OPS_CODE_INVITE_USERS) {
+            binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT
+
+            textEditAddChangedListener()
+            binding?.smileyButton?.visibility = View.VISIBLE
+
+            binding?.textInputLayout?.let { viewThemeUtils.material.colorTextInputLayout(it) }
+            binding?.okButton?.let { viewThemeUtils.material.colorMaterialButtonText(it) }
+
             binding?.textInputLayout?.requestFocus()
 
             binding?.smileyButton?.setOnClickListener { onSmileyClick() }
@@ -162,32 +196,10 @@ class EntryMenuController(args: Bundle) :
 
                         var labelText = ""
                         when (operation) {
-                            ConversationOperationEnum.OPS_CODE_INVITE_USERS,
                             ConversationOperationEnum.OPS_CODE_RENAME_ROOM -> {
                                 labelText = resources!!.getString(R.string.nc_call_name)
                                 binding?.textEdit?.inputType = InputType.TYPE_CLASS_TEXT
                                 binding?.smileyButton?.visibility = View.VISIBLE
-                                emojiPopup = binding?.let {
-                                    EmojiPopup(
-                                        rootView = view,
-                                        editText = it.textEdit,
-                                        onEmojiPopupShownListener = {
-                                            viewThemeUtils.platform.colorImageView(it.smileyButton, ColorRole.PRIMARY)
-                                        },
-                                        onEmojiPopupDismissListener = {
-                                            it.smileyButton.imageTintList = ColorStateList.valueOf(
-                                                ResourcesCompat.getColor(
-                                                    resources!!,
-                                                    R.color.medium_emphasis_text,
-                                                    context.theme
-                                                )
-                                            )
-                                        },
-                                        onEmojiClickListener = {
-                                            binding?.textEdit?.editableText?.append(" ")
-                                        }
-                                    )
-                                }
                             }
 
                             ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> {
