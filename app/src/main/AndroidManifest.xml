@@ -215,7 +215,6 @@
 
         <activity
             android:name=".chat.ChatActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
