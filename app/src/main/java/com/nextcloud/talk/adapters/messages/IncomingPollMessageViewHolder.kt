@@ -40,6 +40,7 @@ import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
@@ -58,6 +59,9 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) :
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var messageUtils: MessageUtils
 
     @Inject
     lateinit var dateUtils: DateUtils
@@ -198,7 +202,14 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) :
             }
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context.getText(R.string.nc_nick_guest)
-            binding.messageQuote.quotedMessage.text = parentChatMessage.text
+            binding.messageQuote.quotedMessage.text = messageUtils
+                .enrichChatMessageText(
+                    binding.messageQuote.quotedMessage.context,
+                    parentChatMessage.text,
+                    binding.messageQuote.quotedMessage.context.resources.getColor(
+                        R.color.nc_incoming_text_default
+                    )
+                )
 
             binding.messageQuote.quotedMessageAuthor
                 .setTextColor(ContextCompat.getColor(context, R.color.textColorMaxContrast))

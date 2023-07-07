@@ -48,7 +48,6 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
@@ -88,11 +87,6 @@ import coil.Coil;
 import coil.request.ImageRequest;
 import coil.target.Target;
 import coil.transform.CircleCropTransformation;
-import io.noties.markwon.AbstractMarkwonPlugin;
-import io.noties.markwon.Markwon;
-import io.noties.markwon.MarkwonConfiguration;
-import io.noties.markwon.core.MarkwonTheme;
-import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
 import third.parties.fresco.BetterImageSpan;
 
 import static com.nextcloud.talk.utils.FileSortOrder.sort_a_to_z_id;
@@ -251,27 +245,6 @@ public class DisplayUtils {
         }
 
         return chip;
-    }
-
-    public static Spanned getRenderedMarkdownText(Context context, String markdown) {
-        final Markwon markwon = Markwon.builder(context)
-            .usePlugin(new AbstractMarkwonPlugin() {
-                @Override
-                public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
-                    builder.headingBreakHeight(0);
-                }
-
-                @Override
-                public void configureConfiguration(@NonNull MarkwonConfiguration.Builder builder) {
-                    builder.linkResolver((view, link) -> {
-                        Log.i(TAG, "Link action not implemented" );
-                    });
-                }
-            })
-            .usePlugin(StrikethroughPlugin.create())
-            .build();
-
-        return markwon.toMarkdown(markdown);
     }
 
     public static Spannable searchAndReplaceWithMentionSpan(String key, Context context, Spanned text,

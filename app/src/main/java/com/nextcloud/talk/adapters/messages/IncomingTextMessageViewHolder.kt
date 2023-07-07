@@ -27,9 +27,6 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.text.Spanned
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
@@ -49,6 +46,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
@@ -64,6 +62,9 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var messageUtils: MessageUtils
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -85,12 +86,25 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
         var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
 
-        var processedMessageText = DisplayUtils.getRenderedMarkdownText(context, message.message)
+        var processedMessageText = messageUtils.enrichChatMessageText(
+            binding.messageText.context,
+            message,
+            binding.messageText.context.resources.getColor(R.color.nc_incoming_text_default)
+        )
+
+        processedMessageText = messageUtils.processMessageParameters(
+            binding.messageText.context,
+            viewThemeUtils,
+            processedMessageText!!,
+            message,
+            itemView
+        )
 
         val messageParameters = message.messageParameters
-        if (messageParameters != null && messageParameters.size > 0) {
-            processedMessageText = processMessageParameters(messageParameters, message, processedMessageText)
-        } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
+        if (
+            (messageParameters == null || messageParameters.size <= 0) &&
+            TextMatchers.isMessageWithSingleEmoticonOnly(message.text)
+        ) {
             textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
             itemView.isSelected = true
             binding.messageAuthor.visibility = View.GONE
@@ -188,7 +202,12 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         } else {
             parentChatMessage.actorDisplayName
         }
-        binding.messageQuote.quotedMessage.text = DisplayUtils.ellipsize(parentChatMessage.text, MAX_REPLY_LENGTH)
+        binding.messageQuote.quotedMessage.text = messageUtils
+            .enrichChatMessageText(
+                binding.messageQuote.quotedMessage.context,
+                DisplayUtils.ellipsize(parentChatMessage.text, MAX_REPLY_LENGTH),
+                binding.messageQuote.quotedMessage.context.resources.getColor(R.color.nc_incoming_text_default)
+            )
 
         if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
             viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView)
@@ -213,47 +232,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         } else if (message.actorType == "bots") {
             binding.messageUserAvatar.loadBotsAvatar()
         }
-    }
-
-    private fun processMessageParameters(
-        messageParameters: HashMap<String?, HashMap<String?, String?>>,
-        message: ChatMessage,
-        messageString: Spanned
-    ): Spanned {
-        var messageStringInternal = messageString
-        for (key in messageParameters.keys) {
-            val individualHashMap = message.messageParameters!![key]
-            if (individualHashMap != null) {
-                when (individualHashMap["type"]) {
-                    "user", "guest", "call", "user-group" -> {
-                        val chip = if (individualHashMap["id"] == message.activeUser!!.userId) {
-                            R.xml.chip_you
-                        } else {
-                            R.xml.chip_others
-                        }
-                        messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
-                            key,
-                            binding.messageText.context,
-                            messageStringInternal,
-                            individualHashMap["id"]!!,
-                            individualHashMap["name"]!!,
-                            individualHashMap["type"]!!,
-                            message.activeUser!!,
-                            chip,
-                            viewThemeUtils
-                        )
-                    }
-                    "file" -> {
-                        itemView.setOnClickListener { v ->
-                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                            context.startActivity(browserIntent)
-                        }
-                    }
-                }
-            }
-        }
-
-        return messageStringInternal
     }
 
     fun assignCommonMessageInterface(commonMessageInterface: CommonMessageInterface) {

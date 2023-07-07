@@ -264,14 +264,15 @@ dependencies {
     implementation "com.afollestad.material-dialogs:lifecycle:${materialDialogsVersion}"
 
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.0'
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.27'
 
     implementation "io.noties.markwon:core:$markwonVersion"
     implementation "io.noties.markwon:ext-strikethrough:$markwonVersion"
-    implementation "io.noties.markwon:syntax-highlight:$markwonVersion"
+    implementation "io.noties.markwon:ext-tables:$markwonVersion"
+    implementation "io.noties.markwon:ext-tasklist:$markwonVersion"
 
     implementation 'com.github.nextcloud-deps:ImagePicker:2.1.0.2'
     implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
