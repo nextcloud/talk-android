@@ -1067,8 +1067,8 @@ class ConversationsListActivity :
             Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.")
         } else {
             val clickedItem: Any? = adapter!!.getItem(position)
-            if (clickedItem != null) {
-                val conversation = (clickedItem as ConversationItem).model
+            if (clickedItem != null && clickedItem is ConversationItem) {
+                val conversation = clickedItem.model
                 conversationsListBottomDialog = ConversationsListBottomDialog(
                     this,
                     userManager.currentUser.blockingGet(),
