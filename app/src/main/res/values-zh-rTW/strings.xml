@@ -276,8 +276,6 @@
     <string name="nc_select_participants">選取參與者</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s 傳送一個 GIF.</string>
     <string name="nc_sent_a_gif_you">您傳送了一個 GIF 檔</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s 傳送一個連結</string>
-    <string name="nc_sent_a_link_you">您傳送了一個連結</string>
     <string name="nc_sent_a_video" formatted="true">%1$s 傳送一個影片</string>
     <string name="nc_sent_a_video_you">您傳送了一個影片</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s 傳送一個附件</string>

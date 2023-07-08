@@ -248,8 +248,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_select_participants">Selecteer deelnemers</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s verstuurde een GIF.</string>
     <string name="nc_sent_a_gif_you">Je verstuurde een GIF.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s verstuurde een link.</string>
-    <string name="nc_sent_a_link_you">Je verstuurde een link.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s verstuurde een video.</string>
     <string name="nc_sent_a_video_you">Je verstuurde een video.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s verstuurde een bijlage.</string>

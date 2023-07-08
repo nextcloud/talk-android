@@ -215,8 +215,6 @@
     <string name="nc_select_participants">Valitse osallistujat</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s lähetti GIF-kuvan.</string>
     <string name="nc_sent_a_gif_you">Lähetit GIF-kuvan.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s lähetti linkin.</string>
-    <string name="nc_sent_a_link_you">Lähetit linkin.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s lähetti videon.</string>
     <string name="nc_sent_a_video_you">Lähetit videon.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s lähetti liitteen.</string>

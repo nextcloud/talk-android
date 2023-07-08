@@ -172,8 +172,6 @@
     <string name="nc_select_an_account">בחירת חשבון</string>
     <string name="nc_sent_a_gif" formatted="true">נשלח GIF על ידי %1$s.</string>
     <string name="nc_sent_a_gif_you">שלחת הנפשה.</string>
-    <string name="nc_sent_a_link" formatted="true">נשלח קישור על ידי %1$s.</string>
-    <string name="nc_sent_a_link_you">שלחת קישור.</string>
     <string name="nc_sent_a_video" formatted="true">נשלח סרטון על ידי %1$s.</string>
     <string name="nc_sent_a_video_you">שלחת סרטון.</string>
     <string name="nc_sent_an_attachment" formatted="true">נשלח קובץ על ידי %1$s.</string>

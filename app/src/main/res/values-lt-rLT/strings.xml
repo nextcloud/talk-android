@@ -173,8 +173,6 @@
     <string name="nc_select_participants">Ieškoti dalyvių</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s išsiuntė GIF paveikslą.</string>
     <string name="nc_sent_a_gif_you">Jūs išsiuntėte GIF paveikslą.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s išsiuntė nuorodą.</string>
-    <string name="nc_sent_a_link_you">Jūs išsiuntėte nuorodą.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s išsiuntė vaizdo įrašą.</string>
     <string name="nc_sent_a_video_you">Jūs išsiuntėte vaizdo įrašą.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s išsiuntė priedą.</string>

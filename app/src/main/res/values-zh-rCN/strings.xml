@@ -275,8 +275,6 @@
     <string name="nc_select_participants">选择参与者</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s发送一个GIF图</string>
     <string name="nc_sent_a_gif_you">你已发送一张GIF图</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s发送一个链接</string>
-    <string name="nc_sent_a_link_you">你已发送一个链接</string>
     <string name="nc_sent_a_video" formatted="true">%1$s发送一个视频</string>
     <string name="nc_sent_a_video_you">你已发送一个视频</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s作为附件发送</string>

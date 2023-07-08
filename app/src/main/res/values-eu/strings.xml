@@ -276,8 +276,6 @@
     <string name="nc_select_participants">Hautatu parte-hartzaileak</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s-k GIF bat bidali du.</string>
     <string name="nc_sent_a_gif_you">GIF bat bidali duzu.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s-k esteka bat bidali du.</string>
-    <string name="nc_sent_a_link_you">Esteka bat bidali duzu.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s-k bideoa bidali du.</string>
     <string name="nc_sent_a_video_you">Bideo bat bidali duzu.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s-k eranskin bat bidali du.</string>

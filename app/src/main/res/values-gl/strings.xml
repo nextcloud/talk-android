@@ -262,8 +262,6 @@
     <string name="nc_select_participants">Seleccionar participantes</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou un GIF.</string>
     <string name="nc_sent_a_gif_you">Vostede enviou un GIF.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s enviou unha ligazón.</string>
-    <string name="nc_sent_a_link_you">Vostede enviou unha ligazón.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s enviou un vídeo.</string>
     <string name="nc_sent_a_video_you">Vostede enviou un vídeo.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s enviou un anexo.</string>
@@ -373,7 +371,7 @@
     <string name="raise_hand">Erguer a man</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="record_cancel_start">Cancelar o inicio da gravación</string>
-    <string name="record_failed_info">Produciuse un fallo de gravación. Póñase en contacto co seu administrador.</string>
+    <string name="record_failed_info">Produciuse un fallo de gravación. Póñase en contacto coa administración desta instancia.</string>
     <string name="record_start_description">Comezar a gravar</string>
     <string name="record_stop_description">Deter a gravación</string>
     <string name="save">Gardar</string>

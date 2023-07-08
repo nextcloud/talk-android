@@ -225,8 +225,6 @@
     <string name="nc_select_participants">Odaberi sudionike</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s je poslao GIF.</string>
     <string name="nc_sent_a_gif_you">Poslali ste GIF.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s je poslao poveznicu.</string>
-    <string name="nc_sent_a_link_you">Poslali ste poveznicu.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s je poslao videozapis.</string>
     <string name="nc_sent_a_video_you">Poslali ste videozapis.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s je poslao privitak.</string>

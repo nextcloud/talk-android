@@ -243,8 +243,6 @@
     <string name="nc_select_participants">Seleziona partecipanti</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ha inviato una GIF.</string>
     <string name="nc_sent_a_gif_you">Hai inviato una GIF.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s ha inviato un collegamento.</string>
-    <string name="nc_sent_a_link_you">Hai inviato un collegamento.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s ha inviato un video.</string>
     <string name="nc_sent_a_video_you">Hai inviato un video.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s ha inviato un allegato.</string>

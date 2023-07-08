@@ -276,8 +276,6 @@
     <string name="nc_select_participants">Selecionar participantes</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou um GIF.</string>
     <string name="nc_sent_a_gif_you">Você enviou um GIF.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s enviou um link.</string>
-    <string name="nc_sent_a_link_you">Você enviou um link.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s enviou um vídeo.</string>
     <string name="nc_sent_a_video_you">Você enviou um vídeo.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s enviou um anexo.</string>

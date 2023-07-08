@@ -262,8 +262,6 @@
     <string name="nc_select_participants">Seleccioneu els participants</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ha enviat un GIF.</string>
     <string name="nc_sent_a_gif_you">Heu enviat un GIF.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s ha enviat un enllaç.</string>
-    <string name="nc_sent_a_link_you">Heu enviat un enllaç.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s ha enviat un vídeo.</string>
     <string name="nc_sent_a_video_you">Heu enviat un vídeo.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s ha enviat un adjunt.</string>

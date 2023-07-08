@@ -276,8 +276,6 @@
     <string name="nc_select_participants">選擇參與者</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s 傳送一個 GIF。</string>
     <string name="nc_sent_a_gif_you">您傳送了一個 GIF 檔</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s 傳送一個連結</string>
-    <string name="nc_sent_a_link_you">您傳送了一個連結</string>
     <string name="nc_sent_a_video" formatted="true">%1$s 傳送一個影片</string>
     <string name="nc_sent_a_video_you">您傳送了一個影片</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s 傳送一個附件</string>
@@ -476,6 +474,7 @@
     <string name="take_photo_toggle_torch">切換 torch</string>
     <string name="thirtyMinutes">30 分鐘</string>
     <string name="thisWeek">本星期</string>
+    <string name="this_is_a_test_message">此乃測試訊息</string>
     <string name="title_attachments">附件</string>
     <string name="today">今日</string>
     <string name="translate">翻譯</string>

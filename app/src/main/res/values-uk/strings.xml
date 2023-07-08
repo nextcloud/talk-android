@@ -265,8 +265,6 @@
     <string name="nc_select_participants">Виберіть учасників</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s надсилає GIF.</string>
     <string name="nc_sent_a_gif_you">Ви надіслали GIF.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s надсилає посилання.</string>
-    <string name="nc_sent_a_link_you">Ви надіслали посилання</string>
     <string name="nc_sent_a_video" formatted="true">%1$s надсилає відео.</string>
     <string name="nc_sent_a_video_you">Ви надіслали відео.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s надсилає вкладення.</string>

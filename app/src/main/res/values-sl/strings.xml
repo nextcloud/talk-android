@@ -266,8 +266,6 @@
     <string name="nc_select_participants">Izbor udeležencev</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s pošlje sličico GIF.</string>
     <string name="nc_sent_a_gif_you">Pošljete sličico GIF</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s pošlje povezavo.</string>
-    <string name="nc_sent_a_link_you">Pošljete povezavo</string>
     <string name="nc_sent_a_video" formatted="true">%1$s pošlje video datoteko.</string>
     <string name="nc_sent_a_video_you">Pošljete video sporočilo</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s pošlje prilogo.</string>

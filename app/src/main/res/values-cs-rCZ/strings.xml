@@ -276,8 +276,6 @@
     <string name="nc_select_participants">Vybrat účastníky</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s poslal(a) GIF animaci.</string>
     <string name="nc_sent_a_gif_you">Odeslali jste GIF animaci.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s poslal(a) odkaz.</string>
-    <string name="nc_sent_a_link_you">Odeslali jste odkaz.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s poslal(a) video.</string>
     <string name="nc_sent_a_video_you">Odeslali jste video.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s poslal(a) přílohu.</string>

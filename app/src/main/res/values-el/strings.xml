@@ -219,8 +219,6 @@
     <string name="nc_select_participants">Επιλογή συμμετεχόντων</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s έστειλε GIF.</string>
     <string name="nc_sent_a_gif_you">Στείλατε εικόνα GIF.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s έστειλε σύνδεσμο.</string>
-    <string name="nc_sent_a_link_you">Στείλατε σύνδεσμο.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s έστειλε βίντεο.</string>
     <string name="nc_sent_a_video_you">Στείλατε βίντεο.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s έστειλε συνημμένο</string>

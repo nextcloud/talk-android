@@ -270,8 +270,6 @@
     <string name="nc_select_participants">Résztvevők kiválasztása</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s GIF képet küldött.</string>
     <string name="nc_sent_a_gif_you">Ön GIF képet küldött.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s hivatkozást küldött.</string>
-    <string name="nc_sent_a_link_you">Ön hivatkozást küldött.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s videót küldött.</string>
     <string name="nc_sent_a_video_you">Ön videót küldött.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s mellékletet küldött.</string>

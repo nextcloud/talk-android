@@ -276,8 +276,6 @@
     <string name="nc_select_participants">إختَر مُشارِكين</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ارسل GIF.</string>
     <string name="nc_sent_a_gif_you">لقد قمت بارسال GIF.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$sارسل رابط.</string>
-    <string name="nc_sent_a_link_you">لقد قمت بإرسال رابط.</string>
     <string name="nc_sent_a_video" formatted="true">%1$sارسل فيديو.</string>
     <string name="nc_sent_a_video_you">لقد قمت بإرسال فيديو.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$sارسل مرفق.</string>

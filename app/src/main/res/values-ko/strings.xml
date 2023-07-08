@@ -254,8 +254,6 @@
     <string name="nc_select_participants">참가자 선택</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s님이 GIF를 보냈습니다.</string>
     <string name="nc_sent_a_gif_you">GIF를 보냈습니다.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s님이 링크를 보냈습니다.</string>
-    <string name="nc_sent_a_link_you">링크를 보냈습니다.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s님이 영상 파일을 보냈습니다.</string>
     <string name="nc_sent_a_video_you">영상 파일을 보냈습니다.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s님이 첨부 파일을 보냈습니다.</string>

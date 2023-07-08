@@ -276,8 +276,6 @@
     <string name="nc_select_participants">Katılımcıları seçin</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s bir GIF gönderdi.</string>
     <string name="nc_sent_a_gif_you">Bir GIF gönderdiniz.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s bir bağlantı gönderdi.</string>
-    <string name="nc_sent_a_link_you">Bir bağlantı gönderdiniz.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s bir görüntü gönderdi.</string>
     <string name="nc_sent_a_video_you">Bir görüntü gönderdiniz.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s bir ek dosya gönderdi.</string>
