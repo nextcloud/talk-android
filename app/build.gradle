@@ -271,7 +271,6 @@ dependencies {
 
     implementation "io.noties.markwon:core:$markwonVersion"
     implementation "io.noties.markwon:ext-strikethrough:$markwonVersion"
-    implementation "io.noties.markwon:ext-tables:$markwonVersion"
     implementation "io.noties.markwon:ext-tasklist:$markwonVersion"
 
     implementation 'com.github.nextcloud-deps:ImagePicker:2.1.0.2'

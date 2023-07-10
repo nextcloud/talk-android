@@ -35,7 +35,6 @@ import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
 import io.noties.markwon.core.MarkwonTheme
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
-import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
 
@@ -133,7 +132,6 @@ class MessageUtils(val context: Context) {
                 }
             }
         })
-            .usePlugin(TablePlugin.create(context))
             .usePlugin(TaskListPlugin.create(drawable))
             .usePlugin(StrikethroughPlugin.create()).build()
         return markwon.toMarkdown(markdown)
