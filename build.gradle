@@ -47,6 +47,7 @@ buildscript {
 }
 
 configurations.all {
+    exclude group: 'org.jetbrains', module: 'annotations-java5' // via prism4j, already using annotations explicitly
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 3600, 'seconds'
 }

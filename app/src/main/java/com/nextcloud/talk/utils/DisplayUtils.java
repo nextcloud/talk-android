@@ -97,6 +97,7 @@ import static com.nextcloud.talk.utils.FileSortOrder.sort_small_to_big_id;
 import static com.nextcloud.talk.utils.FileSortOrder.sort_z_to_a_id;
 
 public class DisplayUtils {
+    private static final String TAG = DisplayUtils.class.getSimpleName();
 
     private static final int INDEX_LUMINATION = 2;
     private static final double MAX_LIGHTNESS = 0.92;
@@ -246,7 +247,7 @@ public class DisplayUtils {
         return chip;
     }
 
-    public static Spannable searchAndReplaceWithMentionSpan(String key, Context context, Spannable text,
+    public static Spannable searchAndReplaceWithMentionSpan(String key, Context context, Spanned text,
                                                             String id, String label, String type,
                                                             User conversationUser,
                                                             @XmlRes int chipXmlRes,

@@ -48,6 +48,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.UriUtils
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -70,6 +71,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var messageUtils: MessageUtils
 
     @Inject
     lateinit var dateUtils: DateUtils
@@ -221,7 +225,12 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
             }
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context!!.getText(R.string.nc_nick_guest)
-            binding.messageQuote.quotedMessage.text = parentChatMessage.text
+            binding.messageQuote.quotedMessage.text = messageUtils
+                .enrichChatMessageText(
+                    binding.messageQuote.quotedMessage.context,
+                    parentChatMessage.text,
+                    viewThemeUtils.getScheme(binding.messageQuote.quotedMessage.context).onSurfaceVariant
+                )
             viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
             viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
             viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
