@@ -507,4 +507,12 @@
     <string name="userinfo_no_info_text">أضِف الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>
     <string name="v0_1">الإصدار 0.1</string>
     <string name="whats_your_status">ماهي حالتك؟</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="zero">%d أصوات</item>
+        <item quantity="one">%d صوت</item>
+        <item quantity="two">%d أصوات</item>
+        <item quantity="few">%d أصوات</item>
+        <item quantity="many">%d أصوات</item>
+        <item quantity="other">%d أصوات</item>
+    </plurals>
+</resources>
