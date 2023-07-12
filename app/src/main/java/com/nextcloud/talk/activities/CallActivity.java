@@ -1942,7 +1942,8 @@ public class CallActivity extends CallBaseActivity {
             removeCallParticipant(sessionId);
         }
 
-        ApplicationWideCurrentRoomHolder.getInstance().clear();
+        ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
+        ApplicationWideCurrentRoomHolder.getInstance().setDialing(false);
         hangupNetworkCalls(shutDownView);
     }
 
