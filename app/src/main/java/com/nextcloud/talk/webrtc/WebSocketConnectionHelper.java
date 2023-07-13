@@ -142,7 +142,7 @@ public class WebSocketConnectionHelper {
         roomOverallWebSocketMessage.setType("room");
         RoomWebSocketMessage roomWebSocketMessage = new RoomWebSocketMessage();
         roomWebSocketMessage.setRoomId(roomId);
-        roomWebSocketMessage.setSessiondId(sessionId);
+        roomWebSocketMessage.setSessionId(sessionId);
         roomOverallWebSocketMessage.setRoomWebSocketMessage(roomWebSocketMessage);
         return roomOverallWebSocketMessage;
     }
