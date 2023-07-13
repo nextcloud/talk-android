@@ -20,9 +20,13 @@
 
 package com.nextcloud.talk.utils.singletons;
 
+import android.util.Log;
+
 import com.nextcloud.talk.data.user.model.User;
 
 public class ApplicationWideCurrentRoomHolder {
+
+    public static final String TAG = "ApplicationWideCurrentRoomHolder";
     private static final ApplicationWideCurrentRoomHolder holder = new ApplicationWideCurrentRoomHolder();
     private String currentRoomId = "";
     private String currentRoomToken = "";
@@ -36,6 +40,7 @@ public class ApplicationWideCurrentRoomHolder {
     }
 
     public void clear() {
+        Log.d(TAG, "ApplicationWideCurrentRoomHolder was cleared");
         currentRoomId = "";
         userInRoom = new User();
         inCall = false;

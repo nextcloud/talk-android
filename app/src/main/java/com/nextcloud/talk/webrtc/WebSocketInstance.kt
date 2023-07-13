@@ -125,6 +125,7 @@ class WebSocketInstance internal constructor(
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
+        Log.d(TAG, "Open webSocket")
         internalWebSocket = webSocket
         sendHello()
     }
