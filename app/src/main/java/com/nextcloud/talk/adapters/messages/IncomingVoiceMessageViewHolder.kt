@@ -111,7 +111,11 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
                 context!!,
                 R.drawable.ic_baseline_pause_voice_message_24
             )
-            binding.seekbar.progress = message.voiceMessagePlayedSeconds
+            val d = message.voiceMessageDuration.toLong()
+            val t = message.voiceMessagePlayedSeconds.toLong()
+            binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
+            binding.voiceMessageDuration.visibility = View.VISIBLE
+            binding.seekbar.setProgress(message.voiceMessagePlayedSeconds, true)
         } else {
             binding.playPauseBtn.visibility = View.VISIBLE
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
@@ -134,6 +138,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
             )
             binding.seekbar.progress = SEEKBAR_START
             message.resetVoiceMessage = false
+            message.voiceMessagePlayedSeconds = 0
+            binding.voiceMessageDuration.visibility = View.GONE
         }
 
         binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -276,7 +282,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
             parentChatMessage!!.activeUser = message.activeUser
-            parentChatMessage!!.imageUrl?.let {
+            parentChatMessage.imageUrl?.let {
                 binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
                 binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
