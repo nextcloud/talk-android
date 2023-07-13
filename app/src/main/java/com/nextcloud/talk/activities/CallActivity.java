@@ -1989,7 +1989,7 @@ public class CallActivity extends CallBaseActivity {
 
                 @Override
                 public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                    // unused atm
+                    Log.e(TAG, "Error while leaving the call", e);
                 }
 
                 @Override

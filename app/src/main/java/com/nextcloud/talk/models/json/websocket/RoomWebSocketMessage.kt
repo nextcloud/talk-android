@@ -32,7 +32,7 @@ class RoomWebSocketMessage(
     @JsonField(name = ["roomid"])
     var roomId: String? = null,
     @JsonField(name = ["sessionid"])
-    var sessiondId: String? = null,
+    var sessionId: String? = null,
     @JsonField(name = ["properties"])
     var roomPropertiesWebSocketMessage: RoomPropertiesWebSocketMessage? = null
 ) : Parcelable {

@@ -84,12 +84,14 @@ public class WebSocketConnectionHelper {
 
         WebSocketInstance webSocketInstance;
         if (userId != -1 && webSocketInstanceMap.containsKey(user.getId()) && (webSocketInstance = webSocketInstanceMap.get(user.getId())) != null) {
+            Log.d(TAG, "webSocketInstanceMap already contained webSocketInstance for userId " + user.getId());
             return webSocketInstance;
         } else {
             if (userId == -1) {
                 deleteExternalSignalingInstanceForUserEntity(userId);
             }
             webSocketInstance = new WebSocketInstance(user, generatedURL, webSocketTicket);
+            Log.d(TAG, "created new webSocketInstance for userId " + user.getId());
             webSocketInstanceMap.put(user.getId(), webSocketInstance);
             return webSocketInstance;
         }
@@ -140,7 +142,7 @@ public class WebSocketConnectionHelper {
         roomOverallWebSocketMessage.setType("room");
         RoomWebSocketMessage roomWebSocketMessage = new RoomWebSocketMessage();
         roomWebSocketMessage.setRoomId(roomId);
-        roomWebSocketMessage.setSessiondId(sessionId);
+        roomWebSocketMessage.setSessionId(sessionId);
         roomOverallWebSocketMessage.setRoomWebSocketMessage(roomWebSocketMessage);
         return roomOverallWebSocketMessage;
     }
