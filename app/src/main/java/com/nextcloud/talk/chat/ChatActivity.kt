@@ -2216,7 +2216,7 @@ class ChatActivity :
                 Log.d(TAG, "not leaving room (validSessionId is false)")
             }
         } else {
-            Log.e(TAG, "not leaving room...")
+            Log.d(TAG, "not leaving room...")
         }
 
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
