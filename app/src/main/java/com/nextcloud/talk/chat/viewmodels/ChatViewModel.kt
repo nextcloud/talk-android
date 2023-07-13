@@ -100,7 +100,7 @@ class ChatViewModel @Inject constructor(private val repository: ChatRepository) 
         }
 
         override fun onError(e: Throwable) {
-            Log.e(TAG, "Error when fetching room")
+            Log.e(TAG, "Error when joining room")
             _joinRoomViewState.value = JoinRoomErrorState
         }
 
