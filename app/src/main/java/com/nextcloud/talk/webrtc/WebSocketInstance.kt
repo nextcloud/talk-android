@@ -358,7 +358,12 @@ class WebSocketInstance internal constructor(
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-        Log.d(TAG, "Closing : $code / $reason")
+        Log.d(TAG, "onClosing : $code / $reason")
+    }
+
+    override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+        Log.d(TAG, "onClosed : $code / $reason")
+        isConnected = false
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
