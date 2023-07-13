@@ -153,7 +153,7 @@
     <string name="nc_file_browser_back">Atrás</string>
     <string name="nc_filter">Filtrar conversas</string>
     <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
-    <string name="nc_formatted_message_you">Vostede: %1$s</string>
+    <string name="nc_formatted_message_you">Vde.: %1$s</string>
     <string name="nc_forward_message">Reenviar</string>
     <string name="nc_forward_to_three_dots">Reenviar a…</string>
     <string name="nc_get_from_provider">Aínda non ten un servidor? \nPrema aquí para obter un dun provedor</string>
@@ -261,15 +261,15 @@
     <string name="nc_select_an_account">Seleccione unha conta</string>
     <string name="nc_select_participants">Seleccionar participantes</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou un GIF.</string>
-    <string name="nc_sent_a_gif_you">Vostede enviou un GIF.</string>
+    <string name="nc_sent_a_gif_you">Vde. enviou un GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s enviou un vídeo.</string>
-    <string name="nc_sent_a_video_you">Vostede enviou un vídeo.</string>
+    <string name="nc_sent_a_video_you">Vde. enviou un vídeo.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s enviou un anexo.</string>
-    <string name="nc_sent_an_attachment_you">Vostede enviou un anexo.</string>
+    <string name="nc_sent_an_attachment_you">Vde. enviou un anexo.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s enviou un ficheiro de son.</string>
-    <string name="nc_sent_an_audio_you">Vostede enviou un ficheiro de son.</string>
+    <string name="nc_sent_an_audio_you">Vde. enviou un ficheiro de son.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou unha imaxe.</string>
-    <string name="nc_sent_an_image_you">Vostede enviou unha imaxe.</string>
+    <string name="nc_sent_an_image_you">Vde. enviou unha imaxe.</string>
     <string name="nc_server_connect">Probar a conexión co servidor</string>
     <string name="nc_server_db_upgrade_needed">Ten que anovar a base de datos %1$s</string>
     <string name="nc_server_failed_to_import_account">Produciuse un fallo ao importar a conta seleccionada</string>
