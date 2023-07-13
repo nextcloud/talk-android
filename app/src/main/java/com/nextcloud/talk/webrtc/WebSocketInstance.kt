@@ -84,6 +84,7 @@ class WebSocketInstance internal constructor(
     private var internalWebSocket: WebSocket? = null
     private val connectionUrl: String
     private var currentRoomToken: String? = null
+    private var currentNormalBackendSession: String? = null
     private var reconnecting = false
     private val usersHashMap: HashMap<String?, Participant>
     private var messagesQueue: MutableList<String> = ArrayList()
@@ -169,6 +170,7 @@ class WebSocketInstance internal constructor(
                             isConnected = false
                             resumeId = ""
                         }
+
                         else -> {}
                     }
                 } else {
@@ -214,8 +216,10 @@ class WebSocketInstance internal constructor(
                         }
                         signalingMessageReceiver.process(eventOverallWebSocketMessage.eventMap)
                     }
+
                     Globals.TARGET_PARTICIPANTS ->
                         signalingMessageReceiver.process(eventOverallWebSocketMessage.eventMap)
+
                     else ->
                         Log.i(TAG, "Received unknown/ignored event target: $target")
                 }
@@ -292,10 +296,7 @@ class WebSocketInstance internal constructor(
         val (_, roomWebSocketMessage) = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage::class.java)
         if (roomWebSocketMessage != null) {
             currentRoomToken = roomWebSocketMessage.roomId
-            if (
-                roomWebSocketMessage.roomPropertiesWebSocketMessage != null &&
-                !TextUtils.isEmpty(currentRoomToken)
-            ) {
+            if (roomWebSocketMessage.roomPropertiesWebSocketMessage != null && !TextUtils.isEmpty(currentRoomToken)) {
                 sendRoomJoinedEvent()
             }
         }
@@ -310,6 +311,7 @@ class WebSocketInstance internal constructor(
                 Log.d(TAG, "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired")
                 resumeId = ""
                 currentRoomToken = ""
+                currentNormalBackendSession = ""
                 restartWebSocket()
             } else if ("hello_expected" == message.code) {
                 restartWebSocket()
@@ -340,6 +342,7 @@ class WebSocketInstance internal constructor(
             helloHashMap["oldResumeId"] = oldResumeId
         } else {
             currentRoomToken = ""
+            currentNormalBackendSession = ""
         }
         if (!TextUtils.isEmpty(currentRoomToken)) {
             helloHashMap[Globals.ROOM_TOKEN] = currentRoomToken
@@ -386,9 +389,16 @@ class WebSocketInstance internal constructor(
             if (!isConnected || reconnecting) {
                 messagesQueue.add(message)
             } else {
-                if (roomToken == currentRoomToken) {
+                if (roomToken == "") {
+                    Log.d(TAG, "sending 'leave room' via websocket")
+                    currentNormalBackendSession = ""
+                    internalWebSocket!!.send(message)
+                } else if (roomToken == currentRoomToken && normalBackendSession == currentNormalBackendSession) {
+                    Log.d(TAG, "roomToken&session are unchanged. Joining locally without to send websocket message")
                     sendRoomJoinedEvent()
                 } else {
+                    Log.d(TAG, "Sending join room message via websocket")
+                    currentNormalBackendSession = normalBackendSession
                     internalWebSocket!!.send(message)
                 }
             }
