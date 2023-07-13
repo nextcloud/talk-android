@@ -23,6 +23,7 @@ package com.nextcloud.talk.jobs;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
@@ -41,6 +42,8 @@ import autodagger.AutoInjector;
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebsocketConnectionsWorker extends Worker {
 
+    public static final String TAG = "WebsocketConnectionsWorker";
+
     @Inject
     UserManager userManager;
 
@@ -52,6 +55,8 @@ public class WebsocketConnectionsWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        Log.d(TAG, "WebsocketConnectionsWorker started ");
+
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         List<User> users = userManager.getUsers().blockingGet();
@@ -61,9 +66,14 @@ public class WebsocketConnectionsWorker extends Worker {
                 user.getExternalSignalingServer().getExternalSignalingServer() != null &&
                 !TextUtils.isEmpty(user.getExternalSignalingServer().getExternalSignalingServer()) &&
                 !TextUtils.isEmpty(user.getExternalSignalingServer().getExternalSignalingTicket())) {
+
+                Log.d(TAG,
+                      "WebsocketConnectionsWorker - getExternalSignalingInstanceForServer for user " + user.getDisplayName());
+
                 webSocketConnectionHelper.getExternalSignalingInstanceForServer(
                     user.getExternalSignalingServer().getExternalSignalingServer(),
-                    user, user.getExternalSignalingServer().getExternalSignalingTicket(),
+                    user,
+                    user.getExternalSignalingServer().getExternalSignalingTicket(),
                     false);
             }
         }
