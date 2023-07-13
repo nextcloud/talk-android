@@ -335,16 +335,16 @@ class WebSocketInstance internal constructor(
             webSocket.send(messagesQueue[i])
         }
         messagesQueue = ArrayList()
-        val helloHasHap = HashMap<String, String?>()
+        val helloHashMap = HashMap<String, String?>()
         if (!TextUtils.isEmpty(oldResumeId)) {
-            helloHasHap["oldResumeId"] = oldResumeId
+            helloHashMap["oldResumeId"] = oldResumeId
         } else {
             currentRoomToken = ""
         }
         if (!TextUtils.isEmpty(currentRoomToken)) {
-            helloHasHap[Globals.ROOM_TOKEN] = currentRoomToken
+            helloHashMap[Globals.ROOM_TOKEN] = currentRoomToken
         }
-        eventBus!!.post(WebSocketCommunicationEvent("hello", helloHasHap))
+        eventBus!!.post(WebSocketCommunicationEvent("hello", helloHashMap))
     }
 
     private fun sendRoomJoinedEvent() {
