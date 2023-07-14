@@ -25,6 +25,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -110,6 +111,7 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
                 .build()
             val shareWorker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)
                 .setInputData(data)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
             WorkManager.getInstance().enqueue(shareWorker)
         }

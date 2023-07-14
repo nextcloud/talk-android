@@ -25,6 +25,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -59,6 +60,7 @@ class GetFirebasePushTokenWorker(val context: Context, workerParameters: WorkerP
                         .build()
                 val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
                     .setInputData(data)
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                     .build()
                 WorkManager.getInstance(context).enqueue(pushRegistrationWork)
             }

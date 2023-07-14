@@ -58,6 +58,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -230,7 +231,9 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun loadCapabilitiesAndUpdateSettings() {
-        val capabilitiesWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
+        val capabilitiesWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
         WorkManager.getInstance(context).enqueue(capabilitiesWork)
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(capabilitiesWork.id)
@@ -470,7 +473,9 @@ class SettingsActivity : BaseActivity() {
 
     private fun removeCurrentAccount() {
         val otherUserExists = userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
-        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
         WorkManager.getInstance(this).enqueue(accountRemovalWork)
         if (otherUserExists) {
             // TODO: find better solution once Conductor is removed
@@ -883,7 +888,11 @@ class SettingsActivity : BaseActivity() {
         ) {
             WorkManager
                 .getInstance(this)
-                .enqueue(OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java).build())
+                .enqueue(
+                    OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
+                        .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                        .build()
+                )
             checkForPhoneNumber()
         } else {
             appPreferences.setPhoneBookIntegration(false)

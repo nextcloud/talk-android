@@ -90,6 +90,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -1507,6 +1508,7 @@ class ChatActivity :
         val downloadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
             .setInputData(data)
             .addTag(fileId)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .build()
 
         WorkManager.getInstance().enqueue(downloadWorker)
@@ -1817,6 +1819,7 @@ class ChatActivity :
                                 .build()
                             val worker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)
                                 .setInputData(data)
+                                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                                 .build()
                             WorkManager.getInstance().enqueue(worker)
                         }

@@ -34,6 +34,7 @@ import androidx.core.content.FileProvider
 import androidx.emoji2.widget.EmojiTextView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nextcloud.talk.R
@@ -315,6 +316,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         downloadWorker = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
             .setInputData(data)
             .addTag(fileInfo.fileId)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .build()
         WorkManager.getInstance().enqueue(downloadWorker)
         progressUi.progressBar?.visibility = View.VISIBLE

@@ -44,6 +44,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.RouterTransaction
@@ -376,6 +377,7 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                             PushRegistrationWorker::class.java
                         )
                             .setInputData(data)
+                            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                             .build()
 
                         WorkManager.getInstance().enqueue(pushRegistrationWork)

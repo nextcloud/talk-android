@@ -51,6 +51,7 @@ import java.util.zip.CRC32;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import androidx.work.ForegroundInfo;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
@@ -80,6 +81,12 @@ public class AccountRemovalWorker extends Worker {
 
     public AccountRemovalWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+    }
+
+    @Override
+    public ForegroundInfo getForegroundInfo(){
+
+        return null;
     }
 
     @NonNull
