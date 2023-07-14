@@ -751,7 +751,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/standard_margin"
-                            android:hint="@string/v0_1"
                             android:textSize="@dimen/supporting_text_text_size"/>
 
                     </LinearLayout>
