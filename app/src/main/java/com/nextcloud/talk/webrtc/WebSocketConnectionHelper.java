@@ -82,19 +82,19 @@ public class WebSocketConnectionHelper {
 
         long userId = isGuest ? -1 : user.getId();
 
-        WebSocketInstance webSocketInstance;
-        if (userId != -1 && webSocketInstanceMap.containsKey(user.getId()) && (webSocketInstance = webSocketInstanceMap.get(user.getId())) != null) {
-            Log.d(TAG, "webSocketInstanceMap already contained webSocketInstance for userId " + user.getId());
-            return webSocketInstance;
-        } else {
-            if (userId == -1) {
-                deleteExternalSignalingInstanceForUserEntity(userId);
-            }
-            webSocketInstance = new WebSocketInstance(user, generatedURL, webSocketTicket);
-            Log.d(TAG, "created new webSocketInstance for userId " + user.getId());
-            webSocketInstanceMap.put(user.getId(), webSocketInstance);
+        WebSocketInstance webSocketInstance = webSocketInstanceMap.get(user.getId());
+
+        if (userId != -1 && webSocketInstance != null && webSocketInstance.isConnected()) {
             return webSocketInstance;
         }
+
+        if (userId == -1) {
+            deleteExternalSignalingInstanceForUserEntity(userId);
+        }
+
+        webSocketInstance = new WebSocketInstance(user, generatedURL, webSocketTicket);
+        webSocketInstanceMap.put(user.getId(), webSocketInstance);
+        return webSocketInstance;
     }
 
     public static synchronized void deleteExternalSignalingInstanceForUserEntity(long id) {
@@ -108,7 +108,7 @@ public class WebSocketConnectionHelper {
     }
 
     HelloOverallWebSocketMessage getAssembledHelloModel(User user, String ticket) {
-        int apiVersion = ApiUtils.getSignalingApiVersion(user, new int[] {ApiUtils.APIv3, 2, 1});
+        int apiVersion = ApiUtils.getSignalingApiVersion(user, new int[]{ApiUtils.APIv3, 2, 1});
 
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");
