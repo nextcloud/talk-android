@@ -942,16 +942,16 @@ class SettingsActivity : BaseActivity() {
                 when (newValue) {
                     "HTTP" -> {
                         binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_http_value))
-                        appPreferences.proxyPort = "3128"
+                        appPreferences.proxyPort = getString(R.string.nc_settings_http_value)
                     }
 
                     "DIRECT" -> {
                         binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_direct_value))
-                        appPreferences.proxyPort = "8080"
+                        appPreferences.proxyPort = getString(R.string.nc_settings_direct_value)
                     }
                     "SOCKS" -> {
                         binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_socks_value))
-                        appPreferences.proxyPort = "1080"
+                        appPreferences.proxyPort = getString(R.string.nc_settings_socks_value)
                     }
                     else -> {
                     }
