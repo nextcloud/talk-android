@@ -207,7 +207,7 @@
     <string name="nc_new_mention">Mencións sen ler</string>
     <string name="nc_new_messages">Mensaxes sen ler</string>
     <string name="nc_new_password">Novo contrasinal</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s non dispoñíbel (non instalado nin restrinxido polo administrador)</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s non dispoñíbel (non instalado nin restrinxido pola administración da instancia.)</string>
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_no">Non</string>
     <string name="nc_no_open_conversations_headline">Non hai conversas abertas</string>
