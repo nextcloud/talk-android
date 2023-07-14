@@ -146,7 +146,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             }
         }
 
-        binding.checkMark.setContentDescription(readStatusContentDescriptionString)
+        binding.checkMark.contentDescription = readStatusContentDescriptionString
 
         Reaction().showReactions(
             message,
@@ -175,6 +175,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
                 R.drawable.ic_baseline_play_arrow_voice_message_24
             )
             binding.seekbar.progress = SEEKBAR_START
+            message.voiceMessagePlayedSeconds = 0
+            binding.voiceMessageDuration.visibility = View.GONE
             message.resetVoiceMessage = false
         }
     }
@@ -194,7 +196,12 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
                 context!!,
                 R.drawable.ic_baseline_pause_voice_message_24
             )
-            binding.seekbar.progress = message.voiceMessagePlayedSeconds
+
+            val d = message.voiceMessageDuration.toLong()
+            val t = message.voiceMessagePlayedSeconds.toLong()
+            binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
+            binding.voiceMessageDuration.visibility = View.VISIBLE
+            binding.seekbar.setProgress(message.voiceMessagePlayedSeconds, true)
         } else {
             binding.playPauseBtn.visibility = View.VISIBLE
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
