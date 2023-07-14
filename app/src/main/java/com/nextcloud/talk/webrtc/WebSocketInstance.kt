@@ -56,6 +56,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
+@Suppress("TooManyFunctions")
 class WebSocketInstance internal constructor(
     conversationUser: User,
     connectionUrl: String,
@@ -388,6 +389,10 @@ class WebSocketInstance internal constructor(
             )
             if (!isConnected || reconnecting) {
                 messagesQueue.add(message)
+
+                if (!reconnecting) {
+                    restartWebSocket()
+                }
             } else {
                 if (roomToken == "") {
                     Log.d(TAG, "sending 'leave room' via websocket")
@@ -399,7 +404,11 @@ class WebSocketInstance internal constructor(
                 } else {
                     Log.d(TAG, "Sending join room message via websocket")
                     currentNormalBackendSession = normalBackendSession
-                    internalWebSocket!!.send(message)
+
+                    if (!internalWebSocket!!.send(message)) {
+                        messagesQueue.add(message)
+                        restartWebSocket()
+                    }
                 }
             }
         } catch (e: IOException) {
@@ -414,8 +423,15 @@ class WebSocketInstance internal constructor(
             )
             if (!isConnected || reconnecting) {
                 messagesQueue.add(message)
+
+                if (!reconnecting) {
+                    restartWebSocket()
+                }
             } else {
-                internalWebSocket!!.send(message)
+                if (!internalWebSocket!!.send(message)) {
+                    messagesQueue.add(message)
+                    restartWebSocket()
+                }
             }
         } catch (e: IOException) {
             Log.e(TAG, "Failed to serialize signaling message", e)
