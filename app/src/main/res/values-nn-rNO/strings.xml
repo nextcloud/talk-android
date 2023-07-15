@@ -185,8 +185,6 @@
     <string name="nc_select_participants">Vel deltakarar</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s har send ein GIF.</string>
     <string name="nc_sent_a_gif_you">Du sendte ein GIF.</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s sendte ei lenkje.</string>
-    <string name="nc_sent_a_link_you">Du sendte ei lenkje.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sendte ein video.</string>
     <string name="nc_sent_a_video_you">Du sendte ein video.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s sendte eit vedlegg.</string>

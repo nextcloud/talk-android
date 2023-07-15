@@ -309,8 +309,6 @@
     <string name="nc_settings_advanced_title">Gelişmiş</string>
     <string name="nc_settings_appearance">Görünüm</string>
     <string name="nc_settings_call_ringtone">Çağrılar</string>
-    <string name="nc_settings_direct_value">8080</string>
-    <string name="nc_settings_http_value">3128</string>
     <string name="nc_settings_incognito_keyboard_desc">Tuş takımında kişisel öğrenmeyi devre dışı bırakır (garanti edilmez)</string>
     <string name="nc_settings_incognito_keyboard_title">Tuş takımı gizliliği</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
@@ -344,7 +342,6 @@
     <string name="nc_settings_server_almost_eol">Sunucu sürümü çok eski ve gelecek sürümde artık desteklenmeyecek</string>
     <string name="nc_settings_server_eol">Sunucu sürümü çok eski ve bu Android uygulaması tarafından desteklenmiyor</string>
     <string name="nc_settings_server_eol_title">Sunucu desteklenmiyor</string>
-    <string name="nc_settings_socks_value">1080</string>
     <string name="nc_settings_theme_battery_saver">Pil koruyucu tarafından ayarlandı</string>
     <string name="nc_settings_theme_dark">Koyu</string>
     <string name="nc_settings_theme_follow_system">Sistem varsayılanı kullanılsın</string>
@@ -505,7 +502,6 @@
     <string name="userinfo_error_text">Kullanıcının kişisel bilgileri alınamadı</string>
     <string name="userinfo_no_info_headline">Herhangi bir kişisel bilgi ayarlanmamış</string>
     <string name="userinfo_no_info_text">Profil sayfanızdan ad, görsel ve iletişim bilgilerinizi ekleyin.</string>
-    <string name="v0_1">v0.1</string>
     <string name="whats_your_status">Durumunuz nedir?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d oy</item>

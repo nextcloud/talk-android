@@ -309,8 +309,6 @@
     <string name="nc_settings_advanced_title">Advanced</string>
     <string name="nc_settings_appearance">Appearance</string>
     <string name="nc_settings_call_ringtone">Calls</string>
-    <string name="nc_settings_direct_value">8080</string>
-    <string name="nc_settings_http_value">3128</string>
     <string name="nc_settings_incognito_keyboard_desc">Instructs keyboard to disable personalized learning (without guarantees)</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
     <string name="nc_settings_no_ringtone">No sound</string>
@@ -344,7 +342,6 @@
     <string name="nc_settings_server_almost_eol">The server version is very old and will not be supported in the next release!</string>
     <string name="nc_settings_server_eol">The server version is too old and not supported by this version of the Android app</string>
     <string name="nc_settings_server_eol_title">Unsupported server</string>
-    <string name="nc_settings_socks_value">1080</string>
     <string name="nc_settings_theme_battery_saver">Set by Battery Saver</string>
     <string name="nc_settings_theme_dark">Dark</string>
     <string name="nc_settings_theme_follow_system">Use system default</string>
@@ -505,7 +502,6 @@
     <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
     <string name="userinfo_no_info_headline">No personal info set</string>
     <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
-    <string name="v0_1">v0.1</string>
     <string name="whats_your_status">What is your status?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>

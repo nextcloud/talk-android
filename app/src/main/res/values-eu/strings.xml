@@ -309,8 +309,6 @@
     <string name="nc_settings_advanced_title">Aurreratua</string>
     <string name="nc_settings_appearance">Itxura</string>
     <string name="nc_settings_call_ringtone">Deiak</string>
-    <string name="nc_settings_direct_value">8080</string>
-    <string name="nc_settings_http_value">3128</string>
     <string name="nc_settings_incognito_keyboard_desc">Teklatuaren ikasketa pertsonalizatua desgaitzen du (bermerik gabe)</string>
     <string name="nc_settings_incognito_keyboard_title">Teklatu ezkutua</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
@@ -344,7 +342,6 @@
     <string name="nc_settings_server_almost_eol">Zerbitzariaren bertsioa zaharregia da eta ez da hurrengo argitalpenean onartuko!</string>
     <string name="nc_settings_server_eol">Zerbitzariaren bertsioa zaharregia da eta Android aplikazio honek ez du onartzen</string>
     <string name="nc_settings_server_eol_title">Ez da zerbitzaria onartzen</string>
-    <string name="nc_settings_socks_value">1080</string>
     <string name="nc_settings_theme_battery_saver">Bateria aurrezleak ezarrita</string>
     <string name="nc_settings_theme_dark">Iluna</string>
     <string name="nc_settings_theme_follow_system">Erabili sistemaren lehenetsia</string>
@@ -505,7 +502,6 @@
     <string name="userinfo_error_text">Erabiltzailearen informazio pertsonala eskuratzeak huts egin du</string>
     <string name="userinfo_no_info_headline">Ez da informazio pertsonalik ezarri</string>
     <string name="userinfo_no_info_text">Gehitu izena, irudia eta kontaktuko xehetasunak zure profilaren orrian</string>
-    <string name="v0_1">v0.1</string>
     <string name="whats_your_status">Zein da zure egoera?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">Boto %d</item>

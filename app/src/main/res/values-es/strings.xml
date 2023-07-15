@@ -309,8 +309,6 @@
     <string name="nc_settings_advanced_title">Avanzado</string>
     <string name="nc_settings_appearance">Apariencia</string>
     <string name="nc_settings_call_ringtone">Llamadas</string>
-    <string name="nc_settings_direct_value">8080</string>
-    <string name="nc_settings_http_value">3128</string>
     <string name="nc_settings_incognito_keyboard_desc">Indica al teclado que desactive el aprendizaje personalizado (sin garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
     <string name="nc_settings_no_ringtone">Sin sonido</string>
@@ -345,7 +343,6 @@
     <string name="nc_settings_server_almost_eol">¡La versión del servidor es muy antigua y no será compatible con la próxima versión!</string>
     <string name="nc_settings_server_eol">La versión del servidor es demasiado antigua y no es compatible con esta versión de la app para Android</string>
     <string name="nc_settings_server_eol_title">Servidor no soportado</string>
-    <string name="nc_settings_socks_value">1080</string>
     <string name="nc_settings_theme_battery_saver">Ajustar Ahorro de batería</string>
     <string name="nc_settings_theme_dark">Oscuro</string>
     <string name="nc_settings_theme_follow_system">Usar valores predeterminados del sistema</string>
@@ -506,7 +503,6 @@
     <string name="userinfo_error_text">Fallo al obtener la información personal del usuario.</string>
     <string name="userinfo_no_info_headline">No se ha configurado la información personal</string>
     <string name="userinfo_no_info_text">Añade tu nombre, imagen y detalles de contacto en tu página de perfil.</string>
-    <string name="v0_1">v0.1</string>
     <string name="whats_your_status">¿Cuál es su estado?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d voto</item>

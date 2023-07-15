@@ -309,8 +309,6 @@
     <string name="nc_settings_advanced_title">مُتقدّمة</string>
     <string name="nc_settings_appearance">المظهر</string>
     <string name="nc_settings_call_ringtone">المكالمات</string>
-    <string name="nc_settings_direct_value">8080</string>
-    <string name="nc_settings_http_value">3128</string>
     <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
     <string name="nc_settings_incognito_keyboard_title">لوحة المفاتيح في وضع المجهول</string>
     <string name="nc_settings_no_ringtone">بدون صوت</string>
@@ -344,7 +342,6 @@
     <string name="nc_settings_server_almost_eol">نسخة الخادوم قديمةٌ جداً ولن يتم توفير الدعم لها في الإصدارت القادمة!</string>
     <string name="nc_settings_server_eol">نسخة الخادوم قديمةٌ جداً وغير مدعومة من هذه النسخة من تطبيق الأندرويد</string>
     <string name="nc_settings_server_eol_title">خادوم غير مدعوم</string>
-    <string name="nc_settings_socks_value">1080</string>
     <string name="nc_settings_theme_battery_saver">تم تعيين توفير شحن البطارية</string>
     <string name="nc_settings_theme_dark">ليلي</string>
     <string name="nc_settings_theme_follow_system">استخدم النظام الافتراضي</string>
@@ -505,7 +502,6 @@
     <string name="userinfo_error_text">فشل في استرداد المعلومات الشخصية للمستخدم</string>
     <string name="userinfo_no_info_headline">لم يتم تعيين أي معلومات شخصية</string>
     <string name="userinfo_no_info_text">أضِف الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>
-    <string name="v0_1">الإصدار 0.1</string>
     <string name="whats_your_status">ماهي حالتك؟</string>
     <plurals name="polls_amount_voters">
         <item quantity="zero">%d أصوات</item>

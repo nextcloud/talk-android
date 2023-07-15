@@ -406,6 +406,7 @@
     <string name="today">Oggi</string>
     <string name="translate">Traduci</string>
     <string name="translation_device_settings">Impostazioni dei dispositivi</string>
+    <string name="translation_error_message">Impossibile rilevare la lingua</string>
     <string name="translation_from">Da</string>
     <string name="translation_to">A</string>
     <string name="unread">Da leggere</string>

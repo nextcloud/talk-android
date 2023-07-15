@@ -309,8 +309,6 @@
     <string name="nc_settings_advanced_title">Avançada</string>
     <string name="nc_settings_appearance">Aparência</string>
     <string name="nc_settings_call_ringtone">Chamadas</string>
-    <string name="nc_settings_direct_value">8080</string>
-    <string name="nc_settings_http_value">3128</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
@@ -344,7 +342,6 @@
     <string name="nc_settings_server_almost_eol">A versão do servidor é muito antiga e não será suportada na próxima versão!</string>
     <string name="nc_settings_server_eol">A versão do servidor é muito antiga e não suporta esta versão do aplicativo para Android</string>
     <string name="nc_settings_server_eol_title">Servidor sem suporte</string>
-    <string name="nc_settings_socks_value">1080</string>
     <string name="nc_settings_theme_battery_saver">Definido por Battery Saver</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Use o padrão do sistema</string>
@@ -505,7 +502,6 @@
     <string name="userinfo_error_text">Falha ao recuperar informações pessoais do usuário.</string>
     <string name="userinfo_no_info_headline">Nenhuma informação pessoal definida</string>
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
-    <string name="v0_1">v0.1</string>
     <string name="whats_your_status">Qual é o seu status?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d votos</item>

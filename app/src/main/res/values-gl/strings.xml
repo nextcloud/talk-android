@@ -289,8 +289,6 @@
     <string name="nc_settings_advanced_title">Avanzado</string>
     <string name="nc_settings_appearance">Aparencia</string>
     <string name="nc_settings_call_ringtone">Chamadas</string>
-    <string name="nc_settings_direct_value">8080</string>
-    <string name="nc_settings_http_value">3128</string>
     <string name="nc_settings_incognito_keyboard_desc">Indícalle ao teclado que desactive a aprendizaxe personalizada (sen garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
@@ -319,7 +317,6 @@
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
     <string name="nc_settings_screen_security_desc">Evita capturas de pantalla na lista recente e dentro da aplicación</string>
     <string name="nc_settings_screen_security_title">Seguranza da pantalla</string>
-    <string name="nc_settings_socks_value">1080</string>
     <string name="nc_settings_theme_battery_saver">Estabelecido polo aforrador de batería</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Usar o redeterminado do sistema</string>
@@ -428,6 +425,5 @@
     <string name="user_status">Estado</string>
     <string name="userinfo_no_info_headline">Non foi estabelecida a información persoal</string>
     <string name="userinfo_no_info_text">Engada o seu nome, imaxe e detalles de contacto na súa páxina de perfil.</string>
-    <string name="v0_1">v0.1</string>
     <string name="whats_your_status">Cal é o seu estado?</string>
     </resources>
