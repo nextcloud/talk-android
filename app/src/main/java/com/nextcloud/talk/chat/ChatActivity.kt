@@ -2473,7 +2473,7 @@ class ChatActivity :
         if (conversationUser == null) {
             return
         }
-        webSocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUserId(conversationUser!!.id!!)
+        webSocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUser(conversationUser!!)
 
         if (webSocketInstance == null) {
             Log.d(TAG, "webSocketInstance not set up. This should only happen when not using the HPB")

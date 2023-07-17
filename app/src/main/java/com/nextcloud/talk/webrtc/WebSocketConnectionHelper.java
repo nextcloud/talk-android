@@ -59,11 +59,15 @@ public class WebSocketConnectionHelper {
     }
 
     @SuppressLint("LongLogTag")
-    public static synchronized WebSocketInstance getWebSocketInstanceForUserId(long userId) {
-        WebSocketInstance webSocketInstance = webSocketInstanceMap.get(userId);
+    public static synchronized WebSocketInstance getWebSocketInstanceForUser(User user) {
+        WebSocketInstance webSocketInstance = webSocketInstanceMap.get(user.getId());
 
         if (webSocketInstance == null) {
-            Log.e(TAG, "No webSocketInstance found for user " + userId);
+            Log.d(TAG, "No webSocketInstance found for user " + user.getDisplayName() +
+                " (userId:" + user.getId() + ")");
+        } else {
+            Log.d(TAG, "Existing webSocketInstance found for user " + user.getDisplayName() +
+                " (userId:" + user.getId() + ")");
         }
 
         return webSocketInstance;
@@ -71,7 +75,8 @@ public class WebSocketConnectionHelper {
 
     public static synchronized WebSocketInstance getExternalSignalingInstanceForServer(String url,
                                                                                        User user,
-                                                                                       String webSocketTicket, boolean isGuest) {
+                                                                                       String webSocketTicket,
+                                                                                       boolean isGuest) {
         String generatedURL = url.replace("https://", "wss://").replace("http://", "ws://");
 
         if (generatedURL.endsWith("/")) {
@@ -82,7 +87,7 @@ public class WebSocketConnectionHelper {
 
         long userId = isGuest ? -1 : user.getId();
 
-        WebSocketInstance webSocketInstance = webSocketInstanceMap.get(user.getId());
+        WebSocketInstance webSocketInstance = getWebSocketInstanceForUser(user);
 
         if (userId != -1 && webSocketInstance != null && webSocketInstance.isConnected()) {
             return webSocketInstance;
