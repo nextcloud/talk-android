@@ -60,21 +60,21 @@ public class WebsocketConnectionsWorker extends Worker {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         List<User> users = userManager.getUsers().blockingGet();
-        WebSocketConnectionHelper webSocketConnectionHelper = new WebSocketConnectionHelper();
         for (User user : users) {
             if (user.getExternalSignalingServer() != null &&
                 user.getExternalSignalingServer().getExternalSignalingServer() != null &&
                 !TextUtils.isEmpty(user.getExternalSignalingServer().getExternalSignalingServer()) &&
                 !TextUtils.isEmpty(user.getExternalSignalingServer().getExternalSignalingTicket())) {
 
-                Log.d(TAG,
-                      "WebsocketConnectionsWorker - getExternalSignalingInstanceForServer for user " + user.getDisplayName());
+                Log.d(TAG, "trying to getExternalSignalingInstanceForServer for user " + user.getDisplayName());
 
-                webSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
                     user.getExternalSignalingServer().getExternalSignalingServer(),
                     user,
                     user.getExternalSignalingServer().getExternalSignalingTicket(),
                     false);
+            } else {
+                Log.d(TAG, "skipped to getExternalSignalingInstanceForServer for user " + user.getDisplayName());
             }
         }
 
