@@ -148,8 +148,6 @@ class WebSocketInstance internal constructor(
 
     fun restartWebSocket() {
         reconnecting = true
-
-        // TODO when improving logging, keep in mind this issue: https://github.com/nextcloud/talk-android/issues/1013
         Log.d(TAG, "restartWebSocket: $connectionUrl")
         val request = Request.Builder().url(connectionUrl).build()
         okHttpClient!!.newWebSocket(request, this)
@@ -371,7 +369,7 @@ class WebSocketInstance internal constructor(
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        Log.d(TAG, "Error : WebSocket " + webSocket.hashCode() + " onFailure: " + t.message)
+        Log.e(TAG, "Error : WebSocket " + webSocket.hashCode(), t)
         closeWebSocket(webSocket)
     }
 
@@ -387,32 +385,20 @@ class WebSocketInstance internal constructor(
             val message = LoganSquare.serialize(
                 webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession)
             )
-            if (!isConnected || reconnecting) {
-                messagesQueue.add(message)
-
-                if (!reconnecting) {
-                    restartWebSocket()
-                }
+            if (roomToken == "") {
+                Log.d(TAG, "sending 'leave room' via websocket")
+                currentNormalBackendSession = ""
+                sendMessage(message)
+            } else if (roomToken == currentRoomToken && normalBackendSession == currentNormalBackendSession) {
+                Log.d(TAG, "roomToken & session are unchanged. Joining locally without to send websocket message")
+                sendRoomJoinedEvent()
             } else {
-                if (roomToken == "") {
-                    Log.d(TAG, "sending 'leave room' via websocket")
-                    currentNormalBackendSession = ""
-                    internalWebSocket!!.send(message)
-                } else if (roomToken == currentRoomToken && normalBackendSession == currentNormalBackendSession) {
-                    Log.d(TAG, "roomToken&session are unchanged. Joining locally without to send websocket message")
-                    sendRoomJoinedEvent()
-                } else {
-                    Log.d(TAG, "Sending join room message via websocket")
-                    currentNormalBackendSession = normalBackendSession
-
-                    if (!internalWebSocket!!.send(message)) {
-                        messagesQueue.add(message)
-                        restartWebSocket()
-                    }
-                }
+                Log.d(TAG, "Sending join room message via websocket")
+                currentNormalBackendSession = normalBackendSession
+                sendMessage(message)
             }
         } catch (e: IOException) {
-            Log.e(TAG, e.message, e)
+            Log.e(TAG, "Failed to serialize signaling message", e)
         }
     }
 
@@ -421,20 +407,24 @@ class WebSocketInstance internal constructor(
             val message = LoganSquare.serialize(
                 webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage)
             )
-            if (!isConnected || reconnecting) {
-                messagesQueue.add(message)
-
-                if (!reconnecting) {
-                    restartWebSocket()
-                }
-            } else {
-                if (!internalWebSocket!!.send(message)) {
-                    messagesQueue.add(message)
-                    restartWebSocket()
-                }
-            }
+            sendMessage(message)
         } catch (e: IOException) {
             Log.e(TAG, "Failed to serialize signaling message", e)
+        }
+    }
+
+    private fun sendMessage(message: String) {
+        if (!isConnected || reconnecting) {
+            messagesQueue.add(message)
+
+            if (!reconnecting) {
+                restartWebSocket()
+            }
+        } else {
+            if (!internalWebSocket!!.send(message)) {
+                messagesQueue.add(message)
+                restartWebSocket()
+            }
         }
     }
 
