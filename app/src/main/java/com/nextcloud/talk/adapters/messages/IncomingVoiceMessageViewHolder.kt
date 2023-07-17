@@ -101,7 +101,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         setParentMessageDataOnMessageItem(message)
 
         updateDownloadState(message)
-        binding.seekbar.max = message.voiceMessageDuration
+        binding.seekbar.max = message.voiceMessageDuration - 1
         viewThemeUtils.platform.themeHorizontalSeekBar(binding.seekbar)
         viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
 

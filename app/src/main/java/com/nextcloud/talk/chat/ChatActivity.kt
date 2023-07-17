@@ -1715,18 +1715,17 @@ class ChatActivity :
 
             mediaPlayerHandler = Handler()
             runOnUiThread(object : Runnable {
-                var timeElapsed = if (message.voiceMessagePlayedSeconds > 0) message.voiceMessagePlayedSeconds else 0
                 override fun run() {
                     if (mediaPlayer != null) {
                         if (message.isPlayingVoiceMessage) {
-                            if (timeElapsed < (mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE)) {
-                                timeElapsed += 1
-                                message.voiceMessagePlayedSeconds = timeElapsed
+                            val pos = mediaPlayer!!.currentPosition / VOICE_MESSAGE_SEEKBAR_BASE
+                            if (pos < (mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE)) {
+                                message.voiceMessagePlayedSeconds = pos
                                 adapter?.update(message)
                             } else {
                                 message.resetVoiceMessage = true
+                                message.voiceMessagePlayedSeconds = 0
                                 adapter?.update(message)
-                                timeElapsed = 0
                                 stopMediaPlayer(message)
                             }
                         }
