@@ -20,7 +20,9 @@
   -->
 
 <resources>
-    <declare-styleable name="MaterialPreferenceCategory">
-        <attr name="mpc_action" format="string" />
+    <declare-styleable name="MicInputCloud">
+        <attr name="primaryColor" format="color" />
+        <attr name="pauseIcon" format="reference" />
+        <attr name="playIcon" format="reference" />
     </declare-styleable>
 </resources>

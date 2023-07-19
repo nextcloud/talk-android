@@ -109,6 +109,47 @@
             tools:visibility="gone"
             android:contentDescription="@null" />
 
+        <com.nextcloud.talk.ui.MicInputCloud
+            android:id="@+id/micInputCloud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/audioRecordDuration"
+            android:layout_centerInParent="true"
+            app:playIcon="@drawable/ic_refresh"
+            app:pauseIcon="@drawable/baseline_stop_24"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/deleteVoiceRecording"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignBottom="@id/micInputCloud"
+            android:layout_below="@id/audioRecordDuration"
+            android:layout_marginVertical="@dimen/standard_margin"
+            android:layout_marginStart="@dimen/standard_double_margin"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_delete"
+            android:contentDescription="@null"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/sendVoiceRecording"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@id/micInputCloud"
+            android:layout_below="@id/audioRecordDuration"
+            android:layout_marginVertical="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_double_margin"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_send"
+            android:contentDescription="@null"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:visibility="gone" />
+
         <!-- the height of this ImageView is used to define the overall height of the
          parent layout whenever the voice recording mode is enabled. parent layout has
          height=wrap_content because it must enlarge whenever user types a message with
@@ -123,7 +164,43 @@
             android:src="@drawable/ic_baseline_mic_red_24"
             android:contentDescription="@null"
             android:visibility="gone"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/voice_preview_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/quotedChatMessageView"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="@dimen/standard_margin"
+            android:background="@drawable/shape_grouped_outcoming_message">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playPauseBtn"
+                style="@style/Widget.AppTheme.Button.IconButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:contentDescription="@string/play_pause_voice_message"
+                android:visibility="gone"
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
+                app:iconSize="30dp"
+                app:iconTint="@color/high_emphasis_text"
+                app:rippleColor="#1FFFFFFF" />
+
+            <SeekBar
+                android:id="@+id/seekbar"
+                style="@style/Nextcloud.Material.Outgoing.SeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:thumb="@drawable/voice_message_outgoing_seek_bar_slider"
+                android:visibility="gone"
+                tools:progress="50" />
+        </LinearLayout>
 
         <Chronometer
             android:id="@+id/audioRecordDuration"
