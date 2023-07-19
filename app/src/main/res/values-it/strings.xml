@@ -21,6 +21,7 @@
     <string name="dnd">Non disturbare</string>
     <string name="dontClear">Non cancellare</string>
     <string name="edit">Modifica</string>
+    <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recenti</string>
     <string name="emoji_search">Cerca emoji</string>
     <string name="encrypted">Cifrato</string>
@@ -405,8 +406,10 @@
     <string name="title_attachments">Allegati</string>
     <string name="today">Oggi</string>
     <string name="translate">Traduci</string>
+    <string name="translation_detect_language">Rileva lingua</string>
     <string name="translation_device_settings">Impostazioni dei dispositivi</string>
     <string name="translation_error_message">Impossibile rilevare la lingua</string>
+    <string name="translation_error_title">Traduzione fallita</string>
     <string name="translation_from">Da</string>
     <string name="translation_to">A</string>
     <string name="unread">Da leggere</string>
