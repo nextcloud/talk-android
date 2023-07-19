@@ -40,11 +40,18 @@ import kotlin.math.roundToInt
 class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs) {
     /**
      * State Descriptions:
-     * - PAUSED_STATE: Animation speed is set to zero
-     * - PLAY_STATE: Animation speed is set to default, but can be overridden
+     * - PAUSED_STATE: Animation speed is set to zero.
+     * - PLAY_STATE: Animation speed is set to default, but can be overridden.
      */
     enum class ViewState {
+        /**
+         * Animation speed is set to zero.
+         */
         PAUSED_STATE,
+
+        /**
+         * Animation speed is set to default, but can be overridden.
+         */
         PLAY_STATE
     }
 
@@ -97,6 +104,7 @@ class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs
     }
 
     private val topCircleBounds = Rect(0, 0, 0, 0)
+    private val iconBounds = topCircleBounds
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         super.onVisibilityChanged(changedView, visibility)
@@ -285,10 +293,23 @@ class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs
 
         centerX = (width / 2).toFloat()
         centerY = (height / 2).toFloat()
-        topCircleBounds.left = (centerX - DEFAULT_RADIUS).toInt()
-        topCircleBounds.top = (centerY - DEFAULT_RADIUS).toInt()
-        topCircleBounds.right = (centerX + DEFAULT_RADIUS).toInt()
-        topCircleBounds.bottom = (centerY + DEFAULT_RADIUS).toInt()
+        topCircleBounds.apply {
+            left = (centerX - DEFAULT_RADIUS).toInt()
+            top = (centerY - DEFAULT_RADIUS).toInt()
+            right = (centerX + DEFAULT_RADIUS).toInt()
+            bottom = (centerY + DEFAULT_RADIUS).toInt()
+        }
+
+        /**
+         * Drawables are drawn the same way as the canvas is drawn, as both originate from the top-left corner.
+         * Because of this, the icon's width = (right - left) and height = (bottom - top).
+         */
+        iconBounds.apply {
+            left = (centerX - DEFAULT_RADIUS + ICON_SIZE.dp).toInt()
+            top = (centerY - DEFAULT_RADIUS + ICON_SIZE.dp).toInt()
+            right = (centerX + DEFAULT_RADIUS - ICON_SIZE.dp).toInt()
+            bottom = (centerY + DEFAULT_RADIUS - ICON_SIZE.dp).toInt()
+        }
 
         setMeasuredDimension(width, height)
     }
@@ -310,7 +331,7 @@ class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs
     }
 
     /**
-     *  Sets the color of the cloud to the parameter, opacity is still set to 50%
+     *  Sets the color of the cloud to the parameter, opacity is still set to 50%.
      */
     fun setColor(primary: Int) {
         primaryColor = primary
@@ -323,7 +344,7 @@ class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs
     }
 
     /**
-     * Sets state of the component to the parameter
+     * Sets state of the component to the parameter, must be of type MicInputCloud.ViewState.
      */
     fun setState(s: ViewState) {
         state = s
@@ -331,7 +352,7 @@ class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs
     }
 
     /**
-     * Sets the rotation speed and radius to the parameters, defaults are left unchanged
+     * Sets the rotation speed and radius to the parameters, defaults are left unchanged.
      */
     fun setRotationSpeed(speed: Float, r: Float) {
         rotationSpeedMultiplier = speed
@@ -344,6 +365,7 @@ class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs
         const val DEFAULT_RADIUS: Float = 70f
         const val EXTENDED_RADIUS: Float = 75f
         const val MAXIMUM_RADIUS: Float = 80f
+        const val ICON_SIZE: Int = 9 // Converted to dp this equals about 24dp
         private const val DEFAULT_SIZE: Int = 110
         private const val DEFAULT_OPACITY: Int = 108
         private const val DEFAULT_ROTATION_SPEED_MULTIPLIER: Float = 0.5f

@@ -245,8 +245,6 @@ import javax.inject.Inject
 import kotlin.collections.set
 import kotlin.math.roundToInt
 
-private const val l = 50
-
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
     BaseActivity(),
@@ -337,8 +335,8 @@ class ChatActivity :
     private lateinit var micInputAudioRecorder: AudioRecord
     private var micInputAudioRecordThread: Thread? = null
     private var isMicInputAudioThreadRunning: Boolean = false
-    private val BUFFER_SIZE = AudioRecord.getMinBufferSize(
-        8000,
+    private val bufferSize = AudioRecord.getMinBufferSize(
+        SAMPLE_RATE,
         AudioFormat.CHANNEL_IN_MONO,
         AudioFormat.ENCODING_PCM_16BIT
     )
@@ -617,41 +615,7 @@ class ChatActivity :
 
         initSmileyKeyboardToggler()
 
-        binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
-            cancelReply()
-        }
-
-        binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {
-            viewThemeUtils.platform
-                .themeImageButton(it)
-        }
-
-        binding.messageInputView.findViewById<MaterialButton>(R.id.playPauseBtn)?.let {
-            viewThemeUtils.material.colorMaterialButtonText(it)
-        }
-
-        binding.messageInputView.findViewById<SeekBar>(R.id.seekbar)?.let {
-            viewThemeUtils.platform.themeHorizontalSeekBar(it)
-        }
-
-        binding.messageInputView.findViewById<ImageView>(R.id.deleteVoiceRecording)?.let {
-            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
-        }
-        binding.messageInputView.findViewById<ImageView>(R.id.sendVoiceRecording)?.let {
-            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
-        }
-
-        binding.messageInputView.findViewById<ImageView>(R.id.microphoneEnabledInfo)?.let {
-            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
-        }
-
-        binding.messageInputView.findViewById<LinearLayout>(R.id.voice_preview_container)?.let {
-            viewThemeUtils.talk.themeOutgoingMessageBubble(it, true, false)
-        }
-
-        binding.messageInputView.findViewById<MicInputCloud>(R.id.micInputCloud)?.let {
-            viewThemeUtils.talk.themeMicInputCloud(it)
-        }
+        themeMessageInputView()
 
         cancelNotificationsForCurrentConversation()
 
@@ -716,6 +680,15 @@ class ChatActivity :
             }
         })
 
+        initMessageInputView()
+
+        loadAvatarForStatusBar()
+        setActionBarTitle()
+
+        viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
+    }
+
+    private fun initMessageInputView() {
         val filters = arrayOfNulls<InputFilter>(1)
         val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
 
@@ -796,13 +769,46 @@ class ChatActivity :
 
         binding.messageInputView.button?.contentDescription =
             resources?.getString(R.string.nc_description_send_message_button)
+    }
 
+    private fun themeMessageInputView() {
         binding.messageInputView.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
 
-        loadAvatarForStatusBar()
-        setActionBarTitle()
+        binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
+            cancelReply()
+        }
 
-        viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
+        binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {
+            viewThemeUtils.platform
+                .themeImageButton(it)
+        }
+
+        binding.messageInputView.findViewById<MaterialButton>(R.id.playPauseBtn)?.let {
+            viewThemeUtils.material.colorMaterialButtonText(it)
+        }
+
+        binding.messageInputView.findViewById<SeekBar>(R.id.seekbar)?.let {
+            viewThemeUtils.platform.themeHorizontalSeekBar(it)
+        }
+
+        binding.messageInputView.findViewById<ImageView>(R.id.deleteVoiceRecording)?.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
+        }
+        binding.messageInputView.findViewById<ImageView>(R.id.sendVoiceRecording)?.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
+        }
+
+        binding.messageInputView.findViewById<ImageView>(R.id.microphoneEnabledInfo)?.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
+        }
+
+        binding.messageInputView.findViewById<LinearLayout>(R.id.voice_preview_container)?.let {
+            viewThemeUtils.talk.themeOutgoingMessageBubble(it, true, false)
+        }
+
+        binding.messageInputView.findViewById<MicInputCloud>(R.id.micInputCloud)?.let {
+            viewThemeUtils.talk.themeMicInputCloud(it)
+        }
     }
 
     private fun setupActionBar() {
@@ -1275,7 +1281,7 @@ class ChatActivity :
             )
 
             binding.voiceRecordingLock.alpha = 1f
-            binding.voiceRecordingLock.animate().alpha(0f).setDuration(500)
+            binding.voiceRecordingLock.animate().alpha(0f).setDuration(VOICE_RECORDING_LOCK_ANIMATION_DURATION.toLong())
                 .setInterpolator(AccelerateInterpolator()).start()
         } else {
             binding.voiceRecordingLock.setImageDrawable(
@@ -1461,7 +1467,7 @@ class ChatActivity :
 
     fun updateOwnTypingStatus(typedText: CharSequence) {
         fun sendStartTypingSignalingMessage() {
-            for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+            for ((sessionId, _) in webSocketInstance?.getUserMap()!!) {
                 val ncSignalingMessage = NCSignalingMessage()
                 ncSignalingMessage.to = sessionId
                 ncSignalingMessage.type = TYPING_STARTED_SIGNALING_MESSAGE_TYPE
@@ -1505,7 +1511,7 @@ class ChatActivity :
             typingTimer = null
             typedWhileTypingTimerIsRunning = false
 
-            for ((sessionId, participant) in webSocketInstance?.getUserMap()!!) {
+            for ((sessionId, _) in webSocketInstance?.getUserMap()!!) {
                 val ncSignalingMessage = NCSignalingMessage()
                 ncSignalingMessage.to = sessionId
                 ncSignalingMessage.type = TYPING_STOPPED_SIGNALING_MESSAGE_TYPE
@@ -1913,25 +1919,25 @@ class ChatActivity :
             Log.d(TAG, "Mic Animation Started")
             micInputAudioRecorder = AudioRecord(
                 MediaRecorder.AudioSource.MIC,
-                8000,
+                SAMPLE_RATE,
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT,
-                BUFFER_SIZE
+                bufferSize
             )
             isMicInputAudioThreadRunning = true
             micInputAudioRecorder.startRecording()
             micInputAudioRecordThread = Thread(
                 Runnable {
                     while (isMicInputAudioThreadRunning) {
-                        val byteArr = ByteArray(BUFFER_SIZE / 2)
+                        val byteArr = ByteArray(bufferSize / 2)
                         micInputAudioRecorder.read(byteArr, 0, byteArr.size)
                         val d = Math.abs(byteArr[0].toDouble())
-                        if (d > 40) {
+                        if (d > AUDIO_VALUE_MAX) {
                             binding.messageInputView.micInputCloud.setRotationSpeed(
                                 Math.log10(d).toFloat(),
                                 MicInputCloud.MAXIMUM_RADIUS
                             )
-                        } else if (d > 20) {
+                        } else if (d > AUDIO_VALUE_MIN) {
                             binding.messageInputView.micInputCloud.setRotationSpeed(
                                 Math.log10(d).toFloat(),
                                 MicInputCloud.EXTENDED_RADIUS
@@ -1942,7 +1948,7 @@ class ChatActivity :
                                 MicInputCloud.DEFAULT_RADIUS
                             )
                         }
-                        Thread.sleep(50)
+                        Thread.sleep(AUDIO_VALUE_SLEEP)
                     }
                 }
             )
@@ -2033,8 +2039,8 @@ class ChatActivity :
                 release()
                 isVoiceRecordingInProgress = false
                 Log.d(TAG, "stopped recorder. isVoiceRecordingInProgress = false")
-            } catch (e: RuntimeException) {
-                Log.w(TAG, "error while stopping recorder!")
+            } catch (e: java.lang.IllegalStateException) {
+                error("error while stopping recorder!" + e)
             }
 
             VibrationUtils.vibrateShort(context)
@@ -2331,7 +2337,7 @@ class ChatActivity :
                             filesToUpload.add(videoURI.toString())
                             videoURI = null
                         } else {
-                            throw IllegalStateException("Failed to get data from intent and uri")
+                            error("Failed to get data from intent and uri")
                         }
 
                         if (permissionUtil.isFilesPermissionGranted()) {
@@ -2642,8 +2648,9 @@ class ChatActivity :
             if (currentConversation?.displayName != null) {
                 try {
                     " " + EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
-                } catch (e: IllegalStateException) {
+                } catch (e: java.lang.IllegalStateException) {
                     " " + currentConversation?.displayName
+                    error(e)
                 }
             } else {
                 ""
@@ -4104,7 +4111,6 @@ class ChatActivity :
         private const val CONTENT_TYPE_POLL: Byte = 5
         private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 6
         private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
-        private const val POP_CURRENT_CONTROLLER_DELAY: Long = 100
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val HTTP_CODE_OK: Int = 200
@@ -4148,11 +4154,14 @@ class ChatActivity :
         private const val INVITE_LENGTH = 6
         private const val ACTOR_LENGTH = 6
         private const val ANIMATION_DURATION: Long = 750
-        private const val RETRIES: Long = 3
         private const val LOOKING_INTO_FUTURE_TIMEOUT = 30
         private const val CHUNK_SIZE: Int = 10
         private const val ONE_SECOND_IN_MILLIS = 1000
-
+        private const val SAMPLE_RATE = 8000
+        private const val VOICE_RECORDING_LOCK_ANIMATION_DURATION = 500
+        private const val AUDIO_VALUE_MAX = 40
+        private const val AUDIO_VALUE_MIN = 20
+        private const val AUDIO_VALUE_SLEEP: Long = 50
         private const val WHITESPACE = " "
         private const val COMMA = ", "
         private const val TYPING_INDICATOR_ANIMATION_DURATION = 200L
