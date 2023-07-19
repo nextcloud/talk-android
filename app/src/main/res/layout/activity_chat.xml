@@ -134,15 +134,16 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/voice_recording_lock"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            style="?attr/floatingActionButtonSmallStyle"
+            android:layout_width="@dimen/min_size_clickable_area"
+            android:layout_height="@dimen/min_size_clickable_area"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginEnd="@dimen/standard_margin"
             android:layout_marginBottom="@dimen/standard_margin"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            app:srcCompat="@drawable/ic_lock_open_grey600_24dp"
-            android:visibility="gone" />
+            android:contentDescription="@string/continuous_voice_message_recording"
+            android:visibility="gone"
+            app:fabCustomSize="@dimen/min_size_clickable_area"
+            app:srcCompat="@drawable/ic_lock_open_grey600_24dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/scrollDownButton"
