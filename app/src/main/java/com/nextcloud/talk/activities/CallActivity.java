@@ -34,7 +34,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
@@ -151,12 +150,9 @@ import javax.inject.Inject;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.lifecycle.ViewModelProvider;
 import autodagger.AutoInjector;
@@ -165,11 +161,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied;
-import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
-import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
 import okhttp3.Cache;
-import pub.devrel.easypermissions.AfterPermissionGranted;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY;
@@ -219,11 +211,6 @@ public class CallActivity extends CallBaseActivity {
 
     public CallRecordingViewModel callRecordingViewModel;
     public RaiseHandViewModel raiseHandViewModel;
-
-    private static final String[] PERMISSIONS_CALL = {
-        Manifest.permission.CAMERA,
-        Manifest.permission.RECORD_AUDIO
-    };
 
     private static final String[] PERMISSIONS_CAMERA = {
         Manifest.permission.CAMERA
@@ -362,12 +349,61 @@ public class CallActivity extends CallBaseActivity {
     private AudioOutputDialog audioOutputDialog;
     private MoreCallActionsDialog moreCallActionsDialog;
 
-    private final ActivityResultLauncher<String> requestBluetoothPermissionLauncher =
-        registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-            if (isGranted) {
-                enableBluetoothManager();
+    ActivityResultLauncher<String[]> requestPermissionLauncher =
+        registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionMap -> {
+
+            List<String> rationaleList = new ArrayList<>();
+
+            Boolean audioPermission = permissionMap.get(Manifest.permission.RECORD_AUDIO);
+            if (audioPermission != null) {
+                if (Boolean.TRUE.equals(audioPermission)) {
+                    if (!microphoneOn) {
+                        onMicrophoneClick();
+                    }
+                } else {
+                    rationaleList.add((getResources().getString(R.string.nc_microphone_permission_hint)));
+                }
+            }
+
+            Boolean cameraPermission = permissionMap.get(Manifest.permission.CAMERA);
+            if (cameraPermission != null) {
+                if (Boolean.TRUE.equals(cameraPermission)) {
+                    if (!videoOn) {
+                        onCameraClick();
+                    }
+
+                    if (cameraEnumerator.getDeviceNames().length == 0) {
+                        binding.cameraButton.setVisibility(View.GONE);
+                    }
+
+                    if (cameraEnumerator.getDeviceNames().length > 1) {
+                        binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    rationaleList.add((getResources().getString(R.string.nc_camera_permission_hint)));
+                }
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                Boolean bluetoothPermission = permissionMap.get(Manifest.permission.BLUETOOTH_CONNECT);
+                if (bluetoothPermission != null) {
+                    if (Boolean.TRUE.equals(bluetoothPermission)) {
+                        enableBluetoothManager();
+                    } else {
+                        // Only ask for bluetooth when already asking to grant microphone or camera access. Asking
+                        // for bluetooth solely is not important enough here and would most likely annoy the user.
+                        if (!rationaleList.isEmpty()) {
+                            rationaleList.add((getResources().getString(R.string.nc_bluetooth_permission_hint)));
+                        }
+                    }
+                }
+            }
+
+            if (!rationaleList.isEmpty()) {
+                showRationaleDialogForSettings(rationaleList);
             }
         });
+
 
     private boolean canPublishAudioStream;
     private boolean canPublishVideoStream;
@@ -502,16 +538,15 @@ public class CallActivity extends CallBaseActivity {
             .setRepeatCount(PulseAnimation.INFINITE)
             .setRepeatMode(PulseAnimation.REVERSE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            requestBluetoothPermission();
-        }
         basicInitialization();
         callParticipants = new HashMap<>();
         participantDisplayItems = new HashMap<>();
         initViews();
+
         if (!isConnectionEstablished()) {
             initiateCall();
         }
+
         updateSelfVideoViewPosition();
 
         reactionAnimator = new ReactionAnimator(context, binding.reactionAnimationWrapper, viewThemeUtils);
@@ -544,15 +579,6 @@ public class CallActivity extends CallBaseActivity {
     public void onStop() {
         super.onStop();
         active = false;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.S)
-    private void requestBluetoothPermission() {
-        if (ContextCompat.checkSelfPermission(
-            getContext(), Manifest.permission.BLUETOOTH_CONNECT) ==
-            PackageManager.PERMISSION_DENIED) {
-            requestBluetoothPermissionLauncher.launch(Manifest.permission.BLUETOOTH_CONNECT);
-        }
     }
 
     private void enableBluetoothManager() {
@@ -936,36 +962,28 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-
     private void checkDevicePermissions() {
-        if (isVoiceOnlyCall) {
-            onMicrophoneClick();
-        } else {
-            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
-                onPermissionsGranted();
-            } else {
-                requestPermissions(PERMISSIONS_CALL, 100);
-            }
-        }
+        List<String> permissionsToRequest = new ArrayList<>();
+        List<String> rationaleList = new ArrayList<>();
 
-    }
-
-    private boolean isConnectionEstablished() {
-        return (currentCallStatus == CallStatus.JOINED || currentCallStatus == CallStatus.IN_CONVERSATION);
-    }
-
-    @AfterPermissionGranted(100)
-    private void onPermissionsGranted() {
-        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
-            if (!videoOn && !isVoiceOnlyCall) {
-                onCameraClick();
-            }
-
+        if (permissionUtil.isMicrophonePermissionGranted()) {
             if (!microphoneOn) {
                 onMicrophoneClick();
             }
 
-            if (!isVoiceOnlyCall) {
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+            permissionsToRequest.add(Manifest.permission.RECORD_AUDIO);
+            rationaleList.add((getResources().getString(R.string.nc_microphone_permission_hint)));
+        } else {
+            permissionsToRequest.add(Manifest.permission.RECORD_AUDIO);
+        }
+
+        if (!isVoiceOnlyCall) {
+            if (permissionUtil.isCameraPermissionGranted()) {
+                if (!videoOn) {
+                    onCameraClick();
+                }
+
                 if (cameraEnumerator.getDeviceNames().length == 0) {
                     binding.cameraButton.setVisibility(View.GONE);
                 }
@@ -973,44 +991,32 @@ public class CallActivity extends CallBaseActivity {
                 if (cameraEnumerator.getDeviceNames().length > 1) {
                     binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
                 }
-            }
-
-            if (!isConnectionEstablished()) {
-                fetchSignalingSettings();
-            }
-        } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_CALL)) {
-            checkIfSomeAreApproved();
-        }
-
-    }
-
-    private void checkIfSomeAreApproved() {
-        if (!isVoiceOnlyCall) {
-            if (cameraEnumerator.getDeviceNames().length == 0) {
-                binding.cameraButton.setVisibility(View.GONE);
-            }
-
-            if (cameraEnumerator.getDeviceNames().length > 1) {
-                binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
-            }
-
-            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) && canPublishVideoStream) {
-                if (!videoOn) {
-                    onCameraClick();
-                }
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                permissionsToRequest.add(Manifest.permission.CAMERA);
+                rationaleList.add((getResources().getString(R.string.nc_camera_permission_hint)));
             } else {
-                binding.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
-                binding.cameraButton.setAlpha(0.7f);
-                binding.switchSelfVideoButton.setVisibility(View.GONE);
+                permissionsToRequest.add(Manifest.permission.CAMERA);
             }
         }
 
-        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE) && canPublishAudioStream) {
-            if (!microphoneOn) {
-                onMicrophoneClick();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (permissionUtil.isBluetoothPermissionGranted()) {
+                enableBluetoothManager();
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_CONNECT)) {
+                permissionsToRequest.add(Manifest.permission.BLUETOOTH_CONNECT);
+                rationaleList.add((getResources().getString(R.string.nc_bluetooth_permission_hint)));
+            } else {
+                permissionsToRequest.add(Manifest.permission.BLUETOOTH_CONNECT);
             }
-        } else {
-            binding.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+        }
+
+        if (!permissionsToRequest.isEmpty()) {
+            if (!rationaleList.isEmpty()) {
+                showRationaleDialog(permissionsToRequest, rationaleList);
+            } else {
+                requestPermissionLauncher.launch(permissionsToRequest.toArray(new String[permissionsToRequest.size()]));
+            }
         }
 
         if (!isConnectionEstablished()) {
@@ -1018,22 +1024,63 @@ public class CallActivity extends CallBaseActivity {
         }
     }
 
-    @AfterPermissionDenied(100)
-    private void onPermissionsDenied() {
-        if (!isVoiceOnlyCall) {
-            if (cameraEnumerator.getDeviceNames().length == 0) {
-                binding.cameraButton.setVisibility(View.GONE);
-            } else if (cameraEnumerator.getDeviceNames().length == 1) {
-                binding.switchSelfVideoButton.setVisibility(View.GONE);
-            }
+    private void showRationaleDialog(String permissionToRequest, String rationale) {
+        List<String> rationaleList = new ArrayList<String>();
+        List<String> permissionsToRequest = new ArrayList<String>();
+
+        rationaleList.add(rationale);
+        permissionsToRequest.add(permissionToRequest);
+
+        showRationaleDialog(permissionsToRequest, rationaleList);
+    }
+
+    private void showRationaleDialog(List<String> permissionsToRequest, List<String> rationaleList) {
+        StringBuilder rationalesWithLineBreaks = new StringBuilder();
+
+        for (String rationale : rationaleList) {
+            rationalesWithLineBreaks.append(rationale).append("\n\n");
         }
 
-        if ((EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) ||
-            EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE))) {
-            checkIfSomeAreApproved();
-        } else if (!isConnectionEstablished()) {
-            fetchSignalingSettings();
+        MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.nc_permissions_rationale_dialog_title)
+            .setMessage(rationalesWithLineBreaks)
+            .setPositiveButton(R.string.nc_permissions_ask, (dialog, which) ->
+                                   requestPermissionLauncher.launch(
+                                       permissionsToRequest.toArray(new String[permissionsToRequest.size()])
+                                                                   )
+                              )
+            .setNegativeButton(R.string.nc_common_dismiss, null);
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder);
+        dialogBuilder.show();
+    }
+
+    private void showRationaleDialogForSettings(List<String> rationaleList) {
+        StringBuilder rationalesWithLineBreaks = new StringBuilder();
+        rationalesWithLineBreaks.append(getResources().getString(R.string.nc_permissions_denied));
+        rationalesWithLineBreaks.append('\n');
+        rationalesWithLineBreaks.append(getResources().getString(R.string.nc_permissions_settings_hint));
+        rationalesWithLineBreaks.append("\n\n");
+
+        for (String rationale : rationaleList) {
+            rationalesWithLineBreaks.append(rationale).append("\n\n");
         }
+
+        MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.nc_permissions_rationale_dialog_title)
+            .setMessage(rationalesWithLineBreaks)
+            .setPositiveButton(R.string.nc_permissions_settings, (dialog, which) -> {
+                Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.setData(Uri.fromParts("package", getPackageName(), null));
+                startActivity(intent);
+            })
+            .setNegativeButton(R.string.nc_common_dismiss, null);
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder);
+        dialogBuilder.show();
+    }
+
+
+    private boolean isConnectionEstablished() {
+        return (currentCallStatus == CallStatus.JOINED || currentCallStatus == CallStatus.IN_CONVERSATION);
     }
 
     private void onAudioManagerDevicesChanged(
@@ -1118,7 +1165,6 @@ public class CallActivity extends CallBaseActivity {
     }
 
     public void onMicrophoneClick() {
-
         if (!canPublishAudioStream) {
             microphoneOn = false;
             binding.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px);
@@ -1134,7 +1180,7 @@ public class CallActivity extends CallBaseActivity {
             return;
         }
 
-        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+        if (permissionUtil.isMicrophonePermissionGranted()) {
 
             if (!appPreferences.getPushToTalkIntroShown()) {
                 int primary = viewThemeUtils.getScheme(binding.audioOutputButton.getContext()).getPrimary();
@@ -1182,19 +1228,17 @@ public class CallActivity extends CallBaseActivity {
                 pulseAnimation.start();
                 toggleMedia(true, false);
             }
-        } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_MICROPHONE)) {
-            // Microphone permission is permanently denied so we cannot request it normally.
-
-            OpenAppDetailsDialogFragment.show(
-                R.string.nc_microphone_permission_permanently_denied,
-                R.string.nc_permissions_settings, (AppCompatActivity) this);
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+            showRationaleDialog(
+                Manifest.permission.RECORD_AUDIO,
+                getResources().getString(R.string.nc_microphone_permission_hint)
+                               );
         } else {
-            requestPermissions(PERMISSIONS_MICROPHONE, 100);
+            requestPermissionLauncher.launch(PERMISSIONS_MICROPHONE);
         }
     }
 
     public void onCameraClick() {
-
         if (!canPublishVideoStream) {
             videoOn = false;
             binding.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
@@ -1202,7 +1246,7 @@ public class CallActivity extends CallBaseActivity {
             return;
         }
 
-        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
+        if (permissionUtil.isCameraPermissionGranted()) {
             videoOn = !videoOn;
 
             if (videoOn) {
@@ -1216,15 +1260,14 @@ public class CallActivity extends CallBaseActivity {
             }
 
             toggleMedia(videoOn, true);
-        } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_CAMERA)) {
-            // Camera permission is permanently denied so we cannot request it normally.
-            OpenAppDetailsDialogFragment.show(
-                R.string.nc_camera_permission_permanently_denied,
-                R.string.nc_permissions_settings, (AppCompatActivity) this);
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+            showRationaleDialog(
+                Manifest.permission.CAMERA,
+                getResources().getString(R.string.nc_camera_permission_hint)
+                               );
         } else {
-            requestPermissions(PERMISSIONS_CAMERA, 100);
+            requestPermissionLauncher.launch(PERMISSIONS_CAMERA);
         }
-
     }
 
     public void switchCamera() {
@@ -2411,7 +2454,7 @@ public class CallActivity extends CallBaseActivity {
         if (!isVoiceOnlyCall) {
             boolean enableVideo = proximitySensorEvent.getProximitySensorEventType() ==
                 ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR && videoOn;
-            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) &&
+            if (permissionUtil.isCameraPermissionGranted() &&
                 (currentCallStatus == CallStatus.CONNECTING || isConnectionEstablished()) && videoOn
                 && enableVideo != localVideoTrack.enabled()) {
                 toggleMedia(enableVideo, true);
@@ -2457,15 +2500,6 @@ public class CallActivity extends CallBaseActivity {
             }
 
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        EffortlessPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults,
-                                                         this);
     }
 
     private void addParticipantDisplayItem(CallParticipantModel callParticipantModel, String videoStreamType) {

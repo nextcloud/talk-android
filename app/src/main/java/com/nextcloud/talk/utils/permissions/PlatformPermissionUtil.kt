@@ -24,6 +24,7 @@ package com.nextcloud.talk.utils.permissions
 interface PlatformPermissionUtil {
     val privateBroadcastPermission: String
     fun isCameraPermissionGranted(): Boolean
-
+    fun isMicrophonePermissionGranted(): Boolean
+    fun isBluetoothPermissionGranted(): Boolean
     fun isFilesPermissionGranted(): Boolean
 }
