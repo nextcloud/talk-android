@@ -25,6 +25,7 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.content.PermissionChecker
 import com.nextcloud.talk.BuildConfig
 
@@ -36,6 +37,21 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
         return PermissionChecker.checkSelfPermission(
             context,
             Manifest.permission.CAMERA
+        ) == PermissionChecker.PERMISSION_GRANTED
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    override fun isBluetoothPermissionGranted(): Boolean {
+        return PermissionChecker.checkSelfPermission(
+            context,
+            Manifest.permission.BLUETOOTH_CONNECT
+        ) == PermissionChecker.PERMISSION_GRANTED
+    }
+
+    override fun isMicrophonePermissionGranted(): Boolean {
+        return PermissionChecker.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO
         ) == PermissionChecker.PERMISSION_GRANTED
     }
 
