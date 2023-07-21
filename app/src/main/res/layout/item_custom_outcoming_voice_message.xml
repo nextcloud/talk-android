@@ -76,43 +76,54 @@
                 app:iconTint="@color/high_emphasis_text"
                 app:rippleColor="#1FFFFFFF" />
 
-            <SeekBar
+
+            <com.nextcloud.talk.ui.WaveformSeekBar
                 android:id="@+id/seekbar"
-                style="@style/Nextcloud.Material.Outgoing.SeekBar"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="70dp"
                 android:thumb="@drawable/voice_message_outgoing_seek_bar_slider"
                 tools:progress="50"
                 android:layout_weight="1" />
 
-            <TextView
-                android:id="@+id/voiceMessageDuration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
         </LinearLayout>
 
-        <TextView
-            android:id="@id/messageTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
             android:layout_below="@id/messageText"
-            android:layout_marginStart="8dp"
-            android:alpha="0.6"
-            android:textColor="@color/no_emphasis_text"
-            app:layout_alignSelf="center"
-            tools:text="10:35" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/checkMark"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/message_bubble_checkmark_height"
-            android:layout_below="@id/messageTime"
-            android:layout_marginStart="8dp"
-            android:contentDescription="@null"
-            app:layout_alignSelf="center"
-            app:tint="@color/high_emphasis_text" />
+            <TextView
+                android:id="@+id/voiceMessageDuration"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                tools:text="02:30"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@id/messageTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:alpha="0.6"
+                android:textColor="@color/no_emphasis_text"
+                android:layout_gravity="center"
+                tools:text="10:35" />
+
+            <ImageView
+                android:id="@+id/checkMark"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/message_bubble_checkmark_height"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@null"
+                android:layout_gravity="center"
+                app:tint="@color/high_emphasis_text" />
+        </LinearLayout>
+
 
         <include
             android:id="@+id/reactions"
