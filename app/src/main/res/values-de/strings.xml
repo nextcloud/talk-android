@@ -16,6 +16,7 @@
     <string name="clear_status_message">Statusmeldung löschen</string>
     <string name="clear_status_message_after">Statusmeldung löschen nach</string>
     <string name="close">Schließen</string>
+    <string name="continuous_voice_message_recording">Aufnahme sperren für kontinuierliche Aufzeichnung der Sprachnachricht</string>
     <string name="conversations">Unterhaltungen</string>
     <string name="danger_zone">Gefahrenzone</string>
     <string name="delete_avatar">Avatar löschen</string>

@@ -16,6 +16,7 @@
     <string name="clear_status_message">清除狀態訊息</string>
     <string name="clear_status_message_after">繼此之後清空狀態訊息</string>
     <string name="close">關閉</string>
+    <string name="continuous_voice_message_recording">鎖定錄音以連續錄製語音訊息</string>
     <string name="conversations">對話</string>
     <string name="danger_zone">危險地帶</string>
     <string name="delete_avatar">刪除虛擬化身大頭照</string>

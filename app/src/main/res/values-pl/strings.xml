@@ -16,7 +16,9 @@
     <string name="clear_status_message">Wyczyść komunikat statusu</string>
     <string name="clear_status_message_after">Wyczyść komunikat statusu po</string>
     <string name="close">Zamknij</string>
+    <string name="continuous_voice_message_recording">Zablokuj nagrywanie w celu ciągłego nagrywania wiadomości głosowej</string>
     <string name="conversations">Rozmowy</string>
+    <string name="danger_zone">Strefa niebezpieczeństwa</string>
     <string name="delete_avatar">Usuń awatar</string>
     <string name="dnd">Nie przeszkadzać</string>
     <string name="dontClear">Nie czyść</string>
@@ -473,6 +475,7 @@
     <string name="take_photo_toggle_torch">Przełącz latarkę</string>
     <string name="thirtyMinutes">30 minut</string>
     <string name="thisWeek">W tym tygodniu</string>
+    <string name="this_is_a_test_message">To jest wiadomość testowa</string>
     <string name="title_attachments">Załączniki</string>
     <string name="today">Dzisiaj</string>
     <string name="translate">Tłumaczenie</string>

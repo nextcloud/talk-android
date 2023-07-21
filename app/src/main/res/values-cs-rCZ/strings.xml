@@ -16,6 +16,7 @@
     <string name="clear_status_message">Vyčistit stavovou zprávu</string>
     <string name="clear_status_message_after">Vyčistit stavovou zprávu po uplynutí</string>
     <string name="close">Zavřít</string>
+    <string name="continuous_voice_message_recording">Zamknout nahrávku pro nepřetržité nahrávání hlasové zprávy</string>
     <string name="conversations">Konverzace</string>
     <string name="danger_zone">Nebezpečná zóna</string>
     <string name="delete_avatar">Vymazat profilový obrázek</string>

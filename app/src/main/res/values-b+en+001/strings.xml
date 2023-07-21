@@ -16,6 +16,7 @@
     <string name="clear_status_message">Clear status message</string>
     <string name="clear_status_message_after">Clear status message after</string>
     <string name="close">Close</string>
+    <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
     <string name="conversations">Conversations</string>
     <string name="danger_zone">Danger Zone</string>
     <string name="delete_avatar">Delete avatar</string>

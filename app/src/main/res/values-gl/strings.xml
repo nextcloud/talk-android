@@ -16,6 +16,7 @@
     <string name="clear_status_message">Limpar a mensaxe de estado</string>
     <string name="clear_status_message_after">Limpar a mensaxe de estado após</string>
     <string name="close">Pechar</string>
+    <string name="continuous_voice_message_recording">Bloquear a gravación para gravar continuamente a mensaxe de voz</string>
     <string name="conversations">Conversas</string>
     <string name="danger_zone">Zona de perigo</string>
     <string name="delete_avatar">Eliminar avatar</string>

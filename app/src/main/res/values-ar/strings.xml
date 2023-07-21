@@ -16,6 +16,7 @@
     <string name="clear_status_message">إمسح رسالة الحالة</string>
     <string name="clear_status_message_after">إمسح رسالة الحالة فيما بعدٌ</string>
     <string name="close">إغلاق</string>
+    <string name="continuous_voice_message_recording">قَفْل التسجيل للتسجيل المستمر للرسالة الصوتية</string>
     <string name="conversations">محادثات</string>
     <string name="danger_zone">منطقة خطر</string>
     <string name="delete_avatar">إمسح الرمز التجسيدي avatar</string>
