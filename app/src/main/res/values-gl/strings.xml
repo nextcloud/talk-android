@@ -10,7 +10,7 @@
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
     <string name="call_more_actions_dialog_headline"> Opcións avanzadas de chamada</string>
-    <string name="call_without_notification">Chamar sen aviso</string>
+    <string name="call_without_notification">Chamar sen notificación</string>
     <string name="camera_permission_granted">Concedeuse o permiso para a cámara. Escolla a cámara de novo.</string>
     <string name="choose_avatar_from_cloud">Escoller un avatar da nube</string>
     <string name="clear_status_message">Limpar a mensaxe de estado</string>
@@ -370,7 +370,7 @@
     <string name="raise_hand">Erguer a man</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="record_cancel_start">Cancelar o inicio da gravación</string>
-    <string name="record_failed_info">Produciuse un fallo de gravación. Póñase en contacto coa administración desta instancia.</string>
+    <string name="record_failed_info">Produciuse un fallo na gravación. Póñase en contacto coa administración desta instancia.</string>
     <string name="record_start_description">Comezar a gravar</string>
     <string name="record_stop_description">Deter a gravación</string>
     <string name="save">Gardar</string>

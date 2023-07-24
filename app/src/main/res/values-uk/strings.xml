@@ -407,7 +407,7 @@
     <string name="save">Зберегти</string>
     <string name="scope_federated_description">Синхронізовувати лише з серверами, яким довіряємо</string>
     <string name="scope_federated_title">Federated</string>
-    <string name="scope_local_description">Відображається лише для людей у ​​цьому екземплярі та гостей</string>
+    <string name="scope_local_description">Видно лише користувачам цієї хмари та гостям</string>
     <string name="scope_local_title">Локально</string>
     <string name="scope_private_description">Відображається лише людям, зіставленим за допомогою інтеграції номера телефону через Talk на мобільному пристрої</string>
     <string name="scope_private_title">Закритий</string>
