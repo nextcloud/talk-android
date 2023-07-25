@@ -93,7 +93,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
 
     private fun initClickListeners() {
         binding.recordCall.setOnClickListener {
-            callActivity.callRecordingViewModel.clickRecordButton()
+            callActivity.callRecordingViewModel?.clickRecordButton()
         }
 
         binding.raiseHand.setOnClickListener {
@@ -105,7 +105,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         if (CapabilitiesUtilNew.isCallReactionsSupported(callActivity.conversationUser)) {
             binding.advancedCallOptionsTitle.visibility = View.GONE
 
-            val capabilities = callActivity.conversationUser.capabilities
+            val capabilities = callActivity.conversationUser?.capabilities
             val availableReactions: ArrayList<*> =
                 capabilities?.spreedCapability?.config!!["call"]!!["supported-reactions"] as ArrayList<*>
 
@@ -133,7 +133,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
     }
 
     private fun initObservers() {
-        callActivity.callRecordingViewModel.viewState.observe(this) { state ->
+        callActivity.callRecordingViewModel?.viewState?.observe(this) { state ->
             when (state) {
                 is CallRecordingViewModel.RecordingStoppedState,
                 is CallRecordingViewModel.RecordingErrorState -> {
@@ -173,7 +173,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
             }
         }
 
-        callActivity.raiseHandViewModel.viewState.observe(this) { state ->
+        callActivity.raiseHandViewModel?.viewState?.observe(this) { state ->
             when (state) {
                 is RaiseHandViewModel.RaisedHandState -> {
                     binding.raiseHandText.text = context.getText(R.string.lower_hand)
