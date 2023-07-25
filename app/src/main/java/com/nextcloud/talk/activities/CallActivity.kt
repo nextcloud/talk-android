@@ -141,7 +141,6 @@ import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.PeerConnectionObserver
 import com.nextcloud.talk.webrtc.WebRtcAudioManager
 import com.nextcloud.talk.webrtc.WebRtcAudioManager.AudioDevice
-import com.nextcloud.talk.webrtc.WebRtcAudioManager.AudioManagerListener
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import com.nextcloud.talk.webrtc.WebSocketInstance
 import com.wooplr.spotlight.SpotlightView
@@ -183,6 +182,7 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
+@Suppress("TooManyFunctions")
 class CallActivity : CallBaseActivity() {
     @JvmField
     @Inject
@@ -348,7 +348,7 @@ class CallActivity : CallBaseActivity() {
                 }
             }
         }
-        if (!rationaleList.isEmpty()) {
+        if (rationaleList.isNotEmpty()) {
             showRationaleDialogForSettings(rationaleList)
         }
     }
@@ -404,7 +404,7 @@ class CallActivity : CallBaseActivity() {
                 binding!!.lowerHandButton.visibility = View.GONE
                 raised = false
             }
-            if (isConnectionEstablished && peerConnectionWrapperList != null) {
+            if (isConnectionEstablished) {
                 for (peerConnectionWrapper in peerConnectionWrapperList) {
                     peerConnectionWrapper.raiseHand(raised)
                 }
@@ -436,12 +436,12 @@ class CallActivity : CallBaseActivity() {
                     val dialogBuilder = MaterialAlertDialogBuilder(this)
                         .setTitle(R.string.record_stop_confirm_title)
                         .setMessage(R.string.record_stop_confirm_message)
-                        .setPositiveButton(
-                            R.string.record_stop_description
-                        ) { dialog: DialogInterface?, which: Int -> callRecordingViewModel!!.stopRecording() }
-                        .setNegativeButton(
-                            R.string.nc_common_dismiss
-                        ) { dialog: DialogInterface?, which: Int -> callRecordingViewModel!!.dismissStopRecording() }
+                        .setPositiveButton(R.string.record_stop_description) { _: DialogInterface?, _: Int ->
+                            callRecordingViewModel!!.stopRecording()
+                        }
+                        .setNegativeButton(R.string.nc_common_dismiss) { _: DialogInterface?, _: Int ->
+                            callRecordingViewModel!!.dismissStopRecording()
+                        }
                     viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
                     val dialog = dialogBuilder.show()
                     viewThemeUtils.platform.colorTextButtons(
@@ -483,7 +483,7 @@ class CallActivity : CallBaseActivity() {
 
     fun sendReaction(emoji: String?) {
         addReactionForAnimation(emoji, conversationUser!!.displayName)
-        if (isConnectionEstablished && peerConnectionWrapperList != null) {
+        if (isConnectionEstablished) {
             for (peerConnectionWrapper in peerConnectionWrapperList) {
                 peerConnectionWrapper.sendReaction(emoji)
             }
@@ -521,18 +521,21 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun initClickListeners() {
-        binding!!.pictureInPictureButton.setOnClickListener { l: View? -> enterPipMode() }
-        binding!!.audioOutputButton.setOnClickListener { v: View? ->
+        binding!!.pictureInPictureButton.setOnClickListener { enterPipMode() }
+
+        binding!!.audioOutputButton.setOnClickListener {
             audioOutputDialog = AudioOutputDialog(this)
             audioOutputDialog!!.show()
         }
-        binding!!.moreCallActions.setOnClickListener { v: View? ->
+
+        binding!!.moreCallActions.setOnClickListener {
             moreCallActionsDialog = MoreCallActionsDialog(this)
             moreCallActionsDialog!!.show()
         }
+
         if (canPublishAudioStream) {
-            binding!!.microphoneButton.setOnClickListener { l: View? -> onMicrophoneClick() }
-            binding!!.microphoneButton.setOnLongClickListener { l: View? ->
+            binding!!.microphoneButton.setOnClickListener { onMicrophoneClick() }
+            binding!!.microphoneButton.setOnLongClickListener {
                 if (!microphoneOn) {
                     callControlHandler.removeCallbacksAndMessages(null)
                     callInfosHandler.removeCallbacksAndMessages(null)
@@ -547,7 +550,7 @@ class CallActivity : CallBaseActivity() {
                 true
             }
         } else {
-            binding!!.microphoneButton.setOnClickListener { l: View? ->
+            binding!!.microphoneButton.setOnClickListener {
                 Toast.makeText(
                     context,
                     R.string.nc_not_allowed_to_activate_audio,
@@ -555,10 +558,11 @@ class CallActivity : CallBaseActivity() {
                 ).show()
             }
         }
+
         if (canPublishVideoStream) {
-            binding!!.cameraButton.setOnClickListener { l: View? -> onCameraClick() }
+            binding!!.cameraButton.setOnClickListener { onCameraClick() }
         } else {
-            binding!!.cameraButton.setOnClickListener { l: View? ->
+            binding!!.cameraButton.setOnClickListener {
                 Toast.makeText(
                     context,
                     R.string.nc_not_allowed_to_activate_video,
@@ -566,22 +570,22 @@ class CallActivity : CallBaseActivity() {
                 ).show()
             }
         }
-        binding!!.hangupButton.setOnClickListener { l: View? -> hangup(true) }
-        binding!!.switchSelfVideoButton.setOnClickListener { l: View? -> switchCamera() }
+        binding!!.hangupButton.setOnClickListener { hangup(true) }
+        binding!!.switchSelfVideoButton.setOnClickListener { switchCamera() }
         binding!!.gridview.onItemClickListener =
-            AdapterView.OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+            AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, _: Long ->
                 animateCallControls(
                     true,
                     0
                 )
             }
-        binding!!.callStates.callStateRelativeLayout.setOnClickListener { l: View? ->
+        binding!!.callStates.callStateRelativeLayout.setOnClickListener {
             if (currentCallStatus === CallStatus.CALLING_TIMEOUT) {
                 setCallState(CallStatus.RECONNECTING)
                 hangupNetworkCalls(false)
             }
         }
-        binding!!.callRecordingIndicator.setOnClickListener { l: View? ->
+        binding!!.callRecordingIndicator.setOnClickListener {
             if (isAllowedToStartOrStopRecording) {
                 if (callRecordingViewModel!!.viewState.value is RecordingStartingState) {
                     if (moreCallActionsDialog == null) {
@@ -644,14 +648,12 @@ class CallActivity : CallBaseActivity() {
         // Store existing audio settings and change audio mode to
         // MODE_IN_COMMUNICATION for best possible VoIP performance.
         Log.d(TAG, "Starting the audio manager...")
-        audioManager!!.start(
-            AudioManagerListener { currentDevice: AudioDevice, availableDevices: Set<AudioDevice> ->
-                onAudioManagerDevicesChanged(
-                    currentDevice,
-                    availableDevices
-                )
-            }
-        )
+        audioManager!!.start { currentDevice: AudioDevice, availableDevices: Set<AudioDevice> ->
+            onAudioManagerDevicesChanged(
+                currentDevice,
+                availableDevices
+            )
+        }
         if (isVoiceOnlyCall) {
             setAudioOutputChannel(AudioDevice.EARPIECE)
         } else {
@@ -776,14 +778,14 @@ class CallActivity : CallBaseActivity() {
             }
             initSelfVideoView()
         }
-        binding!!.gridview.setOnTouchListener { v, me ->
+        binding!!.gridview.setOnTouchListener { _, me ->
             val action = me.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {
                 animateCallControls(true, 0)
             }
             false
         }
-        binding!!.conversationRelativeLayout.setOnTouchListener { v, me ->
+        binding!!.conversationRelativeLayout.setOnTouchListener { _, me ->
             val action = me.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {
                 animateCallControls(true, 0)
@@ -881,7 +883,7 @@ class CallActivity : CallBaseActivity() {
                 if (!videoOn) {
                     onCameraClick()
                 }
-                if (cameraEnumerator!!.deviceNames.size == 0) {
+                if (cameraEnumerator!!.deviceNames.isEmpty()) {
                     binding!!.cameraButton.visibility = View.GONE
                 }
                 if (cameraEnumerator!!.deviceNames.size > 1) {
@@ -904,8 +906,8 @@ class CallActivity : CallBaseActivity() {
                 permissionsToRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
             }
         }
-        if (!permissionsToRequest.isEmpty()) {
-            if (!rationaleList.isEmpty()) {
+        if (permissionsToRequest.isNotEmpty()) {
+            if (rationaleList.isNotEmpty()) {
                 showRationaleDialog(permissionsToRequest, rationaleList)
             } else {
                 requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
@@ -932,12 +934,8 @@ class CallActivity : CallBaseActivity() {
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.nc_permissions_rationale_dialog_title)
             .setMessage(rationalesWithLineBreaks)
-            .setPositiveButton(
-                R.string.nc_permissions_ask
-            ) { dialog: DialogInterface?, which: Int ->
-                requestPermissionLauncher.launch(
-                    permissionsToRequest.toTypedArray()
-                )
+            .setPositiveButton(R.string.nc_permissions_ask) { _, _ ->
+                requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
             }
             .setNegativeButton(R.string.nc_common_dismiss, null)
         viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
@@ -956,7 +954,7 @@ class CallActivity : CallBaseActivity() {
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.nc_permissions_rationale_dialog_title)
             .setMessage(rationalesWithLineBreaks)
-            .setPositiveButton(R.string.nc_permissions_settings) { dialog: DialogInterface?, which: Int ->
+            .setPositiveButton(R.string.nc_permissions_settings) { _, _ ->
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.data = Uri.fromParts("package", packageName, null)
                 startActivity(intent)
@@ -973,11 +971,7 @@ class CallActivity : CallBaseActivity() {
         currentDevice: AudioDevice,
         availableDevices: Set<AudioDevice>
     ) {
-        Log.d(
-            TAG,
-            "onAudioManagerDevicesChanged: " + availableDevices + ", " +
-                "currentDevice: " + currentDevice
-        )
+        Log.d(TAG, "onAudioManagerDevicesChanged: $availableDevices, currentDevice: $currentDevice")
         val shouldDisableProximityLock =
             currentDevice == AudioDevice.WIRED_HEADSET ||
                 currentDevice == AudioDevice.SPEAKER_PHONE ||
@@ -1065,26 +1059,7 @@ class CallActivity : CallBaseActivity() {
         }
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
             if (!appPreferences.pushToTalkIntroShown) {
-                val primary = viewThemeUtils.getScheme(binding!!.audioOutputButton.context).primary
-                spotlightView = SpotlightView.Builder(this)
-                    .introAnimationDuration(300)
-                    .enableRevealAnimation(true)
-                    .performClick(false)
-                    .fadeinTextDuration(400)
-                    .headingTvColor(primary)
-                    .headingTvSize(20)
-                    .headingTvText(resources.getString(R.string.nc_push_to_talk))
-                    .subHeadingTvColor(resources.getColor(R.color.bg_default, null))
-                    .subHeadingTvSize(16)
-                    .subHeadingTvText(resources.getString(R.string.nc_push_to_talk_desc))
-                    .maskColor(Color.parseColor("#dc000000"))
-                    .target(binding!!.microphoneButton)
-                    .lineAnimDuration(400)
-                    .lineAndArcColor(primary)
-                    .enableDismissAfterShown(true)
-                    .dismissOnBackPress(true)
-                    .usageId("pushToTalk")
-                    .show()
+                spotlightView = getSpotlightView()
                 appPreferences.pushToTalkIntroShown = true
             }
             if (!isPushToTalkActive) {
@@ -1120,7 +1095,30 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    fun onCameraClick() {
+    private fun getSpotlightView(): SpotlightView? {
+        val primary = viewThemeUtils.getScheme(binding!!.audioOutputButton.context).primary
+        return SpotlightView.Builder(this)
+            .introAnimationDuration(300)
+            .enableRevealAnimation(true)
+            .performClick(false)
+            .fadeinTextDuration(400)
+            .headingTvColor(primary)
+            .headingTvSize(20)
+            .headingTvText(resources.getString(R.string.nc_push_to_talk))
+            .subHeadingTvColor(resources.getColor(R.color.bg_default, null))
+            .subHeadingTvSize(16)
+            .subHeadingTvText(resources.getString(R.string.nc_push_to_talk_desc))
+            .maskColor(Color.parseColor("#dc000000"))
+            .target(binding!!.microphoneButton)
+            .lineAnimDuration(400)
+            .lineAndArcColor(primary)
+            .enableDismissAfterShown(true)
+            .dismissOnBackPress(true)
+            .usageId("pushToTalk")
+            .show()
+    }
+
+    private fun onCameraClick() {
         if (!canPublishVideoStream) {
             videoOn = false
             binding!!.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px)
@@ -1156,7 +1154,9 @@ class CallActivity : CallBaseActivity() {
                 binding!!.selfVideoRenderer.setMirror(currentCameraIsFront)
             }
 
-            override fun onCameraSwitchError(s: String) {}
+            override fun onCameraSwitchError(s: String) {
+                Log.e(TAG, "Error while switching camera: $s")
+            }
         })
     }
 
@@ -1198,7 +1198,7 @@ class CallActivity : CallBaseActivity() {
                 localStream!!.audioTracks[0].setEnabled(enable)
             }
         }
-        if (isConnectionEstablished && peerConnectionWrapperList != null) {
+        if (isConnectionEstablished) {
             if (!hasMCU) {
                 for (peerConnectionWrapper in peerConnectionWrapperList) {
                     peerConnectionWrapper.sendChannelData(DataChannelMessage(message))
@@ -1348,12 +1348,8 @@ class CallActivity : CallBaseActivity() {
                         signalingSettingsOverall.ocs!!.settings != null
                     ) {
                         externalSignalingServer = ExternalSignalingServer()
-                        if (!TextUtils.isEmpty(
-                                signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer
-                            ) &&
-                            !TextUtils.isEmpty(
-                                    signalingSettingsOverall.ocs!!.settings!!.externalSignalingTicket
-                                )
+                        if (!TextUtils.isEmpty(signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer) &&
+                            !TextUtils.isEmpty(signalingSettingsOverall.ocs!!.settings!!.externalSignalingTicket)
                         ) {
                             externalSignalingServer = ExternalSignalingServer()
                             externalSignalingServer!!.externalSignalingServer =
@@ -1365,6 +1361,7 @@ class CallActivity : CallBaseActivity() {
                             hasExternalSignalingServer = false
                         }
                         Log.d(TAG, "   hasExternalSignalingServer: $hasExternalSignalingServer")
+
                         if ("?" != conversationUser!!.userId && conversationUser!!.id != null) {
                             Log.d(
                                 TAG,
@@ -1380,43 +1377,8 @@ class CallActivity : CallBaseActivity() {
                         } else {
                             conversationUser!!.externalSignalingServer = externalSignalingServer
                         }
-                        if (signalingSettingsOverall.ocs!!.settings!!.stunServers != null) {
-                            val stunServers = signalingSettingsOverall.ocs!!.settings!!.stunServers
-                            if (apiVersion == ApiUtils.APIv3) {
-                                for ((_, urls) in stunServers!!) {
-                                    if (urls != null) {
-                                        for (url in urls) {
-                                            Log.d(TAG, "   STUN server url: $url")
-                                            iceServers!!.add(PeerConnection.IceServer(url))
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (signalingSettingsOverall.ocs!!.settings!!.stunServers != null) {
-                                    for ((url) in stunServers!!) {
-                                        Log.d(TAG, "   STUN server url: $url")
-                                        iceServers!!.add(PeerConnection.IceServer(url))
-                                    }
-                                }
-                            }
-                        }
-                        if (signalingSettingsOverall.ocs!!.settings!!.turnServers != null) {
-                            val turnServers = signalingSettingsOverall.ocs!!.settings!!.turnServers
-                            for ((_, urls, username, credential) in turnServers!!) {
-                                if (urls != null) {
-                                    for (url in urls) {
-                                        Log.d(TAG, "   TURN server url: $url")
-                                        iceServers!!.add(
-                                            PeerConnection.IceServer(
-                                                url,
-                                                username,
-                                                credential
-                                            )
-                                        )
-                                    }
-                                }
-                            }
-                        }
+
+                        addIceServers(signalingSettingsOverall, apiVersion)
                     }
                     checkCapabilities()
                 }
@@ -1429,6 +1391,44 @@ class CallActivity : CallBaseActivity() {
                     // unused atm
                 }
             })
+    }
+
+    private fun addIceServers(
+        signalingSettingsOverall: SignalingSettingsOverall,
+        apiVersion: Int
+    ) {
+        if (signalingSettingsOverall.ocs!!.settings!!.stunServers != null) {
+            val stunServers = signalingSettingsOverall.ocs!!.settings!!.stunServers
+            if (apiVersion == ApiUtils.APIv3) {
+                for ((_, urls) in stunServers!!) {
+                    if (urls != null) {
+                        for (url in urls) {
+                            Log.d(TAG, "   STUN server url: $url")
+                            iceServers!!.add(PeerConnection.IceServer(url))
+                        }
+                    }
+                }
+            } else {
+                if (signalingSettingsOverall.ocs!!.settings!!.stunServers != null) {
+                    for ((url) in stunServers!!) {
+                        Log.d(TAG, "   STUN server url: $url")
+                        iceServers!!.add(PeerConnection.IceServer(url))
+                    }
+                }
+            }
+        }
+
+        if (signalingSettingsOverall.ocs!!.settings!!.turnServers != null) {
+            val turnServers = signalingSettingsOverall.ocs!!.settings!!.turnServers
+            for ((_, urls, username, credential) in turnServers!!) {
+                if (urls != null) {
+                    for (url in urls) {
+                        Log.d(TAG, "   TURN server url: $url")
+                        iceServers!!.add(PeerConnection.IceServer(url, username, credential))
+                    }
+                }
+            }
+        }
     }
 
     private fun checkCapabilities() {
@@ -1527,6 +1527,7 @@ class CallActivity : CallBaseActivity() {
         }
         callParticipantList = CallParticipantList(signalingMessageReceiver)
         callParticipantList!!.addObserver(callParticipantListObserver)
+
         val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
         ncApi!!.joinCall(
             credentials,
@@ -1557,55 +1558,7 @@ class CallActivity : CallBaseActivity() {
                             )
                         }
                         if (!hasExternalSignalingServer) {
-                            val signalingApiVersion =
-                                ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.APIv3, 2, 1))
-                            val delayOnError = AtomicInteger(0)
-                            ncApi!!.pullSignalingMessages(
-                                credentials,
-                                ApiUtils.getUrlForSignaling(
-                                    signalingApiVersion,
-                                    baseUrl,
-                                    roomToken
-                                )
-                            )
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .repeatWhen { observable: Observable<Any?>? -> observable }
-                                .takeWhile { isConnectionEstablished }
-                                .doOnNext { delayOnError.set(0) }
-                                .retryWhen { errors: Observable<Throwable?> ->
-                                    errors
-                                        .flatMap { error: Throwable? ->
-                                            if (!isConnectionEstablished) {
-                                                return@flatMap Observable.error<Long>(error)
-                                            }
-                                            if (delayOnError.get() == 0) {
-                                                delayOnError.set(1)
-                                            } else if (delayOnError.get() < 16) {
-                                                delayOnError.set(delayOnError.get() * 2)
-                                            }
-                                            Observable.timer(delayOnError.get().toLong(), TimeUnit.SECONDS)
-                                        }
-                                }
-                                .subscribe(object : Observer<SignalingOverall> {
-                                    override fun onSubscribe(d: Disposable) {
-                                        signalingDisposable = d
-                                    }
-
-                                    override fun onNext(
-                                        signalingOverall: SignalingOverall
-                                    ) {
-                                        receivedSignalingMessages(signalingOverall.ocs!!.signalings)
-                                    }
-
-                                    override fun onError(e: Throwable) {
-                                        dispose(signalingDisposable)
-                                    }
-
-                                    override fun onComplete() {
-                                        dispose(signalingDisposable)
-                                    }
-                                })
+                            pullSignalingMessages()
                         }
                     }
                 }
@@ -1616,6 +1569,55 @@ class CallActivity : CallBaseActivity() {
 
                 override fun onComplete() {
                     // unused atm
+                }
+            })
+    }
+
+    private fun pullSignalingMessages() {
+        val signalingApiVersion = ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.APIv3, 2, 1))
+        val delayOnError = AtomicInteger(0)
+
+        ncApi!!.pullSignalingMessages(
+            credentials,
+            ApiUtils.getUrlForSignaling(
+                signalingApiVersion,
+                baseUrl,
+                roomToken
+            )
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .repeatWhen { observable: Observable<Any?>? -> observable }
+            .takeWhile { isConnectionEstablished }
+            .doOnNext { delayOnError.set(0) }
+            .retryWhen { errors: Observable<Throwable?> ->
+                errors.flatMap { error: Throwable? ->
+                    if (!isConnectionEstablished) {
+                        return@flatMap Observable.error<Long>(error)
+                    }
+                    if (delayOnError.get() == 0) {
+                        delayOnError.set(1)
+                    } else if (delayOnError.get() < 16) {
+                        delayOnError.set(delayOnError.get() * 2)
+                    }
+                    Observable.timer(delayOnError.get().toLong(), TimeUnit.SECONDS)
+                }
+            }
+            .subscribe(object : Observer<SignalingOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    signalingDisposable = d
+                }
+
+                override fun onNext(signalingOverall: SignalingOverall) {
+                    receivedSignalingMessages(signalingOverall.ocs!!.signalings)
+                }
+
+                override fun onError(e: Throwable) {
+                    dispose(signalingDisposable)
+                }
+
+                override fun onComplete() {
+                    dispose(signalingDisposable)
                 }
             })
     }
@@ -1722,16 +1724,21 @@ class CallActivity : CallBaseActivity() {
         if (!isConnectionEstablished && currentCallStatus !== CallStatus.CONNECTING) {
             return
         }
-        if ("usersInRoom" == messageType) {
-            internalSignalingMessageReceiver.process(signaling.messageWrapper as List<Map<String?, Any?>?>?)
-        } else if ("message" == messageType) {
-            val ncSignalingMessage = LoganSquare.parse(
-                signaling.messageWrapper.toString(),
-                NCSignalingMessage::class.java
-            )
-            internalSignalingMessageReceiver.process(ncSignalingMessage)
-        } else {
-            Log.e(TAG, "unexpected message type when receiving signaling message")
+
+        when (messageType) {
+            "usersInRoom" ->
+                internalSignalingMessageReceiver.process(signaling.messageWrapper as List<Map<String?, Any?>?>?)
+
+            "message" -> {
+                val ncSignalingMessage = LoganSquare.parse(
+                    signaling.messageWrapper.toString(),
+                    NCSignalingMessage::class.java
+                )
+                internalSignalingMessageReceiver.process(ncSignalingMessage)
+            }
+
+            else ->
+                Log.e(TAG, "unexpected message type when receiving signaling message")
         }
     }
 
@@ -1742,6 +1749,7 @@ class CallActivity : CallBaseActivity() {
         }
         stopCallingSound()
         dispose(null)
+
         if (shutDownView) {
             if (videoCapturer != null) {
                 try {
@@ -1775,25 +1783,27 @@ class CallActivity : CallBaseActivity() {
                 WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(-1)
             }
         }
-        val peerConnectionIdsToEnd: MutableList<String> = ArrayList(
-            peerConnectionWrapperList!!.size
-        )
+
+        val peerConnectionIdsToEnd: MutableList<String> = ArrayList(peerConnectionWrapperList.size)
+
         for (wrapper in peerConnectionWrapperList) {
             peerConnectionIdsToEnd.add(wrapper.sessionId)
         }
+
         for (sessionId in peerConnectionIdsToEnd) {
             endPeerConnection(sessionId, "video")
             endPeerConnection(sessionId, "screen")
         }
-        val callParticipantIdsToEnd: MutableList<String> = ArrayList(
-            peerConnectionWrapperList.size
-        )
+
+        val callParticipantIdsToEnd: MutableList<String> = ArrayList(peerConnectionWrapperList.size)
         for (callParticipant in callParticipants.values) {
             callParticipantIdsToEnd.add(callParticipant!!.callParticipantModel.sessionId)
         }
+
         for (sessionId in callParticipantIdsToEnd) {
             removeCallParticipant(sessionId)
         }
+
         ApplicationWideCurrentRoomHolder.getInstance().isInCall = false
         ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
         hangupNetworkCalls(shutDownView)
@@ -1851,6 +1861,7 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    @Suppress("Detekt.ComplexMethod")
     private fun handleCallParticipantsChanged(
         joined: Collection<Participant>,
         updated: Collection<Participant>,
@@ -1867,12 +1878,15 @@ class CallActivity : CallBaseActivity() {
             currentSessionId = webSocketClient!!.sessionId
         }
         Log.d(TAG, "   currentSessionId is $currentSessionId")
+
         val participantsInCall: MutableList<Participant> = ArrayList()
         participantsInCall.addAll(joined)
         participantsInCall.addAll(updated)
         participantsInCall.addAll(unchanged)
+
         var isSelfInCall = false
         var selfParticipant: Participant? = null
+
         for (participant in participantsInCall) {
             val inCallFlag = participant.inCall
             if (participant.sessionId != currentSessionId) {
@@ -1889,6 +1903,7 @@ class CallActivity : CallBaseActivity() {
                 selfParticipant = participant
             }
         }
+
         if (!isSelfInCall &&
             currentCallStatus !== CallStatus.LEAVING &&
             ApplicationWideCurrentRoomHolder.getInstance().isInCall
@@ -1897,6 +1912,7 @@ class CallActivity : CallBaseActivity() {
             hangup(true)
             return
         }
+
         if (!isSelfInCall) {
             Log.d(TAG, "Self not in call, disconnecting from all other sessions")
             for ((_, _, _, _, _, _, _, _, _, _, sessionId) in participantsInCall) {
@@ -1932,19 +1948,22 @@ class CallActivity : CallBaseActivity() {
             }
             Log.d(TAG, "   newSession joined: $sessionId")
             addCallParticipant(sessionId)
+
             val userId = participant.userId
             if (userId != null) {
                 callParticipants[sessionId]!!.setUserId(userId)
             }
+
             if (participant.internal != null) {
                 callParticipants[sessionId]!!.setInternal(participant.internal)
             }
-            var nick: String?
-            nick = if (hasExternalSignalingServer) {
+
+            val nick: String? = if (hasExternalSignalingServer) {
                 webSocketClient!!.getDisplayNameForSession(sessionId)
             } else {
                 if (offerAnswerNickProviders[sessionId] != null) offerAnswerNickProviders[sessionId]?.nick else ""
             }
+
             callParticipants[sessionId]!!.setNick(nick)
             val participantHasAudioOrVideo = participantInCallFlagsHaveAudioOrVideo(participant)
 
@@ -1952,16 +1971,14 @@ class CallActivity : CallBaseActivity() {
             // remote session ID. However, if the other participant does not have audio nor video that participant
             // will not send an offer, so no connection is actually established when the remote participant has a
             // higher session ID but is not publishing media.
-            if (hasMCU && participantHasAudioOrVideo || !hasMCU && selfParticipantHasAudioOrVideo && (
-                !participantHasAudioOrVideo || sessionId.compareTo(
-                        currentSessionId!!
-                    ) < 0
-                )
+            if (hasMCU && participantHasAudioOrVideo ||
+                !hasMCU && selfParticipantHasAudioOrVideo &&
+                (!participantHasAudioOrVideo || sessionId < currentSessionId!!)
             ) {
                 getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false)
             }
         }
-        val othersInCall = if (selfJoined) joined.size > 1 else joined.size > 0
+        val othersInCall = if (selfJoined) joined.size > 1 else joined.isNotEmpty()
         if (othersInCall && currentCallStatus !== CallStatus.IN_CONVERSATION) {
             setCallState(CallStatus.IN_CONVERSATION)
         }
@@ -1984,7 +2001,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun getPeerConnectionWrapperForSessionIdAndType(sessionId: String?, type: String): PeerConnectionWrapper? {
-        for (wrapper in peerConnectionWrapperList!!) {
+        for (wrapper in peerConnectionWrapperList) {
             if (wrapper.sessionId == sessionId && wrapper.videoStreamType == type) {
                 return wrapper
             }
@@ -2072,7 +2089,7 @@ class CallActivity : CallBaseActivity() {
                     )
                 }
             }
-            peerConnectionWrapperList!!.add(peerConnectionWrapper)
+            peerConnectionWrapperList.add(peerConnectionWrapper)
             if (!publisher) {
                 var callParticipant = callParticipants[sessionId]
                 if (callParticipant == null) {
@@ -2144,7 +2161,7 @@ class CallActivity : CallBaseActivity() {
             }
         }
         peerConnectionWrapper.removePeerConnection()
-        peerConnectionWrapperList!!.remove(peerConnectionWrapper)
+        peerConnectionWrapperList.remove(peerConnectionWrapper)
     }
 
     private fun removeCallParticipant(sessionId: String?) {
@@ -2202,8 +2219,7 @@ class CallActivity : CallBaseActivity() {
             val screenWidthPx = displayMetrics.widthPixels
             val screenWidthDp = DisplayUtils.convertPixelToDp(screenWidthPx.toFloat(), applicationContext).toInt()
             var newXafterRotate = 0f
-            val newYafterRotate: Float
-            newYafterRotate = if (binding!!.callInfosLinearLayout.visibility == View.VISIBLE) {
+            val newYafterRotate: Float = if (binding!!.callInfosLinearLayout.visibility == View.VISIBLE) {
                 250f
             } else {
                 20f
@@ -2247,7 +2263,7 @@ class CallActivity : CallBaseActivity() {
         nickChangedPayload["userid"] = conversationUser!!.userId!!
         nickChangedPayload["name"] = conversationUser!!.displayName!!
         dataChannelMessage.payloadMap = nickChangedPayload.toMap()
-        for (peerConnectionWrapper in peerConnectionWrapperList!!) {
+        for (peerConnectionWrapper in peerConnectionWrapperList) {
             if (peerConnectionWrapper.isMCUPublisher) {
                 Observable
                     .interval(1, TimeUnit.SECONDS)
@@ -2455,14 +2471,12 @@ class CallActivity : CallBaseActivity() {
                         binding!!.callStates.errorImageView.visibility = View.GONE
                     }
                 }
-
-                else -> {}
             }
         }
     }
 
     private val descriptionForCallType: String
-        private get() {
+        get() {
             val appName = resources.getString(R.string.nc_app_product_name)
             return if (isVoiceOnlyCall) {
                 String.format(resources.getString(R.string.nc_call_voice), appName)
@@ -2473,14 +2487,10 @@ class CallActivity : CallBaseActivity() {
 
     private fun playCallingSound() {
         stopCallingSound()
-        val ringtoneUri: Uri?
-        ringtoneUri = if (isIncomingCallFromNotification) {
+        val ringtoneUri: Uri? = if (isIncomingCallFromNotification) {
             getCallRingtoneUri(applicationContext, appPreferences)
         } else {
-            Uri.parse(
-                "android.resource://" + applicationContext.packageName + "/raw" +
-                    "/tr110_1_kap8_3_freiton1"
-            )
+            Uri.parse("android.resource://" + applicationContext.packageName + "/raw/tr110_1_kap8_3_freiton1")
         }
         if (ringtoneUri != null) {
             mediaPlayer = MediaPlayer()
@@ -2554,8 +2564,13 @@ class CallActivity : CallBaseActivity() {
                 onOfferOrAnswer(nick)
             }
 
-            override fun onCandidate(sdpMid: String, sdpMLineIndex: Int, sdp: String) {}
-            override fun onEndOfCandidates() {}
+            override fun onCandidate(sdpMid: String, sdpMLineIndex: Int, sdp: String) {
+                // unused atm
+            }
+
+            override fun onEndOfCandidates() {
+                // unused atm
+            }
         }
 
         private fun onOfferOrAnswer(nick: String) {
@@ -2568,16 +2583,28 @@ class CallActivity : CallBaseActivity() {
 
     private inner class CallActivityCallParticipantMessageListener(private val sessionId: String?) :
         CallParticipantMessageListener {
-        override fun onRaiseHand(state: Boolean, timestamp: Long) {}
-        override fun onReaction(reaction: String) {}
+        override fun onRaiseHand(state: Boolean, timestamp: Long) {
+            // unused atm
+        }
+
+        override fun onReaction(reaction: String) {
+            // unused atm
+        }
+
         override fun onUnshareScreen() {
             endPeerConnection(sessionId, "screen")
         }
     }
 
     private inner class CallActivitySelfPeerConnectionObserver : PeerConnectionObserver {
-        override fun onStreamAdded(mediaStream: MediaStream) {}
-        override fun onStreamRemoved(mediaStream: MediaStream) {}
+        override fun onStreamAdded(mediaStream: MediaStream) {
+            // unused atm
+        }
+
+        override fun onStreamRemoved(mediaStream: MediaStream) {
+            // unused atm
+        }
+
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState) {
             runOnUiThread {
                 updateSelfVideoViewIceConnectionState(iceConnectionState)
@@ -2604,7 +2631,9 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
-        override fun onReaction(reaction: String) {}
+        override fun onReaction(reaction: String) {
+            // unused atm
+        }
     }
 
     private inner class CallParticipantEventDisplayer(private val callParticipantModel: CallParticipantModel) :
@@ -2640,8 +2669,7 @@ class CallActivity : CallBaseActivity() {
     private inner class InternalSignalingMessageSender : SignalingMessageSender {
         override fun send(ncSignalingMessage: NCSignalingMessage) {
             addLocalParticipantNickIfNeeded(ncSignalingMessage)
-            val serializedNcSignalingMessage: String
-            serializedNcSignalingMessage = try {
+            val serializedNcSignalingMessage: String = try {
                 LoganSquare.serialize(ncSignalingMessage)
             } catch (e: IOException) {
                 Log.e(TAG, "Failed to serialize signaling message", e)
@@ -2686,7 +2714,9 @@ class CallActivity : CallBaseActivity() {
                         Log.e(TAG, "", e)
                     }
 
-                    override fun onComplete() {}
+                    override fun onComplete() {
+                        // unused atm
+                    }
                 })
         }
 
@@ -2772,7 +2802,7 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    fun updatePictureInPictureActions(
+    private fun updatePictureInPictureActions(
         @DrawableRes iconId: Int,
         title: String?,
         requestCode: Int
@@ -2780,8 +2810,7 @@ class CallActivity : CallBaseActivity() {
         if (isGreaterEqualOreo && isPipModePossible) {
             val actions = ArrayList<RemoteAction>()
             val icon = Icon.createWithResource(this, iconId)
-            val intentFlag: Int
-            intentFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 PendingIntent.FLAG_IMMUTABLE
             } else {
                 0
@@ -2869,7 +2898,8 @@ class CallActivity : CallBaseActivity() {
 
     companion object {
         var active = false
-        const val VIDEO_STREAM_TYPE_SCREEN = "screen"
+
+        // const val VIDEO_STREAM_TYPE_SCREEN = "screen"
         const val VIDEO_STREAM_TYPE_VIDEO = "video"
         const val TAG = "CallActivity"
         private val PERMISSIONS_CAMERA = arrayOf(
