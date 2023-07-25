@@ -348,6 +348,7 @@
     <string name="nc_upload_from_device">Cargar dende o dispositivo</string>
     <string name="nc_upload_in_progess">Enviando</string>
     <string name="nc_user">Usuario</string>
+    <string name="nc_voice_message_slide_to_cancel">« Esvare para cancelar</string>
     <string name="nc_webinar">Seminario web</string>
     <string name="nc_wrong_link">A ligazón da conversa non é válida</string>
     <string name="nc_wrong_password">Contrasinal incorrecto </string>
@@ -360,7 +361,7 @@
     <string name="open_in_files_app">Abrir na aplicación de Ficheiros</string>
     <string name="polls_add_option">Engadir unha opción</string>
     <string name="polls_end_poll">Finalizar a enquisa</string>
-    <string name="polls_multiple_answers">Respostas múltiples</string>
+    <string name="polls_multiple_answers">Varias respostas</string>
     <string name="polls_options">Opcións</string>
     <string name="polls_private_poll">Enquisa privada</string>
     <string name="polls_question">Pregunta</string>
@@ -373,6 +374,7 @@
     <string name="record_failed_info">Produciuse un fallo na gravación. Póñase en contacto coa administración desta instancia.</string>
     <string name="record_start_description">Comezar a gravar</string>
     <string name="record_stop_description">Deter a gravación</string>
+    <string name="record_stopping">Deter a gravación</string>
     <string name="save">Gardar</string>
     <string name="scope_federated_description">Sincronizar só con servidores de confianza</string>
     <string name="scope_federated_title">Federado</string>
