@@ -110,6 +110,7 @@
     <string name="nc_configure_cert_auth">Seleccionar o certificado de autenticación</string>
     <string name="nc_connecting_call">Conectando…</string>
     <string name="nc_contacts_done">Feito</string>
+    <string name="nc_conversation_description">Descrición da conversa</string>
     <string name="nc_conversation_link">Ligazón da conversa</string>
     <string name="nc_conversation_menu_conversation_info">Información da conversa</string>
     <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>
@@ -152,6 +153,7 @@
     <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_failed_to_perform_operation">Desculpe, algo foi mal!</string>
     <string name="nc_file_browser_back">Atrás</string>
+    <string name="nc_file_storage_permission">Necesitase permiso para acceder ao ficheiro</string>
     <string name="nc_filter">Filtrar conversas</string>
     <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
     <string name="nc_formatted_message_you">Vde.: %1$s</string>
@@ -191,17 +193,23 @@
     <string name="nc_limit_hit">Acadouse o límite de %s caracteres</string>
     <string name="nc_list_open_conversations">Lista de conversas abertas</string>
     <string name="nc_lobby">Ástrago</string>
+    <string name="nc_lobby_start_date">Esta xuntanza está programada para %1$s</string>
     <string name="nc_lobby_start_soon">A xuntanza comezará en breve</string>
     <string name="nc_lobby_waiting">Agora está agardando no ástrago.</string>
+    <string name="nc_location_current_position_description">A súa localización actual</string>
+    <string name="nc_location_permission_required">é necesario o permiso de localización</string>
+    <string name="nc_location_unknown">Posición descoñecida</string>
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
     <string name="nc_manual">Sen estabelecer</string>
     <string name="nc_mark_as_read">Marcar como lido</string>
     <string name="nc_mark_as_unread">Marcar como sen ler</string>
+    <string name="nc_message_failed_to_send">Produciuse un fallo ao enviar a mensaxe:</string>
     <string name="nc_message_quote_cancel_reply">Cancelar a resposta</string>
     <string name="nc_message_read">Mensaxe lida</string>
     <string name="nc_message_sent">Mensaxe enviada</string>
     <string name="nc_microphone_permission_permanently_denied">Para permitir a comunicación por voz, conceda o permiso de «Micrófono» nos axustes do sistema.</string>
+    <string name="nc_missed_call">Perdeu unha chamada de %s</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Non conectou nunca</string>
     <string name="nc_new_conversation">Nova conversa</string>
@@ -214,11 +222,15 @@
     <string name="nc_no_open_conversations_headline">Non hai conversas abertas</string>
     <string name="nc_no_open_conversations_text">Non hai conversas abertas ás que poida unirse.\nNon hai conversas abertas ou xa se uníu a todas.</string>
     <string name="nc_no_proxy">Sen proxy</string>
+    <string name="nc_not_allowed_to_activate_audio">Non ten permiso para activar o son!</string>
+    <string name="nc_not_allowed_to_activate_video">Non ten permiso para activar o vídeo!</string>
     <string name="nc_notification_channel">%1$s na canle de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas</string>
     <string name="nc_notification_channel_calls_description">Notificar sobre as chamadas entrantes</string>
     <string name="nc_notification_channel_messages">Mensaxes</string>
+    <string name="nc_notification_channel_messages_description">Notificar sobre as mensaxes entrantes</string>
     <string name="nc_notification_channel_uploads">Envíos</string>
+    <string name="nc_notification_channel_uploads_description">Notificar sobre o progreso da carga</string>
     <string name="nc_notification_settings">Axustes de notificación</string>
     <string name="nc_notify_me_always">Notificar sempre</string>
     <string name="nc_notify_me_mention">Notificar cando son mencionado</string>
@@ -231,6 +243,7 @@
     <string name="nc_password">Contrasinal</string>
     <string name="nc_permissions_settings">Abrir os axustes</string>
     <string name="nc_phone_book_integration_account_not_found">Non se atopou a conta</string>
+    <string name="nc_phone_book_integration_chat_via">Conversar a través de %s</string>
     <string name="nc_pip_microphone_mute">Silenciar o micrófono</string>
     <string name="nc_pip_microphone_unmute">Activar o micrófono</string>
     <string name="nc_plain_old_messages">Mensaxes</string>
@@ -243,6 +256,7 @@
     <string name="nc_push_disabled">Desactivadas as notificacións automáticas</string>
     <string name="nc_push_to_talk">Prema para falar</string>
     <string name="nc_push_to_talk_desc">Co microfono desactivado, prema e manteña para usar a función «Prema para falar»</string>
+    <string name="nc_remote_audio_off">Son remoto desactivado</string>
     <string name="nc_remove_circle_and_members">Retirar círculo e membros</string>
     <string name="nc_remove_from_favorites">Retirar de favoritos</string>
     <string name="nc_remove_group_and_members">Retirar grupo e membros</string>
@@ -271,6 +285,12 @@
     <string name="nc_sent_an_audio_you">Vde. enviou un ficheiro de son.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou unha imaxe.</string>
     <string name="nc_sent_an_image_you">Vde. enviou unha imaxe.</string>
+    <string name="nc_sent_location" formatted="true">%1$s enviou unha localización.</string>
+    <string name="nc_sent_location_you">Vde. enviou unha localización.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s enviou unha enquisa.</string>
+    <string name="nc_sent_poll_you">Vde. enviou unha enquisa.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s enviou unha mensaxe de voz.</string>
+    <string name="nc_sent_voice_you">Vde. enviou unha mensaxe de voz.</string>
     <string name="nc_server_connect">Probar a conexión co servidor</string>
     <string name="nc_server_db_upgrade_needed">Ten que anovar a base de datos %1$s</string>
     <string name="nc_server_failed_to_import_account">Produciuse un fallo ao importar a conta seleccionada</string>
@@ -305,8 +325,10 @@
     <string name="nc_settings_phone_book_integration_title">Integración do número de teléfono</string>
     <string name="nc_settings_privacy">Privacidade</string>
     <string name="nc_settings_proxy_host_title">Máquina do proxy</string>
+    <string name="nc_settings_proxy_password_title">Contrasinal do proxy</string>
     <string name="nc_settings_proxy_port_title">Porto do proxy</string>
     <string name="nc_settings_proxy_type_title">Tipo de proxy</string>
+    <string name="nc_settings_proxy_username_title">Nome de usuario do proxy</string>
     <string name="nc_settings_read_privacy_desc">Compartir o meu estado de lectura e amosar o estado de lectura doutras persoas</string>
     <string name="nc_settings_read_privacy_title">Estado de lectura</string>
     <string name="nc_settings_reauthorize">Volver autorizar a conta</string>
@@ -318,6 +340,9 @@
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
     <string name="nc_settings_screen_security_desc">Evita capturas de pantalla na lista recente e dentro da aplicación</string>
     <string name="nc_settings_screen_security_title">Seguranza da pantalla</string>
+    <string name="nc_settings_server_almost_eol">A versión do servidor é moi antiga e non será compatíbel coa próxima publicación.</string>
+    <string name="nc_settings_server_eol">A versión do servidor é demasiado antiga e non é compatíbel con esta versión da aplicación para Android</string>
+    <string name="nc_settings_server_eol_title">Servidor non admitido</string>
     <string name="nc_settings_theme_battery_saver">Estabelecido polo aforrador de batería</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Usar o redeterminado do sistema</string>
@@ -332,7 +357,7 @@
     <string name="nc_share_text">Únase á conversa en %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nContrasinal: %1$s</string>
     <string name="nc_share_this_location">Compartir esta localización</string>
-    <string name="nc_share_to_choose_account">Escolla unha conta</string>
+    <string name="nc_share_to_choose_account">Escoller unha conta</string>
     <string name="nc_shared_items">Elementos compartidos</string>
     <string name="nc_shared_items_deck_card">Tarxeta</string>
     <string name="nc_shared_items_empty">Non hai elementos compartidos</string>
@@ -341,7 +366,7 @@
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de comezo</string>
     <string name="nc_switch_account">Cambiar de conta</string>
-    <string name="nc_upload_choose_local_files">Escolla os ficheiros</string>
+    <string name="nc_upload_choose_local_files">Escoller os ficheiros</string>
     <string name="nc_upload_confirm_send_multiple">Quere enviar estes ficheiros a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>
     <string name="nc_upload_failed">Desculpe, produciuse un fallo no envío</string>
