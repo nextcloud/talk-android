@@ -23,10 +23,12 @@
  */
 package com.nextcloud.talk.jobs
 
+import android.Manifest
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.media.AudioAttributes
 import android.media.MediaPlayer
@@ -41,6 +43,7 @@ import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
@@ -734,6 +737,15 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun sendNotification(notificationId: Int, notification: Notification) {
         Log.d(TAG, "show notification with id $notificationId")
+        Log.d(TAG, "notification enabled: " + notificationManager.areNotificationsEnabled())
+
+        if (ActivityCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.d(TAG, "notification not allowed!")
+        }
         notificationManager.notify(notificationId, notification)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

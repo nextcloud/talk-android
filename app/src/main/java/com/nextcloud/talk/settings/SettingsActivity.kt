@@ -57,6 +57,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -78,7 +79,9 @@ import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.checkPermission
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
+import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.profile.ProfileActivity
 import com.nextcloud.talk.users.UserManager
@@ -159,13 +162,34 @@ class SettingsActivity : BaseActivity() {
 
         setupPrivacyUrl()
         setupSourceCodeUrl()
+        
+        binding.settingsLicence.setOnClickListener{
+            Log.d(TAG, "Token:" + appPreferences.pushToken)
+        }
+        
         binding.settingsVersionSummary.text = String.format("v" + BuildConfig.VERSION_NAME)
+        binding.settingsVersionSummary.setOnClickListener {
+            Log.d(TAG, "re-register push")
+            registerForPush()
+        }
 
         setupSoundSettings()
 
         setupPhoneBookIntegration()
 
         setupClientCertView()
+    }
+
+    private fun registerForPush() {
+        val data =
+            Data.Builder()
+                .putString(PushRegistrationWorker.ORIGIN, "AccountVerificationController#registerForPush")
+                .build()
+        val pushRegistrationWork =
+            OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
+                .setInputData(data)
+                .build()
+        WorkManager.getInstance().enqueue(pushRegistrationWork)
     }
 
     override fun onResume() {
