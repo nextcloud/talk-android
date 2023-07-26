@@ -1165,11 +1165,11 @@ class CallActivity : CallBaseActivity() {
         if (video) {
             message = "videoOff"
             if (enable) {
-                binding!!.cameraButton.alpha = 1.0f
+                binding!!.cameraButton.alpha = OPACITY_ENABLED
                 message = "videoOn"
                 startVideoCapture()
             } else {
-                binding!!.cameraButton.alpha = 0.7f
+                binding!!.cameraButton.alpha = OPACITY_DISABLED
                 if (videoCapturer != null) {
                     try {
                         videoCapturer!!.stopCapture()
@@ -1190,9 +1190,9 @@ class CallActivity : CallBaseActivity() {
             message = "audioOff"
             if (enable) {
                 message = "audioOn"
-                binding!!.microphoneButton.alpha = 1.0f
+                binding!!.microphoneButton.alpha = OPACITY_ENABLED
             } else {
-                binding!!.microphoneButton.alpha = 0.7f
+                binding!!.microphoneButton.alpha = OPACITY_DISABLED
             }
             if (localStream != null && localStream!!.audioTracks.size > 0) {
                 localStream!!.audioTracks[0].setEnabled(enable)
@@ -1230,14 +1230,14 @@ class CallActivity : CallBaseActivity() {
                 callControlHandler.removeCallbacksAndMessages(null)
                 callInfosHandler.removeCallbacksAndMessages(null)
                 cameraSwitchHandler.removeCallbacksAndMessages(null)
-                alpha = 1.0f
-                duration = 1000
+                alpha = OPACITY_ENABLED
+                duration = SECOND_IN_MILLIES
                 if (binding!!.callControls.visibility != View.VISIBLE) {
-                    binding!!.callControls.alpha = 0.0f
+                    binding!!.callControls.alpha = OPACITY_INVISIBLE
                     binding!!.callControls.visibility = View.VISIBLE
-                    binding!!.callInfosLinearLayout.alpha = 0.0f
+                    binding!!.callInfosLinearLayout.alpha = OPACITY_INVISIBLE
                     binding!!.callInfosLinearLayout.visibility = View.VISIBLE
-                    binding!!.switchSelfVideoButton.alpha = 0.0f
+                    binding!!.switchSelfVideoButton.alpha = OPACITY_INVISIBLE
                     if (videoOn) {
                         binding!!.switchSelfVideoButton.visibility = View.VISIBLE
                     }
@@ -1246,8 +1246,8 @@ class CallActivity : CallBaseActivity() {
                     return
                 }
             } else {
-                alpha = 0.0f
-                duration = 1000
+                alpha = OPACITY_INVISIBLE
+                duration = SECOND_IN_MILLIES
             }
             binding!!.callControls.isEnabled = false
             binding!!.callControls.animate()
@@ -2702,7 +2702,9 @@ class CallActivity : CallBaseActivity() {
                 .retry(3)
                 .subscribeOn(Schedulers.io())
                 .subscribe(object : Observer<SignalingOverall> {
-                    override fun onSubscribe(d: Disposable) {}
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
                     override fun onNext(signalingOverall: SignalingOverall) {
                         // When sending messages to the internal signaling server the response has been empty since
                         // Talk v2.9.0, so it is not really needed to process it, but there is no harm either in
@@ -2912,5 +2914,11 @@ class CallActivity : CallBaseActivity() {
         private const val MICROPHONE_PIP_INTENT_EXTRA_ACTION = "microphone_pip_action"
         private const val MICROPHONE_PIP_REQUEST_MUTE = 1
         private const val MICROPHONE_PIP_REQUEST_UNMUTE = 2
+
+        const val OPACITY_ENABLED = 1.0f
+        const val OPACITY_DISABLED = 0.7f
+        const val OPACITY_INVISIBLE = 0.0f
+
+        const val SECOND_IN_MILLIES: Long = 1000
     }
 }
