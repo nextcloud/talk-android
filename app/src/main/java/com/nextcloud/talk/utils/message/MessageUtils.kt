@@ -23,6 +23,7 @@ package com.nextcloud.talk.utils.message
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.SpannableString
 import android.text.Spanned
 import android.util.Log
 import android.view.View
@@ -39,16 +40,27 @@ import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
 
 class MessageUtils(val context: Context) {
+    fun enrichChatReplyMessageText(context: Context, message: ChatMessage, textColor: Int): Spanned? {
+        return if (message.message == null) {
+            null
+        } else if (message.renderMarkdown == false) {
+            SpannableString(DisplayUtils.ellipsize(message.message!!, MAX_REPLY_LENGTH))
+        } else {
+            enrichChatMessageText(context, DisplayUtils.ellipsize(message.message!!, MAX_REPLY_LENGTH), textColor)
+        }
+    }
 
     fun enrichChatMessageText(context: Context, message: ChatMessage, textColor: Int): Spanned? {
         return if (message.message == null) {
             null
+        } else if (message.renderMarkdown == false) {
+            SpannableString(message.message)
         } else {
             enrichChatMessageText(context, message.message!!, textColor)
         }
     }
 
-    fun enrichChatMessageText(context: Context, message: String, textColor: Int): Spanned {
+    private fun enrichChatMessageText(context: Context, message: String, textColor: Int): Spanned {
         return getRenderedMarkdownText(context, message, textColor)
     }
 
@@ -139,5 +151,6 @@ class MessageUtils(val context: Context) {
 
     companion object {
         private const val TAG = "MessageUtils"
+        const val MAX_REPLY_LENGTH = 250
     }
 }

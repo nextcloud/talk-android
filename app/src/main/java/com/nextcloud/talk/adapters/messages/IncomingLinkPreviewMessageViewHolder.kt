@@ -195,9 +195,9 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = messageUtils
-                .enrichChatMessageText(
+                .enrichChatReplyMessageText(
                     binding.messageQuote.quotedMessage.context,
-                    parentChatMessage.text,
+                    parentChatMessage,
                     binding.messageQuote.quotedMessage.context.resources.getColor(
                         R.color.nc_incoming_text_default
                     )

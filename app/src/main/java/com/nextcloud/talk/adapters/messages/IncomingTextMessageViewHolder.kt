@@ -44,7 +44,6 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -202,10 +201,11 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         } else {
             parentChatMessage.actorDisplayName
         }
+
         binding.messageQuote.quotedMessage.text = messageUtils
-            .enrichChatMessageText(
+            .enrichChatReplyMessageText(
                 binding.messageQuote.quotedMessage.context,
-                DisplayUtils.ellipsize(parentChatMessage.text, MAX_REPLY_LENGTH),
+                parentChatMessage,
                 binding.messageQuote.quotedMessage.context.resources.getColor(R.color.nc_incoming_text_default)
             )
 
@@ -240,6 +240,5 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
-        const val MAX_REPLY_LENGTH = 250
     }
 }

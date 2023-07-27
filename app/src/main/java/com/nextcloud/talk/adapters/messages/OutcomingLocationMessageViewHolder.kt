@@ -226,9 +226,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context!!.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = messageUtils
-                .enrichChatMessageText(
+                .enrichChatReplyMessageText(
                     binding.messageQuote.quotedMessage.context,
-                    parentChatMessage.text,
+                    parentChatMessage,
                     viewThemeUtils.getScheme(binding.messageQuote.quotedMessage.context).onSurfaceVariant
                 )
             viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
