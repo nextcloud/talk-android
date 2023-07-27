@@ -102,6 +102,7 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun isPostNotificationsPermissionGranted(): Boolean {
         return PermissionChecker.checkSelfPermission(
             context,

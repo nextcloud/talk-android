@@ -35,6 +35,8 @@ public class ApplicationWideCurrentRoomHolder {
     private boolean isDialing = false;
     private String session = "";
 
+    private Long callStartTime = null;
+
     public static ApplicationWideCurrentRoomHolder getInstance() {
         return holder;
     }
@@ -95,5 +97,13 @@ public class ApplicationWideCurrentRoomHolder {
 
     public void setSession(String session) {
         this.session = session;
+    }
+
+    public Long getCallStartTime() {
+        return callStartTime;
+    }
+
+    public void setCallStartTime(Long callStartTime) {
+        this.callStartTime = callStartTime;
     }
 }
