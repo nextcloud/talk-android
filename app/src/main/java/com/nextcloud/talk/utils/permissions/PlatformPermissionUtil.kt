@@ -27,4 +27,5 @@ interface PlatformPermissionUtil {
     fun isMicrophonePermissionGranted(): Boolean
     fun isBluetoothPermissionGranted(): Boolean
     fun isFilesPermissionGranted(): Boolean
+    fun isPostNotificationsPermissionGranted(): Boolean
 }

@@ -27,6 +27,7 @@
  */
 package com.nextcloud.talk.conversationlist
 
+import android.Manifest
 import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.app.SearchManager
@@ -215,6 +216,20 @@ class ConversationsListActivity :
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+
+        // handle notification permission on API level >= 33
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            !platformPermissionUtil.isPostNotificationsPermissionGranted()
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                REQUEST_POST_NOTIFICATIONS_PERMISSION
+            )
+        }
     }
 
     override fun onResume() {
@@ -1506,5 +1521,6 @@ class ConversationsListActivity :
         const val CLIENT_UPGRADE_GPLAY_LINK = "https://play.google.com/store/apps/details?id="
         const val HTTP_SERVICE_UNAVAILABLE = 503
         const val MAINTENANCE_MODE_HEADER_KEY = "X-Nextcloud-Maintenance-Mode"
+        const val REQUEST_POST_NOTIFICATIONS_PERMISSION = 111
     }
 }

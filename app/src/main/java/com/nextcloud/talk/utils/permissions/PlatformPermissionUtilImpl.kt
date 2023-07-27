@@ -102,6 +102,13 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
         }
     }
 
+    override fun isPostNotificationsPermissionGranted(): Boolean {
+        return PermissionChecker.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PermissionChecker.PERMISSION_GRANTED
+    }
+
     companion object {
         private val TAG = PlatformPermissionUtilImpl::class.simpleName
     }
