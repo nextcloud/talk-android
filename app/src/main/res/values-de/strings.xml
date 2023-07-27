@@ -64,6 +64,7 @@
     <string name="nc_allow_guests">Gäste zulassen</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s entsperren</string>
+    <string name="nc_bluetooth_permission_hint">Um Bluetooth-Lautsprecher zu aktivieren, bitte die Berechtigung „Geräte in der Nähe“ erteilen.</string>
     <string name="nc_call_button_content_description_advanced">Erweiterte Anrufoptionen</string>
     <string name="nc_call_button_content_description_answer_video_call">Als Videoanruf annehmen</string>
     <string name="nc_call_button_content_description_answer_voice_only">Nur als Sprachanruf annehmen</string>
@@ -87,6 +88,7 @@
     <string name="nc_call_unknown">%s Anruf</string>
     <string name="nc_call_video">%s Videoanruf</string>
     <string name="nc_call_voice">%s Sprachanruf</string>
+    <string name="nc_camera_permission_hint">Um die Videokommunikation zu ermöglichen, bitte die die Berechtigung „Kamera“ erteilen.</string>
     <string name="nc_camera_permission_permanently_denied">Um Videoanrufe zu ermöglichen, gewähren Sie die Berechtigung für die \"Kamera\" in den Systemeinstellungen</string>
     <string name="nc_cancel">Abbrechen</string>
     <string name="nc_capabilities_failed">Fehler beim Abfragen der Fähigkeiten. Abbruch</string>
@@ -208,6 +210,7 @@
     <string name="nc_message_quote_cancel_reply">Antwort abbrechen</string>
     <string name="nc_message_read">Nachricht gelesen</string>
     <string name="nc_message_sent">Nachricht gesendet</string>
+    <string name="nc_microphone_permission_hint">Um die Sprachkommunikation zu ermöglichen, bitte die Berechtigung „Mikrofon“ erteilen.</string>
     <string name="nc_microphone_permission_permanently_denied">Um Audioanrufe zu ermöglichen, gewähren Sie die Berechtigung für das \"Mikrofon\" in den Systemeinstellungen</string>
     <string name="nc_missed_call">Sie haben einen Anruf von %s verpasst</string>
     <string name="nc_moderator">Moderator</string>
@@ -241,7 +244,11 @@
     <string name="nc_participants">Teilnehmer</string>
     <string name="nc_participants_add">Teilnehmer hinzufügen</string>
     <string name="nc_password">Passwort</string>
+    <string name="nc_permissions_ask">Berechtigungen festlegen</string>
+    <string name="nc_permissions_denied">Einige Berechtigungen wurden abgelehnt.</string>
+    <string name="nc_permissions_rationale_dialog_title">Bitte alle Berechtigungen erteilen.</string>
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
+    <string name="nc_permissions_settings_hint">Bitte Berechtigungen erteilen unter Einstellungen > Berechtigungen</string>
     <string name="nc_phone_book_integration_account_not_found">Konto nicht gefunden</string>
     <string name="nc_phone_book_integration_chat_via">Chatten über %s</string>
     <string name="nc_pip_microphone_mute">Mikrofon stummschalten</string>

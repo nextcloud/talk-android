@@ -64,6 +64,7 @@
     <string name="nc_allow_guests">允許訪客</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
+    <string name="nc_bluetooth_permission_hint">要啟用藍牙喇叭，請授予「鄰近裝置」權限。</string>
     <string name="nc_call_button_content_description_advanced">進階通話選項</string>
     <string name="nc_call_button_content_description_answer_video_call">以視訊通話方式接聽</string>
     <string name="nc_call_button_content_description_answer_voice_only">僅以語音通話方式接聽</string>
@@ -87,6 +88,7 @@
     <string name="nc_call_unknown">%s 通話</string>
     <string name="nc_call_video">%s 視訊通話</string>
     <string name="nc_call_voice">%s 語音通話</string>
+    <string name="nc_camera_permission_hint">要啟用影像通訊，請授予「相機」權限。</string>
     <string name="nc_camera_permission_permanently_denied">為了開啟影像的通訊請在系統設定內同意\"相機\"的需求。</string>
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">無法獲取功能，正在中止</string>
@@ -208,6 +210,7 @@
     <string name="nc_message_quote_cancel_reply">取消回覆</string>
     <string name="nc_message_read">訊息已讀</string>
     <string name="nc_message_sent">已傳送郵件</string>
+    <string name="nc_microphone_permission_hint">要啟用語音通訊，請授予「麥克風」權限。</string>
     <string name="nc_microphone_permission_permanently_denied">為了開啟聲音的通訊請在系統設定內同意\"麥克風\"的需求。</string>
     <string name="nc_missed_call">您錯過了來自 %s 的通話</string>
     <string name="nc_moderator">主持人</string>
@@ -241,7 +244,11 @@
     <string name="nc_participants">參與者</string>
     <string name="nc_participants_add">新增成員</string>
     <string name="nc_password">密碼</string>
+    <string name="nc_permissions_ask">設定權限</string>
+    <string name="nc_permissions_denied">部份權限被拒絕。</string>
+    <string name="nc_permissions_rationale_dialog_title">請允許權限</string>
     <string name="nc_permissions_settings">開啟設定</string>
+    <string name="nc_permissions_settings_hint">請在「設定」→「權限」中授予權限</string>
     <string name="nc_phone_book_integration_account_not_found">找不到帳號</string>
     <string name="nc_phone_book_integration_chat_via">透過 %s 聊天</string>
     <string name="nc_pip_microphone_mute">將麥克風靜音</string>

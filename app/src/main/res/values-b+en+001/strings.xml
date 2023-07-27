@@ -64,6 +64,7 @@
     <string name="nc_allow_guests">Allow guests</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Unlock %1$s</string>
+    <string name="nc_bluetooth_permission_hint">To enable Bluetooth speakers please grant \"Nearby devices\" permission.</string>
     <string name="nc_call_button_content_description_advanced">Advanced call options</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
     <string name="nc_call_button_content_description_answer_voice_only">Answer as voice call only</string>
@@ -87,6 +88,7 @@
     <string name="nc_call_unknown">%s call</string>
     <string name="nc_call_video">%s video call</string>
     <string name="nc_call_voice">%s voice call</string>
+    <string name="nc_camera_permission_hint">To enable video communication please grant \"Camera\" permission.</string>
     <string name="nc_camera_permission_permanently_denied">To enable video communication please grant \"Camera\" permission in the system settings.</string>
     <string name="nc_cancel">Cancel</string>
     <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
@@ -208,6 +210,7 @@
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_sent">Message sent</string>
+    <string name="nc_microphone_permission_hint">To enable voice communication please grant \"Microphone\" permission.</string>
     <string name="nc_microphone_permission_permanently_denied">To enable voice communication please grant \"Microphone\" permission in the system settings.</string>
     <string name="nc_missed_call">You missed a call from %s</string>
     <string name="nc_moderator">Moderator</string>
@@ -241,7 +244,11 @@
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Add participants</string>
     <string name="nc_password">Password</string>
+    <string name="nc_permissions_ask">Set permissions</string>
+    <string name="nc_permissions_denied">Some permissions were denied.</string>
+    <string name="nc_permissions_rationale_dialog_title">Please allow permissions</string>
     <string name="nc_permissions_settings">Open settings</string>
+    <string name="nc_permissions_settings_hint">Please grant permissions at Settings > Permissions</string>
     <string name="nc_phone_book_integration_account_not_found">Account not found</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_pip_microphone_mute">Mute microphone</string>

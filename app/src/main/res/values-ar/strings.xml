@@ -64,6 +64,7 @@
     <string name="nc_allow_guests">السماح للضيوف</string>
     <string name="nc_attendee_pin">الرمز: %1$s</string>
     <string name="nc_biometric_unlock">فتح قفل %1$s</string>
+    <string name="nc_bluetooth_permission_hint">لتمكين مكبرات صوت البلوتوث، يرجى منح إذن \"الأجهزة المجاورة\".</string>
     <string name="nc_call_button_content_description_advanced">خيارات المكالمات المتقدمة</string>
     <string name="nc_call_button_content_description_answer_video_call">الردُّ بمكالمة مرئية</string>
     <string name="nc_call_button_content_description_answer_voice_only">الردُّ بمكالمة صوتية فقط</string>
@@ -87,6 +88,7 @@
     <string name="nc_call_unknown">%s اتصال</string>
     <string name="nc_call_video">%s اتصال فيديو</string>
     <string name="nc_call_voice">%s اتصال صوتي</string>
+    <string name="nc_camera_permission_hint">لتمكين اتصال الفيديو ، يرجى منح إذن \"الكاميرا\".</string>
     <string name="nc_camera_permission_permanently_denied">لتمكين اتصال الفيديو ، يرجى منح وصول \"الكاميرا\" في إعدادات النظام.</string>
     <string name="nc_cancel">إلغاء</string>
     <string name="nc_capabilities_failed">فشل في جلب الإمكانيات، جارِ إلالغاء</string>
@@ -208,6 +210,7 @@
     <string name="nc_message_quote_cancel_reply">إلغاء الردّ</string>
     <string name="nc_message_read">تمّت قراءة الرسالة</string>
     <string name="nc_message_sent">تمّ إرسال الرسالة </string>
+    <string name="nc_microphone_permission_hint">لتمكين الاتصال الصوتي ، يرجى منح إذن \"الميكروفون\".</string>
     <string name="nc_microphone_permission_permanently_denied">لتمكين الاتصال الصوتي ، يرجى منح وصول \"الميكروفون\" في إعدادات النظام.</string>
     <string name="nc_missed_call">فَاتَتكَ مكالمةٌ من %s</string>
     <string name="nc_moderator">مشرِف</string>
@@ -241,7 +244,11 @@
     <string name="nc_participants">المشارِكون</string>
     <string name="nc_participants_add">إضِف مشاركين</string>
     <string name="nc_password">كلمة السر</string>
+    <string name="nc_permissions_ask">تعيين الأذونات</string>
+    <string name="nc_permissions_denied">بعض الأذونات تمّ رفضها</string>
+    <string name="nc_permissions_rationale_dialog_title">إسمَح بالأذونات رجاءً</string>
     <string name="nc_permissions_settings">فتح الإعدادات</string>
+    <string name="nc_permissions_settings_hint">إمنح الأذونات رجاءً من Settings > Permissions</string>
     <string name="nc_phone_book_integration_account_not_found">الحساب غير موجود </string>
     <string name="nc_phone_book_integration_chat_via">المحادثة عبر %s</string>
     <string name="nc_pip_microphone_mute">كتم لاقط الصوت microphone</string>
