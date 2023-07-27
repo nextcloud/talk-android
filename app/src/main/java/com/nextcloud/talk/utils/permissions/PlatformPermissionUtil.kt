@@ -26,4 +26,5 @@ interface PlatformPermissionUtil {
     fun isCameraPermissionGranted(): Boolean
 
     fun isFilesPermissionGranted(): Boolean
+    fun isPostNotificationsPermissionGranted(): Boolean
 }
