@@ -46,6 +46,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.text.TextUtils
+import android.text.format.DateUtils
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -84,8 +85,8 @@ import com.nextcloud.talk.events.ProximitySensorEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage
@@ -240,6 +241,8 @@ class CallActivity : CallBaseActivity() {
     private val callInfosHandler = Handler()
     private val cameraSwitchHandler = Handler()
 
+    private val callTimeHandler = Handler(Looper.getMainLooper())
+
     // push to talk
     private var isPushToTalkActive = false
     private var pulseAnimation: PulseAnimation? = null
@@ -356,6 +359,7 @@ class CallActivity : CallBaseActivity() {
     private var canPublishVideoStream = false
     private var isModerator = false
     private var reactionAnimator: ReactionAnimator? = null
+    private var othersInCall = false
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -714,37 +718,6 @@ class CallActivity : CallBaseActivity() {
         DrawableCompat.setTint(binding!!.audioOutputButton.drawable, Color.WHITE)
     }
 
-    private fun handleFromNotification() {
-        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
-        ncApi!!.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, baseUrl), java.lang.Boolean.FALSE)
-            .retry(3)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<RoomsOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(roomsOverall: RoomsOverall) {
-                    for ((roomId1, token) in roomsOverall.ocs!!.data!!) {
-                        if (roomId == roomId1) {
-                            roomToken = token
-                            break
-                        }
-                    }
-                    checkDevicePermissions()
-                }
-
-                override fun onError(e: Throwable) {
-                    // unused atm
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun initViews() {
         Log.d(TAG, "initViews")
@@ -878,6 +851,7 @@ class CallActivity : CallBaseActivity() {
         } else {
             permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
         }
+
         if (!isVoiceOnlyCall) {
             if (permissionUtil!!.isCameraPermissionGranted()) {
                 if (!videoOn) {
@@ -913,6 +887,7 @@ class CallActivity : CallBaseActivity() {
                 requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
             }
         }
+
         if (!isConnectionEstablished) {
             fetchSignalingSettings()
         }
@@ -1333,7 +1308,7 @@ class CallActivity : CallBaseActivity() {
         val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.APIv3, 2, 1))
         ncApi!!.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl))
             .subscribeOn(Schedulers.io())
-            .retry(3)
+            .retry(API_RETRIES)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<SignalingSettingsOverall> {
                 override fun onSubscribe(d: Disposable) {
@@ -1430,7 +1405,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun checkCapabilities() {
         ncApi!!.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
-            .retry(3)
+            .retry(API_RETRIES)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<CapabilitiesOverall> {
@@ -1452,6 +1427,8 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Log.e(TAG, "Failed to fetch capabilities", e)
                     // unused atm
                 }
 
@@ -1470,11 +1447,13 @@ class CallActivity : CallBaseActivity() {
         Log.d(TAG, "   callSession= $callSession")
         val url = ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken)
         Log.d(TAG, "   url= $url")
+
+        // if session is empty, e.g. we when we got here by notification, we need to join the room to get a session
         if (TextUtils.isEmpty(callSession)) {
             ncApi!!.joinRoom(credentials, url, conversationPassword)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .retry(3)
+                .retry(API_RETRIES)
                 .subscribe(object : Observer<RoomOverall> {
                     override fun onSubscribe(d: Disposable) {
                         // unused atm
@@ -1485,10 +1464,9 @@ class CallActivity : CallBaseActivity() {
                         callRecordingViewModel!!.setRecordingState(conversation!!.callRecording)
                         callSession = conversation.sessionId
                         Log.d(TAG, " new callSession by joinRoom= $callSession")
-                        ApplicationWideCurrentRoomHolder.getInstance().session = callSession
-                        ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = conversation.roomId
-                        ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomToken
-                        ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
+
+                        setInitialApplicationWideCurrentRoomHolderValues(conversation)
+
                         callOrJoinRoomViaWebSocket()
                     }
 
@@ -1515,6 +1493,58 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun performCall() {
+        fun getRoomAndContinue() {
+            val getRoomApiVersion = ApiUtils.getConversationApiVersion(
+                conversationUser,
+                intArrayOf(ApiUtils.APIv4, 1)
+            )
+            ncApi!!.getRoom(credentials, ApiUtils.getUrlForRoom(getRoomApiVersion, baseUrl, roomToken))
+                .retry(API_RETRIES)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<RoomOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(roomOverall: RoomOverall) {
+                        val conversation = roomOverall.ocs!!.data
+                        callRecordingViewModel!!.setRecordingState(conversation!!.callRecording)
+                        callSession = conversation.sessionId
+
+                        setInitialApplicationWideCurrentRoomHolderValues(conversation)
+
+                        startCallTimeCounter(conversation.callStartTime)
+
+                        if (currentCallStatus !== CallStatus.LEAVING) {
+                            if (currentCallStatus !== CallStatus.IN_CONVERSATION) {
+                                setCallState(CallStatus.JOINED)
+                            }
+                            ApplicationWideCurrentRoomHolder.getInstance().isInCall = true
+                            ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
+                            if (!TextUtils.isEmpty(roomToken)) {
+                                cancelExistingNotificationsForRoom(
+                                    applicationContext,
+                                    conversationUser!!,
+                                    roomToken!!
+                                )
+                            }
+                            if (!hasExternalSignalingServer) {
+                                pullSignalingMessages()
+                            }
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Failed to get room", e)
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        }
+
         var inCallFlag = Participant.InCallFlags.IN_CALL
         if (canPublishAudioStream) {
             inCallFlag += Participant.InCallFlags.WITH_AUDIO
@@ -1533,7 +1563,7 @@ class CallActivity : CallBaseActivity() {
             isCallWithoutNotification
         )
             .subscribeOn(Schedulers.io())
-            .retry(3)
+            .retry(API_RETRIES)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
@@ -1541,33 +1571,57 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    if (currentCallStatus !== CallStatus.LEAVING) {
-                        if (currentCallStatus !== CallStatus.IN_CONVERSATION) {
-                            setCallState(CallStatus.JOINED)
-                        }
-                        ApplicationWideCurrentRoomHolder.getInstance().isInCall = true
-                        ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
-                        if (!TextUtils.isEmpty(roomToken)) {
-                            cancelExistingNotificationsForRoom(
-                                applicationContext,
-                                conversationUser!!,
-                                roomToken!!
-                            )
-                        }
-                        if (!hasExternalSignalingServer) {
-                            pullSignalingMessages()
-                        }
-                    }
+                    getRoomAndContinue()
                 }
 
                 override fun onError(e: Throwable) {
-                    // unused atm
+                    Log.e(TAG, "Failed to join call", e)
                 }
 
                 override fun onComplete() {
                     // unused atm
                 }
             })
+    }
+
+    private fun setInitialApplicationWideCurrentRoomHolderValues(conversation: Conversation) {
+        ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
+        ApplicationWideCurrentRoomHolder.getInstance().session = conversation.sessionId
+        ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = conversation.roomId
+        ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = conversation.token
+        ApplicationWideCurrentRoomHolder.getInstance().callStartTime = conversation.callStartTime
+    }
+
+    private fun startCallTimeCounter(callStartTime: Long?) {
+        if (callStartTime != null && hasSpreedFeatureCapability(conversationUser, "recording-v1")) {
+            binding!!.callDuration.visibility = View.VISIBLE
+            val currentTimeInSec = System.currentTimeMillis() / SECOND_IN_MILLIES
+            var elapsedSeconds: Long = currentTimeInSec - callStartTime
+
+            val callTimeTask: Runnable = object : Runnable {
+                override fun run() {
+                    if (othersInCall) {
+                        binding!!.callDuration.text = DateUtils.formatElapsedTime(elapsedSeconds)
+                        if (elapsedSeconds.toInt() == CALL_TIME_ONE_HOUR) {
+                            vibrateShort(context)
+                            Toast.makeText(
+                                context,
+                                context.resources.getString(R.string.call_running_since_one_hour),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } else {
+                        binding!!.callDuration.text = CALL_DURATION_EMPTY
+                    }
+
+                    elapsedSeconds += 1
+                    callTimeHandler.postDelayed(this, CALL_TIME_COUNTER_DELAY)
+                }
+            }
+            callTimeHandler.post(callTimeTask)
+        } else {
+            binding!!.callDuration.visibility = View.GONE
+        }
     }
 
     private fun pullSignalingMessages() {
@@ -1645,11 +1699,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun initiateCall() {
-        if (!TextUtils.isEmpty(roomToken)) {
-            checkDevicePermissions()
-        } else {
-            handleFromNotification()
-        }
+        checkDevicePermissions()
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -1745,6 +1795,7 @@ class CallActivity : CallBaseActivity() {
             setCallState(CallStatus.LEAVING)
         }
         stopCallingSound()
+        callTimeHandler.removeCallbacksAndMessages(null)
         dispose(null)
 
         if (shutDownView) {
@@ -1843,6 +1894,7 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
                     Log.e(TAG, "Error while leaving the call", e)
                 }
 
@@ -1975,7 +2027,12 @@ class CallActivity : CallBaseActivity() {
                 getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false)
             }
         }
-        val othersInCall = if (selfJoined) joined.size > 1 else joined.isNotEmpty()
+        othersInCall = if (selfJoined) {
+            joined.size > 1
+        } else {
+            joined.isNotEmpty()
+        }
+
         if (othersInCall && currentCallStatus !== CallStatus.IN_CONVERSATION) {
             setCallState(CallStatus.IN_CONVERSATION)
         }
@@ -2696,12 +2753,13 @@ class CallActivity : CallBaseActivity() {
                 ApiUtils.getUrlForSignaling(apiVersion, baseUrl, roomToken),
                 strings.toString()
             )
-                .retry(3)
+                .retry(API_RETRIES)
                 .subscribeOn(Schedulers.io())
                 .subscribe(object : Observer<SignalingOverall> {
                     override fun onSubscribe(d: Disposable) {
                         // unused atm
                     }
+
                     override fun onNext(signalingOverall: SignalingOverall) {
                         // When sending messages to the internal signaling server the response has been empty since
                         // Talk v2.9.0, so it is not really needed to process it, but there is no harm either in
@@ -2710,7 +2768,7 @@ class CallActivity : CallBaseActivity() {
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(TAG, "", e)
+                        Log.e(TAG, "Failed to send signaling message", e)
                     }
 
                     override fun onComplete() {
@@ -2917,5 +2975,9 @@ class CallActivity : CallBaseActivity() {
         const val OPACITY_INVISIBLE = 0.0f
 
         const val SECOND_IN_MILLIES: Long = 1000
+        const val CALL_TIME_COUNTER_DELAY: Long = 1000
+        const val CALL_TIME_ONE_HOUR = 3600
+        const val CALL_DURATION_EMPTY = "--:--"
+        const val API_RETRIES: Long = 3
     }
 }
