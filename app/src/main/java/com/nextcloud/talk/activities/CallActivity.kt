@@ -163,6 +163,7 @@ import org.webrtc.CameraVideoCapturer.CameraSwitchHandler
 import org.webrtc.DefaultVideoDecoderFactory
 import org.webrtc.DefaultVideoEncoderFactory
 import org.webrtc.EglBase
+import org.webrtc.ExtCamera2Enumerator
 import org.webrtc.Logging
 import org.webrtc.MediaConstraints
 import org.webrtc.MediaStream
@@ -239,6 +240,9 @@ class CallActivity : CallBaseActivity() {
     private val callControlHandler = Handler()
     private val callInfosHandler = Handler()
     private val cameraSwitchHandler = Handler()
+
+    private var disableEIS = true
+    private var zoomOut = true
 
     // push to talk
     private var isPushToTalkActive = false
@@ -610,7 +614,9 @@ class CallActivity : CallBaseActivity() {
         } catch (t: Throwable) {
             Log.w(TAG, "Camera2Enumerator threw an error", t)
         }
-        cameraEnumerator = if (camera2EnumeratorIsSupported) {
+        cameraEnumerator = if (camera2EnumeratorIsSupported && (disableEIS || zoomOut)){
+            ExtCamera2Enumerator(this, disableEIS, zoomOut)
+        } else if (camera2EnumeratorIsSupported) {
             Camera2Enumerator(this)
         } else {
             Camera1Enumerator(MagicWebRTCUtils.shouldEnableVideoHardwareAcceleration())
@@ -1854,7 +1860,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun startVideoCapture() {
         if (videoCapturer != null) {
-            videoCapturer!!.startCapture(1280, 720, 30)
+            videoCapturer!!.startCapture(1280, 960, 30)
         }
     }
 
