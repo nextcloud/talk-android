@@ -36,6 +36,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.Icon
 import android.media.AudioAttributes
 import android.media.MediaPlayer
@@ -306,6 +307,7 @@ class CallActivity : CallBaseActivity() {
     private var binding: CallActivityBinding? = null
     private var audioOutputDialog: AudioOutputDialog? = null
     private var moreCallActionsDialog: MoreCallActionsDialog? = null
+    private var elapsedSeconds: Long = 0
 
     private var requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -483,6 +485,16 @@ class CallActivity : CallBaseActivity() {
         }
         updateSelfVideoViewPosition()
         reactionAnimator = ReactionAnimator(context, binding!!.reactionAnimationWrapper, viewThemeUtils)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (hasSpreedFeatureCapability(conversationUser, "recording-v1") &&
+            othersInCall &&
+            elapsedSeconds.toInt() >= CALL_TIME_ONE_HOUR
+        ) {
+            showCallRunningSinceOneHourOrMoreInfo()
+        }
     }
 
     fun sendReaction(emoji: String?) {
@@ -1596,19 +1608,14 @@ class CallActivity : CallBaseActivity() {
         if (callStartTime != null && hasSpreedFeatureCapability(conversationUser, "recording-v1")) {
             binding!!.callDuration.visibility = View.VISIBLE
             val currentTimeInSec = System.currentTimeMillis() / SECOND_IN_MILLIES
-            var elapsedSeconds: Long = currentTimeInSec - callStartTime
+            elapsedSeconds = currentTimeInSec - callStartTime
 
             val callTimeTask: Runnable = object : Runnable {
                 override fun run() {
                     if (othersInCall) {
                         binding!!.callDuration.text = DateUtils.formatElapsedTime(elapsedSeconds)
                         if (elapsedSeconds.toInt() == CALL_TIME_ONE_HOUR) {
-                            vibrateShort(context)
-                            Toast.makeText(
-                                context,
-                                context.resources.getString(R.string.call_running_since_one_hour),
-                                Toast.LENGTH_LONG
-                            ).show()
+                            showCallRunningSinceOneHourOrMoreInfo()
                         }
                     } else {
                         binding!!.callDuration.text = CALL_DURATION_EMPTY
@@ -1622,6 +1629,16 @@ class CallActivity : CallBaseActivity() {
         } else {
             binding!!.callDuration.visibility = View.GONE
         }
+    }
+
+    private fun showCallRunningSinceOneHourOrMoreInfo() {
+        binding!!.callDuration.setTypeface(null, Typeface.BOLD)
+        vibrateShort(context)
+        Toast.makeText(
+            context,
+            context.resources.getString(R.string.call_running_since_one_hour),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun pullSignalingMessages() {
