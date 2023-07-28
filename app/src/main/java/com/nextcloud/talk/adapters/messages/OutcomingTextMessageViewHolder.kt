@@ -41,7 +41,6 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
@@ -175,9 +174,9 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
             ?: context!!.getText(R.string.nc_nick_guest)
         binding.messageQuote.quotedMessage.text = messageUtils
-            .enrichChatMessageText(
+            .enrichChatReplyMessageText(
                 binding.messageQuote.quotedMessage.context,
-                DisplayUtils.ellipsize(parentChatMessage.text, MAX_REPLY_LENGTH),
+                parentChatMessage,
                 textColor
             )
 
@@ -201,6 +200,5 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
 
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
-        const val MAX_REPLY_LENGTH = 250
     }
 }

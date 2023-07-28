@@ -119,6 +119,9 @@ data class ChatMessage(
     @JsonField(name = ["expirationTimestamp"])
     var expirationTimestamp: Int = 0,
 
+    @JsonField(name = ["markdown"])
+    var renderMarkdown: Boolean? = null,
+
     var isDownloadingVoiceMessage: Boolean = false,
 
     var resetVoiceMessage: Boolean = false,
