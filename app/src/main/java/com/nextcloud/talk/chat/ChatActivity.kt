@@ -73,6 +73,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.widget.AbsListView
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -81,6 +82,7 @@ import android.widget.RelativeLayout
 import android.widget.RelativeLayout.BELOW
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
@@ -178,6 +180,7 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.translate.ui.TranslateActivity
 import com.nextcloud.talk.ui.MicInputCloud
+import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
@@ -1568,10 +1571,24 @@ class ChatActivity :
                 private fun setIcon(drawable: Drawable?) {
                     supportActionBar?.let {
                         val avatarSize = (it.height / TOOLBAR_AVATAR_RATIO).roundToInt()
-
+                        val size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context)
                         if (drawable != null && avatarSize > 0) {
                             val bitmap = drawable.toBitmap(avatarSize, avatarSize)
-                            it.setIcon(BitmapDrawable(resources, bitmap))
+                            val status = StatusDrawable(
+                                currentConversation!!.status,
+                                null,
+                                size,
+                                viewThemeUtils.platform.getScheme(binding.chatToolbar.context).surface,
+                                binding.chatToolbar.context
+                            )
+                            binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_avatar)
+                                .setImageDrawable(BitmapDrawable(resources, bitmap))
+                            binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status)
+                                .setImageDrawable(status)
+                            binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status).contentDescription =
+                                currentConversation?.status
+                            binding.chatToolbar.findViewById<FrameLayout>(R.id.chat_toolbar_avatar_container)
+                                .visibility = View.VISIBLE
                         } else {
                             Log.d(TAG, "loadAvatarForStatusBar avatarSize <= 0")
                         }
@@ -1600,6 +1617,8 @@ class ChatActivity :
                     .diskCachePolicy(CachePolicy.DISABLED)
                     .build()
             )
+        } else {
+            binding.chatToolbar.findViewById<FrameLayout>(R.id.chat_toolbar_avatar_container).visibility = View.GONE
         }
     }
 
@@ -2643,17 +2662,42 @@ class ChatActivity :
     }
 
     private fun setActionBarTitle() {
-        supportActionBar?.title =
+        val title = binding.chatToolbar.findViewById<TextView>(R.id.chat_toolbar_title)
+        viewThemeUtils.platform.colorTextView(title, ColorRole.ON_SURFACE)
+
+        title.text =
             if (currentConversation?.displayName != null) {
                 try {
-                    " " + EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
+                    EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
                 } catch (e: java.lang.IllegalStateException) {
-                    " " + currentConversation?.displayName
+                    currentConversation?.displayName
                     error(e)
                 }
             } else {
                 ""
             }
+
+        val statusMessageView = binding.chatToolbar.findViewById<TextView>(R.id.chat_toolbar_status_message)
+        if (currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+            var statusMessage = ""
+            if (currentConversation?.statusIcon != null) {
+                statusMessage += currentConversation?.statusIcon
+            }
+
+            if (currentConversation?.statusMessage != null) {
+                statusMessage += currentConversation?.statusMessage
+            }
+
+            if (statusMessage.isNotEmpty()) {
+                viewThemeUtils.platform.colorTextView(statusMessageView, ColorRole.ON_SURFACE)
+                statusMessageView.text = statusMessage
+                statusMessageView.visibility = View.VISIBLE
+            } else {
+                statusMessageView.visibility = View.GONE
+            }
+        } else {
+            statusMessageView.visibility = View.GONE
+        }
     }
 
     public override fun onDestroy() {
@@ -3320,6 +3364,7 @@ class ChatActivity :
             }
 
             loadAvatarForStatusBar()
+            setActionBarTitle()
         }
 
         if (CapabilitiesUtilNew.isAbleToCall(conversationUser)) {
@@ -4145,6 +4190,7 @@ class ChatActivity :
         private const val GROUPED_MESSAGES_THRESHOLD = 4
         private const val GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD = 5
         private const val TOOLBAR_AVATAR_RATIO = 1.5
+        private const val STATUS_SIZE_IN_DP = 9f
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
         private const val QUOTED_MESSAGE_IMAGE_MAX_HEIGHT = 96f
