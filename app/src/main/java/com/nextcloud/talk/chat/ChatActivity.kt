@@ -480,6 +480,10 @@ class ChatActivity :
     override fun onStart() {
         super.onStart()
         active = true
+        context.getSharedPreferences(localClassName, MODE_PRIVATE).apply {
+            val text = getString(roomToken, "")
+            binding.messageInputView.messageInput.setText(text)
+        }
     }
 
     override fun onStop() {
@@ -494,6 +498,14 @@ class ChatActivity :
         }
         if (currentlyPlayedVoiceMessage != null) {
             stopMediaPlayer(currentlyPlayedVoiceMessage!!)
+        }
+        val text = binding.messageInputView.messageInput.text.toString()
+        val previous = context.getSharedPreferences(localClassName, MODE_PRIVATE).getString(roomToken, "null")
+        if (text != previous) {
+            context.getSharedPreferences(localClassName, MODE_PRIVATE).edit().apply {
+                putString(roomToken, text)
+                apply()
+            }
         }
     }
 
