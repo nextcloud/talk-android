@@ -41,6 +41,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
@@ -371,7 +372,10 @@ class ContactsActivity :
         data.putStringArray(BundleKeys.KEY_SELECTED_CIRCLES, circleIdsArray)
         val addParticipantsToConversationWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(
             AddParticipantsToConversation::class.java
-        ).setInputData(data.build()).build()
+        )
+            .setInputData(data.build())
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
         WorkManager.getInstance().enqueue(addParticipantsToConversationWorker)
         finish()
     }

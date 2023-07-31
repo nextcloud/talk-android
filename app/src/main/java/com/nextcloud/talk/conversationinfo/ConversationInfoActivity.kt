@@ -43,6 +43,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
@@ -539,10 +540,10 @@ class ConversationInfoActivity :
     private fun leaveConversation() {
         workerData?.let {
             WorkManager.getInstance(context).enqueue(
-                OneTimeWorkRequest.Builder(
-                    LeaveConversationWorker::class
-                        .java
-                ).setInputData(it).build()
+                OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java)
+                    .setInputData(it)
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    .build()
             )
 
             val intent = Intent(context, MainActivity::class.java)
@@ -614,7 +615,10 @@ class ConversationInfoActivity :
             WorkManager.getInstance(context).enqueue(
                 OneTimeWorkRequest.Builder(
                     DeleteConversationWorker::class.java
-                ).setInputData(it).build()
+                )
+                    .setInputData(it)
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    .build()
             )
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

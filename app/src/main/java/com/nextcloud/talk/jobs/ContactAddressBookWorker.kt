@@ -36,6 +36,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -458,7 +459,9 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             ) {
                 WorkManager.getInstance().enqueue(
                     OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
-                        .setInputData(Data.Builder().putBoolean(KEY_FORCE, false).build()).build()
+                        .setInputData(Data.Builder().putBoolean(KEY_FORCE, false).build())
+                        .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                        .build()
                 )
             }
         }
@@ -480,6 +483,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                     .enqueue(
                         OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
                             .setInputData(Data.Builder().putBoolean(KEY_FORCE, true).build())
+                            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                             .build()
                     )
                 return true
@@ -492,6 +496,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                 .enqueue(
                     OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
                         .setInputData(Data.Builder().putBoolean(DELETE_ALL, true).build())
+                        .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                         .build()
                 )
         }

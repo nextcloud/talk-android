@@ -38,6 +38,7 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoComponent
@@ -189,10 +190,18 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
     }
 
     private fun initWorkers() {
-        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
-        val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
-        val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()
-        val websocketConnectionsWorker = OneTimeWorkRequest.Builder(WebsocketConnectionsWorker::class.java).build()
+        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
+        val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
+        val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
+        val websocketConnectionsWorker = OneTimeWorkRequest.Builder(WebsocketConnectionsWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
 
         WorkManager.getInstance(applicationContext)
             .beginWith(accountRemovalWork)
@@ -205,7 +214,8 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
             CapabilitiesWorker::class.java,
             HALF_DAY,
             TimeUnit.HOURS
-        ).build()
+        )
+            .build()
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             "DailyCapabilitiesUpdateWork",
             ExistingPeriodicWorkPolicy.REPLACE,

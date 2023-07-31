@@ -26,6 +26,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.Conductor
@@ -159,9 +160,9 @@ class ConversationsListBottomDialog(
             val data = dataBuilder.build()
 
             val leaveConversationWorker =
-                OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java).setInputData(
-                    data
-                ).build()
+                OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java).setInputData(data)
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    .build()
             WorkManager.getInstance().enqueue(leaveConversationWorker)
 
             dismiss()

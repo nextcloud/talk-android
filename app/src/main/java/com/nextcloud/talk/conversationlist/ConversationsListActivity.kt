@@ -59,6 +59,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.imageLoader
@@ -1290,7 +1291,9 @@ class ConversationsListActivity :
                     val otherUserExists = userManager
                         .scheduleUserForDeletionWithId(currentUser!!.id!!)
                         .blockingGet()
-                    val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+                    val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+                        .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                        .build()
                     WorkManager.getInstance().enqueue(accountRemovalWork)
                     if (otherUserExists) {
                         finish()
@@ -1408,7 +1411,9 @@ class ConversationsListActivity :
                     val otherUserExists = userManager
                         .scheduleUserForDeletionWithId(currentUser!!.id!!)
                         .blockingGet()
-                    val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+                    val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+                        .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                        .build()
                     WorkManager.getInstance().enqueue(accountRemovalWork)
                     if (otherUserExists) {
                         finish()
@@ -1449,7 +1454,10 @@ class ConversationsListActivity :
 
     private fun deleteConversation(data: Data) {
         val deleteConversationWorker =
-            OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(data).build()
+            OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java)
+                .setInputData(data)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .build()
         WorkManager.getInstance().enqueue(deleteConversationWorker)
     }
 

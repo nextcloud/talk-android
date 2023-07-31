@@ -32,6 +32,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.RouterTransaction
@@ -369,6 +370,7 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
         val pushRegistrationWork =
             OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
                 .setInputData(data)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
         WorkManager.getInstance().enqueue(pushRegistrationWork)
     }
@@ -426,6 +428,7 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
         val pushNotificationWork =
             OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
                 .setInputData(userData)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
         WorkManager.getInstance().enqueue(pushNotificationWork)
     }
@@ -437,8 +440,11 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
                 .build()
         val signalingSettings = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
             .setInputData(userData)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .build()
-        val websocketConnectionsWorker = OneTimeWorkRequest.Builder(WebsocketConnectionsWorker::class.java).build()
+        val websocketConnectionsWorker = OneTimeWorkRequest.Builder(WebsocketConnectionsWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
 
         WorkManager.getInstance(applicationContext!!)
             .beginWith(signalingSettings)
