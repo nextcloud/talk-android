@@ -163,7 +163,7 @@ configurations.all {
 
 dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.0'
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 	
     implementation fileTree(include: ['*'], dir: 'libs')
 
