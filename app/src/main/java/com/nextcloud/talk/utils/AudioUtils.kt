@@ -42,12 +42,14 @@ object AudioUtils {
     private val TAG = AudioUtils::class.java.simpleName
     private const val VALUE_10 = 10
     private const val TIME_LIMIT = 5000
+    private const val DEFAULT_SIZE = 500
 
     /**
-     * Suspension function, returns a FloatArray containing the values of an audio file squeezed between [0,1)
+     * Suspension function, returns a FloatArray of size 500, containing the values of an audio file squeezed between
+     * [0,1)
      */
     @Throws(IOException::class)
-    suspend fun audioFileToFloatArray(file: File, size: Int): FloatArray {
+    suspend fun audioFileToFloatArray(file: File): FloatArray {
         return suspendCoroutine {
             val startTime = SystemClock.elapsedRealtime()
             var result = mutableListOf<Float>()
@@ -142,22 +144,18 @@ object AudioUtils {
             while (result.size <= 0) {
                 continue
             }
-            it.resume(shrinkFloatArray(result.toFloatArray(), size))
+            it.resume(shrinkFloatArray(result.toFloatArray(), DEFAULT_SIZE))
         }
     }
 
-    private fun shrinkFloatArray(data: FloatArray, size: Int): FloatArray {
+    fun shrinkFloatArray(data: FloatArray, size: Int): FloatArray {
         val result = FloatArray(size)
         val scale = data.size / size
         var begin = 0
         var end = scale
         for (i in 0 until size) {
             val arr = data.copyOfRange(begin, end)
-            var sum = 0f
-            for (j in arr.indices) {
-                sum += arr[j]
-            }
-            result[i] = (sum / arr.size)
+            result[i] = arr.average().toFloat()
             begin += scale
             end += scale
         }

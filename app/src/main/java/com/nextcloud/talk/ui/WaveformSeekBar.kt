@@ -28,6 +28,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatSeekBar
+import com.nextcloud.talk.utils.AudioUtils
 import kotlin.math.roundToInt
 
 class WaveformSeekBar : AppCompatSeekBar {
@@ -58,9 +59,20 @@ class WaveformSeekBar : AppCompatSeekBar {
         invalidate()
     }
 
+    /**
+     * Sets the wave data of the seekbar. Shrinks the data to a calculated number of bars based off the width of the
+     * seekBar. The greater the width, the more bars displayed.
+     *
+     * Note: bar gap = (usableWidth - waveData.size * DEFAULT_BAR_WIDTH) / (waveData.size - 1).toFloat()
+     * therefore, the gap is determined by the width of the seekBar by extension.
+     */
     fun setWaveData(data: FloatArray) {
-        waveData = data
-        invalidate()
+        val usableWidth = width - paddingLeft - paddingRight
+        if (usableWidth > 0) {
+            val numBars = if (usableWidth > VALUE_100) (usableWidth / WIDTH_DIVISOR) else usableWidth / 2f
+            waveData = AudioUtils.shrinkFloatArray(data, numBars.roundToInt())
+            invalidate()
+        }
     }
 
     private fun init() {
@@ -109,6 +121,8 @@ class WaveformSeekBar : AppCompatSeekBar {
     companion object {
         private const val DEFAULT_BAR_WIDTH: Int = 2
         private const val MAX_HEIGHT_DIVISOR: Float = 4.0f
+        private const val WIDTH_DIVISOR = 20f
+        private const val VALUE_100 = 100
         private val Int.dp: Int
             get() = (this * Resources.getSystem().displayMetrics.density).roundToInt()
     }
