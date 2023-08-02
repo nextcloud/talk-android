@@ -894,12 +894,7 @@ class ChatActivity :
             message.isDownloadingVoiceMessage = true
             adapter?.update(message)
             CoroutineScope(Dispatchers.Default).launch {
-                val bars = if (message.actorDisplayName == conversationUser?.displayName) {
-                    NUM_BARS_OUTCOMING
-                } else {
-                    NUM_BARS_INCOMING
-                }
-                val r = AudioUtils.audioFileToFloatArray(file, bars)
+                val r = AudioUtils.audioFileToFloatArray(file)
                 message.voiceMessageFloatArray = r
                 withContext(Dispatchers.Main) {
                     startPlayback(message)
@@ -4275,7 +4270,5 @@ class ChatActivity :
         private const val TYPING_INTERVAL_TO_SEND_NEXT_TYPING_MESSAGE = 1000L
         private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
         private const val TYPING_STOPPED_SIGNALING_MESSAGE_TYPE = "stoppedTyping"
-        private const val NUM_BARS_OUTCOMING: Int = 38
-        private const val NUM_BARS_INCOMING: Int = 50
     }
 }

@@ -97,10 +97,11 @@
                 android:id="@+id/voiceMessageDuration"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginStart="@dimen/standard_half_margin"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:visibility="invisible"
+                android:textColor="@color/high_emphasis_text"
                 tools:text="02:30"
                 tools:visibility="visible" />
 
