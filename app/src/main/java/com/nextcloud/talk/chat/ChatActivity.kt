@@ -188,6 +188,7 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.AudioUtils
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -232,6 +233,10 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -343,6 +348,11 @@ class ChatActivity :
         AudioFormat.CHANNEL_IN_MONO,
         AudioFormat.ENCODING_PCM_16BIT
     )
+
+    // messy workaround for a mediaPlayer bug, don't delete
+    private var lastRecordMediaPosition: Int = 0
+    private var lastRecordedSeeked: Boolean = false
+
     private lateinit var participantPermissions: ParticipantPermissions
 
     private var videoURI: Uri? = null
@@ -861,18 +871,42 @@ class ChatActivity :
         adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
         adapter?.registerViewClickListener(
             R.id.playPauseBtn
-        ) { view, message ->
+        ) { _, message ->
             val filename = message.selectedIndividualHashMap!!["name"]
             val file = File(context.cacheDir, filename!!)
             if (file.exists()) {
                 if (message.isPlayingVoiceMessage) {
                     pausePlayback(message)
                 } else {
-                    startPlayback(message)
+                    setUpWaveform(message)
                 }
             } else {
+                Log.d(TAG, "Downloaded to cache")
                 downloadFileToCache(message)
             }
+        }
+    }
+
+    private fun setUpWaveform(message: ChatMessage) {
+        val filename = message.selectedIndividualHashMap!!["name"]
+        val file = File(context.cacheDir, filename!!)
+        if (file.exists() && message.voiceMessageFloatArray == null) {
+            message.isDownloadingVoiceMessage = true
+            adapter?.update(message)
+            CoroutineScope(Dispatchers.Default).launch {
+                val bars = if (message.actorDisplayName == conversationUser?.displayName) {
+                    NUM_BARS_OUTCOMING
+                } else {
+                    NUM_BARS_INCOMING
+                }
+                val r = AudioUtils.audioFileToFloatArray(file, bars)
+                message.voiceMessageFloatArray = r
+                withContext(Dispatchers.Main) {
+                    startPlayback(message)
+                }
+            }
+        } else {
+            startPlayback(message)
         }
     }
 
@@ -1215,7 +1249,6 @@ class ChatActivity :
             setDataSource(currentVoiceRecordFile)
             prepare()
             setOnPreparedListener {
-                Log.d(TAG, "Julius the duration is ${it.duration}")
                 binding.messageInputView.seekBar.progress = 0
                 binding.messageInputView.seekBar.max = it.duration
                 voicePreviewObjectAnimator = ObjectAnimator.ofInt(
@@ -1742,6 +1775,7 @@ class ChatActivity :
         mediaPlayer?.let {
             if (!it.isPlaying) {
                 it.start()
+                Log.d(TAG, "MediaPlayer has Started")
             }
 
             mediaPlayerHandler = Handler()
@@ -1751,17 +1785,20 @@ class ChatActivity :
                         if (message.isPlayingVoiceMessage) {
                             val pos = mediaPlayer!!.currentPosition / VOICE_MESSAGE_SEEKBAR_BASE
                             if (pos < (mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE)) {
+                                lastRecordMediaPosition = mediaPlayer!!.currentPosition
                                 message.voiceMessagePlayedSeconds = pos
+                                message.voiceMessageSeekbarProgress = mediaPlayer!!.currentPosition
                                 adapter?.update(message)
                             } else {
                                 message.resetVoiceMessage = true
                                 message.voiceMessagePlayedSeconds = 0
+                                message.voiceMessageSeekbarProgress = 0
                                 adapter?.update(message)
                                 stopMediaPlayer(message)
                             }
                         }
                     }
-                    mediaPlayerHandler.postDelayed(this, SECOND)
+                    mediaPlayerHandler.postDelayed(this, 15)
                 }
             })
 
@@ -1774,6 +1811,7 @@ class ChatActivity :
     private fun pausePlayback(message: ChatMessage) {
         if (mediaPlayer!!.isPlaying) {
             mediaPlayer!!.pause()
+            Log.d(TAG, "MediaPlayer is paused")
         }
 
         message.isPlayingVoiceMessage = false
@@ -1794,13 +1832,22 @@ class ChatActivity :
                 mediaPlayer = MediaPlayer().apply {
                     setDataSource(absolutePath)
                     prepare()
-                }
-
-                currentlyPlayedVoiceMessage = message
-                message.voiceMessageDuration = mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE
-
-                mediaPlayer!!.setOnCompletionListener {
-                    stopMediaPlayer(message)
+                    setOnPreparedListener {
+                        currentlyPlayedVoiceMessage = message
+                        message.voiceMessageDuration = mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE
+                        lastRecordedSeeked = false
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        setOnMediaTimeDiscontinuityListener { mp, _ ->
+                            if (lastRecordMediaPosition > ONE_SECOND_IN_MILLIS && !lastRecordedSeeked) {
+                                mp.seekTo(lastRecordMediaPosition)
+                                lastRecordedSeeked = true
+                            }
+                        }
+                    }
+                    setOnCompletionListener {
+                        stopMediaPlayer(message)
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "failed to initialize mediaPlayer", e)
@@ -1836,7 +1883,7 @@ class ChatActivity :
     override fun updateMediaPlayerProgressBySlider(messageWithSlidedProgress: ChatMessage, progress: Int) {
         if (mediaPlayer != null) {
             if (messageWithSlidedProgress == currentlyPlayedVoiceMessage) {
-                mediaPlayer!!.seekTo(progress * VOICE_MESSAGE_SEEKBAR_BASE)
+                mediaPlayer!!.seekTo(progress)
             }
         }
     }
@@ -1894,7 +1941,8 @@ class ChatActivity :
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.id)
             .observeForever { workInfo: WorkInfo ->
                 if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-                    startPlayback(message)
+                    setUpWaveform(message)
+                    // startPlayback(message)
                 }
             }
     }
@@ -4227,5 +4275,7 @@ class ChatActivity :
         private const val TYPING_INTERVAL_TO_SEND_NEXT_TYPING_MESSAGE = 1000L
         private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
         private const val TYPING_STOPPED_SIGNALING_MESSAGE_TYPE = "stoppedTyping"
+        private const val NUM_BARS_OUTCOMING: Int = 38
+        private const val NUM_BARS_INCOMING: Int = 50
     }
 }

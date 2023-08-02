@@ -42,7 +42,6 @@ import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import kotlinx.parcelize.Parcelize
 import java.security.MessageDigest
-import java.util.Arrays
 import java.util.Date
 
 @Parcelize
@@ -132,7 +131,11 @@ data class ChatMessage(
 
     var voiceMessagePlayedSeconds: Int = 0,
 
-    var voiceMessageDownloadProgress: Int = 0
+    var voiceMessageDownloadProgress: Int = 0,
+
+    var voiceMessageSeekbarProgress: Int = 0,
+
+    var voiceMessageFloatArray: FloatArray? = null
 
 ) : Parcelable, MessageContentType, MessageContentType.Image {
 
@@ -140,7 +143,7 @@ data class ChatMessage(
 
     // messageTypesToIgnore is weird. must be deleted by refactoring!!!
     @JsonIgnore
-    var messageTypesToIgnore = Arrays.asList(
+    var messageTypesToIgnore = listOf(
         MessageType.REGULAR_TEXT_MESSAGE,
         MessageType.SYSTEM_MESSAGE,
         MessageType.SINGLE_LINK_VIDEO_MESSAGE,
@@ -415,6 +418,17 @@ data class ChatMessage(
 
     private fun isHashMapEntryEqualTo(map: HashMap<String?, String?>, key: String, searchTerm: String): Boolean {
         return map != null && MessageDigest.isEqual(map[key]!!.toByteArray(), searchTerm.toByteArray())
+    }
+
+    // needed a equals and hashcode function to fix detekt errors
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return 0
     }
 
     val isVoiceMessage: Boolean

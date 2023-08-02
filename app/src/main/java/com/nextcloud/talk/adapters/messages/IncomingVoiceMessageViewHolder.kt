@@ -101,8 +101,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         setParentMessageDataOnMessageItem(message)
 
         updateDownloadState(message)
-        binding.seekbar.max = message.voiceMessageDuration - 1
-        viewThemeUtils.platform.themeHorizontalSeekBar(binding.seekbar)
+        binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
+        viewThemeUtils.talk.themeWaveFormSeekBar(binding.seekbar)
         viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
 
         if (message.isPlayingVoiceMessage) {
@@ -115,7 +115,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
             val t = message.voiceMessagePlayedSeconds.toLong()
             binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
             binding.voiceMessageDuration.visibility = View.VISIBLE
-            binding.seekbar.setProgress(message.voiceMessagePlayedSeconds, true)
+            binding.seekbar.progress = message.voiceMessageSeekbarProgress
         } else {
             binding.playPauseBtn.visibility = View.VISIBLE
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
@@ -127,6 +127,11 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         if (message.isDownloadingVoiceMessage) {
             showVoiceMessageLoading()
         } else {
+            if (message.voiceMessageFloatArray == null || message.voiceMessageFloatArray!!.isEmpty()) {
+                binding.seekbar.setWaveData(FloatArray(0))
+            } else {
+                binding.seekbar.setWaveData(message.voiceMessageFloatArray!!)
+            }
             binding.progressBar.visibility = View.GONE
         }
 
@@ -139,7 +144,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
             binding.seekbar.progress = SEEKBAR_START
             message.resetVoiceMessage = false
             message.voiceMessagePlayedSeconds = 0
-            binding.voiceMessageDuration.visibility = View.GONE
+            binding.voiceMessageDuration.visibility = View.INVISIBLE
         }
 
         binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -330,5 +335,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
     companion object {
         private const val TAG = "VoiceInMessageView"
         private const val SEEKBAR_START: Int = 0
+        private const val ONE_SEC: Int = 1000
     }
 }

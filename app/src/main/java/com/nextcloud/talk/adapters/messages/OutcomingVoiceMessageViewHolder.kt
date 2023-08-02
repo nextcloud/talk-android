@@ -98,8 +98,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         setParentMessageDataOnMessageItem(message)
 
         updateDownloadState(message)
-        binding.seekbar.max = message.voiceMessageDuration - 1
-        viewThemeUtils.platform.themeHorizontalSeekBar(binding.seekbar)
+        binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
+        viewThemeUtils.talk.themeWaveFormSeekBar(binding.seekbar)
         viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
 
         handleIsPlayingVoiceMessageState(message)
@@ -176,7 +176,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             )
             binding.seekbar.progress = SEEKBAR_START
             message.voiceMessagePlayedSeconds = 0
-            binding.voiceMessageDuration.visibility = View.GONE
+            binding.voiceMessageDuration.visibility = View.INVISIBLE
             message.resetVoiceMessage = false
         }
     }
@@ -185,6 +185,11 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         if (message.isDownloadingVoiceMessage) {
             showVoiceMessageLoading()
         } else {
+            if (message.voiceMessageFloatArray == null || message.voiceMessageFloatArray!!.isEmpty()) {
+                binding.seekbar.setWaveData(FloatArray(0))
+            } else {
+                binding.seekbar.setWaveData(message.voiceMessageFloatArray!!)
+            }
             binding.progressBar.visibility = View.GONE
         }
     }
@@ -201,7 +206,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             val t = message.voiceMessagePlayedSeconds.toLong()
             binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
             binding.voiceMessageDuration.visibility = View.VISIBLE
-            binding.seekbar.setProgress(message.voiceMessagePlayedSeconds, true)
+            binding.seekbar.progress = message.voiceMessageSeekbarProgress
         } else {
             binding.playPauseBtn.visibility = View.VISIBLE
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
@@ -313,5 +318,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
     companion object {
         private const val TAG = "VoiceOutMessageView"
         private const val SEEKBAR_START: Int = 0
+        private const val ONE_SEC: Int = 1000
     }
 }

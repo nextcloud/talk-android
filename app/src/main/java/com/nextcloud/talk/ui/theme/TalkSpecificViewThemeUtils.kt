@@ -24,6 +24,8 @@ package com.nextcloud.talk.ui.theme
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
@@ -47,6 +49,7 @@ import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
 import com.nextcloud.talk.R
 import com.nextcloud.talk.ui.MicInputCloud
+import com.nextcloud.talk.ui.WaveformSeekBar
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.vanniktech.emoji.EmojiTextView
@@ -247,6 +250,16 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     fun themeMicInputCloud(micInputCloud: MicInputCloud) {
         withScheme(micInputCloud) { scheme ->
             micInputCloud.setColor(scheme.primary)
+        }
+    }
+
+    fun themeWaveFormSeekBar(waveformSeekBar: WaveformSeekBar) {
+        withScheme(waveformSeekBar) { scheme ->
+            waveformSeekBar.thumb.colorFilter =
+                PorterDuffColorFilter(scheme.inversePrimary, PorterDuff.Mode.SRC_IN)
+            waveformSeekBar.setColors(scheme.inversePrimary, scheme.onPrimaryContainer)
+            waveformSeekBar.progressDrawable?.colorFilter =
+                PorterDuffColorFilter(scheme.primary, PorterDuff.Mode.SRC_IN)
         }
     }
 
