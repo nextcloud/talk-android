@@ -292,7 +292,7 @@ public class DisplayUtils {
 
             if (chipXmlRes == R.xml.chip_you) {
                 spannableString.setSpan(
-                    new ForegroundColorSpan(viewThemeUtils.getScheme(context).getOnPrimary()),
+                    viewThemeUtils.talk.themeForegroundColorSpan(context),
                     start,
                     end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -25,8 +25,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -65,7 +63,7 @@ class Reaction {
                 val isSelfReaction = message.reactionsSelf != null &&
                     message.reactionsSelf!!.isNotEmpty() &&
                     message.reactionsSelf!!.contains(emoji)
-                val textColor = getTextColor(isOutgoingMessage, isSelfReaction, binding, viewThemeUtils)
+                val textColor = viewThemeUtils.talk.getTextColor(isOutgoingMessage, isSelfReaction, binding)
                 val emojiWithAmountWrapper = getEmojiWithAmountWrapperLayout(
                     binding.reactionsEmojiWrapper.context,
                     emoji,
@@ -112,15 +110,7 @@ class Reaction {
         emojiWithAmountWrapper.layoutParams = layoutInfo.wrapperParams
 
         if (layoutInfo.isSelfReaction) {
-            val color = if (layoutInfo.isOutgoingMessage) {
-                ContextCompat.getColor(
-                    emojiWithAmountWrapper.context,
-                    R.color.bg_message_list_incoming_bubble
-                )
-            } else {
-                layoutInfo.viewThemeUtils.getScheme(emojiWithAmountWrapper.context).primaryContainer
-            }
-            layoutInfo.viewThemeUtils.talk.setCheckedBackground(emojiWithAmountWrapper, color)
+            layoutInfo.viewThemeUtils.talk.setCheckedBackground(emojiWithAmountWrapper, layoutInfo.isOutgoingMessage)
 
             emojiWithAmountWrapper.setPaddingRelative(
                 layoutInfo.paddingSide,
@@ -174,19 +164,6 @@ class Reaction {
         )
         amountParams.marginStart = DisplayUtils.convertDpToPixel(AMOUNT_START_MARGIN, context).toInt()
         return amountParams
-    }
-
-    private fun getTextColor(
-        isOutgoingMessage: Boolean,
-        isSelfReaction: Boolean,
-        binding: ReactionsInsideMessageBinding,
-        viewThemeUtils: ViewThemeUtils
-    ): Int {
-        var textColor = viewThemeUtils.getScheme(binding.root.context).onSurfaceVariant
-        if (!isOutgoingMessage || isSelfReaction) {
-            textColor = ContextCompat.getColor(binding.root.context, R.color.high_emphasis_text)
-        }
-        return textColor
     }
 
     private data class EmojiWithAmountWrapperLayoutInfo(

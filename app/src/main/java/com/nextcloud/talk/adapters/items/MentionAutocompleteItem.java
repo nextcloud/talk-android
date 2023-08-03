@@ -48,7 +48,6 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
-import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 
 public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantItem.ParticipantItemViewHolder>
     implements IFilterable<String> {
@@ -103,8 +102,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof MentionAutocompleteItem) {
-            MentionAutocompleteItem inItem = (MentionAutocompleteItem) o;
+        if (o instanceof MentionAutocompleteItem inItem) {
             return (objectId.equals(inItem.objectId) && displayName.equals(inItem.displayName));
         }
 
@@ -138,18 +136,12 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
                                      R.color.conversation_item_header,
                                      null));
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.binding.nameText,
-                                        displayName,
-                                        String.valueOf(adapter.getFilter(String.class)),
-                                        viewThemeUtils
-                                            .getScheme(holder.binding.secondaryText.getContext())
-                                            .getPrimary());
-            FlexibleUtils.highlightText(holder.binding.secondaryText,
-                                        "@" + objectId,
-                                        String.valueOf(adapter.getFilter(String.class)),
-                                        viewThemeUtils
-                                            .getScheme(holder.binding.secondaryText.getContext())
-                                            .getPrimary());
+            viewThemeUtils.talk.themeAndHighlightText(holder.binding.nameText,
+                                                      displayName,
+                                                      String.valueOf(adapter.getFilter(String.class)));
+            viewThemeUtils.talk.themeAndHighlightText(holder.binding.secondaryText,
+                                                      "@" + objectId,
+                                                      String.valueOf(adapter.getFilter(String.class)));
         } else {
             holder.binding.nameText.setText(displayName);
             holder.binding.secondaryText.setText("@" + objectId);

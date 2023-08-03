@@ -329,12 +329,14 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     private void drawStatus() {
         float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, getContext());
         binding.currentAccount.ticker.setBackground(null);
-        binding.currentAccount.ticker.setImageDrawable(new StatusDrawable(
+        StatusDrawable drawable = new StatusDrawable(
             status.getStatus(),
             status.getIcon(),
             size,
-            viewThemeUtils.getScheme(binding.currentAccount.ticker.getContext()).getSurface(),
-            getContext()));
+            0,
+            getContext());
+        viewThemeUtils.talk.themeStatusDrawable(binding.currentAccount.ticker.getContext(), drawable);
+        binding.currentAccount.ticker.setImageDrawable(drawable);
         binding.currentAccount.ticker.setVisibility(View.VISIBLE);
 
 

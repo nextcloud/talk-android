@@ -51,7 +51,6 @@ import androidx.core.content.res.ResourcesCompat;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
-import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.ParticipantItemViewHolder> implements
@@ -81,8 +80,7 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ParticipantItem) {
-            ParticipantItem inItem = (ParticipantItem) o;
+        if (o instanceof ParticipantItem inItem) {
             return participant.getCalculatedActorType() == inItem.getModel().getCalculatedActorType() &&
                 participant.getCalculatedActorId().equals(inItem.getModel().getCalculatedActorId());
         }
@@ -129,9 +127,8 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
         holder.binding.nameText.setText(participant.getDisplayName());
 
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.binding.nameText, participant.getDisplayName(),
-                                        String.valueOf(adapter.getFilter(String.class)),
-                                        viewThemeUtils.getScheme(holder.binding.nameText.getContext()).getPrimary());
+            viewThemeUtils.talk.themeAndHighlightText(holder.binding.nameText, participant.getDisplayName(),
+                                                      String.valueOf(adapter.getFilter(String.class)));
         }
 
         if (TextUtils.isEmpty(participant.getDisplayName()) &&

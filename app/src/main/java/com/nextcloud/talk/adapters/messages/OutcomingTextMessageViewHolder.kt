@@ -24,13 +24,13 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
-import android.graphics.PorterDuff
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -71,11 +71,12 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         realView.isSelected = false
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
-        var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
-        val textColor = viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant
-        binding.messageTime.setTextColor(textColor)
-
-        var processedMessageText = messageUtils.enrichChatMessageText(binding.messageText.context, message, textColor)
+        var textSize = context.resources.getDimension(R.dimen.chat_text_size)
+        viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
+        var processedMessageText = messageUtils.enrichChatMessageText(
+            binding.messageText.context, message, false,
+            viewThemeUtils
+        )
         processedMessageText = messageUtils.processMessageParameters(
             binding.messageText.context,
             viewThemeUtils,
@@ -98,7 +99,7 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
 
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
-        binding.messageText.setTextColor(textColor)
+        viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
         binding.messageText.text = processedMessageText
 
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
@@ -118,22 +119,19 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         }
 
         val readStatusContentDescriptionString = when (message.readStatus) {
-            ReadStatus.READ -> context?.resources?.getString(R.string.nc_message_read)
-            ReadStatus.SENT -> context?.resources?.getString(R.string.nc_message_sent)
+            ReadStatus.READ -> context.resources?.getString(R.string.nc_message_read)
+            ReadStatus.SENT -> context.resources?.getString(R.string.nc_message_sent)
             else -> null
         }
 
         readStatusDrawableInt?.let { drawableInt ->
-            ResourcesCompat.getDrawable(context!!.resources, drawableInt, null)?.let {
+            ResourcesCompat.getDrawable(context.resources, drawableInt, null)?.let {
                 binding.checkMark.setImageDrawable(it)
-                binding.checkMark.setColorFilter(
-                    viewThemeUtils.getScheme(binding.messageText.context).onSurfaceVariant,
-                    PorterDuff.Mode.SRC_ATOP
-                )
+                viewThemeUtils.talk.themeMessageCheckMark(binding.checkMark)
             }
         }
 
-        binding.checkMark.setContentDescription(readStatusContentDescriptionString)
+        binding.checkMark.contentDescription = readStatusContentDescriptionString
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
@@ -158,7 +156,6 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
 
     private fun processParentMessage(message: ChatMessage) {
         val parentChatMessage = message.parentMessage
-        val textColor = viewThemeUtils.getScheme(binding.messageQuote.quotedMessage.context).onSurfaceVariant
         parentChatMessage!!.activeUser = message.activeUser
         parentChatMessage.imageUrl?.let {
             binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
@@ -172,19 +169,20 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
             binding.messageQuote.quotedMessageImage.visibility = View.GONE
         }
         binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-            ?: context!!.getText(R.string.nc_nick_guest)
+            ?: context.getText(R.string.nc_nick_guest)
         binding.messageQuote.quotedMessage.text = messageUtils
             .enrichChatReplyMessageText(
                 binding.messageQuote.quotedMessage.context,
                 parentChatMessage,
-                textColor
+                false,
+                viewThemeUtils
             )
 
-        binding.messageQuote.quotedMessageAuthor.setTextColor(textColor)
-        binding.messageQuote.quotedMessage.setTextColor(textColor)
-        binding.messageQuote.quoteColoredView.setBackgroundColor(textColor)
+        viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
+        viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
+        viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
 
-        binding.messageQuote.quotedChatMessageView.setOnClickListener() {
+        binding.messageQuote.quotedChatMessageView.setOnClickListener {
             val chatActivity = commonMessageInterface as ChatActivity
             chatActivity.jumpToQuotedMessage(parentChatMessage)
         }

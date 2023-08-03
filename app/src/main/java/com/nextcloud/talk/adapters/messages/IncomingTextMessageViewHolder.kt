@@ -88,7 +88,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         var processedMessageText = messageUtils.enrichChatMessageText(
             binding.messageText.context,
             message,
-            binding.messageText.context.resources.getColor(R.color.nc_incoming_text_default)
+            true,
+            viewThemeUtils
         )
 
         processedMessageText = messageUtils.processMessageParameters(
@@ -197,7 +198,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             binding.messageQuote.quotedMessageImage.visibility = View.GONE
         }
         binding.messageQuote.quotedMessageAuthor.text = if (parentChatMessage.actorDisplayName.isNullOrEmpty()) {
-            context!!.getText(R.string.nc_nick_guest)
+            context.getText(R.string.nc_nick_guest)
         } else {
             parentChatMessage.actorDisplayName
         }
@@ -206,7 +207,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             .enrichChatReplyMessageText(
                 binding.messageQuote.quotedMessage.context,
                 parentChatMessage,
-                binding.messageQuote.quotedMessage.context.resources.getColor(R.color.nc_incoming_text_default)
+                true,
+                viewThemeUtils
             )
 
         if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
@@ -217,7 +219,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             )
         }
 
-        binding.messageQuote.quotedChatMessageView.setOnClickListener() {
+        binding.messageQuote.quotedChatMessageView.setOnClickListener {
             val chatActivity = commonMessageInterface as ChatActivity
             chatActivity.jumpToQuotedMessage(parentChatMessage)
         }

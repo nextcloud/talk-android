@@ -46,7 +46,6 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.ISectionable;
-import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemViewHolder> implements
@@ -74,8 +73,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ContactItem) {
-            ContactItem inItem = (ContactItem) o;
+        if (o instanceof ContactItem inItem) {
             return participant.getCalculatedActorType() == inItem.getModel().getCalculatedActorType() &&
                 participant.getCalculatedActorId().equals(inItem.getModel().getCalculatedActorId());
         }
@@ -135,10 +133,9 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
         holder.binding.nameText.setText(participant.getDisplayName());
 
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.binding.nameText,
-                                        participant.getDisplayName(),
-                                        String.valueOf(adapter.getFilter(String.class)),
-                                        viewThemeUtils.getScheme(holder.binding.nameText.getContext()).getPrimary());
+            viewThemeUtils.talk.themeAndHighlightText(holder.binding.nameText,
+                                                      participant.getDisplayName(),
+                                                      String.valueOf(adapter.getFilter(String.class)));
         }
 
         if (TextUtils.isEmpty(participant.getDisplayName()) &&

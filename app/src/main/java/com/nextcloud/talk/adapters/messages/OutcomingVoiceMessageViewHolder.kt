@@ -24,7 +24,6 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.PorterDuff
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -86,8 +85,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         super.onBind(message)
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
-        val textColor = viewThemeUtils.getScheme(binding.messageTime.context).onSurfaceVariant
-        binding.messageTime.setTextColor(textColor)
+        viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         colorizeMessageBubble(message)
@@ -139,10 +137,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context!!, drawableInt)?.let {
                 binding.checkMark.setImageDrawable(it)
-                binding.checkMark.setColorFilter(
-                    viewThemeUtils.getScheme(binding.checkMark.context).onSurfaceVariant,
-                    PorterDuff.Mode.SRC_ATOP
-                )
+                viewThemeUtils.talk.themeMessageCheckMark(binding.checkMark)
             }
         }
 
@@ -291,7 +286,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
                 .enrichChatReplyMessageText(
                     binding.messageQuote.quotedMessage.context,
                     parentChatMessage,
-                    viewThemeUtils.getScheme(binding.messageQuote.quotedMessage.context).onSurfaceVariant
+                    false,
+                    viewThemeUtils
                 )
             viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
             viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
