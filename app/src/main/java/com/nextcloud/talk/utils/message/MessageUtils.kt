@@ -44,9 +44,9 @@ class MessageUtils(val context: Context) {
         return if (message.message == null) {
             null
         } else if (message.renderMarkdown == false) {
-            SpannableString(DisplayUtils.ellipsize(message.message!!, MAX_REPLY_LENGTH))
+            SpannableString(DisplayUtils.ellipsize(message.text, MAX_REPLY_LENGTH))
         } else {
-            enrichChatMessageText(context, DisplayUtils.ellipsize(message.message!!, MAX_REPLY_LENGTH), textColor)
+            enrichChatMessageText(context, DisplayUtils.ellipsize(message.text, MAX_REPLY_LENGTH), textColor)
         }
     }
 
