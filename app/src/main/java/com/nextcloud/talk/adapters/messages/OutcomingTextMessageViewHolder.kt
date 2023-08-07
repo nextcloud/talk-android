@@ -74,7 +74,9 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         var textSize = context.resources.getDimension(R.dimen.chat_text_size)
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
         var processedMessageText = messageUtils.enrichChatMessageText(
-            binding.messageText.context, message, false,
+            binding.messageText.context,
+            message,
+            false,
             viewThemeUtils
         )
         processedMessageText = messageUtils.processMessageParameters(

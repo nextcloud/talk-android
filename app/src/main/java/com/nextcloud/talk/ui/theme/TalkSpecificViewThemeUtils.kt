@@ -373,7 +373,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     fun getTextColor(
         isOutgoingMessage: Boolean,
         isSelfReaction: Boolean,
-        binding: ReactionsInsideMessageBinding,
+        binding: ReactionsInsideMessageBinding
     ): Int {
         return withScheme(binding.root) { scheme ->
             return@withScheme if (!isOutgoingMessage || isSelfReaction) {
