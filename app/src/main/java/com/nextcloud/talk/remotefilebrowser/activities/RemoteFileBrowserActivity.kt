@@ -26,7 +26,6 @@ package com.nextcloud.talk.remotefilebrowser.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -90,13 +89,10 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         binding = ActivityRemoteFileBrowserBinding.inflate(layoutInflater)
         setSupportActionBar(binding.remoteFileBrowserItemsToolbar)
         viewThemeUtils.material.themeToolbar(binding.remoteFileBrowserItemsToolbar)
-        val scheme = viewThemeUtils.getScheme(binding.sortListButtonGroup.context)
-        binding.sortListButtonGroup.setBackgroundColor(scheme.surface)
-        binding.sortButton.iconTint = ColorStateList.valueOf(scheme.onSurface)
-        binding.sortButton.setTextColor(scheme.onSurface)
+        viewThemeUtils.talk.themeSortListButtonGroup(binding.sortListButtonGroup)
+        viewThemeUtils.talk.themeSortButton(binding.sortButton)
         viewThemeUtils.material.colorMaterialTextButton(binding.sortButton)
-        binding.pathNavigationBackButton.iconTint = ColorStateList.valueOf(scheme.onSurface)
-        binding.pathNavigationBackButton.setTextColor(scheme.onSurface)
+        viewThemeUtils.talk.themePathNavigationButton(binding.pathNavigationBackButton)
         viewThemeUtils.material.colorMaterialTextButton(binding.pathNavigationBackButton)
         viewThemeUtils.platform.themeStatusBar(this)
         setContentView(binding.root)
@@ -199,7 +195,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_share_files, menu)
-        filesSelectionDoneMenuItem = menu?.findItem(R.id.files_selection_done)
+        filesSelectionDoneMenuItem = menu.findItem(R.id.files_selection_done)
         return true
     }
 

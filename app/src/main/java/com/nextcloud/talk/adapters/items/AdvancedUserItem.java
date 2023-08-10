@@ -41,7 +41,6 @@ import androidx.annotation.Nullable;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
-import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.UserItemViewHolder> implements
@@ -65,8 +64,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof AdvancedUserItem) {
-            AdvancedUserItem inItem = (AdvancedUserItem) o;
+        if (o instanceof AdvancedUserItem inItem) {
             return participant.equals(inItem.getModel());
         }
         return false;
@@ -107,11 +105,10 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
 
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(
-                    holder.binding.userName,
-                    participant.getDisplayName(),
-                    String.valueOf(adapter.getFilter(String.class)),
-                    viewThemeUtils.getScheme(holder.binding.userName.getContext()).getPrimary());
+            viewThemeUtils.talk.themeAndHighlightText(
+                holder.binding.userName,
+                participant.getDisplayName(),
+                String.valueOf(adapter.getFilter(String.class)));
         } else {
             holder.binding.userName.setText(participant.getDisplayName());
         }

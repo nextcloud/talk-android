@@ -26,13 +26,19 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
+import android.text.Spannable
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
@@ -42,17 +48,23 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
 import com.nextcloud.talk.R
+import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.ui.MicInputCloud
+import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.WaveformSeekBar
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.vanniktech.emoji.EmojiTextView
+import com.wooplr.spotlight.SpotlightView
+import eu.davidea.flexibleadapter.utils.FlexibleUtils
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -160,11 +172,19 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    fun setCheckedBackground(linearLayout: LinearLayout, @ColorInt backgroundColor: Int) {
+    fun setCheckedBackground(linearLayout: LinearLayout, incoming: Boolean) {
         withScheme(linearLayout) { scheme ->
             val drawable = AppCompatResources
                 .getDrawable(linearLayout.context, R.drawable.reaction_self_background)!!
                 .mutate()
+            val backgroundColor = if (incoming) {
+                scheme.primaryContainer
+            } else {
+                ContextCompat.getColor(
+                    linearLayout.context,
+                    R.color.bg_message_list_incoming_bubble
+                )
+            }
             DrawableCompat.setTintList(
                 drawable,
                 ColorStateList.valueOf(backgroundColor)
@@ -260,6 +280,107 @@ class TalkSpecificViewThemeUtils @Inject constructor(
             waveformSeekBar.setColors(scheme.inversePrimary, scheme.onPrimaryContainer)
             waveformSeekBar.progressDrawable?.colorFilter =
                 PorterDuffColorFilter(scheme.primary, PorterDuff.Mode.SRC_IN)
+        }
+    }
+
+    fun themeForegroundColorSpan(context: Context): ForegroundColorSpan {
+        return withScheme(context) { scheme ->
+            return@withScheme ForegroundColorSpan(scheme.primary)
+        }
+    }
+
+    fun themeSpotlightView(context: Context, builder: SpotlightView.Builder): SpotlightView.Builder {
+        return withScheme(context) { scheme ->
+            return@withScheme builder.headingTvColor(scheme.primary).lineAndArcColor(scheme.primary)
+        }
+    }
+
+    fun themeAndHighlightText(
+        textView: TextView,
+        originalText: String?,
+        c: String?
+    ) {
+        withScheme(textView) { scheme ->
+            var constraint = c
+            constraint = FlexibleUtils.toLowerCase(constraint)
+            var start = FlexibleUtils.toLowerCase(originalText).indexOf(constraint)
+            if (start != -1) {
+                val spanText = Spannable.Factory.getInstance().newSpannable(originalText)
+                do {
+                    val end = start + constraint.length
+                    spanText.setSpan(
+                        ForegroundColorSpan(scheme.primary),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    spanText.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    start = FlexibleUtils.toLowerCase(originalText)
+                        .indexOf(constraint, end + 1) // +1 skips the consecutive span
+                } while (start != -1)
+                textView.setText(spanText, TextView.BufferType.SPANNABLE)
+            } else {
+                textView.setText(originalText, TextView.BufferType.NORMAL)
+            }
+        }
+    }
+
+    fun themeSortButton(sortButton: MaterialButton) {
+        withScheme(sortButton) { scheme ->
+            sortButton.iconTint = ColorStateList.valueOf(scheme.onSurface)
+            sortButton.setTextColor(scheme.onSurface)
+        }
+    }
+
+    fun themePathNavigationButton(navigationBtn: MaterialButton) {
+        withScheme(navigationBtn) { scheme ->
+            navigationBtn.iconTint = ColorStateList.valueOf(scheme.onSurface)
+            navigationBtn.setTextColor(scheme.onSurface)
+        }
+    }
+
+    fun themeSortListButtonGroup(relativeLayout: RelativeLayout) {
+        withScheme(relativeLayout) { scheme ->
+            relativeLayout.setBackgroundColor(scheme.surface)
+        }
+    }
+
+    fun themeStatusDrawable(context: Context, statusDrawable: StatusDrawable) {
+        withScheme(context) { scheme ->
+            statusDrawable.colorStatusDrawable(scheme.surface)
+        }
+    }
+
+    fun themeMessageCheckMark(imageView: ImageView) {
+        withScheme(imageView) { scheme ->
+            imageView.setColorFilter(
+                scheme.onSurfaceVariant,
+                PorterDuff.Mode.SRC_ATOP
+            )
+        }
+    }
+
+    fun themeMarkdown(context: Context, message: String, incoming: Boolean): Spanned {
+        return withScheme(context) { scheme ->
+            return@withScheme if (incoming) {
+                MessageUtils(context).getRenderedMarkdownText(context, message, R.color.nc_incoming_text_default)
+            } else {
+                MessageUtils(context).getRenderedMarkdownText(context, message, scheme.onSurfaceVariant)
+            }
+        }
+    }
+
+    fun getTextColor(
+        isOutgoingMessage: Boolean,
+        isSelfReaction: Boolean,
+        binding: ReactionsInsideMessageBinding
+    ): Int {
+        return withScheme(binding.root) { scheme ->
+            return@withScheme if (!isOutgoingMessage || isSelfReaction) {
+                ContextCompat.getColor(binding.root.context, R.color.high_emphasis_text)
+            } else {
+                scheme.onSurfaceVariant
+            }
         }
     }
 
