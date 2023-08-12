@@ -71,7 +71,7 @@ class MessageUtils(val context: Context) {
         } else if (message.renderMarkdown == false) {
             SpannableString(message.message)
         } else {
-            enrichChatMessageText(context, message.text, incoming, viewThemeUtils)
+            enrichChatMessageText(context, message.message!!, incoming, viewThemeUtils)
         }
     }
 
