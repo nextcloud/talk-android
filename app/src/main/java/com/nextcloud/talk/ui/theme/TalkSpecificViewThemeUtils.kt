@@ -363,7 +363,11 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     fun themeMarkdown(context: Context, message: String, incoming: Boolean): Spanned {
         return withScheme(context) { scheme ->
             return@withScheme if (incoming) {
-                MessageUtils(context).getRenderedMarkdownText(context, message, context.getColor(R.color.nc_incoming_text_default))
+                MessageUtils(context).getRenderedMarkdownText(
+                    context,
+                    message,
+                    context.getColor(R.color.nc_incoming_text_default)
+                )
             } else {
                 MessageUtils(context).getRenderedMarkdownText(context, message, scheme.onSurfaceVariant)
             }
