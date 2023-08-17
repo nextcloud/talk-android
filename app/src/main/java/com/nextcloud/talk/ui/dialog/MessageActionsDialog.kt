@@ -109,6 +109,7 @@ class MessageActionsDialog(
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
                 !(message.isDeletedCommentMessage || message.isDeleted)
         )
+        initMenuRemindMessage(!message.isDeleted && CapabilitiesUtilNew.isRemindSupported(user))
         initMenuMarkAsUnread(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType()
@@ -262,6 +263,17 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuForwardMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuRemindMessage(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuNotifyMessage.setOnClickListener {
+                chatActivity.remindMeLater(message)
+                dismiss()
+            }
+        }
+
+        dialogMessageActionsBinding.menuNotifyMessage.visibility = getVisibility(visible)
     }
 
     private fun initMenuDeleteMessage(visible: Boolean) {

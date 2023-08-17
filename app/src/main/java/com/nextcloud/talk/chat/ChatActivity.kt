@@ -95,6 +95,7 @@ import androidx.core.text.bold
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.text.EmojiCompat
 import androidx.emoji2.widget.EmojiTextView
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -183,6 +184,7 @@ import com.nextcloud.talk.ui.MicInputCloud
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
+import com.nextcloud.talk.ui.dialog.DateTimePickerFragment
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
@@ -3858,6 +3860,16 @@ class ChatActivity :
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.putExtras(bundle)
         startActivity(intent)
+    }
+
+    fun remindMeLater(message: ChatMessage?) {
+        Log.d(TAG, "remindMeLater called")
+        val newFragment: DialogFragment = DateTimePickerFragment.newInstance(
+            roomToken,
+            message!!.id,
+            chatViewModel
+        )
+        newFragment.show(supportFragmentManager, DateTimePickerFragment.TAG)
     }
 
     fun markAsUnread(message: IMessage?) {

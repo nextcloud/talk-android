@@ -23,6 +23,8 @@ package com.nextcloud.talk.chat.data
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 
@@ -53,5 +55,39 @@ class ChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
             ApiUtils.getUrlForParticipantsActive(apiVersion, user.baseUrl, roomToken),
             roomPassword
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!) }
+    }
+
+    override fun setReminder(user: User, roomToken: String, messageId: String, timeStamp: Int): Observable<Reminder> {
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
+        val apiVersion = ApiUtils.getChatApiVersion(user, intArrayOf(ApiUtils.APIv1, 1))
+        return ncApi.setReminder(
+            credentials,
+            ApiUtils.getUrlForReminder(user, roomToken, messageId, apiVersion),
+            timeStamp
+        ).map {
+            it.ocs!!.data
+        }
+    }
+
+    override fun getReminder(user: User, roomToken: String, messageId: String): Observable<Reminder> {
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
+        val apiVersion = ApiUtils.getChatApiVersion(user, intArrayOf(ApiUtils.APIv1, 1))
+        return ncApi.getReminder(
+            credentials,
+            ApiUtils.getUrlForReminder(user, roomToken, messageId, apiVersion)
+        ).map {
+            it.ocs!!.data
+        }
+    }
+
+    override fun deleteReminder(user: User, roomToken: String, messageId: String): Observable<GenericOverall> {
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
+        val apiVersion = ApiUtils.getChatApiVersion(user, intArrayOf(ApiUtils.APIv1, 1))
+        return ncApi.deleteReminder(
+            credentials,
+            ApiUtils.getUrlForReminder(user, roomToken, messageId, apiVersion)
+        ).map {
+            it
+        }
     }
 }
