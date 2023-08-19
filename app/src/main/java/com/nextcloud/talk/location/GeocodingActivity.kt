@@ -32,11 +32,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.adapters.GeocodingAdapter
@@ -216,7 +216,7 @@ class GeocodingActivity :
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get geocoded addresses", e)
-            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
         updateResultsOnMainThread(results)
     }

@@ -4,9 +4,9 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
@@ -145,13 +145,13 @@ class GuestAccessHelper(
 
         override fun onError(e: Throwable) {
             val message = context.getString(R.string.nc_guest_access_resend_invitations_failed)
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
             Log.e(TAG, message, e)
         }
 
         override fun onComplete() {
             if (resendInvitationsResult.successful) {
-                Toast.makeText(context, R.string.nc_guest_access_resend_invitations_successful, Toast.LENGTH_SHORT)
+                Snackbar.make(binding.root, R.string.nc_guest_access_resend_invitations_successful, Snackbar.LENGTH_SHORT)
                     .show()
             }
         }
@@ -167,7 +167,7 @@ class GuestAccessHelper(
 
         override fun onError(e: Throwable) {
             val message = context.getString(R.string.nc_guest_access_allow_failed)
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
             Log.e(TAG, message, e)
         }
 
@@ -210,7 +210,7 @@ class GuestAccessHelper(
 
         override fun onError(e: Throwable) {
             val message = context.getString(R.string.nc_guest_access_password_failed)
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
             Log.e(TAG, message, e)
         }
 

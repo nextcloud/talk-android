@@ -83,7 +83,6 @@ import android.widget.RelativeLayout.BELOW
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.SeekBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
@@ -114,6 +113,7 @@ import coil.transform.CircleCropTransformation
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -568,7 +568,7 @@ class ChatActivity :
                 }
 
                 is ChatViewModel.GetRoomErrorState -> {
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
                 else -> {}
@@ -612,7 +612,7 @@ class ChatActivity :
                 }
 
                 is ChatViewModel.JoinRoomErrorState -> {
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
                 else -> {}
@@ -1166,10 +1166,10 @@ class ChatActivity :
                         val voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
                         if (voiceRecordDuration < MINIMUM_VOICE_RECORD_DURATION) {
                             Log.d(TAG, "voiceRecordDuration: $voiceRecordDuration")
-                            Toast.makeText(
-                                context,
+                            Snackbar.make(
+                                binding.root,
                                 context.getString(R.string.nc_voice_message_hold_to_record_info),
-                                Toast.LENGTH_SHORT
+                                Snackbar.LENGTH_SHORT
                             ).show()
                             stopAndDiscardAudioRecording()
                             return true
@@ -1675,16 +1675,16 @@ class ChatActivity :
         if (conversationUser != null) {
             runOnUiThread {
                 if (currentConversation?.objectType == ObjectType.ROOM) {
-                    Toast.makeText(
-                        context,
+                    Snackbar.make(
+                        binding.root,
                         context.resources.getString(R.string.switch_to_main_room),
-                        Toast.LENGTH_LONG
+                        Snackbar.LENGTH_LONG
                     ).show()
                 } else {
-                    Toast.makeText(
-                        context,
+                    Snackbar.make(
+                        binding.root,
                         context.resources.getString(R.string.switch_to_breakout_room),
-                        Toast.LENGTH_LONG
+                        Snackbar.LENGTH_LONG
                     ).show()
                 }
             }
@@ -1846,7 +1846,7 @@ class ChatActivity :
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "failed to initialize mediaPlayer", e)
-                Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             }
         }
     }
@@ -2364,12 +2364,18 @@ class ChatActivity :
                         )
                     }
                 } catch (e: IllegalStateException) {
-                    Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
-                        .show()
+                    context.resources?.getString(R.string.nc_upload_failed)?.let {
+                        Snackbar.make(binding.root, it, Snackbar
+                            .LENGTH_LONG)
+                            .show()
+                    }
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 } catch (e: IllegalArgumentException) {
-                    Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
-                        .show()
+                    context.resources?.getString(R.string.nc_upload_failed)?.let {
+                        Snackbar.make(binding.root, it, Snackbar
+                            .LENGTH_LONG)
+                            .show()
+                    }
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 }
             }
@@ -2419,20 +2425,22 @@ class ChatActivity :
                             UploadAndShareFilesWorker.requestStoragePermission(this)
                         }
                     } catch (e: IllegalStateException) {
-                        Toast.makeText(
-                            context,
-                            context.resources?.getString(R.string.nc_upload_failed),
-                            Toast.LENGTH_LONG
+                        Snackbar.make(
+                            binding.root,
+                            R.string.nc_upload_failed,
+                            Snackbar.LENGTH_LONG
                         )
                             .show()
                         Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                     } catch (e: IllegalArgumentException) {
-                        Toast.makeText(
-                            context,
-                            context.resources?.getString(R.string.nc_upload_failed),
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
+                        context.resources?.getString(R.string.nc_upload_failed)?.let {
+                            Snackbar.make(
+                                binding.root,
+                                it,
+                                Snackbar.LENGTH_LONG
+                            )
+                                .show()
+                        }
                         Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                     }
                 }
@@ -2488,28 +2496,28 @@ class ChatActivity :
                     uploadFiles(filesToUpload)
                 }
             } else {
-                Toast
-                    .makeText(context, context.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
+                Snackbar
+                    .make(binding.root, context.getString(R.string.read_storage_no_permission), Snackbar.LENGTH_LONG)
                     .show()
             }
         } else if (requestCode == REQUEST_SHARE_FILE_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showLocalFilePicker()
             } else {
-                Toast.makeText(
-                    context,
+                Snackbar.make(
+                    binding.root,
                     context.getString(R.string.nc_file_storage_permission),
-                    Toast.LENGTH_LONG
+                    Snackbar.LENGTH_LONG
                 ).show()
             }
         } else if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // do nothing. user will tap on the microphone again if he wants to record audio..
             } else {
-                Toast.makeText(
-                    context,
+                Snackbar.make(
+                    binding.root,
                     context.getString(R.string.nc_voice_message_missing_audio_permission),
-                    Toast.LENGTH_LONG
+                    Snackbar.LENGTH_LONG
                 ).show()
             }
         } else if (requestCode == REQUEST_READ_CONTACT_PERMISSION) {
@@ -2517,20 +2525,20 @@ class ChatActivity :
                 val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
                 startActivityForResult(intent, REQUEST_CODE_SELECT_CONTACT)
             } else {
-                Toast.makeText(
-                    context,
+                Snackbar.make(
+                    binding.root,
                     context.getString(R.string.nc_share_contact_permission),
-                    Toast.LENGTH_LONG
+                    Snackbar.LENGTH_LONG
                 ).show()
             }
         } else if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast
-                    .makeText(context, context.getString(R.string.camera_permission_granted), Toast.LENGTH_LONG)
+                Snackbar
+                    .make(binding.root, context.getString(R.string.camera_permission_granted), Snackbar.LENGTH_LONG)
                     .show()
             } else {
-                Toast
-                    .makeText(context, context.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
+                Snackbar
+                    .make(binding.root, context.getString(R.string.take_photo_permission), Snackbar.LENGTH_LONG)
                     .show()
             }
         }
@@ -2563,7 +2571,10 @@ class ChatActivity :
                 metaData
             )
         } catch (e: IllegalArgumentException) {
-            Toast.makeText(context, context.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
+            context.resources?.getString(R.string.nc_upload_failed)?.let {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG)
+                    .show()
+            }
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
         }
     }
@@ -3564,7 +3575,7 @@ class ChatActivity :
             if (conversationUser != null) {
                 val pp = ParticipantPermissions(conversationUser!!, it)
                 if (!pp.canStartCall() && currentConversation?.hasCall == false) {
-                    Toast.makeText(context, R.string.startCallForbidden, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.startCallForbidden, Snackbar.LENGTH_LONG).show()
                 } else {
                     ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
                     val callIntent = getIntentForCall(isVoiceOnlyCall, callWithoutNotification)
@@ -3725,7 +3736,7 @@ class ChatActivity :
                 "Deletion of message is skipped because of restrictions by permissions. " +
                     "This method should not have been called!"
             )
-            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         } else {
             var apiVersion = 1
             // FIXME Fix API checking with guests?
@@ -3750,10 +3761,10 @@ class ChatActivity :
 
                     override fun onNext(t: ChatOverallSingleMessage) {
                         if (t.ocs!!.meta!!.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
-                            Toast.makeText(
-                                context,
+                            Snackbar.make(
+                                binding.root,
                                 R.string.nc_delete_message_leaked_to_matterbridge,
-                                Toast.LENGTH_LONG
+                                Snackbar.LENGTH_LONG
                             ).show()
                         }
                     }
@@ -3765,7 +3776,7 @@ class ChatActivity :
                                 message?.id,
                             e
                         )
-                        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     }
 
                     override fun onComplete() {
@@ -4125,7 +4136,7 @@ class ChatActivity :
 
                     override fun onError(e: Throwable) {
                         Log.e(TAG, "error after clicking on user mention chip", e)
-                        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     }
 
                     override fun onComplete() {
@@ -4159,7 +4170,7 @@ class ChatActivity :
                         )
                         File("$outputDir/$videoName$VIDEO_SUFFIX")
                     } catch (e: IOException) {
-                        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                         Log.e(TAG, "error while creating video file", e)
                         null
                     }

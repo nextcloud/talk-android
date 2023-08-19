@@ -23,10 +23,12 @@
  */
 package com.nextcloud.talk.jobs
 
+import android.Manifest
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.media.AudioAttributes
 import android.media.MediaPlayer
@@ -40,7 +42,8 @@ import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
-import android.widget.Toast
+import android.view.View
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
@@ -53,6 +56,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
@@ -325,7 +329,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     Log.e(TAG, "Failed to get NC notification", e)
                     if (BuildConfig.DEBUG) {
                         Handler(Looper.getMainLooper()).post {
-                            Toast.makeText(context, "Failed to get NC notification", Toast.LENGTH_LONG).show()
+                            Snackbar.make(View(applicationContext), "Failed to get NC notification", Snackbar
+                                .LENGTH_LONG).show()
                         }
                     }
                 }
@@ -734,6 +739,20 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun sendNotification(notificationId: Int, notification: Notification) {
         Log.d(TAG, "show notification with id $notificationId")
+        if (ActivityCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
         notificationManager.notify(notificationId, notification)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -902,6 +921,20 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                             .build()
 
                         val notificationId: Int = SystemClock.uptimeMillis().toInt()
+                        if (ActivityCompat.checkSelfPermission(
+                                applicationContext,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
+                            return
+                        }
                         notificationManager.notify(notificationId, notification)
                         Log.d(TAG, "'you missed a call' notification was created")
                     }

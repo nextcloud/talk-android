@@ -31,12 +31,12 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -141,7 +141,7 @@ class ConversationInfoEditActivity :
                 }
 
                 is ConversationInfoEditViewModel.GetRoomErrorState -> {
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
                 is ConversationInfoEditViewModel.UploadAvatarSuccessState -> {
@@ -150,7 +150,7 @@ class ConversationInfoEditActivity :
                 }
 
                 is ConversationInfoEditViewModel.UploadAvatarErrorState -> {
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
                 is ConversationInfoEditViewModel.DeleteAvatarSuccessState -> {
@@ -159,7 +159,7 @@ class ConversationInfoEditActivity :
                 }
 
                 is ConversationInfoEditViewModel.DeleteAvatarErrorState -> {
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
                 else -> {}
@@ -249,10 +249,10 @@ class ConversationInfoEditActivity :
                 }
 
                 override fun onError(e: Throwable) {
-                    Toast.makeText(
-                        applicationContext,
+                    Snackbar.make(
+                        binding.root,
                         context.getString(R.string.default_error_msg),
-                        Toast.LENGTH_LONG
+                        Snackbar.LENGTH_LONG
                     ).show()
                     Log.e(TAG, "Error while saving conversation name", e)
                 }
@@ -289,10 +289,10 @@ class ConversationInfoEditActivity :
                 }
 
                 override fun onError(e: Throwable) {
-                    Toast.makeText(
-                        applicationContext,
+                    Snackbar.make(
+                        binding.root,
                         context.getString(R.string.default_error_msg),
-                        Toast.LENGTH_LONG
+                        Snackbar.LENGTH_LONG
                     ).show()
                     Log.e(TAG, "Error while saving conversation description", e)
                 }
@@ -315,7 +315,7 @@ class ConversationInfoEditActivity :
             }
 
             ImagePicker.RESULT_ERROR -> {
-                Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, ImagePicker.getError(data), Snackbar.LENGTH_SHORT).show()
             }
 
             else -> {

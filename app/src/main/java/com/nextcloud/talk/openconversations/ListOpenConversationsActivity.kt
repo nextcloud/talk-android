@@ -24,9 +24,9 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -112,7 +112,7 @@ class ListOpenConversationsActivity : BaseActivity() {
                     binding.emptyList.emptyListViewText.visibility = View.VISIBLE
                 }
                 is OpenConversationsViewModel.FetchConversationsErrorState -> {
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
                 else -> {}
             }
