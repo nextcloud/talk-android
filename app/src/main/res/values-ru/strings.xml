@@ -10,6 +10,7 @@
     <string name="avatar">Аватар</string>
     <string name="away">Отошёл</string>
     <string name="call_more_actions_dialog_headline">Дополнительные настройки звонка</string>
+    <string name="call_running_since_one_hour">Звонок длится уже час</string>
     <string name="call_without_notification">Звонок без уведомления</string>
     <string name="camera_permission_granted">Разрешение на камеру получено. Пожалуйста, выберите камеру снова.</string>
     <string name="choose_avatar_from_cloud">Выберите аватар из облака</string>

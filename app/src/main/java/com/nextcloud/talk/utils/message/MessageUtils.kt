@@ -40,28 +40,48 @@ import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
 
 class MessageUtils(val context: Context) {
-    fun enrichChatReplyMessageText(context: Context, message: ChatMessage, textColor: Int): Spanned? {
+    fun enrichChatReplyMessageText(
+        context: Context,
+        message: ChatMessage,
+        incoming: Boolean,
+        viewThemeUtils: ViewThemeUtils
+    ): Spanned? {
         return if (message.message == null) {
             null
         } else if (message.renderMarkdown == false) {
-            SpannableString(DisplayUtils.ellipsize(message.message!!, MAX_REPLY_LENGTH))
+            SpannableString(DisplayUtils.ellipsize(message.text, MAX_REPLY_LENGTH))
         } else {
-            enrichChatMessageText(context, DisplayUtils.ellipsize(message.message!!, MAX_REPLY_LENGTH), textColor)
+            enrichChatMessageText(
+                context,
+                DisplayUtils.ellipsize(message.text, MAX_REPLY_LENGTH),
+                incoming,
+                viewThemeUtils
+            )
         }
     }
 
-    fun enrichChatMessageText(context: Context, message: ChatMessage, textColor: Int): Spanned? {
+    fun enrichChatMessageText(
+        context: Context,
+        message: ChatMessage,
+        incoming: Boolean,
+        viewThemeUtils: ViewThemeUtils
+    ): Spanned? {
         return if (message.message == null) {
             null
         } else if (message.renderMarkdown == false) {
             SpannableString(message.message)
         } else {
-            enrichChatMessageText(context, message.message!!, textColor)
+            enrichChatMessageText(context, message.message!!, incoming, viewThemeUtils)
         }
     }
 
-    private fun enrichChatMessageText(context: Context, message: String, textColor: Int): Spanned {
-        return getRenderedMarkdownText(context, message, textColor)
+    private fun enrichChatMessageText(
+        context: Context,
+        message: String,
+        incoming: Boolean,
+        viewThemeUtils: ViewThemeUtils
+    ): Spanned {
+        return viewThemeUtils.talk.themeMarkdown(context, message, incoming)
     }
 
     fun processMessageParameters(
@@ -131,7 +151,7 @@ class MessageUtils(val context: Context) {
         return messageStringInternal
     }
 
-    private fun getRenderedMarkdownText(context: Context, markdown: String, textColor: Int): Spanned {
+    fun getRenderedMarkdownText(context: Context, markdown: String, textColor: Int): Spanned {
         val drawable = TaskListDrawable(textColor, textColor, context.getColor(R.color.bg_default))
         val markwon = Markwon.builder(context).usePlugin(object : AbstractMarkwonPlugin() {
             override fun configureTheme(builder: MarkwonTheme.Builder) {

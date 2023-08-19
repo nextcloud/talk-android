@@ -33,6 +33,7 @@ import android.text.TextUtils;
 
 import com.nextcloud.talk.R;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
@@ -44,11 +45,17 @@ public class StatusDrawable extends Drawable {
     private String text;
     private StatusDrawableType icon = StatusDrawableType.UNDEFINED;
     private Paint textPaint;
-    private final int backgroundColor;
+    private int backgroundColor;
     private final float radius;
     private Context context;
 
-    public StatusDrawable(String status, String statusIcon, float statusSize, int backgroundColor, Context context) {
+    public void colorStatusDrawable(@ColorInt int color) {
+        backgroundColor = color;
+        invalidateSelf();
+    }
+
+    public StatusDrawable(String status, String statusIcon, float statusSize, int backgroundColor,
+                          Context context) {
         radius = statusSize;
         this.backgroundColor = backgroundColor;
 
@@ -58,19 +65,17 @@ public class StatusDrawable extends Drawable {
             this.context = context;
         } else if (TextUtils.isEmpty(statusIcon) && status != null) {
             switch (status) {
-                case "online":
+                case "online" -> {
                     icon = StatusDrawableType.ONLINE;
                     this.context = context;
-                    break;
-
-                case "away":
+                }
+                case "away" -> {
                     icon = StatusDrawableType.AWAY;
                     this.context = context;
-                    break;
-
-                default:
-                    // do not show
-                    break;
+                }
+                default -> {
+                }
+                // do not show
             }
         } else {
             text = statusIcon;

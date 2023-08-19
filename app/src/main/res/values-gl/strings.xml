@@ -151,7 +151,7 @@
     <string name="nc_expire_message_one_hour">1 hora</string>
     <string name="nc_expire_message_one_week">1 semana</string>
     <string name="nc_expire_messages">Caducidade das mensaxes das parolas</string>
-    <string name="nc_expire_messages_explanation">As mensaxes das parolas poden caducar após dun tempo determinado. Nota: os ficheiros compartidos na parola non se eliminarán para o propietario, mais xa non se compartirán na conversa.</string>
+    <string name="nc_expire_messages_explanation">As mensaxes das parolas poden caducar após dun tempo determinado. Nota: Os ficheiros compartidos na parola non se eliminarán para o propietario, mais xa non se compartirán na conversa.</string>
     <string name="nc_external_server_failed">Produciuse un fallo ao recuperar os axustes da sinalización</string>
     <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_failed_to_perform_operation">Desculpe, algo foi mal!</string>

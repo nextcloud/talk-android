@@ -249,7 +249,7 @@
     <string name="nc_privacy">Vie privée</string>
     <string name="nc_proceed">Continuer</string>
     <string name="nc_profile_personal_info_title">Informations personnelles</string>
-    <string name="nc_promote">Promouvoir en modérateur</string>
+    <string name="nc_promote">Promouvoir comme modérateur</string>
     <string name="nc_public_call">Nouvelle conversation publique</string>
     <string name="nc_public_call_explanation">Les conversations publiques vous permettent d\'inviter des personnes extérieures grâce à un lien spécialement créé.</string>
     <string name="nc_push_disabled">Notifications push désactivées</string>
@@ -332,7 +332,7 @@
     <string name="nc_settings_read_privacy_title">Statut de lecture</string>
     <string name="nc_settings_reauthorize">Ré-autoriser le compte</string>
     <string name="nc_settings_remove">Effacer</string>
-    <string name="nc_settings_remove_account">Supprimer le compte</string>
+    <string name="nc_settings_remove_account">Retirer le compte</string>
     <string name="nc_settings_remove_confirmation">Veuillez confirmer votre volonté de supprimer le compte actuel.</string>
     <string name="nc_settings_screen_lock_desc">Verrouiller %1$s avec le verrouillage d’écran Android ou une méthode biométrique supportée</string>
     <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage de l\'écran</string>

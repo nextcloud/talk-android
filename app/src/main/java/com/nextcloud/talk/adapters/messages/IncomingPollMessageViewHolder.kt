@@ -206,9 +206,8 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) :
                 .enrichChatReplyMessageText(
                     binding.messageQuote.quotedMessage.context,
                     parentChatMessage,
-                    binding.messageQuote.quotedMessage.context.resources.getColor(
-                        R.color.nc_incoming_text_default
-                    )
+                    true,
+                    viewThemeUtils
                 )
 
             binding.messageQuote.quotedMessageAuthor

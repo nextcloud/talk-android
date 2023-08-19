@@ -24,11 +24,11 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.PorterDuff
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import autodagger.AutoInjector
 import coil.load
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -78,12 +78,12 @@ class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
         super.onBind(message)
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
-        val textColor = viewThemeUtils.getScheme(binding.messageTime.context).onSurfaceVariant
-        binding.messageTime.setTextColor(textColor)
+        viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         colorizeMessageBubble(message)
-        var processedMessageText = messageUtils.enrichChatMessageText(binding.messageText.context, message, textColor)
+        var processedMessageText =
+            messageUtils.enrichChatMessageText(binding.messageText.context, message, false, viewThemeUtils)
         processedMessageText = messageUtils.processMessageParameters(
             binding.messageText.context,
             viewThemeUtils,
@@ -106,18 +106,15 @@ class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
         }
 
         val readStatusContentDescriptionString = when (message.readStatus) {
-            ReadStatus.READ -> context?.resources?.getString(R.string.nc_message_read)
-            ReadStatus.SENT -> context?.resources?.getString(R.string.nc_message_sent)
+            ReadStatus.READ -> context.resources?.getString(R.string.nc_message_read)
+            ReadStatus.SENT -> context.resources?.getString(R.string.nc_message_sent)
             else -> null
         }
 
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context, drawableInt)?.let {
                 binding.checkMark.setImageDrawable(it)
-                binding.checkMark.setColorFilter(
-                    viewThemeUtils.getScheme(binding.checkMark.context).onSurfaceVariant,
-                    PorterDuff.Mode.SRC_ATOP
-                )
+                viewThemeUtils.talk.themeMessageCheckMark(binding.checkMark)
             }
         }
 
@@ -176,7 +173,8 @@ class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
                 .enrichChatReplyMessageText(
                     binding.messageQuote.quotedMessage.context,
                     parentChatMessage,
-                    viewThemeUtils.getScheme(binding.messageQuote.quotedMessage.context).onSurfaceVariant
+                    false,
+                    viewThemeUtils
                 )
             viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
             viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)

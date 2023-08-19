@@ -96,7 +96,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
 
         itemView.isSelected = false
 
-        val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
+        val textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageText.text = message.text
 
@@ -166,7 +166,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
             parentChatMessage!!.activeUser = message.activeUser
-            parentChatMessage!!.imageUrl?.let {
+            parentChatMessage.imageUrl?.let {
                 binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
                 binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
@@ -178,18 +178,17 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
                 binding.messageQuote.quotedMessageImage.visibility = View.GONE
             }
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-                ?: context!!.getText(R.string.nc_nick_guest)
+                ?: context.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = messageUtils
                 .enrichChatReplyMessageText(
                     binding.messageQuote.quotedMessage.context,
                     parentChatMessage,
-                    binding.messageQuote.quotedMessage.context.resources.getColor(
-                        R.color.nc_incoming_text_default
-                    )
+                    true,
+                    viewThemeUtils
                 )
 
             binding.messageQuote.quotedMessageAuthor
-                .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast, null))
+                .setTextColor(context.resources.getColor(R.color.textColorMaxContrast, null))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
                 viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView)
@@ -217,7 +216,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
             }
         }
 
-        binding.webview.settings?.javaScriptEnabled = true
+        binding.webview.settings.javaScriptEnabled = true
 
         binding.webview.webViewClient = object : WebViewClient() {
             @Deprecated("Use shouldOverrideUrlLoading(WebView view, WebResourceRequest request)")
@@ -234,10 +233,10 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
 
         val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
         urlStringBuffer.append(
-            "?mapProviderUrl=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_url))
+            "?mapProviderUrl=" + URLEncoder.encode(context.getString(R.string.osm_tile_server_url))
         )
         urlStringBuffer.append(
-            "&mapProviderAttribution=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_attributation))
+            "&mapProviderAttribution=" + URLEncoder.encode(context.getString(R.string.osm_tile_server_attributation))
         )
         urlStringBuffer.append("&locationLat=" + URLEncoder.encode(locationLat))
         urlStringBuffer.append("&locationLon=" + URLEncoder.encode(locationLon))
@@ -262,7 +261,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
             val geoLinkWithMarker = addMarkerToGeoLink(locationGeoLink!!)
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(geoLinkWithMarker))
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context!!.startActivity(browserIntent)
+            context.startActivity(browserIntent)
         } else {
             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             Log.e(TAG, "locationGeoLink was null or empty")

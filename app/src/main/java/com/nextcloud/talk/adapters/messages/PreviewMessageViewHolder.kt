@@ -28,7 +28,6 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Handler
@@ -235,17 +234,14 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         if (message.selectedIndividualHashMap!!.containsKey(KEY_MIMETYPE)) {
             val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
             val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
-            val drawable = ContextCompat.getDrawable(context!!, drawableResourceId)
+            var drawable = ContextCompat.getDrawable(context!!, drawableResourceId)
             if (drawable != null &&
                 (
                     drawableResourceId == R.drawable.ic_mimetype_folder ||
                         drawableResourceId == R.drawable.ic_mimetype_package_x_generic
                     )
             ) {
-                drawable.setColorFilter(
-                    viewThemeUtils!!.getScheme(image.context).primary,
-                    PorterDuff.Mode.SRC_ATOP
-                )
+                drawable = viewThemeUtils?.platform?.tintDrawable(context!!, drawable)
             }
             placeholder = drawable
         } else {

@@ -288,6 +288,7 @@
     <string name="today">I dag</string>
     <string name="translate">Oversæt</string>
     <string name="translation_device_settings">Enhedsindstillinger</string>
+    <string name="translation_error_message">Kunne ikke finde sprog</string>
     <string name="translation_from">Fra</string>
     <string name="translation_to">Til</string>
     <string name="unread">Ulæst</string>

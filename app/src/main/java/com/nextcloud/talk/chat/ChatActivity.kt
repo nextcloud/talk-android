@@ -1618,9 +1618,10 @@ class ChatActivity :
                                 currentConversation!!.status,
                                 null,
                                 size,
-                                viewThemeUtils.platform.getScheme(binding.chatToolbar.context).surface,
+                                0,
                                 binding.chatToolbar.context
                             )
+                            viewThemeUtils.talk.themeStatusDrawable(context, status)
                             binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_avatar)
                                 .setImageDrawable(BitmapDrawable(resources, bitmap))
                             binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status)

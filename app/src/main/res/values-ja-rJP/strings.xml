@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">有線ヘッドセット</string>
     <string name="avatar">アバター</string>
     <string name="away">離席中</string>
+    <string name="call_running_since_one_hour">通話が1 時間経過</string>
     <string name="call_without_notification">通知なしで通話</string>
     <string name="choose_avatar_from_cloud">クラウドからアバターを選択</string>
     <string name="clear_status_message">ステータスメッセージを消去</string>
@@ -137,6 +138,7 @@
     <string name="nc_group">グループ</string>
     <string name="nc_groups">グループ</string>
     <string name="nc_guest">ゲスト</string>
+    <string name="nc_guest_access">ゲスト参加</string>
     <string name="nc_guest_access_allow_title">ゲストを許可</string>
     <string name="nc_guest_access_password_dialog_hint">パスワードを入力</string>
     <string name="nc_guest_access_password_summary">パスワードを設定して、パブリックリンクを使用できるユーザーを制限します。</string>
@@ -359,6 +361,9 @@
     <string name="raise_hand">挙手 (r)</string>
     <string name="reactions_tab_all">すべて</string>
     <string name="read_storage_no_permission">ストレージからのファイル共有は権限がなければ不可能です</string>
+    <string name="record_cancel_start">録画開始をキャンセル</string>
+    <string name="record_start_description">録画を開始</string>
+    <string name="record_stop_description">録画を停止</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">信頼できるサーバーのみと同期</string>
     <string name="scope_federated_title">連携</string>

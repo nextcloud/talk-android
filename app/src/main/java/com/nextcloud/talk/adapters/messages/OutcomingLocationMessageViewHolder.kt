@@ -25,7 +25,6 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.util.Log
 import android.util.TypedValue
@@ -84,15 +83,14 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
-        val textColor = viewThemeUtils.getScheme(binding.messageTime.context).onSurfaceVariant
-        binding.messageTime.setTextColor(textColor)
+        viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         realView.isSelected = false
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
 
-        val textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
+        val textSize = context.resources.getDimension(R.dimen.chat_text_size)
 
         colorizeMessageBubble(message)
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
@@ -110,22 +108,19 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
         }
 
         val readStatusContentDescriptionString = when (message.readStatus) {
-            ReadStatus.READ -> context?.resources?.getString(R.string.nc_message_read)
-            ReadStatus.SENT -> context?.resources?.getString(R.string.nc_message_sent)
+            ReadStatus.READ -> context.resources?.getString(R.string.nc_message_read)
+            ReadStatus.SENT -> context.resources?.getString(R.string.nc_message_sent)
             else -> null
         }
 
         readStatusDrawableInt?.let { drawableInt ->
-            AppCompatResources.getDrawable(context!!, drawableInt)?.let {
+            AppCompatResources.getDrawable(context, drawableInt)?.let {
                 binding.checkMark.setImageDrawable(it)
-                binding.checkMark.setColorFilter(
-                    viewThemeUtils.getScheme(binding.checkMark.context).onSurfaceVariant,
-                    PorterDuff.Mode.SRC_ATOP
-                )
+                viewThemeUtils.talk.themeMessageCheckMark(binding.checkMark)
             }
         }
 
-        binding.checkMark.setContentDescription(readStatusContentDescriptionString)
+        binding.checkMark.contentDescription = readStatusContentDescriptionString
 
         // geo-location
         setLocationDataOnMessageItem(message)
@@ -163,7 +158,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
             }
         }
 
-        binding.webview.settings?.javaScriptEnabled = true
+        binding.webview.settings.javaScriptEnabled = true
 
         binding.webview.webViewClient = object : WebViewClient() {
             @Deprecated("Use shouldOverrideUrlLoading(WebView view, WebResourceRequest request)")
@@ -180,11 +175,11 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
 
         val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
         urlStringBuffer.append(
-            "?mapProviderUrl=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_url))
+            "?mapProviderUrl=" + URLEncoder.encode(context.getString(R.string.osm_tile_server_url))
         )
         urlStringBuffer.append(
             "&mapProviderAttribution=" + URLEncoder.encode(
-                context!!.getString(
+                context.getString(
                     R.string
                         .osm_tile_server_attributation
                 )
@@ -224,12 +219,13 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
                 binding.messageQuote.quotedMessageImage.visibility = View.GONE
             }
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-                ?: context!!.getText(R.string.nc_nick_guest)
+                ?: context.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = messageUtils
                 .enrichChatReplyMessageText(
                     binding.messageQuote.quotedMessage.context,
                     parentChatMessage,
-                    viewThemeUtils.getScheme(binding.messageQuote.quotedMessage.context).onSurfaceVariant
+                    false,
+                    viewThemeUtils
                 )
             viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
             viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
@@ -250,7 +246,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
             val geoLinkWithMarker = addMarkerToGeoLink(locationGeoLink!!)
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(geoLinkWithMarker))
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context!!.startActivity(browserIntent)
+            context.startActivity(browserIntent)
         } else {
             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             Log.e(TAG, "locationGeoLink was null or empty")

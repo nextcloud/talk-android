@@ -1083,13 +1083,11 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun getSpotlightView(): SpotlightView? {
-        val primary = viewThemeUtils.getScheme(binding!!.audioOutputButton.context).primary
-        return SpotlightView.Builder(this)
+        val builder = SpotlightView.Builder(this)
             .introAnimationDuration(300)
             .enableRevealAnimation(true)
             .performClick(false)
             .fadeinTextDuration(400)
-            .headingTvColor(primary)
             .headingTvSize(20)
             .headingTvText(resources.getString(R.string.nc_push_to_talk))
             .subHeadingTvColor(resources.getColor(R.color.bg_default, null))
@@ -1098,11 +1096,11 @@ class CallActivity : CallBaseActivity() {
             .maskColor(Color.parseColor("#dc000000"))
             .target(binding!!.microphoneButton)
             .lineAnimDuration(400)
-            .lineAndArcColor(primary)
             .enableDismissAfterShown(true)
             .dismissOnBackPress(true)
             .usageId("pushToTalk")
-            .show()
+
+        return viewThemeUtils.talk.themeSpotlightView(context, builder).show()
     }
 
     private fun onCameraClick() {
