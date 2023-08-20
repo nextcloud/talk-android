@@ -276,8 +276,7 @@ dependencies {
     implementation "io.noties.markwon:ext-tasklist:$markwonVersion"
 
     implementation 'com.github.nextcloud-deps:ImagePicker:2.1.0.2'
-    implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
-
+    implementation 'io.github.elye:loaderviewlibrary:3.0.0'
     implementation 'org.osmdroid:osmdroid-android:6.1.16'
     implementation ('fr.dudie:nominatim-api:3.4', {
         //noinspection DuplicatePlatformClasses
