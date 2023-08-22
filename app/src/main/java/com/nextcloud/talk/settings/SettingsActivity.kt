@@ -471,7 +471,7 @@ class SettingsActivity : BaseActivity() {
     private fun removeCurrentAccount() {
         val otherUserExists = userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
-        WorkManager.getInstance(this).enqueue(accountRemovalWork)
+        WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
         if (otherUserExists) {
             // TODO: find better solution once Conductor is removed
             finish()
