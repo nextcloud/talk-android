@@ -57,7 +57,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.AdapterView
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
@@ -67,6 +66,7 @@ import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.ParticipantDisplayItem
 import com.nextcloud.talk.adapters.ParticipantsAdapter
@@ -427,8 +427,10 @@ class CallActivity : CallBaseActivity() {
                 binding!!.callRecordingIndicator.visibility = View.VISIBLE
                 if (viewState.showStartedInfo) {
                     vibrateShort(context)
-                    Toast.makeText(context, context.resources.getString(R.string.record_active_info), Toast.LENGTH_LONG)
-                        .show()
+                    Snackbar.make(
+                        binding!!.root,
+                        context.resources.getString(R.string.record_active_info),
+                        Snackbar.LENGTH_LONG).show()
                 }
             } else if (viewState is RecordingStartingState) {
                 if (isAllowedToStartOrStopRecording) {
@@ -459,10 +461,10 @@ class CallActivity : CallBaseActivity() {
                 }
             } else if (viewState is RecordingErrorState) {
                 if (isAllowedToStartOrStopRecording) {
-                    Toast.makeText(
-                        context,
+                    Snackbar.make(
+                        binding!!.root,
                         context.resources.getString(R.string.record_failed_info),
-                        Toast.LENGTH_LONG
+                        Snackbar.LENGTH_LONG
                     ).show()
                 }
                 binding!!.callRecordingIndicator.visibility = View.GONE
@@ -567,10 +569,10 @@ class CallActivity : CallBaseActivity() {
             }
         } else {
             binding!!.microphoneButton.setOnClickListener {
-                Toast.makeText(
-                    context,
+                Snackbar.make(
+                    binding!!.root,
                     R.string.nc_not_allowed_to_activate_audio,
-                    Toast.LENGTH_SHORT
+                    Snackbar.LENGTH_SHORT
                 ).show()
             }
         }
@@ -579,10 +581,10 @@ class CallActivity : CallBaseActivity() {
             binding!!.cameraButton.setOnClickListener { onCameraClick() }
         } else {
             binding!!.cameraButton.setOnClickListener {
-                Toast.makeText(
-                    context,
+                Snackbar.make(
+                    binding!!.root,
                     R.string.nc_not_allowed_to_activate_video,
-                    Toast.LENGTH_SHORT
+                    Snackbar.LENGTH_SHORT
                 ).show()
             }
         }
@@ -612,7 +614,8 @@ class CallActivity : CallBaseActivity() {
                     callRecordingViewModel!!.clickRecordButton()
                 }
             } else {
-                Toast.makeText(context, context.resources.getString(R.string.record_active_info), Toast.LENGTH_LONG)
+                Snackbar.make(binding!!.root, context.resources.getString(R.string.record_active_info), Snackbar
+                    .LENGTH_LONG)
                     .show()
             }
         }
@@ -1437,7 +1440,7 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "Failed to fetch capabilities", e)
                     // unused atm
                 }
@@ -1632,10 +1635,10 @@ class CallActivity : CallBaseActivity() {
     private fun showCallRunningSinceOneHourOrMoreInfo() {
         binding!!.callDuration.setTypeface(null, Typeface.BOLD)
         vibrateShort(context)
-        Toast.makeText(
-            context,
+        Snackbar.make(
+            binding!!.root,
             context.resources.getString(R.string.call_running_since_one_hour),
-            Toast.LENGTH_LONG
+            Snackbar.LENGTH_LONG
         ).show()
     }
 
@@ -1909,7 +1912,7 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "Error while leaving the call", e)
                 }
 
@@ -2091,10 +2094,10 @@ class CallActivity : CallBaseActivity() {
         } else {
             if (peerConnectionFactory == null) {
                 Log.e(TAG, "peerConnectionFactory was null in getOrCreatePeerConnectionWrapperForSessionIdAndType")
-                Toast.makeText(
-                    context,
+                Snackbar.make(
+                    binding!!.root,
                     context.resources.getString(R.string.nc_common_error_sorry),
-                    Toast.LENGTH_LONG
+                    Snackbar.LENGTH_LONG
                 ).show()
                 hangup(true)
                 return null
@@ -2723,10 +2726,10 @@ class CallActivity : CallBaseActivity() {
             }
             raisedHand = true
             val nick = callParticipantModel.nick
-            Toast.makeText(
-                context,
+            Snackbar.make(
+                binding!!.root,
                 String.format(context.resources.getString(R.string.nc_call_raised_hand), nick),
-                Toast.LENGTH_LONG
+                Snackbar.LENGTH_LONG
             ).show()
         }
 

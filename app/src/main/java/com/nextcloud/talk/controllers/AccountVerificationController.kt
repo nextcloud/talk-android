@@ -29,7 +29,6 @@ import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -37,6 +36,7 @@ import autodagger.AutoInjector
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.logansquare.LoganSquare
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -474,7 +474,7 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
                 }
             } else {
                 Log.e(TAG, "failed to set active user")
-                Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             }
         }
     }

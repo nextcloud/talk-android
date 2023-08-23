@@ -40,7 +40,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.PermissionChecker
@@ -48,6 +47,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -319,7 +319,11 @@ class LocationPickerActivity :
 
         binding.centerMapButton.setOnClickListener {
             if (myLocation.latitude == COORDINATE_ZERO && myLocation.longitude == COORDINATE_ZERO) {
-                Toast.makeText(context, context.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
+                Snackbar.make(
+                    binding.root,
+                    context.getString(R.string.nc_location_unknown),
+                    Snackbar.LENGTH_LONG
+                ).show()
             } else {
                 mapController.animateTo(myLocation)
                 moveToCurrentLocation = true
@@ -341,11 +345,13 @@ class LocationPickerActivity :
                             setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
                             moveToCurrentLocation = false
                         }
+
                         geocodingResult != null -> {
                             binding.shareLocation.isClickable = true
                             setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
                             geocodingResult = null
                         }
+
                         else -> {
                             binding.shareLocation.isClickable = true
                             setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
@@ -377,6 +383,7 @@ class LocationPickerActivity :
                         this
                     )
                 }
+
                 locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER) -> {
                     locationManager!!.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER,
@@ -386,6 +393,7 @@ class LocationPickerActivity :
                     )
                     Log.d(TAG, "LocationManager.NETWORK_PROVIDER falling back to LocationManager.GPS_PROVIDER")
                 }
+
                 else -> {
                     Log.e(
                         TAG,
@@ -393,16 +401,16 @@ class LocationPickerActivity :
                             " and there is no alternative like UnifiedNlp installed. Furthermore no GPS is " +
                             "supported."
                     )
-                    Toast.makeText(context, context.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG)
+                    Snackbar.make(binding.root, context.getString(R.string.nc_location_unknown), Snackbar.LENGTH_LONG)
                         .show()
                 }
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "Error when requesting location updates. Permissions may be missing.", e)
-            Toast.makeText(context, context.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, context.getString(R.string.nc_location_unknown), Snackbar.LENGTH_LONG).show()
         } catch (e: Exception) {
             Log.e(TAG, "Error when requesting location updates.", e)
-            Toast.makeText(context, context.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, context.getString(R.string.nc_common_error_sorry), Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -413,11 +421,13 @@ class LocationPickerActivity :
                 binding.placeName.visibility = View.GONE
                 binding.placeName.text = ""
             }
+
             isGeocodedResult -> {
                 binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_this_location)
                 binding.placeName.visibility = View.VISIBLE
                 binding.placeName.text = geocodingResult?.displayName
             }
+
             else -> {
                 binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_this_location)
                 binding.placeName.visibility = View.GONE
@@ -476,7 +486,7 @@ class LocationPickerActivity :
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "error when trying to share location", e)
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     finish()
                 }
 
@@ -531,8 +541,11 @@ class LocationPickerActivity :
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE && areAllGranted(grantResults)) {
             initMap()
         } else {
-            Toast.makeText(context, context!!.getString(R.string.nc_location_permission_required), Toast.LENGTH_LONG)
-                .show()
+            Snackbar.make(
+                binding.root,
+                context!!.getString(R.string.nc_location_permission_required),
+                Snackbar.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -556,7 +569,7 @@ class LocationPickerActivity :
             address = nominatimClient!!.getAddress(lon, lat)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get geocoded addresses", e)
-            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
         updateResultOnMainThread(lat, lon, address?.displayName)
     }

@@ -32,12 +32,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -45,6 +44,7 @@ import com.nextcloud.talk.databinding.ItemCustomOutcomingLocationMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.UriUtils
@@ -249,7 +249,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(browserIntent)
         } else {
-            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             Log.e(TAG, "locationGeoLink was null or empty")
         }
     }

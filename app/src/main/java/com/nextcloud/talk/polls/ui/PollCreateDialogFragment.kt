@@ -30,12 +30,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollCreateBinding
@@ -172,7 +172,7 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
     private fun showError() {
         dismiss()
         Log.e(TAG, "Failed to create poll")
-        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
     }
 
     override fun onRemoveOptionsItemClick(pollCreateOptionItem: PollCreateOptionItem, position: Int) {

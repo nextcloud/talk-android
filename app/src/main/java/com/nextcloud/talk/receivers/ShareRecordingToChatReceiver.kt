@@ -25,8 +25,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
+import android.view.View
 import autodagger.AutoInjector
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -91,12 +92,12 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
                     // combined with addNextIntentWithParentStack. For further reading, see
                     // https://developer.android.com/develop/ui/views/notifications/navigation#DirectEntry
                     // As we are using the conductor framework it might be hard the combine this or to keep an overview.
-                    // For this reason there is only a toast for now until we got rid of conductor.
+                    // For this reason there is only a Snackbar for now until we got rid of conductor.
 
-                    Toast.makeText(
-                        context,
+                    Snackbar.make(
+                        View(context),
                         context.resources.getString(R.string.nc_all_ok_operation),
-                        Toast.LENGTH_LONG
+                        Snackbar.LENGTH_LONG
                     ).show()
                 }
 

@@ -30,11 +30,11 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
@@ -127,7 +127,7 @@ class MessageSearchActivity : BaseActivity() {
 
     private fun showError() {
         displayLoading(false)
-        Toast.makeText(this, "Error while searching", Toast.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, "Error while searching", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showLoading() {

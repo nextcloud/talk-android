@@ -40,7 +40,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
@@ -49,6 +48,7 @@ import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getError
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -459,13 +459,13 @@ class ProfileActivity : BaseActivity() {
 
                         override fun onError(e: Throwable) {
                             item.text = userInfo?.getValueByField(item.field)
-                            Toast.makeText(
-                                applicationContext,
+                            Snackbar.make(
+                                binding.root,
                                 String.format(
                                     resources!!.getString(R.string.failed_to_save),
                                     item.field
                                 ),
-                                Toast.LENGTH_LONG
+                                Snackbar.LENGTH_LONG
                             ).show()
                             adapter!!.updateFilteredList()
                             adapter!!.notifyDataSetChanged()
@@ -492,8 +492,8 @@ class ProfileActivity : BaseActivity() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 pickImage.takePicture()
             } else {
-                Toast
-                    .makeText(context, context.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
+                Snackbar
+                    .make(binding.root, context.getString(R.string.take_photo_permission), Snackbar.LENGTH_LONG)
                     .show()
             }
         }
@@ -510,7 +510,7 @@ class ProfileActivity : BaseActivity() {
                 ) { uploadAvatar(it.toFile()) }
             }
             ImagePicker.RESULT_ERROR -> {
-                Toast.makeText(this, getError(data), Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, getError(data), Snackbar.LENGTH_SHORT).show()
             }
             else -> {
                 Log.i(TAG, "Task Cancelled")
@@ -550,10 +550,10 @@ class ProfileActivity : BaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Toast.makeText(
-                        applicationContext,
+                    Snackbar.make(
+                        binding.root,
                         context.getString(R.string.default_error_msg),
-                        Toast
+                        Snackbar
                             .LENGTH_LONG
                     ).show()
                     Log.e(TAG, "Error uploading avatar", e)

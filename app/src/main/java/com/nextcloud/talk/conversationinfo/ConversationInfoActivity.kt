@@ -39,7 +39,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -50,6 +49,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.datetime.dateTimePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -594,12 +594,13 @@ class ConversationInfoActivity :
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    Toast.makeText(context, context.getString(R.string.nc_clear_history_success), Toast.LENGTH_LONG)
-                        .show()
+                    Snackbar.make(binding.root,
+                        context.getString(R.string.nc_clear_history_success),
+                        Snackbar.LENGTH_LONG).show()
                 }
 
                 override fun onError(e: Throwable) {
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "failed to clear chat history", e)
                 }
 

@@ -50,7 +50,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
@@ -68,6 +67,7 @@ import coil.transform.CircleCropTransformation
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -267,7 +267,7 @@ class ConversationsListActivity :
             fetchRooms()
         } else {
             Log.e(TAG, "userManager.currentUser.blockingGet() returned null")
-            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
 
         showSearchOrToolbar()
@@ -309,7 +309,7 @@ class ConversationsListActivity :
             )
         } else {
             Log.e(TAG, "currentUser was null in loadUserAvatar")
-            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -989,14 +989,14 @@ class ConversationsListActivity :
                 ) {
                     handleSharedData()
                 } else {
-                    Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.send_to_forbidden, Snackbar.LENGTH_LONG).show()
                 }
             } else if (forwardMessage) {
                 if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
                     openConversation(intent.getStringExtra(KEY_FORWARD_MSG_TEXT))
                     forwardMessage = false
                 } else {
-                    Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.send_to_forbidden, Snackbar.LENGTH_LONG).show()
                 }
             } else {
                 openConversation()
@@ -1023,8 +1023,8 @@ class ConversationsListActivity :
         } else if (filesToShare != null && filesToShare!!.isNotEmpty()) {
             showSendFilesConfirmDialog()
         } else {
-            Toast
-                .makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+            Snackbar
+                .make(binding.root, context.resources.getString(R.string.nc_common_error_sorry), Snackbar.LENGTH_LONG)
                 .show()
         }
     }
@@ -1125,18 +1125,18 @@ class ConversationsListActivity :
                         }
                     }
                     if (filesToShare!!.isEmpty() && textToPaste!!.isEmpty()) {
-                        Toast.makeText(
-                            context,
+                        Snackbar.make(
+                            binding.root,
                             context.resources.getString(R.string.nc_common_error_sorry),
-                            Toast.LENGTH_LONG
+                            Snackbar.LENGTH_LONG
                         ).show()
                         Log.e(TAG, "failed to get data from intent")
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(
-                        context,
+                    Snackbar.make(
+                        binding.root,
                         context.resources.getString(R.string.nc_common_error_sorry),
-                        Toast.LENGTH_LONG
+                        Snackbar.LENGTH_LONG
                     ).show()
                     Log.e(TAG, "Something went wrong when extracting data from intent")
                 }
@@ -1146,10 +1146,10 @@ class ConversationsListActivity :
 
     private fun upload() {
         if (selectedConversation == null) {
-            Toast.makeText(
-                context,
+            Snackbar.make(
+                binding.root,
                 context.resources.getString(R.string.nc_common_error_sorry),
-                Toast.LENGTH_LONG
+                Snackbar.LENGTH_LONG
             ).show()
             Log.e(TAG, "not able to upload any files because conversation was null.")
             return
@@ -1164,7 +1164,8 @@ class ConversationsListActivity :
                 )
             }
         } catch (e: IllegalArgumentException) {
-            Toast.makeText(context, context.resources.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, context.resources.getString(R.string.nc_upload_failed), Snackbar.LENGTH_LONG)
+                .show()
             Log.e(TAG, "Something went wrong when trying to upload file", e)
         }
     }
@@ -1178,7 +1179,8 @@ class ConversationsListActivity :
             Log.d(TAG, "upload starting after permissions were granted")
             showSendFilesConfirmDialog()
         } else {
-            Toast.makeText(context, context.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, context.getString(R.string.read_storage_no_permission), Snackbar.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -1186,10 +1188,10 @@ class ConversationsListActivity :
         if (CallActivity.active &&
             selectedConversation!!.token != ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken
         ) {
-            Toast.makeText(
-                context,
+            Snackbar.make(
+                binding.root,
                 context.getString(R.string.restrict_join_other_room_while_call),
-                Toast.LENGTH_LONG
+                Snackbar.LENGTH_LONG
             ).show()
             return
         }
