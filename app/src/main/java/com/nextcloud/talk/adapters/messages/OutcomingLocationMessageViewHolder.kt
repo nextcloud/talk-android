@@ -44,6 +44,7 @@ import com.nextcloud.talk.databinding.ItemCustomOutcomingLocationMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.UriUtils

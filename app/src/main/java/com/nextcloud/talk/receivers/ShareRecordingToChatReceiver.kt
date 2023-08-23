@@ -95,7 +95,7 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
                     // For this reason there is only a Snackbar for now until we got rid of conductor.
 
                     Snackbar.make(
-                       View(context),
+                        View(context),
                         context.resources.getString(R.string.nc_all_ok_operation),
                         Snackbar.LENGTH_LONG
                     ).show()

@@ -151,8 +151,9 @@ class GuestAccessHelper(
 
         override fun onComplete() {
             if (resendInvitationsResult.successful) {
-                Snackbar.make(binding.root, R.string.nc_guest_access_resend_invitations_successful, Snackbar.LENGTH_SHORT)
-                    .show()
+                Snackbar.make(binding.root,
+                    R.string.nc_guest_access_resend_invitations_successful,
+                    Snackbar.LENGTH_SHORT).show()
             }
         }
     }

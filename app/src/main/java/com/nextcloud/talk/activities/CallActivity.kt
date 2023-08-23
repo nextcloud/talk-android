@@ -428,9 +428,9 @@ class CallActivity : CallBaseActivity() {
                 if (viewState.showStartedInfo) {
                     vibrateShort(context)
                     Snackbar.make(
-                        binding!!.root, context.resources.getString(R.string.record_active_info), Snackbar
-                        .LENGTH_LONG)
-                        .show()
+                        binding!!.root,
+                        context.resources.getString(R.string.record_active_info),
+                        Snackbar.LENGTH_LONG).show()
                 }
             } else if (viewState is RecordingStartingState) {
                 if (isAllowedToStartOrStopRecording) {

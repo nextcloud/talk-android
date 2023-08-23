@@ -319,7 +319,11 @@ class LocationPickerActivity :
 
         binding.centerMapButton.setOnClickListener {
             if (myLocation.latitude == COORDINATE_ZERO && myLocation.longitude == COORDINATE_ZERO) {
-                Snackbar.make(binding.root, context.getString(R.string.nc_location_unknown), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    binding.root,
+                    context.getString(R.string.nc_location_unknown),
+                    Snackbar.LENGTH_LONG
+                ).show()
             } else {
                 mapController.animateTo(myLocation)
                 moveToCurrentLocation = true
@@ -341,11 +345,13 @@ class LocationPickerActivity :
                             setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
                             moveToCurrentLocation = false
                         }
+
                         geocodingResult != null -> {
                             binding.shareLocation.isClickable = true
                             setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
                             geocodingResult = null
                         }
+
                         else -> {
                             binding.shareLocation.isClickable = true
                             setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
@@ -377,6 +383,7 @@ class LocationPickerActivity :
                         this
                     )
                 }
+
                 locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER) -> {
                     locationManager!!.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER,
@@ -386,6 +393,7 @@ class LocationPickerActivity :
                     )
                     Log.d(TAG, "LocationManager.NETWORK_PROVIDER falling back to LocationManager.GPS_PROVIDER")
                 }
+
                 else -> {
                     Log.e(
                         TAG,
@@ -413,11 +421,13 @@ class LocationPickerActivity :
                 binding.placeName.visibility = View.GONE
                 binding.placeName.text = ""
             }
+
             isGeocodedResult -> {
                 binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_this_location)
                 binding.placeName.visibility = View.VISIBLE
                 binding.placeName.text = geocodingResult?.displayName
             }
+
             else -> {
                 binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_this_location)
                 binding.placeName.visibility = View.GONE
@@ -531,8 +541,11 @@ class LocationPickerActivity :
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE && areAllGranted(grantResults)) {
             initMap()
         } else {
-            Snackbar.make(binding.root, context!!.getString(R.string.nc_location_permission_required), Snackbar.LENGTH_LONG)
-                .show()
+            Snackbar.make(
+                binding.root,
+                context!!.getString(R.string.nc_location_permission_required),
+                Snackbar.LENGTH_LONG
+            ).show()
         }
     }
 
