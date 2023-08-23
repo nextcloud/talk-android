@@ -30,13 +30,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import autodagger.AutoInjector
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -49,7 +51,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     lateinit var binding: ActivityFullScreenMediaBinding
 
     private lateinit var path: String
-    private lateinit var player: SimpleExoPlayer
+    private lateinit var player: ExoPlayer
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
@@ -81,6 +83,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
         }
     }
 
+    @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -104,7 +107,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
         }
 
         binding.playerView.setControllerVisibilityListener(
-            StyledPlayerView.ControllerVisibilityListener { v ->
+            PlayerView.ControllerVisibilityListener { v ->
                 if (v != 0) {
                     hideSystemUI()
                     supportActionBar?.hide()
@@ -132,7 +135,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun initializePlayer() {
-        player = SimpleExoPlayer.Builder(applicationContext).build()
+        player = ExoPlayer.Builder(applicationContext).build()
         binding.playerView.player = player
         player.playWhenReady = true
         player.addListener(this)

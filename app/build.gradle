@@ -152,6 +152,7 @@ ext {
     roomVersion = "2.5.2"
     workVersion = "2.8.1"
     espressoVersion = "3.5.1"
+    media3_version = "1.1.1"
 }
 
 configurations.all {
@@ -263,7 +264,9 @@ dependencies {
     implementation "com.afollestad.material-dialogs:lifecycle:${materialDialogsVersion}"
 
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.google.android.exoplayer:exoplayer:2.19.0'
+
+    implementation "androidx.media3:media3-exoplayer:$media3_version"
+    implementation "androidx.media3:media3-ui:$media3_version"
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.27'
