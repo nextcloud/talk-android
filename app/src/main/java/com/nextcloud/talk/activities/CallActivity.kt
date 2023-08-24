@@ -430,7 +430,8 @@ class CallActivity : CallBaseActivity() {
                     Snackbar.make(
                         binding!!.root,
                         context.resources.getString(R.string.record_active_info),
-                        Snackbar.LENGTH_LONG).show()
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             } else if (viewState is RecordingStartingState) {
                 if (isAllowedToStartOrStopRecording) {
@@ -614,9 +615,11 @@ class CallActivity : CallBaseActivity() {
                     callRecordingViewModel!!.clickRecordButton()
                 }
             } else {
-                Snackbar.make(binding!!.root, context.resources.getString(R.string.record_active_info), Snackbar
-                    .LENGTH_LONG)
-                    .show()
+                Snackbar.make(
+                    binding!!.root,
+                    context.resources.getString(R.string.record_active_info),
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
         }
         binding!!.lowerHandButton.setOnClickListener { l: View? -> raiseHandViewModel!!.lowerHand() }

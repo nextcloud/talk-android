@@ -2366,16 +2366,20 @@ class ChatActivity :
                     }
                 } catch (e: IllegalStateException) {
                     context.resources?.getString(R.string.nc_upload_failed)?.let {
-                        Snackbar.make(binding.root, it, Snackbar
-                            .LENGTH_LONG)
-                            .show()
+                        Snackbar.make(
+                            binding.root,
+                            it,
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 } catch (e: IllegalArgumentException) {
                     context.resources?.getString(R.string.nc_upload_failed)?.let {
-                        Snackbar.make(binding.root, it, Snackbar
-                            .LENGTH_LONG)
-                            .show()
+                        Snackbar.make(
+                            binding.root,
+                            it,
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 }

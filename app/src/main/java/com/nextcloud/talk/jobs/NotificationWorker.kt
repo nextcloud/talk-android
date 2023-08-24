@@ -329,8 +329,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     Log.e(TAG, "Failed to get NC notification", e)
                     if (BuildConfig.DEBUG) {
                         Handler(Looper.getMainLooper()).post {
-                            Snackbar.make(View(applicationContext), "Failed to get NC notification", Snackbar
-                                .LENGTH_LONG).show()
+                            Snackbar.make(
+                                View(applicationContext),
+                                "Failed to get NC notification",
+                                Snackbar.LENGTH_LONG
+                            ).show()
                         }
                     }
                 }
@@ -744,7 +747,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
@@ -925,7 +927,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                                 Manifest.permission.POST_NOTIFICATIONS
                             ) != PackageManager.PERMISSION_GRANTED
                         ) {
-
                             // here to request the missing permissions, and then overriding
                             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
                             //                                          int[] grantResults)

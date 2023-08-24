@@ -594,9 +594,11 @@ class ConversationInfoActivity :
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    Snackbar.make(binding.root,
+                    Snackbar.make(
+                        binding.root,
                         context.getString(R.string.nc_clear_history_success),
-                        Snackbar.LENGTH_LONG).show()
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
 
                 override fun onError(e: Throwable) {

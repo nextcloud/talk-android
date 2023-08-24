@@ -1179,8 +1179,11 @@ class ConversationsListActivity :
                 Log.d(TAG, "upload starting after permissions were granted")
                 showSendFilesConfirmDialog()
             } else {
-                Snackbar.make(binding.root, context.getString(R.string.read_storage_no_permission), Snackbar.LENGTH_LONG)
-                    .show()
+                Snackbar.make(
+                    binding.root,
+                    context.getString(R.string.read_storage_no_permission),
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
         }
     }
