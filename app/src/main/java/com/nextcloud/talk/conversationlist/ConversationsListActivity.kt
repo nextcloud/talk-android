@@ -956,9 +956,11 @@ class ConversationsListActivity :
                     selectedMessageId = messageItem.messageEntry.messageId
                     showConversationByToken(conversationToken)
                 }
+
                 LoadMoreResultsItem.VIEW_TYPE -> {
                     loadMoreMessages()
                 }
+
                 ConversationItem.VIEW_TYPE -> {
                     handleConversation((Objects.requireNonNull(item) as ConversationItem).model)
                 }
@@ -1172,15 +1174,17 @@ class ConversationsListActivity :
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION &&
-            grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            Log.d(TAG, "upload starting after permissions were granted")
-            showSendFilesConfirmDialog()
-        } else {
-            Snackbar.make(binding.root, context.getString(R.string.read_storage_no_permission), Snackbar.LENGTH_LONG)
-                .show()
+        if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "upload starting after permissions were granted")
+                showSendFilesConfirmDialog()
+            } else {
+                Snackbar.make(
+                    binding.root,
+                    context.getString(R.string.read_storage_no_permission),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
@@ -1219,6 +1223,7 @@ class ConversationsListActivity :
                 EventStatus.EventType.CONVERSATION_UPDATE -> if (eventStatus.isAllGood && !isRefreshing) {
                     fetchRooms()
                 }
+
                 else -> {}
             }
         }
@@ -1495,7 +1500,9 @@ class ConversationsListActivity :
         filterState[FilterConversationFragment.UNREAD] = unread
     }
 
-    fun setFilterableItems(items: MutableList<AbstractFlexibleItem<*>>) { filterableConversationItems = items }
+    fun setFilterableItems(items: MutableList<AbstractFlexibleItem<*>>) {
+        filterableConversationItems = items
+    }
 
     fun updateFilterConversationButtonColor() {
         if (filterState.containsValue(true)) {
