@@ -51,7 +51,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     lateinit var binding: ActivityFullScreenMediaBinding
 
     private lateinit var path: String
-    private lateinit var player: ExoPlayer
+    private var player: ExoPlayer? = null
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
@@ -124,9 +124,11 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
         initializePlayer()
 
         val mediaItem: MediaItem = MediaItem.fromUri(path)
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.play()
+        player?.let { exoPlayer ->
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.prepare()
+            exoPlayer.play()
+        }
     }
 
     override fun onStop() {
@@ -137,12 +139,15 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     private fun initializePlayer() {
         player = ExoPlayer.Builder(applicationContext).build()
         binding.playerView.player = player
-        player.playWhenReady = true
-        player.addListener(this)
+        player?.let { exoPlayer ->
+            exoPlayer.playWhenReady = true
+            exoPlayer.addListener(this)
+        }
     }
 
     private fun releasePlayer() {
-        player.release()
+        player?.release()
+        player = null
     }
 
     private fun hideSystemUI() {
