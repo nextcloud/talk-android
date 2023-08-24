@@ -2093,7 +2093,6 @@ class ChatActivity :
             val uri = Uri.fromFile(File(currentVoiceRecordFile))
             uploadFile(uri.toString(), true)
         }
-
     }
 
     private fun stopAndDiscardAudioRecording() {
