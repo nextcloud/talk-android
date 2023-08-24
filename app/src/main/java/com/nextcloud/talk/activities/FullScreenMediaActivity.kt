@@ -4,9 +4,11 @@
  * @author Marcel Hibbe
  * @author Andy Scherzinger
  * @author Ezhil Shanmugham
+ * @author Parneet Singh
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
+ * Copyright (c) 2023 Parneet Singh <gurayaparneet@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +54,9 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
 
     private lateinit var path: String
     private var player: ExoPlayer? = null
+
+    private var playWhenReadyState: Boolean = true
+    private var playBackPosition: Long = 0L
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
@@ -122,13 +127,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     override fun onStart() {
         super.onStart()
         initializePlayer()
-
-        val mediaItem: MediaItem = MediaItem.fromUri(path)
-        player?.let { exoPlayer ->
-            exoPlayer.setMediaItem(mediaItem)
-            exoPlayer.prepare()
-            exoPlayer.play()
-        }
+        preparePlayer()
     }
 
     override fun onStop() {
@@ -139,14 +138,25 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     private fun initializePlayer() {
         player = ExoPlayer.Builder(applicationContext).build()
         binding.playerView.player = player
+        player?.addListener(this)
+    }
+
+    private fun preparePlayer() {
+        val mediaItem: MediaItem = MediaItem.fromUri(path)
         player?.let { exoPlayer ->
-            exoPlayer.playWhenReady = true
-            exoPlayer.addListener(this)
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.playWhenReady = playWhenReadyState
+            exoPlayer.seekTo(playBackPosition)
+            exoPlayer.prepare()
         }
     }
 
     private fun releasePlayer() {
-        player?.release()
+        player?.let { exoPlayer ->
+            playBackPosition = exoPlayer.currentPosition
+            playWhenReadyState = exoPlayer.playWhenReady
+            exoPlayer.release()
+        }
         player = null
     }
 
