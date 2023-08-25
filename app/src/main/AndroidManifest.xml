@@ -159,17 +159,17 @@
         <activity
             android:name=".activities.FullScreenImageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/FullScreenImageTheme"></activity>
+            android:theme="@style/FullScreenImageTheme"/>
 
         <activity
             android:name=".activities.FullScreenMediaActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/FullScreenMediaTheme"></activity>
+            android:theme="@style/FullScreenMediaTheme"/>
 
         <activity
             android:name=".activities.FullScreenTextViewerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/FullScreenTextTheme"></activity>
+            android:theme="@style/FullScreenTextTheme"/>
 
         <activity
             android:name=".activities.TakePhotoActivity"
