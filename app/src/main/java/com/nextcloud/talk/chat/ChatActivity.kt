@@ -348,6 +348,7 @@ class ChatActivity :
         AudioFormat.CHANNEL_IN_MONO,
         AudioFormat.ENCODING_PCM_16BIT
     )
+    private var voiceRecordDuration = 0L
 
     // messy workaround for a mediaPlayer bug, don't delete
     private var lastRecordMediaPosition: Int = 0
@@ -1163,7 +1164,7 @@ class ChatActivity :
                         showRecordAudioUi(false)
 
                         voiceRecordEndTime = System.currentTimeMillis()
-                        val voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
+                        voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
                         if (voiceRecordDuration < MINIMUM_VOICE_RECORD_DURATION) {
                             Log.d(TAG, "voiceRecordDuration: $voiceRecordDuration")
                             Snackbar.make(
@@ -2075,6 +2076,7 @@ class ChatActivity :
 
             try {
                 start()
+                Log.d(TAG, "recording started")
                 isVoiceRecordingInProgress = true
             } catch (e: IllegalStateException) {
                 Log.e(TAG, "start for audio recording failed")
@@ -2087,15 +2089,16 @@ class ChatActivity :
     private fun stopAndSendAudioRecording() {
         if (isVoiceRecordingInProgress) {
             stopAudioRecording()
+            Log.d(TAG, "stopped and sent audio recording")
+            val uri = Uri.fromFile(File(currentVoiceRecordFile))
+            uploadFile(uri.toString(), true)
         }
-
-        val uri = Uri.fromFile(File(currentVoiceRecordFile))
-        uploadFile(uri.toString(), true)
     }
 
     private fun stopAndDiscardAudioRecording() {
         if (isVoiceRecordingInProgress) {
             stopAudioRecording()
+            Log.d(TAG, "stopped and discarded audio recording")
         }
 
         val cachedFile = File(currentVoiceRecordFile)
@@ -2109,11 +2112,16 @@ class ChatActivity :
 
         recorder?.apply {
             try {
-                stop()
+                Log.d(TAG, "recording stopped with $voiceRecordDuration")
+                if (voiceRecordDuration > MINIMUM_VOICE_RECORD_TO_STOP) {
+                    stop()
+                }
                 release()
                 isVoiceRecordingInProgress = false
                 Log.d(TAG, "stopped recorder. isVoiceRecordingInProgress = false")
             } catch (e: java.lang.IllegalStateException) {
+                error("error while stopping recorder!" + e)
+            } catch (e: java.lang.RuntimeException) {
                 error("error while stopping recorder!" + e)
             }
 
@@ -4241,6 +4249,7 @@ class ChatActivity :
         private const val REQUEST_CODE_SELECT_REMOTE_FILES = 888
         private const val OBJECT_MESSAGE: String = "{object}"
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000
+        private const val MINIMUM_VOICE_RECORD_TO_STOP: Int = 200
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
         private const val VOICE_RECORD_LOCK_BUTTON_Y: Int = -130
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
