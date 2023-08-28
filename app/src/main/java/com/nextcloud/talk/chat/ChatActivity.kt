@@ -198,6 +198,7 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
+import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.VibrationUtils
@@ -312,6 +313,7 @@ class ChatActivity :
     var voiceOnly: Boolean = true
     var isFirstMessagesProcessing = true
     private var emojiPopup: EmojiPopup? = null
+    private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
     var checkingLobbyStatus: Boolean = false
@@ -3907,6 +3909,23 @@ class ChatActivity :
         val intent = Intent(this, TranslateActivity::class.java)
         intent.putExtras(bundle)
         startActivity(intent)
+    }
+    fun share(message: ChatMessage) {
+        val fileName = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_NAME]!!
+        path = applicationContext.cacheDir.absolutePath + "/" + fileName
+        val shareUri = FileProvider.getUriForFile(
+            this,
+            BuildConfig.APPLICATION_ID,
+            File(path)
+        )
+
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, shareUri)
+            type = Mimetype.IMAGE_PREFIX_GENERIC
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
     }
 
     fun openInFilesApp(message: ChatMessage) {
