@@ -3911,8 +3911,8 @@ class ChatActivity :
         startActivity(intent)
     }
     fun share(message: ChatMessage) {
-        val fileName = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_NAME]!!
-        path = applicationContext.cacheDir.absolutePath + "/" + fileName
+        val filename = message.selectedIndividualHashMap!!["name"]
+        path = applicationContext.cacheDir.absolutePath + "/" + filename
         val shareUri = FileProvider.getUriForFile(
             this,
             BuildConfig.APPLICATION_ID,
