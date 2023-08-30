@@ -1006,7 +1006,11 @@ class ChatActivity :
     @SuppressLint("ClickableViewAccessibility")
     private fun initVoiceRecordButton() {
         if (!isVoiceRecordingLocked) {
-            showMicrophoneButton(true)
+            if (binding.messageInputView.messageInput.text!!.isNotEmpty()) {
+                showMicrophoneButton(false)
+            } else {
+                showMicrophoneButton(true)
+            }
         } else if (isVoiceRecordingInProgress) {
             binding.messageInputView.playPauseBtn.visibility = View.GONE
             binding.messageInputView.seekBar.visibility = View.GONE
@@ -3998,9 +4002,11 @@ class ChatActivity :
 
     private fun showMicrophoneButton(show: Boolean) {
         if (show && CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "voice-message-sharing")) {
+            Log.d(TAG, "Microphone shown")
             binding.messageInputView.messageSendButton.visibility = View.GONE
             binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
         } else {
+            Log.d(TAG, "Microphone hidden")
             binding.messageInputView.messageSendButton.visibility = View.VISIBLE
             binding.messageInputView.recordAudioButton.visibility = View.GONE
         }
