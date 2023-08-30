@@ -166,7 +166,7 @@
     <string name="nc_guest_access_password_title">Захист паролем</string>
     <string name="nc_guest_access_password_weak_alert_title">Слабкий пароль</string>
     <string name="nc_guest_access_resend_invitations">Повторно надіслати запрошення</string>
-    <string name="nc_guest_access_resend_invitations_failed">Запрошення не були надіслані через помилку.</string>
+    <string name="nc_guest_access_resend_invitations_failed">Запрошення не було надіслано через помилку, що виникла.</string>
     <string name="nc_guest_access_resend_invitations_successful">Запрошення було розіслано повторно.</string>
     <string name="nc_guest_access_share_link">Поділитися посиланням на бесіду</string>
     <string name="nc_hint_enter_a_message">Введіть повідомлення ...</string>

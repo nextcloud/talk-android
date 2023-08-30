@@ -4,9 +4,11 @@
  * @author Marcel Hibbe
  * @author Andy Scherzinger
  * @author Ezhil Shanmugham
+ * @author Parneet Singh
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
+ * Copyright (c) 2023 Parneet Singh <gurayaparneet@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,13 +32,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import autodagger.AutoInjector
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -49,7 +53,10 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     lateinit var binding: ActivityFullScreenMediaBinding
 
     private lateinit var path: String
-    private lateinit var player: SimpleExoPlayer
+    private var player: ExoPlayer? = null
+
+    private var playWhenReadyState: Boolean = true
+    private var playBackPosition: Long = 0L
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
@@ -81,6 +88,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
         }
     }
 
+    @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -104,7 +112,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
         }
 
         binding.playerView.setControllerVisibilityListener(
-            StyledPlayerView.ControllerVisibilityListener { v ->
+            PlayerView.ControllerVisibilityListener { v ->
                 if (v != 0) {
                     hideSystemUI()
                     supportActionBar?.hide()
@@ -119,11 +127,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     override fun onStart() {
         super.onStart()
         initializePlayer()
-
-        val mediaItem: MediaItem = MediaItem.fromUri(path)
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.play()
+        preparePlayer()
     }
 
     override fun onStop() {
@@ -132,14 +136,28 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun initializePlayer() {
-        player = SimpleExoPlayer.Builder(applicationContext).build()
+        player = ExoPlayer.Builder(applicationContext).build()
         binding.playerView.player = player
-        player.playWhenReady = true
-        player.addListener(this)
+        player?.addListener(this)
+    }
+
+    private fun preparePlayer() {
+        val mediaItem: MediaItem = MediaItem.fromUri(path)
+        player?.let { exoPlayer ->
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.playWhenReady = playWhenReadyState
+            exoPlayer.seekTo(playBackPosition)
+            exoPlayer.prepare()
+        }
     }
 
     private fun releasePlayer() {
-        player.release()
+        player?.let { exoPlayer ->
+            playBackPosition = exoPlayer.currentPosition
+            playWhenReadyState = exoPlayer.playWhenReady
+            exoPlayer.release()
+        }
+        player = null
     }
 
     private fun hideSystemUI() {

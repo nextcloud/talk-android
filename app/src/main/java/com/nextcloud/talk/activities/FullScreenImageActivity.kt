@@ -32,9 +32,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.ActivityFullScreenImageBinding
@@ -133,7 +133,7 @@ class FullScreenImageActivity : AppCompatActivity() {
         // info that 100MB is the limit comes from https://stackoverflow.com/a/53334563
         if (bitmapSize > HUNDRED_MB) {
             Log.e(TAG, "bitmap will be too large to display. It won't be displayed to avoid RuntimeException")
-            Toast.makeText(this, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         } else {
             binding.photoView.setImageBitmap(bitmap)
         }

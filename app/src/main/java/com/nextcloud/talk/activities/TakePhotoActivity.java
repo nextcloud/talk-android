@@ -37,8 +37,7 @@ import android.view.OrientationEventListener;
 import android.view.ScaleGestureDetector;
 import android.view.Surface;
 import android.view.View;
-import android.widget.Toast;
-
+import com.google.android.material.snackbar.Snackbar;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -234,7 +233,7 @@ public class TakePhotoActivity extends AppCompatActivity {
                 binding.photoPreview.setMediumScale(MEDIUM_SCALE);
             } catch (IllegalArgumentException | ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error taking picture", e);
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                Snackbar.make(binding.getRoot(), e.getMessage(), Snackbar.LENGTH_LONG).show();
                 finish();
             }
         }, ContextCompat.getMainExecutor(this));
@@ -326,7 +325,7 @@ public class TakePhotoActivity extends AppCompatActivity {
                     });
             } catch (Exception e) {
                 Log.e(TAG, "error while taking picture", e);
-                Toast.makeText(this, R.string.take_photo_error_deleting_picture, Toast.LENGTH_SHORT).show();
+                Snackbar.make(binding.getRoot(), R.string.take_photo_error_deleting_picture, Snackbar.LENGTH_SHORT).show();
             }
         });
 

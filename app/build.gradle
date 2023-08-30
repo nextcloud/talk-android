@@ -46,8 +46,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode 170100017
-        versionName "17.10.0 Alpha 17"
+        versionCode 170100020
+        versionName "17.10.0 Alpha 20"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
@@ -152,6 +152,7 @@ ext {
     roomVersion = "2.5.2"
     workVersion = "2.8.1"
     espressoVersion = "3.5.1"
+    media3_version = "1.1.1"
 }
 
 configurations.all {
@@ -263,7 +264,9 @@ dependencies {
     implementation "com.afollestad.material-dialogs:lifecycle:${materialDialogsVersion}"
 
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.google.android.exoplayer:exoplayer:2.19.0'
+
+    implementation "androidx.media3:media3-exoplayer:$media3_version"
+    implementation "androidx.media3:media3-ui:$media3_version"
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.27'
@@ -273,8 +276,7 @@ dependencies {
     implementation "io.noties.markwon:ext-tasklist:$markwonVersion"
 
     implementation 'com.github.nextcloud-deps:ImagePicker:2.1.0.2'
-    implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
-
+    implementation 'io.github.elye:loaderviewlibrary:3.0.0'
     implementation 'org.osmdroid:osmdroid-android:6.1.16'
     implementation ('fr.dudie:nominatim-api:3.4', {
         //noinspection DuplicatePlatformClasses
@@ -284,7 +286,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.10.1'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:5.4.0'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
 
     androidTestImplementation "androidx.test:core:1.5.0"

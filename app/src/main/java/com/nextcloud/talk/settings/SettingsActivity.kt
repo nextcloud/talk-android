@@ -52,7 +52,6 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
@@ -63,6 +62,7 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
@@ -471,7 +471,7 @@ class SettingsActivity : BaseActivity() {
     private fun removeCurrentAccount() {
         val otherUserExists = userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
-        WorkManager.getInstance(this).enqueue(accountRemovalWork)
+        WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
         if (otherUserExists) {
             // TODO: find better solution once Conductor is removed
             finish()
@@ -888,10 +888,10 @@ class SettingsActivity : BaseActivity() {
         } else {
             appPreferences.setPhoneBookIntegration(false)
             binding.settingsPhoneBookIntegrationSwitch.isChecked = appPreferences.isPhoneBookIntegrationEnabled
-            Toast.makeText(
-                context,
+            Snackbar.make(
+                binding.root,
                 context.resources.getString(R.string.no_phone_book_integration_due_to_permissions),
-                Toast.LENGTH_LONG
+                Snackbar.LENGTH_LONG
             ).show()
         }
     }
@@ -1082,12 +1082,12 @@ class SettingsActivity : BaseActivity() {
                     val statusCode = genericOverall.ocs?.meta?.statusCode
                     if (statusCode == HTTP_CODE) {
                         dialog.dismiss()
-                        Toast.makeText(
-                            context,
+                        Snackbar.make(
+                            binding.root,
                             context.resources.getString(
                                 R.string.nc_settings_phone_book_integration_phone_number_dialog_success
                             ),
-                            Toast.LENGTH_LONG
+                            Snackbar.LENGTH_LONG
                         ).show()
                     } else {
                         textInputLayout.helperText = context.resources.getString(

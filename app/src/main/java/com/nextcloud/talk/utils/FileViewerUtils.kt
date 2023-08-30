@@ -29,13 +29,13 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.emoji2.widget.EmojiTextView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.FullScreenImageActivity
 import com.nextcloud.talk.activities.FullScreenMediaActivity
@@ -122,7 +122,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                     "support it, it can't be handled by an external app and there is no link " +
                     "to open it in the nextcloud files app"
             )
-            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Snackbar.make(View(context), R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -175,7 +175,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             }
         } else {
             Log.e(TAG, "can't open file with unknown mimetype")
-            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Snackbar.make(View(context), R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
     }
 

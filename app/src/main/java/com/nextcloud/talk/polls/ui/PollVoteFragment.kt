@@ -32,12 +32,12 @@ import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.RadioButton
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollVoteBinding
@@ -94,10 +94,10 @@ class PollVoteFragment : Fragment() {
                 PollVoteViewModel.InitialState -> {}
                 is PollVoteViewModel.PollVoteFailedState -> {
                     Log.e(TAG, "Failed to vote on poll.")
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
                 is PollVoteViewModel.PollVoteHiddenSuccessState -> {
-                    Toast.makeText(context, R.string.polls_voted_hidden_success, Toast.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.polls_voted_hidden_success, Snackbar.LENGTH_LONG).show()
                     parentViewModel.dismissDialog()
                 }
                 is PollVoteViewModel.PollVoteSuccessState -> {
@@ -182,7 +182,7 @@ class PollVoteFragment : Fragment() {
                             viewModel.selectOption(index, false)
                         } else {
                             checkBox.isChecked = false
-                            Toast.makeText(context, R.string.polls_max_votes_reached, Toast.LENGTH_LONG).show()
+                            Snackbar.make(binding.root, R.string.polls_max_votes_reached, Snackbar.LENGTH_LONG).show()
                         }
                     } else {
                         viewModel.deSelectOption(index)
