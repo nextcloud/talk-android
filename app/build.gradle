@@ -269,7 +269,7 @@ dependencies {
     implementation "androidx.media3:media3-ui:$media3_version"
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.27'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.28'
 
     implementation "io.noties.markwon:core:$markwonVersion"
     implementation "io.noties.markwon:ext-strikethrough:$markwonVersion"
