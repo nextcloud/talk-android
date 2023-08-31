@@ -137,6 +137,7 @@ import com.nextcloud.talk.adapters.messages.OutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
 import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
+import com.nextcloud.talk.adapters.messages.SystemMessageInterface
 import com.nextcloud.talk.adapters.messages.SystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
 import com.nextcloud.talk.adapters.messages.UnreadNoticeMessageViewHolder
@@ -264,7 +265,8 @@ class ChatActivity :
     ContentChecker<ChatMessage>,
     VoiceMessageInterface,
     CommonMessageInterface,
-    PreviewMessageInterface {
+    PreviewMessageInterface,
+    SystemMessageInterface {
 
     var active = false
 
@@ -1891,6 +1893,45 @@ class ChatActivity :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    override fun collapseSystemMessages() {
+        adapter?.items?.forEach {
+            if (it.item is ChatMessage) {
+                val chatMessage = it.item as ChatMessage
+                if (isChildOfExpandableSystemMessage(chatMessage)) {
+                    chatMessage.hiddenByCollapse = true
+                }
+                chatMessage.isExpanded = false
+            }
+        }
+
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun isChildOfExpandableSystemMessage(chatMessage: ChatMessage): Boolean {
+        return isSystemMessage(chatMessage) &&
+            !chatMessage.expandableParent &&
+            chatMessage.lastItemOfExpandableGroup != 0
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun expandSystemMessage(chatMessageToExpand: ChatMessage) {
+        adapter?.items?.forEach {
+            if (it.item is ChatMessage) {
+                val belongsToGroupToExpand =
+                    (it.item as ChatMessage).lastItemOfExpandableGroup == chatMessageToExpand.lastItemOfExpandableGroup
+
+                if (belongsToGroupToExpand) {
+                    (it.item as ChatMessage).hiddenByCollapse = false
+                }
+            }
+        }
+
+        chatMessageToExpand.isExpanded = true
+
+        adapter?.notifyDataSetChanged()
+    }
+
     @SuppressLint("LongLogTag")
     private fun downloadFileToCache(message: ChatMessage) {
         message.isDownloadingVoiceMessage = true
@@ -3085,7 +3126,14 @@ class ChatActivity :
                             Log.d(TAG, "pullChatMessages - HTTP_CODE_OK.")
 
                             val chatOverall = response.body() as ChatOverall?
-                            val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data!!)
+
+                            var chatMessageList = chatOverall?.ocs!!.data!!
+
+                            chatMessageList = handleSystemMessages(chatMessageList)
+
+                            determinePreviousMessageIds(chatMessageList)
+
+                            handleExpandableSystemMessages(chatMessageList)
 
                             processHeaderChatLastGiven(response, lookIntoFuture)
 
@@ -3100,6 +3148,8 @@ class ChatActivity :
                                 processMessagesFromTheFuture(chatMessageList)
                             } else {
                                 processMessagesNotFromTheFuture(chatMessageList)
+
+                                collapseSystemMessages()
                             }
 
                             val newXChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
@@ -3123,6 +3173,8 @@ class ChatActivity :
                         isFirstMessagesProcessing = false
                         binding.progressBar.visibility = View.GONE
                         binding.messagesListView.visibility = View.VISIBLE
+
+                        collapseSystemMessages()
                     }
                 }
 
@@ -3188,6 +3240,7 @@ class ChatActivity :
     }
 
     private fun processExpiredMessages() {
+        @SuppressLint("NotifyDataSetChanged")
         fun deleteExpiredMessages() {
             val messagesToDelete: ArrayList<ChatMessage> = ArrayList()
             val systemTime = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
@@ -3248,13 +3301,41 @@ class ChatActivity :
             adapter?.addToStart(unreadChatMessage, false)
         }
 
-        determinePreviousMessageIds(chatMessageList)
-
         addMessagesToAdapter(shouldAddNewMessagesNotice, chatMessageList)
 
         if (shouldAddNewMessagesNotice && adapter != null) {
             scrollToFirstUnreadMessage()
         }
+    }
+
+    private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
+        var countGroupedMessages = 0
+
+        for (i in chatMessageList.indices) {
+            if (chatMessageList.size > i + 1) {
+                if (isSameDayNonSystemMessages(chatMessageList[i], chatMessageList[i + 1]) &&
+                    chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
+                    countGroupedMessages < GROUPED_MESSAGES_THRESHOLD
+                ) {
+                    chatMessageList[i].isGrouped = true
+                    countGroupedMessages++
+                } else {
+                    countGroupedMessages = 0
+                }
+            }
+
+            val chatMessage = chatMessageList[i]
+            chatMessage.isOneToOneConversation =
+                currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            chatMessage.isFormerOneToOneConversation =
+                (currentConversation?.type == ConversationType.FORMER_ONE_TO_ONE)
+            chatMessage.activeUser = conversationUser
+        }
+
+        if (adapter != null) {
+            adapter?.addToEnd(chatMessageList, false)
+        }
+        scrollToRequestedMessageIfNeeded()
     }
 
     private fun scrollToFirstUnreadMessage() {
@@ -3286,10 +3367,8 @@ class ChatActivity :
 
             adapter?.let {
                 chatMessage.isGrouped = (
-                    it.isPreviousSameAuthor(
-                        chatMessage.actorId,
-                        -1
-                    ) && it.getSameAuthorLastMessagesCount(chatMessage.actorId) %
+                    it.isPreviousSameAuthor(chatMessage.actorId, -1) &&
+                        it.getSameAuthorLastMessagesCount(chatMessage.actorId) %
                         GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
                     )
                 chatMessage.isOneToOneConversation =
@@ -3316,37 +3395,6 @@ class ChatActivity :
             binding.scrollDownButton.visibility = View.GONE
             newMessagesCount = 0
         }
-    }
-
-    private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
-        var countGroupedMessages = 0
-        determinePreviousMessageIds(chatMessageList)
-
-        for (i in chatMessageList.indices) {
-            if (chatMessageList.size > i + 1) {
-                if (isSameDayNonSystemMessages(chatMessageList[i], chatMessageList[i + 1]) &&
-                    chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
-                    countGroupedMessages < GROUPED_MESSAGES_THRESHOLD
-                ) {
-                    chatMessageList[i].isGrouped = true
-                    countGroupedMessages++
-                } else {
-                    countGroupedMessages = 0
-                }
-            }
-
-            val chatMessage = chatMessageList[i]
-            chatMessage.isOneToOneConversation =
-                currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-            chatMessage.isFormerOneToOneConversation =
-                (currentConversation?.type == ConversationType.FORMER_ONE_TO_ONE)
-            chatMessage.activeUser = conversationUser
-        }
-
-        if (adapter != null) {
-            adapter?.addToEnd(chatMessageList, false)
-        }
-        scrollToRequestedMessageIfNeeded()
     }
 
     private fun determinePreviousMessageIds(chatMessageList: List<ChatMessage>) {
@@ -3569,6 +3617,30 @@ class ChatActivity :
             // delete poll system messages
             else if (isPollVotedMessage(currentMessage)) {
                 chatMessageIterator.remove()
+            }
+        }
+        return chatMessageMap.values.toList()
+    }
+
+    private fun handleExpandableSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+        val chatMessageMap = chatMessageList.map { it.id to it }.toMap().toMutableMap()
+        val chatMessageIterator = chatMessageMap.iterator()
+        while (chatMessageIterator.hasNext()) {
+            val currentMessage = chatMessageIterator.next()
+
+            val previousMessage = chatMessageMap[currentMessage.value.previousMessageId.toString()]
+            if (isSystemMessage(currentMessage.value) &&
+                previousMessage?.systemMessageType == currentMessage.value.systemMessageType
+            ) {
+                previousMessage?.expandableParent = true
+                currentMessage.value.expandableParent = false
+
+                if (currentMessage.value.lastItemOfExpandableGroup == 0) {
+                    currentMessage.value.lastItemOfExpandableGroup = currentMessage.value.jsonMessageId
+                }
+
+                previousMessage?.lastItemOfExpandableGroup = currentMessage.value.lastItemOfExpandableGroup
+                previousMessage?.expandableChildrenAmount = currentMessage.value.expandableChildrenAmount + 1
             }
         }
         return chatMessageMap.values.toList()

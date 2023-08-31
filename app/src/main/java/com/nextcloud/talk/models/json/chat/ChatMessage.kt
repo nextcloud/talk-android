@@ -135,7 +135,17 @@ data class ChatMessage(
 
     var voiceMessageSeekbarProgress: Int = 0,
 
-    var voiceMessageFloatArray: FloatArray? = null
+    var voiceMessageFloatArray: FloatArray? = null,
+
+    var expandableParent: Boolean = false,
+
+    var isExpanded: Boolean = false,
+
+    var lastItemOfExpandableGroup: Int = 0,
+
+    var expandableChildrenAmount: Int = 0,
+
+    var hiddenByCollapse: Boolean = false
 
 ) : Parcelable, MessageContentType, MessageContentType.Image {
 
