@@ -175,7 +175,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else if (isSpreedNotification()) {
             Log.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
-                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING -> handleNonCallPushMessage()
+                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER -> handleNonCallPushMessage()
                 TYPE_CALL -> handleCallPushMessage()
                 else -> Log.e(TAG, "unknown pushMessage.type")
             }
@@ -407,7 +407,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     ) {
         var category = ""
         when (pushMessage.type) {
-            TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING -> category = Notification.CATEGORY_MESSAGE
+            TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER -> category = Notification.CATEGORY_MESSAGE
             TYPE_CALL -> category = Notification.CATEGORY_CALL
             else -> Log.e(TAG, "unknown pushMessage.type")
         }
@@ -464,7 +464,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             when (pushMessage.type) {
-                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING -> {
+                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER -> {
                     notificationBuilder.setChannelId(
                         NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
                     )
@@ -489,7 +489,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val systemNotificationId: Int =
             activeStatusBarNotification?.id ?: calculateCRC32(System.currentTimeMillis().toString()).toInt()
 
-        if (TYPE_CHAT == pushMessage.type && pushMessage.notificationUser != null) {
+        if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
+            pushMessage.notificationUser != null
+        ) {
             prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
             addReplyAction(notificationBuilder, systemNotificationId)
             addMarkAsReadAction(notificationBuilder, systemNotificationId)
@@ -522,6 +524,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 else -> // assuming one2one
                     largeIcon = if (TYPE_CHAT == pushMessage.type || TYPE_ROOM == pushMessage.type) {
                         ContextCompat.getDrawable(context!!, R.drawable.ic_comment)?.toBitmap()!!
+                    } else if (TYPE_REMINDER == pushMessage.type) {
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_timer_black_24dp)?.toBitmap()!!
                     } else {
                         ContextCompat.getDrawable(context!!, R.drawable.ic_call_black_24dp)?.toBitmap()!!
                     }
@@ -984,6 +988,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TYPE_ROOM = "room"
         private const val TYPE_CALL = "call"
         private const val TYPE_RECORDING = "recording"
+        private const val TYPE_REMINDER = "reminder"
         private const val SPREED_APP = "spreed"
         private const val TIMER_START = 1
         private const val TIMER_COUNT = 12

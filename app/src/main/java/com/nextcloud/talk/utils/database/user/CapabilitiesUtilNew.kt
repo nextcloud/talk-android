@@ -145,7 +145,7 @@ object CapabilitiesUtilNew {
     }
 
     @JvmStatic
-    fun getAttachmentFolder(user: User): String? {
+    fun getAttachmentFolder(user: User): String {
         if (user.capabilities?.spreedCapability?.config?.containsKey("attachments") == true) {
             val map = user.capabilities!!.spreedCapability!!.config!!["attachments"]
             if (map?.containsKey("folder") == true) {
@@ -239,6 +239,15 @@ object CapabilitiesUtilNew {
         } else {
             null
         }
+    }
+
+    fun isRemindSupported(user: User?): Boolean {
+        if (user?.capabilities != null) {
+            val capabilities = user.capabilities
+            return capabilities?.spreedCapability?.features?.contains("remind-me-later") == true
+        }
+
+        return false
     }
 
     const val DEFAULT_CHAT_SIZE = 1000
