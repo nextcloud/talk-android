@@ -35,6 +35,7 @@
     <string name="filename_progress">%1$s(%2$d)</string>
     <string name="fourHours">4 ordu</string>
     <string name="invisible">Ikusezina</string>
+    <string name="later_today">Beranduago gaur</string>
     <string name="load_more_results">Kargatu emaitza gehiago </string>
     <string name="lock_symbol">Blokeo sinboloa</string>
     <string name="lower_hand">Jaitsi eskua</string>
@@ -403,6 +404,7 @@
     <string name="nc_wrong_link">Elkarrizketa esteka ez da baliozkoa</string>
     <string name="nc_wrong_password">Pasahitz okerra</string>
     <string name="nc_yes">Bai</string>
+    <string name="next_week">Hurrengo astea</string>
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zenbakia integratu, baimen falta dela eta</string>
     <string name="oneHour">Ordu 1</string>
     <string name="online">Linean</string>
@@ -456,6 +458,7 @@
     <string name="send_to_forbidden">Ez duzu edukirik partekatzeko baimentik txat honetan</string>
     <string name="send_to_three_dots">Bidali honi …</string>
     <string name="send_without_notification">Bidali jakinarazpenik gabe</string>
+    <string name="set">Ezarri</string>
     <string name="set_avatar_from_camera">Ezarri avatarra kameraren bidez</string>
     <string name="set_status">Ezarri egoera</string>
     <string name="set_status_message">Ezarri egoera-mezua</string>

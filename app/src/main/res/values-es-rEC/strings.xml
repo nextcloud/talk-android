@@ -395,6 +395,7 @@
     <string name="nc_wrong_link">La liga de la conversación no es válida</string>
     <string name="nc_wrong_password">Contraseña equivocada</string>
     <string name="nc_yes">Sí</string>
+    <string name="next_week">Semana siguiente</string>
     <string name="no_phone_book_integration_due_to_permissions">No hay integración de número de teléfono debido a permisos faltantes</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línea</string>
@@ -448,6 +449,7 @@
     <string name="send_to_forbidden">No tienes permiso para compartir contenido en este chat</string>
     <string name="send_to_three_dots">Enviar a...</string>
     <string name="send_without_notification">Enviar sin notificación</string>
+    <string name="set">Establecer</string>
     <string name="set_avatar_from_camera">Establecer avatar desde la cámara</string>
     <string name="set_status">Establecer estado</string>
     <string name="set_status_message">Establecer mensaje de estado</string>

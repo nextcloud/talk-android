@@ -19,6 +19,7 @@
     <string name="close">Pechar</string>
     <string name="continuous_voice_message_recording">Bloquear a gravación para gravar continuamente a mensaxe de voz</string>
     <string name="conversations">Conversas</string>
+    <string name="custom">Personalizado</string>
     <string name="danger_zone">Zona de perigo</string>
     <string name="delete_avatar">Eliminar avatar</string>
     <string name="dnd">Non molestar</string>
@@ -35,6 +36,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisíbel</string>
+    <string name="later_today">Hoxe máis tarde</string>
     <string name="load_more_results">Cargando máis resultados</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
     <string name="lower_hand">Baixar a man</string>
@@ -403,6 +405,7 @@
     <string name="nc_wrong_link">A ligazón da conversa non é válida</string>
     <string name="nc_wrong_password">Contrasinal incorrecto </string>
     <string name="nc_yes">Si</string>
+    <string name="next_week">Semana seguinte</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración do número de teléfono por mor da falta de permisos</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En liña</string>
@@ -456,6 +459,7 @@
     <string name="send_to_forbidden">Non ten permiso para compartir contido nesta parola</string>
     <string name="send_to_three_dots">Enviar a…</string>
     <string name="send_without_notification">Enviar sen notificación</string>
+    <string name="set">Estabelecer</string>
     <string name="set_avatar_from_camera">Estabelecer o avatar dende a cámara</string>
     <string name="set_status">Estabelecer o estado</string>
     <string name="set_status_message">Estabelecer a mensaxe de estado</string>
@@ -484,6 +488,7 @@
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Esta é unha mensaxe de proba</string>
+    <string name="this_weekend">Este fin de semana</string>
     <string name="title_attachments">Anexos</string>
     <string name="today">Hoxe</string>
     <string name="translate">Traducir</string>

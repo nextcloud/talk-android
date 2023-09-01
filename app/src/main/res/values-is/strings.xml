@@ -10,6 +10,7 @@
     <string name="clear_status_message_after">Hreinsa stöðuskilaboð eftir</string>
     <string name="close">Loka</string>
     <string name="conversations">Samtöl</string>
+    <string name="custom">Sérsniðið</string>
     <string name="dnd">Ónáðið ekki</string>
     <string name="dontClear">Ekki hreinsa</string>
     <string name="edit">Breyta</string>
@@ -233,6 +234,7 @@
     <string name="nc_wrong_link">Samskiptatengill er ekki gildur</string>
     <string name="nc_wrong_password">Rangt lykilorð</string>
     <string name="nc_yes">Já</string>
+    <string name="next_week">Næsta viku</string>
     <string name="oneHour">1 klukkustund</string>
     <string name="online">Á netinu</string>
     <string name="online_status">Staða á netinu</string>
@@ -248,6 +250,7 @@
     <string name="scope_published_title">Útgefið</string>
     <string name="secondsAgo">sekúndum síðan</string>
     <string name="selected_list_item">Valið</string>
+    <string name="set">Setja</string>
     <string name="set_status">Setja stöðu</string>
     <string name="set_status_message">Setja stöðuskilaboð</string>
     <string name="share">Deila</string>

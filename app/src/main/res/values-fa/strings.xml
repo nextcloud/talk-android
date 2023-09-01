@@ -403,6 +403,7 @@
     <string name="nc_wrong_link">پیوند مکالمه معتبر نیست</string>
     <string name="nc_wrong_password">کلمه عبور اشتباه</string>
     <string name="nc_yes">بله</string>
+    <string name="next_week">هفتهٔ بعد</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="oneHour">۱ ساعت</string>
     <string name="online">آنلاین</string>
@@ -456,6 +457,7 @@
     <string name="send_to_forbidden">You are not allowed to share content to this chat</string>
     <string name="send_to_three_dots">Send to …</string>
     <string name="send_without_notification">Send without notification</string>
+    <string name="set">تنظیم</string>
     <string name="set_avatar_from_camera">Set avatar from camera</string>
     <string name="set_status">تنظیم وضعیت</string>
     <string name="set_status_message">تنظیم پیام وضعیت</string>

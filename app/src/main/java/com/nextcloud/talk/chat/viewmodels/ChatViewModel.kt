@@ -27,6 +27,8 @@ import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.reminder.Reminder
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -40,6 +42,13 @@ class ChatViewModel @Inject constructor(private val repository: ChatRepository) 
 
     object GetRoomStartState : ViewState
     object GetRoomErrorState : ViewState
+    object GetReminderStartState : ViewState
+    open class GetReminderExistState(val reminder: Reminder) : ViewState
+
+    private val _getReminderExistState: MutableLiveData<ViewState> = MutableLiveData(GetReminderStartState)
+    val getReminderExistState: LiveData<ViewState>
+        get() = _getReminderExistState
+
     open class GetRoomSuccessState(val conversationModel: ConversationModel) : ViewState
 
     private val _getRoomViewState: MutableLiveData<ViewState> = MutableLiveData(GetRoomStartState)
@@ -69,6 +78,43 @@ class ChatViewModel @Inject constructor(private val repository: ChatRepository) 
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.retry(JOIN_ROOM_RETRY_COUNT)
             ?.subscribe(JoinRoomObserver())
+    }
+
+    fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int) {
+        repository.setReminder(user, roomToken, messageId, timestamp)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(SetReminderObserver())
+    }
+
+    fun getReminder(user: User, roomToken: String, messageId: String) {
+        repository.getReminder(user, roomToken, messageId)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(GetReminderObserver())
+    }
+
+    fun deleteReminder(user: User, roomToken: String, messageId: String) {
+        repository.deleteReminder(user, roomToken, messageId)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    _getReminderExistState.value = GetReminderStartState
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.d(TAG, "Error when deleting reminder $e")
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
     }
 
     inner class GetRoomObserver : Observer<ConversationModel> {
@@ -102,6 +148,43 @@ class ChatViewModel @Inject constructor(private val repository: ChatRepository) 
         override fun onError(e: Throwable) {
             Log.e(TAG, "Error when joining room")
             _joinRoomViewState.value = JoinRoomErrorState
+        }
+
+        override fun onComplete() {
+            // unused atm
+        }
+    }
+
+    inner class SetReminderObserver : Observer<Reminder> {
+        override fun onSubscribe(d: Disposable) {
+            // unused atm
+        }
+
+        override fun onNext(reminder: Reminder) {
+            Log.d(TAG, "reminder set successfully")
+        }
+
+        override fun onError(e: Throwable) {
+            Log.e(TAG, "Error when sending reminder, $e")
+        }
+
+        override fun onComplete() {
+            // unused atm
+        }
+    }
+
+    inner class GetReminderObserver : Observer<Reminder> {
+        override fun onSubscribe(d: Disposable) {
+            // unused atm
+        }
+
+        override fun onNext(reminder: Reminder) {
+            _getReminderExistState.value = GetReminderExistState(reminder)
+        }
+
+        override fun onError(e: Throwable) {
+            Log.d(TAG, "Error when getting reminder $e")
+            _getReminderExistState.value = GetReminderStartState
         }
 
         override fun onComplete() {

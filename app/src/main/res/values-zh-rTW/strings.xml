@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">有線式頭戴耳機</string>
     <string name="avatar">頭像</string>
     <string name="away">外出</string>
+    <string name="calendar">日曆</string>
     <string name="call_more_actions_dialog_headline">進階通話選項</string>
     <string name="call_running_since_one_hour">通話已經持續一個小時了。</string>
     <string name="call_without_notification">通話而不通知</string>
@@ -19,6 +20,7 @@
     <string name="close">關閉</string>
     <string name="continuous_voice_message_recording">鎖定錄音以連續錄製語音訊息</string>
     <string name="conversations">對話</string>
+    <string name="custom">自訂</string>
     <string name="danger_zone">危險地帶</string>
     <string name="delete_avatar">刪除頭像</string>
     <string name="dnd">請勿打擾</string>
@@ -35,6 +37,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小時</string>
     <string name="invisible">隱藏</string>
+    <string name="later_today">今天稍後</string>
     <string name="load_more_results">載入更多結果</string>
     <string name="lock_symbol">上鎖符號</string>
     <string name="lower_hand">放手</string>
@@ -264,6 +267,7 @@
     <string name="nc_push_disabled">取消推送通知</string>
     <string name="nc_push_to_talk">按住以說話</string>
     <string name="nc_push_to_talk_desc">在停用麥克風的情況下，點擊並按住即可使用按住以說話</string>
+    <string name="nc_remind">稍後提醒我</string>
     <string name="nc_remote_audio_off">遠端音訊關閉</string>
     <string name="nc_remove_circle_and_members">移除小圈圈與成員</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
@@ -403,6 +407,7 @@
     <string name="nc_wrong_link">對話連結無效</string>
     <string name="nc_wrong_password">密碼錯誤</string>
     <string name="nc_yes">是</string>
+    <string name="next_week">下週</string>
     <string name="no_phone_book_integration_due_to_permissions">因為缺少權限而無法整合電話號碼</string>
     <string name="oneHour">1小時</string>
     <string name="online">線上</string>
@@ -456,6 +461,7 @@
     <string name="send_to_forbidden">您不被允許在此聊天中分享內容</string>
     <string name="send_to_three_dots">傳送至……</string>
     <string name="send_without_notification">傳送而不通知</string>
+    <string name="set">設定</string>
     <string name="set_avatar_from_camera">從相機設定大頭照</string>
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
@@ -484,8 +490,10 @@
     <string name="thirtyMinutes">30分鐘</string>
     <string name="thisWeek">這個禮拜</string>
     <string name="this_is_a_test_message">這是測試訊息</string>
+    <string name="this_weekend">本週末</string>
     <string name="title_attachments">附件</string>
     <string name="today">今天</string>
+    <string name="tomorrow">明天</string>
     <string name="translate">翻譯</string>
     <string name="translation">翻譯</string>
     <string name="translation_copy_translated_text">複製已翻譯的文字</string>

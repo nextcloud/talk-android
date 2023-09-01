@@ -17,6 +17,7 @@
     <string name="clear_status_message_after">Állapotüzenet törlése ennyi idő után:</string>
     <string name="close">Bezárás</string>
     <string name="conversations">Beszélgetések</string>
+    <string name="custom">Egyéni</string>
     <string name="delete_avatar">Profilkép törlése</string>
     <string name="dnd">Ne zavarjanak</string>
     <string name="dontClear">Ne törölje</string>
@@ -388,6 +389,7 @@
     <string name="nc_wrong_link">A beszélgetési hivatkozás nem érvényes</string>
     <string name="nc_wrong_password">Hibás jelszó</string>
     <string name="nc_yes">Igen</string>
+    <string name="next_week">Következő hét</string>
     <string name="no_phone_book_integration_due_to_permissions">Nincs telefonszám integráció hiányzó engedélyek miatt</string>
     <string name="oneHour">1 óra</string>
     <string name="online">Elérhető</string>
@@ -441,6 +443,7 @@
     <string name="send_to_forbidden">Nincs jogosultsága, hogy tartalmat osszon meg ebben a csevegésben</string>
     <string name="send_to_three_dots">Küldés…</string>
     <string name="send_without_notification">Küldés értesítés nélkül</string>
+    <string name="set">Beállítás</string>
     <string name="set_avatar_from_camera">Profilkép beállítása a kamerával</string>
     <string name="set_status">Állapot beállítása</string>
     <string name="set_status_message">Állapotüzenet beállítása</string>

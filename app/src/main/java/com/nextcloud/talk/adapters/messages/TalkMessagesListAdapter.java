@@ -74,6 +74,9 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
         } else if (holder instanceof PreviewMessageViewHolder) {
             ((PreviewMessageViewHolder) holder).assignPreviewMessageInterface(chatActivity);
             ((PreviewMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
+
+        } else if (holder instanceof SystemMessageViewHolder) {
+            ((SystemMessageViewHolder) holder).assignSystemMessageInterface(chatActivity);
         }
     }
 }

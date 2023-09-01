@@ -376,6 +376,7 @@ How to translate with transifex:
     <string name="nc_add_attachment">Add attachment</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="emoji_backspace">Backspace</string>
+    <string name="see_similar_system_messages">See %1$s similar messages</string>
 
     <!-- Conversation info guest access -->
     <string name="nc_guest_access">Guest access</string>
@@ -697,5 +698,13 @@ How to translate with transifex:
     <string name="nc_settings_socks_value" translatable="false">1080</string>
     <string name="this_is_a_test_message">This is a test message</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
+    <string name="nc_remind">Remind me later</string>
+    <string name="next_week">Next week</string>
+    <string name="this_weekend">This weekend</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="later_today">Later today</string>
+    <string name="custom">Custom</string>
+    <string name="set">Set</string>
+    <string name="calendar">Calendar</string>
 
 </resources>

@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">유선 헤드셋</string>
     <string name="avatar">아바타</string>
     <string name="away">자리비움</string>
+    <string name="calendar">일정</string>
     <string name="call_without_notification">알림 없이 전화하기</string>
     <string name="camera_permission_granted">카메라 권한이 부여되었습니다 . 카메라를 다시 선택해주세요.</string>
     <string name="choose_avatar_from_cloud">클라우드에서 아바타 선택</string>
@@ -16,6 +17,7 @@
     <string name="clear_status_message_after">상태 메시지 지우기 예약</string>
     <string name="close">닫기</string>
     <string name="conversations">대화</string>
+    <string name="custom">사용자 정의</string>
     <string name="delete_avatar">아바타 삭제</string>
     <string name="dnd">방해 없음</string>
     <string name="dontClear">지우지 않음</string>
@@ -367,6 +369,7 @@
     <string name="nc_wrong_link">무효한 대화 링크</string>
     <string name="nc_wrong_password">잘못된 암호</string>
     <string name="nc_yes">예</string>
+    <string name="next_week">다음주</string>
     <string name="no_phone_book_integration_due_to_permissions">권한 없음으로 인하여 전화 번호를 통합하지 않습니다.</string>
     <string name="oneHour">1시간</string>
     <string name="online">접속 중</string>

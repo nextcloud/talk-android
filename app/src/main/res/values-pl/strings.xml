@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Słuchawki przewodowe</string>
     <string name="avatar">Awatar</string>
     <string name="away">Bezczynny</string>
+    <string name="calendar">Kalendarz</string>
     <string name="call_more_actions_dialog_headline">Zaawansowane opcje połączeń</string>
     <string name="call_without_notification">Połącz bez powiadomienia</string>
     <string name="camera_permission_granted">Udzielono dostępu do kamery. Proszę ponownie wybrać kamerę.</string>
@@ -18,6 +19,7 @@
     <string name="close">Zamknij</string>
     <string name="continuous_voice_message_recording">Zablokuj nagrywanie w celu ciągłego nagrywania wiadomości głosowej</string>
     <string name="conversations">Rozmowy</string>
+    <string name="custom">Dowolnie</string>
     <string name="danger_zone">Strefa niebezpieczeństwa</string>
     <string name="delete_avatar">Usuń awatar</string>
     <string name="dnd">Nie przeszkadzać</string>
@@ -395,6 +397,7 @@
     <string name="nc_wrong_link">Link rozmowy jest nieprawidłowy</string>
     <string name="nc_wrong_password">Złe hasło</string>
     <string name="nc_yes">Tak</string>
+    <string name="next_week">Następny tydzień</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>
     <string name="oneHour">1 godzina</string>
     <string name="online">Online</string>
@@ -448,6 +451,7 @@
     <string name="send_to_forbidden">Nie możesz udostępniać treści na tym czacie</string>
     <string name="send_to_three_dots">Wyślij do…</string>
     <string name="send_without_notification">Wyślij bez powiadomienia</string>
+    <string name="set">Ustaw</string>
     <string name="set_avatar_from_camera">Ustaw awatar z aparatu</string>
     <string name="set_status">Ustaw status</string>
     <string name="set_status_message">Ustaw komunikat statusu</string>
@@ -478,6 +482,7 @@
     <string name="this_is_a_test_message">To jest wiadomość testowa</string>
     <string name="title_attachments">Załączniki</string>
     <string name="today">Dzisiaj</string>
+    <string name="tomorrow">Jutro</string>
     <string name="translate">Tłumaczenie</string>
     <string name="translation">Tłumaczenie</string>
     <string name="translation_copy_translated_text">Kopiuj przetłumaczony tekst</string>

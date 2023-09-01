@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Fone de ouvido</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="calendar">Calendário</string>
     <string name="call_more_actions_dialog_headline">Opções avançadas de chamada</string>
     <string name="call_running_since_one_hour">A chamada está em execução há uma hora.</string>
     <string name="call_without_notification">Ligue sem notificação</string>
@@ -19,6 +20,7 @@
     <string name="close">Fechar</string>
     <string name="continuous_voice_message_recording">Gravação de bloqueio para gravação contínua da mensagem de voz</string>
     <string name="conversations">Conversas</string>
+    <string name="custom">Personalizar</string>
     <string name="danger_zone">Zona de perigo</string>
     <string name="delete_avatar">Excluir avatar</string>
     <string name="dnd">Não perturbe</string>
@@ -35,6 +37,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisível</string>
+    <string name="later_today">Hoje mais tarde</string>
     <string name="load_more_results">Carregar mais resultados </string>
     <string name="lock_symbol">Símbolo de cadeado</string>
     <string name="lower_hand">Baixar a mão</string>
@@ -403,6 +406,7 @@
     <string name="nc_wrong_link">O link de conversação não é válido</string>
     <string name="nc_wrong_password">Senha incorreta</string>
     <string name="nc_yes">Sim</string>
+    <string name="next_week">Próxima semana</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="oneHour">1 hora</string>
     <string name="online">Online</string>
@@ -456,6 +460,7 @@
     <string name="send_to_forbidden">Você não tem permissão para compartilhar conteúdo neste bate-papo</string>
     <string name="send_to_three_dots">Enviar para …</string>
     <string name="send_without_notification">Enviar sem notificação</string>
+    <string name="set">Definir</string>
     <string name="set_avatar_from_camera">Definir avatar da câmera</string>
     <string name="set_status">Definir status</string>
     <string name="set_status_message">Definir mensagem de status</string>
@@ -484,8 +489,10 @@
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Esta é uma mensagem de teste</string>
+    <string name="this_weekend">Este fim de semana</string>
     <string name="title_attachments">Anexos</string>
     <string name="today">Hoje</string>
+    <string name="tomorrow">Amanhã</string>
     <string name="translate">Traduzir</string>
     <string name="translation">Tradução</string>
     <string name="translation_copy_translated_text">Copiar texto traduzido</string>

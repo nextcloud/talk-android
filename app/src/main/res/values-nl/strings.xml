@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Bedrade headset</string>
     <string name="avatar">Avatar</string>
     <string name="away">Afwezig</string>
+    <string name="calendar">Agenda</string>
     <string name="call_more_actions_dialog_headline">Geavanceerde oproepopties</string>
     <string name="call_without_notification">Oproepen zonder melding</string>
     <string name="camera_permission_granted">Toegang tot camera verleend. Kies aub. uw camera opnieuw.</string>
@@ -17,6 +18,7 @@
     <string name="clear_status_message_after">Statusbericht wissen na</string>
     <string name="close">Sluit</string>
     <string name="conversations">Gesprekken</string>
+    <string name="custom">Aangepast</string>
     <string name="delete_avatar">Verwijder avatar</string>
     <string name="dnd">Niet storen</string>
     <string name="dontClear">Niet opruimen</string>
@@ -357,6 +359,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_wrong_link">Gesprekslink is niet geldig</string>
     <string name="nc_wrong_password">Onjuist wachtwoord</string>
     <string name="nc_yes">Ja</string>
+    <string name="next_week">Volgende week</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonnummer-integratie wegens ontbrekende machtigingen</string>
     <string name="oneHour">1 uur</string>
     <string name="online">Online</string>
@@ -400,6 +403,7 @@ Kies er eentje van een provider.</string>
     <string name="send_to">Versturen naar</string>
     <string name="send_to_three_dots">Versturen naar …</string>
     <string name="send_without_notification">Versturen zonder melding</string>
+    <string name="set">Stel in</string>
     <string name="set_status">Instellen status</string>
     <string name="set_status_message">Statusbericht instellen</string>
     <string name="share">Delen</string>
@@ -424,6 +428,7 @@ Kies er eentje van een provider.</string>
     <string name="thisWeek">Deze week</string>
     <string name="title_attachments">Bijlagen</string>
     <string name="today">Vandaag</string>
+    <string name="tomorrow">Morgen</string>
     <string name="translation_device_settings">Apparaatinstellingen</string>
     <string name="translation_error_message">Kan taal niet detecteren</string>
     <string name="translation_from">Van</string>

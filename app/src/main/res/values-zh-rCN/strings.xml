@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">有线耳机</string>
     <string name="avatar">头像</string>
     <string name="away">离开</string>
+    <string name="calendar">日历</string>
     <string name="call_more_actions_dialog_headline">高级呼叫选项</string>
     <string name="call_without_notification">无通知呼叫</string>
     <string name="camera_permission_granted">摄像头访问已授权。请重新选择摄像头。</string>
@@ -17,6 +18,7 @@
     <string name="clear_status_message_after">过多长时间清除状态消息</string>
     <string name="close">关闭</string>
     <string name="conversations">对话</string>
+    <string name="custom">自定义</string>
     <string name="danger_zone">危险区域</string>
     <string name="delete_avatar">删除头像</string>
     <string name="dnd">不要打扰</string>
@@ -255,6 +257,7 @@
     <string name="nc_push_disabled">通知推送已禁用</string>
     <string name="nc_push_to_talk">按键讲话</string>
     <string name="nc_push_to_talk_desc">禁用麦克风的情况下，点击&amp;并按住使用“按键讲话”功能</string>
+    <string name="nc_remind">以后提醒我 </string>
     <string name="nc_remote_audio_off">远程音频关闭</string>
     <string name="nc_remove_circle_and_members">删除圈子和成员</string>
     <string name="nc_remove_from_favorites">取消收藏</string>
@@ -394,6 +397,7 @@
     <string name="nc_wrong_link">对话链接无效</string>
     <string name="nc_wrong_password">错误的密码</string>
     <string name="nc_yes">是的</string>
+    <string name="next_week">下周</string>
     <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话集成 </string>
     <string name="oneHour">1小时</string>
     <string name="online">在线</string>
@@ -447,6 +451,7 @@
     <string name="send_to_forbidden">你不能在此聊天中分享内容</string>
     <string name="send_to_three_dots">发送到 …</string>
     <string name="send_without_notification">发送而不通知</string>
+    <string name="set">设置</string>
     <string name="set_avatar_from_camera">从摄像头设置头像</string>
     <string name="set_status">设定状态</string>
     <string name="set_status_message">设置状态消息</string>
@@ -477,6 +482,7 @@
     <string name="this_is_a_test_message">这是一个测试消息</string>
     <string name="title_attachments">附件</string>
     <string name="today">今天</string>
+    <string name="tomorrow">明天</string>
     <string name="translate">翻译</string>
     <string name="translation">翻译</string>
     <string name="translation_copy_translated_text">复制已翻译的文字</string>

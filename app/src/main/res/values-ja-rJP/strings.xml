@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">有線ヘッドセット</string>
     <string name="avatar">アバター</string>
     <string name="away">離席中</string>
+    <string name="calendar">カレンダー</string>
     <string name="call_running_since_one_hour">通話が1 時間経過</string>
     <string name="call_without_notification">通知なしで通話</string>
     <string name="choose_avatar_from_cloud">クラウドからアバターを選択</string>
@@ -16,6 +17,7 @@
     <string name="clear_status_message_after">ステータスメッセージの有効期限</string>
     <string name="close">閉じる</string>
     <string name="conversations">会話</string>
+    <string name="custom">カスタム</string>
     <string name="delete_avatar">アバターを削除</string>
     <string name="dnd">取り込み中</string>
     <string name="dontClear">消去しない</string>
@@ -345,6 +347,7 @@
     <string name="nc_wrong_link">会話リンクが無効です</string>
     <string name="nc_wrong_password">パスワードが間違っています</string>
     <string name="nc_yes">はい</string>
+    <string name="next_week">来週</string>
     <string name="no_phone_book_integration_due_to_permissions">利用権限がないため、電話番号統合ができません。</string>
     <string name="oneHour">1時間</string>
     <string name="online">オンライン</string>
@@ -382,6 +385,7 @@
     <string name="send_to_forbidden">このチャットにコンテンツを許可する権限がありません</string>
     <string name="send_to_three_dots">送信…</string>
     <string name="send_without_notification">通知なしで送信</string>
+    <string name="set">セット</string>
     <string name="set_status">ステータスを設定</string>
     <string name="set_status_message">メッセージを設定</string>
     <string name="share">共有</string>

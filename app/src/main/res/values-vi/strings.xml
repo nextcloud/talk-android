@@ -5,11 +5,13 @@
     <string name="audio_output_phone">Điện thoại</string>
     <string name="avatar">Hình đại diện</string>
     <string name="away">Tạm vắng</string>
+    <string name="calendar">Lịch</string>
     <string name="choose_avatar_from_cloud">Chọn hình đại diện từ đám mây</string>
     <string name="clear_status_message">Xoá thông báo trạng thái</string>
     <string name="clear_status_message_after">Xoá thông báo trạng thái sau</string>
     <string name="close">Đóng</string>
     <string name="conversations">Đàm thoại</string>
+    <string name="custom">Tùy chỉnh</string>
     <string name="delete_avatar">Xóa hình đại diện</string>
     <string name="dnd">Đừng làm phiền</string>
     <string name="dontClear">Không xoá</string>
@@ -214,6 +216,7 @@
     <string name="nc_wrong_link">Liên kết đàm thoại này không có thực</string>
     <string name="nc_wrong_password">Sai mật khẩu</string>
     <string name="nc_yes">Có</string>
+    <string name="next_week">Tuần sau</string>
     <string name="oneHour">1 tiếng</string>
     <string name="online">Trực tuyến</string>
     <string name="online_status">Trạng thái trực tuyến</string>
@@ -234,6 +237,7 @@
     <string name="scroll_to_bottom">Cuộn xuống dưới cùng</string>
     <string name="secondsAgo">vài giây trước</string>
     <string name="selected_list_item">Selected</string>
+    <string name="set">Đặt</string>
     <string name="set_status">Đặt trạng thái</string>
     <string name="set_status_message">Đặt thông báo trạng thái</string>
     <string name="share">Chia sẻ</string>
@@ -252,6 +256,7 @@
     <string name="thisWeek">Tuần này</string>
     <string name="title_attachments">Đính kèm</string>
     <string name="today">Hôm nay</string>
+    <string name="tomorrow">Ngày mai</string>
     <string name="translate">Dịch</string>
     <string name="translation_device_settings">Cài đặt thiết bị</string>
     <string name="translation_error_message">Không thể phát hiện ngôn ngữ</string>

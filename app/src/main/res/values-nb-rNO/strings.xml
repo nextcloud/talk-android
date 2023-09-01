@@ -8,10 +8,12 @@
     <string name="audio_output_speaker">Høytaler</string>
     <string name="avatar">Avatar</string>
     <string name="away">Borte</string>
+    <string name="calendar">Kalender</string>
     <string name="clear_status_message">Fjern statusmelding</string>
     <string name="clear_status_message_after">Fjern statusmelding etter</string>
     <string name="close">Lukk</string>
     <string name="conversations">Samtaler</string>
+    <string name="custom">Egendefinert</string>
     <string name="delete_avatar">Slett data</string>
     <string name="dnd">Ikke forstyrr</string>
     <string name="dontClear">Ikke fjern</string>
@@ -23,6 +25,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timer</string>
     <string name="invisible">Usynlig</string>
+    <string name="later_today">Senere i dag</string>
     <string name="load_more_results">Hent flere resultat</string>
     <string name="lower_hand">Senk hånden</string>
     <string name="menu_item_sort_by_date_newest_first">Nyeste først</string>
@@ -267,6 +270,7 @@
     <string name="nc_wrong_link">Samtale lenke er ikke gyldig</string>
     <string name="nc_wrong_password">Feil passord</string>
     <string name="nc_yes">Ja</string>
+    <string name="next_week">Neste uke</string>
     <string name="oneHour">1 time</string>
     <string name="online">Pålogget</string>
     <string name="online_status">Online-status</string>
@@ -290,6 +294,7 @@
     <string name="selected_list_item">Valgt</string>
     <string name="send_to">Send til</string>
     <string name="send_to_three_dots">Send til...</string>
+    <string name="set">Sett</string>
     <string name="set_status">Velg status</string>
     <string name="set_status_message">Velg statusmelding</string>
     <string name="share">Del</string>
@@ -309,6 +314,7 @@
     <string name="take_photo_toggle_torch">Lommelykt av/på</string>
     <string name="thirtyMinutes">30 minutter</string>
     <string name="thisWeek">Denne uken</string>
+    <string name="this_weekend">Denne helgen</string>
     <string name="title_attachments">Vedlegg</string>
     <string name="today">I dag</string>
     <string name="translate">Oversette</string>

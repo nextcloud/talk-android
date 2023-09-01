@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Ožičene slušalke</string>
     <string name="avatar">Podoba</string>
     <string name="away">Ne spremljam</string>
+    <string name="calendar">Koledar</string>
     <string name="call_more_actions_dialog_headline">Napredne možnosti klica</string>
     <string name="call_without_notification">Klic brez obvestila</string>
     <string name="camera_permission_granted">Dovoljenje za uporabo kamere je dodeljeno. Ponovno izberite kamero.</string>
@@ -17,6 +18,7 @@
     <string name="clear_status_message_after">Počisti sporočilo stanja po</string>
     <string name="close">Zapri</string>
     <string name="conversations">Pogovori</string>
+    <string name="custom">Po meri</string>
     <string name="delete_avatar">Izbriši podobo</string>
     <string name="dnd">Ne moti</string>
     <string name="dontClear">Ne počisti</string>
@@ -245,6 +247,7 @@
     <string name="nc_push_disabled">Potisno obveščanje je onemogočeno</string>
     <string name="nc_push_to_talk">Možnost »push-to-talk«</string>
     <string name="nc_push_to_talk_desc">Pri onemogočenem mikrofonu lahko za začetek govora kliknete in zadržite gumb</string>
+    <string name="nc_remind">Opomni me kasneje</string>
     <string name="nc_remote_audio_off">Oddaljen zvok je onemogočen</string>
     <string name="nc_remove_circle_and_members">Odstrani krog in člane</string>
     <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
@@ -381,6 +384,7 @@
     <string name="nc_wrong_link">Povezava do pogovora ni veljavna</string>
     <string name="nc_wrong_password">Napačno geslo</string>
     <string name="nc_yes">Da</string>
+    <string name="next_week">Naslednji teden</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
     <string name="oneHour">1 uri</string>
     <string name="online">Trenutno na spletu</string>
@@ -432,6 +436,7 @@
     <string name="send_to_forbidden">Ni ustreznih dovoljenj za objavljanje vsebine v ta klepet</string>
     <string name="send_to_three_dots">Pošlji …</string>
     <string name="send_without_notification">Pošlji brez obvestila</string>
+    <string name="set">Nastavi</string>
     <string name="set_avatar_from_camera">Nastavi sličico s kamero</string>
     <string name="set_status">Nastavi stanje</string>
     <string name="set_status_message">Nastavi sporočilo stanja</string>
@@ -461,6 +466,7 @@
     <string name="thisWeek">Ta teden</string>
     <string name="title_attachments">Priloge</string>
     <string name="today">Danes</string>
+    <string name="tomorrow">Jutri</string>
     <string name="translate">Prevodi</string>
     <string name="translation">Prevod</string>
     <string name="translation_copy_translated_text">Kopiraj prevedeno besedilo</string>
