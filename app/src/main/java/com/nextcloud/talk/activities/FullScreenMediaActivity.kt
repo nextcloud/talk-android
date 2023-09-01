@@ -36,7 +36,6 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -49,7 +48,7 @@ import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX_GENERIC
 import java.io.File
 
 @AutoInjector(NextcloudTalkApplication::class)
-class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
+class FullScreenMediaActivity : AppCompatActivity() {
     lateinit var binding: ActivityFullScreenMediaBinding
 
     private lateinit var path: String
@@ -138,7 +137,6 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     private fun initializePlayer() {
         player = ExoPlayer.Builder(applicationContext).build()
         binding.playerView.player = player
-        player?.addListener(this)
     }
 
     private fun preparePlayer() {
