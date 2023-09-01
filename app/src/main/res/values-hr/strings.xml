@@ -6,11 +6,13 @@
     <string name="audio_output_speaker">Zvučnik</string>
     <string name="avatar">Avatar</string>
     <string name="away">Odsutan</string>
+    <string name="calendar">Kalendar</string>
     <string name="choose_avatar_from_cloud">Odaberi avatar iz oblaka</string>
     <string name="clear_status_message">Izbriši poruku statusa</string>
     <string name="clear_status_message_after">Izbriši poruku statusa nakon</string>
     <string name="close">Zatvori</string>
     <string name="conversations">Razgovori</string>
+    <string name="custom">Prilagođeno</string>
     <string name="delete_avatar">Izbriši avatar</string>
     <string name="dnd">Ne ometaj</string>
     <string name="dontClear">Ne briši</string>
@@ -204,6 +206,7 @@
     <string name="nc_push_disabled">Push obavijesti su onemogućene</string>
     <string name="nc_push_to_talk">Pritisni za govor</string>
     <string name="nc_push_to_talk_desc">Kada je mikrofon onemogućen, kliknite i držite za uporabu značajke Pritisni za govor</string>
+    <string name="nc_remind">Podsjeti me kasnije</string>
     <string name="nc_remote_audio_off">Udaljeno isključivanje zvuka</string>
     <string name="nc_remove_circle_and_members">Ukloni krug i članove</string>
     <string name="nc_remove_from_favorites">Ukloni iz favorita</string>
@@ -328,6 +331,7 @@
     <string name="nc_wrong_link">Poveznica za razgovor nije valjana</string>
     <string name="nc_wrong_password">Pogrešna zaporka</string>
     <string name="nc_yes">Da</string>
+    <string name="next_week">Sljedeći tjedan</string>
     <string name="no_phone_book_integration_due_to_permissions">Integracija broja telefona nije moguća jer nedostaje dopuštenje</string>
     <string name="oneHour">1 sat</string>
     <string name="online">Na mreži</string>
@@ -358,6 +362,7 @@
     <string name="selected_list_item">Odabrano</string>
     <string name="send_to">Pošalji na</string>
     <string name="send_to_three_dots">Pošalji na…</string>
+    <string name="set">Postavi</string>
     <string name="set_status">Postavi status</string>
     <string name="set_status_message">Postavi poruku statusa</string>
     <string name="share">Dijeli</string>
@@ -376,6 +381,7 @@
     <string name="thisWeek">Ovaj tjedan</string>
     <string name="title_attachments">Privici</string>
     <string name="today">Danas</string>
+    <string name="tomorrow">Sutra</string>
     <string name="translate">Prevedi</string>
     <string name="translation_device_settings">Postavke uređaja</string>
     <string name="translation_from">Od</string>

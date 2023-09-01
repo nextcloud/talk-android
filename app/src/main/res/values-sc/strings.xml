@@ -6,11 +6,13 @@
     <string name="audio_output_speaker">Altoparlante</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="calendar">Calendàriu</string>
     <string name="choose_avatar_from_cloud">Sèbera s\'avatar dae sa nue virtuale</string>
     <string name="clear_status_message">Lìmpia su messàgiu de istadu</string>
     <string name="clear_status_message_after">Lìmpia su messàgiu de istadu a pustis</string>
     <string name="close">Serra</string>
     <string name="conversations">Cunversatziones</string>
+    <string name="custom">Personaliza</string>
     <string name="delete_avatar">Cantzella s\'avatar</string>
     <string name="dnd">No istorbes</string>
     <string name="edit">Modìfica</string>
@@ -314,6 +316,7 @@
     <string name="nc_wrong_link">Ligòngiu de tzarrada non vàlidu</string>
     <string name="nc_wrong_password">Crae isballiada</string>
     <string name="nc_yes">Eja</string>
+    <string name="next_week">Sa chida chi benit</string>
     <string name="no_phone_book_integration_due_to_permissions">Peruna integratzione de nùmeru de telèfonu pro farta de permissos</string>
     <string name="oneHour">1 ora</string>
     <string name="online">In lìnia</string>
@@ -362,6 +365,7 @@
     <string name="thisWeek">Custa chida</string>
     <string name="title_attachments">Alligongiados</string>
     <string name="today">Oe</string>
+    <string name="tomorrow">Cras</string>
     <string name="translate">Borta</string>
     <string name="translation_device_settings">Impostatziones de su dispositivu</string>
     <string name="translation_from">Dae</string>

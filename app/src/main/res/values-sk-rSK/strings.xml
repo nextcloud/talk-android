@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Drátové sluchátka</string>
     <string name="avatar">Avatar</string>
     <string name="away">Preč</string>
+    <string name="calendar">Kalendár</string>
     <string name="call_without_notification">Volať bez upozornenia</string>
     <string name="camera_permission_granted">Povolenie fotoaparátu bolo udelené. Vyberte fotoaparát znova.</string>
     <string name="choose_avatar_from_cloud">Vyberte si avatara z cloudu</string>
@@ -16,6 +17,7 @@
     <string name="clear_status_message_after">Vyčistiť správu o stave po</string>
     <string name="close">Zatvoriť</string>
     <string name="conversations">Konverzácie</string>
+    <string name="custom">Vlastný</string>
     <string name="delete_avatar">Zmazať avatara</string>
     <string name="dnd">Nerušiť</string>
     <string name="dontClear">Nemazať</string>
@@ -233,6 +235,7 @@
     <string name="nc_push_disabled">Push notifikácie vypnuté</string>
     <string name="nc_push_to_talk">Stlač a hovor PTT</string>
     <string name="nc_push_to_talk_desc">S vypnutým mikrofónom, kliknite &amp;podržte pre použitie funkcie Stlač a hovor PTT</string>
+    <string name="nc_remind">Pripomenúť neskôr</string>
     <string name="nc_remote_audio_off">Vypnúť vzdialené audio</string>
     <string name="nc_remove_circle_and_members">Vymazať kruh a členov</string>
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
@@ -369,6 +372,7 @@
     <string name="nc_wrong_link">Odkaz na rozhovor nie je platný!</string>
     <string name="nc_wrong_password">Nesprávne heslo</string>
     <string name="nc_yes">Áno</string>
+    <string name="next_week">Nasledujúci týždeň</string>
     <string name="no_phone_book_integration_due_to_permissions">Registrácia telefónneho čísla nie je povolená pre nedostatok práv</string>
     <string name="oneHour">1 hodina</string>
     <string name="online">Pripojený</string>
@@ -413,6 +417,7 @@
     <string name="send_to_forbidden">Nemáte oprávnenie zdieľať obsah tohto rozhovoru</string>
     <string name="send_to_three_dots">Odoslať do …</string>
     <string name="send_without_notification">Poslať bez upozornenia</string>
+    <string name="set">Nastaviť</string>
     <string name="set_avatar_from_camera">Nastaviť avatara z fotoaparátu</string>
     <string name="set_status">Nastaviť stav</string>
     <string name="set_status_message">Nastaviť správu o stave</string>
@@ -439,6 +444,7 @@
     <string name="thisWeek">Tento týždeň</string>
     <string name="title_attachments">Prílohy</string>
     <string name="today">Dnes</string>
+    <string name="tomorrow">Zajtra</string>
     <string name="translate">Preložiť</string>
     <string name="translation_device_settings">Nastavenia zariadenia</string>
     <string name="translation_from">Od</string>

@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Kabelgebundener Kopfhörer</string>
     <string name="avatar">Avatar</string>
     <string name="away">Abwesend</string>
+    <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Erweiterte Anrufoptionen</string>
     <string name="call_running_since_one_hour">Der Anruf läuft seit einer Stunde.</string>
     <string name="call_without_notification">Anruf ohne Benachrichtigung</string>
@@ -19,6 +20,7 @@
     <string name="close">Schließen</string>
     <string name="continuous_voice_message_recording">Aufnahme sperren für kontinuierliche Aufzeichnung der Sprachnachricht</string>
     <string name="conversations">Unterhaltungen</string>
+    <string name="custom">Benutzerdefiniert</string>
     <string name="danger_zone">Gefahrenzone</string>
     <string name="delete_avatar">Avatar löschen</string>
     <string name="dnd">Nicht stören</string>
@@ -35,6 +37,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 Stunden</string>
     <string name="invisible">Unsichtbar</string>
+    <string name="later_today">Später heute</string>
     <string name="load_more_results">Weitere Ergebnisse laden</string>
     <string name="lock_symbol">Schloss-Symbol</string>
     <string name="lower_hand">Hand herunternehmen</string>
@@ -264,6 +267,7 @@
     <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
     <string name="nc_push_to_talk">Funkgerät-Modus</string>
     <string name="nc_push_to_talk_desc">Bei deaktiviertem Mikrofon &amp;drücken. Halten Sie zum Senden die Sprechtaste gedrückt (Funkgerät-Modus)</string>
+    <string name="nc_remind">Erinnere mich später</string>
     <string name="nc_remote_audio_off">Entferntes Audio aus</string>
     <string name="nc_remove_circle_and_members">Kreis und Mitglieder entfernen</string>
     <string name="nc_remove_from_favorites">Von Favoriten entfernen</string>
@@ -403,6 +407,7 @@
     <string name="nc_wrong_link">Unterhaltungs-Link ist ungültig</string>
     <string name="nc_wrong_password">Falsches Passwort</string>
     <string name="nc_yes">Ja</string>
+    <string name="next_week">Nächste Woche</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
     <string name="oneHour">1 Stunde</string>
     <string name="online">Online</string>
@@ -456,6 +461,7 @@
     <string name="send_to_forbidden">Sie sind nicht berechtigt, Inhalte in diesem Chat zu teilen</string>
     <string name="send_to_three_dots">Senden an …</string>
     <string name="send_without_notification">Ohne Benachrichtigung senden</string>
+    <string name="set">Eingestellt</string>
     <string name="set_avatar_from_camera">Avatar mit der Kamera setzen</string>
     <string name="set_status">Status setzen</string>
     <string name="set_status_message">Statusnachricht setzen</string>
@@ -484,8 +490,10 @@
     <string name="thirtyMinutes">30 Minuten</string>
     <string name="thisWeek">Diese Woche</string>
     <string name="this_is_a_test_message">Dies ist eine Testnachricht</string>
+    <string name="this_weekend">Dieses Wochenende</string>
     <string name="title_attachments">Anhänge</string>
     <string name="today">Heute</string>
+    <string name="tomorrow">Morgen</string>
     <string name="translate">Übersetzen</string>
     <string name="translation">Übersetzung</string>
     <string name="translation_copy_translated_text">Übersetzten Text kopieren</string>

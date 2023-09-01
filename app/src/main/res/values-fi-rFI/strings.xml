@@ -9,12 +9,14 @@
     <string name="audio_output_wired_headset">Langallinen kuulokemikrofoni</string>
     <string name="avatar">Profiilikuva</string>
     <string name="away">Poissa</string>
+    <string name="calendar">Kalenteri</string>
     <string name="call_without_notification">Puhelu ilman ilmoitusta</string>
     <string name="camera_permission_granted">Kameraoikeus myönnetty. Valitse kamera uudelleen.</string>
     <string name="clear_status_message">Tyhjennä tilaviesti</string>
     <string name="clear_status_message_after">Tyhjennä tilaviesti, kun on kulunut</string>
     <string name="close">Sulje</string>
     <string name="conversations">Keskustelut</string>
+    <string name="custom">Omavalintainen</string>
     <string name="dnd">Älä häiritse</string>
     <string name="dontClear">Älä tyhjennä</string>
     <string name="edit">Muokkaa</string>
@@ -27,6 +29,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 tuntia</string>
     <string name="invisible">Näkymätön</string>
+    <string name="later_today">Myöhemmin tänään</string>
     <string name="load_more_results">Lataa lisää tuloksia</string>
     <string name="lower_hand">Laske käsi</string>
     <string name="menu_item_sort_by_date_newest_first">Uusin ensin</string>
@@ -195,6 +198,7 @@
     <string name="nc_public_call">Uusi julkinen keskustelu</string>
     <string name="nc_push_disabled">Push-ilmoitukset pois käytöstä</string>
     <string name="nc_push_to_talk">Paina puhuaksesi</string>
+    <string name="nc_remind">Muistuta myöhemmin</string>
     <string name="nc_remove_circle_and_members">Poista piiri ja jäsenet</string>
     <string name="nc_remove_from_favorites">Poista suosikeista</string>
     <string name="nc_remove_group_and_members">Poista ryhmä ja jäsenet</string>
@@ -310,6 +314,7 @@
     <string name="nc_wrong_link">Keskustelulinkki ei ole kelvollinen</string>
     <string name="nc_wrong_password">Väärä salasana</string>
     <string name="nc_yes">Kyllä</string>
+    <string name="next_week">Seuraava viikko</string>
     <string name="oneHour">1 tunti</string>
     <string name="online">Paikalla</string>
     <string name="online_status">Online-tila</string>
@@ -344,6 +349,7 @@
     <string name="send_to_forbidden">Sinulla ei ole oikeutta jakaa sisältöä tähän keskusteluun</string>
     <string name="send_to_three_dots">Lähetä…</string>
     <string name="send_without_notification">Lähetä ilman ilmoitusta</string>
+    <string name="set">Aseta</string>
     <string name="set_status">Aseta tilatieto</string>
     <string name="set_status_message">Aseta tilaviesti</string>
     <string name="share">Jaa</string>
@@ -366,8 +372,10 @@
     <string name="take_photo_toggle_lowres">Pienennä kuvan kokoa</string>
     <string name="thirtyMinutes">30 minuuttia</string>
     <string name="thisWeek">Tämä viikko</string>
+    <string name="this_weekend">Tämä viikonloppu</string>
     <string name="title_attachments">Liitteet</string>
     <string name="today">Tänään</string>
+    <string name="tomorrow">Huomenna</string>
     <string name="translate">Käännä</string>
     <string name="translation_copy_translated_text">Kopioi käännetty teksti</string>
     <string name="translation_detect_language">Havaitse kieli</string>

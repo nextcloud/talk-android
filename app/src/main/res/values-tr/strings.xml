@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Kablolu kulaklık</string>
     <string name="avatar">Avatar</string>
     <string name="away">Uzakta</string>
+    <string name="calendar">Takvim</string>
     <string name="call_more_actions_dialog_headline">Gelişmiş çağrı seçenekleri</string>
     <string name="call_running_since_one_hour">Çağrı bir saattir sürüyor.</string>
     <string name="call_without_notification">Bildirim olmadan çağrı</string>
@@ -19,6 +20,7 @@
     <string name="close">Kapat</string>
     <string name="continuous_voice_message_recording">Sesli iletinin sürekli olarak kaydedilmesi için kaydı kilitleyin</string>
     <string name="conversations">Görüşmeler</string>
+    <string name="custom">Özel</string>
     <string name="danger_zone">Tehlikeli bölge</string>
     <string name="delete_avatar">Avatarı sil</string>
     <string name="dnd">Rahatsız etmeyin</string>
@@ -35,6 +37,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 saat</string>
     <string name="invisible">Görünmez</string>
+    <string name="later_today">Bugün daha sonra</string>
     <string name="load_more_results">Diğer sonuçları yükle</string>
     <string name="lock_symbol">Kilit simgesi</string>
     <string name="lower_hand">Eli indir</string>
@@ -264,6 +267,7 @@
     <string name="nc_push_disabled">Anında bildirimler devre dışı</string>
     <string name="nc_push_to_talk">Bas-konuş</string>
     <string name="nc_push_to_talk_desc">Mikrofon devre dışı iken, Bas-konuş üzerine tıklayıp basılı tutun</string>
+    <string name="nc_remind">Sonra hatırlat</string>
     <string name="nc_remote_audio_off">Uzak ses kapalı</string>
     <string name="nc_remove_circle_and_members">Çevreyi ve üyelerini sil</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
@@ -403,6 +407,7 @@
     <string name="nc_wrong_link">Görüşme bağlantısı geçersiz</string>
     <string name="nc_wrong_password">Parola yanlış</string>
     <string name="nc_yes">Evet</string>
+    <string name="next_week">Sonraki hafta</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
     <string name="oneHour">1 saat</string>
     <string name="online">Çevrim içi</string>
@@ -456,6 +461,7 @@
     <string name="send_to_forbidden">Bu sohbette içerik paylaşma izniniz yok</string>
     <string name="send_to_three_dots">Şuraya gönder …</string>
     <string name="send_without_notification">Bildirim olmadan gönder</string>
+    <string name="set">Ayarla</string>
     <string name="set_avatar_from_camera">Avatarı kamerayla ayarla</string>
     <string name="set_status">Durumu ayarla</string>
     <string name="set_status_message">Durum iletisini ayarla</string>
@@ -484,8 +490,10 @@
     <string name="thirtyMinutes">30 dakika</string>
     <string name="thisWeek">Bu hafta</string>
     <string name="this_is_a_test_message">Bu bir deneme iletisidir</string>
+    <string name="this_weekend">Bu hafta sonu</string>
     <string name="title_attachments">Ek dosyalar</string>
     <string name="today">Bugün</string>
+    <string name="tomorrow">Yarın</string>
     <string name="translate">Çevir</string>
     <string name="translation">Çeviri</string>
     <string name="translation_copy_translated_text">Çevrilmiş metni kopyala</string>

@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Wired headset</string>
     <string name="avatar">آواتار</string>
     <string name="away">دور</string>
+    <string name="calendar">تقویم</string>
     <string name="call_more_actions_dialog_headline">Advanced call options</string>
     <string name="call_running_since_one_hour">The call has been running for one hour.</string>
     <string name="call_without_notification">Call without notification</string>
@@ -19,6 +20,7 @@
     <string name="close">بسته</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
     <string name="conversations">گفتگو</string>
+    <string name="custom">Custom</string>
     <string name="danger_zone">Danger Zone</string>
     <string name="delete_avatar">آواتار را پاک کن</string>
     <string name="dnd">مزاحم نشوید</string>
@@ -264,6 +266,7 @@
     <string name="nc_push_disabled">دریافت اعلانات غیرفعال است</string>
     <string name="nc_push_to_talk">برای صحبت کردن فشار دهید</string>
     <string name="nc_push_to_talk_desc">با غیر فعال کردن میکروفن، برای استفاده از Push-to-talk کلیک &amp; نگه‌داشتن را انجام دهید</string>
+    <string name="nc_remind">بعدا به من یادآوری کن</string>
     <string name="nc_remote_audio_off">Remote audio off</string>
     <string name="nc_remove_circle_and_members">Remove circle and members</string>
     <string name="nc_remove_from_favorites">حذف کردن از مورد علاقه‌ها</string>
@@ -403,6 +406,7 @@
     <string name="nc_wrong_link">پیوند مکالمه معتبر نیست</string>
     <string name="nc_wrong_password">کلمه عبور اشتباه</string>
     <string name="nc_yes">بله</string>
+    <string name="next_week">هفتهٔ بعد</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="oneHour">۱ ساعت</string>
     <string name="online">آنلاین</string>
@@ -456,6 +460,7 @@
     <string name="send_to_forbidden">You are not allowed to share content to this chat</string>
     <string name="send_to_three_dots">Send to …</string>
     <string name="send_without_notification">Send without notification</string>
+    <string name="set">تنظیم</string>
     <string name="set_avatar_from_camera">Set avatar from camera</string>
     <string name="set_status">تنظیم وضعیت</string>
     <string name="set_status_message">تنظیم پیام وضعیت</string>
@@ -486,6 +491,7 @@
     <string name="this_is_a_test_message">This is a test message</string>
     <string name="title_attachments">پیوست ها</string>
     <string name="today">امروز</string>
+    <string name="tomorrow">فردا</string>
     <string name="translate">ترجمه</string>
     <string name="translation">Translation</string>
     <string name="translation_copy_translated_text">Copy translated text</string>

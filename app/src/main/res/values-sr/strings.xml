@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Жичане слушалице са микрофоном</string>
     <string name="avatar">Аватар</string>
     <string name="away">Одсутан</string>
+    <string name="calendar">Календар</string>
     <string name="call_more_actions_dialog_headline">Напредне опције позива</string>
     <string name="call_running_since_one_hour">Позив траје један сат.</string>
     <string name="call_without_notification">Позив без обавештења</string>
@@ -19,6 +20,7 @@
     <string name="close">Затвори</string>
     <string name="continuous_voice_message_recording">Закључајте снимање да би се гласовна порука непрестано снимала.</string>
     <string name="conversations">Разговори</string>
+    <string name="custom">Прилагођено</string>
     <string name="danger_zone">Зона опасности</string>
     <string name="delete_avatar">Обриши аватар</string>
     <string name="dnd">Не узнемиравај</string>
@@ -35,6 +37,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 сата</string>
     <string name="invisible">Невидљива</string>
+    <string name="later_today">Касније данас</string>
     <string name="load_more_results">Учитај још резултата</string>
     <string name="lock_symbol">Симбол катанца</string>
     <string name="lower_hand">Спуштена рука</string>
@@ -264,6 +267,7 @@
     <string name="nc_push_disabled">Брза обавештења су искључена</string>
     <string name="nc_push_to_talk">Притисни за разговор</string>
     <string name="nc_push_to_talk_desc">Са онемогућеним микрофоном, кликните &amp; држите да користите притисак за разговор</string>
+    <string name="nc_remind">Подсети ме касније</string>
     <string name="nc_remote_audio_off">Удаљени аудио је искључен</string>
     <string name="nc_remove_circle_and_members">Уклони круг и чланове</string>
     <string name="nc_remove_from_favorites">Уклони из омиљених</string>
@@ -403,6 +407,7 @@
     <string name="nc_wrong_link">Веза разговора није исправна</string>
     <string name="nc_wrong_password">Погрешна лозинка</string>
     <string name="nc_yes">Да</string>
+    <string name="next_week">Наредне недеље</string>
     <string name="no_phone_book_integration_due_to_permissions">Нема интеграције броја телефона јер недостају дозволе</string>
     <string name="oneHour">1 сат</string>
     <string name="online">На мрежи</string>
@@ -456,6 +461,7 @@
     <string name="send_to_forbidden">Није вам дозвољено да делите садржај у овај чет</string>
     <string name="send_to_three_dots">Пошаљи у ...</string>
     <string name="send_without_notification">Пошаљи без обавештења</string>
+    <string name="set">Постави</string>
     <string name="set_avatar_from_camera">Постави аватар са камере</string>
     <string name="set_status">Постави статус</string>
     <string name="set_status_message">Постави статусну поруку</string>
@@ -484,8 +490,10 @@
     <string name="thirtyMinutes">30 минута</string>
     <string name="thisWeek">Ове недеље</string>
     <string name="this_is_a_test_message">Ово је тест порука</string>
+    <string name="this_weekend">Овог викенда</string>
     <string name="title_attachments">Прилози</string>
     <string name="today">Данас</string>
+    <string name="tomorrow">Сутра</string>
     <string name="translate">Превођење</string>
     <string name="translation">Превод</string>
     <string name="translation_copy_translated_text">Копирај преведени текст</string>

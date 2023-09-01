@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Auricolare cablato</string>
     <string name="avatar">Avatar</string>
     <string name="away">Assente</string>
+    <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline">Opzioni avanzate per le chiamate</string>
     <string name="call_without_notification">Chiama senza notifica</string>
     <string name="camera_permission_granted">Autorizzazione fotocamera concessa. Scegli di nuovo la fotocamera.</string>
@@ -17,6 +18,7 @@
     <string name="clear_status_message_after">Cancella il messaggio di stato dopo</string>
     <string name="close">Chiudi</string>
     <string name="conversations">Conversazioni</string>
+    <string name="custom">Personalizzato</string>
     <string name="delete_avatar">Elimina avatar</string>
     <string name="dnd">Non disturbare</string>
     <string name="dontClear">Non cancellare</string>
@@ -223,6 +225,7 @@
     <string name="nc_push_disabled">Notifiche push disabilitate</string>
     <string name="nc_push_to_talk">Premi per parlare</string>
     <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utilizzare Premi per parlare</string>
+    <string name="nc_remind">Ricordamelo più tardi</string>
     <string name="nc_remote_audio_off">Audio remoto spento</string>
     <string name="nc_remove_circle_and_members">Rimuovi cerchia e membri</string>
     <string name="nc_remove_from_favorites">Rimuovi dai preferiti</string>
@@ -349,6 +352,7 @@
     <string name="nc_wrong_link">Il collegamento della conversazione non è valido</string>
     <string name="nc_wrong_password">Password errata</string>
     <string name="nc_yes">Sì</string>
+    <string name="next_week">Settimana successiva</string>
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione del numero di telefono a causa di autorizzazioni mancanti</string>
     <string name="oneHour">1 ora</string>
     <string name="online">In linea</string>
@@ -381,6 +385,7 @@
     <string name="selected_list_item">Selezionato</string>
     <string name="send_to">Invia a</string>
     <string name="send_to_three_dots">Invia a…</string>
+    <string name="set">Imposta</string>
     <string name="set_status">Imposta stato</string>
     <string name="set_status_message">Imposta messaggio di stato</string>
     <string name="share">Condividi</string>
@@ -405,6 +410,7 @@
     <string name="thisWeek">Questa settimana</string>
     <string name="title_attachments">Allegati</string>
     <string name="today">Oggi</string>
+    <string name="tomorrow">Domani</string>
     <string name="translate">Traduci</string>
     <string name="translation_detect_language">Rileva lingua</string>
     <string name="translation_device_settings">Impostazioni dei dispositivi</string>

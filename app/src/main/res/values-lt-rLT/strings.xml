@@ -5,10 +5,12 @@
     <string name="audio_output_phone">Telefonas</string>
     <string name="avatar">Avataras</string>
     <string name="away">Atsitraukęs</string>
+    <string name="calendar">Kalendorius</string>
     <string name="clear_status_message">Išvalyti būsenos žinutę</string>
     <string name="clear_status_message_after">Išvalyti būsenos žinutę po</string>
     <string name="close">Užverti</string>
     <string name="conversations">Pokalbiai</string>
+    <string name="custom">Tinkinti</string>
     <string name="dnd">Netrukdyti</string>
     <string name="dontClear">Neišvalyti</string>
     <string name="edit">Taisyti</string>
@@ -155,6 +157,7 @@
     <string name="nc_promote">Paaukštinti į moderatorius</string>
     <string name="nc_public_call">Naujas viešas pokalbis</string>
     <string name="nc_push_disabled">\"Push\" pranešimai yra išjungti</string>
+    <string name="nc_remind">Priminti vėliau</string>
     <string name="nc_remove_from_favorites">Šalinti iš mėgstamų</string>
     <string name="nc_remove_participant">Šalinti dalyvį</string>
     <string name="nc_rename">Pervadinti pokalbį</string>
@@ -247,6 +250,7 @@
     <string name="nc_wrong_link">Pokalbio nuoroda negalioja</string>
     <string name="nc_wrong_password">Neteisingas slaptažodis</string>
     <string name="nc_yes">Taip</string>
+    <string name="next_week">Kita savaitė</string>
     <string name="oneHour">1 valanda</string>
     <string name="online">Prisijungęs</string>
     <string name="online_status">Prisijungimo būsena</string>
@@ -274,6 +278,7 @@
     <string name="scroll_to_bottom">Slinkti į apačią</string>
     <string name="secondsAgo">prieš keletą sekundžių</string>
     <string name="selected_list_item">Pasirinkta</string>
+    <string name="set">Nustatyti</string>
     <string name="set_status">Nustatyti būseną</string>
     <string name="set_status_message">Nustatyti būsenos žinutę</string>
     <string name="share">Bendrinti</string>
@@ -294,6 +299,7 @@
     <string name="thisWeek">Šią savaitę</string>
     <string name="title_attachments">Priedai</string>
     <string name="today">Šiandiena</string>
+    <string name="tomorrow">Rytoj</string>
     <string name="translate">Verskite</string>
     <string name="translation_device_settings">Įrenginio nustatymai</string>
     <string name="translation_from">Nuo</string>

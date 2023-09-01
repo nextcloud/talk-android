@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Auriculares con cable</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline">Opciones avanzadas de llamada</string>
     <string name="call_without_notification">Llamar sin notificación</string>
     <string name="camera_permission_granted">Se ha concedido el permiso de la cámara. Por favor, elige la cámara de nuevo.</string>
@@ -18,6 +19,7 @@
     <string name="close">Cerrar</string>
     <string name="continuous_voice_message_recording">Bloquear grabación para grabación continua del mensaje de voz.</string>
     <string name="conversations">Conversaciones</string>
+    <string name="custom">Personalizado</string>
     <string name="danger_zone">Zona de peligro</string>
     <string name="delete_avatar">Borrar avatar</string>
     <string name="dnd">No molestar</string>
@@ -256,6 +258,7 @@
     <string name="nc_push_disabled">Notificaciones push deshabilitadas</string>
     <string name="nc_push_to_talk">Presiona-para-hablar</string>
     <string name="nc_push_to_talk_desc">Con el microfono deshabilitado, haz click &amp; presiona para usar Presiona-para-hablar</string>
+    <string name="nc_remind">Recuérdame más tarde</string>
     <string name="nc_remote_audio_off">Audio remoto desactivado</string>
     <string name="nc_remove_circle_and_members">Eliminar círculo y miembros</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
@@ -395,6 +398,7 @@
     <string name="nc_wrong_link">La liga de la conversación no es válida</string>
     <string name="nc_wrong_password">Contraseña equivocada</string>
     <string name="nc_yes">Sí</string>
+    <string name="next_week">Semana siguiente</string>
     <string name="no_phone_book_integration_due_to_permissions">No hay integración de número de teléfono debido a permisos faltantes</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línea</string>
@@ -448,6 +452,7 @@
     <string name="send_to_forbidden">No tienes permiso para compartir contenido en este chat</string>
     <string name="send_to_three_dots">Enviar a...</string>
     <string name="send_without_notification">Enviar sin notificación</string>
+    <string name="set">Establecer</string>
     <string name="set_avatar_from_camera">Establecer avatar desde la cámara</string>
     <string name="set_status">Establecer estado</string>
     <string name="set_status_message">Establecer mensaje de estado</string>
@@ -478,6 +483,7 @@
     <string name="this_is_a_test_message">Este es un mensaje de prueba</string>
     <string name="title_attachments">Adjuntos</string>
     <string name="today">Hoy</string>
+    <string name="tomorrow">Mañana</string>
     <string name="translate">Traducir</string>
     <string name="translation">Traducción</string>
     <string name="translation_copy_translated_text">Copiar texto traducido</string>

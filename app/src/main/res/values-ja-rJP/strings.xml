@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">有線ヘッドセット</string>
     <string name="avatar">アバター</string>
     <string name="away">離席中</string>
+    <string name="calendar">カレンダー</string>
     <string name="call_running_since_one_hour">通話が1 時間経過</string>
     <string name="call_without_notification">通知なしで通話</string>
     <string name="choose_avatar_from_cloud">クラウドからアバターを選択</string>
@@ -16,6 +17,7 @@
     <string name="clear_status_message_after">ステータスメッセージの有効期限</string>
     <string name="close">閉じる</string>
     <string name="conversations">会話</string>
+    <string name="custom">カスタム</string>
     <string name="delete_avatar">アバターを削除</string>
     <string name="dnd">取り込み中</string>
     <string name="dontClear">消去しない</string>
@@ -217,6 +219,7 @@
     <string name="nc_push_disabled">プッシュ通知が無効になっています</string>
     <string name="nc_push_to_talk">プッシュトゥートーク</string>
     <string name="nc_push_to_talk_desc">マイクを無効にして、プッシュツートークを使用する場合は &amp; ホールド</string>
+    <string name="nc_remind">後で通知する</string>
     <string name="nc_remote_audio_off">リモート音声オフ</string>
     <string name="nc_remove_circle_and_members">サークルとメンバーを削除</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
@@ -345,6 +348,7 @@
     <string name="nc_wrong_link">会話リンクが無効です</string>
     <string name="nc_wrong_password">パスワードが間違っています</string>
     <string name="nc_yes">はい</string>
+    <string name="next_week">来週</string>
     <string name="no_phone_book_integration_due_to_permissions">利用権限がないため、電話番号統合ができません。</string>
     <string name="oneHour">1時間</string>
     <string name="online">オンライン</string>
@@ -382,6 +386,7 @@
     <string name="send_to_forbidden">このチャットにコンテンツを許可する権限がありません</string>
     <string name="send_to_three_dots">送信…</string>
     <string name="send_without_notification">通知なしで送信</string>
+    <string name="set">セット</string>
     <string name="set_status">ステータスを設定</string>
     <string name="set_status_message">メッセージを設定</string>
     <string name="share">共有</string>
@@ -406,6 +411,7 @@
     <string name="thisWeek">今週</string>
     <string name="title_attachments">添付ファイル</string>
     <string name="today">今日</string>
+    <string name="tomorrow">明日</string>
     <string name="translate">翻訳</string>
     <string name="translation_device_settings">デバイスの設定</string>
     <string name="translation_error_message">言語を検出できませんでした</string>
