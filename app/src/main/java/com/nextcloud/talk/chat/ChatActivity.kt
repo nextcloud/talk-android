@@ -188,7 +188,7 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.AudioUtils
+import com.nextcloud.talk.utils.AudioUtils.audioFileToFloatArray
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -897,14 +897,31 @@ class ChatActivity :
             message.isDownloadingVoiceMessage = true
             adapter?.update(message)
             CoroutineScope(Dispatchers.Default).launch {
-                val r = AudioUtils.audioFileToFloatArray(file)
-                message.voiceMessageFloatArray = r
-                withContext(Dispatchers.Main) {
-                    startPlayback(message)
+                try {
+                    val r = audioFileToFloatArray(file)
+                    message.voiceMessageFloatArray = r
+                    withContext(Dispatchers.Main) {
+                        startPlayback(message)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         } else {
             startPlayback(message)
+        }
+    }
+    private fun setUpshare(message: ChatMessage) {
+        val filename = message.selectedIndividualHashMap!!["name"]
+        val file = File(context.cacheDir, filename!!)
+        if (file.exists()) {
+            CoroutineScope(Dispatchers.Default).launch {
+                withContext(Dispatchers.Main) {
+                    share(message)
+                }
+            }
+        } else {
+            share(message)
         }
     }
 
@@ -1946,6 +1963,10 @@ class ChatActivity :
                 if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                     setUpWaveform(message)
                     // startPlayback(message)
+                    setUpshare(message)
+                }
+                else {
+                    Log.e(TAG, "Error")
                 }
             }
     }
@@ -3930,6 +3951,16 @@ class ChatActivity :
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
+    }
+    fun checkifsharable(message: ChatMessage) {
+        val filename = message.selectedIndividualHashMap!!["name"]
+        path = applicationContext.cacheDir.absolutePath + "/" + filename
+        val file = File(context.cacheDir, filename!!)
+            if (file.exists()) {
+                share(message)
+            }else{
+                downloadFileToCache(message)
+            }
     }
 
     fun openInFilesApp(message: ChatMessage) {

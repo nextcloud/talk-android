@@ -322,7 +322,7 @@ class MessageActionsDialog(
     private fun initMenuShare(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuShare.setOnClickListener {
-                chatActivity.share(message)
+                chatActivity.checkifsharable(message)
                 dismiss()
             }
         }
