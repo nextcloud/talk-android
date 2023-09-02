@@ -456,6 +456,7 @@
     <string name="scope_toggle_description">تغيير مستوى الخصوصية لـ%1$s</string>
     <string name="scroll_to_bottom">مرِّر للأسفل</string>
     <string name="secondsAgo">منذ ثوانٍ</string>
+    <string name="see_similar_system_messages">أنظُر %1$s رسائل مُشابِهة</string>
     <string name="selected_list_item">مُحدّدة</string>
     <string name="send_to">أرسِل إلى</string>
     <string name="send_to_forbidden">ليس مسموحاً لك مشاركة محتوى هذه الدردشة</string>
