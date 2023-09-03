@@ -5,6 +5,7 @@
     <string name="audio_output_phone">טלפון</string>
     <string name="avatar">תמונה מייצגת</string>
     <string name="away">לא פה</string>
+    <string name="calendar">לוח שנה</string>
     <string name="clear_status_message">פינוי הודעת המצב</string>
     <string name="clear_status_message_after">מחיקת הודעת מצב לאחר</string>
     <string name="close">סגירה</string>
@@ -156,6 +157,7 @@
     <string name="nc_push_disabled">התראות בדחיפה הושבתו</string>
     <string name="nc_push_to_talk">לחיצה לדיבור</string>
     <string name="nc_push_to_talk_desc">כשהמיקרופון מושבת, יש ללחוץ ולהחזיק כדי להשתמש בלחיצה לדיבור</string>
+    <string name="nc_remind">להזכיר לי מאוחר יותר</string>
     <string name="nc_remove_from_favorites">הסרה מהמועדפים</string>
     <string name="nc_remove_group_and_members">הסרת קבוצה וחברים</string>
     <string name="nc_remove_participant">הסרת משתתף</string>
@@ -278,6 +280,7 @@
     <string name="thisWeek">השבוע</string>
     <string name="title_attachments">קבצים מצורפים</string>
     <string name="today">היום</string>
+    <string name="tomorrow">מחר</string>
     <string name="translate">תרגום</string>
     <string name="translation_device_settings">הגדרות מכשיר</string>
     <string name="translation_from">מאת</string>

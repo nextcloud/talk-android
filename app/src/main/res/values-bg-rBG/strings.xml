@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Слушалки с кабел</string>
     <string name="avatar">Аватар</string>
     <string name="away">Винаги</string>
+    <string name="calendar">Kалендар</string>
     <string name="call_more_actions_dialog_headline">Разширени опции за повикване</string>
     <string name="call_without_notification">Обаждане без известие</string>
     <string name="camera_permission_granted">Дадено е право на камера. Моля, изберете камера отново. </string>
@@ -17,6 +18,7 @@
     <string name="clear_status_message_after">Изчистване на съобщение за състоянието след</string>
     <string name="close">Затваряне</string>
     <string name="conversations">Разговори</string>
+    <string name="custom">Персонализиран</string>
     <string name="delete_avatar">Изтриване на аватар</string>
     <string name="dnd">Не безпокойте</string>
     <string name="dontClear">Да не се изчиства</string>
@@ -244,6 +246,7 @@
     <string name="nc_push_disabled">Push/насочените/ известия са деактивирани</string>
     <string name="nc_push_to_talk">Натисни и говори</string>
     <string name="nc_push_to_talk_desc">Когато микрофонът е деактивиран, кликнете &amp; и задръжте, за да използвате „Натисни и говори“</string>
+    <string name="nc_remind">Напомни ми по-късно</string>
     <string name="nc_remote_audio_off">Отдалеченото аудио е изключено</string>
     <string name="nc_remove_circle_and_members">Премахване на кръга и на членовете</string>
     <string name="nc_remove_from_favorites">Премахни от любимите</string>
@@ -380,6 +383,7 @@
     <string name="nc_wrong_link">Невалидна връзка за разговор </string>
     <string name="nc_wrong_password">Грешна парола</string>
     <string name="nc_yes">Да</string>
+    <string name="next_week">Следваща седмица</string>
     <string name="no_phone_book_integration_due_to_permissions">Няма интеграция на телефонен номер поради липсващи права</string>
     <string name="oneHour">1 час</string>
     <string name="online">На линия</string>
@@ -433,6 +437,7 @@
     <string name="send_to_forbidden">Нямате право да споделяте съдържание в този чат</string>
     <string name="send_to_three_dots">Изпращане до …</string>
     <string name="send_without_notification">Изпращане без известие</string>
+    <string name="set">Да се зададе</string>
     <string name="set_avatar_from_camera">Задаване на аватар от камерата</string>
     <string name="set_status">Задаване на състояние</string>
     <string name="set_status_message">Задаване на съобщение за състояние</string>
@@ -462,6 +467,7 @@
     <string name="thisWeek">Тази седмица</string>
     <string name="title_attachments">Прикачени файлове</string>
     <string name="today">Днес</string>
+    <string name="tomorrow">Утре</string>
     <string name="translate">Превод</string>
     <string name="translation_detect_language">Разпознаване на език</string>
     <string name="translation_device_settings">Настройки за устройството</string>

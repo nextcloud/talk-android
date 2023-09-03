@@ -9,12 +9,14 @@
     <string name="audio_output_wired_headset">Langallinen kuulokemikrofoni</string>
     <string name="avatar">Profiilikuva</string>
     <string name="away">Poissa</string>
+    <string name="calendar">Kalenteri</string>
     <string name="call_without_notification">Puhelu ilman ilmoitusta</string>
     <string name="camera_permission_granted">Kameraoikeus myönnetty. Valitse kamera uudelleen.</string>
     <string name="clear_status_message">Tyhjennä tilaviesti</string>
     <string name="clear_status_message_after">Tyhjennä tilaviesti, kun on kulunut</string>
     <string name="close">Sulje</string>
     <string name="conversations">Keskustelut</string>
+    <string name="custom">Omavalintainen</string>
     <string name="dnd">Älä häiritse</string>
     <string name="dontClear">Älä tyhjennä</string>
     <string name="edit">Muokkaa</string>
@@ -196,6 +198,7 @@
     <string name="nc_public_call">Uusi julkinen keskustelu</string>
     <string name="nc_push_disabled">Push-ilmoitukset pois käytöstä</string>
     <string name="nc_push_to_talk">Paina puhuaksesi</string>
+    <string name="nc_remind">Muistuta myöhemmin</string>
     <string name="nc_remove_circle_and_members">Poista piiri ja jäsenet</string>
     <string name="nc_remove_from_favorites">Poista suosikeista</string>
     <string name="nc_remove_group_and_members">Poista ryhmä ja jäsenet</string>
@@ -369,8 +372,10 @@
     <string name="take_photo_toggle_lowres">Pienennä kuvan kokoa</string>
     <string name="thirtyMinutes">30 minuuttia</string>
     <string name="thisWeek">Tämä viikko</string>
+    <string name="this_weekend">Tämä viikonloppu</string>
     <string name="title_attachments">Liitteet</string>
     <string name="today">Tänään</string>
+    <string name="tomorrow">Huomenna</string>
     <string name="translate">Käännä</string>
     <string name="translation_copy_translated_text">Kopioi käännetty teksti</string>
     <string name="translation_detect_language">Havaitse kieli</string>

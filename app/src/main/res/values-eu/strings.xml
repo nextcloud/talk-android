@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Kabledun entzungailua</string>
     <string name="avatar">Avatarra</string>
     <string name="away">Kanpoan</string>
+    <string name="calendar">Egutegia</string>
     <string name="call_more_actions_dialog_headline">Dei-ezarpen aurreratuak</string>
     <string name="call_running_since_one_hour">Deia ordubetez egon da martxan.</string>
     <string name="call_without_notification">Deitu jakinarazpenik gabe</string>
@@ -19,6 +20,7 @@
     <string name="close">Itxi</string>
     <string name="continuous_voice_message_recording">Blokeatu grabazioa ahots-mezua etengabe grabatzeko</string>
     <string name="conversations">Elkarrizketak</string>
+    <string name="custom">Pertsonalizatua</string>
     <string name="danger_zone">Arrisku eremua</string>
     <string name="delete_avatar">Ezabatu avatarra</string>
     <string name="dnd">Ez molestatu</string>
@@ -265,6 +267,7 @@
     <string name="nc_push_disabled">Push jakinarazpenak desgaiturik</string>
     <string name="nc_push_to_talk">Sakatu-hitz-egiteko</string>
     <string name="nc_push_to_talk_desc">Mikrofonoa desgaituta daukazunean, egin klik &amp;mantendu sakatzerakoan hitz egiteko</string>
+    <string name="nc_remind">Gogoratu geroago</string>
     <string name="nc_remote_audio_off">Urruneko audioa itzalita</string>
     <string name="nc_remove_circle_and_members">Kendu taldea eta kideak</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
@@ -487,8 +490,10 @@
     <string name="thirtyMinutes">30 minutu</string>
     <string name="thisWeek">Aste honetan</string>
     <string name="this_is_a_test_message">Hau test mezu bat da</string>
+    <string name="this_weekend">Asteburu hau</string>
     <string name="title_attachments">Eranskinak</string>
     <string name="today">Gaur</string>
+    <string name="tomorrow">Bihar</string>
     <string name="translate">Itzuli</string>
     <string name="translation">Itzulpena</string>
     <string name="translation_copy_translated_text">Kopiatu itzulitako testua</string>

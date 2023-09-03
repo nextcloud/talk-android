@@ -225,6 +225,7 @@
     <string name="nc_push_disabled">Notifiche push disabilitate</string>
     <string name="nc_push_to_talk">Premi per parlare</string>
     <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utilizzare Premi per parlare</string>
+    <string name="nc_remind">Ricordamelo più tardi</string>
     <string name="nc_remote_audio_off">Audio remoto spento</string>
     <string name="nc_remove_circle_and_members">Rimuovi cerchia e membri</string>
     <string name="nc_remove_from_favorites">Rimuovi dai preferiti</string>
@@ -409,6 +410,7 @@
     <string name="thisWeek">Questa settimana</string>
     <string name="title_attachments">Allegati</string>
     <string name="today">Oggi</string>
+    <string name="tomorrow">Domani</string>
     <string name="translate">Traduci</string>
     <string name="translation_detect_language">Rileva lingua</string>
     <string name="translation_device_settings">Impostazioni dei dispositivi</string>

@@ -6,6 +6,7 @@
     <string name="audio_output_speaker">Speaker</string>
     <string name="avatar">Auðkennismynd</string>
     <string name="away">Fjarverandi</string>
+    <string name="calendar">Dagatal</string>
     <string name="clear_status_message">Hreinsa stöðuskilaboð</string>
     <string name="clear_status_message_after">Hreinsa stöðuskilaboð eftir</string>
     <string name="close">Loka</string>
@@ -155,6 +156,7 @@
     <string name="nc_push_disabled">Ýtitilkynningar óvirkar</string>
     <string name="nc_push_to_talk">Ýta-til-að-tala</string>
     <string name="nc_push_to_talk_desc">Með hljóðnemann óvirkan, smelltu og haltu niðri til að nota Ýta-til-að-tala</string>
+    <string name="nc_remind">Áminna mig síðar</string>
     <string name="nc_remove_from_favorites">Fjarlægja úr eftirlætum</string>
     <string name="nc_remove_participant">Fjarlægja þátttakanda</string>
     <string name="nc_rename">Endurnefna samtal</string>
@@ -267,6 +269,7 @@
     <string name="thisWeek">Í þessari viku</string>
     <string name="title_attachments">Viðhengi</string>
     <string name="today">Í dag</string>
+    <string name="tomorrow">Á morgun</string>
     <string name="translate">Þýða</string>
     <string name="translation_device_settings">Stillingar tækis</string>
     <string name="translation_from">Frá</string>

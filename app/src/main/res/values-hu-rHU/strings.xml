@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Vezetékes fejhallgató</string>
     <string name="avatar">Profilkép</string>
     <string name="away">Távol</string>
+    <string name="calendar">Naptár</string>
     <string name="call_more_actions_dialog_headline">Speciális hívásbeállítások</string>
     <string name="call_without_notification">Hívás értesítés nélkül</string>
     <string name="camera_permission_granted">Kamera engedély megadva. Válassza újra a kamerát.</string>
@@ -250,6 +251,7 @@
     <string name="nc_push_disabled">Leküldéses értesítések kikapcsolva</string>
     <string name="nc_push_to_talk">Lenyomás a beszédhez</string>
     <string name="nc_push_to_talk_desc">A mikrofon le lesz tiltva, a beszédhez tartsa lenyomva</string>
+    <string name="nc_remind">Emlékeztessen később</string>
     <string name="nc_remote_audio_off">Távoli hang kikapcsolása</string>
     <string name="nc_remove_circle_and_members">Kör és tagok eltávolítása</string>
     <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>
@@ -473,6 +475,7 @@
     <string name="thisWeek">Ez a hét</string>
     <string name="title_attachments">Mellékletek</string>
     <string name="today">Ma</string>
+    <string name="tomorrow">Holnap</string>
     <string name="translate">Lefordítás</string>
     <string name="translation">Fordítás</string>
     <string name="translation_copy_translated_text">Lefordított szöveg másolása</string>

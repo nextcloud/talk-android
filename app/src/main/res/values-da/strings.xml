@@ -5,10 +5,12 @@
     <string name="audio_output_phone">Telefon</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ikke tilstede</string>
+    <string name="calendar">Kalender</string>
     <string name="clear_status_message">Ryd status notifikation</string>
     <string name="clear_status_message_after">Ryd status notifikationer efter</string>
     <string name="close">Luk</string>
     <string name="conversations">Samtaler</string>
+    <string name="custom">Valgfrit</string>
     <string name="dnd">Forstyr ikke</string>
     <string name="dontClear">Ryd ikke</string>
     <string name="edit">Rediger</string>
@@ -159,6 +161,7 @@
     <string name="nc_push_disabled">Pushbeskeder er slået fra</string>
     <string name="nc_push_to_talk">Tryk-for-at-tale</string>
     <string name="nc_push_to_talk_desc">Med mikrofonen deaktiveret, hold&amp;nede for at bruge Push-to-talk</string>
+    <string name="nc_remind">Påmind mig senere</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_participant">Fjern deltager</string>
     <string name="nc_rename">Omdøb samtale</string>
@@ -248,6 +251,7 @@
     <string name="nc_wrong_link">Samtale link er ikke gyldigt</string>
     <string name="nc_wrong_password">Forkert adgangskode</string>
     <string name="nc_yes">Ja</string>
+    <string name="next_week">Næste uge</string>
     <string name="oneHour">1 time</string>
     <string name="online">Online</string>
     <string name="online_status">Online status</string>
@@ -269,6 +273,7 @@
     <string name="scope_toggle_description">Skift privatlivsniveau for %1$s</string>
     <string name="secondsAgo">sekunder siden</string>
     <string name="selected_list_item">Markeret</string>
+    <string name="set">Sæt</string>
     <string name="set_status">Sæt status</string>
     <string name="set_status_message">Sæt statusbesked</string>
     <string name="share">Del</string>
@@ -286,6 +291,7 @@
     <string name="thisWeek">Denne uge</string>
     <string name="title_attachments">Vedhæftede filer</string>
     <string name="today">I dag</string>
+    <string name="tomorrow">I morgen</string>
     <string name="translate">Oversæt</string>
     <string name="translation_device_settings">Enhedsindstillinger</string>
     <string name="translation_error_message">Kunne ikke finde sprog</string>

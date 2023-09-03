@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Drátová náhlavní souprava</string>
     <string name="avatar">Profilový obrázek</string>
     <string name="away">Pryč</string>
+    <string name="calendar">Kalendář</string>
     <string name="call_more_actions_dialog_headline">Pokročilé předvolby pro hovor</string>
     <string name="call_running_since_one_hour">Hovor trvá už hodinu.</string>
     <string name="call_without_notification">Zavolat bez upozornění</string>
@@ -19,6 +20,7 @@
     <string name="close">Zavřít</string>
     <string name="continuous_voice_message_recording">Zamknout nahrávku pro nepřetržité nahrávání hlasové zprávy</string>
     <string name="conversations">Konverzace</string>
+    <string name="custom">Uživatelsky určený</string>
     <string name="danger_zone">Nebezpečná zóna</string>
     <string name="delete_avatar">Vymazat profilový obrázek</string>
     <string name="dnd">Nerušit</string>
@@ -35,6 +37,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
     <string name="invisible">Není vidět</string>
+    <string name="later_today">Později dnes</string>
     <string name="load_more_results">Načíst další výsledky</string>
     <string name="lock_symbol">Uzamknout symbol</string>
     <string name="lower_hand">Přestat se hlásit</string>
@@ -264,6 +267,7 @@
     <string name="nc_push_disabled">Push upozorňování vypnutá</string>
     <string name="nc_push_to_talk">Vysílačka</string>
     <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte a dokud držíte, můžete mluvit – jako u vysílačky</string>
+    <string name="nc_remind">Připomenout později</string>
     <string name="nc_remote_audio_off">Ztlumení mikrofonu na dálku</string>
     <string name="nc_remove_circle_and_members">Odebrat kruh a členy</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
@@ -403,6 +407,7 @@
     <string name="nc_wrong_link">Odkaz na konverzaci není platný</string>
     <string name="nc_wrong_password">Nesprávné heslo</string>
     <string name="nc_yes">Ano</string>
+    <string name="next_week">Příští týden</string>
     <string name="no_phone_book_integration_due_to_permissions">Není možné propojit telefonní čísla, protože chybí potřebná oprávnění</string>
     <string name="oneHour">1 hodina</string>
     <string name="online">Online</string>
@@ -456,6 +461,7 @@
     <string name="send_to_forbidden">Nemáte oprávnění sdílet obsah do tohoto chatu</string>
     <string name="send_to_three_dots">Odeslat k…</string>
     <string name="send_without_notification">Odeslat bez upozornění</string>
+    <string name="set">Nastavit</string>
     <string name="set_avatar_from_camera">Získat zástupný obrázek z kamery</string>
     <string name="set_status">Nastavit stav</string>
     <string name="set_status_message">Nastavit stavovou zprávu</string>
@@ -484,8 +490,10 @@
     <string name="thirtyMinutes">30 minut</string>
     <string name="thisWeek">Tento týden</string>
     <string name="this_is_a_test_message">Toto je zkušební zpráva</string>
+    <string name="this_weekend">Tento víkend</string>
     <string name="title_attachments">Přílohy</string>
     <string name="today">Dnes</string>
+    <string name="tomorrow">Zítra</string>
     <string name="translate">Překládání</string>
     <string name="translation">Překlad</string>
     <string name="translation_copy_translated_text">Zkopírovat přeložený text</string>

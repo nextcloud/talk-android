@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Auriculars per cable</string>
     <string name="avatar">Avatar</string>
     <string name="away">Absent</string>
+    <string name="calendar">Calendari</string>
     <string name="call_more_actions_dialog_headline">Opcions avançades de trucada</string>
     <string name="call_running_since_one_hour">La trucada porta una hora en marxa.</string>
     <string name="call_without_notification">Trucada sense notificació</string>
@@ -18,6 +19,7 @@
     <string name="clear_status_message_after">Esborra el missatge d\'estat després</string>
     <string name="close">Tanca</string>
     <string name="conversations">Converses</string>
+    <string name="custom">Personalitzat</string>
     <string name="delete_avatar">Suprimeix l\'avatar</string>
     <string name="dnd">No molesteu</string>
     <string name="dontClear">No l\'esborris</string>
@@ -242,6 +244,7 @@
     <string name="nc_push_disabled">Servei de notificacions desactivat</string>
     <string name="nc_push_to_talk">Prem-i-parla</string>
     <string name="nc_push_to_talk_desc">Amb el micròfon desactivat, feu clic a &amp; i mantingueu-lo pressionat per fer servir el Prem-i-parla</string>
+    <string name="nc_remind">Recorda-m\'ho més tard</string>
     <string name="nc_remote_audio_off">Àudio remot desactivat</string>
     <string name="nc_remove_circle_and_members">Suprimeix el cercle i els membres</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>
@@ -379,6 +382,7 @@
     <string name="nc_wrong_link">L\'enllaç de la conversa no és vàlid</string>
     <string name="nc_wrong_password">Contrasenya incorrecta</string>
     <string name="nc_yes">Sí</string>
+    <string name="next_week">Setmana següent</string>
     <string name="no_phone_book_integration_due_to_permissions">No hi ha integració amb el número de telèfon perquè falten permisos</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línia</string>
@@ -430,6 +434,7 @@
     <string name="send_to_forbidden">No teniu permís per compartir contingut amb aquest xat</string>
     <string name="send_to_three_dots">Envia a …</string>
     <string name="send_without_notification">Envia sense notificació</string>
+    <string name="set">Estableix</string>
     <string name="set_avatar_from_camera">Estableix l\'avatar des de la càmera</string>
     <string name="set_status">Estableix l\'estat</string>
     <string name="set_status_message">Estableix un missatge d\'estat</string>
@@ -456,6 +461,7 @@
     <string name="thisWeek">Aquesta setmana</string>
     <string name="title_attachments">Adjunts</string>
     <string name="today">Avui</string>
+    <string name="tomorrow">Demà</string>
     <string name="translate">Traducció</string>
     <string name="translation_copy_translated_text">Copia el text traduït</string>
     <string name="translation_detect_language">Detectar idioma</string>

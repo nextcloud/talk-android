@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Auriculares con cable</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline"> Opcións avanzadas de chamada</string>
     <string name="call_running_since_one_hour">A chamada leva unha hora en curso.</string>
     <string name="call_without_notification">Chamar sen notificación</string>
@@ -266,6 +267,7 @@
     <string name="nc_push_disabled">Desactivadas as notificacións automáticas</string>
     <string name="nc_push_to_talk">Prema para falar</string>
     <string name="nc_push_to_talk_desc">Co microfono desactivado, prema e manteña para usar a función «Prema para falar»</string>
+    <string name="nc_remind">Lembrarmo más adiante</string>
     <string name="nc_remote_audio_off">Son remoto desactivado</string>
     <string name="nc_remove_circle_and_members">Retirar círculo e membros</string>
     <string name="nc_remove_from_favorites">Retirar de favoritos</string>
@@ -491,6 +493,7 @@
     <string name="this_weekend">Este fin de semana</string>
     <string name="title_attachments">Anexos</string>
     <string name="today">Hoxe</string>
+    <string name="tomorrow">Mañá</string>
     <string name="translate">Traducir</string>
     <string name="translation">Tradución</string>
     <string name="translation_copy_translated_text">Copiar o texto traducido</string>

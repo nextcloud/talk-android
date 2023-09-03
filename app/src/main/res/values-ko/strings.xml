@@ -235,6 +235,7 @@
     <string name="nc_push_disabled">푸시 알림이 비활성화됨</string>
     <string name="nc_push_to_talk">눌러 말하기</string>
     <string name="nc_push_to_talk_desc">마이크가 비활성화된 상태에서 &amp;를 누르고 있으면 눌러 말하기 사용</string>
+    <string name="nc_remind">나중에 다시 알림</string>
     <string name="nc_remote_audio_off">원격 오디오 끄기</string>
     <string name="nc_remove_circle_and_members">서클과 구성원 제거</string>
     <string name="nc_remove_from_favorites">즐겨찾기에서 제거</string>
@@ -444,6 +445,7 @@
     <string name="thisWeek">이번 주</string>
     <string name="title_attachments">첨부파일</string>
     <string name="today">오늘</string>
+    <string name="tomorrow">내일</string>
     <string name="translate">번역:</string>
     <string name="translation_copy_translated_text">번역한 텍스트 복사</string>
     <string name="translation_device_settings">디바이스 설정</string>

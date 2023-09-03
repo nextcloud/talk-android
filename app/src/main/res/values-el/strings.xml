@@ -7,11 +7,13 @@
     <string name="audio_output_speaker">Μεγάφωνο</string>
     <string name="avatar">Εικόνα προφίλ</string>
     <string name="away">Λείπω</string>
+    <string name="calendar">Ημερολόγιο</string>
     <string name="choose_avatar_from_cloud">Επιλογή εικόνας προφίλ από το cloud</string>
     <string name="clear_status_message">Εκκαθάριση μηνύματος κατάστασης</string>
     <string name="clear_status_message_after">Εκκαθάριση μηνύματος κατάστασης μετά από</string>
     <string name="close">Κλείσιμο</string>
     <string name="conversations">Συνομιλίες</string>
+    <string name="custom">Προσαρμοσμένο</string>
     <string name="delete_avatar">Διαγραφή εικόνας προφίλ</string>
     <string name="dnd">Μην ενοχλείτε</string>
     <string name="dontClear">Να μη γίνεται εκκαθάριση</string>
@@ -24,6 +26,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ώρες</string>
     <string name="invisible">Αόρατο</string>
+    <string name="later_today">Αργότερα σήμερα</string>
     <string name="load_more_results">Φόρτωση περισσοτέρων αποτελεσμάτων</string>
     <string name="lower_hand">Κατεβάστε το χέρι</string>
     <string name="menu_item_sort_by_date_newest_first">Νεότερο πρώτα</string>
@@ -199,6 +202,7 @@
     <string name="nc_push_disabled">Οι ειδοποιήσεις push απενεργοποιήθηκαν</string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Με απενεργοποιημένο το μικρόφωνο, πιέστε και κρατήστε το &amp; για χρήση του Push-to-talk</string>
+    <string name="nc_remind">Θύμισέ μου αργότερα</string>
     <string name="nc_remove_circle_and_members">Αφαίρεση κύκλων και μελών</string>
     <string name="nc_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>
     <string name="nc_remove_group_and_members">Αφαίρεση ομάδων και μελών</string>
@@ -322,6 +326,7 @@
     <string name="nc_wrong_link">Μη έγκυρος σύνδεσμος συνομιλίας</string>
     <string name="nc_wrong_password">Λανθασμένο συνθηματικό</string>
     <string name="nc_yes">Ναι</string>
+    <string name="next_week">Επόμενη εβδομάδα</string>
     <string name="no_phone_book_integration_due_to_permissions">Δεν υπάρχει ενσωμάτωση αριθμού τηλεφώνου λόγω έλλειψης δικαιωμάτων</string>
     <string name="oneHour">1 ώρα</string>
     <string name="online">Σε σύνδεση</string>
@@ -354,6 +359,7 @@
     <string name="selected_list_item">Επιλέχθηκαν</string>
     <string name="send_to">Αποστολή σε</string>
     <string name="send_to_three_dots">Αποστολή σε …</string>
+    <string name="set">Ορισμός</string>
     <string name="set_status">Ορισμός κατάστασης</string>
     <string name="set_status_message">Ορισμός μηνύματος κατάστασης</string>
     <string name="share">Διαμοιρασμός</string>
@@ -370,8 +376,10 @@
     <string name="take_photo_toggle_torch">Εναλλαγή φακού</string>
     <string name="thirtyMinutes">30 λεπτά</string>
     <string name="thisWeek">Αυτή την εβδομάδα</string>
+    <string name="this_weekend">Αυτό το Σαββατοκύριακο</string>
     <string name="title_attachments">Συνημμένα</string>
     <string name="today">Σήμερα</string>
+    <string name="tomorrow">Αύριο</string>
     <string name="translate">Μετάφραση</string>
     <string name="translation_device_settings">Ρυθμίσεις συσκευής</string>
     <string name="translation_error_message">Δεν ήταν δυνατός ο εντοπισμός της γλώσσας</string>

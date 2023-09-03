@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Écouteurs filaires</string>
     <string name="avatar">Avatar</string>
     <string name="away">Absent(e)</string>
+    <string name="calendar">Agenda</string>
     <string name="call_more_actions_dialog_headline">Options d\'appel avancées</string>
     <string name="call_running_since_one_hour">L\'appel est en cours depuis une heure.</string>
     <string name="call_without_notification">Appeler sans notification</string>
@@ -19,6 +20,7 @@
     <string name="close">Fermer</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
     <string name="conversations">Discussions</string>
+    <string name="custom">Personnalisé</string>
     <string name="danger_zone">Zone de danger</string>
     <string name="delete_avatar">Supprimer l\'avatar</string>
     <string name="dnd">Ne pas déranger</string>
@@ -264,6 +266,7 @@
     <string name="nc_push_disabled">Notifications push désactivées</string>
     <string name="nc_push_to_talk">Talkie-walkie</string>
     <string name="nc_push_to_talk_desc">Avec le micro désactivé, cliquez &amp; maintenez pour utiliser la fonction Talkie-walkie.</string>
+    <string name="nc_remind">Rappelez-moi plus tard</string>
     <string name="nc_remote_audio_off">Audio distant en sourdine</string>
     <string name="nc_remove_circle_and_members">Supprimer le cercle et ses membres</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
@@ -488,6 +491,7 @@
     <string name="this_is_a_test_message">Ceci est un message de test</string>
     <string name="title_attachments">Pièces jointes</string>
     <string name="today">Aujourd\'hui</string>
+    <string name="tomorrow">Demain</string>
     <string name="translate">Traduire</string>
     <string name="translation">Traduction</string>
     <string name="translation_copy_translated_text">Copier le texte traduit</string>

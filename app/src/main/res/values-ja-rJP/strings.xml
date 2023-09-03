@@ -219,6 +219,7 @@
     <string name="nc_push_disabled">プッシュ通知が無効になっています</string>
     <string name="nc_push_to_talk">プッシュトゥートーク</string>
     <string name="nc_push_to_talk_desc">マイクを無効にして、プッシュツートークを使用する場合は &amp; ホールド</string>
+    <string name="nc_remind">後で通知する</string>
     <string name="nc_remote_audio_off">リモート音声オフ</string>
     <string name="nc_remove_circle_and_members">サークルとメンバーを削除</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
@@ -410,6 +411,7 @@
     <string name="thisWeek">今週</string>
     <string name="title_attachments">添付ファイル</string>
     <string name="today">今日</string>
+    <string name="tomorrow">明日</string>
     <string name="translate">翻訳</string>
     <string name="translation_device_settings">デバイスの設定</string>
     <string name="translation_error_message">言語を検出できませんでした</string>

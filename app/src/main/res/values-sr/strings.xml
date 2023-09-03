@@ -456,6 +456,7 @@
     <string name="scope_toggle_description">Промена нивоа приватности за %1$s</string>
     <string name="scroll_to_bottom">Скролуј на дно</string>
     <string name="secondsAgo">пре неколико секунди</string>
+    <string name="see_similar_system_messages">Погледајте %1$s сличних порука</string>
     <string name="selected_list_item">Одабрано</string>
     <string name="send_to">Пошаљи у</string>
     <string name="send_to_forbidden">Није вам дозвољено да делите садржај у овај чет</string>

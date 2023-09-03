@@ -6,6 +6,7 @@
     <string name="audio_output_speaker">Zvučnik</string>
     <string name="avatar">Avatar</string>
     <string name="away">Odsutan</string>
+    <string name="calendar">Kalendar</string>
     <string name="choose_avatar_from_cloud">Odaberi avatar iz oblaka</string>
     <string name="clear_status_message">Izbriši poruku statusa</string>
     <string name="clear_status_message_after">Izbriši poruku statusa nakon</string>
@@ -205,6 +206,7 @@
     <string name="nc_push_disabled">Push obavijesti su onemogućene</string>
     <string name="nc_push_to_talk">Pritisni za govor</string>
     <string name="nc_push_to_talk_desc">Kada je mikrofon onemogućen, kliknite i držite za uporabu značajke Pritisni za govor</string>
+    <string name="nc_remind">Podsjeti me kasnije</string>
     <string name="nc_remote_audio_off">Udaljeno isključivanje zvuka</string>
     <string name="nc_remove_circle_and_members">Ukloni krug i članove</string>
     <string name="nc_remove_from_favorites">Ukloni iz favorita</string>
@@ -379,6 +381,7 @@
     <string name="thisWeek">Ovaj tjedan</string>
     <string name="title_attachments">Privici</string>
     <string name="today">Danas</string>
+    <string name="tomorrow">Sutra</string>
     <string name="translate">Prevedi</string>
     <string name="translation_device_settings">Postavke uređaja</string>
     <string name="translation_from">Od</string>

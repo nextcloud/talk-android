@@ -177,6 +177,7 @@
     <string name="nc_push_disabled">Push notifisering deaktivert</string>
     <string name="nc_push_to_talk">Trykk-for-å-snakke</string>
     <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk &amp; hold for å bruke klikk-for-å-snakke</string>
+    <string name="nc_remind">Påminnn meg senere</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_participant">Fjern deltaker</string>
     <string name="nc_rename">Endre navn på samtale</string>
@@ -317,6 +318,7 @@
     <string name="this_weekend">Denne helgen</string>
     <string name="title_attachments">Vedlegg</string>
     <string name="today">I dag</string>
+    <string name="tomorrow">I morgen</string>
     <string name="translate">Oversette</string>
     <string name="translation_device_settings">Enhetsinnstillinger</string>
     <string name="translation_from">Fra</string>
