@@ -145,7 +145,9 @@ data class ChatMessage(
 
     var expandableChildrenAmount: Int = 0,
 
-    var hiddenByCollapse: Boolean = false
+    var hiddenByCollapse: Boolean = false,
+
+    var openWhenDownloaded: Boolean = true
 
 ) : Parcelable, MessageContentType, MessageContentType.Image {
 

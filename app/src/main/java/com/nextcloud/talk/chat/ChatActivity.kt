@@ -889,7 +889,9 @@ class ChatActivity :
                 }
             } else {
                 Log.d(TAG, "Downloaded to cache")
-                downloadFileToCache(message)
+                downloadFileToCache(message, true) {
+                    setUpWaveform(message)
+                }
             }
         }
     }
@@ -901,31 +903,14 @@ class ChatActivity :
             message.isDownloadingVoiceMessage = true
             adapter?.update(message)
             CoroutineScope(Dispatchers.Default).launch {
-                try {
-                    val r = audioFileToFloatArray(file)
-                    message.voiceMessageFloatArray = r
-                    withContext(Dispatchers.Main) {
-                        startPlayback(message)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                val r = audioFileToFloatArray(file)
+                message.voiceMessageFloatArray = r
+                withContext(Dispatchers.Main) {
+                    startPlayback(message)
                 }
             }
         } else {
             startPlayback(message)
-        }
-    }
-    private fun setUpshare(message: ChatMessage) {
-        val filename = message.selectedIndividualHashMap!!["name"]
-        val file = File(context.cacheDir, filename!!)
-        if (file.exists()) {
-            CoroutineScope(Dispatchers.Default).launch {
-                withContext(Dispatchers.Main) {
-                    share(message)
-                }
-            }
-        } else {
-            share(message)
         }
     }
 
@@ -1952,8 +1937,13 @@ class ChatActivity :
     }
 
     @SuppressLint("LongLogTag")
-    private fun downloadFileToCache(message: ChatMessage) {
+    private fun downloadFileToCache(
+        message: ChatMessage,
+        openWhenDownloaded: Boolean,
+        funToCallWhenDownloadSuccessful: (() -> Unit)
+    ) {
         message.isDownloadingVoiceMessage = true
+        message.openWhenDownloaded = openWhenDownloaded
         adapter?.update(message)
 
         val baseUrl = message.activeUser!!.baseUrl
@@ -2004,12 +1994,7 @@ class ChatActivity :
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.id)
             .observeForever { workInfo: WorkInfo ->
                 if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-                    setUpWaveform(message)
-                    // startPlayback(message)
-                    setUpshare(message)
-                }
-                else {
-                    Log.e(TAG, "Error")
+                    funToCallWhenDownloadSuccessful()
                 }
             }
     }
@@ -4019,6 +4004,7 @@ class ChatActivity :
         intent.putExtras(bundle)
         startActivity(intent)
     }
+
     fun share(message: ChatMessage) {
         val filename = message.selectedIndividualHashMap!!["name"]
         path = applicationContext.cacheDir.absolutePath + "/" + filename
@@ -4036,15 +4022,18 @@ class ChatActivity :
         }
         startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
     }
-    fun checkifsharable(message: ChatMessage) {
+
+    fun checkIfSharable(message: ChatMessage) {
         val filename = message.selectedIndividualHashMap!!["name"]
         path = applicationContext.cacheDir.absolutePath + "/" + filename
         val file = File(context.cacheDir, filename!!)
-            if (file.exists()) {
+        if (file.exists()) {
+            share(message)
+        } else {
+            downloadFileToCache(message, false) {
                 share(message)
-            }else{
-                downloadFileToCache(message)
             }
+        }
     }
 
     fun openInFilesApp(message: ChatMessage) {
