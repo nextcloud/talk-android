@@ -456,6 +456,7 @@
     <string name="scope_toggle_description">變更 %1$s 的隱私層級</string>
     <string name="scroll_to_bottom">捲動至底部</string>
     <string name="secondsAgo">秒前</string>
+    <string name="see_similar_system_messages">檢視 %1$s 則類似的訊息</string>
     <string name="selected_list_item">已選擇</string>
     <string name="send_to">傳送至</string>
     <string name="send_to_forbidden">您不被允許在此聊天中分享內容</string>
