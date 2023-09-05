@@ -93,7 +93,7 @@ abstract class SharedItemsViewHolder(
             item.id,
             item.mimeType,
             true,
-            FileViewerUtils.ProgressUi(progressBar, null, image),
+            FileViewerUtils.ProgressUi(progressBar, null, image)
         )
     }
 

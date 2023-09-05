@@ -1069,6 +1069,7 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    @Suppress("Detekt.NestedBlockDepth")
     private fun sendIsSpeakingMessage(isSpeaking: Boolean) {
         val isSpeakingMessage: String =
             if (isSpeaking) SIGNALING_MESSAGE_SPEAKING_STARTED else SIGNALING_MESSAGE_SPEAKING_STOPPED
@@ -1234,10 +1235,10 @@ class CallActivity : CallBaseActivity() {
     private fun toggleMedia(enable: Boolean, video: Boolean) {
         var message: String
         if (video) {
-            message = "videoOff"
+            message = SIGNALING_MESSAGE_VIDEO_OFF
             if (enable) {
                 binding!!.cameraButton.alpha = OPACITY_ENABLED
-                message = "videoOn"
+                message = SIGNALING_MESSAGE_VIDEO_ON
                 startVideoCapture()
             } else {
                 binding!!.cameraButton.alpha = OPACITY_DISABLED
@@ -1258,9 +1259,9 @@ class CallActivity : CallBaseActivity() {
                 binding!!.selfVideoRenderer.visibility = View.INVISIBLE
             }
         } else {
-            message = "audioOff"
+            message = SIGNALING_MESSAGE_AUDIO_OFF
             if (enable) {
-                message = "audioOn"
+                message = SIGNALING_MESSAGE_AUDIO_ON
                 binding!!.microphoneButton.alpha = OPACITY_ENABLED
             } else {
                 binding!!.microphoneButton.alpha = OPACITY_DISABLED
@@ -3050,7 +3051,7 @@ class CallActivity : CallBaseActivity() {
                 val newX = event.rawX - binding!!.selfVideoViewWrapper.width / 2f
                 binding!!.selfVideoViewWrapper.y = newY
                 binding!!.selfVideoViewWrapper.x = newX
-            } else if (event.actionMasked == MotionEvent.ACTION_UP && duration < 100) {
+            } else if (event.actionMasked == MotionEvent.ACTION_UP && duration < SWITCH_CAMERA_THRESHOLD_DURATION) {
                 switchCamera()
             }
             return true
@@ -3084,11 +3085,17 @@ class CallActivity : CallBaseActivity() {
         const val CALL_DURATION_EMPTY = "--:--"
         const val API_RETRIES: Long = 3
 
+        const val SWITCH_CAMERA_THRESHOLD_DURATION = 100
+
         private const val SAMPLE_RATE = 8000
         private const val MICROPHONE_VALUE_THRESHOLD = 20
         private const val MICROPHONE_VALUE_SLEEP: Long = 1000
 
         private const val SIGNALING_MESSAGE_SPEAKING_STARTED = "speaking"
         private const val SIGNALING_MESSAGE_SPEAKING_STOPPED = "stoppedSpeaking"
+        private const val SIGNALING_MESSAGE_VIDEO_ON = "videoOn"
+        private const val SIGNALING_MESSAGE_VIDEO_OFF = "videoOff"
+        private const val SIGNALING_MESSAGE_AUDIO_ON = "audioOn"
+        private const val SIGNALING_MESSAGE_AUDIO_OFF = "audioOff"
     }
 }
