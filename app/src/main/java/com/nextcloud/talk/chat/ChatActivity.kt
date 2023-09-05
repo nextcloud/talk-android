@@ -191,7 +191,7 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.AudioUtils
+import com.nextcloud.talk.utils.AudioUtils.audioFileToFloatArray
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -201,6 +201,7 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.MagicCharPolicy
+import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.VibrationUtils
@@ -316,6 +317,7 @@ class ChatActivity :
     var voiceOnly: Boolean = true
     var isFirstMessagesProcessing = true
     private var emojiPopup: EmojiPopup? = null
+    private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
     var checkingLobbyStatus: Boolean = false
@@ -887,7 +889,9 @@ class ChatActivity :
                 }
             } else {
                 Log.d(TAG, "Downloaded to cache")
-                downloadFileToCache(message)
+                downloadFileToCache(message, true) {
+                    setUpWaveform(message)
+                }
             }
         }
     }
@@ -899,7 +903,7 @@ class ChatActivity :
             message.isDownloadingVoiceMessage = true
             adapter?.update(message)
             CoroutineScope(Dispatchers.Default).launch {
-                val r = AudioUtils.audioFileToFloatArray(file)
+                val r = audioFileToFloatArray(file)
                 message.voiceMessageFloatArray = r
                 withContext(Dispatchers.Main) {
                     startPlayback(message)
@@ -1933,8 +1937,13 @@ class ChatActivity :
     }
 
     @SuppressLint("LongLogTag")
-    private fun downloadFileToCache(message: ChatMessage) {
+    private fun downloadFileToCache(
+        message: ChatMessage,
+        openWhenDownloaded: Boolean,
+        funToCallWhenDownloadSuccessful: (() -> Unit)
+    ) {
         message.isDownloadingVoiceMessage = true
+        message.openWhenDownloaded = openWhenDownloaded
         adapter?.update(message)
 
         val baseUrl = message.activeUser!!.baseUrl
@@ -1985,8 +1994,7 @@ class ChatActivity :
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.id)
             .observeForever { workInfo: WorkInfo ->
                 if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-                    setUpWaveform(message)
-                    // startPlayback(message)
+                    funToCallWhenDownloadSuccessful()
                 }
             }
     }
@@ -3995,6 +4003,37 @@ class ChatActivity :
         val intent = Intent(this, TranslateActivity::class.java)
         intent.putExtras(bundle)
         startActivity(intent)
+    }
+
+    fun share(message: ChatMessage) {
+        val filename = message.selectedIndividualHashMap!!["name"]
+        path = applicationContext.cacheDir.absolutePath + "/" + filename
+        val shareUri = FileProvider.getUriForFile(
+            this,
+            BuildConfig.APPLICATION_ID,
+            File(path)
+        )
+
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, shareUri)
+            type = Mimetype.IMAGE_PREFIX_GENERIC
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
+    }
+
+    fun checkIfSharable(message: ChatMessage) {
+        val filename = message.selectedIndividualHashMap!!["name"]
+        path = applicationContext.cacheDir.absolutePath + "/" + filename
+        val file = File(context.cacheDir, filename!!)
+        if (file.exists()) {
+            share(message)
+        } else {
+            downloadFileToCache(message, false) {
+                share(message)
+            }
+        }
     }
 
     fun openInFilesApp(message: ChatMessage) {

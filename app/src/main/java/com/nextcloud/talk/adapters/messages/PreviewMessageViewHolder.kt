@@ -138,6 +138,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                 message.selectedIndividualHashMap!![KEY_NAME]!!,
                 message.selectedIndividualHashMap!![KEY_ID]!!,
                 message.selectedIndividualHashMap!![KEY_MIMETYPE],
+                message.openWhenDownloaded,
                 ProgressUi(progressBar, messageText, image)
             )
         } else if (message.getCalculateMessageType() === ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {

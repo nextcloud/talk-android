@@ -114,6 +114,7 @@ class MessageActionsDialog(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType()
         )
+        initMenuShare(ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType())
         initMenuItemOpenNcApp(
             ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType()
         )
@@ -329,6 +330,15 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuTranslateMessage.visibility = getVisibility(visible)
+    }
+    private fun initMenuShare(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuShare.setOnClickListener {
+                chatActivity.checkIfSharable(message)
+                dismiss()
+            }
+        }
+        dialogMessageActionsBinding.menuShare.visibility = getVisibility(visible)
     }
 
     private fun initMenuItemOpenNcApp(visible: Boolean) {
