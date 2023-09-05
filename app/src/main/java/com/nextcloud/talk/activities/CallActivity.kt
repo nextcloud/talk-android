@@ -39,7 +39,10 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Icon
 import android.media.AudioAttributes
+import android.media.AudioFormat
+import android.media.AudioRecord
 import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -181,6 +184,7 @@ import java.util.Objects
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -363,6 +367,15 @@ class CallActivity : CallBaseActivity() {
     private var reactionAnimator: ReactionAnimator? = null
     private var othersInCall = false
 
+    private lateinit var micInputAudioRecorder: AudioRecord
+    private var micInputAudioRecordThread: Thread? = null
+    private var isMicInputAudioThreadRunning: Boolean = false
+    private val bufferSize = AudioRecord.getMinBufferSize(
+        SAMPLE_RATE,
+        AudioFormat.CHANNEL_IN_MONO,
+        AudioFormat.ENCODING_PCM_16BIT
+    )
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -523,6 +536,19 @@ class CallActivity : CallBaseActivity() {
     override fun onStop() {
         super.onStop()
         active = false
+
+        if (isMicInputAudioThreadRunning) {
+            stopMicInputDetection()
+        }
+    }
+
+    private fun stopMicInputDetection() {
+        if (micInputAudioRecordThread != null) {
+            micInputAudioRecorder.stop()
+            micInputAudioRecorder.release()
+            isMicInputAudioThreadRunning = false
+            micInputAudioRecordThread = null
+        }
     }
 
     private fun enableBluetoothManager() {
@@ -999,11 +1025,68 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun microphoneInitialization() {
+        startMicInputDetection()
+
         // create an AudioSource instance
         audioSource = peerConnectionFactory!!.createAudioSource(audioConstraints)
         localAudioTrack = peerConnectionFactory!!.createAudioTrack("NCa0", audioSource)
         localAudioTrack!!.setEnabled(false)
         localStream!!.addTrack(localAudioTrack)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun startMicInputDetection() {
+        if (permissionUtil!!.isMicrophonePermissionGranted() && micInputAudioRecordThread == null) {
+            var isSpeakingLongTerm = false
+            micInputAudioRecorder = AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                SAMPLE_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize
+            )
+            isMicInputAudioThreadRunning = true
+            micInputAudioRecorder.startRecording()
+            micInputAudioRecordThread = Thread(
+                Runnable {
+                    while (isMicInputAudioThreadRunning) {
+                        val byteArr = ByteArray(bufferSize / 2)
+                        micInputAudioRecorder.read(byteArr, 0, byteArr.size)
+                        val isCurrentlySpeaking = abs(byteArr[0].toDouble()) > MICROPHONE_VALUE_THRESHOLD
+
+                        if (isCurrentlySpeaking && !isSpeakingLongTerm) {
+                            isSpeakingLongTerm = true
+                            sendIsSpeakingMessage(true)
+                        } else if (!isCurrentlySpeaking && isSpeakingLongTerm) {
+                            isSpeakingLongTerm = false
+                            sendIsSpeakingMessage(false)
+                        }
+                        Thread.sleep(MICROPHONE_VALUE_SLEEP)
+                    }
+                }
+            )
+            micInputAudioRecordThread!!.start()
+        }
+    }
+
+    private fun sendIsSpeakingMessage(isSpeaking: Boolean) {
+        val isSpeakingMessage: String =
+            if (isSpeaking) SIGNALING_MESSAGE_SPEAKING_STARTED else SIGNALING_MESSAGE_SPEAKING_STOPPED
+
+        if (isConnectionEstablished && othersInCall) {
+            if (!hasMCU) {
+                for (peerConnectionWrapper in peerConnectionWrapperList) {
+                    peerConnectionWrapper.sendChannelData(DataChannelMessage(isSpeakingMessage))
+                }
+            } else {
+                for (peerConnectionWrapper in peerConnectionWrapperList) {
+                    if (peerConnectionWrapper.sessionId == webSocketClient!!.sessionId) {
+                        peerConnectionWrapper.sendChannelData(DataChannelMessage(isSpeakingMessage))
+                        break
+                    }
+                }
+            }
+        }
     }
 
     private fun createCameraCapturer(enumerator: CameraEnumerator?): VideoCapturer? {
@@ -3000,5 +3083,12 @@ class CallActivity : CallBaseActivity() {
         const val CALL_TIME_ONE_HOUR = 3600
         const val CALL_DURATION_EMPTY = "--:--"
         const val API_RETRIES: Long = 3
+
+        private const val SAMPLE_RATE = 8000
+        private const val MICROPHONE_VALUE_THRESHOLD = 20
+        private const val MICROPHONE_VALUE_SLEEP: Long = 1000
+
+        private const val SIGNALING_MESSAGE_SPEAKING_STARTED = "speaking"
+        private const val SIGNALING_MESSAGE_SPEAKING_STOPPED = "stoppedSpeaking"
     }
 }
