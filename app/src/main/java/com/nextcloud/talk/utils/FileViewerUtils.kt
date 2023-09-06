@@ -358,9 +358,11 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                 if (progressUi.previewImage.isShown && openWhenDownloaded) {
                     openFileByMimetype(fileName, mimetype)
                 } else {
-                    Log.d(TAG, "file " + fileName +
-                        " was downloaded but it's not opened because view is not shown on screen or " +
-                        "openWhenDownloaded is false"
+                    Log.d(
+                        TAG,
+                        "file " + fileName +
+                            " was downloaded but it's not opened because view is not shown on screen or " +
+                            "openWhenDownloaded is false"
                     )
                 }
                 progressUi.messageText?.text = fileName
