@@ -456,6 +456,7 @@
     <string name="scope_toggle_description">Změnit úroveň soukromí pro %1$s</string>
     <string name="scroll_to_bottom">Odrolovat na konec</string>
     <string name="secondsAgo">sekund před</string>
+    <string name="see_similar_system_messages">Viz %1$s podobných zpráv</string>
     <string name="selected_list_item">Vybráno</string>
     <string name="send_to">Odeslat k</string>
     <string name="send_to_forbidden">Nemáte oprávnění sdílet obsah do tohoto chatu</string>
