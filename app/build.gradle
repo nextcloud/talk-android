@@ -244,7 +244,6 @@ dependencies {
     implementation 'com.github.wooplr:Spotlight:1.3'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.github.nextcloud-deps:ChatKit:0.4.2'
-
     implementation 'joda-time:joda-time:2.12.5'
     implementation "io.coil-kt:coil:${coilKtVersion}"
     implementation "io.coil-kt:coil-gif:${coilKtVersion}"
@@ -287,6 +286,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.5.0'
+    androidTestImplementation 'org.mockito:mockito-android:2.24.5'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
 
     androidTestImplementation "androidx.test:core:1.5.0"
