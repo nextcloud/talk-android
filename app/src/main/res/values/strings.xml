@@ -706,6 +706,9 @@ How to translate with transifex:
     <string name="custom">Custom</string>
     <string name="set">Set</string>
     <string name="calendar">Calendar</string>
+    <string name="video_call">Video Call</string>
+    <string name="audio_call">Audio Call</string>
+    <string name="started_a_call">started a call</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Error 429 Too Many Requests</string>
 
 </resources>
