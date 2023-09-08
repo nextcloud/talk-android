@@ -456,6 +456,7 @@
     <string name="scope_toggle_description">%1$s gizlilik düzeyini değiştir</string>
     <string name="scroll_to_bottom">Aşağıya kaydır</string>
     <string name="secondsAgo">saniye önce</string>
+    <string name="see_similar_system_messages">Benzer %1$s iletiye bakın</string>
     <string name="selected_list_item">Seçilmiş</string>
     <string name="send_to">Şuraya gönder</string>
     <string name="send_to_forbidden">Bu sohbette içerik paylaşma izniniz yok</string>
