@@ -54,4 +54,3 @@ class UserIdUtilsTest {
         Assert.assertEquals("The id is correct user id is not null", expectedId, result)
     }
 }
-
