@@ -1,8 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Marcel Hibbe
- * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
+ * @author Mario Danic
+ * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,21 +18,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.nextcloud.talk.utils
-
 import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.junit.MockitoJUnitRunner
 
-object VibrationUtils {
-    const val SHORT_VIBRATE: Long = 100
+@RunWith(MockitoJUnitRunner::class)
+class VibrationUtilsTest {
 
-    fun vibrateShort(context: Context) {
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    @Mock
+    private lateinit var mockContext: Context
+
+    @Mock
+    private lateinit var mockVibrator: Vibrator
+
+    @Before
+    fun setup() {
+        Mockito.`when`(mockContext.getSystemService(Context.VIBRATOR_SERVICE)).thenReturn(mockVibrator)
+    }
+
+    @Test
+    fun testVibrateShort() {
+        VibrationUtils.vibrateShort(mockContext)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
+            Mockito.verify(mockVibrator).vibrate(VibrationEffect.createOneShot(VibrationUtils.SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
-            vibrator.vibrate(SHORT_VIBRATE)
+            Mockito.verify(mockVibrator).vibrate(VibrationUtils.SHORT_VIBRATE)
         }
     }
 }
