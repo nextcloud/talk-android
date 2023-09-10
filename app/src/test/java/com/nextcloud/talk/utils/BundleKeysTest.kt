@@ -22,8 +22,6 @@ package com.nextcloud.talk.utils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
-
-
 class BundleKeysTest {
 
     @Test
@@ -58,6 +56,9 @@ class BundleKeysTest {
         assertEquals("KEY_INVITED_CIRCLE", BundleKeys.KEY_INVITED_CIRCLE)
         assertEquals("KEY_INVITED_GROUP", BundleKeys.KEY_INVITED_GROUP)
         assertEquals("KEY_INVITED_EMAIL", BundleKeys.KEY_INVITED_EMAIL)
+    }
+    @Test
+    fun testBundleKeysValues2(){
         assertEquals("KEY_CONVERSATION_NAME", BundleKeys.KEY_CONVERSATION_NAME)
         assertEquals("KEY_RECORDING_STATE", BundleKeys.KEY_RECORDING_STATE)
         assertEquals("KEY_CALL_VOICE_ONLY", BundleKeys.KEY_CALL_VOICE_ONLY)
@@ -79,8 +80,10 @@ class BundleKeysTest {
         assertEquals("KEY_SYSTEM_NOTIFICATION_ID", BundleKeys.KEY_SYSTEM_NOTIFICATION_ID)
         assertEquals("KEY_MESSAGE_ID", BundleKeys.KEY_MESSAGE_ID)
         assertEquals("KEY_MIME_TYPE_FILTER", BundleKeys.KEY_MIME_TYPE_FILTER)
-        assertEquals("KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO", BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO)
-        assertEquals("KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO", BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO)
+        assertEquals("KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO",
+            BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO)
+        assertEquals("KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO",
+            BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO)
         assertEquals("KEY_IS_MODERATOR", BundleKeys.KEY_IS_MODERATOR)
         assertEquals("KEY_SWITCH_TO_ROOM", BundleKeys.KEY_SWITCH_TO_ROOM)
         assertEquals("KEY_START_CALL_AFTER_ROOM_SWITCH", BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH)

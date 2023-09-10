@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.nextcloud.talk.utils
+
 import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
@@ -48,7 +49,14 @@ class VibrationUtilsTest {
         VibrationUtils.vibrateShort(mockContext)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Mockito.verify(mockVibrator).vibrate(VibrationEffect.createOneShot(VibrationUtils.SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
+            Mockito.verify(mockVibrator)
+                .vibrate(
+                    VibrationEffect
+                        .createOneShot(
+                            VibrationUtils.SHORT_VIBRATE,
+                            VibrationEffect.DEFAULT_AMPLITUDE
+                        )
+                )
         } else {
             Mockito.verify(mockVibrator).vibrate(VibrationUtils.SHORT_VIBRATE)
         }

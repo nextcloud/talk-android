@@ -19,11 +19,12 @@
  */
 package com.nextcloud.talk.webrtc
 
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.*
-
-import org.junit.Assert.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 class DataChannelMessageNotifierTest {
 
