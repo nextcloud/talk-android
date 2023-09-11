@@ -10,6 +10,7 @@
     <string name="avatar">아바타</string>
     <string name="away">자리비움</string>
     <string name="calendar">일정</string>
+    <string name="call_running_since_one_hour">통화가 한 시간동안 진행되었습니다.</string>
     <string name="call_without_notification">알림 없이 전화하기</string>
     <string name="camera_permission_granted">카메라 권한이 부여되었습니다 . 카메라를 다시 선택해주세요.</string>
     <string name="choose_avatar_from_cloud">클라우드에서 아바타 선택</string>
