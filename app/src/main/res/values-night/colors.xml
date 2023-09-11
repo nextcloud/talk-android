@@ -44,7 +44,6 @@
 
     <color name="bg_default">#121212</color>
     <color name="bg_default_semitransparent">#99121212</color>
-    <color name="bg_inverse">@color/grey950</color>
 
     <color name="fg_default">#FFFFFF</color>
     <color name="fg_inverse">#121212</color>

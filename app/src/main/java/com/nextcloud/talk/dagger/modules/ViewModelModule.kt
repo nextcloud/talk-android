@@ -25,6 +25,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.callnotification.viewmodel.CallNotificationViewModel
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.conversation.viewmodel.ConversationViewModel
+import com.nextcloud.talk.conversation.viewmodel.RenameConversationViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
 import com.nextcloud.talk.messagesearch.MessageSearchViewModel
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
@@ -132,4 +134,14 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ConversationInfoEditViewModel::class)
     abstract fun conversationInfoEditViewModel(viewModel: ConversationInfoEditViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RenameConversationViewModel::class)
+    abstract fun renameConversationViewModel(viewModel: RenameConversationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ConversationViewModel::class)
+    abstract fun conversationViewModel(viewModel: ConversationViewModel): ViewModel
 }

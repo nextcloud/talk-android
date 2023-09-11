@@ -26,36 +26,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import com.bluelinelabs.conductor.Conductor
-import com.bluelinelabs.conductor.Router
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_ADD_FAVORITE
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MARK_AS_READ
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MARK_AS_UNREAD
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_RENAME_ROOM
-import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
-import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController
+import com.nextcloud.talk.conversation.RenameConversationDialogFragment
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPERATION_CODE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -64,8 +59,6 @@ class ConversationsListBottomDialog(
     val currentUser: User,
     val conversation: Conversation
 ) : BottomSheetDialog(activity) {
-
-    private var dialogRouter: Router? = null
 
     private lateinit var binding: DialogConversationOperationsBinding
 
@@ -77,6 +70,8 @@ class ConversationsListBottomDialog(
 
     @Inject
     lateinit var userManager: UserManager
+
+    lateinit var credentials: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +85,15 @@ class ConversationsListBottomDialog(
         initHeaderDescription()
         initItemsVisibility()
         initClickListeners()
+
+        credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
+        val behavior = BottomSheetBehavior.from(bottomSheet as View)
+        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private fun initHeaderDescription() {
@@ -104,18 +108,18 @@ class ConversationsListBottomDialog(
         val hasFavoritesCapability = CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "favorites")
         val canModerate = conversation.canModerate(currentUser)
 
-        binding.conversationOperationRemoveFavorite.visibility = setVisibleIf(
+        binding.conversationRemoveFromFavorites.visibility = setVisibleIf(
             hasFavoritesCapability && conversation.favorite
         )
-        binding.conversationOperationAddFavorite.visibility = setVisibleIf(
+        binding.conversationAddToFavorites.visibility = setVisibleIf(
             hasFavoritesCapability && !conversation.favorite
         )
 
-        binding.conversationOperationMarkAsRead.visibility = setVisibleIf(
+        binding.conversationMarkAsRead.visibility = setVisibleIf(
             conversation.unreadMessages > 0 && CapabilitiesUtilNew.canSetChatReadMarker(currentUser)
         )
 
-        binding.conversationOperationMarkAsUnread.visibility = setVisibleIf(
+        binding.conversationMarkAsUnread.visibility = setVisibleIf(
             conversation.unreadMessages <= 0 && CapabilitiesUtilNew.canMarkRoomAsUnread(currentUser)
         )
 
@@ -144,98 +148,258 @@ class ConversationsListBottomDialog(
     }
 
     private fun initClickListeners() {
-        binding.conversationOperationAddFavorite.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_ADD_FAVORITE)
+        binding.conversationAddToFavorites.setOnClickListener {
+            addConversationToFavorites()
         }
 
-        binding.conversationOperationRemoveFavorite.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_REMOVE_FAVORITE)
+        binding.conversationRemoveFromFavorites.setOnClickListener {
+            removeConversationFromFavorites()
         }
 
-        binding.conversationOperationLeave.setOnClickListener {
-            val dataBuilder = Data.Builder()
-            dataBuilder.putString(KEY_ROOM_TOKEN, conversation.token)
-            dataBuilder.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
-            val data = dataBuilder.build()
-
-            val leaveConversationWorker =
-                OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java).setInputData(
-                    data
-                ).build()
-            WorkManager.getInstance().enqueue(leaveConversationWorker)
-
-            dismiss()
+        binding.conversationMarkAsRead.setOnClickListener {
+            markConversationAsRead()
         }
 
-        binding.conversationOperationDelete.setOnClickListener {
-            if (!TextUtils.isEmpty(conversation.token)) {
-                val bundle = Bundle()
-                bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
-                bundle.putString(KEY_ROOM_TOKEN, conversation.token)
-                activity.showDeleteConversationDialog(bundle)
-            }
-
-            dismiss()
+        binding.conversationMarkAsUnread.setOnClickListener {
+            markConversationAsUnread()
         }
 
         binding.conversationOperationRename.setOnClickListener {
-            executeEntryMenuController(OPS_CODE_RENAME_ROOM)
+            renameConversation()
         }
 
-        binding.conversationOperationMarkAsRead.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_MARK_AS_READ)
+        binding.conversationOperationLeave.setOnClickListener {
+            leaveConversation()
         }
 
-        binding.conversationOperationMarkAsUnread.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_MARK_AS_UNREAD)
+        binding.conversationOperationDelete.setOnClickListener {
+            deleteConversation()
         }
     }
 
-    private fun executeOperationsMenuController(operation: ConversationOperationEnum) {
-        val bundle = Bundle()
-        bundle.putSerializable(KEY_OPERATION_CODE, operation)
-        bundle.putString(KEY_ROOM_TOKEN, conversation.token)
-
-        binding.operationItemsLayout.visibility = View.GONE
-
-        dialogRouter = Conductor.attachRouter(activity, binding.root, null)
-
-        dialogRouter!!.pushController(
-            RouterTransaction.with(OperationsMenuController(bundle))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
+    private fun addConversationToFavorites() {
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+        ncApi.addConversationToFavorites(
+            credentials,
+            ApiUtils.getUrlForRoomFavorite(
+                apiVersion,
+                currentUser.baseUrl,
+                conversation.token
+            )
         )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
 
-        activity.fetchRooms()
+                override fun onNext(genericOverall: GenericOverall) {
+                    activity.fetchRooms()
+                    activity.showSnackbar(
+                        String.format(
+                            context.resources.getString(R.string.added_to_favorites),
+                            conversation.displayName
+                        )
+                    )
+                    dismiss()
+                }
+
+                override fun onError(e: Throwable) {
+                    activity.showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
+                    dismiss()
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
     }
 
-    private fun executeEntryMenuController(operation: ConversationOperationEnum) {
-        val bundle = Bundle()
-        bundle.putSerializable(KEY_OPERATION_CODE, operation)
-        bundle.putString(KEY_ROOM_TOKEN, conversation.token)
-
-        binding.operationItemsLayout.visibility = View.GONE
-
-        dialogRouter = Conductor.attachRouter(activity, binding.root, null)
-
-        dialogRouter!!.pushController(
-
-            // TODO refresh conversation list after EntryMenuController finished (throw event? / pass controller
-            //  into EntryMenuController to execute fetch data... ?!)
-            // for example if you set a password, the dialog items should be refreshed for the next time you open it
-            // without to manually have to refresh the conversations list
-            // also see BottomSheetLockEvent ??
-
-            RouterTransaction.with(EntryMenuController(bundle))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
+    private fun removeConversationFromFavorites() {
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+        ncApi.removeConversationFromFavorites(
+            credentials,
+            ApiUtils.getUrlForRoomFavorite(
+                apiVersion,
+                currentUser.baseUrl,
+                conversation.token
+            )
         )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    activity.fetchRooms()
+                    activity.showSnackbar(
+                        String.format(
+                            context.resources.getString(R.string.removed_from_favorites),
+                            conversation.displayName
+                        )
+                    )
+                    dismiss()
+                }
+
+                override fun onError(e: Throwable) {
+                    activity.showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
+                    dismiss()
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
     }
 
-    override fun onStart() {
-        super.onStart()
-        val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
-        val behavior = BottomSheetBehavior.from(bottomSheet as View)
-        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    private fun markConversationAsUnread() {
+        ncApi.markRoomAsUnread(
+            credentials,
+            ApiUtils.getUrlForChatReadMarker(
+                chatApiVersion(),
+                currentUser.baseUrl,
+                conversation.token
+            )
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    activity.fetchRooms()
+                    activity.showSnackbar(
+                        String.format(
+                            context.resources.getString(R.string.marked_as_unread),
+                            conversation.displayName
+                        )
+                    )
+                    dismiss()
+                }
+
+                override fun onError(e: Throwable) {
+                    activity.showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
+                    dismiss()
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
+    }
+
+    private fun markConversationAsRead() {
+        ncApi.setChatReadMarker(
+            credentials,
+            ApiUtils.getUrlForChatReadMarker(
+                chatApiVersion(),
+                currentUser.baseUrl,
+                conversation.token
+            ),
+            conversation.lastMessage!!.jsonMessageId
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    activity.fetchRooms()
+                    activity.showSnackbar(
+                        String.format(
+                            context.resources.getString(R.string.marked_as_read),
+                            conversation.displayName
+                        )
+                    )
+                    dismiss()
+                }
+
+                override fun onError(e: Throwable) {
+                    activity.showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
+                    dismiss()
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
+    }
+
+    private fun renameConversation() {
+        if (!TextUtils.isEmpty(conversation.token)) {
+            dismiss()
+            val conversationDialog = RenameConversationDialogFragment.newInstance(
+                conversation.token!!,
+                conversation.displayName!!
+            )
+            conversationDialog.show(
+                activity.supportFragmentManager,
+                TAG
+            )
+        }
+    }
+    private fun leaveConversation() {
+        val dataBuilder = Data.Builder()
+        dataBuilder.putString(KEY_ROOM_TOKEN, conversation.token)
+        dataBuilder.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
+        val data = dataBuilder.build()
+
+        val leaveConversationWorker =
+            OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java).setInputData(
+                data
+            ).build()
+        WorkManager.getInstance().enqueue(leaveConversationWorker)
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(leaveConversationWorker.id)
+            .observeForever { workInfo: WorkInfo? ->
+                if (workInfo != null) {
+                    when (workInfo.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            activity.showSnackbar(
+                                String.format(
+                                    context.resources.getString(R.string.left_conversation),
+                                    conversation.displayName
+                                )
+                            )
+                        }
+
+                        WorkInfo.State.FAILED -> {
+                            activity.showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
+                        }
+
+                        else -> {
+                        }
+                    }
+                }
+            }
+
+        dismiss()
+    }
+
+    private fun deleteConversation() {
+        if (!TextUtils.isEmpty(conversation.token)) {
+            activity.showDeleteConversationDialog(conversation)
+        }
+
+        dismiss()
+    }
+
+    private fun chatApiVersion(): Int {
+        return ApiUtils.getChatApiVersion(currentUser, intArrayOf(ApiUtils.APIv1))
+    }
+
+    companion object {
+        val TAG = ConversationsListBottomDialog::class.simpleName
     }
 }

@@ -58,6 +58,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.imageLoader
@@ -86,7 +87,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationsRvBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.events.EventStatus
-import com.nextcloud.talk.interfaces.ConversationMenuInterface
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
@@ -143,8 +143,7 @@ import javax.inject.Inject
 class ConversationsListActivity :
     BaseActivity(),
     FlexibleAdapter.OnItemClickListener,
-    FlexibleAdapter.OnItemLongClickListener,
-    ConversationMenuInterface {
+    FlexibleAdapter.OnItemLongClickListener {
 
     private lateinit var binding: ControllerConversationsRvBinding
 
@@ -181,7 +180,6 @@ class ConversationsListActivity :
     private var credentials: String? = null
     private var adapterWasNull = true
     private var isRefreshing = false
-    private var conversationMenuBundle: Bundle? = null
     private var showShareToScreen = false
     private var filesToShare: ArrayList<String>? = null
     private var selectedConversation: Conversation? = null
@@ -600,6 +598,9 @@ class ConversationsListActivity :
         searchItem!!.expandActionView()
     }
 
+    fun showSnackbar(text: String) {
+        Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG).show()
+    }
     fun fetchRooms() {
         val includeStatus = isUserStatusAvailable(userManager.currentUser.blockingGet())
 
@@ -999,7 +1000,7 @@ class ConversationsListActivity :
 
     @SuppressLint("CheckResult") // handled by helper
     private fun loadMoreMessages() {
-        binding?.swipeRefreshLayoutView?.isRefreshing = true
+        binding.swipeRefreshLayoutView.isRefreshing = true
         val observable = searchHelper!!.loadMore()
         observable?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe({ results: MessageSearchResults -> onMessageSearchResult(results) }) { throwable: Throwable ->
@@ -1302,50 +1303,33 @@ class ConversationsListActivity :
         }, BOTTOM_SHEET_DELAY)
     }
 
-    override fun showDeleteConversationDialog(bundle: Bundle) {
-        conversationMenuBundle = bundle
-        if (conversationMenuBundle != null &&
-            isInternalUserEqualsCurrentUser(currentUser, conversationMenuBundle)
-        ) {
-            binding?.floatingActionButton?.let {
-                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                    .setIcon(
-                        viewThemeUtils.dialog
-                            .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
-                    )
-                    .setTitle(R.string.nc_delete_call)
-                    .setMessage(R.string.nc_delete_conversation_more)
-                    .setPositiveButton(R.string.nc_delete) { _, _ ->
-                        val data = Data.Builder()
-                        data.putLong(
-                            KEY_INTERNAL_USER_ID,
-                            conversationMenuBundle!!.getLong(KEY_INTERNAL_USER_ID)
-                        )
-                        data.putString(KEY_ROOM_TOKEN, bundle.getString(KEY_ROOM_TOKEN))
-                        conversationMenuBundle = null
-                        deleteConversation(data.build())
-                    }
-                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                        conversationMenuBundle = null
-                    }
-
-                viewThemeUtils.dialog
-                    .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-                val dialog = dialogBuilder.show()
-                viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+    fun showDeleteConversationDialog(conversation: Conversation) {
+        binding.floatingActionButton.let {
+            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
+                .setIcon(
+                    viewThemeUtils.dialog
+                        .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
                 )
-            }
+                .setTitle(R.string.nc_delete_call)
+                .setMessage(R.string.nc_delete_conversation_more)
+                .setPositiveButton(R.string.nc_delete) { _, _ ->
+                    deleteConversation(conversation)
+                }
+                .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                }
+
+            viewThemeUtils.dialog
+                .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         }
     }
 
-    private fun isInternalUserEqualsCurrentUser(currentUser: User?, conversationMenuBundle: Bundle?): Boolean {
-        return currentUser != null && conversationMenuBundle!!.getLong(KEY_INTERNAL_USER_ID) == currentUser.id
-    }
-
     private fun showUnauthorizedDialog() {
-        binding?.floatingActionButton?.let {
+        binding.floatingActionButton.let {
             val dialogBuilder = MaterialAlertDialogBuilder(it.context)
                 .setIcon(
                     viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
@@ -1517,10 +1501,40 @@ class ConversationsListActivity :
         Runtime.getRuntime().exit(0)
     }
 
-    private fun deleteConversation(data: Data) {
+    private fun deleteConversation(conversation: Conversation) {
+        val data = Data.Builder()
+        data.putLong(
+            KEY_INTERNAL_USER_ID,
+            currentUser?.id!!
+        )
+        data.putString(KEY_ROOM_TOKEN, conversation.token)
+
         val deleteConversationWorker =
-            OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(data).build()
+            OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(data.build()).build()
         WorkManager.getInstance().enqueue(deleteConversationWorker)
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(deleteConversationWorker.id)
+            .observeForever { workInfo: WorkInfo? ->
+                if (workInfo != null) {
+                    when (workInfo.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            showSnackbar(
+                                String.format(
+                                    context.resources.getString(R.string.deleted_conversation),
+                                    conversation.displayName
+                                )
+                            )
+                        }
+
+                        WorkInfo.State.FAILED -> {
+                            showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
+                        }
+
+                        else -> {
+                        }
+                    }
+                }
+            }
     }
 
     private fun onMessageSearchResult(results: MessageSearchResults) {

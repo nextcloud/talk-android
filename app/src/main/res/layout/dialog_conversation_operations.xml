@@ -47,7 +47,7 @@
             tools:text="conversation name" />
 
         <LinearLayout
-            android:id="@+id/conversation_operation_remove_favorite"
+            android:id="@+id/conversation_remove_from_favorites"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_sheet_item_height"
             android:background="?android:attr/selectableItemBackground"
@@ -77,7 +77,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/conversation_operation_add_favorite"
+            android:id="@+id/conversation_add_to_favorites"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_sheet_item_height"
             android:background="?android:attr/selectableItemBackground"
@@ -107,7 +107,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/conversation_operation_mark_as_read"
+            android:id="@+id/conversation_mark_as_read"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_sheet_item_height"
             android:background="?android:attr/selectableItemBackground"
@@ -137,7 +137,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/conversation_operation_mark_as_unread"
+            android:id="@+id/conversation_mark_as_unread"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_sheet_item_height"
             android:background="?android:attr/selectableItemBackground"
