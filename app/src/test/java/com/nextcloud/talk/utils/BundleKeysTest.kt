@@ -58,7 +58,7 @@ class BundleKeysTest {
         assertEquals("KEY_INVITED_EMAIL", BundleKeys.KEY_INVITED_EMAIL)
     }
     @Test
-    fun testBundleKeysValues2(){
+    fun testBundleKeysValues2() {
         assertEquals("KEY_CONVERSATION_NAME", BundleKeys.KEY_CONVERSATION_NAME)
         assertEquals("KEY_RECORDING_STATE", BundleKeys.KEY_RECORDING_STATE)
         assertEquals("KEY_CALL_VOICE_ONLY", BundleKeys.KEY_CALL_VOICE_ONLY)
