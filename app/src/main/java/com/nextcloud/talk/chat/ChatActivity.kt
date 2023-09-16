@@ -4216,8 +4216,6 @@ class ChatActivity :
             isOlderThanSixHours -> false
             message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
             message.isDeleted -> false
-            message.hasFileAttachment() -> false
-            OBJECT_MESSAGE == message.message -> false
             !CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
             !participantPermissions.hasChatPermission() -> false
             else -> true
