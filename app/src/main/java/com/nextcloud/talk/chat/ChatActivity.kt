@@ -2136,19 +2136,15 @@ class ChatActivity :
     }
 
     private fun stopAndSendAudioRecording() {
-        if (isVoiceRecordingInProgress) {
-            stopAudioRecording()
-            Log.d(TAG, "stopped and sent audio recording")
-            val uri = Uri.fromFile(File(currentVoiceRecordFile))
-            uploadFile(uri.toString(), true)
-        }
+        stopAudioRecording()
+        Log.d(TAG, "stopped and sent audio recording")
+        val uri = Uri.fromFile(File(currentVoiceRecordFile))
+        uploadFile(uri.toString(), true)
     }
 
     private fun stopAndDiscardAudioRecording() {
-        if (isVoiceRecordingInProgress) {
-            stopAudioRecording()
-            Log.d(TAG, "stopped and discarded audio recording")
-        }
+        stopAudioRecording()
+        Log.d(TAG, "stopped and discarded audio recording")
 
         val cachedFile = File(currentVoiceRecordFile)
         cachedFile.delete()
