@@ -57,6 +57,7 @@ class BundleKeysTest {
         assertEquals("KEY_INVITED_GROUP", BundleKeys.KEY_INVITED_GROUP)
         assertEquals("KEY_INVITED_EMAIL", BundleKeys.KEY_INVITED_EMAIL)
     }
+
     @Test
     fun testBundleKeysValues2() {
         assertEquals("KEY_CONVERSATION_NAME", BundleKeys.KEY_CONVERSATION_NAME)
@@ -80,10 +81,14 @@ class BundleKeysTest {
         assertEquals("KEY_SYSTEM_NOTIFICATION_ID", BundleKeys.KEY_SYSTEM_NOTIFICATION_ID)
         assertEquals("KEY_MESSAGE_ID", BundleKeys.KEY_MESSAGE_ID)
         assertEquals("KEY_MIME_TYPE_FILTER", BundleKeys.KEY_MIME_TYPE_FILTER)
-        assertEquals("KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO",
-            BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO)
-        assertEquals("KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO",
-            BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO)
+        assertEquals(
+            "KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO",
+            BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO
+        )
+        assertEquals(
+            "KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO",
+            BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO
+        )
         assertEquals("KEY_IS_MODERATOR", BundleKeys.KEY_IS_MODERATOR)
         assertEquals("KEY_SWITCH_TO_ROOM", BundleKeys.KEY_SWITCH_TO_ROOM)
         assertEquals("KEY_START_CALL_AFTER_ROOM_SWITCH", BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH)

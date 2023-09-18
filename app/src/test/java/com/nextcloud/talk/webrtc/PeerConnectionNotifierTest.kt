@@ -31,6 +31,7 @@ class PeerConnectionNotifierTest {
     private var observer1: PeerConnectionObserver? = null
     private var observer2: PeerConnectionObserver? = null
     private var mockStream: MediaStream? = null
+
     @Before
     fun setUp() {
         notifier = PeerConnectionNotifier()

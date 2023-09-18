@@ -26,7 +26,6 @@ class UriUtilsTest {
 
     @Test
     fun testHasHttpProtocolPrefixed() {
-
         val uriHttp = "http://www.example.com"
         val resultHttp = UriUtils.hasHttpProtocollPrefixed(uriHttp)
         Assert.assertTrue(resultHttp)
