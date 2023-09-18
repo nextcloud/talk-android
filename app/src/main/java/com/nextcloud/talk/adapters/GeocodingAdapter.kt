@@ -24,35 +24,47 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
 import fr.dudie.nominatim.model.Address
 
-class GeocodingAdapter(context: Context, val dataSource: List<Address>) : BaseAdapter() {
+class GeocodingAdapter(private val context: Context, private val dataSource: List<Address>) :
+    RecyclerView.Adapter<GeocodingAdapter.ViewHolder>() {
 
-    private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
 
-    override fun getCount(): Int {
+    private var listener: OnItemClickListener? = null
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.geocoding_item, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val address = dataSource[position]
+        holder.nameView.text = address.displayName
+
+        holder.itemView.setOnClickListener {
+            listener?.onItemClick(position)
+        }
+    }
+
+    override fun getItemCount(): Int {
         return dataSource.size
     }
 
-    override fun getItem(position: Int): Any {
+    fun getItem(position: Int): Any {
         return dataSource[position]
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val rowView = inflater.inflate(R.layout.geocoding_item, parent, false)
-
-        val nameView = rowView.findViewById(R.id.name) as TextView
-
-        val address = getItem(position) as Address
-        nameView.text = address.displayName
-
-        return rowView
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val nameView: TextView = itemView.findViewById(R.id.name)
     }
 }

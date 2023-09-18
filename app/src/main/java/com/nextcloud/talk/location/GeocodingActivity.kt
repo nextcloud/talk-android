@@ -31,10 +31,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
-import android.widget.AdapterView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
@@ -77,6 +78,7 @@ class GeocodingActivity :
 
     lateinit var adapter: GeocodingAdapter
     private var geocodingResults: List<Address> = ArrayList()
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +93,10 @@ class GeocodingActivity :
 
         roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         query = intent.getStringExtra(BundleKeys.KEY_GEOCODING_QUERY)
+        recyclerView = findViewById(R.id.geocoding_results)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = GeocodingAdapter(this, geocodingResults)
+        recyclerView.adapter = adapter
     }
 
     override fun onStart() {
@@ -108,16 +114,17 @@ class GeocodingActivity :
             Log.e(TAG, "search string that was passed to GeocodingController was null or empty")
         }
 
-        binding.geocodingResults.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            val address: Address = adapter.getItem(position) as Address
-            val geocodingResult = GeocodingResult(address.latitude, address.longitude, address.displayName)
-
-            val intent = Intent(this, LocationPickerActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-            intent.putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
-            startActivity(intent)
-        }
+        adapter.setOnItemClickListener(object : GeocodingAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                val address: Address = adapter.getItem(position) as Address
+                val geocodingResult = GeocodingResult(address.latitude, address.longitude, address.displayName)
+                val intent = Intent(this@GeocodingActivity, LocationPickerActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+                intent.putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
+                startActivity(intent)
+            }
+        })
     }
 
     private fun setupActionBar() {
