@@ -186,7 +186,7 @@
     <string name="nc_guest_access_share_link">Compartir enlace de la conversación</string>
     <string name="nc_hint_enter_a_message">Escribe un mensaje…</string>
     <string name="nc_important_conversation">Conversación importante</string>
-    <string name="nc_important_conversation_desc">Las notificaciones de esta conversación no tendrán en cuenta el ajuste de No Molestar</string>
+    <string name="nc_important_conversation_desc">Las notificaciones de esta conversación anularán el ajuste de No Molestar</string>
     <string name="nc_join_via_link">Unirse con un enlace</string>
     <string name="nc_join_via_web">Unirse vía web</string>
     <string name="nc_last_moderator">Necesitas establecer a un nuevo moderador antes de salir %1$s</string>
