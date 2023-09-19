@@ -31,7 +31,8 @@ import java.util.Set;
  */
 public class DataChannelMessageNotifier {
 
-    private final Set<PeerConnectionWrapper.DataChannelMessageListener> dataChannelMessageListeners = new LinkedHashSet<>();
+    public final Set<PeerConnectionWrapper.DataChannelMessageListener> dataChannelMessageListeners =
+        new LinkedHashSet<>();
 
     public synchronized void addListener(PeerConnectionWrapper.DataChannelMessageListener listener) {
         if (listener == null) {

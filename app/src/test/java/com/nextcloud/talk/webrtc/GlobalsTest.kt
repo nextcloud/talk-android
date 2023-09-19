@@ -1,8 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Marcel Hibbe
- * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
+ * @author Samanwith KSN
+ * Copyright (C) 2023 Samanwith KSN <samanwith21@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,22 +17,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.utils
+package com.nextcloud.talk.webrtc
 
-import android.content.Context
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
+import org.junit.Assert
+import org.junit.Test
 
-object VibrationUtils {
-    const val SHORT_VIBRATE: Long = 100
+class GlobalsTest {
+    @Test
+    fun testRoomToken() {
+        Assert.assertEquals("roomToken", Globals.ROOM_TOKEN)
+    }
 
-    fun vibrateShort(context: Context) {
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrator.vibrate(SHORT_VIBRATE)
-        }
+    @Test
+    fun testTargetParticipants() {
+        Assert.assertEquals("participants", Globals.TARGET_PARTICIPANTS)
+    }
+
+    @Test
+    fun testTargetRoom() {
+        Assert.assertEquals("room", Globals.TARGET_ROOM)
     }
 }

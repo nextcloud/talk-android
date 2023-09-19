@@ -1,8 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Marcel Hibbe
- * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
+ * @author Samanwith KSN
+ * Copyright (C) 2023 Samanwith KSN <samanwith21@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,20 +19,23 @@
  */
 package com.nextcloud.talk.utils
 
-import android.content.Context
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
+import org.junit.Assert
+import org.junit.Test
 
-object VibrationUtils {
-    const val SHORT_VIBRATE: Long = 100
+class UriUtilsTest {
 
-    fun vibrateShort(context: Context) {
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrator.vibrate(SHORT_VIBRATE)
-        }
+    @Test
+    fun testHasHttpProtocolPrefixed() {
+        val uriHttp = "http://www.example.com"
+        val resultHttp = UriUtils.hasHttpProtocollPrefixed(uriHttp)
+        Assert.assertTrue(resultHttp)
+
+        val uriHttps = "https://www.example.com"
+        val resultHttps = UriUtils.hasHttpProtocollPrefixed(uriHttps)
+        Assert.assertTrue(resultHttps)
+
+        val uriWithoutPrefix = "www.example.com"
+        val resultWithoutPrefix = UriUtils.hasHttpProtocollPrefixed(uriWithoutPrefix)
+        Assert.assertFalse(resultWithoutPrefix)
     }
 }
