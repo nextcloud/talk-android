@@ -221,7 +221,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
         binding.webview.webViewClient = object : WebViewClient() {
             @Deprecated("Use shouldOverrideUrlLoading(WebView view, WebResourceRequest request)")
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                return if (url != null && UriUtils.hasHttpProtocollPrefixed(url)
+                return if (url != null && UriUtils.hasHttpProtocolPrefixed(url)
                 ) {
                     view?.context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                     true

@@ -204,6 +204,7 @@ import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.VibrationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
@@ -2660,58 +2661,23 @@ class ChatActivity :
         )
     }
 
-    fun isInstanceFileUrl(user: User, url: String): Boolean {
-        return url.startsWith(user.baseUrl!!) &&
-            (isInstanceInternalFileShareUrl(user.baseUrl!!, url) || isInstanceInternalFileUrl(user.baseUrl!!, url))
-    }
-
-    fun isInstanceInternalFileShareUrl(baseUrl: String, url: String): Boolean {
-        // https://cloud.nextcloud.com/f/41
-        return url.startsWith("$baseUrl/f/") || url.startsWith("$baseUrl/index.php/f/")
-    }
-
-    fun extractInstanceInternalFileShareFileId(url: String): String {
-        // https://cloud.nextcloud.com/f/41
-        return "41"
-    }
-
-    fun isInstanceInternalFileUrl(baseUrl: String, url: String): Boolean {
-        //https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
-        return url.startsWith("$baseUrl/apps/files/") || url.startsWith("$baseUrl/index.php/apps/files/")
-    }
-
-    fun extractInstanceInternalFileFileId(url: String): String {
-        // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
-        return "41"
-    }
-
-    fun isInstanceInternalFileUrlNew(baseUrl: String, url: String): Boolean {
-        //https://cloud.nextcloud.com/apps/files/files/41?dir=/
-        return url.startsWith("$baseUrl/apps/files/files/") || url.startsWith("$baseUrl/index.php/apps/files/files/")
-    }
-
-    fun extractInstanceInternalFileFileIdNew(url: String): String {
-        // https://cloud.nextcloud.com/apps/files/files/41?dir=/
-        return "41"
-    }
-
     override fun startActivity(intent: Intent) {
         val user = currentUserProvider.currentUser.blockingGet()
         if (intent.data != null && TextUtils.equals(intent.action, Intent.ACTION_VIEW)) {
             val uri = intent.data.toString()
             if (uri.startsWith(user.baseUrl!!)) {
-                if (isInstanceInternalFileShareUrl(user.baseUrl!!, uri)) {
+                if (UriUtils.isInstanceInternalFileShareUrl(user.baseUrl!!, uri)) {
                     // https://cloud.nextcloud.com/f/41
                     val fileViewerUtils = FileViewerUtils(this, user)
-                    fileViewerUtils.openFileInFilesApp(uri, extractInstanceInternalFileShareFileId(uri))
-                } else if (isInstanceInternalFileUrl(user.baseUrl!!, uri)) {
+                    fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileShareFileId(uri))
+                } else if (UriUtils.isInstanceInternalFileUrl(user.baseUrl!!, uri)) {
                     // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
                     val fileViewerUtils = FileViewerUtils(this, user)
-                    fileViewerUtils.openFileInFilesApp(uri, extractInstanceInternalFileFileId(uri))
-                } else if (isInstanceInternalFileUrlNew(user.baseUrl!!, uri)) {
+                    fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileId(uri))
+                } else if (UriUtils.isInstanceInternalFileUrlNew(user.baseUrl!!, uri)) {
                     // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
                     val fileViewerUtils = FileViewerUtils(this, user)
-                    fileViewerUtils.openFileInFilesApp(uri, extractInstanceInternalFileFileIdNew(uri))
+                    fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileIdNew(uri))
                 } else {
                     super.startActivity(intent)
                 }

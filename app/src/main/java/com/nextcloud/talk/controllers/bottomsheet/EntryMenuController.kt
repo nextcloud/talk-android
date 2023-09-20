@@ -272,7 +272,7 @@ class EntryMenuController(args: Bundle) :
                         }
                         binding?.textInputLayout?.isErrorEnabled = false
                     } else if (
-                        UriUtils.hasHttpProtocollPrefixed(binding?.textEdit?.text.toString()) &&
+                        UriUtils.hasHttpProtocolPrefixed(binding?.textEdit?.text.toString()) &&
                         binding?.textEdit?.text.toString().contains("/call/")
                     ) {
                         if (!binding?.okButton?.isEnabled!!) {

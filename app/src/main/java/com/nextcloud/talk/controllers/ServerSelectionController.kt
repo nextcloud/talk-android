@@ -216,7 +216,7 @@ class ServerSelectionController :
             url = url.substring(0, url.length - 1)
         }
 
-        if (UriUtils.hasHttpProtocollPrefixed(url)) {
+        if (UriUtils.hasHttpProtocolPrefixed(url)) {
             checkServer(url, false)
         } else {
             checkServer("https://$url", true)
