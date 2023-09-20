@@ -48,13 +48,18 @@ class UriUtils {
 
         fun isInstanceInternalFileUrl(baseUrl: String, url: String): Boolean {
             // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
-            return (url.startsWith("$baseUrl/apps/files/") || url.startsWith("$baseUrl/index.php/apps/files/")) &&
-                Uri.parse(url).queryParameterNames.contains("fileid") && Regex(""".*fileid=\d*""").matches(url)
+            return (
+                url.startsWith("$baseUrl/apps/files/") ||
+                    url.startsWith("$baseUrl/index.php/apps/files/")
+                ) &&
+                Uri.parse(url).queryParameterNames.contains("fileid") &&
+                Regex(""".*fileid=\d*""").matches(url)
         }
 
         fun isInstanceInternalFileUrlNew(baseUrl: String, url: String): Boolean {
             // https://cloud.nextcloud.com/apps/files/files/41?dir=/
-            return url.startsWith("$baseUrl/apps/files/files/") || url.startsWith("$baseUrl/index.php/apps/files/files/")
+            return url.startsWith("$baseUrl/apps/files/files/") ||
+                url.startsWith("$baseUrl/index.php/apps/files/files/")
         }
 
         fun extractInstanceInternalFileFileIdNew(url: String): String {

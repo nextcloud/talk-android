@@ -152,4 +152,4 @@ class UriUtilsIT {
             UriUtils.extractInstanceInternalFileFileIdNew("https://cloud.nextcloud.com/apps/files/files/42?dir=/")
         )
     }
-} 
+}
