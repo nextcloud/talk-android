@@ -161,6 +161,9 @@ class ConversationsListActivity :
 
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
+    
+    @Inject
+    lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
     override val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.SEARCH_BAR
@@ -277,8 +280,18 @@ class ConversationsListActivity :
         showSearchOrToolbar()
     }
     fun filterConversation() {
-        filterState[FilterConversationFragment.UNREAD] = appPreferences.isUnreadFilterEnabled
-        filterState[FilterConversationFragment.MENTION] = appPreferences.isMentionFilterEnabled
+        val accountId = UserIdUtils.getIdForUser(userManager.currentUser.blockingGet())
+        filterState[FilterConversationFragment.UNREAD] = (arbitraryStorageManager.getStorageSetting(
+            accountId, 
+            FilterConversationFragment.UNREAD,
+            ""
+        ).blockingGet()?.value ?: "") == "true"
+
+        filterState[FilterConversationFragment.MENTION] = (arbitraryStorageManager.getStorageSetting(
+            accountId,
+            FilterConversationFragment.MENTION,
+            ""
+        ).blockingGet()?.value ?: "") == "true"
         
         val newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
         if (filterState[FilterConversationFragment.UNREAD] == false && 

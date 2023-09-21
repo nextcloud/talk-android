@@ -28,19 +28,14 @@ import androidx.fragment.app.DialogFragment
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.databinding.DialogFilterConversationBinding
-import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.UserIdUtils.getIdForUser
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import eu.davidea.flexibleadapter.FlexibleAdapter
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -60,7 +55,7 @@ class FilterConversationFragment(
     lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
-    lateinit var appPreferences: AppPreferences
+    lateinit var arbitraryStorageManager: ArbitraryStorageManager
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogFilterConversationBinding.inflate(LayoutInflater.from(context))
         dialogView = binding.root
@@ -123,8 +118,15 @@ class FilterConversationFragment(
 
     private fun processSubmit() {
         // store
-        appPreferences.setMentionFilter(filterState[MENTION] == true)
-        appPreferences.setUnreadFilter(filterState[UNREAD] == true)
+        val accountId = UserIdUtils.getIdForUser(userManager.currentUser.blockingGet())
+        val mentionValue = filterState[MENTION] == true
+        val unreadValue = filterState[UNREAD] == true
+        
+        arbitraryStorageManager.storeStorageSetting(accountId, MENTION, mentionValue.toString(), "")
+        arbitraryStorageManager.storeStorageSetting(accountId, UNREAD, unreadValue.toString(), "")
+        
+        val m = arbitraryStorageManager.getStorageSetting(accountId, MENTION, "")
+        val u = arbitraryStorageManager.getStorageSetting(accountId, UNREAD, "")
 
         conversationsList.filterConversation()
     }
@@ -136,7 +138,7 @@ class FilterConversationFragment(
             conversationsListActivity: ConversationsListActivity
         ) = FilterConversationFragment(savedFilterState, conversationsListActivity)
         val TAG: String = FilterConversationFragment::class.java.simpleName
-        const val MENTION: String = "mention"
+        const val MENTION: String = "TestmentionTest"
         const val UNREAD: String = "unread"
     }
 }
