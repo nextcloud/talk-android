@@ -21,6 +21,7 @@ package com.nextcloud.talk.ui.dialog
 
 import android.app.Dialog
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +33,7 @@ import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -229,9 +231,10 @@ class DateTimePickerFragment(
     }
 
     private fun setUpTimePicker(year: Int, month: Int, day: Int, weekInYear: Int) {
-        val timePicker = MaterialTimePicker
-            .Builder()
+        val locale = if (DateFormat.is24HourFormat(requireContext())) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
+        val timePicker = MaterialTimePicker.Builder()
             .setTitleText(R.string.nc_remind)
+            .setTimeFormat(locale)
             .build()
 
         timePicker.addOnPositiveButtonClickListener {
