@@ -79,8 +79,10 @@ import com.nextcloud.talk.adapters.items.MessageResultItem
 import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
+import com.nextcloud.talk.data.storage.model.ArbitraryStorage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationsRvBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
@@ -106,6 +108,7 @@ import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_FLAG
@@ -120,6 +123,7 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
+import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -271,6 +275,50 @@ class ConversationsListActivity :
         }
 
         showSearchOrToolbar()
+    }
+    fun filterConversation() {
+        filterState[FilterConversationFragment.UNREAD] = appPreferences.isUnreadFilterEnabled
+        filterState[FilterConversationFragment.MENTION] = appPreferences.isMentionFilterEnabled
+        
+        val newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+        if (filterState[FilterConversationFragment.UNREAD] == false && 
+            filterState[FilterConversationFragment.MENTION] == false) {
+            adapter!!.updateDataSet(conversationItems, true)
+        } else {
+            val items = conversationItems
+            for (i in items) {
+                val conversation = (i as ConversationItem).model
+                if (filter(conversation)) {
+                    newItems.add(i)
+                }
+            }
+            adapter!!.updateDataSet(newItems, true)
+            setFilterableItems(newItems)
+        }
+
+        updateFilterConversationButtonColor()
+    }
+
+    private fun filter(conversation: Conversation): Boolean {
+        var result = true
+        for ((k, v) in filterState) {
+            if (v) {
+                when (k) {
+                    FilterConversationFragment.MENTION -> result = (result && conversation.unreadMention) ||
+                        (
+                            result &&
+                                (
+                                    conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
+                                        conversation.type == Conversation.ConversationType.FORMER_ONE_TO_ONE
+                                    ) &&
+                                (conversation.unreadMessages > 0)
+                            )
+                    FilterConversationFragment.UNREAD -> result = result && (conversation.unreadMessages > 0)
+                }
+            }
+        }
+
+        return result
     }
 
     private fun setupActionBar() {
@@ -578,6 +626,7 @@ class ConversationsListActivity :
                 sortConversations(conversationItems)
                 sortConversations(conversationItemsWithHeader)
                 if (!filterState.containsValue(true)) filterableConversationItems = conversationItems
+                filterConversation()
                 adapter!!.updateDataSet(filterableConversationItems, false)
                 Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
                 fetchOpenConversations(apiVersion)
@@ -788,8 +837,6 @@ class ConversationsListActivity :
 
         binding.filterConversationsButton.setOnClickListener {
             val newFragment: DialogFragment = FilterConversationFragment.newInstance(
-                adapter!!,
-                conversationItems,
                 filterState,
                 this
             )

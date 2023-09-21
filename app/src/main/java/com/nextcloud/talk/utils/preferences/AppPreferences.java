@@ -344,6 +344,20 @@ public interface AppPreferences {
     @KeyByResource(R.string.nc_file_browser_sort_by_key)
     @DefaultValue(R.string.nc_file_browser_sort_by_default)
     String getSorting();
+    
+    @KeyByResource(R.string.nc_filter_unread)
+    @DefaultValue(R.bool.value_false)
+    boolean isUnreadFilterEnabled();
+
+    @KeyByResource(R.string.nc_filter_unread)
+    void setUnreadFilter(boolean value);
+
+    @KeyByResource(R.string.nc_filter_mention)
+    @DefaultValue(R.bool.value_false)
+    boolean isMentionFilterEnabled();
+    
+    @KeyByResource(R.string.nc_filter_mention)
+    void setMentionFilter(boolean value);
 
     @KeyByResource(R.string.nc_file_browser_sort_by_key)
     @RegisterChangeListenerMethod
