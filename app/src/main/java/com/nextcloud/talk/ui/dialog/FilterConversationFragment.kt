@@ -35,7 +35,6 @@ import com.nextcloud.talk.databinding.DialogFilterConversationBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -121,10 +120,10 @@ class FilterConversationFragment(
         val accountId = UserIdUtils.getIdForUser(userManager.currentUser.blockingGet())
         val mentionValue = filterState[MENTION] == true
         val unreadValue = filterState[UNREAD] == true
-        
+
         arbitraryStorageManager.storeStorageSetting(accountId, MENTION, mentionValue.toString(), "")
         arbitraryStorageManager.storeStorageSetting(accountId, UNREAD, unreadValue.toString(), "")
-        
+
         conversationsList.filterConversation()
     }
 

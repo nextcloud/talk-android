@@ -82,7 +82,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
-import com.nextcloud.talk.data.storage.model.ArbitraryStorage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerConversationsRvBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
@@ -123,7 +122,6 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -161,7 +159,7 @@ class ConversationsListActivity :
 
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
-    
+
     @Inject
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
@@ -281,21 +279,26 @@ class ConversationsListActivity :
     }
     fun filterConversation() {
         val accountId = UserIdUtils.getIdForUser(userManager.currentUser.blockingGet())
-        filterState[FilterConversationFragment.UNREAD] = (arbitraryStorageManager.getStorageSetting(
-            accountId, 
-            FilterConversationFragment.UNREAD,
-            ""
-        ).blockingGet()?.value ?: "") == "true"
+        filterState[FilterConversationFragment.UNREAD] = (
+            arbitraryStorageManager.getStorageSetting(
+                accountId,
+                FilterConversationFragment.UNREAD,
+                ""
+            ).blockingGet()?.value ?: ""
+            ) == "true"
 
-        filterState[FilterConversationFragment.MENTION] = (arbitraryStorageManager.getStorageSetting(
-            accountId,
-            FilterConversationFragment.MENTION,
-            ""
-        ).blockingGet()?.value ?: "") == "true"
-        
+        filterState[FilterConversationFragment.MENTION] = (
+            arbitraryStorageManager.getStorageSetting(
+                accountId,
+                FilterConversationFragment.MENTION,
+                ""
+            ).blockingGet()?.value ?: ""
+            ) == "true"
+
         val newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-        if (filterState[FilterConversationFragment.UNREAD] == false && 
-            filterState[FilterConversationFragment.MENTION] == false) {
+        if (filterState[FilterConversationFragment.UNREAD] == false &&
+            filterState[FilterConversationFragment.MENTION] == false
+        ) {
             adapter!!.updateDataSet(conversationItems, true)
         } else {
             val items = conversationItems

@@ -22,7 +22,6 @@ package com.nextcloud.talk.arbitrarystorage
 
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.model.ArbitraryStorage
-import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 import io.reactivex.Maybe
 
 class ArbitraryStorageManager(private val arbitraryStoragesRepository: ArbitraryStoragesRepository) {
@@ -36,9 +35,5 @@ class ArbitraryStorageManager(private val arbitraryStoragesRepository: Arbitrary
 
     fun deleteAllEntriesForAccountIdentifier(accountIdentifier: Long): Int {
         return arbitraryStoragesRepository.deleteArbitraryStorage(accountIdentifier)
-    }
-    
-    fun getAll() : Maybe<List<ArbitraryStorageEntity>> {
-        return arbitraryStoragesRepository.getAll()
     }
 }
