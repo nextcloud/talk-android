@@ -229,6 +229,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_push_disabled">Push meldingen uitgeschakeld</string>
     <string name="nc_push_to_talk">Druk-om-te-praten</string>
     <string name="nc_push_to_talk_desc">Met uitgeschakelde microfoon, klik&amp;indrukken om Druk-om-te-praten te gebruiken</string>
+    <string name="nc_remind">Herinner me later</string>
     <string name="nc_remote_audio_off">Externe audio uit</string>
     <string name="nc_remove_circle_and_members">Verwijderen kring en leden</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
