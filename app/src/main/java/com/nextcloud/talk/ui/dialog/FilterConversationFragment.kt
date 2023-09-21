@@ -28,28 +28,22 @@ import androidx.fragment.app.DialogFragment
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.databinding.DialogFilterConversationBinding
-import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
-import eu.davidea.flexibleadapter.FlexibleAdapter
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
+import com.nextcloud.talk.utils.UserIdUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class FilterConversationFragment(
-    adapter: FlexibleAdapter<AbstractFlexibleItem<*>>,
-    currentConversations: MutableList<AbstractFlexibleItem<*>>,
     savedFilterState: MutableMap<String, Boolean>,
     conversationsListActivity: ConversationsListActivity
 ) : DialogFragment() {
     lateinit var binding: DialogFilterConversationBinding
     private var dialogView: View? = null
-    private var currentAdapter: FlexibleAdapter<AbstractFlexibleItem<*>> = adapter
-    private var currentItems = currentConversations
     private var filterState = savedFilterState
     private var conversationsList = conversationsListActivity
 
@@ -58,6 +52,9 @@ class FilterConversationFragment(
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var arbitraryStorageManager: ArbitraryStorageManager
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogFilterConversationBinding.inflate(LayoutInflater.from(context))
         dialogView = binding.root
@@ -119,57 +116,23 @@ class FilterConversationFragment(
     }
 
     private fun processSubmit() {
-        val newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-        if (!filterState.containsValue(true)) {
-            currentAdapter.updateDataSet(currentItems, true)
-        } else {
-            val items = currentItems
-            for (i in items) {
-                val conversation = (i as ConversationItem).model
-                if (filter(conversation)) {
-                    newItems.add(i)
-                }
-            }
-            currentAdapter.updateDataSet(newItems, true)
-            conversationsList.setFilterableItems(newItems)
-        }
-        conversationsList.updateFilterState(
-            filterState[MENTION]!!,
-            filterState[UNREAD]!!
-        )
+        // store
+        val accountId = UserIdUtils.getIdForUser(userManager.currentUser.blockingGet())
+        val mentionValue = filterState[MENTION] == true
+        val unreadValue = filterState[UNREAD] == true
 
-        conversationsList.updateFilterConversationButtonColor()
-    }
-    private fun filter(conversation: Conversation): Boolean {
-        var result = true
-        for ((k, v) in filterState) {
-            if (v) {
-                when (k) {
-                    MENTION -> result = (result && conversation.unreadMention) ||
-                        (
-                            result &&
-                                (
-                                    conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
-                                        conversation.type == Conversation.ConversationType.FORMER_ONE_TO_ONE
-                                    ) &&
-                                (conversation.unreadMessages > 0)
-                            )
-                    UNREAD -> result = result && (conversation.unreadMessages > 0)
-                }
-            }
-        }
+        arbitraryStorageManager.storeStorageSetting(accountId, MENTION, mentionValue.toString(), "")
+        arbitraryStorageManager.storeStorageSetting(accountId, UNREAD, unreadValue.toString(), "")
 
-        return result
+        conversationsList.filterConversation()
     }
 
     companion object {
         @JvmStatic
         fun newInstance(
-            adapter: FlexibleAdapter<AbstractFlexibleItem<*>>,
-            currentConversations: MutableList<AbstractFlexibleItem<*>>,
             savedFilterState: MutableMap<String, Boolean>,
             conversationsListActivity: ConversationsListActivity
-        ) = FilterConversationFragment(adapter, currentConversations, savedFilterState, conversationsListActivity)
+        ) = FilterConversationFragment(savedFilterState, conversationsListActivity)
         val TAG: String = FilterConversationFragment::class.java.simpleName
         const val MENTION: String = "mention"
         const val UNREAD: String = "unread"

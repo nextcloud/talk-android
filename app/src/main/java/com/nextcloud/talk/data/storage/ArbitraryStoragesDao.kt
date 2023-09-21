@@ -41,6 +41,11 @@ abstract class ArbitraryStoragesDao {
         objectString: String
     ): Maybe<ArbitraryStorageEntity>
 
+    @Query(
+        "SELECT * FROM ArbitraryStorage"
+    )
+    abstract fun getAll(): Maybe<List<ArbitraryStorageEntity>>
+
     @Query("DELETE FROM ArbitraryStorage WHERE accountIdentifier = :accountIdentifier")
     abstract fun deleteArbitraryStorage(accountIdentifier: Long): Int
 
