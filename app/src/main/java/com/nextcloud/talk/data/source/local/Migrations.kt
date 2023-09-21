@@ -40,6 +40,13 @@ object Migrations {
         }
     }
 
+    val MIGRATION_8_9 = object : Migration(8, 9) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 8 to 9")
+            migrateToDualPrimaryKeyArbitraryStorage(database)
+        }
+    }
+
     fun migrateToRoom(database: SupportSQLiteDatabase) {
         database.execSQL(
             "CREATE TABLE User_new (" +
@@ -91,5 +98,30 @@ object Migrations {
         // Change the table name to the correct one
         database.execSQL("ALTER TABLE User_new RENAME TO User")
         database.execSQL("ALTER TABLE ArbitraryStorage_new RENAME TO ArbitraryStorage")
+    }
+
+    fun migrateToDualPrimaryKeyArbitraryStorage(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "CREATE TABLE ArbitraryStorage_dualPK (" +
+                "accountIdentifier INTEGER NOT NULL, " +
+                "\"key\" TEXT  NOT NULL, " +
+                "object TEXT, " +
+                "value TEXT, " +
+                "PRIMARY KEY(accountIdentifier, \"key\")" +
+                ")"
+        )
+        // Copy the data
+        database.execSQL(
+            "INSERT INTO ArbitraryStorage_dualPK (" +
+                "accountIdentifier, \"key\", object, value) " +
+                "SELECT " +
+                "accountIdentifier, \"key\", object, value " +
+                "FROM ArbitraryStorage"
+        )
+        // Remove the old table
+        database.execSQL("DROP TABLE ArbitraryStorage")
+
+        // Change the table name to the correct one
+        database.execSQL("ALTER TABLE ArbitraryStorage_dualPK RENAME TO ArbitraryStorage")
     }
 }

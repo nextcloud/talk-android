@@ -97,7 +97,7 @@ abstract class TalkDatabase : RoomDatabase() {
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 // comment out openHelperFactory to view the database entries in Android Studio for debugging
                 .openHelperFactory(factory)
-                .addMigrations(Migrations.MIGRATION_6_8, Migrations.MIGRATION_7_8)
+                .addMigrations(Migrations.MIGRATION_6_8, Migrations.MIGRATION_7_8, Migrations.MIGRATION_8_9)
                 .allowMainThreadQueries()
                 .addCallback(
                     object : RoomDatabase.Callback() {
