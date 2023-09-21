@@ -21,6 +21,7 @@
 package com.nextcloud.talk.data.storage
 
 import com.nextcloud.talk.data.storage.model.ArbitraryStorage
+import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 import io.reactivex.Maybe
 
 class ArbitraryStoragesRepositoryImpl(private val arbitraryStoragesDao: ArbitraryStoragesDao) :
@@ -33,6 +34,10 @@ class ArbitraryStoragesRepositoryImpl(private val arbitraryStoragesDao: Arbitrar
         return arbitraryStoragesDao
             .getStorageSetting(accountIdentifier, key, objectString)
             .map { ArbitraryStorageMapper.toModel(it) }
+    }
+
+    override fun getAll(): Maybe<List<ArbitraryStorageEntity>> {
+        return arbitraryStoragesDao.getAll()
     }
 
     override fun deleteArbitraryStorage(accountIdentifier: Long): Int {

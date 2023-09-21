@@ -125,9 +125,6 @@ class FilterConversationFragment(
         arbitraryStorageManager.storeStorageSetting(accountId, MENTION, mentionValue.toString(), "")
         arbitraryStorageManager.storeStorageSetting(accountId, UNREAD, unreadValue.toString(), "")
         
-        val m = arbitraryStorageManager.getStorageSetting(accountId, MENTION, "")
-        val u = arbitraryStorageManager.getStorageSetting(accountId, UNREAD, "")
-
         conversationsList.filterConversation()
     }
 

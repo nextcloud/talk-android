@@ -22,6 +22,7 @@ package com.nextcloud.talk.data.source.local
 
 import android.content.Context
 import android.util.Log
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -45,7 +46,7 @@ import java.util.Locale
 
 @Database(
     entities = [UserEntity::class, ArbitraryStorageEntity::class],
-    version = 8,
+    version = 9,
     exportSchema = true
 )
 @TypeConverters(
