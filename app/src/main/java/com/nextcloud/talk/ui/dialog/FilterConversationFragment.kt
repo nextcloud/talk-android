@@ -134,7 +134,7 @@ class FilterConversationFragment(
             conversationsListActivity: ConversationsListActivity
         ) = FilterConversationFragment(savedFilterState, conversationsListActivity)
         val TAG: String = FilterConversationFragment::class.java.simpleName
-        const val MENTION: String = "TestmentionTest"
+        const val MENTION: String = "mention"
         const val UNREAD: String = "unread"
     }
 }
