@@ -37,6 +37,7 @@ import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.snackbar.Snackbar
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -44,7 +45,6 @@ import com.nextcloud.talk.databinding.ItemCustomOutcomingLocationMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.UriUtils
@@ -164,7 +164,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
         binding.webview.webViewClient = object : WebViewClient() {
             @Deprecated("Use shouldOverrideUrlLoading(WebView view, WebResourceRequest request)")
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                return if (url != null && UriUtils.hasHttpProtocollPrefixed(url)
+                return if (url != null && UriUtils.hasHttpProtocolPrefixed(url)
                 ) {
                     view?.context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                     true

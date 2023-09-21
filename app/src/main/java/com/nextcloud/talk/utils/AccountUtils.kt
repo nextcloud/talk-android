@@ -69,7 +69,7 @@ object AccountUtils {
     private fun matchAccounts(importAccount: ImportAccount, user: User): Boolean {
         var accountFound = false
         if (importAccount.token != null) {
-            if (UriUtils.hasHttpProtocollPrefixed(importAccount.baseUrl)) {
+            if (UriUtils.hasHttpProtocolPrefixed(importAccount.baseUrl)) {
                 if (
                     user.username == importAccount.username &&
                     user.baseUrl == importAccount.baseUrl

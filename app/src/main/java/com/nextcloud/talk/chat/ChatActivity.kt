@@ -204,6 +204,7 @@ import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.VibrationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
@@ -2658,6 +2659,34 @@ class ChatActivity :
             ),
             REQUEST_CODE_CHOOSE_FILE
         )
+    }
+
+    override fun startActivity(intent: Intent) {
+        val user = currentUserProvider.currentUser.blockingGet()
+        if (intent.data != null && TextUtils.equals(intent.action, Intent.ACTION_VIEW)) {
+            val uri = intent.data.toString()
+            if (uri.startsWith(user.baseUrl!!)) {
+                if (UriUtils.isInstanceInternalFileShareUrl(user.baseUrl!!, uri)) {
+                    // https://cloud.nextcloud.com/f/41
+                    val fileViewerUtils = FileViewerUtils(this, user)
+                    fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileShareFileId(uri))
+                } else if (UriUtils.isInstanceInternalFileUrl(user.baseUrl!!, uri)) {
+                    // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
+                    val fileViewerUtils = FileViewerUtils(this, user)
+                    fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileId(uri))
+                } else if (UriUtils.isInstanceInternalFileUrlNew(user.baseUrl!!, uri)) {
+                    // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
+                    val fileViewerUtils = FileViewerUtils(this, user)
+                    fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileIdNew(uri))
+                } else {
+                    super.startActivity(intent)
+                }
+            } else {
+                super.startActivity(intent)
+            }
+        } else {
+            super.startActivity(intent)
+        }
     }
 
     fun sendSelectLocalFileIntent() {

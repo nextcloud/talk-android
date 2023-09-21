@@ -124,7 +124,7 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
 
         if (
             isAccountImport &&
-            !UriUtils.hasHttpProtocollPrefixed(baseUrl!!) ||
+            !UriUtils.hasHttpProtocolPrefixed(baseUrl!!) ||
             isSameProtocol(baseUrl!!, originalProtocol!!)
         ) {
             determineBaseUrlProtocol(true)
