@@ -337,6 +337,7 @@
     <string name="nc_upload_confirm_send_single">%1$sへこのファイルを送信しますか?</string>
     <string name="nc_upload_failed">アップロードできませんでした</string>
     <string name="nc_upload_from_cloud">%1$sから共有</string>
+    <string name="nc_upload_from_device">デバイスからアップロード</string>
     <string name="nc_upload_in_progess">アップロード中</string>
     <string name="nc_upload_picture_from_cam">写真を撮る</string>
     <string name="nc_user">ユーザー</string>

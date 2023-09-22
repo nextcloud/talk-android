@@ -34,6 +34,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 години</string>
     <string name="invisible">Невидимка</string>
+    <string name="later_today">Пізніше сьогодні</string>
     <string name="load_more_results">Завантажити більше результатів</string>
     <string name="lock_symbol">Символ блокування</string>
     <string name="lower_hand">Опустити руку</string>
@@ -434,6 +435,7 @@
     <string name="take_photo_toggle_crop">Кадрувати зображення</string>
     <string name="thirtyMinutes">30 хвилин</string>
     <string name="thisWeek">Цього тижня</string>
+    <string name="this_weekend">Цими вихідними</string>
     <string name="title_attachments">Вкладення</string>
     <string name="today">Сьогодні</string>
     <string name="tomorrow">Завтра</string>
