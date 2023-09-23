@@ -37,6 +37,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 heures</string>
     <string name="invisible">Invisible</string>
+    <string name="later_today">Plus tard aujourd\'hui</string>
     <string name="load_more_results">Charger plus de résultats</string>
     <string name="lock_symbol">Symbole de verrouillage</string>
     <string name="lower_hand">Baisser la main</string>
@@ -489,6 +490,7 @@
     <string name="thirtyMinutes">30 minutes</string>
     <string name="thisWeek">Cette semaine</string>
     <string name="this_is_a_test_message">Ceci est un message de test</string>
+    <string name="this_weekend">Ce week-end</string>
     <string name="title_attachments">Pièces jointes</string>
     <string name="today">Aujourd\'hui</string>
     <string name="tomorrow">Demain</string>
