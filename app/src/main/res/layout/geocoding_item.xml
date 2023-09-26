@@ -35,7 +35,7 @@
         android:layout_gravity="top"
         android:layout_marginStart="@dimen/standard_half_margin"
         android:layout_marginTop="@dimen/standard_margin"
-        android:layout_marginEnd="@dimen/standard_double_padding"
+        android:layout_marginEnd="@dimen/standard_margin"
         android:layout_marginBottom="@dimen/standard_margin"
         android:contentDescription="@null"
         android:src="@drawable/ic_circular_location" />
