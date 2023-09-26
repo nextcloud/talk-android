@@ -44,10 +44,9 @@
             tools:title="@string/nc_app_product_name" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/geocoding_results"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ListView>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
