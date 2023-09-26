@@ -141,6 +141,17 @@ class GeocodingActivity :
 
     private fun initAdapter(addresses: List<Address>) {
         adapter = GeocodingAdapter(binding.geocodingResults.context!!, addresses)
+        adapter.setOnItemClickListener(object : GeocodingAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                val address: Address = adapter.getItem(position) as Address
+                val geocodingResult = GeocodingResult(address.latitude, address.longitude, address.displayName)
+                val intent = Intent(this@GeocodingActivity, LocationPickerActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+                intent.putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
+                startActivity(intent)
+            }
+        })
         binding.geocodingResults.adapter = adapter
     }
 
