@@ -2668,15 +2668,15 @@ class ChatActivity :
             if (uri.startsWith(user.baseUrl!!)) {
                 if (UriUtils.isInstanceInternalFileShareUrl(user.baseUrl!!, uri)) {
                     // https://cloud.nextcloud.com/f/41
-                    val fileViewerUtils = FileViewerUtils(this, user)
+                    val fileViewerUtils = FileViewerUtils(applicationContext, user)
                     fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileShareFileId(uri))
                 } else if (UriUtils.isInstanceInternalFileUrl(user.baseUrl!!, uri)) {
                     // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
-                    val fileViewerUtils = FileViewerUtils(this, user)
+                    val fileViewerUtils = FileViewerUtils(applicationContext, user)
                     fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileId(uri))
                 } else if (UriUtils.isInstanceInternalFileUrlNew(user.baseUrl!!, uri)) {
                     // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
-                    val fileViewerUtils = FileViewerUtils(this, user)
+                    val fileViewerUtils = FileViewerUtils(applicationContext, user)
                     fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileIdNew(uri))
                 } else {
                     super.startActivity(intent)
