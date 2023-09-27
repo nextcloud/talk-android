@@ -33,6 +33,8 @@ import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,6 +47,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityGeocodingBinding
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.viewmodels.GeoCodingViewModel
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import kotlinx.coroutines.CoroutineScope
@@ -79,7 +82,7 @@ class GeocodingActivity :
     lateinit var adapter: GeocodingAdapter
     private var geocodingResults: List<Address> = ArrayList()
     private lateinit var recyclerView: RecyclerView
-
+    private lateinit var viewModel: GeoCodingViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -97,6 +100,16 @@ class GeocodingActivity :
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = GeocodingAdapter(this, geocodingResults)
         recyclerView.adapter = adapter
+        viewModel = ViewModelProvider(this).get(GeoCodingViewModel::class.java)
+
+        // Observe geocoding results LiveData
+        viewModel.getGeocodingResultsLiveData().observe(this, Observer { results ->
+            // Update the adapter with the new results
+            adapter.updateData(results)
+        })
+        val baseUrl = getString(R.string.osm_geocoder_url)
+        val email = context.getString(R.string.osm_geocoder_contact)
+        nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
     }
 
     override fun onStart() {
@@ -169,7 +182,9 @@ class GeocodingActivity :
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         this.query = query
-        searchLocation()
+        if (query != null) {
+            viewModel.searchLocation(query)
+        }
         searchView?.clearFocus()
         return true
     }
