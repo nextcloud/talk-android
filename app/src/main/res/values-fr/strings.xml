@@ -346,7 +346,7 @@
     <string name="nc_settings_reauthorize">Ré-autoriser le compte</string>
     <string name="nc_settings_remove">Effacer</string>
     <string name="nc_settings_remove_account">Retirer le compte</string>
-    <string name="nc_settings_remove_confirmation">Veuillez confirmer votre volonté de supprimer le compte actuel.</string>
+    <string name="nc_settings_remove_confirmation">Veuillez confirmer votre intention de retirer le compte en cours.</string>
     <string name="nc_settings_screen_lock_desc">Verrouiller %1$s avec le verrouillage d’écran Android ou une méthode biométrique supportée</string>
     <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage de l\'écran</string>
     <string name="nc_settings_screen_lock_title">Écran de verrouillage</string>
