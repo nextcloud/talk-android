@@ -27,6 +27,7 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 
 object ConversationUtils {
     private val TAG = ConversationUtils::class.java.simpleName
+    private const val NOTE_TO_SELF = "Note to self"
 
     fun isPublic(conversation: ConversationModel): Boolean {
         return ConversationType.ROOM_PUBLIC_CALL == conversation.type
@@ -52,7 +53,8 @@ object ConversationUtils {
     fun canModerate(conversation: ConversationModel, conversationUser: User): Boolean {
         return isParticipantOwnerOrModerator(conversation) &&
             !isLockedOneToOne(conversation, conversationUser) &&
-            conversation.type != ConversationType.FORMER_ONE_TO_ONE
+            conversation.type != ConversationType.FORMER_ONE_TO_ONE &&
+            !isNoteToSelfConversation(conversation)
     }
 
     fun isLobbyViewApplicable(conversation: ConversationModel, conversationUser: User): Boolean {
@@ -85,5 +87,9 @@ object ConversationUtils {
             canModerate(conversation, conversationUser)
             // Fallback for APIv1
         }
+    }
+
+    fun isNoteToSelfConversation(currentConversation: ConversationModel?): Boolean {
+        return currentConversation != null && currentConversation.name == NOTE_TO_SELF
     }
 }

@@ -2248,7 +2248,10 @@ class ChatActivity :
     }
 
     private fun checkShowCallButtons() {
-        if (isReadOnlyConversation() || shouldShowLobby()) {
+        if (isReadOnlyConversation() ||
+            shouldShowLobby() ||
+            ConversationUtils.isNoteToSelfConversation(currentConversation)
+        ) {
             disableCallButtons()
         } else {
             enableCallButtons()

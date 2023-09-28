@@ -65,10 +65,12 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.extensions.loadConversationAvatar
+import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
@@ -81,6 +83,7 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -714,8 +717,14 @@ class ConversationInfoActivity :
                                 conversationUser
                             ).setupGuestAccess()
                         }
-
-                        binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
+                        if (ConversationUtils.isNoteToSelfConversation(
+                                ConversationModel.mapToConversationModel(conversation!!)
+                            )
+                        ) {
+                            binding.notificationSettingsView.notificationSettings.visibility = GONE
+                        } else {
+                            binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
+                        }
                     }
                 }
 
@@ -731,6 +740,7 @@ class ConversationInfoActivity :
 
     private fun initExpiringMessageOption() {
         if (conversation!!.isParticipantOwnerOrModerator &&
+            !ConversationUtils.isNoteToSelfConversation(ConversationModel.mapToConversationModel(conversation!!)) &&
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")
         ) {
             databaseStorageModule?.setMessageExpiration(conversation!!.messageExpiration)
@@ -826,6 +836,15 @@ class ConversationInfoActivity :
 
             Conversation.ConversationType.ROOM_SYSTEM -> {
                 binding.avatarImage.loadSystemAvatar()
+            }
+
+            Conversation.ConversationType.DUMMY -> {
+                if (ConversationUtils.isNoteToSelfConversation(
+                        ConversationModel.mapToConversationModel(conversation!!)
+                    )
+                ) {
+                    binding.avatarImage.loadNoteToSelfAvatar()
+                }
             }
 
             else -> {
