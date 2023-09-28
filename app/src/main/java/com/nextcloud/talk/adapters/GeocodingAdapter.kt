@@ -36,7 +36,7 @@ class GeocodingAdapter(private val context: Context, private var dataSource: Lis
         fun onItemClick(position: Int)
     }
     fun updateData(data: List<Address>) {
-       this.dataSource = data
+        this.dataSource = data
         notifyDataSetChanged()
     }
 

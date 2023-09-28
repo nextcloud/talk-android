@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.nextcloud.talk.viewmodels
 
 import android.util.Log
@@ -30,6 +31,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import java.io.IOException
 
 class GeoCodingViewModel : ViewModel() {
     private val geocodingResultsLiveData = MutableLiveData<List<Address>>()
@@ -53,7 +55,7 @@ class GeoCodingViewModel : ViewModel() {
             try {
                 val results = nominatimClient.search(query) as ArrayList<Address>
                 geocodingResultsLiveData.postValue(results)
-            } catch (e: Exception) {
+            } catch (e: IOException) {
                 Log.e(TAG, "Failed to get geocoded addresses", e)
             }
         }

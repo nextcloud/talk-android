@@ -103,10 +103,11 @@ class GeocodingActivity :
         viewModel = ViewModelProvider(this).get(GeoCodingViewModel::class.java)
 
         // Observe geocoding results LiveData
-        viewModel.getGeocodingResultsLiveData().observe(this, Observer { results ->
-            // Update the adapter with the new results
-            adapter.updateData(results)
-        })
+        viewModel.getGeocodingResultsLiveData().observe(
+            this,
+            Observer { results -> // Update the adapter with the new results
+                adapter.updateData(results)
+            })
         val baseUrl = getString(R.string.osm_geocoder_url)
         val email = context.getString(R.string.osm_geocoder_contact)
         nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
@@ -200,7 +201,7 @@ class GeocodingActivity :
             searchView?.maxWidth = Int.MAX_VALUE
             searchView?.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
             var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
                 imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
             }
             searchView?.imeOptions = imeOptions
