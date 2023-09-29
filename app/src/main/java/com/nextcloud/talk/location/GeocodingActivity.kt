@@ -39,7 +39,6 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
-import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.adapters.GeocodingAdapter
@@ -50,11 +49,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.viewmodels.GeoCodingViewModel
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.osmdroid.config.Configuration
 import javax.inject.Inject
@@ -83,6 +77,7 @@ class GeocodingActivity :
     private var geocodingResults: List<Address> = ArrayList()
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewModel: GeoCodingViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -102,12 +97,27 @@ class GeocodingActivity :
         recyclerView.adapter = adapter
         viewModel = ViewModelProvider(this).get(GeoCodingViewModel::class.java)
 
-        // Observe geocoding results LiveData
+        query = viewModel.getQuery()
+        if (query.isNullOrEmpty()) {
+            query = intent.getStringExtra(BundleKeys.KEY_GEOCODING_QUERY)
+            viewModel.setQuery(query ?: "")
+        }
+        val savedResults = viewModel.getGeocodingResults()
+        initAdapter(savedResults)
         viewModel.getGeocodingResultsLiveData().observe(
             this,
-            Observer { results -> // Update the adapter with the new results
+            Observer { results ->
+                geocodingResults = results
                 adapter.updateData(results)
-            })
+            }
+        )
+        viewModel.getQueryLiveData().observe(
+            this,
+            Observer { newQuery ->
+                query = newQuery
+                searchView?.setQuery(query, false)
+            }
+        )
         val baseUrl = getString(R.string.osm_geocoder_url)
         val email = context.getString(R.string.osm_geocoder_contact)
         nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
@@ -123,11 +133,10 @@ class GeocodingActivity :
         super.onResume()
 
         if (!query.isNullOrEmpty()) {
-            searchLocation()
+            viewModel.searchLocation(query!!)
         } else {
             Log.e(TAG, "search string that was passed to GeocodingController was null or empty")
         }
-
         adapter.setOnItemClickListener(object : GeocodingAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 val address: Address = adapter.getItem(position) as Address
@@ -139,6 +148,7 @@ class GeocodingActivity :
                 startActivity(intent)
             }
         })
+        searchView?.setQuery(query, false)
     }
 
     private fun setupActionBar() {
@@ -182,12 +192,25 @@ class GeocodingActivity :
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        this.query = query
+        this.query = query ?: ""
+        viewModel.setQuery(this.query!!)
         if (query != null) {
             viewModel.searchLocation(query)
         }
         searchView?.clearFocus()
         return true
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        query?.let { viewModel.setQuery(it) }
+        outState.putString(KEY_SEARCH_QUERY, query)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        query = viewModel.getQuery()
+        query = savedInstanceState.getString(KEY_SEARCH_QUERY)
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
@@ -231,37 +254,8 @@ class GeocodingActivity :
         nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
     }
 
-    private fun searchLocation(): Boolean {
-        CoroutineScope(IO).launch {
-            executeGeocodingRequest()
-        }
-        return true
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    private suspend fun executeGeocodingRequest() {
-        var results: ArrayList<Address> = ArrayList()
-        try {
-            results = nominatimClient!!.search(query) as ArrayList<Address>
-            for (address in results) {
-                Log.d(TAG, address.displayName)
-                Log.d(TAG, address.latitude.toString())
-                Log.d(TAG, address.longitude.toString())
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to get geocoded addresses", e)
-            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-        }
-        updateResultsOnMainThread(results)
-    }
-
-    private suspend fun updateResultsOnMainThread(results: ArrayList<Address>) {
-        withContext(Main) {
-            initAdapter(results)
-        }
-    }
-
     companion object {
-        private val TAG = GeocodingActivity::class.java.simpleName
+        val TAG = GeocodingActivity::class.java.simpleName
+        const val KEY_SEARCH_QUERY = "search_query"
     }
 }

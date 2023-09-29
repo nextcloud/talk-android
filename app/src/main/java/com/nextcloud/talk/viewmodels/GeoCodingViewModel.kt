@@ -25,6 +25,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.activities.CallActivity.Companion.TAG
+import com.nextcloud.talk.location.GeocodingActivity
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import kotlinx.coroutines.CoroutineScope
@@ -35,12 +36,32 @@ import java.io.IOException
 
 class GeoCodingViewModel : ViewModel() {
     private val geocodingResultsLiveData = MutableLiveData<List<Address>>()
+    private val queryLiveData = MutableLiveData<String>()
+    private val nominatimClient: TalkJsonNominatimClient
+    private val okHttpClient: OkHttpClient = OkHttpClient.Builder().build()
+    private var geocodingResults: List<Address> = ArrayList()
+    private var query: String = ""
     fun getGeocodingResultsLiveData(): LiveData<List<Address>> {
         return geocodingResultsLiveData
     }
 
-    private val nominatimClient: TalkJsonNominatimClient
-    private val okHttpClient: OkHttpClient = OkHttpClient.Builder().build()
+    fun getQueryLiveData(): LiveData<String> {
+        return queryLiveData
+    }
+
+    fun getQuery(): String {
+        return query
+    }
+
+    fun setQuery(query: String) {
+        if (queryLiveData.value.isNullOrEmpty()) {
+            queryLiveData.value = query
+        }
+    }
+
+    fun getGeocodingResults(): List<Address> {
+        return geocodingResults
+    }
 
     init {
         nominatimClient = TalkJsonNominatimClient(
@@ -51,12 +72,20 @@ class GeoCodingViewModel : ViewModel() {
     }
 
     fun searchLocation(query: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val results = nominatimClient.search(query) as ArrayList<Address>
-                geocodingResultsLiveData.postValue(results)
-            } catch (e: IOException) {
-                Log.e(TAG, "Failed to get geocoded addresses", e)
+        if (query.isNotEmpty()) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val results = nominatimClient.search(query) as ArrayList<Address>
+                    for (address in results) {
+                        Log.d(GeocodingActivity.TAG, address.displayName)
+                        Log.d(GeocodingActivity.TAG, address.latitude.toString())
+                        Log.d(GeocodingActivity.TAG, address.longitude.toString())
+                    }
+                    geocodingResults = results
+                    geocodingResultsLiveData.postValue(results)
+                } catch (e: IOException) {
+                    Log.e(TAG, "Failed to get geocoded addresses", e)
+                }
             }
         }
     }
