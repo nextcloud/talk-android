@@ -32,6 +32,7 @@ import android.net.Uri
 import android.os.RemoteException
 import android.provider.ContactsContract
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
 import androidx.work.Data
@@ -143,9 +144,22 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                     }
 
                     override fun onNext(foundContacts: ContactsByNumberOverall) {
-                        val contactsWithAssociatedPhoneNumbers = foundContacts.ocs!!.map
-                        deleteLinkedAccounts(contactsWithAssociatedPhoneNumbers)
-                        createLinkedAccounts(contactsWithAssociatedPhoneNumbers)
+                        when (foundContacts.ocs?.meta?.statusCode) {
+                            HTTP_CODE_TOO_MANY_REQUESTS -> {
+                                Toast.makeText(
+                                    context,
+                                    context.resources.getString(
+                                        R.string.nc_settings_phone_book_integration_phone_number_dialog_429
+                                    ),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            else -> {
+                                val contactsWithAssociatedPhoneNumbers = foundContacts.ocs!!.map
+                                deleteLinkedAccounts(contactsWithAssociatedPhoneNumbers)
+                                createLinkedAccounts(contactsWithAssociatedPhoneNumbers)
+                            }
+                        }
                     }
 
                     override fun onError(e: Throwable) {
@@ -449,6 +463,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         const val REQUEST_PERMISSION = 231
         const val KEY_FORCE = "KEY_FORCE"
         const val DELETE_ALL = "DELETE_ALL"
+        private const val HTTP_CODE_TOO_MANY_REQUESTS: Int = 429
 
         fun run(context: Context) {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CONTACTS) ==

@@ -1079,21 +1079,23 @@ class SettingsActivity : BaseActivity() {
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    val statusCode = genericOverall.ocs?.meta?.statusCode
-                    if (statusCode == HTTP_CODE) {
-                        dialog.dismiss()
-                        Snackbar.make(
-                            binding.root,
-                            context.resources.getString(
-                                R.string.nc_settings_phone_book_integration_phone_number_dialog_success
-                            ),
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    } else {
-                        textInputLayout.helperText = context.resources.getString(
-                            R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid
-                        )
-                        Log.d(TAG, "failed to set phoneNumber. statusCode=$statusCode")
+                    when (val statusCode = genericOverall.ocs?.meta?.statusCode) {
+                        HTTP_CODE_OK -> {
+                            dialog.dismiss()
+                            Snackbar.make(
+                                binding.root,
+                                context.resources.getString(
+                                    R.string.nc_settings_phone_book_integration_phone_number_dialog_success
+                                ),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        else -> {
+                            textInputLayout.helperText = context.resources.getString(
+                                R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid
+                            )
+                            Log.d(TAG, "failed to set phoneNumber. statusCode=$statusCode")
+                        }
                     }
                 }
 
@@ -1181,7 +1183,7 @@ class SettingsActivity : BaseActivity() {
         private const val START_DELAY: Long = 5000
         private const val DISABLED_ALPHA: Float = 0.38f
         private const val ENABLED_ALPHA: Float = 1.0f
-        private const val HTTP_CODE: Int = 200
+        private const val HTTP_CODE_OK: Int = 200
         private const val PHONE_NUMBER_SIDE_PADDING: Int = 50
     }
 }
