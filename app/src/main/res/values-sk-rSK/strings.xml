@@ -399,6 +399,7 @@
     <string name="raise_hand">Zdvihnúť ruku</string>
     <string name="reactions_tab_all">Všetko</string>
     <string name="read_storage_no_permission">Zdielanie súborov z úložiska nie je možné bez oprávnenia</string>
+    <string name="record_cancel_start">Zrušiť začiatok nahrávania</string>
     <string name="save">Uložiť</string>
     <string name="scope_federated_description">Synchronizovať iba s dôveryhodnými servermi</string>
     <string name="scope_federated_title">Združený</string>

@@ -330,6 +330,7 @@
     <string name="nc_settings_notification_sounds_post_oreo">التنبيهات</string>
     <string name="nc_settings_other_notifications_ringtone">الرسائل</string>
     <string name="nc_settings_phone_book_integration_desc">مُطابقة جهات الاتصال بناءً على رقم الهاتف لدمج اختصارات تطبيق \"المحادثة\" Talk في تطبيق \"جهات الاتصال\" على الهاتف</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">الخطأ رقم 429؛ طلبات كثيرة جداً</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">بإمكانك تعيين رقم هاتفك حتى يتمكن المستخدمون الآخرون من العثور عليك</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">رقم الهاتف غير صحيح </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">تم تعيين رقم الهاتف بنجاح </string>
