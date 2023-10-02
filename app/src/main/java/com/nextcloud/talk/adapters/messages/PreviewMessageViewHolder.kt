@@ -33,13 +33,9 @@ import android.net.Uri
 import android.os.Handler
 import android.util.Base64
 import android.util.Log
-import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.PopupMenu
 import android.widget.ProgressBar
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.emoji2.widget.EmojiTextView
 import autodagger.AutoInjector
@@ -128,7 +124,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                     )
                 }
                 clickView!!.setOnLongClickListener { l: View? ->
-                    onMessageViewLongClick(message)
+                    previewMessageInterface!!.onPreviewMessageLongClick(message)
                     true
                 }
             } else {
@@ -278,33 +274,6 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             drawable = ContextCompat.getDrawable(context!!, R.drawable.ic_mimetype_text_vcard)
         }
         return drawable
-    }
-
-    private fun onMessageViewLongClick(message: ChatMessage) {
-        if (fileViewerUtils!!.isSupportedForInternalViewer(message.selectedIndividualHashMap!![KEY_MIMETYPE])) {
-            previewMessageInterface!!.onPreviewMessageLongClick(message)
-            return
-        }
-        val viewContext: Context? = if (itemView.context != null) {
-            itemView.context
-        } else {
-            context
-        }
-        val popupMenu = PopupMenu(
-            ContextThemeWrapper(viewContext, R.style.appActionBarPopupMenu),
-            itemView,
-            Gravity.START
-        )
-        popupMenu.inflate(R.menu.chat_preview_message_menu)
-        popupMenu.setOnMenuItemClickListener { item: MenuItem ->
-            if (item.itemId == R.id.openInFiles) {
-                val keyID = message.selectedIndividualHashMap!![KEY_ID]
-                val link = message.selectedIndividualHashMap!!["link"]
-                fileViewerUtils!!.openFileInFilesApp(link!!, keyID!!)
-            }
-            true
-        }
-        popupMenu.show()
     }
 
     private fun fetchFileInformation(url: String, activeUser: User?) {
