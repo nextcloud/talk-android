@@ -39,7 +39,7 @@
     <string name="invisible">Není vidět</string>
     <string name="later_today">Později dnes</string>
     <string name="load_more_results">Načíst další výsledky</string>
-    <string name="lock_symbol">Uzamknout symbol</string>
+    <string name="lock_symbol">Symbol zámku</string>
     <string name="lower_hand">Přestat se hlásit</string>
     <string name="mentioned">Zmíněni</string>
     <string name="menu_item_sort_by_date_newest_first">Nejnovější jako první</string>
@@ -330,6 +330,7 @@
     <string name="nc_settings_notification_sounds_post_oreo">Upozornění</string>
     <string name="nc_settings_other_notifications_ringtone">Zprávy</string>
     <string name="nc_settings_phone_book_integration_desc">Najít kontakty se stejným telefonním číslem a přidat zkratku Talk do systémové aplikace pro kontakty</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Chyba 429 – příliš mnoho požadavků</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Můžete si nastavit své telefonní číslo a tak vás budou moci ostatní uživatelé najít</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neplatné telefonní číslo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Nastavení telefonního čísla úspěšné</string>
