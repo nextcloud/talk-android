@@ -36,7 +36,6 @@ import java.io.IOException
 
 class GeoCodingViewModel : ViewModel() {
     private val geocodingResultsLiveData = MutableLiveData<List<Address>>()
-    private val queryLiveData = MutableLiveData<String>()
     private val nominatimClient: TalkJsonNominatimClient
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().build()
     private var geocodingResults: List<Address> = ArrayList()
@@ -45,18 +44,12 @@ class GeoCodingViewModel : ViewModel() {
         return geocodingResultsLiveData
     }
 
-    fun getQueryLiveData(): LiveData<String> {
-        return queryLiveData
-    }
-
     fun getQuery(): String {
         return query
     }
 
     fun setQuery(query: String) {
-        if (queryLiveData.value.isNullOrEmpty()) {
-            queryLiveData.value = query
-        }
+        this.query = query
     }
 
     fun getGeocodingResults(): List<Address> {
@@ -71,7 +64,7 @@ class GeoCodingViewModel : ViewModel() {
         )
     }
 
-    fun searchLocation(query: String) {
+    fun searchLocation() {
         if (query.isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {

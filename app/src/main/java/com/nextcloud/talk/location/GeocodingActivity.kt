@@ -32,8 +32,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.MenuItemCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,8 +53,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class GeocodingActivity :
-    BaseActivity(),
-    SearchView.OnQueryTextListener {
+    BaseActivity() {
 
     private lateinit var binding: ActivityGeocodingBinding
 
@@ -67,11 +64,10 @@ class GeocodingActivity :
     lateinit var okHttpClient: OkHttpClient
 
     lateinit var roomToken: String
-    var nominatimClient: TalkJsonNominatimClient? = null
+    private var nominatimClient: TalkJsonNominatimClient? = null
 
-    var searchItem: MenuItem? = null
+    private var searchItem: MenuItem? = null
     var searchView: SearchView? = null
-    var query: String? = null
 
     lateinit var adapter: GeocodingAdapter
     private var geocodingResults: List<Address> = ArrayList()
@@ -90,34 +86,24 @@ class GeocodingActivity :
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
         roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
-        query = intent.getStringExtra(BundleKeys.KEY_GEOCODING_QUERY)
+
         recyclerView = findViewById(R.id.geocoding_results)
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = GeocodingAdapter(this, geocodingResults)
         recyclerView.adapter = adapter
-        viewModel = ViewModelProvider(this).get(GeoCodingViewModel::class.java)
+        viewModel = ViewModelProvider(this)[GeoCodingViewModel::class.java]
 
-        query = viewModel.getQuery()
-        if (query.isNullOrEmpty()) {
-            query = intent.getStringExtra(BundleKeys.KEY_GEOCODING_QUERY)
-            viewModel.setQuery(query ?: "")
+        var query = viewModel.getQuery()
+        if (query.isEmpty() && intent.hasExtra(BundleKeys.KEY_GEOCODING_QUERY)) {
+            query = intent.getStringExtra(BundleKeys.KEY_GEOCODING_QUERY).orEmpty()
+            viewModel.setQuery(query)
         }
         val savedResults = viewModel.getGeocodingResults()
         initAdapter(savedResults)
-        viewModel.getGeocodingResultsLiveData().observe(
-            this,
-            Observer { results ->
-                geocodingResults = results
-                adapter.updateData(results)
-            }
-        )
-        viewModel.getQueryLiveData().observe(
-            this,
-            Observer { newQuery ->
-                query = newQuery
-                searchView?.setQuery(query, false)
-            }
-        )
+        viewModel.getGeocodingResultsLiveData().observe(this) { results ->
+            geocodingResults = results
+            adapter.updateData(results)
+        }
         val baseUrl = getString(R.string.osm_geocoder_url)
         val email = context.getString(R.string.osm_geocoder_contact)
         nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
@@ -132,8 +118,8 @@ class GeocodingActivity :
     override fun onResume() {
         super.onResume()
 
-        if (!query.isNullOrEmpty()) {
-            viewModel.searchLocation(query!!)
+        if (viewModel.getQuery().isNotEmpty() && adapter.itemCount == 0) {
+            viewModel.searchLocation()
         } else {
             Log.e(TAG, "search string that was passed to GeocodingController was null or empty")
         }
@@ -148,7 +134,7 @@ class GeocodingActivity :
                 startActivity(intent)
             }
         })
-        searchView?.setQuery(query, false)
+        searchView?.setQuery(viewModel.getQuery(), false)
     }
 
     private fun setupActionBar() {
@@ -184,43 +170,17 @@ class GeocodingActivity :
         menuInflater.inflate(R.menu.menu_geocoding, menu)
         searchItem = menu.findItem(R.id.geocoding_action_search)
         initSearchView()
-
         searchItem?.expandActionView()
-        searchView?.setQuery(query, false)
+        searchView?.setQuery(viewModel.getQuery(), false)
         searchView?.clearFocus()
-        return true
-    }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        this.query = query ?: ""
-        viewModel.setQuery(this.query!!)
-        if (query != null) {
-            viewModel.searchLocation(query)
-        }
-        searchView?.clearFocus()
-        return true
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        query?.let { viewModel.setQuery(it) }
-        outState.putString(KEY_SEARCH_QUERY, query)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        query = viewModel.getQuery()
-        query = savedInstanceState.getString(KEY_SEARCH_QUERY)
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
         return true
     }
 
     private fun initSearchView() {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         if (searchItem != null) {
-            searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+            searchView = searchItem!!.actionView as SearchView?
+
             searchView?.maxWidth = Int.MAX_VALUE
             searchView?.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
             var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
@@ -230,7 +190,23 @@ class GeocodingActivity :
             searchView?.imeOptions = imeOptions
             searchView?.queryHint = resources!!.getString(R.string.nc_search)
             searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            searchView?.setOnQueryTextListener(this)
+            searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    viewModel.setQuery(query)
+                    viewModel.searchLocation()
+                    searchView?.clearFocus()
+                    return true
+                }
+
+                override fun onQueryTextChange(query: String): Boolean {
+                    // This is a workaround to not set viewModel data when onQueryTextChange is triggered on startup
+                    // Otherwise it would be set to an empty string.
+                    if (searchView?.width!! > 0) {
+                        viewModel.setQuery(query)
+                    }
+                    return true
+                }
+            })
 
             searchItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(menuItem: MenuItem): Boolean {
@@ -256,6 +232,5 @@ class GeocodingActivity :
 
     companion object {
         val TAG = GeocodingActivity::class.java.simpleName
-        const val KEY_SEARCH_QUERY = "search_query"
     }
 }

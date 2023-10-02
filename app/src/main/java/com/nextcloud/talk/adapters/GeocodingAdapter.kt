@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,8 @@ class GeocodingAdapter(private val context: Context, private var dataSource: Lis
     interface OnItemClickListener {
         fun onItemClick(position: Int)
     }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(data: List<Address>) {
         this.dataSource = data
         notifyDataSetChanged()
