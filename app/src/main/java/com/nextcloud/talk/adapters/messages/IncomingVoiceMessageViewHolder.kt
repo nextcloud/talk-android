@@ -312,7 +312,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
                 .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView, ColorRole.PRIMARY)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }
