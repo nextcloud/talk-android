@@ -121,6 +121,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.TakePhotoActivity
+import com.nextcloud.talk.adapters.messages.CallStartedMessageInterface
+import com.nextcloud.talk.adapters.messages.CallStartedViewHolder
 import com.nextcloud.talk.adapters.messages.CommonMessageInterface
 import com.nextcloud.talk.adapters.messages.IncomingLinkPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
@@ -268,7 +270,8 @@ class ChatActivity :
     VoiceMessageInterface,
     CommonMessageInterface,
     PreviewMessageInterface,
-    SystemMessageInterface {
+    SystemMessageInterface,
+    CallStartedMessageInterface {
 
     var active = false
 
@@ -376,6 +379,8 @@ class ChatActivity :
     var typingTimer: CountDownTimer? = null
     var typedWhileTypingTimerIsRunning: Boolean = false
     val typingParticipants = HashMap<String, TypingParticipant>()
+
+    var callStarted = false
 
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
@@ -944,6 +949,17 @@ class ChatActivity :
         messageHolders.setOutcomingImageConfig(
             OutcomingPreviewMessageViewHolder::class.java,
             R.layout.item_custom_outcoming_preview_message
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_CALL_STARTED,
+            CallStartedViewHolder::class.java,
+            payload,
+            R.layout.call_started_message,
+            CallStartedViewHolder::class.java,
+            payload,
+            R.layout.call_started_message,
+            this
         )
 
         messageHolders.registerContentType(
@@ -1808,7 +1824,7 @@ class ChatActivity :
                             }
                         }
                     }
-                    mediaPlayerHandler.postDelayed(this, 15)
+                    mediaPlayerHandler.postDelayed(this, MILISEC_15)
                 }
             })
 
@@ -3189,6 +3205,31 @@ class ChatActivity :
                                 Integer.parseInt(it)
                             }
 
+                            try {
+                                val mostRecentCallSystemMessage = adapter?.items?.first {
+                                    it.item is ChatMessage &&
+                                        (it.item as ChatMessage).systemMessageType in
+                                        listOf(
+                                            ChatMessage.SystemMessageType.CALL_STARTED,
+                                            ChatMessage.SystemMessageType.CALL_JOINED,
+                                            ChatMessage.SystemMessageType.CALL_LEFT,
+                                            ChatMessage.SystemMessageType.CALL_ENDED,
+                                            ChatMessage.SystemMessageType.CALL_TRIED,
+                                            ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE,
+                                            ChatMessage.SystemMessageType.CALL_MISSED
+                                        )
+                                }?.item
+
+                                if (mostRecentCallSystemMessage != null) {
+                                    processMostRecentMessage(
+                                        mostRecentCallSystemMessage as ChatMessage,
+                                        chatMessageList
+                                    )
+                                }
+                            } catch (e: java.util.NoSuchElementException) {
+                                Log.d(TAG, "No System messages found $e")
+                            }
+
                             updateReadStatusOfAllMessages(newXChatLastCommonRead)
                             adapter?.notifyDataSetChanged()
 
@@ -4230,7 +4271,36 @@ class ChatActivity :
             CONTENT_TYPE_LINK_PREVIEW -> message.isLinkPreview()
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
+            CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
+
             else -> false
+        }
+    }
+
+    private fun processMostRecentMessage(recent: ChatMessage, chatMessageList: List<ChatMessage>) {
+        when (recent.systemMessageType) {
+            ChatMessage.SystemMessageType.CALL_STARTED -> { // add CallStartedMessage with id -2
+                if (!callStarted) {
+                    val callStartedChatMessage = ChatMessage()
+                    callStartedChatMessage.jsonMessageId = CALL_STARTED_ID
+                    callStartedChatMessage.actorId = "-2"
+                    val name = if (recent.actorDisplayName.isNullOrEmpty()) "Guest" else recent.actorDisplayName
+                    callStartedChatMessage.actorDisplayName = name
+                    callStartedChatMessage.actorType = recent.actorType
+                    callStartedChatMessage.timestamp = chatMessageList[0].timestamp
+                    callStartedChatMessage.message = null
+                    adapter?.addToStart(callStartedChatMessage, false)
+                    callStarted = true
+                }
+            } // remove CallStartedMessage with id -2
+            ChatMessage.SystemMessageType.CALL_ENDED,
+            ChatMessage.SystemMessageType.CALL_MISSED,
+            ChatMessage.SystemMessageType.CALL_TRIED,
+            ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE -> {
+                adapter?.deleteById("-2")
+                callStarted = false
+            } // remove message of id -2
+            else -> {}
         }
     }
 
@@ -4367,6 +4437,14 @@ class ChatActivity :
         }
     }
 
+    override fun joinAudioCall() {
+        startACall(true, false)
+    }
+
+    override fun joinVideoCall() {
+        startACall(false, false)
+    }
+
     private fun logConversationInfos(methodName: String) {
         Log.d(TAG, " |-----------------------------------------------")
         Log.d(TAG, " | method: $methodName")
@@ -4379,12 +4457,13 @@ class ChatActivity :
 
     companion object {
         private val TAG = ChatActivity::class.simpleName
-        private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
-        private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
-        private const val CONTENT_TYPE_LOCATION: Byte = 3
-        private const val CONTENT_TYPE_VOICE_MESSAGE: Byte = 4
-        private const val CONTENT_TYPE_POLL: Byte = 5
-        private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 6
+        private const val CONTENT_TYPE_CALL_STARTED: Byte = 1
+        private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 2
+        private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 3
+        private const val CONTENT_TYPE_LOCATION: Byte = 4
+        private const val CONTENT_TYPE_VOICE_MESSAGE: Byte = 5
+        private const val CONTENT_TYPE_POLL: Byte = 6
+        private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 7
         private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
@@ -4417,7 +4496,6 @@ class ChatActivity :
         private const val FULLY_OPAQUE_INT: Int = 255
         private const val SEMI_TRANSPARENT_INT: Int = 99
         private const val VOICE_MESSAGE_SEEKBAR_BASE = 1000
-        private const val SECOND: Long = 1000
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
         private const val GROUPED_MESSAGES_THRESHOLD = 4
         private const val GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD = 5
@@ -4447,5 +4525,7 @@ class ChatActivity :
         private const val TYPING_INTERVAL_TO_SEND_NEXT_TYPING_MESSAGE = 1000L
         private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
         private const val TYPING_STOPPED_SIGNALING_MESSAGE_TYPE = "stoppedTyping"
+        private const val CALL_STARTED_ID = -2
+        private const val MILISEC_15: Long = 15
     }
 }
