@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -29,11 +30,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
 import fr.dudie.nominatim.model.Address
 
-class GeocodingAdapter(private val context: Context, private val dataSource: List<Address>) :
+class GeocodingAdapter(private val context: Context, private var dataSource: List<Address>) :
     RecyclerView.Adapter<GeocodingAdapter.ViewHolder>() {
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(data: List<Address>) {
+        this.dataSource = data
+        notifyDataSetChanged()
     }
 
     private var listener: OnItemClickListener? = null
