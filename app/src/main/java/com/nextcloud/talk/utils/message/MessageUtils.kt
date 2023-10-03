@@ -71,7 +71,8 @@ class MessageUtils(val context: Context) {
         } else if (message.renderMarkdown == false) {
             SpannableString(message.message)
         } else {
-            enrichChatMessageText(context, message.message!!, incoming, viewThemeUtils)
+            val newMessage = message.message!!.replace("\n", "  \n", false)
+            enrichChatMessageText(context, newMessage, incoming, viewThemeUtils)
         }
     }
 
@@ -106,6 +107,7 @@ class MessageUtils(val context: Context) {
         return processedMessageText
     }
 
+    @Suppress("NestedBlockDepth", "LongParameterList")
     private fun processMessageParameters(
         themingContext: Context,
         viewThemeUtils: ViewThemeUtils,
