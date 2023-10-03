@@ -41,9 +41,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/standard_quarter_margin"
-            app:chipIcon="@drawable/accent_circle"
+            app:chipIcon="@drawable/account_circle_48dp"
             app:chipCornerRadius="@dimen/dialogBorderRadius"
-            tools:text="Jessica Fox" />
+            tools:text="Julius James Linus" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
             android:backgroundTint="@color/nc_darkGreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/standard_half_margin"
+            android:layout_marginHorizontal="@dimen/standard_margin"
             app:icon="@drawable/ic_videocam_grey_600_24dp"
             app:iconTint="@color/white"
             android:alpha="0.8"
@@ -78,7 +78,7 @@
             android:backgroundTint="@color/nc_darkGreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/standard_half_margin"
+            android:layout_marginHorizontal="@dimen/standard_margin"
             android:alpha="0.8"
             app:icon="@drawable/ic_phone"
             app:iconTint="@color/white"
