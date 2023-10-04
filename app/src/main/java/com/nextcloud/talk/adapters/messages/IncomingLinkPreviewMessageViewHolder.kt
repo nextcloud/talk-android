@@ -29,6 +29,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import autodagger.AutoInjector
 import coil.load
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -207,7 +208,7 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
                 .setTextColor(ContextCompat.getColor(context, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView)
+                viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView, ColorRole.PRIMARY)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }
