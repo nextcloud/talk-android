@@ -24,7 +24,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/standard_double_margin"
+    android:layout_marginHorizontal="@dimen/standard_margin"
     android:padding="@dimen/standard_padding"
     tools:background="@drawable/shape_grouped_outcoming_message"
     tools:backgroundTint="@color/colorPrimaryDark">
@@ -32,7 +32,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_margin"
         android:orientation="horizontal"
         android:gravity="center">
 
@@ -41,9 +41,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/standard_quarter_margin"
-            app:chipIcon="@drawable/accent_circle"
+            app:chipIcon="@drawable/account_circle_48dp"
             app:chipCornerRadius="@dimen/dialogBorderRadius"
-            tools:text="Jessica Fox" />
+            tools:text="Julius James Linus" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -65,10 +65,9 @@
             android:backgroundTint="@color/nc_darkGreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/standard_half_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
             app:icon="@drawable/ic_videocam_grey_600_24dp"
             app:iconTint="@color/white"
-            android:alpha="0.8"
             android:textColor="@color/white"
             android:text="@string/video_call" />
 
@@ -78,8 +77,6 @@
             android:backgroundTint="@color/nc_darkGreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/standard_half_margin"
-            android:alpha="0.8"
             app:icon="@drawable/ic_phone"
             app:iconTint="@color/white"
             android:text="@string/audio_call"

@@ -82,7 +82,7 @@ class CallStartedViewHolder(incomingView: View, payload: Any) :
                 true
             )
         } else {
-            ApiUtils.getUrlForAvatar(user!!.baseUrl, message.actorDisplayName, true)
+            ApiUtils.getUrlForAvatar(user!!.baseUrl, message.actorDisplayName, false)
         }
 
         val imageRequest: ImageRequest = ImageRequest.Builder(context)
