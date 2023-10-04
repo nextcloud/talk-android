@@ -214,12 +214,8 @@ object CapabilitiesUtilNew {
 
     @JvmStatic
     fun isLinkPreviewAvailable(user: User): Boolean {
-        if (user.capabilities?.coreCapability?.referenceApi != null &&
+        return user.capabilities?.coreCapability?.referenceApi != null &&
             user.capabilities?.coreCapability?.referenceApi == "true"
-        ) {
-            return true
-        }
-        return false
     }
 
     fun isTranslationsSupported(user: User?): Boolean {
@@ -227,18 +223,11 @@ object CapabilitiesUtilNew {
             val capabilities = user.capabilities
             return capabilities?.spreedCapability?.config?.containsKey("chat") == true &&
                 capabilities.spreedCapability!!.config!!["chat"] != null &&
-                capabilities.spreedCapability!!.config!!["chat"]!!.containsKey("translations")
+                capabilities.spreedCapability!!.config!!["chat"]!!.containsKey("has-translation-providers") &&
+                capabilities.spreedCapability!!.config!!["chat"]!!["has-translation-providers"] == true
         }
 
         return false
-    }
-
-    fun getLanguages(user: User?): Any? {
-        return if (isTranslationsSupported(user)) {
-            user!!.capabilities!!.spreedCapability!!.config!!["chat"]!!["translations"]
-        } else {
-            null
-        }
     }
 
     fun isRemindSupported(user: User?): Boolean {

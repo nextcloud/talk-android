@@ -1,5 +1,6 @@
 package com.nextcloud.talk.translate.repositories
 
+import com.nextcloud.talk.translate.repositories.model.Language
 import io.reactivex.Observable
 
 interface TranslateRepository {
@@ -11,4 +12,9 @@ interface TranslateRepository {
         toLanguage: String,
         fromLanguage: String?
     ): Observable<String>
+
+    fun getLanguages(
+        authorization: String,
+        url: String
+    ): Observable<List<Language>>
 }

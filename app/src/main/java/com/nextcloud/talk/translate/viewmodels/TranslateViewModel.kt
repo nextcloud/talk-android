@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.translate.repositories.TranslateRepository
+import com.nextcloud.talk.translate.repositories.model.Language
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
@@ -21,9 +22,14 @@ class TranslateViewModel @Inject constructor(
 
     sealed interface ViewState
 
-    object StartState : ViewState
+    data object StartState : ViewState
     class TranslatedState(val msg: String) : ViewState
-    object ErrorState : ViewState
+
+    class LanguagesRetrievedState(val list: List<Language>) : ViewState
+
+    data object LanguagesErrorState : ViewState
+
+    data object TranslationErrorState : ViewState
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(StartState)
     val viewState: LiveData<ViewState>
@@ -47,6 +53,35 @@ class TranslateViewModel @Inject constructor(
             ?.subscribe(TranslateObserver())
     }
 
+    fun getLanguages() {
+        val currentUser: User = userManager.currentUser.blockingGet()
+        val authorization: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+        val url: String = ApiUtils.getUrlForLanguages(currentUser.baseUrl)
+        Log.d(TAG, "URL is: $url")
+        repository.getLanguages(authorization, url)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<List<Language>> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onError(e: Throwable) {
+                    _viewState.value = LanguagesErrorState
+                    Log.e(TAG, "Error while retrieving languages: $e")
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+
+                override fun onNext(list: List<Language>) {
+                    _viewState.value = LanguagesRetrievedState(list)
+                    Log.d(TAG, "Languages retrieved: $list")
+                }
+            })
+    }
+
     inner class TranslateObserver : Observer<String> {
         override fun onSubscribe(d: Disposable) {
             _viewState.value = StartState
@@ -57,7 +92,7 @@ class TranslateViewModel @Inject constructor(
         }
 
         override fun onError(e: Throwable) {
-            _viewState.value = ErrorState
+            _viewState.value = TranslationErrorState
             Log.e(TAG, "Error while translating message", e)
         }
 

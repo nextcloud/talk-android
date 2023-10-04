@@ -532,6 +532,10 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/translation/translate";
     }
 
+    public static String getUrlForLanguages(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/translation/languages";
+    }
+
     public static String getUrlForReminder(User user, String roomToken, String messageId, int version) {
         String url = ApiUtils.getUrlForChatMessage(version, user.getBaseUrl(), roomToken, messageId);
         return url + "/reminder";
