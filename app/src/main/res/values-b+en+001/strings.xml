@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Account icon</string>
     <string name="appbar_search_in">Search in %s</string>
+    <string name="audio_call">Audio Call</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_phone">Phone</string>
@@ -477,6 +478,7 @@
     <string name="shared_items_voice">Voice</string>
     <string name="starred">Favourite</string>
     <string name="startCallForbidden">You are not allowed to start a call</string>
+    <string name="started_a_call">started a call</string>
     <string name="status_message">Status message</string>
     <string name="switch_to_breakout_room">Switch to breakout room</string>
     <string name="switch_to_main_room">Switch to main room</string>
@@ -521,6 +523,7 @@
     <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
     <string name="userinfo_no_info_headline">No personal info set</string>
     <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
+    <string name="video_call">Video Call</string>
     <string name="whats_your_status">What is your status?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>

@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">賬戶圖示</string>
     <string name="appbar_search_in">%s內搜尋</string>
+    <string name="audio_call">語音通話</string>
     <string name="audio_output_bluetooth">藍牙</string>
     <string name="audio_output_dialog_headline">語音輸出</string>
     <string name="audio_output_phone">電話</string>
@@ -477,6 +478,7 @@
     <string name="shared_items_voice">語音</string>
     <string name="starred">我的最愛</string>
     <string name="startCallForbidden">你無權開始通話</string>
+    <string name="started_a_call">發起了通話</string>
     <string name="status_message">狀態訊息</string>
     <string name="switch_to_breakout_room">切換到分組討論室</string>
     <string name="switch_to_main_room">切換到主室</string>
@@ -521,6 +523,7 @@
     <string name="userinfo_error_text">無法檢索個人用戶資訊。</string>
     <string name="userinfo_no_info_headline">未設定個人資訊</string>
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、頭像和聯絡資訊</string>
+    <string name="video_call">視像通話</string>
     <string name="whats_your_status">您目前的狀態是什麼呢？</string>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 選票</item>

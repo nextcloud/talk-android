@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Hesap simgesi</string>
     <string name="appbar_search_in">%s içinde arama</string>
+    <string name="audio_call">Sesli çağrı</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Ses çıkışı</string>
     <string name="audio_output_phone">Telefon</string>
@@ -477,6 +478,7 @@
     <string name="shared_items_voice">Ses</string>
     <string name="starred">Sık kullanılanlara ekle</string>
     <string name="startCallForbidden">Bir çağrı başlatma izniniz yok</string>
+    <string name="started_a_call">bir çağrı başlattı</string>
     <string name="status_message">Durum iletisi</string>
     <string name="switch_to_breakout_room">Çalışma odasına geç</string>
     <string name="switch_to_main_room">Ana odaya geç</string>
@@ -521,6 +523,7 @@
     <string name="userinfo_error_text">Kullanıcının kişisel bilgileri alınamadı</string>
     <string name="userinfo_no_info_headline">Herhangi bir kişisel bilgi ayarlanmamış</string>
     <string name="userinfo_no_info_text">Profil sayfanızdan ad, görsel ve iletişim bilgilerinizi ekleyin.</string>
+    <string name="video_call">Görüntülü çağrı</string>
     <string name="whats_your_status">Durumunuz nedir?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d oy</item>

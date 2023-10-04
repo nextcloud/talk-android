@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Икона налога</string>
     <string name="appbar_search_in">Тражи у %s</string>
+    <string name="audio_call">Гласовни позив</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Аудио излаз</string>
     <string name="audio_output_phone">Телефон</string>
@@ -477,6 +478,7 @@
     <string name="shared_items_voice">Гласовна пошта</string>
     <string name="starred">Омиљени</string>
     <string name="startCallForbidden">Није вам дозвољене да започнете позив</string>
+    <string name="started_a_call">је започео позив</string>
     <string name="status_message">Порука стања</string>
     <string name="switch_to_breakout_room">Пређи у собу за одмор</string>
     <string name="switch_to_main_room">Пређи у главну собу</string>
@@ -521,6 +523,7 @@
     <string name="userinfo_error_text">Није успело добављање личних података о кориснику.</string>
     <string name="userinfo_no_info_headline">Нису постављени лични подаци</string>
     <string name="userinfo_no_info_text">Додајте име, слику и детаље за контакт на страницу профила.</string>
+    <string name="video_call">Видео позив</string>
     <string name="whats_your_status">Који је ваш статус?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d глас</item>

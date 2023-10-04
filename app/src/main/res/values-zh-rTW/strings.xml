@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">帳號圖示</string>
     <string name="appbar_search_in">在 %s內搜尋</string>
+    <string name="audio_call">音訊通話</string>
     <string name="audio_output_bluetooth">藍牙</string>
     <string name="audio_output_dialog_headline">音訊輸入</string>
     <string name="audio_output_phone">電話</string>
@@ -330,6 +331,7 @@
     <string name="nc_settings_notification_sounds_post_oreo">通知</string>
     <string name="nc_settings_other_notifications_ringtone">訊息</string>
     <string name="nc_settings_phone_book_integration_desc">根據電話號碼尋找相符的聯絡人以將 Talk 捷徑整合至系統聯絡人應用程式中</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">錯誤 429 太多請求</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">您可以設定電話號碼以讓其他使用者可以找到您</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">無效的電話號碼</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">電話號碼設定成功</string>
@@ -476,6 +478,7 @@
     <string name="shared_items_voice">語音</string>
     <string name="starred">收藏</string>
     <string name="startCallForbidden">您不被允許開始通話</string>
+    <string name="started_a_call">開始通話</string>
     <string name="status_message">狀態訊息</string>
     <string name="switch_to_breakout_room">切換至分組討論室</string>
     <string name="switch_to_main_room">切換至主要聊天室</string>
@@ -520,6 +523,7 @@
     <string name="userinfo_error_text">無法擷取個人使用者資訊。</string>
     <string name="userinfo_no_info_headline">未設定個人資訊</string>
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、大頭照和聯絡資訊。</string>
+    <string name="video_call">視訊通話</string>
     <string name="whats_your_status">您目前的狀態是什麼呢？</string>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 票</item>

@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">أيقونة الحساب </string>
     <string name="appbar_search_in">بحث في %s</string>
+    <string name="audio_call">مكالمة صوتية</string>
     <string name="audio_output_bluetooth">البلوتوث</string>
     <string name="audio_output_dialog_headline">مَخِرج الصوت</string>
     <string name="audio_output_phone">الهاتف</string>
@@ -477,6 +478,7 @@
     <string name="shared_items_voice">صوت</string>
     <string name="starred">المفضلة</string>
     <string name="startCallForbidden">لا يُمكنُك إجراءُ مكالمة</string>
+    <string name="started_a_call">بدأت مكالمةً</string>
     <string name="status_message">رسالة الحالة</string>
     <string name="switch_to_breakout_room">تبديل إلى غرفة جانبية breakout room</string>
     <string name="switch_to_main_room">تبديل إلى الغرفة الرئيسية main room</string>
@@ -521,6 +523,7 @@
     <string name="userinfo_error_text">فشل في استرداد المعلومات الشخصية للمستخدم</string>
     <string name="userinfo_no_info_headline">لم يتم تعيين أي معلومات شخصية</string>
     <string name="userinfo_no_info_text">أضِف الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>
+    <string name="video_call">مكالمة مرئية</string>
     <string name="whats_your_status">ماهي حالتك؟</string>
     <plurals name="polls_amount_voters">
         <item quantity="zero">%d أصوات</item>

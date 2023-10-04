@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Konto-Icon</string>
     <string name="appbar_search_in">Suche in %s</string>
+    <string name="audio_call">Audioanruf</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio-Ausgabe</string>
     <string name="audio_output_phone">Telefon</string>
@@ -477,6 +478,7 @@
     <string name="shared_items_voice">Sprachnachrichten</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Sie dürfen keinen Anruf zu tätigen</string>
+    <string name="started_a_call">Gat einen Anruf begonnen</string>
     <string name="status_message">Statusnachricht</string>
     <string name="switch_to_breakout_room">Zu Gruppenraum wechseln</string>
     <string name="switch_to_main_room">Zu Hauptraum wechseln</string>
@@ -521,6 +523,7 @@
     <string name="userinfo_error_text">Fehler beim Laden der persönlichen Nutzerinformationen.</string>
     <string name="userinfo_no_info_headline">Keine persönlichen Informationen eingestellt</string>
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
+    <string name="video_call">Videoanruf</string>
     <string name="whats_your_status">Wie ist Ihr Status?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d Stimme</item>
