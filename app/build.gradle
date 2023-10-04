@@ -140,7 +140,7 @@ android {
 ext {
     androidxCameraVersion = "1.2.3"
     coilKtVersion = "2.4.0"
-    daggerVersion = "2.48"
+    daggerVersion = "2.48.1"
     emojiVersion = "1.3.0"
     lifecycleVersion = '2.6.2'
     okhttpVersion = "4.11.0"
