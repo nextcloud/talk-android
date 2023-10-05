@@ -478,7 +478,7 @@
     <string name="shared_items_voice">Sprachnachrichten</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Sie dürfen keinen Anruf zu tätigen</string>
-    <string name="started_a_call">Gat einen Anruf begonnen</string>
+    <string name="started_a_call">hat einen Anruf begonnen</string>
     <string name="status_message">Statusnachricht</string>
     <string name="switch_to_breakout_room">Zu Gruppenraum wechseln</string>
     <string name="switch_to_main_room">Zu Hauptraum wechseln</string>

@@ -438,6 +438,7 @@
     <string name="scope_toggle_description">Изменить уровень конфиденциальности %1$s</string>
     <string name="scroll_to_bottom">Прокрутить вниз</string>
     <string name="secondsAgo">несколько секунд назад</string>
+    <string name="see_similar_system_messages">Посмотреть %1$s похожие сообщения</string>
     <string name="selected_list_item">Выбрано</string>
     <string name="send_to">Отправить в</string>
     <string name="send_to_forbidden">Вам не разрешено делиться контентом в этом чате</string>

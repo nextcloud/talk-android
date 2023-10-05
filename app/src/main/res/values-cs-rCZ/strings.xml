@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Ikona účtu</string>
     <string name="appbar_search_in">Hledat v %s</string>
+    <string name="audio_call">Hlasový hovor</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Zvukový výstup</string>
     <string name="audio_output_phone">Telefon</string>
@@ -477,6 +478,7 @@
     <string name="shared_items_voice">Hlas</string>
     <string name="starred">Oblíbené</string>
     <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>
+    <string name="started_a_call">zahájen hovor</string>
     <string name="status_message">Stavová zpráva</string>
     <string name="switch_to_breakout_room">Přepnout na přestávkovou místnost</string>
     <string name="switch_to_main_room">Přepnout na hlavní místnost</string>
@@ -521,6 +523,7 @@
     <string name="userinfo_error_text">Nepodařilo se získat osobní údaje uživatele.</string>
     <string name="userinfo_no_info_headline">Osobní údaje nejsou nastaveny</string>
     <string name="userinfo_no_info_text">Přidejte jméno, obrázek a kontaktní údaje na svou profilovou stránku.</string>
+    <string name="video_call">Videohovor</string>
     <string name="whats_your_status">Jaký je váš stav?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d hlas</item>
