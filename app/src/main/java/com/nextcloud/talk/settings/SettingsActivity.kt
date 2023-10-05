@@ -60,7 +60,6 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
@@ -104,6 +103,7 @@ import java.net.URISyntaxException
 import java.util.Locale
 import javax.inject.Inject
 
+@Suppress("LargeClass", "TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
 class SettingsActivity : BaseActivity() {
     private lateinit var binding: ActivitySettingsBinding
@@ -393,9 +393,11 @@ class SettingsActivity : BaseActivity() {
                 screenSecurityChangeListener = it
             }
         )
-        var pos = getStringArray(R.array.screen_lock_timeout_entry_values).indexOf(appPreferences.screenLockTimeout)
+        var pos = resources.getStringArray(R.array.screen_lock_timeout_entry_values).indexOf(
+            appPreferences.screenLockTimeout
+        )
         binding.settingsScreenLockTimeoutLayoutDropdown.setText(
-            getStringArray(R.array.screen_lock_timeout_descriptions)[pos]
+            resources.getStringArray(R.array.screen_lock_timeout_descriptions)[pos]
         )
         binding.settingsScreenLockTimeoutLayoutDropdown.setSimpleItems(R.array.screen_lock_timeout_descriptions)
         binding.settingsScreenLockTimeoutLayoutDropdown.setOnItemClickListener { _, _, position, _ ->
@@ -408,11 +410,11 @@ class SettingsActivity : BaseActivity() {
                 screenLockTimeoutChangeListener = it
             }
         )
-        pos = getStringArray(R.array.theme_entry_values).indexOf(appPreferences.theme)
-        binding.settingsTheme.setText(getStringArray(R.array.theme_descriptions)[pos])
+        pos = resources.getStringArray(R.array.theme_entry_values).indexOf(appPreferences.theme)
+        binding.settingsTheme.setText(resources.getStringArray(R.array.theme_descriptions)[pos])
         binding.settingsTheme.setSimpleItems(R.array.theme_descriptions)
         binding.settingsTheme.setOnItemClickListener { _, _, position, _ ->
-            val entryVal: String = getStringArray(R.array.theme_entry_values)[position]
+            val entryVal: String = resources.getStringArray(R.array.theme_entry_values)[position]
             appPreferences.theme = entryVal
         }
         appPreferences.registerThemeChangeListener(ThemeChangeListener().also { themeChangeListener = it })
@@ -426,9 +428,7 @@ class SettingsActivity : BaseActivity() {
                 readPrivacyChangeListener = it
             }
         )
-        binding.settingsPrivacy.setOnClickListener {
-            readPrivacyChangeListener!!.onChanged(!binding.settingsReadPrivacySwitch.isChecked)
-        }
+
         appPreferences.registerTypingStatusChangeListener(
             TypingStatusChangeListener().also {
                 typingStatusChangeListener = it
@@ -527,7 +527,7 @@ class SettingsActivity : BaseActivity() {
         binding.settingsProxyChoice.setText(appPreferences.proxyType)
         binding.settingsProxyChoice.setSimpleItems(R.array.proxy_type_descriptions)
         binding.settingsProxyChoice.setOnItemClickListener { _, _, position, _ ->
-            val entryVal = getStringArray(R.array.proxy_type_descriptions)[position]
+            val entryVal = resources.getStringArray(R.array.proxy_type_descriptions)[position]
             appPreferences.proxyType = entryVal
         }
 
