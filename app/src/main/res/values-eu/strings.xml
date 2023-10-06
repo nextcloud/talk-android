@@ -236,8 +236,8 @@
     <string name="nc_notification_channel_calls_description">Jakinarazi sarrera-deiei buruz</string>
     <string name="nc_notification_channel_messages">Mezuak</string>
     <string name="nc_notification_channel_messages_description">Jakinarazi sarrerako mezuei buruz</string>
-    <string name="nc_notification_channel_uploads">Kargak</string>
-    <string name="nc_notification_channel_uploads_description">Eman kargaren aurrerapenaren berri</string>
+    <string name="nc_notification_channel_uploads">Igoerak</string>
+    <string name="nc_notification_channel_uploads_description">Jakinarazi igoeraren egoeraren berri</string>
     <string name="nc_notification_settings">Jakinarazpen-ezarpenak</string>
     <string name="nc_notify_me_always">Jakinarazi beti</string>
     <string name="nc_notify_me_mention">Jakinarazi aipatzen nautenean</string>
@@ -388,12 +388,12 @@
     <string name="nc_upload_choose_local_files">Hautatu fitxategiak</string>
     <string name="nc_upload_confirm_send_multiple">Fitxategi hauek bidali %1$s(r)i?</string>
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
-    <string name="nc_upload_failed">Sentitzen dugu, kargatzeak huts egin du.</string>
-    <string name="nc_upload_failed_notification_text">Huts egin du %1$s-ren karga</string>
+    <string name="nc_upload_failed">Sentitzen dugu, igoerak huts egin du.</string>
+    <string name="nc_upload_failed_notification_text">%1$s-ren igoerak huts egin du</string>
     <string name="nc_upload_failed_notification_title">Hutsegitea</string>
     <string name="nc_upload_from_cloud">Partekatu %1$s(e)tik</string>
-    <string name="nc_upload_from_device">Kargatu gailutik</string>
-    <string name="nc_upload_in_progess">Kargatzen</string>
+    <string name="nc_upload_from_device">Igo gailutik</string>
+    <string name="nc_upload_in_progess">Igotzen</string>
     <string name="nc_upload_notification_text">%1$s %2$s-ra  - %3$s \%%</string>
     <string name="nc_upload_picture_from_cam">Atera argazkia</string>
     <string name="nc_upload_video_from_cam">Atera bideoa</string>
@@ -508,7 +508,7 @@
     <string name="typing_is_typing">idazten ari da ...</string>
     <string name="typing_x_others">eta beste %1$s idazten ari dira ...</string>
     <string name="unread">Irakurri gabe</string>
-    <string name="upload_new_avatar_from_device">Kargatu avatar berria gailutik</string>
+    <string name="upload_new_avatar_from_device">Igo avatar berria gailutik</string>
     <string name="user_info_address">Helbidea</string>
     <string name="user_info_displayname">Izen osoa</string>
     <string name="user_info_email">E-posta</string>
