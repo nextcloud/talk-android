@@ -448,6 +448,7 @@
     <string name="tomorrow">Zajtra</string>
     <string name="translate">Preložiť</string>
     <string name="translation_device_settings">Nastavenia zariadenia</string>
+    <string name="translation_error_message">Nepodarilo sa zistiť jazyk</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Pre</string>
     <string name="unread">Neprečítané</string>
