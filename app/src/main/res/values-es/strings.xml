@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Icono de la cuenta</string>
     <string name="appbar_search_in">Buscar en %s</string>
+    <string name="audio_call">Llamada de Audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Salida Audio</string>
     <string name="audio_output_phone">Teléfono</string>
@@ -331,6 +332,7 @@
     <string name="nc_settings_other_notifications_ringtone">Mensajes</string>
     <string name="nc_settings_phone_book_integration_desc">Comparar el número de teléfono de los contactos para integrar un acceso directo a Talk en la app de contactos del sistema
 </string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Error 429 Demasiadas Solicitudes</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Puede establecer su número de teléfono para que otros usuarios puedan encontrarlo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono no válido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Número de teléfono guardado correctamente</string>
@@ -477,6 +479,7 @@
     <string name="shared_items_voice">Voz</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">No estas autorizado a iniciar una llamada</string>
+    <string name="started_a_call">se inició la llamada</string>
     <string name="status_message">Mensaje de estado</string>
     <string name="switch_to_breakout_room">Cambiar a la sala de reuniones</string>
     <string name="switch_to_main_room">Cambiar a la sala principal</string>
@@ -521,6 +524,7 @@
     <string name="userinfo_error_text">Fallo al obtener la información personal del usuario.</string>
     <string name="userinfo_no_info_headline">No se ha configurado la información personal</string>
     <string name="userinfo_no_info_text">Añade tu nombre, imagen y detalles de contacto en tu página de perfil.</string>
+    <string name="video_call">Llamada de Video</string>
     <string name="whats_your_status">¿Cuál es su estado?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d voto</item>
