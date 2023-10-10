@@ -25,11 +25,9 @@ import android.content.Context;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.UserIdUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import org.greenrobot.eventbus.EventBus;
@@ -138,9 +136,6 @@ public class AddParticipantsToConversation extends Worker {
             }
         }
 
-        eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
-                                      EventStatus.EventType.PARTICIPANTS_UPDATE,
-                                      true));
         return Result.success();
     }
 }

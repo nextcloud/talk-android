@@ -75,36 +75,36 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                    android:id="@+id/conversation_info_name"
-                    android:layout_width="match_parent"
+                android:id="@+id/conversation_info_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:animateLayoutChanges="true"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/avatar_image"
+                    android:layout_width="@dimen/avatar_size_big"
+                    android:layout_height="@dimen/avatar_size_big"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/standard_margin"
+                    android:contentDescription="@string/avatar"
+                    tools:src="@drawable/account_circle_48dp" />
+
+                <androidx.emoji2.widget.EmojiTextView
+                    android:id="@+id/display_name_text"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_quarter_margin"
-                    android:animateLayoutChanges="true"
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    android:layout_marginStart="@dimen/standard_margin"
-                    android:layout_marginEnd="@dimen/standard_margin">
+                    android:layout_below="@id/avatar_image"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/margin_between_elements"
+                    android:textSize="@dimen/headline_text_size"
+                    tools:text="Jane Doe" />
 
-                    <ImageView
-                        android:id="@+id/avatar_image"
-                        android:layout_width="@dimen/avatar_size_big"
-                        android:layout_height="@dimen/avatar_size_big"
-                        android:layout_marginTop="@dimen/standard_margin"
-                        android:layout_centerHorizontal="true"
-                        android:contentDescription="@string/avatar"
-                        tools:src="@drawable/account_circle_48dp" />
-
-                    <androidx.emoji2.widget.EmojiTextView
-                        android:id="@+id/display_name_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/avatar_image"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/margin_between_elements"
-                        android:textSize="@dimen/headline_text_size"
-                        tools:text="Jane Doe" />
-
-                </RelativeLayout>
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/conversation_description"
@@ -119,43 +119,41 @@
                     android:id="@+id/description_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_half_margin"
-                    android:layout_marginBottom="@dimen/standard_half_margin"
                     android:layout_marginStart="@dimen/standard_margin"
+                    android:layout_marginTop="@dimen/standard_half_margin"
                     android:layout_marginEnd="@dimen/standard_margin"
+                    android:layout_marginBottom="@dimen/standard_half_margin"
                     android:autoLink="web"
                     tools:text="Hello world!" />
             </LinearLayout>
 
             <LinearLayout
-                    android:id="@+id/add_to_favorites_button"
-                    android:layout_width="match_parent"
+                android:id="@+id/add_to_favorites_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:orientation="horizontal"
+                android:padding="@dimen/standard_half_padding"
+                android:visibility="gone"
+                tools:visibility="gone">
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_quarter_margin"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/standard_half_padding"
-                    android:visibility="gone"
-                    tools:visibility="gone">
+                    android:background="@color/transparent"
+                    app:icon="@drawable/ic_star_black_24dp"
+                    app:iconGravity="textStart"
+                    app:iconSize="@dimen/sm_icon_height"
+                    app:iconTint="@color/grey_600" />
 
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/nc_add_to_favorites"
+                    android:textSize="@dimen/two_line_primary_text_size" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@color/transparent"
-                            app:icon="@drawable/ic_star_black_24dp"
-                            app:iconGravity="textStart"
-                            app:iconSize="@dimen/sm_icon_height"
-                            app:iconTint="@color/grey_600" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="@string/nc_add_to_favorites"
-                            android:textSize="@dimen/two_line_primary_text_size" />
-
-
-                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/settings"
@@ -187,251 +185,244 @@
             </LinearLayout>
 
             <LinearLayout
-                    android:id="@+id/shared_items"
+                android:id="@+id/shared_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/shared_items_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_quarter_margin"
-                    android:orientation="vertical"
-                    >
+                    android:padding="@dimen/standard_padding"
+                    android:text="@string/nc_shared_items"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/shared_items_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_folder_multiple_image"
+                        app:tint="@color/grey_600" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/shared_items_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/nc_shared_items"
-                        android:textSize="@dimen/headline_text_size"
-                        android:textStyle="bold"
-                        android:padding="@dimen/standard_padding"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="@string/nc_shared_items_description"
+                        android:textSize="@dimen/two_line_primary_text_size" />
 
-                    <LinearLayout
-                            android:id="@+id/shared_items_button"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/standard_padding"
-                            android:background="?android:attr/selectableItemBackground">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="40dp"
-                            android:layout_marginEnd="@dimen/standard_margin"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_folder_multiple_image"
-                            app:tint="@color/grey_600" />
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/nc_shared_items_description"
-                                    android:textSize="@dimen/two_line_primary_text_size" />
-
-                        </LinearLayout>
                 </LinearLayout>
+            </LinearLayout>
 
 
             <LinearLayout
-                    android:id="@+id/conversation_settings"
+                android:id="@+id/conversation_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/conversation_settings_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_quarter_margin"
-                    android:orientation="vertical"
-                    >
+                    android:padding="@dimen/standard_padding"
+                    android:text="@string/nc_conversation_settings"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textStyle="bold" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/conversation_settings_title"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/conversation_info_chat_settings_input_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/standard_margin"
+                    android:layout_marginTop="@dimen/standard_half_margin"
+                    android:hint="@string/nc_expire_messages">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/conversation_settings_dropdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_conversation_settings"
-                        android:textSize="@dimen/headline_text_size"
-                        android:textStyle="bold"
-                        android:padding="@dimen/standard_padding"/>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/conversation_info_chat_settings_input_layout"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_half_margin"
-                        android:layout_marginHorizontal="@dimen/standard_margin"
-                        android:hint="@string/nc_expire_messages">
-
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/conversation_settings_dropdown"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none"
-                            android:lines="1"
-                            android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
-                            android:text="" />
+                        android:inputType="none"
+                        android:lines="1"
+                        android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
+                        android:text="" />
 
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/conversation_info_expire_messages_explanation"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/standard_margin"
-                        android:text="@string/nc_expire_messages_explanation"
-                        android:textColor="@color/disabled_text"
-                        android:textSize="@dimen/supporting_text_text_size"/>
-                </LinearLayout>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/conversation_info_expire_messages_explanation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    android:text="@string/nc_expire_messages_explanation"
+                    android:textColor="@color/disabled_text"
+                    android:textSize="@dimen/supporting_text_text_size" />
+            </LinearLayout>
 
             <LinearLayout
-                    android:id="@+id/participants"
+                android:id="@+id/participants"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:ignore="UnknownIdInLayout"
+                tools:visibility="visible">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/participants_list_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/standard_padding"
+                    android:text="@string/nc_participants"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/addParticipantsAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/standard_quarter_margin"
-                    android:visibility="gone"
-                    tools:ignore="UnknownIdInLayout"
-                    tools:visibility="visible"
-                    android:orientation="vertical">
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_account_plus"
+                        app:tint="@color/grey_600" />
+
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/participants_list_category"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/standard_padding"
-                        android:text="@string/nc_participants"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/headline_text_size"
-                        android:textStyle="bold" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="@string/nc_participants_add"
+                        android:textSize="@dimen/two_line_primary_text_size" />
 
-                    <LinearLayout
-                            android:id="@+id/addParticipantsAction"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/standard_quarter_margin"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/standard_padding"
-                            android:background="?android:attr/selectableItemBackground">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="40dp"
-                            android:layout_marginEnd="@dimen/standard_margin"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_account_plus"
-                            app:tint="@color/grey_600" />
-
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:gravity="center_vertical"
-                                android:text="@string/nc_participants_add"
-                                android:textSize="@dimen/two_line_primary_text_size" />
-
-                        </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:listitem="@layout/rv_item_conversation_info_participant" />
                 </LinearLayout>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/rv_item_conversation_info_participant" />
+            </LinearLayout>
+
             <LinearLayout
-                    android:id="@+id/danger_zone_options"
+                android:id="@+id/danger_zone_options"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/standard_padding"
+                    android:text="@string/danger_zone"
+                    android:textColor="@color/design_default_color_error"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/leaveConversationAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/standard_quarter_margin"
-                    android:orientation="vertical"
-                    >
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_exit_to_app_black_24dp"
+                        app:tint="@color/design_default_color_error" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/danger_zone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="@string/nc_leave"
                         android:textColor="@color/design_default_color_error"
-                        android:textSize="@dimen/headline_text_size"
-                        android:textStyle="bold"
-                        android:padding="@dimen/standard_padding"/>
-
-                    <LinearLayout
-                            android:id="@+id/leaveConversationAction"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/standard_quarter_margin"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/standard_padding"
-                            android:background="?android:attr/selectableItemBackground">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="40dp"
-                            android:layout_marginEnd="@dimen/standard_margin"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_exit_to_app_black_24dp"
-                            app:tint="@color/design_default_color_error" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="@string/nc_leave"
-                            android:textColor="@color/design_default_color_error"
-                            android:textSize="@dimen/two_line_primary_text_size" />
-
-
-
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                            android:id="@+id/clearConversationHistory"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/standard_quarter_margin"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/standard_padding"
-                            android:background="?android:attr/selectableItemBackground">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="40dp"
-                            android:layout_marginEnd="@dimen/standard_margin"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_delete_black_24dp"
-                            app:tint="@color/design_default_color_error" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="@string/nc_clear_history"
-                            android:textColor="@color/design_default_color_error"
-                            android:textSize="@dimen/two_line_primary_text_size" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                            android:id="@+id/deleteConversationAction"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/standard_quarter_margin"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/standard_padding"
-                            android:background="?android:attr/selectableItemBackground">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="40dp"
-                            android:layout_marginEnd="@dimen/standard_margin"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_delete_black_24dp"
-                            app:tint="@color/design_default_color_error" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:text="@string/nc_delete_call"
-                            android:textColor="@color/design_default_color_error"
-                            android:textSize="@dimen/two_line_primary_text_size" />
-
-                    </LinearLayout>
+                        android:textSize="@dimen/two_line_primary_text_size" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/clearConversationHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_delete_black_24dp"
+                        app:tint="@color/design_default_color_error" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="@string/nc_clear_history"
+                        android:textColor="@color/design_default_color_error"
+                        android:textSize="@dimen/two_line_primary_text_size" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/deleteConversationAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_delete_black_24dp"
+                        app:tint="@color/design_default_color_error" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="@string/nc_delete_call"
+                        android:textColor="@color/design_default_color_error"
+                        android:textSize="@dimen/two_line_primary_text_size" />
+
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

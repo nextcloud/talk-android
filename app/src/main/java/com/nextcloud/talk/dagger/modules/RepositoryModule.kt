@@ -28,6 +28,8 @@ package com.nextcloud.talk.dagger.modules
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.chat.data.ChatRepositoryImpl
+import com.nextcloud.talk.conversation.repository.ConversationRepository
+import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepositoryImpl
 import com.nextcloud.talk.data.source.local.TalkDatabase
@@ -138,5 +140,11 @@ class RepositoryModule {
     fun provideConversationInfoEditRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew):
         ConversationInfoEditRepository {
         return ConversationInfoEditRepositoryImpl(ncApi, userProvider)
+    }
+
+    @Provides
+    fun provideConversationRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew):
+        ConversationRepository {
+        return ConversationRepositoryImpl(ncApi, userProvider)
     }
 }

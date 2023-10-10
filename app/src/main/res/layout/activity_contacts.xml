@@ -93,7 +93,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/initial_relative_layout"
+            android:id="@+id/public_conversation_create"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -124,7 +124,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/secondary_relative_layout"
+            android:id="@+id/public_conversation_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -174,40 +174,6 @@
             android:ellipsize="middle"
             android:singleLine="true"
             android:text="@string/nc_list_open_conversations"
-            android:textAlignment="viewStart"
-            android:textAppearance="@style/ListItem" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/join_conversation_via_link"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginTop="@dimen/standard_half_margin"
-        android:layout_marginEnd="@dimen/standard_margin"
-        android:layout_marginBottom="@dimen/standard_half_margin"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/join_conversation_via_link_image"
-            android:layout_width="@dimen/avatar_size"
-            android:layout_height="@dimen/avatar_size"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/standard_margin"
-            android:background="@drawable/round_bgnd"
-            android:contentDescription="@null"
-            android:padding="@dimen/standard_half_padding"
-            android:src="@drawable/ic_public_black_24px"
-            app:tint="@color/white" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/join_conversation_via_link_image"
-            android:ellipsize="middle"
-            android:singleLine="true"
-            android:text="@string/nc_join_via_link"
             android:textAlignment="viewStart"
             android:textAppearance="@style/ListItem" />
     </RelativeLayout>

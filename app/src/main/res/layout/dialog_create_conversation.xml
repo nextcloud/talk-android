@@ -27,22 +27,6 @@
     android:paddingTop="@dimen/standard_padding"
     android:paddingEnd="@dimen/standard_half_padding">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/ok_button"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_input_layout"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/standard_half_margin"
-        android:layout_marginBottom="@dimen/standard_half_margin"
-        android:alpha="0.7"
-        android:background="@color/bg_default"
-        android:enabled="false"
-        android:text="@string/nc_proceed"
-        android:textAllCaps="false"
-        android:textColor="@color/colorPrimary" />
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -50,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/standard_half_margin"
         android:layout_toStartOf="@id/smileyButton"
+        android:hint="@string/nc_call_name"
         app:errorTextAppearance="@style/ErrorAppearance"
         app:passwordToggleTint="@color/grey_600"
         app:boxStrokeColor="@color/colorPrimary"
@@ -77,7 +62,6 @@
         android:background="@color/transparent"
         android:contentDescription="@string/nc_add_emojis"
         android:src="@drawable/ic_insert_emoticon_black_24dp"
-        android:visibility="gone"
         app:tint="@color/medium_emphasis_text"
         tools:visibility="visible" />
 

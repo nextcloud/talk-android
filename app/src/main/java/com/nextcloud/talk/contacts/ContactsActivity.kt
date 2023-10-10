@@ -41,6 +41,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
@@ -51,9 +52,10 @@ import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
+import com.nextcloud.talk.conversation.CreateConversationDialogFragment
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityContactsBinding
+import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.events.OpenConversationEvent
 import com.nextcloud.talk.jobs.AddParticipantsToConversation
 import com.nextcloud.talk.models.RetrofitBucket
@@ -64,9 +66,9 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.openconversations.ListOpenConversationsActivity
-import com.nextcloud.talk.ui.dialog.ContactsBottomDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.UserIdUtils.getIdForUser
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -82,7 +84,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.parceler.Parcels
 import java.io.IOException
-import java.util.Collections
 import java.util.Locale
 import javax.inject.Inject
 
@@ -120,7 +121,6 @@ class ContactsActivity :
     private var existingParticipants: List<String>? = null
     private var isAddingParticipantsView = false
     private var conversationToken: String? = null
-    private var contactsBottomDialog: ContactsBottomDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,12 +160,8 @@ class ContactsActivity :
             toggleConversationPrivacyLayout(!isPublicCall)
         }
         if (isAddingParticipantsView) {
-            binding.joinConversationViaLink.visibility = View.GONE
             binding.callHeaderLayout.visibility = View.GONE
         } else {
-            binding.joinConversationViaLink.setOnClickListener {
-                joinConversationViaLink()
-            }
             binding.listOpenConversations.setOnClickListener {
                 listOpenConversations()
             }
@@ -228,7 +224,7 @@ class ContactsActivity :
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
         if (searchItem != null) {
-            binding?.titleTextView?.let {
+            binding.titleTextView.let {
                 viewThemeUtils.platform.colorToolbarMenuIcon(
                     it.context,
                     searchItem!!
@@ -270,7 +266,10 @@ class ContactsActivity :
     }
 
     private fun selectionDone() {
-        if (!isAddingParticipantsView) {
+        if (isAddingParticipantsView) {
+            addParticipantsToConversation()
+        } else {
+            // if there is only 1 participant, directly add him while creating room (which can only add 'one')
             if (!isPublicCall && selectedCircleIds.size + selectedGroupIds.size + selectedUserIds.size == 1) {
                 val userId: String
                 var sourceType: String? = null
@@ -290,8 +289,9 @@ class ContactsActivity :
                     }
                 }
                 createRoom(roomType, sourceType, userId)
+
+                // if there are more participants to add, ask for roomName and add them one after another
             } else {
-                val bundle = Bundle()
                 val roomType: Conversation.ConversationType = if (isPublicCall) {
                     Conversation.ConversationType.ROOM_PUBLIC_CALL
                 } else {
@@ -301,16 +301,19 @@ class ContactsActivity :
                 val groupIdsArray = ArrayList(selectedGroupIds)
                 val emailsArray = ArrayList(selectedEmails)
                 val circleIdsArray = ArrayList(selectedCircleIds)
-                bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType))
-                bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIdsArray)
-                bundle.putStringArrayList(BundleKeys.KEY_INVITED_GROUP, groupIdsArray)
-                bundle.putStringArrayList(BundleKeys.KEY_INVITED_EMAIL, emailsArray)
-                bundle.putStringArrayList(BundleKeys.KEY_INVITED_CIRCLE, circleIdsArray)
-                bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, ConversationOperationEnum.OPS_CODE_INVITE_USERS)
-                prepareAndShowBottomSheetWithBundle(bundle)
+
+                val createConversationDialog = CreateConversationDialogFragment.newInstance(
+                    userIdsArray,
+                    groupIdsArray,
+                    emailsArray,
+                    circleIdsArray,
+                    Parcels.wrap(roomType)
+                )
+                createConversationDialog.show(
+                    supportFragmentManager,
+                    TAG
+                )
             }
-        } else {
-            addParticipantsToConversation()
         }
     }
 
@@ -373,7 +376,38 @@ class ContactsActivity :
             AddParticipantsToConversation::class.java
         ).setInputData(data.build()).build()
         WorkManager.getInstance().enqueue(addParticipantsToConversationWorker)
-        finish()
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(addParticipantsToConversationWorker.id)
+            .observeForever { workInfo: WorkInfo? ->
+                if (workInfo != null) {
+                    when (workInfo.state) {
+                        WorkInfo.State.RUNNING -> {
+                            Log.d(TAG, "running AddParticipantsToConversation")
+                        }
+
+                        WorkInfo.State.SUCCEEDED -> {
+                            Log.d(TAG, "success AddParticipantsToConversation")
+
+                            eventBus.post(
+                                EventStatus(
+                                    getIdForUser(currentUser),
+                                    EventStatus.EventType.PARTICIPANTS_UPDATE,
+                                    true
+                                )
+                            )
+
+                            finish()
+                        }
+
+                        WorkInfo.State.FAILED -> {
+                            Log.d(TAG, "failed AddParticipantsToConversation")
+                        }
+
+                        else -> {
+                        }
+                    }
+                }
+            }
     }
 
     private fun initSearchView() {
@@ -401,14 +435,14 @@ class ContactsActivity :
     private fun fetchData() {
         dispose(null)
         alreadyFetching = true
-        userHeaderItems = HashMap<String, GenericTextHeaderItem>()
-        val query = adapter!!.getFilter(String::class.java) as String?
+        userHeaderItems = HashMap()
+        val query = adapter!!.getFilter(String::class.java)
         val retrofitBucket: RetrofitBucket =
             ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl, query)
-        val modifiedQueryMap: HashMap<String, Any?> = HashMap<String, Any?>(retrofitBucket.queryMap)
-        modifiedQueryMap.put("limit", CONTACTS_BATCH_SIZE)
+        val modifiedQueryMap: HashMap<String, Any?> = HashMap(retrofitBucket.queryMap)
+        modifiedQueryMap["limit"] = CONTACTS_BATCH_SIZE
         if (isAddingParticipantsView) {
-            modifiedQueryMap.put("itemId", conversationToken)
+            modifiedQueryMap["itemId"] = conversationToken
         }
         val shareTypesList: ArrayList<String> = ArrayList()
         // users
@@ -426,7 +460,7 @@ class ContactsActivity :
             // circles
             shareTypesList.add("7")
         }
-        modifiedQueryMap.put("shareTypes[]", shareTypesList)
+        modifiedQueryMap["shareTypes[]"] = shareTypesList
         ncApi.getContactsWithSearchParam(
             credentials,
             retrofitBucket.url,
@@ -444,7 +478,7 @@ class ContactsActivity :
                 override fun onNext(responseBody: ResponseBody) {
                     val newUserItemList = processAutocompleteUserList(responseBody)
 
-                    userHeaderItems = HashMap<String, GenericTextHeaderItem>()
+                    userHeaderItems = HashMap()
                     contactItems!!.addAll(newUserItemList)
 
                     sortUserItems(newUserItemList)
@@ -455,16 +489,16 @@ class ContactsActivity :
                         adapter?.filterItems()
                     }
 
-                    binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
+                    binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
                 }
 
                 override fun onError(e: Throwable) {
-                    binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
+                    binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
                     dispose(contactsQueryDisposable)
                 }
 
                 override fun onComplete() {
-                    binding?.controllerGenericRv?.swipeRefreshLayout?.isRefreshing = false
+                    binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
                     dispose(contactsQueryDisposable)
                     alreadyFetching = false
                     disengageProgressBar()
@@ -474,18 +508,18 @@ class ContactsActivity :
 
     private fun processAutocompleteUserList(responseBody: ResponseBody): MutableList<AbstractFlexibleItem<*>> {
         try {
-            val autocompleteOverall: AutocompleteOverall = LoganSquare.parse<AutocompleteOverall>(
+            val autocompleteOverall: AutocompleteOverall = LoganSquare.parse(
                 responseBody.string(),
                 AutocompleteOverall::class.java
             )
-            val autocompleteUsersList: ArrayList<AutocompleteUser> = ArrayList<AutocompleteUser>()
+            val autocompleteUsersList: ArrayList<AutocompleteUser> = ArrayList()
             autocompleteUsersList.addAll(autocompleteOverall.ocs!!.data!!)
             return processAutocompleteUserList(autocompleteUsersList)
         } catch (ioe: IOException) {
             Log.e(TAG, "Parsing response body failed while getting contacts", ioe)
         }
 
-        return ArrayList<AbstractFlexibleItem<*>>()
+        return ArrayList()
     }
 
     private fun processAutocompleteUserList(
@@ -493,7 +527,7 @@ class ContactsActivity :
     ): MutableList<AbstractFlexibleItem<*>> {
         var participant: Participant
         val actorTypeConverter = EnumActorTypeConverter()
-        val newUserItemList: MutableList<AbstractFlexibleItem<*>> = ArrayList<AbstractFlexibleItem<*>>()
+        val newUserItemList: MutableList<AbstractFlexibleItem<*>> = ArrayList()
         for (autocompleteUser in autocompleteUsersList) {
             if (autocompleteUser.id != null &&
                 autocompleteUser.id != currentUser!!.userId &&
@@ -529,7 +563,7 @@ class ContactsActivity :
                 resources!!.getString(R.string.nc_circles)
             }
             else -> {
-                participant.displayName!!.substring(0, 1).toUpperCase(Locale.getDefault())
+                participant.displayName!!.substring(0, 1).uppercase(Locale.getDefault())
             }
         }
     }
@@ -547,76 +581,72 @@ class ContactsActivity :
         return participant
     }
 
+    @Suppress("LongMethod")
     private fun sortUserItems(newUserItemList: MutableList<AbstractFlexibleItem<*>>) {
-        Collections.sort(
-            newUserItemList,
-            { o1: AbstractFlexibleItem<*>, o2: AbstractFlexibleItem<*> ->
-                val firstName: String = if (o1 is ContactItem) {
-                    (o1 as ContactItem).model.displayName!!
-                } else {
-                    (o1 as GenericTextHeaderItem).model
-                }
-                val secondName: String = if (o2 is ContactItem) {
-                    (o2 as ContactItem).model.displayName!!
-                } else {
-                    (o2 as GenericTextHeaderItem).model
-                }
-                if (o1 is ContactItem && o2 is ContactItem) {
-                    val firstSource: String = (o1 as ContactItem).model.source!!
-                    val secondSource: String = (o2 as ContactItem).model.source!!
-                    if (firstSource == secondSource) {
-                        return@sort firstName.compareTo(secondName, ignoreCase = true)
-                    }
-
-                    // First users
-                    if ("users" == firstSource) {
-                        return@sort -1
-                    } else if ("users" == secondSource) {
-                        return@sort 1
-                    }
-
-                    // Then groups
-                    if ("groups" == firstSource) {
-                        return@sort -1
-                    } else if ("groups" == secondSource) {
-                        return@sort 1
-                    }
-
-                    // Then circles
-                    if ("circles" == firstSource) {
-                        return@sort -1
-                    } else if ("circles" == secondSource) {
-                        return@sort 1
-                    }
-
-                    // Otherwise fall back to name sorting
-                    return@sort firstName.compareTo(secondName, ignoreCase = true)
-                }
-                firstName.compareTo(secondName, ignoreCase = true)
-            }
-        )
-
-        Collections.sort(
-            contactItems
-        ) { o1: AbstractFlexibleItem<*>, o2: AbstractFlexibleItem<*> ->
+        newUserItemList.sortWith sort@{ o1: AbstractFlexibleItem<*>, o2: AbstractFlexibleItem<*> ->
             val firstName: String = if (o1 is ContactItem) {
-                (o1 as ContactItem).model.displayName!!
+                o1.model.displayName!!
             } else {
                 (o1 as GenericTextHeaderItem).model
             }
             val secondName: String = if (o2 is ContactItem) {
-                (o2 as ContactItem).model.displayName!!
+                o2.model.displayName!!
             } else {
                 (o2 as GenericTextHeaderItem).model
             }
             if (o1 is ContactItem && o2 is ContactItem) {
-                if ("groups" == (o1 as ContactItem).model.source &&
-                    "groups" == (o2 as ContactItem).model.source
+                val firstSource: String = o1.model.source!!
+                val secondSource: String = o2.model.source!!
+                if (firstSource == secondSource) {
+                    return@sort firstName.compareTo(secondName, ignoreCase = true)
+                }
+
+                // First users
+                if ("users" == firstSource) {
+                    return@sort -1
+                } else if ("users" == secondSource) {
+                    return@sort 1
+                }
+
+                // Then groups
+                if ("groups" == firstSource) {
+                    return@sort -1
+                } else if ("groups" == secondSource) {
+                    return@sort 1
+                }
+
+                // Then circles
+                if ("circles" == firstSource) {
+                    return@sort -1
+                } else if ("circles" == secondSource) {
+                    return@sort 1
+                }
+
+                // Otherwise fall back to name sorting
+                return@sort firstName.compareTo(secondName, ignoreCase = true)
+            }
+            firstName.compareTo(secondName, ignoreCase = true)
+        }
+
+        contactItems?.sortWith sort@{ o1: AbstractFlexibleItem<*>, o2: AbstractFlexibleItem<*> ->
+            val firstName: String = if (o1 is ContactItem) {
+                o1.model.displayName!!
+            } else {
+                (o1 as GenericTextHeaderItem).model
+            }
+            val secondName: String = if (o2 is ContactItem) {
+                o2.model.displayName!!
+            } else {
+                (o2 as GenericTextHeaderItem).model
+            }
+            if (o1 is ContactItem && o2 is ContactItem) {
+                if ("groups" == o1.model.source &&
+                    "groups" == o2.model.source
                 ) {
                     return@sort firstName.compareTo(secondName, ignoreCase = true)
-                } else if ("groups" == (o1 as ContactItem).model.source) {
+                } else if ("groups" == o1.model.source) {
                     return@sort -1
-                } else if ("groups" == (o2 as ContactItem).model.source) {
+                } else if ("groups" == o2.model.source) {
                     return@sort 1
                 }
             }
@@ -626,24 +656,19 @@ class ContactsActivity :
 
     private fun prepareViews() {
         layoutManager = SmoothScrollLinearLayoutManager(this)
-        binding?.controllerGenericRv?.recyclerView?.layoutManager = layoutManager
-        binding?.controllerGenericRv?.recyclerView?.setHasFixedSize(true)
-        binding?.controllerGenericRv?.recyclerView?.adapter = adapter
-        binding?.controllerGenericRv?.swipeRefreshLayout?.setOnRefreshListener { fetchData() }
+        binding.controllerGenericRv.recyclerView.layoutManager = layoutManager
+        binding.controllerGenericRv.recyclerView.setHasFixedSize(true)
+        binding.controllerGenericRv.recyclerView.adapter = adapter
+        binding.controllerGenericRv.swipeRefreshLayout.setOnRefreshListener { fetchData() }
 
-        binding?.controllerGenericRv?.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it.swipeRefreshLayout) }
+        binding.controllerGenericRv.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it.swipeRefreshLayout) }
 
         binding.listOpenConversationsImage.background?.setColorFilter(
             ResourcesCompat.getColor(resources!!, R.color.colorBackgroundDarker, null),
             PorterDuff.Mode.SRC_IN
         )
 
-        binding.joinConversationViaLinkImage.background?.setColorFilter(
-            ResourcesCompat.getColor(resources!!, R.color.colorBackgroundDarker, null),
-            PorterDuff.Mode.SRC_IN
-        )
-
-        binding?.let {
+        binding.let {
             viewThemeUtils.platform.colorImageViewBackgroundAndIcon(it.publicCallLink)
         }
         disengageProgressBar()
@@ -655,7 +680,6 @@ class ContactsActivity :
             binding.controllerGenericRv.root.visibility = View.VISIBLE
             if (isNewConversationView) {
                 binding.callHeaderLayout.visibility = View.VISIBLE
-                binding.joinConversationViaLink.visibility = View.VISIBLE
             }
         }
     }
@@ -708,21 +732,12 @@ class ContactsActivity :
         }
     }
 
-    private fun prepareAndShowBottomSheetWithBundle(bundle: Bundle) {
-        // 11: create conversation-enter name for new conversation
-        // 10: get&join room when enter link
-        contactsBottomDialog = ContactsBottomDialog(this, bundle)
-        contactsBottomDialog?.show()
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(openConversationEvent: OpenConversationEvent) {
         val chatIntent = Intent(context, ChatActivity::class.java)
         chatIntent.putExtras(openConversationEvent.bundle!!)
         chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(chatIntent)
-
-        contactsBottomDialog?.dismiss()
     }
 
     override fun onItemClick(view: View, position: Int): Boolean {
@@ -730,7 +745,6 @@ class ContactsActivity :
             if (!isNewConversationView && !isAddingParticipantsView) {
                 createRoom(adapter?.getItem(position) as ContactItem)
             } else {
-                val participant: Participant = (adapter?.getItem(position) as ContactItem).model
                 updateSelection((adapter?.getItem(position) as ContactItem))
             }
         }
@@ -840,12 +854,6 @@ class ContactsActivity :
         return "groups" == contactItem.model.source && participant.selected && adapter?.selectedItemCount!! > 1
     }
 
-    private fun joinConversationViaLink() {
-        val bundle = Bundle()
-        bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM)
-        prepareAndShowBottomSheetWithBundle(bundle)
-    }
-
     private fun listOpenConversations() {
         val intent = Intent(this, ListOpenConversationsActivity::class.java)
         startActivity(intent)
@@ -854,28 +862,9 @@ class ContactsActivity :
     private fun toggleCallHeader() {
         toggleConversationPrivacyLayout(isPublicCall)
         isPublicCall = !isPublicCall
-        toggleConversationViaLinkVisibility(isPublicCall)
-
         enableContactForNonPublicCall()
         checkAndHandleDoneMenuItem()
         adapter?.notifyDataSetChanged()
-    }
-
-    private fun updateGroupParticipantSelection() {
-        val currentItems: List<AbstractFlexibleItem<*>> = adapter?.currentItems as
-            List<AbstractFlexibleItem<*>>
-        var internalParticipant: Participant
-        for (i in currentItems.indices) {
-            if (currentItems[i] is ContactItem) {
-                internalParticipant = (currentItems[i] as ContactItem).model
-                if (internalParticipant.calculatedActorType == Participant.ActorType.GROUPS &&
-                    internalParticipant.selected
-                ) {
-                    internalParticipant.selected = false
-                    selectedGroupIds.remove(internalParticipant.calculatedActorId)
-                }
-            }
-        }
     }
 
     private fun enableContactForNonPublicCall() {
@@ -891,20 +880,12 @@ class ContactsActivity :
 
     private fun toggleConversationPrivacyLayout(showInitialLayout: Boolean) {
         if (showInitialLayout) {
-            binding.initialRelativeLayout.visibility = View.VISIBLE
-            binding.secondaryRelativeLayout.visibility = View.GONE
+            binding.publicConversationCreate.visibility = View.VISIBLE
+            binding.publicConversationInfo.visibility = View.GONE
         } else {
-            binding.initialRelativeLayout.visibility = View.GONE
-            binding.secondaryRelativeLayout.visibility = View.VISIBLE
-        }
-    }
-
-    private fun toggleConversationViaLinkVisibility(isPublicCall: Boolean) {
-        if (isPublicCall) {
-            binding.joinConversationViaLink.visibility = View.GONE
-            updateGroupParticipantSelection()
-        } else {
-            binding.joinConversationViaLink.visibility = View.VISIBLE
+            binding.publicConversationCreate.visibility = View.GONE
+            binding.publicConversationInfo.visibility = View.VISIBLE
+            binding.listOpenConversations.visibility = View.GONE
         }
     }
 
