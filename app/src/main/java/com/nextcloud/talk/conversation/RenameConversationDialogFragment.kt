@@ -118,6 +118,15 @@ class RenameConversationDialogFragment : DialogFragment() {
         positiveButton.setOnClickListener {
             viewModel.renameConversation(roomToken, binding.textEdit.text.toString())
         }
+
+        themeDialog()
+    }
+
+    private fun themeDialog() {
+        viewThemeUtils.platform.themeDialog(binding.root)
+        viewThemeUtils.platform.colorTextButtons((dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE))
+        viewThemeUtils.platform.colorTextButtons((dialog as AlertDialog).getButton(AlertDialog.BUTTON_NEGATIVE))
+        viewThemeUtils.material.colorTextInputLayout(binding.textInputLayout)
     }
 
     private fun setupEmojiPopup() {
