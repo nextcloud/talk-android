@@ -62,27 +62,31 @@ class FullScreenImageActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            onBackPressedDispatcher.onBackPressed()
-            true
-        } else if (item.itemId == R.id.share) {
-            val shareUri = FileProvider.getUriForFile(
-                this,
-                BuildConfig.APPLICATION_ID,
-                File(path)
-            )
-
-            val shareIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_STREAM, shareUri)
-                type = IMAGE_PREFIX_GENERIC
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressedDispatcher.onBackPressed()
+                true
             }
-            startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
+            R.id.share -> {
+                val shareUri = FileProvider.getUriForFile(
+                    this,
+                    BuildConfig.APPLICATION_ID,
+                    File(path)
+                )
 
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+                val shareIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_STREAM, shareUri)
+                    type = IMAGE_PREFIX_GENERIC
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
+
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 
@@ -96,7 +100,7 @@ class FullScreenImageActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         initWindowInsetsController()
         applyWindowInsets()
-        binding.photoView.setOnPhotoTapListener { view, x, y ->
+        binding.photoView.setOnPhotoTapListener { _, _, _ ->
             toggleFullscreen()
         }
         binding.photoView.setOnOutsidePhotoTapListener {
@@ -185,7 +189,7 @@ class FullScreenImageActivity : AppCompatActivity() {
     }
 
     companion object {
-        private val TAG = "FullScreenImageActivity"
+        private const val TAG = "FullScreenImageActivity"
         private const val HUNDRED_MB = 100 * 1024 * 1024
         private const val MAX_SCALE = 6.0f
         private const val MEDIUM_SCALE = 2.45f
