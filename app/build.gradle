@@ -285,7 +285,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.10.1'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:5.5.0'
+    testImplementation 'org.mockito:mockito-core:5.6.0'
     androidTestImplementation 'org.mockito:mockito-android:5.5.0'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
 
