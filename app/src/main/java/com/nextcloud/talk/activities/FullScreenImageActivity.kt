@@ -32,8 +32,15 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -45,7 +52,7 @@ import java.io.File
 
 class FullScreenImageActivity : AppCompatActivity() {
     lateinit var binding: ActivityFullScreenImageBinding
-
+    private lateinit var windowInsetsController: WindowInsetsControllerCompat
     private lateinit var path: String
     private var showFullscreen = false
 
@@ -86,7 +93,9 @@ class FullScreenImageActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.imageviewToolbar)
-
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        initWindowInsetsController()
+        applyWindowInsets()
         binding.photoView.setOnPhotoTapListener { view, x, y ->
             toggleFullscreen()
         }
@@ -142,31 +151,37 @@ class FullScreenImageActivity : AppCompatActivity() {
     private fun toggleFullscreen() {
         showFullscreen = !showFullscreen
         if (showFullscreen) {
-            hideSystemUI()
-            supportActionBar?.hide()
+            enterImmersiveMode()
         } else {
-            showSystemUI()
-            supportActionBar?.show()
+            exitImmersiveMode()
         }
     }
 
-    private fun hideSystemUI() {
-        window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_IMMERSIVE
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN
-            )
+    private fun initWindowInsetsController() {
+        windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 
-    private fun showSystemUI() {
-        window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            )
+    private fun enterImmersiveMode() {
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+        supportActionBar?.hide()
+    }
+
+    private fun exitImmersiveMode() {
+        windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+        supportActionBar?.show()
+    }
+
+    private fun applyWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
+            val insets =
+                windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            binding.imageviewToolbar.updateLayoutParams<MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            binding.imageviewToolbar.updatePadding(left = insets.left, right = insets.right)
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     companion object {
