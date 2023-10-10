@@ -287,6 +287,7 @@ How to translate with transifex:
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Conversation name</string>
+    <string name="create_conversation">Create conversation</string>
     <string name="nc_add_emojis">Add emojis</string>
     <string name="nc_share_text">Join the conversation at %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s invitation</string>

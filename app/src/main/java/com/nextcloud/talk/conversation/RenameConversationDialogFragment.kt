@@ -85,7 +85,7 @@ class RenameConversationDialogFragment : DialogFragment() {
         binding = DialogRenameConversationBinding.inflate(LayoutInflater.from(context))
 
         val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context)
-            .setTitle(resources.getString(R.string.nc_call_name))
+            .setTitle(resources.getString(R.string.nc_rename))
             // listener is null for now to avoid closing after button was clicked.
             // listener is set later in onStart
             .setPositiveButton(R.string.nc_rename_confirm, null)

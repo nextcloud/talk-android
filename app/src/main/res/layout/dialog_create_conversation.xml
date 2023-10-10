@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/standard_half_margin"
         android:layout_toStartOf="@id/smileyButton"
+        android:hint="@string/nc_call_name"
         app:errorTextAppearance="@style/ErrorAppearance"
         app:passwordToggleTint="@color/grey_600"
         app:boxStrokeColor="@color/colorPrimary"
