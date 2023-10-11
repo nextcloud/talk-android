@@ -32,8 +32,15 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -45,7 +52,7 @@ import java.io.File
 
 class FullScreenImageActivity : AppCompatActivity() {
     lateinit var binding: ActivityFullScreenImageBinding
-
+    private lateinit var windowInsetsController: WindowInsetsControllerCompat
     private lateinit var path: String
     private var showFullscreen = false
 
@@ -55,27 +62,31 @@ class FullScreenImageActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            onBackPressedDispatcher.onBackPressed()
-            true
-        } else if (item.itemId == R.id.share) {
-            val shareUri = FileProvider.getUriForFile(
-                this,
-                BuildConfig.APPLICATION_ID,
-                File(path)
-            )
-
-            val shareIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_STREAM, shareUri)
-                type = IMAGE_PREFIX_GENERIC
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressedDispatcher.onBackPressed()
+                true
             }
-            startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
+            R.id.share -> {
+                val shareUri = FileProvider.getUriForFile(
+                    this,
+                    BuildConfig.APPLICATION_ID,
+                    File(path)
+                )
 
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+                val shareIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_STREAM, shareUri)
+                    type = IMAGE_PREFIX_GENERIC
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
+
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 
@@ -86,8 +97,10 @@ class FullScreenImageActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.imageviewToolbar)
-
-        binding.photoView.setOnPhotoTapListener { view, x, y ->
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        initWindowInsetsController()
+        applyWindowInsets()
+        binding.photoView.setOnPhotoTapListener { _, _, _ ->
             toggleFullscreen()
         }
         binding.photoView.setOnOutsidePhotoTapListener {
@@ -142,35 +155,41 @@ class FullScreenImageActivity : AppCompatActivity() {
     private fun toggleFullscreen() {
         showFullscreen = !showFullscreen
         if (showFullscreen) {
-            hideSystemUI()
-            supportActionBar?.hide()
+            enterImmersiveMode()
         } else {
-            showSystemUI()
-            supportActionBar?.show()
+            exitImmersiveMode()
         }
     }
 
-    private fun hideSystemUI() {
-        window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_IMMERSIVE
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN
-            )
+    private fun initWindowInsetsController() {
+        windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 
-    private fun showSystemUI() {
-        window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            )
+    private fun enterImmersiveMode() {
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+        supportActionBar?.hide()
+    }
+
+    private fun exitImmersiveMode() {
+        windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+        supportActionBar?.show()
+    }
+
+    private fun applyWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
+            val insets =
+                windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            binding.imageviewToolbar.updateLayoutParams<MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            binding.imageviewToolbar.updatePadding(left = insets.left, right = insets.right)
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     companion object {
-        private val TAG = "FullScreenImageActivity"
+        private const val TAG = "FullScreenImageActivity"
         private const val HUNDRED_MB = 100 * 1024 * 1024
         private const val MAX_SCALE = 6.0f
         private const val MEDIUM_SCALE = 2.45f

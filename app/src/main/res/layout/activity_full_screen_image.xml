@@ -28,7 +28,6 @@
     android:id="@+id/image_wrapper_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".activities.FullScreenImageActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
