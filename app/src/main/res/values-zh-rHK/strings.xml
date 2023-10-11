@@ -21,6 +21,7 @@
     <string name="close">關閉</string>
     <string name="continuous_voice_message_recording">鎖定錄音以連續錄製語音訊息</string>
     <string name="conversations">對話</string>
+    <string name="create_conversation">建立對話</string>
     <string name="custom">自訂</string>
     <string name="danger_zone">危險地帶</string>
     <string name="delete_avatar">刪除虛擬化身大頭照</string>
@@ -110,6 +111,7 @@
     <string name="nc_client_cert_setup">設置客戶端證書</string>
     <string name="nc_close_app">關閉應用程式</string>
     <string name="nc_common_and">及</string>
+    <string name="nc_common_create">創建</string>
     <string name="nc_common_dismiss">撤銷</string>
     <string name="nc_common_error_sorry">發生錯誤了：（</string>
     <string name="nc_common_set">設定</string>
@@ -275,6 +277,7 @@
     <string name="nc_remove_group_and_members">移除群組及組員</string>
     <string name="nc_remove_participant">移除參與者</string>
     <string name="nc_rename">重新命名對話</string>
+    <string name="nc_rename_confirm">重新命名</string>
     <string name="nc_reply">回覆</string>
     <string name="nc_reply_privately">私下回覆</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>

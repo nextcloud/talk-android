@@ -14,6 +14,7 @@
     <string name="clear_status_message_after">Rensa statusmeddelande efter</string>
     <string name="close">Stäng</string>
     <string name="conversations">Konversationer</string>
+    <string name="create_conversation">Skapa konversation</string>
     <string name="custom">Anpassad</string>
     <string name="delete_avatar">Ta bort avatar</string>
     <string name="dnd">Stör ej</string>
@@ -70,6 +71,7 @@
     <string name="nc_client_cert_change">Ändra klientcertifikat</string>
     <string name="nc_client_cert_setup">Konfigurera klientcertifikat</string>
     <string name="nc_common_and">och</string>
+    <string name="nc_common_create">Skapa</string>
     <string name="nc_common_dismiss">Avfärda</string>
     <string name="nc_common_error_sorry">Ledsen, någonting gick fel!</string>
     <string name="nc_common_set">Sätt</string>
@@ -184,6 +186,7 @@
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
     <string name="nc_remove_participant">Ta bort deltagare</string>
     <string name="nc_rename">Byt namn på konversation</string>
+    <string name="nc_rename_confirm">Döp om</string>
     <string name="nc_reply">Svara</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_300">5 minuter</string>

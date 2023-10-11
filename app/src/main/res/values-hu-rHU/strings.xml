@@ -18,6 +18,7 @@
     <string name="clear_status_message_after">Állapotüzenet törlése ennyi idő után:</string>
     <string name="close">Bezárás</string>
     <string name="conversations">Beszélgetések</string>
+    <string name="create_conversation">Beszélgetés létrehozása</string>
     <string name="custom">Egyéni</string>
     <string name="delete_avatar">Profilkép törlése</string>
     <string name="dnd">Ne zavarjanak</string>
@@ -102,6 +103,7 @@
     <string name="nc_client_cert_setup">Klienstanúsítvány beállítása</string>
     <string name="nc_close_app">Alkalmazás bezárása</string>
     <string name="nc_common_and">és</string>
+    <string name="nc_common_create">Létrehozás</string>
     <string name="nc_common_dismiss">Elutasítás</string>
     <string name="nc_common_error_sorry">Valami hiba történt!</string>
     <string name="nc_common_set">Beállítás</string>

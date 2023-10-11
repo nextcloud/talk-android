@@ -19,6 +19,7 @@
     <string name="clear_status_message_after">Esborra el missatge d\'estat després</string>
     <string name="close">Tanca</string>
     <string name="conversations">Converses</string>
+    <string name="create_conversation">Crea una conversa</string>
     <string name="custom">Personalitzat</string>
     <string name="delete_avatar">Suprimeix l\'avatar</string>
     <string name="dnd">No molesteu</string>
@@ -100,6 +101,7 @@
     <string name="nc_client_cert_change">Canvia el certificat del client</string>
     <string name="nc_client_cert_setup">Configureu el certificat del client</string>
     <string name="nc_common_and">i</string>
+    <string name="nc_common_create">Crea</string>
     <string name="nc_common_dismiss">Descarta</string>
     <string name="nc_common_error_sorry">Disculpeu, alguna cosa ha anat malament!</string>
     <string name="nc_common_set">Estableix</string>
@@ -251,6 +253,7 @@
     <string name="nc_remove_group_and_members">Suprimeix el grup i els membres</string>
     <string name="nc_remove_participant">Suprimeix el participant</string>
     <string name="nc_rename">Reanomena la conversa</string>
+    <string name="nc_rename_confirm">Anomena</string>
     <string name="nc_reply">Respon</string>
     <string name="nc_reply_privately">Respon en privat</string>
     <string name="nc_screen_lock_timeout_30">30 segons</string>

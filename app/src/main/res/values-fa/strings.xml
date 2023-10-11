@@ -20,6 +20,7 @@
     <string name="close">بسته</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
     <string name="conversations">گفتگو</string>
+    <string name="create_conversation">Create conversation</string>
     <string name="custom">Custom</string>
     <string name="danger_zone">Danger Zone</string>
     <string name="delete_avatar">آواتار را پاک کن</string>
@@ -109,6 +110,7 @@
     <string name="nc_client_cert_setup">گواهی مشتری تنظیم کنید</string>
     <string name="nc_close_app">Close app</string>
     <string name="nc_common_and">and</string>
+    <string name="nc_common_create">ایجاد</string>
     <string name="nc_common_dismiss">پنهان کن</string>
     <string name="nc_common_error_sorry">متاسفیم؛ خطایی پیش آمد</string>
     <string name="nc_common_set">تنظیم</string>
@@ -274,6 +276,7 @@
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_remove_participant">شرکت کننده را حذف کنید</string>
     <string name="nc_rename">تغییر نام مکالمه</string>
+    <string name="nc_rename_confirm">تغییرنام</string>
     <string name="nc_reply">پاسخ</string>
     <string name="nc_reply_privately">Reply privately</string>
     <string name="nc_screen_lock_timeout_30">۳۰ ثانیه</string>

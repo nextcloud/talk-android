@@ -17,6 +17,7 @@
     <string name="clear_status_message_after">ステータスメッセージの有効期限</string>
     <string name="close">閉じる</string>
     <string name="conversations">会話</string>
+    <string name="create_conversation">会話を作成</string>
     <string name="custom">カスタム</string>
     <string name="delete_avatar">アバターを削除</string>
     <string name="dnd">取り込み中</string>
@@ -89,6 +90,7 @@
     <string name="nc_client_cert_change">クライアント証明書を変更する</string>
     <string name="nc_client_cert_setup">クライアント証明書を設定する</string>
     <string name="nc_common_and">かつ</string>
+    <string name="nc_common_create">作成</string>
     <string name="nc_common_dismiss">閉じる</string>
     <string name="nc_common_error_sorry">不明なエラーが発生しました。</string>
     <string name="nc_common_set">設定</string>

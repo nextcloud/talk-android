@@ -18,6 +18,7 @@
     <string name="clear_status_message_after">Statusbericht wissen na</string>
     <string name="close">Sluit</string>
     <string name="conversations">Gesprekken</string>
+    <string name="create_conversation">Maak gesprek</string>
     <string name="custom">Aangepast</string>
     <string name="delete_avatar">Verwijder avatar</string>
     <string name="dnd">Niet storen</string>
@@ -95,6 +96,7 @@
     <string name="nc_client_cert_change">Wijzig clientcertificaat</string>
     <string name="nc_client_cert_setup">Instellen clientcertificaat</string>
     <string name="nc_common_and">en</string>
+    <string name="nc_common_create">Creëer</string>
     <string name="nc_common_dismiss">Wissen</string>
     <string name="nc_common_error_sorry">Sorry, er is iets fout gegaan!</string>
     <string name="nc_common_set">Instellen</string>
@@ -236,6 +238,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_remove_group_and_members">Verwijderen groep en leden</string>
     <string name="nc_remove_participant">Verwijder deelnemer</string>
     <string name="nc_rename">Hernoem gesprek</string>
+    <string name="nc_rename_confirm">Hernoemen</string>
     <string name="nc_reply">Antwoord</string>
     <string name="nc_reply_privately">Antwoord privé</string>
     <string name="nc_screen_lock_timeout_30">30 seconden</string>

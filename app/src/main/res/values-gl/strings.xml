@@ -20,6 +20,7 @@
     <string name="close">Pechar</string>
     <string name="continuous_voice_message_recording">Bloquear a gravación para gravar continuamente a mensaxe de voz</string>
     <string name="conversations">Conversas</string>
+    <string name="create_conversation">Crear conversa</string>
     <string name="custom">Personalizado</string>
     <string name="danger_zone">Zona de perigo</string>
     <string name="delete_avatar">Eliminar avatar</string>
@@ -109,6 +110,7 @@
     <string name="nc_client_cert_setup">Configurar o certificado do cliente</string>
     <string name="nc_close_app">Pechar a aplicación</string>
     <string name="nc_common_and">e</string>
+    <string name="nc_common_create">Crear</string>
     <string name="nc_common_dismiss">Rexeitar</string>
     <string name="nc_common_error_sorry">Desculpe, algo foi mal!</string>
     <string name="nc_common_set">Estabelecer</string>

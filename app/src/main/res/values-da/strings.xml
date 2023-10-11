@@ -10,6 +10,7 @@
     <string name="clear_status_message_after">Ryd status notifikationer efter</string>
     <string name="close">Luk</string>
     <string name="conversations">Samtaler</string>
+    <string name="create_conversation">Opret samtale</string>
     <string name="custom">Valgfrit</string>
     <string name="dnd">Forstyr ikke</string>
     <string name="dontClear">Ryd ikke</string>
@@ -58,6 +59,7 @@
     <string name="nc_client_cert_change">Skift kliencertifikat</string>
     <string name="nc_client_cert_setup">Indstil klientcertifikat</string>
     <string name="nc_common_and">og</string>
+    <string name="nc_common_create">Opret</string>
     <string name="nc_common_dismiss">Afvis</string>
     <string name="nc_common_error_sorry">Noget gik galt, undskyld!</string>
     <string name="nc_common_set">Sæt</string>
@@ -165,6 +167,7 @@
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_participant">Fjern deltager</string>
     <string name="nc_rename">Omdøb samtale</string>
+    <string name="nc_rename_confirm">Omdøb</string>
     <string name="nc_reply">Besvar</string>
     <string name="nc_reply_privately">Svar privat</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>

@@ -18,6 +18,7 @@
     <string name="clear_status_message_after">Cancella il messaggio di stato dopo</string>
     <string name="close">Chiudi</string>
     <string name="conversations">Conversazioni</string>
+    <string name="create_conversation">Crea conversazione</string>
     <string name="custom">Personalizzato</string>
     <string name="delete_avatar">Elimina avatar</string>
     <string name="dnd">Non disturbare</string>
@@ -95,6 +96,7 @@
     <string name="nc_client_cert_change">Cambia certificato client</string>
     <string name="nc_client_cert_setup">Configura certificato client</string>
     <string name="nc_common_and">e</string>
+    <string name="nc_common_create">Crea</string>
     <string name="nc_common_dismiss">Annulla</string>
     <string name="nc_common_error_sorry">Spiacenti, qualcosa non ha funzionato!</string>
     <string name="nc_common_set">Imposta</string>

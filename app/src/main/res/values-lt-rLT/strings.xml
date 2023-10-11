@@ -10,6 +10,7 @@
     <string name="clear_status_message_after">Išvalyti būsenos žinutę po</string>
     <string name="close">Užverti</string>
     <string name="conversations">Pokalbiai</string>
+    <string name="create_conversation">Sukurti pokalbį</string>
     <string name="custom">Tinkinti</string>
     <string name="dnd">Netrukdyti</string>
     <string name="dontClear">Neišvalyti</string>
@@ -61,6 +62,7 @@
     <string name="nc_client_cert_change">Keisti kliento programėlės liudijimą</string>
     <string name="nc_client_cert_setup">Nustatyti kliento programėlės liudijimą</string>
     <string name="nc_common_and">ir</string>
+    <string name="nc_common_create">Sukurti</string>
     <string name="nc_common_dismiss">Atmesti</string>
     <string name="nc_common_error_sorry">Atleiskite, kažkas nutiko!</string>
     <string name="nc_common_set">Nustatyti</string>

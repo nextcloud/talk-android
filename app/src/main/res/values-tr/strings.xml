@@ -21,6 +21,7 @@
     <string name="close">Kapat</string>
     <string name="continuous_voice_message_recording">Sesli iletinin sürekli olarak kaydedilmesi için kaydı kilitleyin</string>
     <string name="conversations">Görüşmeler</string>
+    <string name="create_conversation">Görüşme oluştur</string>
     <string name="custom">Özel</string>
     <string name="danger_zone">Tehlikeli bölge</string>
     <string name="delete_avatar">Avatarı sil</string>
@@ -110,6 +111,7 @@
     <string name="nc_client_cert_setup">İstemci sertifikası kurulumu</string>
     <string name="nc_close_app">Uygulamayı kapat</string>
     <string name="nc_common_and">ve</string>
+    <string name="nc_common_create">Ekle</string>
     <string name="nc_common_dismiss">Yok say</string>
     <string name="nc_common_error_sorry">Ne yazık ki bir sorun çıktı!</string>
     <string name="nc_common_set">Ayarla</string>
@@ -275,6 +277,7 @@
     <string name="nc_remove_group_and_members">Grup ve üyelerini sil</string>
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>
     <string name="nc_rename">Görüşmeyi yeniden adlandır</string>
+    <string name="nc_rename_confirm">Yeniden adlandır</string>
     <string name="nc_reply">Yanıtla</string>
     <string name="nc_reply_privately">Kişisel yanıt gönder</string>
     <string name="nc_screen_lock_timeout_30">30 saniye</string>

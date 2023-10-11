@@ -13,6 +13,7 @@
     <string name="clear_status_message_after">Fjern statusmelding etter</string>
     <string name="close">Lukk</string>
     <string name="conversations">Samtaler</string>
+    <string name="create_conversation">Opprett samtale</string>
     <string name="custom">Egendefinert</string>
     <string name="delete_avatar">Slett data</string>
     <string name="dnd">Ikke forstyrr</string>
@@ -67,6 +68,7 @@
     <string name="nc_client_cert_change">Endre klient sertifikat</string>
     <string name="nc_client_cert_setup">Sett opp klient sertifikat</string>
     <string name="nc_common_and">og</string>
+    <string name="nc_common_create">Opprett</string>
     <string name="nc_common_dismiss">Forkast</string>
     <string name="nc_common_error_sorry">Noe gikk galt.</string>
     <string name="nc_common_set">Sett</string>

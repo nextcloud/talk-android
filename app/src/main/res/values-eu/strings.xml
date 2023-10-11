@@ -20,6 +20,7 @@
     <string name="close">Itxi</string>
     <string name="continuous_voice_message_recording">Blokeatu grabazioa ahots-mezua etengabe grabatzeko</string>
     <string name="conversations">Elkarrizketak</string>
+    <string name="create_conversation">Sortu elkarrizketa</string>
     <string name="custom">Pertsonalizatua</string>
     <string name="danger_zone">Arrisku eremua</string>
     <string name="delete_avatar">Ezabatu avatarra</string>
@@ -109,6 +110,7 @@
     <string name="nc_client_cert_setup">Konfiguratu bezeroaren ziurtagiria</string>
     <string name="nc_close_app">Itxi aplikazioa</string>
     <string name="nc_common_and">eta</string>
+    <string name="nc_common_create">Sortu</string>
     <string name="nc_common_dismiss">Baztertu</string>
     <string name="nc_common_error_sorry">Sentitzen dugu, zerbait gaizki joan da!</string>
     <string name="nc_common_set">Ezarri</string>
@@ -274,6 +276,7 @@
     <string name="nc_remove_group_and_members">Kendu taldea eta kideak</string>
     <string name="nc_remove_participant">Kendu parte-hartzailea</string>
     <string name="nc_rename">Aldatu izena elkarrizktari</string>
+    <string name="nc_rename_confirm">Berrizendatu</string>
     <string name="nc_reply">Erantzun</string>
     <string name="nc_reply_privately">Erantzun pribatuki</string>
     <string name="nc_screen_lock_timeout_30">30 segundo</string>

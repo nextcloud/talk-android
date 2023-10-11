@@ -18,6 +18,7 @@
     <string name="clear_status_message_after">过多长时间清除状态消息</string>
     <string name="close">关闭</string>
     <string name="conversations">对话</string>
+    <string name="create_conversation">建立对话</string>
     <string name="custom">自定义</string>
     <string name="danger_zone">危险区域</string>
     <string name="delete_avatar">删除头像</string>
@@ -104,6 +105,7 @@
     <string name="nc_client_cert_setup">设置客户端证书</string>
     <string name="nc_close_app">关闭应用</string>
     <string name="nc_common_and">和</string>
+    <string name="nc_common_create">创建</string>
     <string name="nc_common_dismiss">不予理会</string>
     <string name="nc_common_error_sorry">抱歉，出问题了！</string>
     <string name="nc_common_set">设置</string>
@@ -264,6 +266,7 @@
     <string name="nc_remove_group_and_members">移除群组和成员</string>
     <string name="nc_remove_participant">移除参与者</string>
     <string name="nc_rename">重命名对话</string>
+    <string name="nc_rename_confirm">重命名</string>
     <string name="nc_reply">回复</string>
     <string name="nc_reply_privately">私下回复</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>

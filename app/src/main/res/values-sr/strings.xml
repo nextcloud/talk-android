@@ -21,6 +21,7 @@
     <string name="close">Затвори</string>
     <string name="continuous_voice_message_recording">Закључајте снимање да би се гласовна порука непрестано снимала.</string>
     <string name="conversations">Разговори</string>
+    <string name="create_conversation">Креирај разговор</string>
     <string name="custom">Прилагођено</string>
     <string name="danger_zone">Зона опасности</string>
     <string name="delete_avatar">Обриши аватар</string>
@@ -110,6 +111,7 @@
     <string name="nc_client_cert_setup">Подесите клијентски сертификат</string>
     <string name="nc_close_app">Затвори апликацију</string>
     <string name="nc_common_and">и</string>
+    <string name="nc_common_create">Креирање</string>
     <string name="nc_common_dismiss">Уклони</string>
     <string name="nc_common_error_sorry">Извињавамо се, нешто је пошло наопако!</string>
     <string name="nc_common_set">Постави</string>
@@ -275,6 +277,7 @@
     <string name="nc_remove_group_and_members">Уклони групу и чланове</string>
     <string name="nc_remove_participant">Уклони учесника</string>
     <string name="nc_rename">Преименуј разговор</string>
+    <string name="nc_rename_confirm">Преименуј</string>
     <string name="nc_reply">Одговори</string>
     <string name="nc_reply_privately">Одговори приватно</string>
     <string name="nc_screen_lock_timeout_30">30 секунди</string>

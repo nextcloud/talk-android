@@ -20,6 +20,7 @@
     <string name="close">Fermer</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
     <string name="conversations">Discussions</string>
+    <string name="create_conversation">Créer la conversation</string>
     <string name="custom">Personnalisé</string>
     <string name="danger_zone">Zone de danger</string>
     <string name="delete_avatar">Supprimer l\'avatar</string>
@@ -109,6 +110,7 @@
     <string name="nc_client_cert_setup">Configurer le certificat du client</string>
     <string name="nc_close_app">Fermer l\'application</string>
     <string name="nc_common_and">et</string>
+    <string name="nc_common_create">Créer</string>
     <string name="nc_common_dismiss">Ignorer</string>
     <string name="nc_common_error_sorry">Désolé, quelque chose s’est mal passé !</string>
     <string name="nc_common_set">Sauver</string>
