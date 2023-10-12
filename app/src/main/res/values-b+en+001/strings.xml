@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Account icon</string>
+    <string name="added_to_favorites">Added conversation %1$s to favourites</string>
     <string name="appbar_search_in">Search in %s</string>
     <string name="audio_call">Audio Call</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -25,6 +26,7 @@
     <string name="custom">Custom</string>
     <string name="danger_zone">Danger Zone</string>
     <string name="delete_avatar">Delete avatar</string>
+    <string name="deleted_conversation">Deleted conversation %1$s</string>
     <string name="dnd">Do not disturb</string>
     <string name="dontClear">Don\'t clear</string>
     <string name="edit">Edit</string>
@@ -40,9 +42,12 @@
     <string name="fourHours">4 hours</string>
     <string name="invisible">Invisible</string>
     <string name="later_today">Later today</string>
+    <string name="left_conversation">You left the conversation %1$s</string>
     <string name="load_more_results">Load more results</string>
     <string name="lock_symbol">Lock symbol</string>
     <string name="lower_hand">Lower hand</string>
+    <string name="marked_as_read">Marked conversation %1$s as read</string>
+    <string name="marked_as_unread">Marked conversation %1$s as unread</string>
     <string name="mentioned">Mentioned</string>
     <string name="menu_item_sort_by_date_newest_first">Newest first</string>
     <string name="menu_item_sort_by_date_oldest_first">Oldest first</string>
@@ -447,6 +452,8 @@
     <string name="record_stop_confirm_title">Stop Call recording</string>
     <string name="record_stop_description">Stop recording</string>
     <string name="record_stopping">Stopping recording …</string>
+    <string name="removed_from_favorites">Removed conversation %1$s from favourites</string>
+    <string name="renamed_conversation">Conversation %1$s was renamed</string>
     <string name="restrict_join_other_room_while_call">It is not possible to join other rooms while in a call</string>
     <string name="save">Save</string>
     <string name="scope_federated_description">Only synchronize to trusted servers</string>

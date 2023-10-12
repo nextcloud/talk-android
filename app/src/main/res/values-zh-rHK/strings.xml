@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">賬戶圖示</string>
+    <string name="added_to_favorites">添加了對話 %1$s 至最愛</string>
     <string name="appbar_search_in">%s內搜尋</string>
     <string name="audio_call">語音通話</string>
     <string name="audio_output_bluetooth">藍牙</string>
@@ -25,6 +26,7 @@
     <string name="custom">自訂</string>
     <string name="danger_zone">危險地帶</string>
     <string name="delete_avatar">刪除虛擬化身大頭照</string>
+    <string name="deleted_conversation">已刪除對話 %1$s</string>
     <string name="dnd">請勿打擾</string>
     <string name="dontClear">不要清除</string>
     <string name="edit">編輯</string>
@@ -40,9 +42,12 @@
     <string name="fourHours">4 小時</string>
     <string name="invisible">隱藏</string>
     <string name="later_today">今日稍後</string>
+    <string name="left_conversation">你離開了對話 %1$s</string>
     <string name="load_more_results">正在載入更多結果</string>
     <string name="lock_symbol">鎖符號</string>
     <string name="lower_hand">放下手</string>
+    <string name="marked_as_read">將對話 %1$s 標記為已讀</string>
+    <string name="marked_as_unread">將對話 %1$s 標記為未讀</string>
     <string name="mentioned">已提及</string>
     <string name="menu_item_sort_by_date_newest_first">最新先</string>
     <string name="menu_item_sort_by_date_oldest_first">最舊先</string>
@@ -447,6 +452,8 @@
     <string name="record_stop_confirm_title">停止通話錄音</string>
     <string name="record_stop_description">停止錄音</string>
     <string name="record_stopping">停止錄音 ...</string>
+    <string name="removed_from_favorites">從最愛移除了對話 %1$s</string>
+    <string name="renamed_conversation">對話 %1$s 被重新命名</string>
     <string name="restrict_join_other_room_while_call">通話時無法加入其他聊天室</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>

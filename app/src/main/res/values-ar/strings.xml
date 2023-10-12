@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">أيقونة الحساب </string>
+    <string name="added_to_favorites">أضِف المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
     <string name="audio_call">مكالمة صوتية</string>
     <string name="audio_output_bluetooth">البلوتوث</string>
@@ -25,6 +26,7 @@
     <string name="custom">مُخصّص</string>
     <string name="danger_zone">منطقة خطر</string>
     <string name="delete_avatar">إمسح الرمز التجسيدي avatar</string>
+    <string name="deleted_conversation">محادثة محذوفة %1$s</string>
     <string name="dnd">الرجاء عدم الإزعاج</string>
     <string name="dontClear">لا تمحُ</string>
     <string name="edit">تعديل</string>
@@ -40,9 +42,12 @@
     <string name="fourHours">4 ساعات</string>
     <string name="invisible">غير مرئي</string>
     <string name="later_today">في وقت لاحقٍ اليوم</string>
+    <string name="left_conversation">أنت غادرت المحادثة %1$s</string>
     <string name="load_more_results">تحميل المزيد من النتائج</string>
     <string name="lock_symbol">رمز القفل</string>
     <string name="lower_hand">خفض اليد </string>
+    <string name="marked_as_read">تمّ تمييز المحادثة %1$s كمقرؤة</string>
+    <string name="marked_as_unread">تمّ تمييز المحادثة %1$s كغير مقرؤة</string>
     <string name="mentioned">مَذكورٌ</string>
     <string name="menu_item_sort_by_date_newest_first">الأحدث أولاً</string>
     <string name="menu_item_sort_by_date_oldest_first">الأقدم أولاً</string>
@@ -447,6 +452,8 @@
     <string name="record_stop_confirm_title">إيقاف تسجيل المكالمة</string>
     <string name="record_stop_description">إيقاف التسجيل</string>
     <string name="record_stopping">إيقاف التسجيل جارٍ ...</string>
+    <string name="removed_from_favorites">تمّ سحب المحادثة %1$s من قائمة المفضلة</string>
+    <string name="renamed_conversation">المحادثة %1$s تمّ تغيير تسميتها</string>
     <string name="restrict_join_other_room_while_call">لا يمكنك الانضمام إلى غرف محادثة أخرى طالما أنت تجري مكالمةً</string>
     <string name="save">حفظ</string>
     <string name="scope_federated_description">قم فقط بالمزامنة مع الخوادم الموثوقة</string>

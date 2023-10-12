@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Konto-Icon</string>
+    <string name="added_to_favorites">Unterhaltung %1$s zu Favoriten hinzugefügt</string>
     <string name="appbar_search_in">Suche in %s</string>
     <string name="audio_call">Audioanruf</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -25,6 +26,7 @@
     <string name="custom">Benutzerdefiniert</string>
     <string name="danger_zone">Gefahrenzone</string>
     <string name="delete_avatar">Avatar löschen</string>
+    <string name="deleted_conversation">Unterhaltung %1$s gelöscht</string>
     <string name="dnd">Nicht stören</string>
     <string name="dontClear">Nicht löschen</string>
     <string name="edit">Bearbeiten</string>
@@ -40,9 +42,12 @@
     <string name="fourHours">4 Stunden</string>
     <string name="invisible">Unsichtbar</string>
     <string name="later_today">Später heute</string>
+    <string name="left_conversation">Sie haben die Unterhaltung %1$s verlassen</string>
     <string name="load_more_results">Weitere Ergebnisse laden</string>
     <string name="lock_symbol">Schloss-Symbol</string>
     <string name="lower_hand">Hand herunternehmen</string>
+    <string name="marked_as_read">Unterhaltung %1$s als gelesen markiert</string>
+    <string name="marked_as_unread">Unterhaltung %1$s als ungelesen markiert</string>
     <string name="mentioned">Erwähnt</string>
     <string name="menu_item_sort_by_date_newest_first">Neue zuerst</string>
     <string name="menu_item_sort_by_date_oldest_first">Älteste zuerst</string>
@@ -447,6 +452,8 @@
     <string name="record_stop_confirm_title">Anrufaufnahme beenden</string>
     <string name="record_stop_description">Aufnahme stoppen</string>
     <string name="record_stopping">Stoppe Aufnahme …</string>
+    <string name="removed_from_favorites">Unterhaltung %1$s aus Favoriten entfernt</string>
+    <string name="renamed_conversation">Unterhaltung %1$s wurde umbenannt</string>
     <string name="restrict_join_other_room_while_call">Während einer Unterhaltung können Sie keinen anderen Räumen beitreten</string>
     <string name="save">Speichern</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Hesap simgesi</string>
+    <string name="added_to_favorites">%1$s görüşmesi sık kullanılara eklendi</string>
     <string name="appbar_search_in">%s içinde arama</string>
     <string name="audio_call">Sesli çağrı</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -25,6 +26,7 @@
     <string name="custom">Özel</string>
     <string name="danger_zone">Tehlikeli bölge</string>
     <string name="delete_avatar">Avatarı sil</string>
+    <string name="deleted_conversation">%1$s görüşmesi silindi</string>
     <string name="dnd">Rahatsız etmeyin</string>
     <string name="dontClear">Kaldırılmasın</string>
     <string name="edit">Düzenle</string>
@@ -40,9 +42,12 @@
     <string name="fourHours">4 saat</string>
     <string name="invisible">Görünmez</string>
     <string name="later_today">Bugün daha sonra</string>
+    <string name="left_conversation">%1$s görüşmesinden ayrıldınız</string>
     <string name="load_more_results">Diğer sonuçları yükle</string>
     <string name="lock_symbol">Kilit simgesi</string>
     <string name="lower_hand">Eli indir</string>
+    <string name="marked_as_read">%1$s görüşmesi okunmuş olarak işaretlendi</string>
+    <string name="marked_as_unread">%1$s görüşmesi okunmamış olarak işaretlendi</string>
     <string name="mentioned">Anılmış</string>
     <string name="menu_item_sort_by_date_newest_first">Yeniden eskiye</string>
     <string name="menu_item_sort_by_date_oldest_first">Eskiden yeniye</string>
@@ -447,6 +452,8 @@
     <string name="record_stop_confirm_title">Çağrı kaydını durdur</string>
     <string name="record_stop_description">Kaydı durdur</string>
     <string name="record_stopping">Kayıt durduruluyor…</string>
+    <string name="removed_from_favorites">%1$s görüşmesi sık kullanılanlardan kaldırıldı</string>
+    <string name="renamed_conversation">%1$s görüşmesi yeniden adlandırıldı</string>
     <string name="restrict_join_other_room_while_call">Bir çağrı sürerken diğer odalara katılamazsınız</string>
     <string name="save">Kaydet</string>
     <string name="scope_federated_description">Yalnızca güvenilen sunucular ile eşitlensin</string>
