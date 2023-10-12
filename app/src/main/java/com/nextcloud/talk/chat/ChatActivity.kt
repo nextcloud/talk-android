@@ -193,7 +193,7 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.AudioUtils.audioFileToFloatArray
+import com.nextcloud.talk.utils.AudioUtils
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -507,6 +507,7 @@ class ChatActivity :
             val text = getString(roomToken, "")
             binding.messageInputView.messageInput.setText(text)
         }
+        this.lifecycle.addObserver(AudioUtils)
     }
 
     override fun onStop() {
@@ -530,6 +531,7 @@ class ChatActivity :
                 apply()
             }
         }
+        this.lifecycle.removeObserver(AudioUtils)
     }
 
     @Suppress("LongMethod")
@@ -909,7 +911,7 @@ class ChatActivity :
             message.isDownloadingVoiceMessage = true
             adapter?.update(message)
             CoroutineScope(Dispatchers.Default).launch {
-                val r = audioFileToFloatArray(file)
+                val r = AudioUtils.audioFileToFloatArray(file)
                 message.voiceMessageFloatArray = r
                 withContext(Dispatchers.Main) {
                     startPlayback(message)
