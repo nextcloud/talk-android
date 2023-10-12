@@ -176,7 +176,7 @@ class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs
     private val ovalTwoPath: Path = Path()
     private val ovalThreePath: Path = Path()
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         circlePath.apply {
             addCircle(centerX, centerY, DEFAULT_RADIUS, Path.Direction.CCW)

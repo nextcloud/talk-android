@@ -35,7 +35,7 @@ apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: 'kotlinx-serialization'
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     namespace 'com.nextcloud.talk'
 
@@ -141,7 +141,7 @@ ext {
     androidxCameraVersion = "1.2.3"
     coilKtVersion = "2.4.0"
     daggerVersion = "2.48.1"
-    emojiVersion = "1.3.0"
+    emojiVersion = "1.4.0"
     lifecycleVersion = '2.6.2'
     okhttpVersion = "4.11.0"
     markwonVersion = "4.6.2"
