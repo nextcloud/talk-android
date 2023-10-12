@@ -499,6 +499,7 @@ class ChatActivity :
             val text = getString(roomToken, "")
             binding.messageInputView.messageInput.setText(text)
         }
+        this.lifecycle.addObserver(AudioUtils)
     }
 
     override fun onStop() {
@@ -522,6 +523,7 @@ class ChatActivity :
                 apply()
             }
         }
+        this.lifecycle.removeObserver(AudioUtils)
     }
 
     @Suppress("LongMethod")
