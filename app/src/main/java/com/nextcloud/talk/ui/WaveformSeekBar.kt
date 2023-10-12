@@ -83,7 +83,7 @@ class WaveformSeekBar : AppCompatSeekBar {
         }
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         if (waveData.isEmpty() || waveData[0].toString() == "NaN") {
             super.onDraw(canvas)
         } else {
