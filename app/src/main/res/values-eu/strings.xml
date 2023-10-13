@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Kontuaren ikonoa</string>
+    <string name="added_to_favorites">%1$s elkarrizketa gogokoetara gehitu da</string>
     <string name="appbar_search_in">Bilatu %s(e)n</string>
+    <string name="audio_call">Audio deia</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio irteera</string>
     <string name="audio_output_phone">Telefonoa</string>
@@ -24,6 +26,7 @@
     <string name="custom">Pertsonalizatua</string>
     <string name="danger_zone">Arrisku eremua</string>
     <string name="delete_avatar">Ezabatu avatarra</string>
+    <string name="deleted_conversation"> %1$s elkarrizketa ezabatu da</string>
     <string name="dnd">Ez molestatu</string>
     <string name="dontClear">Ez garbitu</string>
     <string name="edit">Editatu</string>
@@ -39,9 +42,12 @@
     <string name="fourHours">4 ordu</string>
     <string name="invisible">Ikusezina</string>
     <string name="later_today">Beranduago gaur</string>
+    <string name="left_conversation"> %1$s elkarrizketa utzi duzu</string>
     <string name="load_more_results">Kargatu emaitza gehiago </string>
     <string name="lock_symbol">Blokeo sinboloa</string>
     <string name="lower_hand">Jaitsi eskua</string>
+    <string name="marked_as_read">Markatu %1$s elkarrizketa irakurrita gisa</string>
+    <string name="marked_as_unread">Markatu %1$s elkarrizketa ez irakurrita gisa</string>
     <string name="mentioned">Aipatuta</string>
     <string name="menu_item_sort_by_date_newest_first">Berrienak lehenengo </string>
     <string name="menu_item_sort_by_date_oldest_first">Zaharrenak lehenengo</string>
@@ -252,7 +258,7 @@
     <string name="nc_password">Pasahitza</string>
     <string name="nc_permissions_ask">Ezarri baimenak</string>
     <string name="nc_permissions_denied">Baimen batzuk ukatu egin dira.</string>
-    <string name="nc_permissions_rationale_dialog_title">Mesedez, eman baimenak</string>
+    <string name="nc_permissions_rationale_dialog_title">Eman baimenak, mesedez</string>
     <string name="nc_permissions_settings">Ireki ezarpenak</string>
     <string name="nc_permissions_settings_hint">Mesedez, eman baimenak Ezarpenak > Baimenak atalean</string>
     <string name="nc_phone_book_integration_account_not_found">Ez da kontua aurkitu</string>
@@ -333,6 +339,7 @@
     <string name="nc_settings_notification_sounds_post_oreo">Jakinarazpenak</string>
     <string name="nc_settings_other_notifications_ringtone">Mezuak</string>
     <string name="nc_settings_phone_book_integration_desc">Lotu telefono zenbakiaren araberako kontaktuak Talk lasterbidea sistemako kontaktuen aplikazioan integratzeko</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">429 errorea. Eskaera gehiegi</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Zure telefono zenbakia ezarri dezakezu beste erabiltzaile batzuek aurkitu ahal izateko</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefono-zenbaki baliogabea</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefono zenbakia ondo ezarri da</string>
@@ -445,6 +452,8 @@
     <string name="record_stop_confirm_title">Gelditu grabaketa</string>
     <string name="record_stop_description">Utzi grabaketa</string>
     <string name="record_stopping">Grabazioa gelditzen…</string>
+    <string name="removed_from_favorites">%1$s elkarrizketa gogokoetatik kendu da</string>
+    <string name="renamed_conversation"> %1$s elkarrizketa kendu da</string>
     <string name="restrict_join_other_room_while_call">Ezin da beste geletan sartu dei batean ari zaren bitartean</string>
     <string name="save">Gorde</string>
     <string name="scope_federated_description">Sinkronizatu zerbitzari fidagarriekin soilik</string>
@@ -459,6 +468,7 @@
     <string name="scope_toggle_description">Aldatu %1$s(r)en pribatutasun maila</string>
     <string name="scroll_to_bottom">Korritu beherantz</string>
     <string name="secondsAgo">segundu lehenago</string>
+    <string name="see_similar_system_messages">Ikusi antzeko %1$s mezu</string>
     <string name="selected_list_item">Hautatua</string>
     <string name="send_to">Bidali honi:</string>
     <string name="send_to_forbidden">Ez duzu edukirik partekatzeko baimentik txat honetan</string>
@@ -474,10 +484,11 @@
     <string name="shared_items_media">Media</string>
     <string name="shared_items_other">Bestelakoa</string>
     <string name="shared_items_poll">Galdeketa</string>
-    <string name="shared_items_recording">Dei grabatzea</string>
+    <string name="shared_items_recording">Deia grabatzea</string>
     <string name="shared_items_voice">Ahotsa</string>
     <string name="starred">Gogokoa</string>
     <string name="startCallForbidden">Ez duzu dei bat hasteko baimenik</string>
+    <string name="started_a_call">dei bat hasi da</string>
     <string name="status_message">Egoera-mezua</string>
     <string name="switch_to_breakout_room">Aldatu azpitaldearen gelara</string>
     <string name="switch_to_main_room">Aldatu gela nagusira</string>
@@ -492,7 +503,7 @@
     <string name="take_photo_toggle_torch">Txandakatu linterna</string>
     <string name="thirtyMinutes">30 minutu</string>
     <string name="thisWeek">Aste honetan</string>
-    <string name="this_is_a_test_message">Hau test mezu bat da</string>
+    <string name="this_is_a_test_message">Hau probako mezu bat da</string>
     <string name="this_weekend">Asteburu hau</string>
     <string name="title_attachments">Eranskinak</string>
     <string name="today">Gaur</string>
@@ -522,6 +533,7 @@
     <string name="userinfo_error_text">Erabiltzailearen informazio pertsonala eskuratzeak huts egin du</string>
     <string name="userinfo_no_info_headline">Ez da informazio pertsonalik ezarri</string>
     <string name="userinfo_no_info_text">Gehitu izena, irudia eta kontaktuko xehetasunak zure profilaren orrian</string>
+    <string name="video_call">Bideo deia</string>
     <string name="whats_your_status">Zein da zure egoera?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">Boto %d</item>

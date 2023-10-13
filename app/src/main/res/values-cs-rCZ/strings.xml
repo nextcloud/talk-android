@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Ikona účtu</string>
+    <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
     <string name="audio_call">Hlasový hovor</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -25,6 +26,7 @@
     <string name="custom">Uživatelsky určený</string>
     <string name="danger_zone">Nebezpečná zóna</string>
     <string name="delete_avatar">Vymazat profilový obrázek</string>
+    <string name="deleted_conversation">Konverzace %1$s smazána</string>
     <string name="dnd">Nerušit</string>
     <string name="dontClear">Nečistit</string>
     <string name="edit">Upravit</string>
@@ -40,9 +42,12 @@
     <string name="fourHours">4 hodiny</string>
     <string name="invisible">Není vidět</string>
     <string name="later_today">Později dnes</string>
+    <string name="left_conversation">Opustili jste konverzaci %1$s</string>
     <string name="load_more_results">Načíst další výsledky</string>
     <string name="lock_symbol">Symbol zámku</string>
     <string name="lower_hand">Přestat se hlásit</string>
+    <string name="marked_as_read">Konverzace %1$s označena jako přečtená</string>
+    <string name="marked_as_unread">Konverzace %1$s označena jako nepřečtená</string>
     <string name="mentioned">Zmíněni</string>
     <string name="menu_item_sort_by_date_newest_first">Nejnovější jako první</string>
     <string name="menu_item_sort_by_date_oldest_first">Nejstarší jako první</string>
@@ -447,6 +452,8 @@
     <string name="record_stop_confirm_title">Zastavit nahrávání hovoru</string>
     <string name="record_stop_description">Zastavit nahrávání</string>
     <string name="record_stopping">Zastavování nahrávání</string>
+    <string name="removed_from_favorites">Konverzace %1$s odebrána z oblíbených</string>
+    <string name="renamed_conversation">Konverzace %1$s byla přejmenována</string>
     <string name="restrict_join_other_room_while_call">Během hovoru se nelze připojit k jiným místnostem.</string>
     <string name="save">Uložit</string>
     <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>
