@@ -34,6 +34,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
     <string name="invisible">Neviditeľný</string>
+    <string name="later_today">Neskôr dnes</string>
     <string name="load_more_results">Načítať viac výsledkov</string>
     <string name="lock_symbol">Symbol zámku</string>
     <string name="lower_hand">Dať ruku dole</string>
@@ -332,6 +333,7 @@
     <string name="nc_settings_theme_key">motív vzhľadu</string>
     <string name="nc_settings_theme_light">Svetlý</string>
     <string name="nc_settings_theme_title">Motív vzhľadu</string>
+    <string name="nc_settings_typing_status_desc">Zdieľať môj stav písania a zobrazovať stav písania pri ostatných používateľoch</string>
     <string name="nc_settings_use_credentials_title">Proxy vyžaduje prilhlasovacie údaje</string>
     <string name="nc_settings_warning">Varovanie</string>
     <string name="nc_settings_wrong_account">Iba aktuálny účet môže byť znova prihlásený</string>
@@ -401,8 +403,9 @@
     <string name="polls_voted_hidden_success">Hlasovanie odoslané</string>
     <string name="raise_hand">Zdvihnúť ruku</string>
     <string name="reactions_tab_all">Všetko</string>
-    <string name="read_storage_no_permission">Zdielanie súborov z úložiska nie je možné bez oprávnenia</string>
+    <string name="read_storage_no_permission">Zdieľanie súborov z úložiska nie je možné bez oprávnenia</string>
     <string name="record_cancel_start">Zrušiť začiatok nahrávania</string>
+    <string name="record_stop_description">Zastaviť nahrávanie</string>
     <string name="save">Uložiť</string>
     <string name="scope_federated_description">Synchronizovať iba s dôveryhodnými servermi</string>
     <string name="scope_federated_title">Združený</string>
@@ -435,6 +438,7 @@
     <string name="starred">Obľúbené</string>
     <string name="startCallForbidden">Nemáte oprávnenie začat rozhovor</string>
     <string name="status_message">Správa o stave</string>
+    <string name="switch_to_breakout_room">Prepnúť do vyhradenej miestnosti</string>
     <string name="take_photo">Urobiť fotografiu</string>
     <string name="take_photo_error_deleting_picture">Chyba pri vytváraní fotografie</string>
     <string name="take_photo_permission">Fotografovanie nie je možné bez oprávnení</string>
@@ -463,7 +467,7 @@
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Webstránka</string>
     <string name="user_status">Stav</string>
-    <string name="userinfo_error_text">Zlyhalo načítanie osobných údajov uživateľa.</string>
+    <string name="userinfo_error_text">Zlyhalo načítanie osobných údajov používateľa.</string>
     <string name="userinfo_no_info_headline">Osobné informácie neboli nastavené</string>
     <string name="userinfo_no_info_text">Pridaj meno, obrázok a kontakt na profilovú stránku.</string>
     <string name="whats_your_status">Aký je váš stav?</string>
