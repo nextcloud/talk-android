@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Icône du compte</string>
+    <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favorites</string>
     <string name="appbar_search_in">Rechercher dans %s</string>
+    <string name="audio_call">Appel audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Sortie audio</string>
     <string name="audio_output_phone">Téléphone</string>
@@ -24,6 +26,7 @@
     <string name="custom">Personnalisé</string>
     <string name="danger_zone">Zone de danger</string>
     <string name="delete_avatar">Supprimer l\'avatar</string>
+    <string name="deleted_conversation">La conversation %1$s a été supprimée</string>
     <string name="dnd">Ne pas déranger</string>
     <string name="dontClear">Ne pas effacer</string>
     <string name="edit">Modifier</string>
@@ -39,9 +42,12 @@
     <string name="fourHours">4 heures</string>
     <string name="invisible">Invisible</string>
     <string name="later_today">Plus tard aujourd\'hui</string>
+    <string name="left_conversation">Vous avez quitté la conversation %1$s</string>
     <string name="load_more_results">Charger plus de résultats</string>
     <string name="lock_symbol">Symbole de verrouillage</string>
     <string name="lower_hand">Baisser la main</string>
+    <string name="marked_as_read">La conversation %1$s a été marquée comme lue</string>
+    <string name="marked_as_unread">La conversation %1$s a été marquée comme non-lue</string>
     <string name="mentioned">Mentionné</string>
     <string name="menu_item_sort_by_date_newest_first">Les plus récents d\'abord</string>
     <string name="menu_item_sort_by_date_oldest_first">Les plus anciens d\'abord</string>
@@ -276,6 +282,7 @@
     <string name="nc_remove_group_and_members">Supprimer un groupe et ses membres</string>
     <string name="nc_remove_participant">Retirer le participant</string>
     <string name="nc_rename">Renommer la conversation</string>
+    <string name="nc_rename_confirm">Renommer</string>
     <string name="nc_reply">Répondre</string>
     <string name="nc_reply_privately">Répondre en privé</string>
     <string name="nc_screen_lock_timeout_30">30 secondes</string>
@@ -332,6 +339,7 @@
     <string name="nc_settings_notification_sounds_post_oreo">Notifications</string>
     <string name="nc_settings_other_notifications_ringtone">Messages</string>
     <string name="nc_settings_phone_book_integration_desc">Mettre en correspondance les contacts à l\'aide du numéro de téléphone pour intégrer des raccourcis Talk dans le carnet d\'adresses</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erreur 429 Trop de requêtes</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Vous pouvez ajouter votre numéro de téléphone pour que les autres utilisateurs puissent vous trouver</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Numéro de téléphone invalide</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numéro de téléphone configuré avec succès</string>
@@ -444,6 +452,8 @@
     <string name="record_stop_confirm_title">Arrêter l\'enregistrement de l\'appel</string>
     <string name="record_stop_description">Arrêter l\'enregistrement</string>
     <string name="record_stopping">Arrêt de l\'enregistrement…</string>
+    <string name="removed_from_favorites">La conversation %1$s a été supprimée des favorites</string>
+    <string name="renamed_conversation">La conversation %1$s a été renommée</string>
     <string name="restrict_join_other_room_while_call">Il est impossible de rejoindre une autre salle pendant un appel</string>
     <string name="save">Sauvegarder</string>
     <string name="scope_federated_description">Synchronisation avec les serveurs de confiance uniquement</string>
@@ -478,6 +488,7 @@
     <string name="shared_items_voice">Voix</string>
     <string name="starred">Favori</string>
     <string name="startCallForbidden">Vous n\'êtes pas autorisé à commencer un appel</string>
+    <string name="started_a_call">a démarré un appel</string>
     <string name="status_message">Message d\'état</string>
     <string name="switch_to_breakout_room">Basculer vers la salle de sous-groupe</string>
     <string name="switch_to_main_room">Basculer vers la salle principale</string>
@@ -522,6 +533,7 @@
     <string name="userinfo_error_text">Impossible de récupérer les informations personnelles de l\'utilisateur.</string>
     <string name="userinfo_no_info_headline">Aucunes informations personnelles renseignées</string>
     <string name="userinfo_no_info_text">Ajoutez vos nom, photo et coordonnées sur votre page de profil.</string>
+    <string name="video_call">Appel vidéo</string>
     <string name="whats_your_status">Quel est votre état ?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>
