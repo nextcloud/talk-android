@@ -302,7 +302,7 @@
     <string name="nc_settings_notification_sounds_post_oreo">Upozornenia</string>
     <string name="nc_settings_other_notifications_ringtone">Správy</string>
     <string name="nc_settings_phone_book_integration_desc">Priradiť kontakty podľa telefónneho čísla a integrovať odkaz na Talk do aplikácie systémových kontaktov</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Môžete nastaviť vaše telefónne číslo aby vás ostatní uživatelia našli</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Môžete nastaviť vaše telefónne číslo aby vás ostatní používatelia našli</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Zlé telefónne číslo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefónne číslo bolo úspešne nastavené</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefónne číslo</string>
