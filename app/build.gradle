@@ -143,7 +143,7 @@ ext {
     daggerVersion = "2.48.1"
     emojiVersion = "1.4.0"
     lifecycleVersion = '2.6.2'
-    okhttpVersion = "4.11.0"
+    okhttpVersion = "5.0.0-alpha.10"
     markwonVersion = "4.6.2"
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
@@ -184,9 +184,6 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     androidTestImplementation "androidx.work:work-testing:${workVersion}"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
-    implementation ('com.gitlab.bitfireAT:dav4jvm:2.1.3', {
-        exclude group: 'org.ogce', module: 'xpp3'	// Android comes with its own XmlPullParser
-    })
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
     implementation "androidx.camera:camera-core:${androidxCameraVersion}"
@@ -311,6 +308,10 @@ dependencies {
     implementation 'com.github.nextcloud.android-common:ui:0.12.0'
 
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:110.5481.0'
+
+    api("com.github.nextcloud:android-library:$androidLibraryVersion") {
+        exclude group: 'org.ogce', module: 'xpp3' // unused in Android and brings wrong Junit version
+    }
 }
 
 task installGitHooks(type: Copy, group: "development") {

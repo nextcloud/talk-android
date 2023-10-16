@@ -30,18 +30,19 @@ import at.bitfire.dav4jvm.property.GetLastModified
 import at.bitfire.dav4jvm.property.ResourceType
 import at.bitfire.dav4jvm.property.ResourceType.Companion.COLLECTION
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPermission
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview
-import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite
 import com.nextcloud.talk.components.filebrowser.models.properties.OCId
 import com.nextcloud.talk.components.filebrowser.models.properties.OCSize
 import com.nextcloud.talk.utils.Mimetype.FOLDER
+import com.owncloud.android.lib.resources.files.webdav.NCEncrypted
+import com.owncloud.android.lib.resources.files.webdav.NCFavorite
+import com.owncloud.android.lib.resources.files.webdav.NCPermissions
+import com.owncloud.android.lib.resources.files.webdav.NCPreview
 import kotlinx.parcelize.Parcelize
 import java.io.File
 
 @Parcelize
 @JsonObject
+@Deprecated("Use library", replaceWith = ReplaceWith("RemoteFile"))
 data class BrowserFile(
     var path: String? = null,
     var displayName: String? = null,
@@ -93,7 +94,7 @@ data class BrowserFile(
                     browserFile.modifiedTimestamp = property.lastModified
                 }
                 is GetContentType -> {
-                    browserFile.mimeType = property.type
+                    browserFile.mimeType = property.type?.toString()
                 }
                 is OCSize -> {
                     browserFile.size = property.ocSize
@@ -101,7 +102,7 @@ data class BrowserFile(
                 is NCPreview -> {
                     browserFile.hasPreview = property.isNcPreview
                 }
-                is OCFavorite -> {
+                is NCFavorite -> {
                     browserFile.isFavorite = property.isOcFavorite
                 }
                 is DisplayName -> {
@@ -110,8 +111,8 @@ data class BrowserFile(
                 is NCEncrypted -> {
                     browserFile.isEncrypted = property.isNcEncrypted
                 }
-                is NCPermission -> {
-                    browserFile.permissions = property.ncPermission
+                is NCPermissions -> {
+                    browserFile.permissions = property.permissions
                 }
             }
         }
