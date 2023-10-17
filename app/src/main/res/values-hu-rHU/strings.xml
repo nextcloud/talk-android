@@ -35,6 +35,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 óra </string>
     <string name="invisible">Láthatatlan</string>
+    <string name="later_today">Mai nap később</string>
     <string name="load_more_results">További találatok betöltése</string>
     <string name="lock_symbol">Zár szimbólum</string>
     <string name="lower_hand">Kéz letétele</string>
@@ -260,6 +261,7 @@
     <string name="nc_remove_group_and_members">Csoport és tagok eltávolítása</string>
     <string name="nc_remove_participant">Résztvevő eltávolítása</string>
     <string name="nc_rename">Beszélgetés átnevezése</string>
+    <string name="nc_rename_confirm">Átnevezés</string>
     <string name="nc_reply">Válasz</string>
     <string name="nc_reply_privately">Válasz privátban</string>
     <string name="nc_screen_lock_timeout_30">30 másodperc</string>
@@ -475,6 +477,7 @@
     <string name="take_photo_toggle_torch">Lámpa be/ki</string>
     <string name="thirtyMinutes">30 perc</string>
     <string name="thisWeek">Ez a hét</string>
+    <string name="this_weekend">Ezen a héten</string>
     <string name="title_attachments">Mellékletek</string>
     <string name="today">Ma</string>
     <string name="tomorrow">Holnap</string>
