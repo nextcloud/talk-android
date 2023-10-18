@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Fiókikon</string>
     <string name="appbar_search_in">Keresés itt: %s</string>
+    <string name="audio_call">Audio hívás</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Hangkimenet</string>
     <string name="audio_output_phone">Telefon</string>
@@ -11,6 +12,7 @@
     <string name="away">Távol</string>
     <string name="calendar">Naptár</string>
     <string name="call_more_actions_dialog_headline">Speciális hívásbeállítások</string>
+    <string name="call_running_since_one_hour">A hívás egy órája tart.</string>
     <string name="call_without_notification">Hívás értesítés nélkül</string>
     <string name="camera_permission_granted">Kamera engedély megadva. Válassza újra a kamerát.</string>
     <string name="choose_avatar_from_cloud">Profilkép választása a felhőből</string>
@@ -20,7 +22,9 @@
     <string name="conversations">Beszélgetések</string>
     <string name="create_conversation">Beszélgetés létrehozása</string>
     <string name="custom">Egyéni</string>
+    <string name="danger_zone">Veszély zóna</string>
     <string name="delete_avatar">Profilkép törlése</string>
+    <string name="deleted_conversation">%1$s beszélgetés törlése</string>
     <string name="dnd">Ne zavarjanak</string>
     <string name="dontClear">Ne törölje</string>
     <string name="edit">Szerkesztés</string>
@@ -39,6 +43,7 @@
     <string name="load_more_results">További találatok betöltése</string>
     <string name="lock_symbol">Zár szimbólum</string>
     <string name="lower_hand">Kéz letétele</string>
+    <string name="mentioned">Említett</string>
     <string name="menu_item_sort_by_date_newest_first">Legújabb elöl</string>
     <string name="menu_item_sort_by_date_oldest_first">Régebbiek elöl</string>
     <string name="menu_item_sort_by_name_a_z">A – Z</string>
@@ -156,6 +161,7 @@
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
     <string name="nc_file_browser_back">Vissza</string>
     <string name="nc_file_storage_permission">Fájlelérési jogosultság szükséges</string>
+    <string name="nc_filter">Beszélgetések szűrése</string>
     <string name="nc_following_link">Nyilvános hivatkozást használó felhasználó</string>
     <string name="nc_formatted_message_you">Ön: %1$s</string>
     <string name="nc_forward_message">Továbbítás</string>
@@ -192,6 +198,7 @@
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Licenc</string>
     <string name="nc_limit_hit">%s karakteres korlát elérve</string>
+    <string name="nc_list_open_conversations">Nyitott beszélgetések listázása</string>
     <string name="nc_lobby">Váró</string>
     <string name="nc_lobby_start_date">A találkozó ekkorra van ütemezve: %1$s</string>
     <string name="nc_lobby_start_soon">Ez a találkozó hamarosan elkezdődik</string>
@@ -219,6 +226,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">A(z) %1$s nem érhető el (nincs telepítve vagy egy rendszergazda korlátozta) </string>
     <string name="nc_nick_guest">Vendég</string>
     <string name="nc_no">Nem</string>
+    <string name="nc_no_open_conversations_headline">Nincs nyitott beszélgetés</string>
     <string name="nc_no_proxy">Nincs proxy</string>
     <string name="nc_not_allowed_to_activate_audio">Nem kapcsolhatja be a hangot.</string>
     <string name="nc_not_allowed_to_activate_video">Nem kapcsolhatja be a videót.</string>
@@ -239,6 +247,9 @@
     <string name="nc_participants">Résztvevők</string>
     <string name="nc_participants_add">Résztvevők hozzáadása</string>
     <string name="nc_password">Jelszó</string>
+    <string name="nc_permissions_ask">Jogosultságok beállításaa</string>
+    <string name="nc_permissions_denied">Néhány jogosultság meg lett tagadva.</string>
+    <string name="nc_permissions_rationale_dialog_title">Engedélyezzen jogosultságokat</string>
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
     <string name="nc_phone_book_integration_account_not_found">A fiók nem található</string>
     <string name="nc_phone_book_integration_chat_via">Csevegés %s segítségével</string>
@@ -318,6 +329,7 @@
     <string name="nc_settings_notification_sounds_post_oreo">Értesítések</string>
     <string name="nc_settings_other_notifications_ringtone">Üzenetek</string>
     <string name="nc_settings_phone_book_integration_desc">Párosítsa a névjegyeket telefonszám alapján, hogy integrálja a Beszélgetéseket a rendszer Névjegyek alkalmazásba</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">429-es hiba Túl Sok Kérés</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Beállíthatja telefonszámát, hogy a többi felhasználó megtalálja Önt</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Érvénytelen telefonszám-formátum</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonszám beállítása sikeresen megtörtént</string>
@@ -430,6 +442,7 @@
     <string name="record_stop_confirm_title">Hívásfelvétel leállítása</string>
     <string name="record_stop_description">Felvétel leállítása</string>
     <string name="record_stopping">Felvétel leállítása…</string>
+    <string name="renamed_conversation">%1$s beszélgetés át lett nevezve</string>
     <string name="restrict_join_other_room_while_call">Hívás közben nem lehet más szobákhoz csatlakozni</string>
     <string name="save">Mentés</string>
     <string name="scope_federated_description">Szinkronizálás csak a megbízható kiszolgálókkal</string>
@@ -463,6 +476,7 @@
     <string name="shared_items_voice">Hang</string>
     <string name="starred">Kedvenc</string>
     <string name="startCallForbidden">Nincs jogosultsága hívást indítani</string>
+    <string name="started_a_call">hívás indítás</string>
     <string name="status_message">Állapotüzenet</string>
     <string name="switch_to_breakout_room">Szétbontott szobára váltás</string>
     <string name="switch_to_main_room">Fő szobára váltás</string>
@@ -477,7 +491,8 @@
     <string name="take_photo_toggle_torch">Lámpa be/ki</string>
     <string name="thirtyMinutes">30 perc</string>
     <string name="thisWeek">Ez a hét</string>
-    <string name="this_weekend">Ezen a héten</string>
+    <string name="this_is_a_test_message">Ez egy teszt üzenet</string>
+    <string name="this_weekend">Ezen a hétvégén</string>
     <string name="title_attachments">Mellékletek</string>
     <string name="today">Ma</string>
     <string name="tomorrow">Holnap</string>
@@ -506,6 +521,7 @@
     <string name="userinfo_error_text">Nem sikerült beolvasni a személyes felhasználói adatokat.</string>
     <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
+    <string name="video_call">Video hívás</string>
     <string name="whats_your_status">Mi az állapota?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d szavazat</item>
