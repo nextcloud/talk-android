@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Fiókikon</string>
+    <string name="added_to_favorites">A(z) %1$s beszélgetés hozzáadva a kedvencekhez</string>
     <string name="appbar_search_in">Keresés itt: %s</string>
     <string name="audio_call">Audio hívás</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -40,9 +41,12 @@
     <string name="fourHours">4 óra </string>
     <string name="invisible">Láthatatlan</string>
     <string name="later_today">Mai nap később</string>
+    <string name="left_conversation">Elhagyta a következő beszélgetést: %1$s</string>
     <string name="load_more_results">További találatok betöltése</string>
     <string name="lock_symbol">Zár szimbólum</string>
     <string name="lower_hand">Kéz letétele</string>
+    <string name="marked_as_read">%1$s beszélgetés olvasottként jelölése</string>
+    <string name="marked_as_unread">%1$s beszélgetés olvasatlanként jelölése</string>
     <string name="mentioned">Említett</string>
     <string name="menu_item_sort_by_date_newest_first">Legújabb elöl</string>
     <string name="menu_item_sort_by_date_oldest_first">Régebbiek elöl</string>
@@ -251,6 +255,7 @@
     <string name="nc_permissions_denied">Néhány jogosultság meg lett tagadva.</string>
     <string name="nc_permissions_rationale_dialog_title">Engedélyezzen jogosultságokat</string>
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
+    <string name="nc_permissions_settings_hint">Adjon engedélyt a Beállítások > Engedélyek menüpontban</string>
     <string name="nc_phone_book_integration_account_not_found">A fiók nem található</string>
     <string name="nc_phone_book_integration_chat_via">Csevegés %s segítségével</string>
     <string name="nc_pip_microphone_mute">Mikrofon némítása</string>
@@ -442,6 +447,7 @@
     <string name="record_stop_confirm_title">Hívásfelvétel leállítása</string>
     <string name="record_stop_description">Felvétel leállítása</string>
     <string name="record_stopping">Felvétel leállítása…</string>
+    <string name="removed_from_favorites">A(z) %1$s beszélgetés eltávolítva a kedvencek közül</string>
     <string name="renamed_conversation">%1$s beszélgetés át lett nevezve</string>
     <string name="restrict_join_other_room_while_call">Hívás közben nem lehet más szobákhoz csatlakozni</string>
     <string name="save">Mentés</string>
@@ -457,6 +463,7 @@
     <string name="scope_toggle_description">A(z) %1$s adatvédelmi szintjének módosítása</string>
     <string name="scroll_to_bottom">Görgetés az aljára</string>
     <string name="secondsAgo">pár másodperce</string>
+    <string name="see_similar_system_messages">További %1$s hasonló üzenet</string>
     <string name="selected_list_item">Kiválasztott</string>
     <string name="send_to">Küldés</string>
     <string name="send_to_forbidden">Nincs jogosultsága, hogy tartalmat osszon meg ebben a csevegésben</string>

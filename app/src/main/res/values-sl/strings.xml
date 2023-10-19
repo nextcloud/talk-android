@@ -11,6 +11,7 @@
     <string name="away">Ne spremljam</string>
     <string name="calendar">Koledar</string>
     <string name="call_more_actions_dialog_headline">Napredne možnosti klica</string>
+    <string name="call_running_since_one_hour">Pogovor traja že eno uro.</string>
     <string name="call_without_notification">Klic brez obvestila</string>
     <string name="camera_permission_granted">Dovoljenje za uporabo kamere je dodeljeno. Ponovno izberite kamero.</string>
     <string name="choose_avatar_from_cloud">Izbor pogodbe iz oblaka</string>

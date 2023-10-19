@@ -56,7 +56,7 @@
     <string name="nc_account_scheduled_for_deletion">Účet je naplánovaný na zrušenie a preto nemôže byť zmenený</string>
     <string name="nc_action_open_main_menu">Otvoriť hlavné menu</string>
     <string name="nc_add_attachment">Pridať prílohu</string>
-    <string name="nc_add_emojis">Pridať emodži</string>
+    <string name="nc_add_emojis">Pridať emotikony</string>
     <string name="nc_add_file">Pridať do konverzácie</string>
     <string name="nc_add_participants">Pridať účastníkov</string>
     <string name="nc_add_to_favorites">Pridať do obľúbených</string>
@@ -450,6 +450,7 @@
     <string name="take_photo_toggle_torch">Prepnúť baterku</string>
     <string name="thirtyMinutes">30 minút</string>
     <string name="thisWeek">Tento týždeň</string>
+    <string name="this_weekend">Tento víkend</string>
     <string name="title_attachments">Prílohy</string>
     <string name="today">Dnes</string>
     <string name="tomorrow">Zajtra</string>
