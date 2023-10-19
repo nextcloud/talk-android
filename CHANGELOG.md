@@ -5,6 +5,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [17.1.2] - 2023-10-19
+
+### Fixed
+- Fix to play voice messages
+- Fix to send voice message after recording was stopped to re-listen
+- Fix emoji size in markdown headers
+- minor bug fixes
+
+### Changed
+- message reminder: TimePicker format matches locale of device
+- removed Android Auto support for now
+
+Minimum: Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/76?closed=1
+
+## [17.1.0] - 2023-09-15
+
+### Added
+- Markdown support
+- Group system messages
+- Set reminders for messages
+- List open conversations
+- Call duration visible while in a call
+- Filter for unread / mentioned conversations
+- Continuous recording of voice messages
+- Android Auto support
+- Keep message drafts
+- Show status icon in chatview
+- Send indicator that user is speaking when being in a call
+
+### Fixed
+- Media playback does not retain state (@parneet-guraya)
+- minor bug fixes
+
+### Changed
+- Adjust app icon size for notifications (@Smarshal21)
+
+Minimum: Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/71?closed=1
+
 ## [17.0.2] - 2023-07-24
 
 ### Fixed
