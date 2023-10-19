@@ -1288,7 +1288,7 @@ class ConversationInfoActivity :
         binding.notificationSettingsView.notificationSettingsImportantConversation.setOnClickListener {
             val isChecked = binding.notificationSettingsView.importantConversationSwitch.isChecked
             binding.notificationSettingsView.importantConversationSwitch.isChecked = !isChecked
-            module.saveBoolean("important_conversation_switch", !isChecked)
+            module.saveBoolean(IMPORTANT_CONVERSATION_KEY, !isChecked)
         }
         binding.notificationSettingsView.notificationSettingsCallNotifications.setOnClickListener {
             val isChecked = binding.notificationSettingsView.callNotificationsSwitch.isChecked
@@ -1303,7 +1303,7 @@ class ConversationInfoActivity :
             }
 
         binding.notificationSettingsView.importantConversationSwitch.isChecked = module
-            .getBoolean("important_conversation_switch", false)
+            .getBoolean(IMPORTANT_CONVERSATION_KEY, false)
 
         binding.notificationSettingsView.callNotificationsSwitch.isChecked = module
             .getBoolean("call_notifications_switch", true)
@@ -1317,6 +1317,7 @@ class ConversationInfoActivity :
         private const val LOW_EMPHASIS_OPACITY: Float = 0.38f
         private const val RECORDING_CONSENT_NOT_REQUIRED_FOR_CONVERSATION: Int = 0
         private const val RECORDING_CONSENT_REQUIRED_FOR_CONVERSATION: Int = 1
+        const val IMPORTANT_CONVERSATION_KEY = "important_conversation_switch"
     }
 
     /**
