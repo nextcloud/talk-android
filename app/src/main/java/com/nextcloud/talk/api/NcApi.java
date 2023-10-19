@@ -245,9 +245,11 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> joinCall(@Nullable @Header("Authorization") String authorization, @Url String url,
+    Observable<GenericOverall> joinCall(@Nullable @Header("Authorization") String authorization,
+                                        @Url String url,
                                         @Field("flags") Integer inCall,
-                                        @Field("silent") Boolean callWithoutNotification);
+                                        @Field("silent") Boolean callWithoutNotification,
+                                        @Nullable @Field("recordingConsent") Boolean recordingConsent);
 
     /*
     Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
@@ -686,4 +688,10 @@ public interface NcApi {
     Observable<ReminderOverall> setReminder(@Header("Authorization") String authorization,
                                             @Url String url,
                                             @Field("timestamp") int timestamp);
+
+    @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> setRecordingConsent(@Header("Authorization") String authorization,
+                                                    @Url String url,
+                                                    @Field("recordingConsent") int recordingConsent);
 }

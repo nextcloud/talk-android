@@ -157,7 +157,10 @@ data class Conversation(
     var hasCustomAvatar: Boolean? = null,
 
     @JsonField(name = ["callStartTime"])
-    var callStartTime: Long? = null
+    var callStartTime: Long? = null,
+
+    @JsonField(name = ["recordingConsent"])
+    var recordingConsentRequired: Int = 0
 
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

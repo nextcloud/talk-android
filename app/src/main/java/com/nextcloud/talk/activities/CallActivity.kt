@@ -130,6 +130,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isCallRecordingAvailable
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -376,6 +377,8 @@ class CallActivity : CallBaseActivity() {
         AudioFormat.ENCODING_PCM_16BIT
     )
 
+    private var recordingConsentGiven = false
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -496,11 +499,72 @@ class CallActivity : CallBaseActivity() {
         callParticipants = HashMap()
         participantDisplayItems = HashMap()
         initViews()
-        if (!isConnectionEstablished) {
-            initiateCall()
-        }
         updateSelfVideoViewPosition()
         reactionAnimator = ReactionAnimator(context, binding!!.reactionAnimationWrapper, viewThemeUtils)
+
+        checkRecordingConsentAndInitiateCall()
+    }
+
+    private fun checkRecordingConsentAndInitiateCall() {
+        fun askForRecordingConsent() {
+            val materialAlertDialogBuilder = MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.recording_consent_title)
+                .setMessage(R.string.recording_consent_description)
+                .setCancelable(false)
+                .setPositiveButton(R.string.nc_yes) { _, _ ->
+                    recordingConsentGiven = true
+                    initiateCall()
+                }
+                .setNegativeButton(R.string.nc_no) { _, _ ->
+                    recordingConsentGiven = false
+                    hangup(true)
+                }
+
+            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, materialAlertDialogBuilder)
+            val dialog = materialAlertDialogBuilder.show()
+            viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
+        }
+
+        when (CapabilitiesUtilNew.getRecordingConsentType(conversationUser)) {
+            CapabilitiesUtilNew.RECORDING_CONSENT_NOT_REQUIRED -> initiateCall()
+            CapabilitiesUtilNew.RECORDING_CONSENT_REQUIRED -> askForRecordingConsent()
+            CapabilitiesUtilNew.RECORDING_CONSENT_DEPEND_ON_CONVERSATION -> {
+                val getRoomApiVersion = ApiUtils.getConversationApiVersion(
+                    conversationUser,
+                    intArrayOf(ApiUtils.APIv4, 1)
+                )
+                ncApi!!.getRoom(credentials, ApiUtils.getUrlForRoom(getRoomApiVersion, baseUrl, roomToken))
+                    .retry(API_RETRIES)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<RoomOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                            // unused atm
+                        }
+
+                        override fun onNext(roomOverall: RoomOverall) {
+                            val conversation = roomOverall.ocs!!.data
+                            if (conversation?.recordingConsentRequired == 1) {
+                                askForRecordingConsent()
+                            } else {
+                                initiateCall()
+                            }
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Failed to get room", e)
+                            Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                        }
+
+                        override fun onComplete() {
+                            // unused atm
+                        }
+                    })
+            }
+        }
     }
 
     override fun onResume() {
@@ -1660,7 +1724,8 @@ class CallActivity : CallBaseActivity() {
             credentials,
             ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken),
             inCallFlag,
-            isCallWithoutNotification
+            isCallWithoutNotification,
+            recordingConsentGiven
         )
             .subscribeOn(Schedulers.io())
             .retry(API_RETRIES)
@@ -1676,6 +1741,8 @@ class CallActivity : CallBaseActivity() {
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Failed to join call", e)
+                    Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    hangup(true)
                 }
 
                 override fun onComplete() {
@@ -1804,6 +1871,10 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun initiateCall() {
+        if (isConnectionEstablished) {
+            Log.d(TAG, "connection already established")
+            return
+        }
         checkDevicePermissions()
     }
 

@@ -250,5 +250,29 @@ object CapabilitiesUtilNew {
         return false
     }
 
+    fun getRecordingConsentType(user: User?): Int {
+        if (user?.capabilities != null) {
+            val capabilities = user.capabilities
+            if (
+                capabilities?.spreedCapability?.config?.containsKey("call") == true &&
+                capabilities.spreedCapability!!.config!!["call"] != null &&
+                capabilities.spreedCapability!!.config!!["call"]!!.containsKey("recording-consent")
+            ) {
+                return when (
+                    capabilities.spreedCapability!!.config!!["call"]!!["recording-consent"].toString()
+                        .toInt()
+                ) {
+                    1 -> RECORDING_CONSENT_REQUIRED
+                    2 -> RECORDING_CONSENT_DEPEND_ON_CONVERSATION
+                    else -> RECORDING_CONSENT_NOT_REQUIRED
+                }
+            }
+        }
+        return RECORDING_CONSENT_NOT_REQUIRED
+    }
+
     const val DEFAULT_CHAT_SIZE = 1000
+    const val RECORDING_CONSENT_NOT_REQUIRED = 0
+    const val RECORDING_CONSENT_REQUIRED = 1
+    const val RECORDING_CONSENT_DEPEND_ON_CONVERSATION = 2
 }

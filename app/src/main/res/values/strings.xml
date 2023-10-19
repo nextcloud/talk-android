@@ -606,6 +606,12 @@ How to translate with transifex:
     <string name="record_cancel_start">Cancel recording start</string>
     <string name="record_stopping">Stopping recording …</string>
     <string name="record_failed_info">The recording failed. Please contact your administrator.</string>
+    <string name="recording_consent_title">The call might be recorded.</string>
+    <string name="recording_consent_description">The recording might include your voice, video from camera, and screen share. Your consent is required before joining the call. Do you consent?</string>
+    <string name="recording_settings_title">Recording</string>
+    <string name="recording_consent_for_conversation_title">Recording consent</string>
+    <string name="recording_consent_for_conversation_description">Require recording consent before joining call in this conversation</string>
+    <string name="recording_consent_all">Recording consent is required for all calls</string>
 
     <!-- Shared items -->
     <string name="nc_shared_items">Shared items</string>
@@ -708,5 +714,4 @@ How to translate with transifex:
     <string name="audio_call">Audio Call</string>
     <string name="started_a_call">started a call</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Error 429 Too Many Requests</string>
-
 </resources>

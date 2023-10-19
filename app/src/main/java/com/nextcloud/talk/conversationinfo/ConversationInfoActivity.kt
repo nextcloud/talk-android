@@ -247,7 +247,8 @@ class ConversationInfoActivity :
                 binding.notificationSettingsView.callNotificationsSwitch,
                 binding.notificationSettingsView.importantConversationSwitch,
                 binding.guestAccessView.allowGuestsSwitch,
-                binding.guestAccessView.passwordProtectionSwitch
+                binding.guestAccessView.passwordProtectionSwitch,
+                binding.recordingConsentView.recordingConsentForConversationSwitch
             ).forEach(viewThemeUtils.talk::colorSwitch)
         }
     }
@@ -259,6 +260,7 @@ class ConversationInfoActivity :
                 binding.webinarInfoView.webinarSettingsCategory,
                 binding.guestAccessView.guestAccessSettingsCategory,
                 binding.sharedItemsTitle,
+                binding.recordingConsentView.recordingConsentSettingsCategory,
                 binding.conversationSettingsTitle,
                 binding.participantsListCategory
             )
@@ -707,6 +709,7 @@ class ConversationInfoActivity :
 
                         loadConversationAvatar()
                         adjustNotificationLevelUI()
+                        initRecordingConsentOption()
                         initExpiringMessageOption()
 
                         binding.let {
@@ -734,6 +737,86 @@ class ConversationInfoActivity :
 
                 override fun onComplete() {
                     roomDisposable!!.dispose()
+                }
+            })
+    }
+
+    private fun initRecordingConsentOption() {
+        fun hide() {
+            binding.recordingConsentView.recordingConsentSettingsCategory.visibility = GONE
+            binding.recordingConsentView.recordingConsentForConversation.visibility = GONE
+            binding.recordingConsentView.recordingConsentAll.visibility = GONE
+        }
+
+        fun showAlwaysRequiredInfo() {
+            binding.recordingConsentView.recordingConsentForConversation.visibility = GONE
+            binding.recordingConsentView.recordingConsentAll.visibility = VISIBLE
+        }
+
+        fun showSwitch() {
+            binding.recordingConsentView.recordingConsentForConversation.visibility = VISIBLE
+            binding.recordingConsentView.recordingConsentAll.visibility = GONE
+
+            if (conversation!!.hasCall) {
+                binding.recordingConsentView.recordingConsentForConversation.isEnabled = false
+                binding.recordingConsentView.recordingConsentForConversation.alpha = LOW_EMPHASIS_OPACITY
+            } else {
+                binding.recordingConsentView.recordingConsentForConversationSwitch.isChecked =
+                    conversation!!.recordingConsentRequired == RECORDING_CONSENT_REQUIRED_FOR_CONVERSATION
+
+                binding.recordingConsentView.recordingConsentForConversation.setOnClickListener {
+                    binding.recordingConsentView.recordingConsentForConversationSwitch.isChecked =
+                        !binding.recordingConsentView.recordingConsentForConversationSwitch.isChecked
+                    submitRecordingConsentChanges()
+                }
+            }
+        }
+
+        if (conversation!!.isParticipantOwnerOrModerator &&
+            !ConversationUtils.isNoteToSelfConversation(ConversationModel.mapToConversationModel(conversation!!))
+        ) {
+            when (CapabilitiesUtilNew.getRecordingConsentType(conversationUser)) {
+                CapabilitiesUtilNew.RECORDING_CONSENT_NOT_REQUIRED -> hide()
+                CapabilitiesUtilNew.RECORDING_CONSENT_REQUIRED -> showAlwaysRequiredInfo()
+                CapabilitiesUtilNew.RECORDING_CONSENT_DEPEND_ON_CONVERSATION -> showSwitch()
+            }
+        } else {
+            hide()
+        }
+    }
+
+    private fun submitRecordingConsentChanges() {
+        val state = if (binding.recordingConsentView.recordingConsentForConversationSwitch.isChecked) {
+            RECORDING_CONSENT_REQUIRED_FOR_CONVERSATION
+        } else {
+            RECORDING_CONSENT_NOT_REQUIRED_FOR_CONVERSATION
+        }
+
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+
+        ncApi.setRecordingConsent(
+            ApiUtils.getCredentials(conversationUser.username, conversationUser.token),
+            ApiUtils.getUrlForRecordingConsent(apiVersion, conversationUser.baseUrl, conversation!!.token),
+            state
+        )
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onComplete() {
+                    // unused atm
+                }
+
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(t: GenericOverall) {
+                    // unused atm
+                }
+
+                override fun onError(e: Throwable) {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    Log.e(TAG, "Error when setting recording consent option for conversation", e)
                 }
             })
     }
@@ -1227,11 +1310,13 @@ class ConversationInfoActivity :
     }
 
     companion object {
-        private const val TAG = "ConversationInfo"
+        private val TAG = ConversationInfoActivity::class.java.simpleName
         private const val NOTIFICATION_LEVEL_ALWAYS: Int = 1
         private const val NOTIFICATION_LEVEL_MENTION: Int = 2
         private const val NOTIFICATION_LEVEL_NEVER: Int = 3
         private const val LOW_EMPHASIS_OPACITY: Float = 0.38f
+        private const val RECORDING_CONSENT_NOT_REQUIRED_FOR_CONVERSATION: Int = 0
+        private const val RECORDING_CONSENT_REQUIRED_FOR_CONVERSATION: Int = 1
     }
 
     /**
