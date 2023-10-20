@@ -29,7 +29,6 @@
     <string name="edit">Editar</string>
     <string name="emoji_backspace">Retroceso</string>
     <string name="emoji_category_recent">Recente</string>
-    <string name="emoji_search">Buscar «emoji»</string>
     <string name="encrypted">Cifrado</string>
     <string name="error_loading_chats">Produciuse un problema ao cargar as súas parolas</string>
     <string name="failed_to_save">Produciuse un fallo ao gardar %1$s</string>
@@ -94,7 +93,6 @@
     <string name="nc_call_video">%s videochamada</string>
     <string name="nc_call_voice">%s chamada de voz</string>
     <string name="nc_camera_permission_hint">Para activar a comunicación por vídeo, conceda o permiso de «Cámara».</string>
-    <string name="nc_camera_permission_permanently_denied">Para activar a comunicación por vídeo, conceda o permiso de «Cámara» nos axustes do sistema.</string>
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Produciuse un fallo ao recuperar as funcionalidades. Interrompendo.</string>
     <string name="nc_certificate_dialog_text">Quere confiar nun certificado SSL descoñecido, emitido por %1$s para %2$s, válido dende %3$s ata %4$s?</string>
@@ -217,7 +215,6 @@
     <string name="nc_message_read">Mensaxe lida</string>
     <string name="nc_message_sent">Mensaxe enviada</string>
     <string name="nc_microphone_permission_hint">Para activar a comunicación por voz, conceda o permiso de «Micrófono».</string>
-    <string name="nc_microphone_permission_permanently_denied">Para activar a comunicación por voz, conceda o permiso de «Micrófono» nos axustes do sistema.</string>
     <string name="nc_missed_call">Perdeu unha chamada de %s</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Non conectou nunca</string>
@@ -276,6 +273,7 @@
     <string name="nc_remove_group_and_members">Retirar grupo e membros</string>
     <string name="nc_remove_participant">Retirar participante</string>
     <string name="nc_rename">Renomear a conversa</string>
+    <string name="nc_rename_confirm">Renomear</string>
     <string name="nc_reply">Responder</string>
     <string name="nc_reply_privately">Responder en privado</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>

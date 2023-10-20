@@ -32,7 +32,6 @@
     <string name="edit">Editatu</string>
     <string name="emoji_backspace">Atzera</string>
     <string name="emoji_category_recent">Azkenak</string>
-    <string name="emoji_search">Bilatu emojiak</string>
     <string name="encrypted">Zifratua</string>
     <string name="error_loading_chats">Arazo bat gertatu da zure txatak kargatzean</string>
     <string name="failed_to_save">%1$s gordetzeak huts egin du</string>
@@ -100,7 +99,6 @@
     <string name="nc_call_video">%s bideo-deia</string>
     <string name="nc_call_voice">%s ahots-deia</string>
     <string name="nc_camera_permission_hint">Bideo komunikazioa gaitzeko, eman \"Kamera\" baimena.</string>
-    <string name="nc_camera_permission_permanently_denied">Bideo komunikazioa gaitu nahi baduzu eman \"Kamera\" baimena sistemaren ezarpenetan.</string>
     <string name="nc_cancel">Utzi</string>
     <string name="nc_capabilities_failed">Akatsak gaitasunak berreskuratzean. Bertan behera uzten.</string>
     <string name="nc_certificate_dialog_text">Fio zara %1$s (e)k  %2$s(e)ntzat emandako SSL ziurtagiri ezezagunaz?,  %3$s tik %4$sra baliagarria?</string>
@@ -223,7 +221,6 @@
     <string name="nc_message_read">Mezua irakurrita</string>
     <string name="nc_message_sent">Mezua bidalita</string>
     <string name="nc_microphone_permission_hint">Ahots bidezko komunikazioa gaitzeko, eman \"Mikrofonoa\" baimena.</string>
-    <string name="nc_microphone_permission_permanently_denied">Ahots komunikazioa gaitu nahi baduzu eman \"Mikrofonoa\" baimena sistemaren ezarpenetan.</string>
     <string name="nc_missed_call">%s-ren dei bat galdu duzu</string>
     <string name="nc_moderator">Moderatzailea</string>
     <string name="nc_never">Ez da inoiz elkartu</string>

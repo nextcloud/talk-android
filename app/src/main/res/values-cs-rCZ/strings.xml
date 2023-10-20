@@ -32,7 +32,6 @@
     <string name="edit">Upravit</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Nedávné</string>
-    <string name="emoji_search">Hledat emotionu</string>
     <string name="encrypted">Šifrované</string>
     <string name="error_loading_chats">Došlo k problému při načítání vašich chatů</string>
     <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
@@ -100,7 +99,6 @@
     <string name="nc_call_video">%s video hovor</string>
     <string name="nc_call_voice">%s hlasový hovor</string>
     <string name="nc_camera_permission_hint">Pro zapnutí videokomunikace udělte oprávnění „Kamera“ .</string>
-    <string name="nc_camera_permission_permanently_denied">Pro zapnutí videokomunikace udělte v nastavení systému oprávnění „Kamera“ .</string>
     <string name="nc_cancel">Storno</string>
     <string name="nc_capabilities_failed">Nepodařilo se získat schopnosti, přerušuje se</string>
     <string name="nc_certificate_dialog_text">Věříte doposud neznámému SSL certifikátu, vydaném %1$s pro %2$s, platnému od %3$s do %4$s?</string>
@@ -223,7 +221,6 @@
     <string name="nc_message_read">Zpráva přečtena</string>
     <string name="nc_message_sent">Zpráva odeslána</string>
     <string name="nc_microphone_permission_hint">Pro zapnutí hlasové komunikace udělte oprávnění „Mikrofon“ .</string>
-    <string name="nc_microphone_permission_permanently_denied">Pro zapnutí hlasové komunikace udělte v nastavení systému oprávnění „Mikrofon“ .</string>
     <string name="nc_missed_call">Zmeškali jste hovor od %s</string>
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_never">Nikdy nepřipojeno</string>

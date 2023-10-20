@@ -22,7 +22,6 @@
     <string name="edit">Ändra</string>
     <string name="emoji_backspace">Backsteg</string>
     <string name="emoji_category_recent">Senaste</string>
-    <string name="emoji_search">Sök emoji</string>
     <string name="encrypted">Krypterad</string>
     <string name="failed_to_save">Misslyckades att spara  %1$s</string>
     <string name="file_list_folder">mapp</string>
@@ -58,7 +57,6 @@
     <string name="nc_call_name_is_same">Namnet du angav är detsamma som det befintliga</string>
     <string name="nc_call_reconnecting">Återansluter …</string>
     <string name="nc_call_timeout">Inget svar på 45 sekunder, tryck för att försöka igen</string>
-    <string name="nc_camera_permission_permanently_denied">För att aktivera videokommunikation vänligen bevilja \"Kamera\"-tillstånd i systeminställningar.</string>
     <string name="nc_cancel">Avbryt</string>
     <string name="nc_capabilities_failed">Misslyckades att hämta funktioner, avbryter</string>
     <string name="nc_certificate_dialog_text">Litar du på det tills nu okända SSL-certifikatet, skapad av  %1$s för %2$s, giltig från%3$s till %4$s?</string>
@@ -146,7 +144,6 @@
     <string name="nc_mark_as_unread">Markera som oläst</string>
     <string name="nc_message_quote_cancel_reply">Avbryt svar</string>
     <string name="nc_message_sent">Meddelande skickat</string>
-    <string name="nc_microphone_permission_permanently_denied">För att aktivera röstkommunikation vänligen bevilja \"Mikrofon\"-tillstånd i systeminställningar.</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Gick aldrig med</string>
     <string name="nc_new_conversation">Ny konversation</string>

@@ -32,7 +32,6 @@
     <string name="edit">編輯</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">最新</string>
-    <string name="emoji_search">搜尋 emoji</string>
     <string name="encrypted">已加密</string>
     <string name="error_loading_chats">載入您的聊天記錄時時發生問題</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
@@ -100,7 +99,6 @@
     <string name="nc_call_video">%s 視像通話</string>
     <string name="nc_call_voice">%s 語音通話</string>
     <string name="nc_camera_permission_hint">要啟用影像通訊，請授予「相機」權限。</string>
-    <string name="nc_camera_permission_permanently_denied">為了開啟影像的通訊請在系統設定內同意\"相機\"的需求。</string>
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">無法獲取功能，正在中止</string>
     <string name="nc_certificate_dialog_text">您是否信任 %1$s 為 %2$s 發行的，有效期從 %3$s 到 %4$s，迄今不詳的SSL證書？</string>
@@ -223,7 +221,6 @@
     <string name="nc_message_read">訊息已讀</string>
     <string name="nc_message_sent">訊息已傳送</string>
     <string name="nc_microphone_permission_hint">要啟用語音通訊，請授予「米高風」權限。</string>
-    <string name="nc_microphone_permission_permanently_denied">為了開啟聲音的通訊請在系統設定內同意\"麥克風\"的需求。</string>
     <string name="nc_missed_call">您錯過了 %s 的來電</string>
     <string name="nc_moderator">主持人</string>
     <string name="nc_never">從未加入</string>

@@ -32,7 +32,6 @@
     <string name="edit">Düzenle</string>
     <string name="emoji_backspace">Geriye silme</string>
     <string name="emoji_category_recent">Son kullanılan</string>
-    <string name="emoji_search">Emoji arama</string>
     <string name="encrypted">Şifrelenmiş</string>
     <string name="error_loading_chats">Çizelgeleriniz yüklenirken bir sorun çıktı</string>
     <string name="failed_to_save">%1$s kaydedilemedi</string>
@@ -100,7 +99,6 @@
     <string name="nc_call_video">%s görüntülü çağrı</string>
     <string name="nc_call_voice">%s sesli çağrı</string>
     <string name="nc_camera_permission_hint">Görüntülü iletişim kurabilmek için \"Kamera\" için erişme izni verin.</string>
-    <string name="nc_camera_permission_permanently_denied">Görüntülü iletişim kurabilmek için sistem ayarlarından \"Kamera\" erişme iznini verin.</string>
     <string name="nc_cancel">İptal</string>
     <string name="nc_capabilities_failed">Yeterlilikler alınamadı, vazgeçiliyor</string>
     <string name="nc_certificate_dialog_text">Şimdiye kadar bilinmeyen, %1$s tarafından %2$s için yayınlanmış %3$s ile %4$s tarihleri arasında geçerli olan sertifikaya güvenilsin mi?</string>
@@ -223,7 +221,6 @@
     <string name="nc_message_read">İleti okundu</string>
     <string name="nc_message_sent">İleti gönderildi</string>
     <string name="nc_microphone_permission_hint">Sesli iletişim kurabilmek için \"Mikrofon\" için erişme izni verin.</string>
-    <string name="nc_microphone_permission_permanently_denied">Sesli iletişim kurabilmek için sistem ayarlarından \"Mikrofon\" erişme iznini verin.</string>
     <string name="nc_missed_call">%s sizi aramış</string>
     <string name="nc_moderator">Sorumlu</string>
     <string name="nc_never">Hiç katılmadı</string>

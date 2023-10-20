@@ -26,7 +26,6 @@
     <string name="edit">Променяне</string>
     <string name="emoji_backspace">Backspace /Назад/</string>
     <string name="emoji_category_recent">Скорошни</string>
-    <string name="emoji_search">Търсене на емотикони</string>
     <string name="encrypted">Криптиран</string>
     <string name="error_loading_chats">Имаше проблем със зареждането на вашите чатове</string>
     <string name="failed_to_save">Неуспешно записване %1$s</string>
@@ -87,7 +86,6 @@
     <string name="nc_call_unknown">%sобаждане</string>
     <string name="nc_call_video">%sвидео обаждане</string>
     <string name="nc_call_voice">%sгласово обаждане</string>
-    <string name="nc_camera_permission_permanently_denied">За да активирате видео комуникация, моля, предоставете право на „Камера“ в системните настройки.</string>
     <string name="nc_cancel">Отказ</string>
     <string name="nc_capabilities_failed">Прекъсване, извличането на възможности не беше успешно </string>
     <string name="nc_certificate_dialog_text">Вярвате ли на неизвестен досега SSL сертификат, издаден от %1$s за %2$s, валиден от%3$s до %4$s?</string>
@@ -202,7 +200,6 @@
     <string name="nc_message_quote_cancel_reply">Отказ на отговор</string>
     <string name="nc_message_read">Съобщението е прочетено</string>
     <string name="nc_message_sent">Съобщението е изпратено</string>
-    <string name="nc_microphone_permission_permanently_denied">За активиране на гласова комуникация, моля, дайте право на „Микрофон“ в системните настройки.</string>
     <string name="nc_missed_call">Пропуснахте обаждане от %s</string>
     <string name="nc_moderator">Модератор</string>
     <string name="nc_never">Никога не е присъединяван</string>

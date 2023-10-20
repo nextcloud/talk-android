@@ -32,7 +32,6 @@
     <string name="edit">تعديل</string>
     <string name="emoji_backspace">سهم خلفي backspace</string>
     <string name="emoji_category_recent">مؤخّراً recednt</string>
-    <string name="emoji_search">بحث الإيموجي emoji</string>
     <string name="encrypted">مُشفّر</string>
     <string name="error_loading_chats">حدثت مشكلة أثناء رفع دردشاتك</string>
     <string name="failed_to_save">تعذّر حفظ %1$s</string>
@@ -100,7 +99,6 @@
     <string name="nc_call_video">%s اتصال فيديو</string>
     <string name="nc_call_voice">%s اتصال صوتي</string>
     <string name="nc_camera_permission_hint">لتمكين اتصال الفيديو ، يرجى منح إذن \"الكاميرا\".</string>
-    <string name="nc_camera_permission_permanently_denied">لتمكين اتصال الفيديو ، يرجى منح وصول \"الكاميرا\" في إعدادات النظام.</string>
     <string name="nc_cancel">إلغاء</string>
     <string name="nc_capabilities_failed">فشل في جلب الإمكانيات، جارِ إلالغاء</string>
     <string name="nc_certificate_dialog_text">هل تثق في شهادة SSL غير المعروفة حتى الآن ، الصادرة من%1$sإلى %2$s  ، الصالحة %3$s إلى%4$s؟</string>
@@ -223,7 +221,6 @@
     <string name="nc_message_read">تمّت قراءة الرسالة</string>
     <string name="nc_message_sent">تمّ إرسال الرسالة </string>
     <string name="nc_microphone_permission_hint">لتمكين الاتصال الصوتي ، يرجى منح إذن \"الميكروفون\".</string>
-    <string name="nc_microphone_permission_permanently_denied">لتمكين الاتصال الصوتي ، يرجى منح وصول \"الميكروفون\" في إعدادات النظام.</string>
     <string name="nc_missed_call">فَاتَتكَ مكالمةٌ من %s</string>
     <string name="nc_moderator">مشرِف</string>
     <string name="nc_never">عدم الانضمام</string>

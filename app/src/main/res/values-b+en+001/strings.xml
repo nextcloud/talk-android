@@ -32,7 +32,6 @@
     <string name="edit">Edit</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recent</string>
-    <string name="emoji_search">Search emoji</string>
     <string name="encrypted">Encrypted</string>
     <string name="error_loading_chats">There was a problem loading your chats</string>
     <string name="failed_to_save">Failed to save %1$s</string>
@@ -100,7 +99,6 @@
     <string name="nc_call_video">%s video call</string>
     <string name="nc_call_voice">%s voice call</string>
     <string name="nc_camera_permission_hint">To enable video communication please grant \"Camera\" permission.</string>
-    <string name="nc_camera_permission_permanently_denied">To enable video communication please grant \"Camera\" permission in the system settings.</string>
     <string name="nc_cancel">Cancel</string>
     <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
     <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
@@ -223,7 +221,6 @@
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_microphone_permission_hint">To enable voice communication please grant \"Microphone\" permission.</string>
-    <string name="nc_microphone_permission_permanently_denied">To enable voice communication please grant \"Microphone\" permission in the system settings.</string>
     <string name="nc_missed_call">You missed a call from %s</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Never joined</string>

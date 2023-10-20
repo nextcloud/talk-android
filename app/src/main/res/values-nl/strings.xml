@@ -26,7 +26,6 @@
     <string name="edit">Bewerken</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recent</string>
-    <string name="emoji_search">Zoek emoji</string>
     <string name="encrypted">Versleuteld</string>
     <string name="error_loading_chats">Het laden van uw gesprekken was problematisch</string>
     <string name="failed_to_save">Kon %1$s niet opslaan</string>
@@ -81,7 +80,6 @@
     <string name="nc_call_unknown">%s oproep</string>
     <string name="nc_call_video">%s videogesprek</string>
     <string name="nc_call_voice">%s gesprek</string>
-    <string name="nc_camera_permission_permanently_denied">Om videogesprekken te houden, verleen \"Camera\" machtiging in de systeeminstellingen.</string>
     <string name="nc_cancel">Annuleren</string>
     <string name="nc_capabilities_failed">Kon mogelijkheden niet ophalen, afbreken</string>
     <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
@@ -188,7 +186,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_message_quote_cancel_reply">Antwoord annuleren</string>
     <string name="nc_message_read">Bericht gelezen</string>
     <string name="nc_message_sent">Bericht verstuurd</string>
-    <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" machtiging in de systeeminstellingen.</string>
     <string name="nc_missed_call">Je hebt een gesprek gemist van %s</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nooit deelgenomen</string>

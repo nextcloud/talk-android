@@ -19,7 +19,6 @@
     <string name="dontClear">Ne briši</string>
     <string name="edit">Uredi</string>
     <string name="emoji_category_recent">Nedavni</string>
-    <string name="emoji_search">Pretraži emoji</string>
     <string name="encrypted">Šifrirano</string>
     <string name="failed_to_save">Spremanje %1$s nije uspjelo</string>
     <string name="file_list_folder">mapa</string>
@@ -68,7 +67,6 @@
     <string name="nc_call_unknown">%s poziv</string>
     <string name="nc_call_video">%s videopoziv</string>
     <string name="nc_call_voice">%s glasovni poziv</string>
-    <string name="nc_camera_permission_permanently_denied">Kako biste omogućili videokomunikaciju, aktivirajte dopuštenje \“Kamera\“ u postavkama sustava.</string>
     <string name="nc_cancel">Odustani</string>
     <string name="nc_capabilities_failed">Neuspješno dohvaćanje mogućnosti, prekid</string>
     <string name="nc_certificate_dialog_text">Vjerujete li dosad nepoznatoj SSL vjerodajnici koju je izdao %1$s za %2$s i koja vrijedi od %3$s do %4$s?</string>
@@ -170,7 +168,6 @@
     <string name="nc_message_quote_cancel_reply">Prekini odgovor</string>
     <string name="nc_message_read">Poruka pročitana</string>
     <string name="nc_message_sent">Poruka poslana</string>
-    <string name="nc_microphone_permission_permanently_denied">Kako biste omogućili glasovnu komunikaciju, aktivirajte dopuštenje \“Mikrofon\“ u postavkama sustava.</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nije se nikad pridružio</string>
     <string name="nc_new_conversation">Novi razgovor</string>
@@ -215,6 +212,7 @@
     <string name="nc_remove_group_and_members">Ukloni grupu i članove</string>
     <string name="nc_remove_participant">Ukloni sudionika</string>
     <string name="nc_rename">Preimenuj razgovor</string>
+    <string name="nc_rename_confirm">Preimenuj</string>
     <string name="nc_reply">Odgovori</string>
     <string name="nc_reply_privately">Odgovori privatno</string>
     <string name="nc_screen_lock_timeout_30">30 sekundi</string>

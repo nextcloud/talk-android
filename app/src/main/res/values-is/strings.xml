@@ -45,7 +45,6 @@
     <string name="nc_call_name">Heiti samtals</string>
     <string name="nc_call_name_is_same">Nafnið sem þú settir inn er það sama og það sem fyrir er</string>
     <string name="nc_call_unknown">%s símtal</string>
-    <string name="nc_camera_permission_permanently_denied">Til að koma á myndsamtölum þarftu að veita heimildir fyrir \"Myndavél\" í kerfisstillingunum.</string>
     <string name="nc_cancel">Hætta við</string>
     <string name="nc_capabilities_failed">Mistókst að sækja getuupplýsingar, hætti</string>
     <string name="nc_certificate_dialog_text">Treystirðu hinu hingað til óþekkta SSL-skilríki, útgefnu af %1$s fyrir %2$s, með gildistíma frá %3$s til %4$s?</string>
@@ -122,7 +121,6 @@
     <string name="nc_mark_as_unread">Merkja allt sem ólesið</string>
     <string name="nc_message_read">Skilaboðin hafa verið lesið</string>
     <string name="nc_message_sent">Skilaboðin hafa verið send</string>
-    <string name="nc_microphone_permission_permanently_denied">Til að koma á hljóðsamtölum þarftu að veita heimildir fyrir \"Hljóðnemi\" í kerfisstillingunum.</string>
     <string name="nc_moderator">Umsjónarmaður</string>
     <string name="nc_never">Skráði sig aldrei</string>
     <string name="nc_new_conversation">Nýtt samtal</string>
@@ -160,6 +158,7 @@
     <string name="nc_remove_from_favorites">Fjarlægja úr eftirlætum</string>
     <string name="nc_remove_participant">Fjarlægja þátttakanda</string>
     <string name="nc_rename">Endurnefna samtal</string>
+    <string name="nc_rename_confirm">Endurnefna</string>
     <string name="nc_reply">Svara</string>
     <string name="nc_screen_lock_timeout_30">30 sekúndur</string>
     <string name="nc_screen_lock_timeout_300">5 mínútur</string>

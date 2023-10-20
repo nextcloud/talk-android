@@ -32,7 +32,6 @@
     <string name="edit">Bearbeiten</string>
     <string name="emoji_backspace">Rücktaste</string>
     <string name="emoji_category_recent">Neueste</string>
-    <string name="emoji_search">Emoji suchen</string>
     <string name="encrypted">Verschlüsselt</string>
     <string name="error_loading_chats">Beim Laden Ihrer Chats ist ein Problem aufgetreten</string>
     <string name="failed_to_save">Speichern von %1$s fehlgeschlagen</string>
@@ -100,7 +99,6 @@
     <string name="nc_call_video">%s Videoanruf</string>
     <string name="nc_call_voice">%s Sprachanruf</string>
     <string name="nc_camera_permission_hint">Um Videokommunikation zu ermöglichen, bitte die Berechtigung „Kamera“ erteilen.</string>
-    <string name="nc_camera_permission_permanently_denied">Um Videoanrufe zu ermöglichen, gewähren Sie die Berechtigung für die \"Kamera\" in den Systemeinstellungen</string>
     <string name="nc_cancel">Abbrechen</string>
     <string name="nc_capabilities_failed">Fehler beim Abfragen der Fähigkeiten. Abbruch</string>
     <string name="nc_certificate_dialog_text">Soll dem bisher unbekannten SSL-Zertifikat, ausgestellt von %1$s für %2$s, gültig von %3$s bis %4$s, vertraut werden?</string>
@@ -223,7 +221,6 @@
     <string name="nc_message_read">Nachricht gelesen</string>
     <string name="nc_message_sent">Nachricht gesendet</string>
     <string name="nc_microphone_permission_hint">Um Sprachkommunikation zu ermöglichen, bitte die Berechtigung „Mikrofon“ erteilen.</string>
-    <string name="nc_microphone_permission_permanently_denied">Um Audioanrufe zu ermöglichen, gewähren Sie die Berechtigung für das \"Mikrofon\" in den Systemeinstellungen</string>
     <string name="nc_missed_call">Sie haben einen Anruf von %s verpasst</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nie beigetreten</string>

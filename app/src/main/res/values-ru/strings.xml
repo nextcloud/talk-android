@@ -27,7 +27,6 @@
     <string name="edit">Редактировать</string>
     <string name="emoji_backspace">Вернуться</string>
     <string name="emoji_category_recent">Недавние</string>
-    <string name="emoji_search">Поиск эмодзи</string>
     <string name="encrypted">Зашифровано</string>
     <string name="error_loading_chats">Возникла проблема при загрузке ваших чатов</string>
     <string name="failed_to_save">Не удалось сохранить %1$s</string>
@@ -89,7 +88,6 @@
     <string name="nc_call_unknown">%s звонок</string>
     <string name="nc_call_video">%s видеозвонок</string>
     <string name="nc_call_voice">%s голосовой вызов</string>
-    <string name="nc_camera_permission_permanently_denied">Для выполнения видеовызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к камере в системных настройках.</string>
     <string name="nc_cancel">Отмена</string>
     <string name="nc_capabilities_failed">Не удалось получить список поддерживаемых протоколов</string>
     <string name="nc_certificate_dialog_text">Доверять неизвестному сертификату SSL: выпущен %1$s для %2$s, действителен с %3$s по %4$s?</string>
@@ -205,7 +203,6 @@
     <string name="nc_message_quote_cancel_reply">Отменить ответ</string>
     <string name="nc_message_read">Сообщение прочитано</string>
     <string name="nc_message_sent">Сообщение отправлено</string>
-    <string name="nc_microphone_permission_permanently_denied">Для выполнения вызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к микрофону  в системных настройках.</string>
     <string name="nc_missed_call">Вы пропустили звонок от %s</string>
     <string name="nc_moderator">Модератор</string>
     <string name="nc_never">Никогда не использовался</string>

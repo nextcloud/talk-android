@@ -31,7 +31,6 @@
     <string name="edit">Szerkesztés</string>
     <string name="emoji_backspace">Visszatörlés</string>
     <string name="emoji_category_recent">Legutóbbiak</string>
-    <string name="emoji_search">Emodzsi keresése</string>
     <string name="encrypted">Titkosított</string>
     <string name="error_loading_chats">Hiba történt a csevegések betöltése során</string>
     <string name="failed_to_save">Sikertelen mentés: %1$s</string>
@@ -97,7 +96,7 @@
     <string name="nc_call_unknown">%s hívás</string>
     <string name="nc_call_video">%s videohívás</string>
     <string name="nc_call_voice">%s hanghívás</string>
-    <string name="nc_camera_permission_permanently_denied">A videohívás engedélyezéséhez a rendszerbeállításokban meg kell adnia a „Kamera” engedélyt.</string>
+    <string name="nc_camera_permission_hint">A videohívás engedélyezéséhez meg kell adnia a „Kamera” engedélyt.</string>
     <string name="nc_cancel">Mégse</string>
     <string name="nc_capabilities_failed">A lehetőségek lekérdezése sikertelen, megszakítás</string>
     <string name="nc_certificate_dialog_text">Megbízik a(z) %1$s által a(z) %2$s részére kiállított, %3$s és %4$s között érvényes, korábban ismeretlen SSL tanúsítványban?</string>
@@ -219,7 +218,7 @@
     <string name="nc_message_quote_cancel_reply">Válasz elvetése</string>
     <string name="nc_message_read">Üzenet elolvasva</string>
     <string name="nc_message_sent">Üzenet elküldve</string>
-    <string name="nc_microphone_permission_permanently_denied">A hanghívás engedélyezéséhez a rendszerbeállításokban meg kell adnia a „Mikrofon” engedélyt.</string>
+    <string name="nc_microphone_permission_hint">A hanghívás engedélyezéséhez meg kell adnia a „Mikrofon” engedélyt.</string>
     <string name="nc_missed_call">Nem fogadott hívás a következőtől: %s</string>
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_never">Soha nem csatlakozott</string>

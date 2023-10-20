@@ -32,7 +32,6 @@
     <string name="edit">Измени</string>
     <string name="emoji_backspace">Брисање улево</string>
     <string name="emoji_category_recent">Недавно</string>
-    <string name="emoji_search">Пронађи емођи</string>
     <string name="encrypted">Шифровано</string>
     <string name="error_loading_chats">Дошло је до проблема приликом учитавања ваших четова</string>
     <string name="failed_to_save">Није успело чување %1$s</string>
@@ -100,7 +99,6 @@
     <string name="nc_call_video">%s видео позив</string>
     <string name="nc_call_voice">%s гласовни позив</string>
     <string name="nc_camera_permission_hint">Ако желите да укључите видео комуникацију, молимо вас да дате дозволу „Камера”</string>
-    <string name="nc_camera_permission_permanently_denied">Да бисте омогућили видео комуникацију, дозволите приступ камери у системским поставкама.</string>
     <string name="nc_cancel">Откажи</string>
     <string name="nc_capabilities_failed">Грешка приликом дохватања могућности, прекидам</string>
     <string name="nc_certificate_dialog_text">Да ли верујете, до сада непознатом, SSL сертификату, који је издао %1$s на %2$s, валидним од %3$s до %4$s?</string>
@@ -223,7 +221,6 @@
     <string name="nc_message_read">Порука је прочитана</string>
     <string name="nc_message_sent">Порука послата</string>
     <string name="nc_microphone_permission_hint">Ако желите да укључите аудио комуникацију, молимо вас да дате дозволу „Микрофон”</string>
-    <string name="nc_microphone_permission_permanently_denied">Да бисте омогућили аудио комуникацију, дозволите приступ микрофону у системским поставкама.</string>
     <string name="nc_missed_call">Имате пропуштен позив од %s</string>
     <string name="nc_moderator">Модератор</string>
     <string name="nc_never">Никад придружен</string>

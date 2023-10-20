@@ -26,7 +26,6 @@
     <string name="edit">Modifica</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recenti</string>
-    <string name="emoji_search">Cerca emoji</string>
     <string name="encrypted">Cifrato</string>
     <string name="error_loading_chats">Si è verificato un problema durante il caricamento delle tue chat</string>
     <string name="failed_to_save">Salvataggio di %1$s fallito</string>
@@ -81,7 +80,6 @@
     <string name="nc_call_unknown">%s chiamata</string>
     <string name="nc_call_video">%s videochiamata</string>
     <string name="nc_call_voice">%s chiamata vocale</string>
-    <string name="nc_camera_permission_permanently_denied">Per abilitare la comunicazione video devi accordare il permesso per la \"Fotocamera\" nelle impostazioni di sistema.</string>
     <string name="nc_cancel">Annulla</string>
     <string name="nc_capabilities_failed">Recupero delle capacità non riuscito, interruzione in corso</string>
     <string name="nc_certificate_dialog_text">Ti fidi del certificato SSL fino ad ora sconosciuto, rilasciato da %1$s per %2$s, valido da %3$s a %4$s?</string>
@@ -185,7 +183,6 @@
     <string name="nc_message_quote_cancel_reply">Annulla risposta</string>
     <string name="nc_message_read">Messaggio letto</string>
     <string name="nc_message_sent">Messaggio inviato</string>
-    <string name="nc_microphone_permission_permanently_denied">Per abilitare la comunicazione vocale devi accordare il permesso per  \"Microfono\" nelle impostazioni di sistema.</string>
     <string name="nc_moderator">Moderatore</string>
     <string name="nc_never">Mai partecipato</string>
     <string name="nc_new_conversation">Nuova conversazione</string>
@@ -234,6 +231,7 @@
     <string name="nc_remove_group_and_members">Rimuovi gruppo e membri</string>
     <string name="nc_remove_participant">Rimuovi partecipante</string>
     <string name="nc_rename">Rinomina conversazione</string>
+    <string name="nc_rename_confirm">Rinomina</string>
     <string name="nc_reply">Rispondi</string>
     <string name="nc_reply_privately">Rispondi in privato</string>
     <string name="nc_screen_lock_timeout_30">30 secondi</string>

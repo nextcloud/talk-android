@@ -29,7 +29,6 @@
     <string name="edit">ویرایش</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">اخیر</string>
-    <string name="emoji_search">Search emoji</string>
     <string name="encrypted">Encrypted</string>
     <string name="error_loading_chats">There was a problem loading your chats</string>
     <string name="failed_to_save">Failed to save %1$s</string>
@@ -94,7 +93,6 @@
     <string name="nc_call_video">%s video call</string>
     <string name="nc_call_voice">%s voice call</string>
     <string name="nc_camera_permission_hint">To enable video communication please grant \"Camera\" permission.</string>
-    <string name="nc_camera_permission_permanently_denied">برای فعال کردن ارتباطات تصویری ، لطفاً اجازه استفاده از \"دوربین\" را در تنظیمات سیستم قرار دهید.</string>
     <string name="nc_cancel">لغو</string>
     <string name="nc_capabilities_failed">دریافت قابلیت‌ها موفقیت‌آمیز نبود، درحال لغو</string>
     <string name="nc_certificate_dialog_text">آیا به گواهی SSL ناشناخته ، صادر شده توسط ، اعتماد دارید %1$s برای %2$s, معتبر از %3$s به %4$s؟</string>
@@ -217,7 +215,6 @@
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_sent">پیام ارسال شد</string>
     <string name="nc_microphone_permission_hint">To enable voice communication please grant \"Microphone\" permission.</string>
-    <string name="nc_microphone_permission_permanently_denied">برای فعال کردن ارتباط صوتی ، لطفاً در \"تنظیمات سیستم\" اجازه استفاه از \"میکروفون\" را قرار دهید.</string>
     <string name="nc_missed_call">You missed a call from %s</string>
     <string name="nc_moderator">مدیر</string>
     <string name="nc_never">هرگز ملحق نشوید</string>

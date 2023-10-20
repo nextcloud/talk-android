@@ -29,7 +29,6 @@
     <string name="edit">Edytuj</string>
     <string name="emoji_backspace">Cofnij</string>
     <string name="emoji_category_recent">Ostatnie</string>
-    <string name="emoji_search">Szukaj emoji</string>
     <string name="encrypted">Zaszyfrowane</string>
     <string name="error_loading_chats">Wystąpił problem z wczytaniem Twoich czatów</string>
     <string name="failed_to_save">Nie udało się zapisać %1$s</string>
@@ -94,7 +93,6 @@
     <string name="nc_call_video">%s połączenie wideo</string>
     <string name="nc_call_voice">%s połączenie głosowe</string>
     <string name="nc_camera_permission_hint">Aby umożliwić komunikację wideo, należy udzielić dostępu dla \"Kamera\".</string>
-    <string name="nc_camera_permission_permanently_denied">Aby włączyć komunikację wideo, należy udzielić dostępu dla \"Aparat\" w ustawieniach systemu.</string>
     <string name="nc_cancel">Anuluj</string>
     <string name="nc_capabilities_failed">Błąd pobierania, przerwano żądanie</string>
     <string name="nc_certificate_dialog_text">Czy ufasz dotychczas nieznanemu certyfikatowi SSL, wydanemu przez %1$s dla %2$s, ważnemu od %3$s do %4$s?</string>
@@ -217,7 +215,6 @@
     <string name="nc_message_read">Wiadomość przeczytana</string>
     <string name="nc_message_sent">Wiadomość wysłana</string>
     <string name="nc_microphone_permission_hint">Aby włączyć komunikację głosową, należy udzielić dostępu dla \"Mikrofon\".</string>
-    <string name="nc_microphone_permission_permanently_denied">Aby włączyć komunikację głosową, należy udzielić dostępu dla \"Mikrofon\" w ustawieniach systemu.</string>
     <string name="nc_missed_call">Nie odebrałeś połączenia od %s</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nigdy nie dołączył</string>

@@ -16,7 +16,6 @@
     <string name="dontClear">Neišvalyti</string>
     <string name="edit">Taisyti</string>
     <string name="emoji_category_recent">Paskiausi</string>
-    <string name="emoji_search">Ieškoti šypsenėlių</string>
     <string name="failed_to_save">Nepavyko įrašyti %1$s</string>
     <string name="file_list_folder">aplankas</string>
     <string name="file_list_loading">Įkeliama…</string>
@@ -52,7 +51,6 @@
     <string name="nc_call_name_is_same">Jūsų įvestas vardas yra toks pats kaip ir esamas</string>
     <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
     <string name="nc_call_timeout">Per 45 sekundes jokio atsakymo, bakstelėkite norėdami bandyti dar kartą</string>
-    <string name="nc_camera_permission_permanently_denied">Norėdami įjungti bendravimą vaizdu, sistemos nustatymuose suteikite prieigą prie \"Kameros\".</string>
     <string name="nc_cancel">Atsisakyti</string>
     <string name="nc_certificate_dialog_text">Ar pasitikite iki šiol nežinomu SSL liudijimu, kurį išdavė %1$s, kuris skirtas %2$s ir galioja nuo %3$s iki %4$s?</string>
     <string name="nc_certificate_error">Jūsų SSL sąranka neleido ryšio</string>
@@ -128,7 +126,6 @@
     <string name="nc_mark_as_read">Žymėti kaip skaitytą</string>
     <string name="nc_mark_as_unread">Žymėti kaip neskaitytą</string>
     <string name="nc_message_sent">Žinutė išsiųsta</string>
-    <string name="nc_microphone_permission_permanently_denied">Norėdami įjungti bendravimą balsu, sistemos nustatymuose suteikite prieigą prie \"Mikrofono\".</string>
     <string name="nc_moderator">Moderatorius</string>
     <string name="nc_new_conversation">Naujas pokalbis</string>
     <string name="nc_new_messages">Neskaitytos žinutės</string>
@@ -164,6 +161,7 @@
     <string name="nc_remove_from_favorites">Šalinti iš mėgstamų</string>
     <string name="nc_remove_participant">Šalinti dalyvį</string>
     <string name="nc_rename">Pervadinti pokalbį</string>
+    <string name="nc_rename_confirm">Pervadinti</string>
     <string name="nc_reply">Atsakyti</string>
     <string name="nc_reply_privately">Atsakyti privačiai</string>
     <string name="nc_screen_lock_timeout_30">30 sekundžių</string>

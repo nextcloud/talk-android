@@ -45,7 +45,6 @@
     <string name="nc_call_name">שם הדיון</string>
     <string name="nc_call_name_is_same">השם שהקלדת זהה לקיים</string>
     <string name="nc_call_timeout">אין תגובה תוך 45 שניות, יש לגעת כדי לנסות שוב</string>
-    <string name="nc_camera_permission_permanently_denied">כדי לאפשר תקשורת וידאו נא להעניק את ההרשאה „מצלמה” בהגדרות המערכת.</string>
     <string name="nc_cancel">ביטול</string>
     <string name="nc_capabilities_failed">אחזור היכולות נכשל, התהליך נפסק</string>
     <string name="nc_certificate_dialog_text">האם אתה סומך על אישור ה- SSL הלא ידוע עד כה, שהונפק על ידי %1$s עבור %2$s, תקף מ-%3$sעד %4$s?</string>
@@ -123,7 +122,6 @@
     <string name="nc_mark_as_read">סימון כנקרא</string>
     <string name="nc_mark_as_unread">סימון כלא נקרא</string>
     <string name="nc_message_sent">הודעה נשלחה</string>
-    <string name="nc_microphone_permission_permanently_denied">כדי להפעיל תקשורת שמע נא להעניק את ההרשאה „מיקרופון” בהגדרות המערכת.</string>
     <string name="nc_moderator">פיקוח</string>
     <string name="nc_never">מעולם לא הצטרף</string>
     <string name="nc_new_conversation">דיון חדש</string>
@@ -163,6 +161,7 @@
     <string name="nc_remove_group_and_members">הסרת קבוצה וחברים</string>
     <string name="nc_remove_participant">הסרת משתתף</string>
     <string name="nc_rename">שינוי שם הדיון</string>
+    <string name="nc_rename_confirm">שינוי שם</string>
     <string name="nc_reply">תגובה</string>
     <string name="nc_screen_lock_timeout_30">30 שניות</string>
     <string name="nc_screen_lock_timeout_300">5 דקות</string>

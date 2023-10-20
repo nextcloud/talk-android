@@ -27,7 +27,6 @@
     <string name="edit">Uredi</string>
     <string name="emoji_backspace">povratnica</string>
     <string name="emoji_category_recent">Nedavno</string>
-    <string name="emoji_search">Iskanje izraznih ikon</string>
     <string name="encrypted">Šifrirano</string>
     <string name="error_loading_chats">Prišlo je do napake nalaganja pogovorov.</string>
     <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>
@@ -88,7 +87,6 @@
     <string name="nc_call_unknown">Klic %s</string>
     <string name="nc_call_video">Glasovni klic %s</string>
     <string name="nc_call_voice">Glasovni klic %s</string>
-    <string name="nc_camera_permission_permanently_denied">Za omogočanje pogovora po videu je treba dodeliti ustrezna dovoljenja za dostop do »Kamere« med nastavitvami sistema.</string>
     <string name="nc_cancel">Prekliči</string>
     <string name="nc_capabilities_failed">Pridobivanje podatkov je spodletelo. Opravilo bo preklicano.</string>
     <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
@@ -204,7 +202,6 @@
     <string name="nc_message_quote_cancel_reply">Prekliči odgovor</string>
     <string name="nc_message_read">Sporočilo je prebrano</string>
     <string name="nc_message_sent">Sporočilo je poslano</string>
-    <string name="nc_microphone_permission_permanently_denied">Za omogočanje zvočnega pogovora je treba dodeliti ustrezna dovoljenja za dostop do »Mikrofona« med nastavitvami sistema.</string>
     <string name="nc_missed_call">Zgrešili ste klic stika %s</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nikoli pridružen</string>

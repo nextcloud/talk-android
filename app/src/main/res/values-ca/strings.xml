@@ -27,7 +27,6 @@
     <string name="edit">Editar</string>
     <string name="emoji_backspace">Retrocés</string>
     <string name="emoji_category_recent">Recent</string>
-    <string name="emoji_search">Cerca l\'emoji</string>
     <string name="encrypted">Xifrat</string>
     <string name="error_loading_chats">S\'ha produït un problema carregant els xats</string>
     <string name="failed_to_save">No s\'ha pogut desar %1$s</string>
@@ -86,7 +85,6 @@
     <string name="nc_call_unknown">%strucada </string>
     <string name="nc_call_video">%s trucada de vídeo</string>
     <string name="nc_call_voice">%s trucada de veu</string>
-    <string name="nc_camera_permission_permanently_denied">Per habilitar la comunicació per vídeo, si us plau doneu permís a la \"Càmera\" dins de la configuració dels paràmetres del sistema.</string>
     <string name="nc_cancel">Cancel·la</string>
     <string name="nc_capabilities_failed">No s\'han pogut obtenir les funcionalitats, s\'està avortant</string>
     <string name="nc_certificate_dialog_text">Us en refieu del certificat SSL desconegut fins ara, emès per %1$s per %2$s, vàlid del %3$s fins el %4$s?</string>
@@ -200,7 +198,6 @@
     <string name="nc_message_quote_cancel_reply">Cancel·la la resposta</string>
     <string name="nc_message_read">Missatge llegit</string>
     <string name="nc_message_sent">Missatge enviat</string>
-    <string name="nc_microphone_permission_permanently_denied">Per activar la comunicació de veu, doneu permís al \"Micròfon\" dins de la configuració del sistema.</string>
     <string name="nc_missed_call">Teniu una trucada perduda de %s</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Mai no us hi heu unit</string>

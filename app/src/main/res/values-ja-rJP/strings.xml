@@ -25,7 +25,6 @@
     <string name="edit">編集</string>
     <string name="emoji_backspace">バックスペース</string>
     <string name="emoji_category_recent">最近</string>
-    <string name="emoji_search">絵文字を検索</string>
     <string name="encrypted">暗号化済み</string>
     <string name="failed_to_save">%1$sの保存に失敗しました</string>
     <string name="file_list_folder">フォルダー</string>
@@ -75,7 +74,6 @@
     <string name="nc_call_unknown">%s通話</string>
     <string name="nc_call_video">%s映像通話</string>
     <string name="nc_call_voice">%s音声通話</string>
-    <string name="nc_camera_permission_permanently_denied">ビデオ通信を有効にするには、システム設定で「カメラ」権限を与えてください。</string>
     <string name="nc_cancel">キャンセル</string>
     <string name="nc_capabilities_failed">機能を取得できませんでした。</string>
     <string name="nc_certificate_dialog_text">未確認のSSL証明書を信頼しますか？（ issued by %1$s for %2$s, valid from %3$s to %4$s）</string>
@@ -179,7 +177,6 @@
     <string name="nc_message_quote_cancel_reply">返信をキャンセル</string>
     <string name="nc_message_read">メッセージ既読</string>
     <string name="nc_message_sent">メッセージ送信済</string>
-    <string name="nc_microphone_permission_permanently_denied">音声通信を有効にするには、システム設定で「マイク」権限を与えてください。</string>
     <string name="nc_moderator">モデレータ</string>
     <string name="nc_never">決して参加しなかった</string>
     <string name="nc_new_conversation">新しい会話</string>
@@ -228,6 +225,7 @@
     <string name="nc_remove_group_and_members">メンバーとグループを削除</string>
     <string name="nc_remove_participant">参加者を削除</string>
     <string name="nc_rename">会話の名前を変更する</string>
+    <string name="nc_rename_confirm">名前を変更</string>
     <string name="nc_reply">返信</string>
     <string name="nc_reply_privately">個人的に返信する</string>
     <string name="nc_screen_lock_timeout_30">30 秒</string>

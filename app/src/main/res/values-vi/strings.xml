@@ -59,7 +59,6 @@
     <string name="nc_call_state_with_phone">%1$s với điện thoại</string>
     <string name="nc_call_state_with_video">%1$s với video</string>
     <string name="nc_call_timeout">Không có phản hồi trong 45 giây, nhấn để thử lại</string>
-    <string name="nc_camera_permission_permanently_denied">Để sử dụng cuộc gọi Video, vui lòng cấp quyền \"Camera\" trong cài đặt hệ thống.</string>
     <string name="nc_cancel">Hủy</string>
     <string name="nc_capabilities_failed">Lỗi không thể tải dữ liệu, hủy bỏ</string>
     <string name="nc_certificate_dialog_text">Bạn có tin tưởng vào chứng thực SSL chưa biết này không, phát sinh này bởi %1$s cho %2$s, hiệu lực từ %3$s đến %4$s?</string>
@@ -123,7 +122,6 @@
     <string name="nc_mark_as_read">Đánh dấu đã đọc</string>
     <string name="nc_mark_as_unread">Đánh dấu là chưa đọc</string>
     <string name="nc_message_sent">Tin nhắn đã gửi</string>
-    <string name="nc_microphone_permission_permanently_denied">Để sử dụng cuộc gọi, hãy vui lòng cấp quyền \"Microphone\" trong cài đặt hệ thống</string>
     <string name="nc_moderator">Kiểm duyệt</string>
     <string name="nc_never">Chưa bao giờ tham gia</string>
     <string name="nc_new_conversation">Tạo đàm thoại mới</string>

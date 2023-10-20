@@ -55,7 +55,6 @@
     <string name="nc_call_name">Samtalenavn</string>
     <string name="nc_call_name_is_same">Navnet du valgte eksisterer allerede</string>
     <string name="nc_call_timeout">Ingen svar på 45 sekunder, trykk for å prøve igjen</string>
-    <string name="nc_camera_permission_permanently_denied">For å skru på videokommunikasjon, innvilg \"Kamera\"-tilgang i systeminnstillingene.</string>
     <string name="nc_cancel">Avbryt</string>
     <string name="nc_capabilities_failed">Kunne ikke hente evner, avbryter</string>
     <string name="nc_certificate_dialog_text">Ønsker du å stole på det hittil ukjente SSL-sertifikatet, utstedt av %1$s for %2$s gyldig fra %3$s til %4$s?</string>
@@ -142,7 +141,6 @@
     <string name="nc_mark_as_unread">Merk som ulest</string>
     <string name="nc_message_quote_cancel_reply">Avbryt svar</string>
     <string name="nc_message_sent">Melding sendt</string>
-    <string name="nc_microphone_permission_permanently_denied">For å skru på stemmekommunikasjon, innvilg \"Mikrofon\"-tilgang i systeminnstillingene.</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Har aldri deltatt</string>
     <string name="nc_new_conversation">Ny samtale</string>
@@ -183,6 +181,7 @@
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_participant">Fjern deltaker</string>
     <string name="nc_rename">Endre navn på samtale</string>
+    <string name="nc_rename_confirm">Endre navn</string>
     <string name="nc_reply">Svar</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_300">5 minutter</string>

@@ -29,7 +29,6 @@
     <string name="edit">Editar</string>
     <string name="emoji_backspace">Retroceder</string>
     <string name="emoji_category_recent">Recente</string>
-    <string name="emoji_search">Pesquisar emoji</string>
     <string name="encrypted">Criptografado</string>
     <string name="error_loading_chats">Ocorreu um problema ao carregar seus bate-papos</string>
     <string name="failed_to_save">Falha ao salvar %1$s</string>
@@ -94,7 +93,6 @@
     <string name="nc_call_video">%s chamada de vídeo</string>
     <string name="nc_call_voice">%s chamada de voz</string>
     <string name="nc_camera_permission_hint">Para ativar a comunicação por vídeo, conceda a permissão \"Câmera\".</string>
-    <string name="nc_camera_permission_permanently_denied">Para ativar a comunicação por vídeo, conceda a permissão \"Câmera\" nas configurações do sistema.</string>
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Falhou ao buscar recursos, interrompendo</string>
     <string name="nc_certificate_dialog_text">Quer confiar em um certificado SSL desconhecido, emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
@@ -217,7 +215,6 @@
     <string name="nc_message_read">Leitura de mensagem</string>
     <string name="nc_message_sent">Mensagem enviada</string>
     <string name="nc_microphone_permission_hint">Para ativar a comunicação por voz, conceda a permissão \"Microfone\".</string>
-    <string name="nc_microphone_permission_permanently_denied">Para ativar a comunicação por voz, conceda a permissão \"Microfone\" nas configurações do sistema.</string>
     <string name="nc_missed_call">Você perdeu uma chamada de %s</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Nunca juntado</string>
