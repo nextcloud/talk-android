@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Ikona účtu</string>
+    <string name="added_to_favorites">Pridať konverzáciu %1$s k obľúbeným</string>
     <string name="appbar_search_in">Hľadať v %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Zvukový výstup</string>
@@ -200,6 +201,8 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s nie je dostupné (nie je nainštalované alebo je obmedzené administrátorom)</string>
     <string name="nc_nick_guest">Hosť</string>
     <string name="nc_no">Nie</string>
+    <string name="nc_no_open_conversations_headline">Žiadne prebiehajúce konverzácie</string>
+    <string name="nc_no_open_conversations_text">Momentálne neexistuje žiadna prebiehajúca konverzácia, ku ktorej by ste sa mohli pridať\nBuď žiadne neprebiehajú alebo sa už všetkých účastníte.</string>
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_not_allowed_to_activate_audio">Nemáte oprávnenie povoliť zvuk!</string>
     <string name="nc_not_allowed_to_activate_video">Nemáte oprávnenie povoliť video!</string>
@@ -283,7 +286,7 @@
     <string name="nc_server_maintenance">Prosím vypnite váš %1$s z režimu údržby</string>
     <string name="nc_server_not_installed">Prosím dokončite vašu %1$s inštaláciu</string>
     <string name="nc_server_testing_connection">Testuje sa pripojenie</string>
-    <string name="nc_server_unsupported">Na serveri nie je nainštalovaná podporovaná apka Talk</string>
+    <string name="nc_server_unsupported">Na serveri nie je nainštalovaná podporovaná apka Rozhovor</string>
     <string name="nc_server_url">Adresa servera https://…</string>
     <string name="nc_server_version">%1$spracuje iba s %2$s13 a vyššie</string>
     <string name="nc_settings">Nastavenia</string>
@@ -294,11 +297,11 @@
     <string name="nc_settings_incognito_keyboard_desc">Klávesnica bude pracovať bez personalizovaného učenia (bez záruky)</string>
     <string name="nc_settings_incognito_keyboard_title">Súkromná klávesnica</string>
     <string name="nc_settings_no_ringtone">Žiadny zvuk</string>
-    <string name="nc_settings_no_talk_installed">Aplikácia Talk nie je na serveri, voči ktorému ste sa chceli overiť nainštalovaná.</string>
+    <string name="nc_settings_no_talk_installed">Aplikácia Rozhovor nie je na serveri, voči ktorému ste sa chceli overiť nainštalovaná.</string>
     <string name="nc_settings_notification_sounds">Zvuky upozornení</string>
     <string name="nc_settings_notification_sounds_post_oreo">Upozornenia</string>
     <string name="nc_settings_other_notifications_ringtone">Správy</string>
-    <string name="nc_settings_phone_book_integration_desc">Priradiť kontakty podľa telefónneho čísla a integrovať odkaz na Talk do aplikácie systémových kontaktov</string>
+    <string name="nc_settings_phone_book_integration_desc">Priradiť kontakty podľa telefónneho čísla a integrovať odkaz na Rozhovor do aplikácie systémových kontaktov</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Môžete nastaviť vaše telefónne číslo aby vás ostatní používatelia našli</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Zlé telefónne číslo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefónne číslo bolo úspešne nastavené</string>
@@ -403,12 +406,13 @@
     <string name="read_storage_no_permission">Zdieľanie súborov z úložiska nie je možné bez oprávnenia</string>
     <string name="record_cancel_start">Zrušiť začiatok nahrávania</string>
     <string name="record_stop_description">Zastaviť nahrávanie</string>
+    <string name="removed_from_favorites">Konverzácia %1$s bola odstránená z obľúbených</string>
     <string name="save">Uložiť</string>
     <string name="scope_federated_description">Synchronizovať iba s dôveryhodnými servermi</string>
     <string name="scope_federated_title">Združený</string>
     <string name="scope_local_description">Viditeľné iba pre ľudí tejto inštancie a návštevníkov</string>
     <string name="scope_local_title">Lokálny</string>
-    <string name="scope_private_description">Viditeľné iba pre ľudí s integráciou telefónneho čísla prostredníctvom aplikácie Talk pre mobil</string>
+    <string name="scope_private_description">Viditeľné iba pre ľudí s integráciou telefónneho čísla prostredníctvom aplikácie Rozhovor pre mobil</string>
     <string name="scope_private_title">Súkromný</string>
     <string name="scope_published_description">Synchronizovať s dôveryhodnými servermi a globálnym a verejným adresárom</string>
     <string name="scope_published_title">Publikované</string>
