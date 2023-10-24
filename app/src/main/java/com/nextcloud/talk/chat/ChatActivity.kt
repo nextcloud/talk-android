@@ -84,7 +84,6 @@ import android.widget.RelativeLayout.LayoutParams
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -113,7 +112,6 @@ import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
@@ -188,6 +186,7 @@ import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.dialog.DateTimePickerFragment
+import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
@@ -2412,40 +2411,12 @@ class ChatActivity :
                         filenamesWithLineBreaks.append(filename).append("\n")
                     }
 
-                    val confirmationQuestion = when (filesToUpload.size) {
-                        1 -> context.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
-                            String.format(it, title.trim())
-                        }
-
-                        else -> context.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
-                            String.format(it, title.trim())
-                        }
-                    }
-
-                    binding.messageInputView.context?.let {
-                        val materialAlertDialogBuilder = MaterialAlertDialogBuilder(it)
-                            .setTitle(confirmationQuestion)
-                            .setMessage(filenamesWithLineBreaks.toString())
-                            .setPositiveButton(R.string.nc_yes) { _, _ ->
-                                if (permissionUtil.isFilesPermissionGranted()) {
-                                    uploadFiles(filesToUpload)
-                                } else {
-                                    UploadAndShareFilesWorker.requestStoragePermission(this)
-                                }
-                            }
-                            .setNegativeButton(R.string.nc_no) { _, _ ->
-                                // unused atm
-                            }
-
-                        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it, materialAlertDialogBuilder)
-
-                        val dialog = materialAlertDialogBuilder.show()
-
-                        viewThemeUtils.platform.colorTextButtons(
-                            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                        )
-                    }
+                    val newFragment: DialogFragment = FileAttachmentPreviewFragment.newInstance(
+                        filenamesWithLineBreaks.toString(),
+                        filesToUpload,
+                        this::uploadFiles
+                    )
+                    newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
                 } catch (e: IllegalStateException) {
                     context.resources?.getString(R.string.nc_upload_failed)?.let {
                         Snackbar.make(
@@ -2507,7 +2478,19 @@ class ChatActivity :
                         }
 
                         if (permissionUtil.isFilesPermissionGranted()) {
-                            uploadFiles(filesToUpload)
+                            val filenamesWithLineBreaks = StringBuilder("\n")
+
+                            for (file in filesToUpload) {
+                                val filename = FileUtils.getFileName(Uri.parse(file), context)
+                                filenamesWithLineBreaks.append(filename).append("\n")
+                            }
+
+                            val newFragment: DialogFragment = FileAttachmentPreviewFragment.newInstance(
+                                filenamesWithLineBreaks.toString(),
+                                filesToUpload,
+                                this::uploadFiles
+                            )
+                            newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
                         } else {
                             UploadAndShareFilesWorker.requestStoragePermission(this)
                         }
@@ -2631,13 +2614,17 @@ class ChatActivity :
         }
     }
 
-    private fun uploadFiles(files: MutableList<String>) {
-        for (file in files) {
-            uploadFile(file, false)
+    private fun uploadFiles(files: MutableList<String>, caption: String = "") {
+        for (i in 0 until files.size) {
+            if (i == files.size - 1) {
+                uploadFile(files[i], false, caption)
+            } else {
+                uploadFile(files[i], false)
+            }
         }
     }
 
-    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean) {
+    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "") {
         var metaData = ""
 
         if (!participantPermissions.hasChatPermission()) {
@@ -2647,6 +2634,10 @@ class ChatActivity :
 
         if (isVoiceMessage) {
             metaData = VOICE_MESSAGE_META_DATA
+        }
+
+        if (caption != "") {
+            metaData = "{\"caption\":\"$caption\"}"
         }
 
         try {
@@ -3211,30 +3202,7 @@ class ChatActivity :
                                 Integer.parseInt(it)
                             }
 
-                            try {
-                                val mostRecentCallSystemMessage = adapter?.items?.first {
-                                    it.item is ChatMessage &&
-                                        (it.item as ChatMessage).systemMessageType in
-                                        listOf(
-                                            ChatMessage.SystemMessageType.CALL_STARTED,
-                                            ChatMessage.SystemMessageType.CALL_JOINED,
-                                            ChatMessage.SystemMessageType.CALL_LEFT,
-                                            ChatMessage.SystemMessageType.CALL_ENDED,
-                                            ChatMessage.SystemMessageType.CALL_TRIED,
-                                            ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE,
-                                            ChatMessage.SystemMessageType.CALL_MISSED
-                                        )
-                                }?.item
-
-                                if (mostRecentCallSystemMessage != null) {
-                                    processMostRecentMessage(
-                                        mostRecentCallSystemMessage as ChatMessage,
-                                        chatMessageList
-                                    )
-                                }
-                            } catch (e: java.util.NoSuchElementException) {
-                                Log.d(TAG, "No System messages found $e")
-                            }
+                            processCallStartedMessages(chatMessageList)
 
                             updateReadStatusOfAllMessages(newXChatLastCommonRead)
                             adapter?.notifyDataSetChanged()
@@ -3267,6 +3235,33 @@ class ChatActivity :
                     pullChatMessagesPending = false
                 }
             })
+    }
+
+    private fun processCallStartedMessages(chatMessageList: List<ChatMessage>) {
+        try {
+            val mostRecentCallSystemMessage = adapter?.items?.first {
+                it.item is ChatMessage &&
+                    (it.item as ChatMessage).systemMessageType in
+                    listOf(
+                        ChatMessage.SystemMessageType.CALL_STARTED,
+                        ChatMessage.SystemMessageType.CALL_JOINED,
+                        ChatMessage.SystemMessageType.CALL_LEFT,
+                        ChatMessage.SystemMessageType.CALL_ENDED,
+                        ChatMessage.SystemMessageType.CALL_TRIED,
+                        ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE,
+                        ChatMessage.SystemMessageType.CALL_MISSED
+                    )
+            }?.item
+
+            if (mostRecentCallSystemMessage != null) {
+                processMostRecentMessage(
+                    mostRecentCallSystemMessage as ChatMessage,
+                    chatMessageList
+                )
+            }
+        } catch (e: NoSuchElementException) {
+            Log.d(TAG, "No System messages found $e")
+        }
     }
 
     private fun setupFieldsForPullChatMessages(

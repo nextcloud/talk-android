@@ -721,4 +721,5 @@ How to translate with transifex:
     <string name="audio_call">Audio Call</string>
     <string name="started_a_call">started a call</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Error 429 Too Many Requests</string>
+    <string name="nc_caption">Caption</string>
 </resources>
