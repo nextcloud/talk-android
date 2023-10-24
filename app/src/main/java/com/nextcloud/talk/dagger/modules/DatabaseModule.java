@@ -25,23 +25,31 @@ import android.content.Context;
 
 import com.nextcloud.talk.data.source.local.TalkDatabase;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
-
-import net.orange_box.storebox.StoreBox;
+import com.nextcloud.talk.utils.preferences.AppPreferencesImpl;
 
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.ExperimentalCoroutinesApi;
 
 @Module
+@OptIn(markerClass = ExperimentalCoroutinesApi.class)
 public class DatabaseModule {
     @Provides
     @Singleton
     public AppPreferences providePreferences(@NonNull final Context poContext) {
-        AppPreferences preferences = StoreBox.create(poContext, AppPreferences.class);
+        AppPreferences preferences = new AppPreferencesImpl(poContext);
         preferences.removeLinkPreviews();
         return preferences;
+    }
+
+    @Provides
+    @Singleton
+    public AppPreferencesImpl providePreferencesImpl(@NonNull final Context poContext) {
+        return new AppPreferencesImpl(poContext);
     }
 
     @Provides

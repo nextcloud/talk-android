@@ -27,7 +27,6 @@ package com.nextcloud.talk.settings
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.app.Activity
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.DialogInterface
@@ -90,12 +89,17 @@ import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.net.URI
@@ -119,15 +123,15 @@ class SettingsActivity : BaseActivity() {
 
     private var currentUser: User? = null
     private var credentials: String? = null
-    private var proxyTypeChangeListener: OnPreferenceValueChangedListener<String>? = null
-    private var proxyCredentialsChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
-    private var screenSecurityChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
-    private var screenLockChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
-    private var screenLockTimeoutChangeListener: OnPreferenceValueChangedListener<String?>? = null
-    private var themeChangeListener: OnPreferenceValueChangedListener<String?>? = null
-    private var readPrivacyChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
-    private var typingStatusChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
-    private var phoneBookIntegrationChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
+    private lateinit var proxyTypeFlow: Flow<String>
+    private lateinit var proxyCredentialFlow: Flow<Boolean>
+    private lateinit var screenSecurityFlow: Flow<Boolean>
+    private lateinit var screenLockFlow: Flow<Boolean>
+    private lateinit var screenLockTimeoutFlow: Flow<String>
+    private lateinit var themeFlow: Flow<String>
+    private lateinit var readPrivacyFlow: Flow<Boolean>
+    private lateinit var typingStatusFlow: Flow<Boolean>
+    private lateinit var phoneBookIntegrationFlow: Flow<Boolean>
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
 
@@ -144,7 +148,6 @@ class SettingsActivity : BaseActivity() {
 
         getCurrentUser()
 
-        // setupSettingsScreen()
         setupLicenceSetting()
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -381,59 +384,53 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun registerChangeListeners() {
-        appPreferences.registerProxyTypeListener(ProxyTypeChangeListener().also { proxyTypeChangeListener = it })
-        appPreferences.registerProxyCredentialsListener(
-            ProxyCredentialsChangeListener().also {
-                proxyCredentialsChangeListener = it
-            }
-        )
-        appPreferences.registerScreenSecurityListener(
-            ScreenSecurityChangeListener().also {
-                screenSecurityChangeListener = it
-            }
-        )
+        val appPreferences = AppPreferencesImpl(context)
+        proxyTypeFlow = appPreferences.readString(AppPreferencesImpl.PROXY_TYPE)
+        proxyCredentialFlow = appPreferences.readBoolean(AppPreferencesImpl.PROXY_CRED)
+        screenSecurityFlow = appPreferences.readBoolean(AppPreferencesImpl.SCREEN_SECURITY)
+        screenLockFlow = appPreferences.readBoolean(AppPreferencesImpl.SCREEN_LOCK)
+        screenLockTimeoutFlow = appPreferences.readString(AppPreferencesImpl.SCREEN_LOCK_TIMEOUT)
+
+        val themeKey = context.resources.getString(R.string.nc_settings_theme_key)
+        themeFlow = appPreferences.readString(themeKey)
+
+        val privacyKey = context.resources.getString(R.string.nc_settings_read_privacy_key)
+        readPrivacyFlow = appPreferences.readBoolean(privacyKey)
+
+        typingStatusFlow = appPreferences.readBoolean(AppPreferencesImpl.TYPING_STATUS)
+        phoneBookIntegrationFlow = appPreferences.readBoolean(AppPreferencesImpl.PHONE_BOOK_INTEGRATION)
+
         var pos = resources.getStringArray(R.array.screen_lock_timeout_entry_values).indexOf(
             appPreferences.screenLockTimeout
         )
         binding.settingsScreenLockTimeoutLayoutDropdown.setText(
             resources.getStringArray(R.array.screen_lock_timeout_descriptions)[pos]
         )
+
         binding.settingsScreenLockTimeoutLayoutDropdown.setSimpleItems(R.array.screen_lock_timeout_descriptions)
         binding.settingsScreenLockTimeoutLayoutDropdown.setOnItemClickListener { _, _, position, _ ->
             val entryVal: String = resources.getStringArray(R.array.screen_lock_timeout_entry_values)[position]
             appPreferences.screenLockTimeout = entryVal
+            SecurityUtils.createKey(entryVal)
         }
-        appPreferences.registerScreenLockListener(ScreenLockListener().also { screenLockChangeListener = it })
-        appPreferences.registerScreenLockTimeoutListener(
-            ScreenLockTimeoutListener().also {
-                screenLockTimeoutChangeListener = it
-            }
-        )
         pos = resources.getStringArray(R.array.theme_entry_values).indexOf(appPreferences.theme)
         binding.settingsTheme.setText(resources.getStringArray(R.array.theme_descriptions)[pos])
+
         binding.settingsTheme.setSimpleItems(R.array.theme_descriptions)
         binding.settingsTheme.setOnItemClickListener { _, _, position, _ ->
             val entryVal: String = resources.getStringArray(R.array.theme_entry_values)[position]
             appPreferences.theme = entryVal
         }
-        appPreferences.registerThemeChangeListener(ThemeChangeListener().also { themeChangeListener = it })
-        appPreferences.registerPhoneBookIntegrationChangeListener(
-            PhoneBookIntegrationChangeListener(this).also {
-                phoneBookIntegrationChangeListener = it
-            }
-        )
-        appPreferences.registerReadPrivacyChangeListener(
-            ReadPrivacyChangeListener().also {
-                readPrivacyChangeListener = it
-            }
-        )
 
-        appPreferences.registerTypingStatusChangeListener(
-            TypingStatusChangeListener().also {
-                typingStatusChangeListener = it
-            }
-        )
+        observeProxyType()
+        observeProxyCredential()
+        observeScreenSecurity()
+        observeScreenLock()
+        observeTheme()
+        observeReadPrivacy()
+        observeTypingStatus()
     }
 
     fun sendLogs() {
@@ -694,9 +691,9 @@ class SettingsActivity : BaseActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             binding.settingsIncognitoKeyboardSwitch.isChecked = appPreferences.isKeyboardIncognito
+        } else {
+            binding.settingsIncognitoKeyboardSwitch.visibility = View.GONE
         }
-
-        binding.settingsIncognitoKeyboardSwitch.isChecked = appPreferences.isKeyboardIncognito
 
         if (CapabilitiesUtilNew.isReadStatusAvailable(currentUser!!)) {
             binding.settingsReadPrivacySwitch.isChecked = !CapabilitiesUtilNew.isReadStatusPrivate(currentUser!!)
@@ -738,6 +735,13 @@ class SettingsActivity : BaseActivity() {
             val isChecked = binding.settingsPhoneBookIntegrationSwitch.isChecked
             binding.settingsPhoneBookIntegrationSwitch.isChecked = !isChecked
             appPreferences.setPhoneBookIntegration(!isChecked)
+            if (!isChecked) {
+                if (checkPermission(this@SettingsActivity, (context))) {
+                    checkForPhoneNumber()
+                }
+            } else {
+                deleteAll()
+            }
         }
 
         binding.settingsScreenSecurity.setOnClickListener {
@@ -798,15 +802,15 @@ class SettingsActivity : BaseActivity() {
     }
 
     public override fun onDestroy() {
-        appPreferences.unregisterProxyTypeListener(proxyTypeChangeListener)
-        appPreferences.unregisterProxyCredentialsListener(proxyCredentialsChangeListener)
-        appPreferences.unregisterScreenSecurityListener(screenSecurityChangeListener)
-        appPreferences.unregisterScreenLockListener(screenLockChangeListener)
-        appPreferences.unregisterScreenLockTimeoutListener(screenLockTimeoutChangeListener)
-        appPreferences.unregisterThemeChangeListener(themeChangeListener)
-        appPreferences.unregisterReadPrivacyChangeListener(readPrivacyChangeListener)
-        appPreferences.unregisterTypingStatusChangeListener(typingStatusChangeListener)
-        appPreferences.unregisterPhoneBookIntegrationChangeListener(phoneBookIntegrationChangeListener)
+        // appPreferences.unregisterProxyTypeListener(proxyTypeChangeListener)
+        // appPreferences.unregisterProxyCredentialsListener(proxyCredentialsChangeListener)
+        // appPreferences.unregisterScreenSecurityListener(screenSecurityChangeListener)
+        // appPreferences.unregisterScreenLockListener(screenLockChangeListener)
+        // appPreferences.unregisterScreenLockTimeoutListener(screenLockTimeoutChangeListener)
+        // appPreferences.unregisterThemeChangeListener(themeChangeListener)
+        // appPreferences.unregisterReadPrivacyChangeListener(readPrivacyChangeListener)
+        // appPreferences.unregisterTypingStatusChangeListener(typingStatusChangeListener)
+        // appPreferences.unregisterPhoneBookIntegrationChangeListener(phoneBookIntegrationChangeListener)
 
         super.onDestroy()
     }
@@ -819,8 +823,7 @@ class SettingsActivity : BaseActivity() {
         appPreferences.removeProxyPassword()
         binding.settingsProxyHostLayout.visibility = View.GONE
         binding.settingsProxyPortLayout.visibility = View.GONE
-        binding.settingsProxyUseCredentials.visibility =
-            View.GONE
+        binding.settingsProxyUseCredentials.visibility = View.GONE
         hideProxyCredentials()
     }
 
@@ -896,86 +899,98 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
-    private inner class ScreenLockTimeoutListener : OnPreferenceValueChangedListener<String?> {
-        override fun onChanged(newValue: String?) {
-            SecurityUtils.createKey(appPreferences.screenLockTimeout)
-        }
-    }
-
-    private inner class ScreenLockListener : OnPreferenceValueChangedListener<Boolean> {
-        override fun onChanged(newValue: Boolean) {
-            binding.settingsScreenLockTimeout.isEnabled = newValue
-            if (newValue) {
-                binding.settingsScreenLockTimeout.alpha = ENABLED_ALPHA
-            } else {
-                binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
-            }
-        }
-    }
-
-    private inner class ScreenSecurityChangeListener : OnPreferenceValueChangedListener<Boolean> {
-        override fun onChanged(newValue: Boolean) {
-            if (newValue) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-            } else {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-            }
-        }
-    }
-
-    private inner class ProxyCredentialsChangeListener : OnPreferenceValueChangedListener<Boolean> {
-        override fun onChanged(newValue: Boolean) {
-            if (newValue) {
-                showProxyCredentials()
-            } else {
-                hideProxyCredentials()
-            }
-        }
-    }
-
-    private inner class ProxyTypeChangeListener : OnPreferenceValueChangedListener<String> {
-        @Suppress("Detekt.TooGenericExceptionCaught")
-        override fun onChanged(newValue: String) {
-            if (("No proxy" == newValue)) {
-                hideProxySettings()
-            } else {
-                when (newValue) {
-                    "HTTP" -> {
-                        binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_http_value))
-                        appPreferences.proxyPort = getString(R.string.nc_settings_http_value)
-                    }
-
-                    "DIRECT" -> {
-                        binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_direct_value))
-                        appPreferences.proxyPort = getString(R.string.nc_settings_direct_value)
-                    }
-                    "SOCKS" -> {
-                        binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_socks_value))
-                        appPreferences.proxyPort = getString(R.string.nc_settings_socks_value)
-                    }
-                    else -> {
+    private fun observeScreenLock() {
+        CoroutineScope(Dispatchers.Main).launch {
+            var state = appPreferences.isScreenLocked
+            screenLockFlow.collect { newBoolean ->
+                if (newBoolean != state) {
+                    state = newBoolean
+                    binding.settingsScreenLockTimeout.isEnabled = newBoolean
+                    if (newBoolean) {
+                        binding.settingsScreenLockTimeout.alpha = ENABLED_ALPHA
+                    } else {
+                        binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
                     }
                 }
-                showProxySettings()
             }
         }
     }
 
-    private inner class ThemeChangeListener : OnPreferenceValueChangedListener<String?> {
-        override fun onChanged(newValue: String?) {
-            setAppTheme((newValue)!!)
+    private fun observeScreenSecurity() {
+        CoroutineScope(Dispatchers.Main).launch {
+            var state = appPreferences.isScreenSecured
+            screenSecurityFlow.collect { newBoolean ->
+                if (newBoolean != state) {
+                    state = newBoolean
+                    if (newBoolean) {
+                        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    } else {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    }
+                }
+            }
         }
     }
 
-    private inner class PhoneBookIntegrationChangeListener(private val activity: Activity) :
-        OnPreferenceValueChangedListener<Boolean> {
-        override fun onChanged(isEnabled: Boolean) {
-            if (isEnabled) {
-                if (checkPermission(activity, (context))) {
-                    checkForPhoneNumber()
+    private fun observeProxyCredential() {
+        CoroutineScope(Dispatchers.Main).launch {
+            var state = appPreferences.proxyCredentials
+            proxyCredentialFlow.collect { newBoolean ->
+                if (newBoolean != state) {
+                    state = newBoolean
+                    if (newBoolean) {
+                        showProxyCredentials()
+                    } else {
+                        hideProxyCredentials()
+                    }
                 }
-            } else {
-                deleteAll()
+            }
+        }
+    }
+
+    private fun observeProxyType() {
+        CoroutineScope(Dispatchers.Main).launch {
+            var state = appPreferences.proxyType
+            proxyTypeFlow.collect { newString ->
+                if (newString != state) {
+                    state = newString
+                    if (("No proxy" == newString) || newString.isEmpty()) {
+                        hideProxySettings()
+                    } else {
+                        when (newString) {
+                            "HTTP" -> {
+                                binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_http_value))
+                                appPreferences.proxyPort = getString(R.string.nc_settings_http_value)
+                            }
+
+                            "DIRECT" -> {
+                                binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_direct_value))
+                                appPreferences.proxyPort = getString(R.string.nc_settings_direct_value)
+                            }
+
+                            "SOCKS" -> {
+                                binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_socks_value))
+                                appPreferences.proxyPort = getString(R.string.nc_settings_socks_value)
+                            }
+
+                            else -> {
+                            }
+                        }
+                        showProxySettings()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeTheme() {
+        CoroutineScope(Dispatchers.Main).launch {
+            var state = appPreferences.theme
+            themeFlow.collect { newString ->
+                if (newString != state) {
+                    state = newString
+                    setAppTheme(newString)
+                }
             }
         }
     }
@@ -1112,68 +1127,80 @@ class SettingsActivity : BaseActivity() {
             })
     }
 
-    private inner class ReadPrivacyChangeListener : OnPreferenceValueChangedListener<Boolean> {
-        override fun onChanged(newValue: Boolean) {
-            val booleanValue = if (newValue) "0" else "1"
-            val json = "{\"key\": \"read_status_privacy\", \"value\" : $booleanValue}"
-            ncApi.setReadStatusPrivacy(
-                ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl),
-                json.toRequestBody("application/json".toMediaTypeOrNull())
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
+    private fun observeReadPrivacy() {
+        CoroutineScope(Dispatchers.Main).launch {
+            var state = appPreferences.readPrivacy
+            readPrivacyFlow.collect { newBoolean ->
+                if (state != newBoolean) {
+                    state = newBoolean
+                    val booleanValue = if (newBoolean) "0" else "1"
+                    val json = "{\"key\": \"read_status_privacy\", \"value\" : $booleanValue}"
+                    ncApi.setReadStatusPrivacy(
+                        ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
+                        ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl),
+                        json.toRequestBody("application/json".toMediaTypeOrNull())
+                    )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(object : Observer<GenericOverall> {
+                            override fun onSubscribe(d: Disposable) {
+                                // unused atm
+                            }
 
-                    override fun onNext(genericOverall: GenericOverall) {
-                        // unused atm
-                    }
+                            override fun onNext(genericOverall: GenericOverall) {
+                                // unused atm
+                            }
 
-                    override fun onError(e: Throwable) {
-                        appPreferences.setReadPrivacy(!newValue)
-                        binding.settingsReadPrivacySwitch.isChecked = !newValue
-                    }
+                            override fun onError(e: Throwable) {
+                                appPreferences.setReadPrivacy(!newBoolean)
+                                binding.settingsReadPrivacySwitch.isChecked = !newBoolean
+                            }
 
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
+                            override fun onComplete() {
+                                // unused atm
+                            }
+                        })
+                }
+            }
         }
     }
 
-    private inner class TypingStatusChangeListener : OnPreferenceValueChangedListener<Boolean> {
-        override fun onChanged(newValue: Boolean) {
-            val booleanValue = if (newValue) "0" else "1"
-            val json = "{\"key\": \"typing_privacy\", \"value\" : $booleanValue}"
-            ncApi.setTypingStatusPrivacy(
-                ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl),
-                json.toRequestBody("application/json".toMediaTypeOrNull())
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
+    private fun observeTypingStatus() {
+        CoroutineScope(Dispatchers.Main).launch {
+            var state = appPreferences.typingStatus
+            typingStatusFlow.collect { newBoolean ->
+                if (state != newBoolean) {
+                    state = newBoolean
+                    val booleanValue = if (newBoolean) "0" else "1"
+                    val json = "{\"key\": \"typing_privacy\", \"value\" : $booleanValue}"
+                    ncApi.setTypingStatusPrivacy(
+                        ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
+                        ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl),
+                        json.toRequestBody("application/json".toMediaTypeOrNull())
+                    )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(object : Observer<GenericOverall> {
+                            override fun onSubscribe(d: Disposable) {
+                                // unused atm
+                            }
 
-                    override fun onNext(genericOverall: GenericOverall) {
-                        loadCapabilitiesAndUpdateSettings()
-                        Log.i(TAG, "onNext called typing status set")
-                    }
+                            override fun onNext(genericOverall: GenericOverall) {
+                                loadCapabilitiesAndUpdateSettings()
+                                Log.i(TAG, "onNext called typing status set")
+                            }
 
-                    override fun onError(e: Throwable) {
-                        appPreferences.setTypingStatus(!newValue)
-                        binding.settingsTypingStatusSwitch.isChecked = !newValue
-                    }
+                            override fun onError(e: Throwable) {
+                                appPreferences.typingStatus = !newBoolean
+                                binding.settingsTypingStatusSwitch.isChecked = !newBoolean
+                            }
 
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
+                            override fun onComplete() {
+                                // unused atm
+                            }
+                        })
+                }
+            }
         }
     }
 

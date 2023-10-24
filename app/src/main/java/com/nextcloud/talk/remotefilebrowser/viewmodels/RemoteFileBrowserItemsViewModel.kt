@@ -22,20 +22,26 @@
 
 package com.nextcloud.talk.remotefilebrowser.viewmodels
 
+import android.content.res.Resources
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nextcloud.talk.R
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
 import com.nextcloud.talk.utils.FileSortOrder
 import com.nextcloud.talk.utils.Mimetype.FOLDER
-import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -52,9 +58,12 @@ import javax.inject.Inject
  * FinishState --> [*]
  * @enduml
  */
-class RemoteFileBrowserItemsViewModel @Inject constructor(
+@OptIn(ExperimentalCoroutinesApi::class)
+class RemoteFileBrowserItemsViewModel
+@Inject
+constructor(
     private val repository: RemoteFileBrowserItemsRepository,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferencesImpl
 ) :
     ViewModel() {
 
@@ -66,7 +75,8 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
     class FinishState(val selectedPaths: Set<String>) : ViewState
 
     private val initialSortOrder = FileSortOrder.getFileSortOrder(appPreferences.sorting)
-    private val sortingPrefListener: SortChangeListener = SortChangeListener()
+
+    private var sortingFlow: Flow<String>
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
     val viewState: LiveData<ViewState>
@@ -86,18 +96,17 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
         get() = _selectedPaths
 
     init {
-        appPreferences.registerSortingChangeListener(sortingPrefListener)
-    }
-
-    inner class SortChangeListener : OnPreferenceValueChangedListener<String> {
-        override fun onChanged(newValue: String) {
-            onSelectSortOrder(newValue)
+        val key = Resources.getSystem().getString(R.string.nc_file_browser_sort_by_key)
+        sortingFlow = appPreferences.readString(key)
+        CoroutineScope(Dispatchers.Main).launch {
+            var state = appPreferences.sorting
+            sortingFlow.collect { newString ->
+                if (newString != state) {
+                    state = newString
+                    onSelectSortOrder(newString)
+                }
+            }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        appPreferences.unregisterSortingChangeListener(sortingPrefListener)
     }
 
     fun loadItems() {
