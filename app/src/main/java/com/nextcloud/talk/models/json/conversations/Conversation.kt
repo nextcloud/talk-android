@@ -29,6 +29,7 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.converters.ConversationObjectTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter
@@ -37,6 +38,7 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumReadOnlyConversationConverter
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import kotlinx.parcelize.Parcelize
 
@@ -187,7 +189,8 @@ data class Conversation(
     fun canModerate(conversationUser: User): Boolean {
         return isParticipantOwnerOrModerator &&
             !isLockedOneToOne(conversationUser) &&
-            type != ConversationType.FORMER_ONE_TO_ONE
+            type != ConversationType.FORMER_ONE_TO_ONE &&
+            !ConversationUtils.isNoteToSelfConversation(ConversationModel.mapToConversationModel(this))
     }
 
     @Deprecated("Use ConversationUtil")

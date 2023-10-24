@@ -41,13 +41,16 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationWithLastMessageBinding
 import com.nextcloud.talk.extensions.loadConversationAvatar
+import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -178,6 +181,15 @@ class ConversationItem(
                         )
                     } else {
                         holder.binding.dialogAvatar.visibility = View.GONE
+                    }
+                }
+
+                ConversationType.DUMMY -> {
+                    if (ConversationUtils.isNoteToSelfConversation(
+                            ConversationModel.mapToConversationModel(model)
+                        )
+                    ) {
+                        holder.binding.dialogAvatar.loadNoteToSelfAvatar()
                     }
                 }
 

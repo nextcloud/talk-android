@@ -1,0 +1,42 @@
+<!--
+  ~ Copyright (c) 2023 Nextcloud Talk application
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+-->
+
+<vector
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportHeight="54"
+    android:viewportWidth="54"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:translateX="12"
+        android:translateY="12">
+        <path android:fillColor="#B4ACBC" android:pathData="M20.343,2.293C20.156,2.105 19.901,2 19.636,2H7C5.895,2 5,2.895 5,4V28C5,29.105 5.895,30 7,30H25C26.105,30 27,29.105 27,28V9.364C27,9.099 26.895,8.844 26.707,8.657L20.343,2.293Z"/>
+        <path android:fillColor="#F3EEF8" android:pathData="M19.682,3L7,3C6.448,3 6,3.448 6,4V28C6,28.552 6.448,29 7,29L25,29C25.552,29 26,28.552 26,28V9.453L19.682,3Z"/>
+        <path android:fillColor="#998EA4" android:pathData="M9.5,12H22.5C22.776,12 23,12.224 23,12.5C23,12.776 22.776,13 22.5,13H9.5C9.224,13 9,12.776 9,12.5C9,12.224 9.224,12 9.5,12ZM9.5,15C9.224,15 9,15.224 9,15.5C9,15.776 9.224,16 9.5,16H22.5C22.776,16 23,15.776 23,15.5C23,15.224 22.776,15 22.5,15H9.5ZM9,18.5C9,18.224 9.224,18 9.5,18H22.5C22.776,18 23,18.224 23,18.5C23,18.776 22.776,19 22.5,19H9.5C9.224,19 9,18.776 9,18.5ZM9.5,21C9.224,21 9,21.224 9,21.5C9,21.776 9.224,22 9.5,22H17.5C17.776,22 18,21.776 18,21.5C18,21.224 17.776,21 17.5,21H9.5Z"/>
+        <path android:fillColor="#CDC4D6" android:pathData="M26,9.453H21.389C20.446,9.453 19.682,8.689 19.682,7.746V3L26,9.453Z"/>
+        <path android:fillColor="#FF822D" android:pathData="M26.766,20.172L25.686,16.941L22.89,14.935L12.283,22.784L13.431,25.94L16.158,28.022L26.766,20.172Z"/>
+        <path android:fillColor="#FFCE7C" android:pathData="M11.106,26.654L11.277,27.548L12.113,28.016L16.152,28.01L12.292,22.794L11.106,26.654Z"/>
+        <path android:fillColor="#402A32" android:pathData="M10.686,28.018L11.105,26.655L12.112,28.016L10.686,28.018Z"/>
+        <path android:fillColor="#F92F60" android:pathData="M26.521,12.248C27.409,11.592 28.661,11.779 29.318,12.667L30.814,14.689C31.471,15.577 31.284,16.829 30.396,17.486L28.338,19.01L25.533,16.941L24.462,13.772L26.521,12.248Z"/>
+        <path android:fillColor="#D3D3D3" android:pathData="M24.462,13.772L28.338,19.01L26.766,20.172L22.891,14.935L24.462,13.772Z"/>
+    </group>
+</vector>

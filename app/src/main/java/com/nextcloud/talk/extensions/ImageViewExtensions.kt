@@ -267,6 +267,24 @@ fun ImageView.loadSystemAvatar(): io.reactivex.disposables.Disposable {
     )
 }
 
+fun ImageView.loadNoteToSelfAvatar(): io.reactivex.disposables.Disposable {
+    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val layers = arrayOfNulls<Drawable>(2)
+        layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+        layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_note_to_self)
+        val layerDrawable = LayerDrawable(layers)
+        layerDrawable
+    } else {
+        R.mipmap.ic_launcher
+    }
+
+    return DisposableWrapper(
+        load(data) {
+            transformations(CircleCropTransformation())
+        }
+    )
+}
+
 fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable {
     return loadSystemAvatar()
 }
