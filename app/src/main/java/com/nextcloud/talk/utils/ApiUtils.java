@@ -61,8 +61,8 @@ public class ApiUtils {
     }
 
     /**
-     * @deprecated This is only supported on API v1-3, in API v4+ please use {@link ApiUtils#getUrlForAttendees(int,
-     * String, String)} instead.
+     * @deprecated This is only supported on API v1-3, in API v4+ please use
+     * {@link ApiUtils#getUrlForAttendees(int, String, String)} instead.
      */
     @Deprecated
     public static String getUrlForRemovingParticipantFromConversation(String baseUrl, String roomToken, boolean isGuest) {

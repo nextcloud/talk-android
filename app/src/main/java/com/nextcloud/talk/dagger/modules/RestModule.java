@@ -92,7 +92,7 @@ public class RestModule {
     @Provides
     Proxy provideProxy(AppPreferences appPreferences) {
         if (!TextUtils.isEmpty(appPreferences.getProxyType()) && !"No proxy".equals(appPreferences.getProxyType())
-                && !TextUtils.isEmpty(appPreferences.getProxyHost())) {
+            && !TextUtils.isEmpty(appPreferences.getProxyHost())) {
             GetProxyRunnable getProxyRunnable = new GetProxyRunnable(appPreferences);
             Thread getProxyThread = new Thread(getProxyRunnable);
             getProxyThread.start();
@@ -112,10 +112,10 @@ public class RestModule {
     @Provides
     Retrofit provideRetrofit(OkHttpClient httpClient) {
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
-                .client(httpClient)
-                .baseUrl("https://nextcloud.com")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(LoganSquareConverterFactory.create());
+            .client(httpClient)
+            .baseUrl("https://nextcloud.com")
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addConverterFactory(LoganSquareConverterFactory.create());
 
         return retrofitBuilder.build();
     }
@@ -208,13 +208,13 @@ public class RestModule {
             httpClient.proxy(proxy);
 
             if (appPreferences.getProxyCredentials() &&
-                    !TextUtils.isEmpty(appPreferences.getProxyUsername()) &&
-                    !TextUtils.isEmpty(appPreferences.getProxyPassword())) {
+                !TextUtils.isEmpty(appPreferences.getProxyUsername()) &&
+                !TextUtils.isEmpty(appPreferences.getProxyPassword())) {
                 httpClient.proxyAuthenticator(new HttpAuthenticator(
                     Credentials.basic(
-                    appPreferences.getProxyUsername(),
-                    appPreferences.getProxyPassword(),
-                    StandardCharsets.UTF_8),
+                        appPreferences.getProxyUsername(),
+                        appPreferences.getProxyPassword(),
+                        StandardCharsets.UTF_8),
                     "Proxy-Authorization"));
             }
         }
@@ -229,7 +229,7 @@ public class RestModule {
             httpClient.addInterceptor(loggingInterceptor);
         } else if (context.getResources().getBoolean(R.bool.nc_is_debug)) {
             HttpLoggingInterceptor.Logger fileLogger =
-                    s -> LoggingUtils.INSTANCE.writeLogEntryToFile(context, s);
+                s -> LoggingUtils.INSTANCE.writeLogEntryToFile(context, s);
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(fileLogger);
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             loggingInterceptor.redactHeader("Authorization");
@@ -247,11 +247,11 @@ public class RestModule {
         public Response intercept(@NonNull Chain chain) throws IOException {
             Request original = chain.request();
             Request request = original.newBuilder()
-                    .header("User-Agent", ApiUtils.getUserAgent())
-                    .header("Accept", "application/json")
-                    .header("OCS-APIRequest", "true")
-                    .method(original.method(), original.body())
-                    .build();
+                .header("User-Agent", ApiUtils.getUserAgent())
+                .header("Accept", "application/json")
+                .header("OCS-APIRequest", "true")
+                .method(original.method(), original.body())
+                .build();
 
             return chain.proceed(request);
         }
@@ -286,8 +286,8 @@ public class RestModule {
             }
 
             return response.request().newBuilder()
-                    .header(authenticatorType, credentials)
-                    .build();
+                .header(authenticatorType, credentials)
+                .build();
         }
     }
 
@@ -303,12 +303,12 @@ public class RestModule {
         public void run() {
             if (Proxy.Type.valueOf(appPreferences.getProxyType()) == Proxy.Type.SOCKS) {
                 proxy = new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
-                        InetSocketAddress.createUnresolved(appPreferences.getProxyHost(), Integer.parseInt(
-                                appPreferences.getProxyPort())));
+                                  InetSocketAddress.createUnresolved(appPreferences.getProxyHost(), Integer.parseInt(
+                                      appPreferences.getProxyPort())));
             } else {
                 proxy = new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
-                        new InetSocketAddress(appPreferences.getProxyHost(),
-                                Integer.parseInt(appPreferences.getProxyPort())));
+                                  new InetSocketAddress(appPreferences.getProxyHost(),
+                                                        Integer.parseInt(appPreferences.getProxyPort())));
             }
         }
 
