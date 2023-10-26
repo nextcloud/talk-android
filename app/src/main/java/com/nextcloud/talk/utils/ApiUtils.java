@@ -34,6 +34,7 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,8 +61,8 @@ public class ApiUtils {
     }
 
     /**
-     * @deprecated This is only supported on API v1-3, in API v4+ please use {@link ApiUtils#getUrlForAttendees(int,
-     * String, String)} instead.
+     * @deprecated This is only supported on API v1-3, in API v4+ please use
+     * {@link ApiUtils#getUrlForAttendees(int, String, String)} instead.
      */
     @Deprecated
     public static String getUrlForRemovingParticipantFromConversation(String baseUrl, String roomToken, boolean isGuest) {
@@ -399,7 +400,7 @@ public class ApiUtils {
         if (TextUtils.isEmpty(username) && TextUtils.isEmpty(token)) {
             return null;
         }
-        return Credentials.basic(username, token);
+        return Credentials.basic(username, token, StandardCharsets.UTF_8);
     }
 
     public static String getUrlNextcloudPush(String baseUrl) {
