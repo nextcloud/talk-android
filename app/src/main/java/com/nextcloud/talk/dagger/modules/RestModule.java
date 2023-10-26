@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.net.CookieManager;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -209,9 +210,12 @@ public class RestModule {
             if (appPreferences.getProxyCredentials() &&
                     !TextUtils.isEmpty(appPreferences.getProxyUsername()) &&
                     !TextUtils.isEmpty(appPreferences.getProxyPassword())) {
-                httpClient.proxyAuthenticator(new HttpAuthenticator(Credentials.basic(
-                        appPreferences.getProxyUsername(),
-                        appPreferences.getProxyPassword()), "Proxy-Authorization"));
+                httpClient.proxyAuthenticator(new HttpAuthenticator(
+                    Credentials.basic(
+                    appPreferences.getProxyUsername(),
+                    appPreferences.getProxyPassword(),
+                    StandardCharsets.UTF_8),
+                    "Proxy-Authorization"));
             }
         }
 
