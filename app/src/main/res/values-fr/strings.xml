@@ -423,7 +423,7 @@
     <string name="open_in_files_app">Ouvrir dans l\'application Fichiers</string>
     <string name="play_pause_voice_message">Jouer/mettre en pause le message vocal</string>
     <string name="polls_add_option">Ajouter une option</string>
-    <string name="polls_edit_vote">Éditer le vote</string>
+    <string name="polls_edit_vote">Modifier le vote</string>
     <string name="polls_end_poll">Fin du sondage</string>
     <string name="polls_end_poll_confirm">Voulez-vous réellement terminer ce sondage ? Cela ne peut pas être annulé.</string>
     <string name="polls_max_votes_reached">Vous ne pouvez pas voter pour plus de choix pour ce sondage.</string>
