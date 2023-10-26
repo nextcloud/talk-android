@@ -22,7 +22,6 @@
 
 package com.nextcloud.talk.remotefilebrowser.viewmodels
 
-import android.content.res.Resources
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -96,7 +95,7 @@ constructor(
         get() = _selectedPaths
 
     init {
-        val key = Resources.getSystem().getString(R.string.nc_file_browser_sort_by_key)
+        val key = appPreferences.context.resources.getString(R.string.nc_file_browser_sort_by_key)
         sortingFlow = appPreferences.readString(key)
         CoroutineScope(Dispatchers.Main).launch {
             var state = appPreferences.sorting
