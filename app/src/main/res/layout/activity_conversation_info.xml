@@ -239,7 +239,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/standard_padding"
-                    android:text="@string/nc_conversation_settings"
+                    android:text="@string/message_expiration_title"
                     android:textSize="@dimen/headline_text_size"
                     android:textStyle="bold" />
 
