@@ -54,6 +54,7 @@
     <string name="menu_item_sort_by_name_z_a">ي - أ</string>
     <string name="menu_item_sort_by_size_biggest_first">الأعلى حجماً أولاً</string>
     <string name="menu_item_sort_by_size_smallest_first">الأقل حجماً أولاً</string>
+    <string name="message_expiration_title">نهاية صلاحية الرسالة</string>
     <string name="message_poll_tap_to_open">أنقُر لفتح الاستبيان</string>
     <string name="message_search_begin_empty">لا توجد نتائج</string>
     <string name="message_search_begin_typing">أكتب هنا للبحث …</string>

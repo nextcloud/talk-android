@@ -38,6 +38,7 @@
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Suurin ensin</string>
     <string name="menu_item_sort_by_size_smallest_first">Pienin ensin</string>
+    <string name="message_expiration_title">Viestin vanheneminen</string>
     <string name="message_search_begin_empty">Ei hakutuloksia</string>
     <string name="message_search_begin_typing">Aloita kirjoittaminen hakeaksesi…</string>
     <string name="message_search_hint">Hae…</string>
