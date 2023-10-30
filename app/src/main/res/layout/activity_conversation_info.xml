@@ -226,6 +226,12 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <include
+                android:id="@+id/recording_consent_view"
+                layout="@layout/item_recording_consent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_quarter_margin" />
 
             <LinearLayout
                 android:id="@+id/conversation_settings"
@@ -260,7 +266,6 @@
                         android:lines="1"
                         android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
                         android:text="" />
-
 
                 </com.google.android.material.textfield.TextInputLayout>
 

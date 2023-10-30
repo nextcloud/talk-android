@@ -536,4 +536,8 @@ public class ApiUtils {
         String url = ApiUtils.getUrlForChatMessage(version, user.getBaseUrl(), roomToken, messageId);
         return url + "/reminder";
     }
+
+    public static String getUrlForRecordingConsent(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/recording-consent";
+    }
 }
