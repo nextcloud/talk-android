@@ -34,6 +34,7 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
@@ -156,6 +157,7 @@ import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.extensions.loadAvatarOrImagePreview
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
+import com.nextcloud.talk.jobs.SaveFileToStorageWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
@@ -897,7 +899,7 @@ class ChatActivity :
                 }
             } else {
                 Log.d(TAG, "Downloaded to cache")
-                downloadFileToCache(message, true) {
+                downloadFileToCache(message,true ) {
                     setUpWaveform(message)
                 }
             }
@@ -2016,6 +2018,44 @@ class ChatActivity :
                     funToCallWhenDownloadSuccessful()
                 }
             }
+    }
+
+    @SuppressLint("LongLogTag")
+    private fun saveImageToStorage(
+        message: ChatMessage
+    ) {
+        message.openWhenDownloaded = false
+        adapter?.update(message)
+
+        val fileName = message.selectedIndividualHashMap!!["name"]
+        val sourceFilePath = applicationContext.cacheDir.path
+        val fileId = message.selectedIndividualHashMap!!["id"]
+
+        val workers = WorkManager.getInstance(context).getWorkInfosByTag(fileId!!)
+        try {
+            for (workInfo in workers.get()) {
+                if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
+                    Log.d(TAG, "SaveFileToStorageWorker for $fileId is already running or scheduled")
+                    return
+                }
+            }
+        } catch (e: ExecutionException) {
+            Log.e(TAG, "Error when checking if worker already exists", e)
+        } catch (e: InterruptedException) {
+            Log.e(TAG, "Error when checking if worker already exists", e)
+        }
+
+        val data: Data = Data.Builder()
+            .putString(SaveFileToStorageWorker.KEY_FILE_NAME, fileName)
+            .putString(SaveFileToStorageWorker.KEY_SOURCE_FILE_PATH, "$sourceFilePath/$fileName")
+            .build()
+
+        val saveWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(SaveFileToStorageWorker::class.java)
+            .setInputData(data)
+            .addTag(fileId)
+            .build()
+
+        WorkManager.getInstance().enqueue(saveWorker)
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -4101,8 +4141,44 @@ class ChatActivity :
         if (file.exists()) {
             share(message)
         } else {
-            downloadFileToCache(message, false) {
+            downloadFileToCache(message,  false ) {
                 share(message)
+            }
+        }
+    }
+
+    private fun saveImage(message: ChatMessage){
+        if (permissionUtil.isFilesPermissionGranted()) {
+            saveImageToStorage(message)
+        } else {
+            UploadAndShareFilesWorker.requestStoragePermission(this@ChatActivity)
+        }
+    }
+
+    private fun showSaveToStorageWarning(message: ChatMessage) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(R.string.nc_dialog_save_to_storage_title)
+        builder.setMessage(R.string.nc_dialog_save_to_storage_content)
+        builder.setPositiveButton(R.string.nc_dialog_save_to_storage_yes) { dialog: DialogInterface, _: Int ->
+            saveImage(message)
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.nc_dialog_save_to_storage_no) { dialog: DialogInterface, _: Int ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    fun checkIfSaveable(message: ChatMessage) {
+        val filename = message.selectedIndividualHashMap!!["name"]
+        path = applicationContext.cacheDir.absolutePath + "/" + filename
+        val file = File(context.cacheDir, filename!!)
+        if (file.exists()) {
+            showSaveToStorageWarning(message)
+        } else {
+            downloadFileToCache(message ,false) {
+                showSaveToStorageWarning(message)
             }
         }
     }

@@ -118,6 +118,7 @@ class MessageActionsDialog(
         initMenuItemOpenNcApp(
             ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType()
         )
+        initMenuItemSave(message.getCalculateMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE)
     }
 
     override fun onStart() {
@@ -168,6 +169,8 @@ class MessageActionsDialog(
         dialogMessageActionsBinding.emojiMore.installDisableKeyboardInput(popup)
         dialogMessageActionsBinding.emojiMore.installForceSingleEmoji()
     }
+
+
 
     /*
         This method is a hacky workaround to avoid bug #1914
@@ -350,6 +353,16 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuOpenInNcApp.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuItemSave (visible:  Boolean) {
+        if (visible){
+            dialogMessageActionsBinding.menuSaveMessage.setOnClickListener {
+                chatActivity.checkIfSaveable(message)
+                dismiss()
+            }
+        }
+        dialogMessageActionsBinding.menuSaveMessage.visibility = getVisibility(visible)
     }
 
     private fun getVisibility(visible: Boolean): Int {
