@@ -450,6 +450,11 @@
     <string name="record_stop_confirm_title">Zastavit nahrávání hovoru</string>
     <string name="record_stop_description">Zastavit nahrávání</string>
     <string name="record_stopping">Zastavování nahrávání</string>
+    <string name="recording_consent_all">Souhlas s nahráváním je vyžadován pro všechna volání</string>
+    <string name="recording_consent_for_conversation_description">Vždy vyžadovat souhlas s nahráváním před připojením hovoru v této konverzaci.</string>
+    <string name="recording_consent_for_conversation_title">Souhlas s nahráváním</string>
+    <string name="recording_consent_title">Hovor může být nahráván.</string>
+    <string name="recording_settings_title">Zaznamenávání</string>
     <string name="removed_from_favorites">Konverzace %1$s odebrána z oblíbených</string>
     <string name="renamed_conversation">Konverzace %1$s byla přejmenována</string>
     <string name="restrict_join_other_room_while_call">Během hovoru se nelze připojit k jiným místnostem.</string>

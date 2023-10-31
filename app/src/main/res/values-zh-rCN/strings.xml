@@ -433,6 +433,7 @@
     <string name="record_stop_confirm_title">停止通话录制</string>
     <string name="record_stop_description">停止录制</string>
     <string name="record_stopping">正在停止录制……</string>
+    <string name="recording_settings_title">录音</string>
     <string name="restrict_join_other_room_while_call">在通话时无法加入其他房间</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">只同步到受信任的服务器 </string>

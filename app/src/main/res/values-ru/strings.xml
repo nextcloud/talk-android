@@ -425,6 +425,7 @@
     <string name="record_stop_confirm_title">Остановить запись звонка</string>
     <string name="record_stop_description">Остановить запись</string>
     <string name="record_stopping">Запись останавливается...</string>
+    <string name="recording_settings_title">Запись</string>
     <string name="restrict_join_other_room_while_call">Невозможно присоединиться к другим комнатам находясь в звонке</string>
     <string name="save">Сохранить</string>
     <string name="scope_federated_description">Выполнять синхронизацию только с доверенными серверами</string>

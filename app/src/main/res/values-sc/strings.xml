@@ -332,6 +332,7 @@
     <string name="raise_hand">Àrtzia sa manu </string>
     <string name="reactions_tab_all">Totu</string>
     <string name="read_storage_no_permission">Non faghet a cumpartzire archìvios dae s\'archiviatzione chene permissos</string>
+    <string name="recording_settings_title">Registratzione</string>
     <string name="save">Sarva</string>
     <string name="scope_federated_description">Sincroniza cun serbidores seguros ebbia</string>
     <string name="scope_federated_title">Federadu</string>

@@ -370,6 +370,7 @@
     <string name="record_cancel_start">録画開始をキャンセル</string>
     <string name="record_start_description">録画を開始</string>
     <string name="record_stop_description">録画を停止</string>
+    <string name="recording_settings_title">記録中</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">信頼できるサーバーのみと同期</string>
     <string name="scope_federated_title">連携</string>

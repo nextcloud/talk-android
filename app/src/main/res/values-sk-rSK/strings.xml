@@ -441,6 +441,7 @@
     <string name="record_stop_confirm_title">Zastaviť nahrávanie hovoru</string>
     <string name="record_stop_description">Zastaviť nahrávanie</string>
     <string name="record_stopping">Zastavujem nahrávanie...</string>
+    <string name="recording_settings_title">Záznam</string>
     <string name="removed_from_favorites">Konverzácia %1$s bola odstránená z obľúbených</string>
     <string name="renamed_conversation">Konverzácia %1$s bola premenovaná</string>
     <string name="save">Uložiť</string>

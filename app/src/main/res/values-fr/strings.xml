@@ -54,6 +54,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Les plus gros d\'abord</string>
     <string name="menu_item_sort_by_size_smallest_first">Le plus petit en premier</string>
+    <string name="message_expiration_title">Expiration du message</string>
     <string name="message_poll_tap_to_open">Toucher pour ouvrir le sondage</string>
     <string name="message_search_begin_empty">Aucun résultat de recherche</string>
     <string name="message_search_begin_typing">Commencer à taper pour lancer la recherche…</string>
@@ -74,7 +75,7 @@
     <string name="nc_allow_guests">Autoriser les invités</string>
     <string name="nc_attendee_pin">Épingler : %1$s</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
-    <string name="nc_bluetooth_permission_hint">Pour activer les écouteurs bluetooth, merci de donner la permission \"Appareils à proximité\".</string>
+    <string name="nc_bluetooth_permission_hint">Pour activer les écouteurs Bluetooth, merci de donner la permission « Appareils à proximité ».</string>
     <string name="nc_call_button_content_description_advanced">Options d\'appel avancées</string>
     <string name="nc_call_button_content_description_answer_video_call">Répondre par appel vidéo</string>
     <string name="nc_call_button_content_description_answer_voice_only">Répondre par appel vocal uniquement</string>
@@ -98,7 +99,7 @@
     <string name="nc_call_unknown">%s appel</string>
     <string name="nc_call_video">%s appel vidéo</string>
     <string name="nc_call_voice">%s appel audio</string>
-    <string name="nc_camera_permission_hint">Pour activer la communication vidéo, merci de donner l\'autorisation \"Appareil photo\".</string>
+    <string name="nc_camera_permission_hint">Pour activer la communication vidéo, merci de donner l\'autorisation « Appareil photo ».</string>
     <string name="nc_cancel">Annuler</string>
     <string name="nc_capabilities_failed">Échec de la récupération des capacités, abandon</string>
     <string name="nc_certificate_dialog_text">Faites-vous confiance au certificat SSL jusque-là inconnu, émis par %1$s pour %2$s, et et valide du %3$s au %4$s ?</string>
@@ -220,7 +221,7 @@
     <string name="nc_message_quote_cancel_reply">Annuler la réponse</string>
     <string name="nc_message_read">Message lu</string>
     <string name="nc_message_sent">Message envoyé</string>
-    <string name="nc_microphone_permission_hint">Pour autoriser la communication audio, merci de donner l\'autorisation \"Microphone\".</string>
+    <string name="nc_microphone_permission_hint">Pour autoriser la communication audio, merci de donner l\'autorisation « Microphone ».</string>
     <string name="nc_missed_call">Vous avez manqué un appel de %s</string>
     <string name="nc_moderator">Modérateur</string>
     <string name="nc_never">Jamais contacté</string>
@@ -449,6 +450,11 @@
     <string name="record_stop_confirm_title">Arrêter l\'enregistrement de l\'appel</string>
     <string name="record_stop_description">Arrêter l\'enregistrement</string>
     <string name="record_stopping">Arrêt de l\'enregistrement…</string>
+    <string name="recording_consent_all">Le consentement à l\'enregistrement est exigé pour tous les appels</string>
+    <string name="recording_consent_for_conversation_description">Exiger le consentement à l\'enregistrement avant de rejoindre l\'appel dans cette conversation</string>
+    <string name="recording_consent_for_conversation_title">Consentement à l\'enregistrement</string>
+    <string name="recording_consent_title">L\'appel peut être enregistré.</string>
+    <string name="recording_settings_title">Enregistrement</string>
     <string name="removed_from_favorites">La conversation %1$s a été supprimée des favorites</string>
     <string name="renamed_conversation">La conversation %1$s a été renommée</string>
     <string name="restrict_join_other_room_while_call">Il est impossible de rejoindre une autre salle pendant un appel</string>
@@ -497,7 +503,7 @@
     <string name="take_photo_switch_camera">Retourner la caméra</string>
     <string name="take_photo_toggle_crop">Rogner la photo</string>
     <string name="take_photo_toggle_lowres">Réduire la taille de l\'image</string>
-    <string name="take_photo_toggle_torch">Allumer/Eteindre la lampe</string>
+    <string name="take_photo_toggle_torch">Allumer/Éteindre la lampe</string>
     <string name="thirtyMinutes">30 minutes</string>
     <string name="thisWeek">Cette semaine</string>
     <string name="this_is_a_test_message">Ceci est un message de test</string>

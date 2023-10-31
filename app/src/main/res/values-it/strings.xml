@@ -369,6 +369,7 @@
     <string name="raise_hand">Alza la mano</string>
     <string name="reactions_tab_all">Tutti</string>
     <string name="read_storage_no_permission">La condivisione dei file dall\'archiviazione non è possibile senza permessi</string>
+    <string name="recording_settings_title">Registrazione</string>
     <string name="save">Salva</string>
     <string name="scope_federated_description">Sincronizza solo con server fidati</string>
     <string name="scope_federated_title">Federato</string>

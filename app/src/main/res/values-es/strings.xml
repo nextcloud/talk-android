@@ -451,6 +451,8 @@
     <string name="record_stop_confirm_title">Detener grabación de la llamada</string>
     <string name="record_stop_description">Detener la grabación</string>
     <string name="record_stopping">Deteniendo grabación ...</string>
+    <string name="recording_consent_for_conversation_title">Consentimiento de grabación</string>
+    <string name="recording_settings_title">Grabando</string>
     <string name="removed_from_favorites">Se quitó la conversación %1$s de los favoritos</string>
     <string name="renamed_conversation">La conversación %1$s fue renombrada</string>
     <string name="restrict_join_other_room_while_call">No es posible unirse a otras salas mientras está en una llamada</string>

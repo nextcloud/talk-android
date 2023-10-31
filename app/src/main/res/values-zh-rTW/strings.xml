@@ -450,6 +450,11 @@
     <string name="record_stop_confirm_title">停止通話錄製</string>
     <string name="record_stop_description">停止錄音</string>
     <string name="record_stopping">停止錄製……</string>
+    <string name="recording_consent_all">所有通話都需要獲得錄製同意</string>
+    <string name="recording_consent_for_conversation_description">在此對話中，需要在加入通話前給予錄製同意</string>
+    <string name="recording_consent_for_conversation_title">同意錄製</string>
+    <string name="recording_consent_title">通話可能會被錄製。</string>
+    <string name="recording_settings_title">錄音</string>
     <string name="removed_from_favorites">從最愛移除了對話 %1$s</string>
     <string name="renamed_conversation">對話 %1$s 已重新命名</string>
     <string name="restrict_join_other_room_while_call">通話時無法加入其他聊天室</string>

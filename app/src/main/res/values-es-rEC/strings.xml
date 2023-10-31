@@ -434,6 +434,7 @@
     <string name="record_stop_confirm_title">Detener grabación de llamada</string>
     <string name="record_stop_description">Detener grabación</string>
     <string name="record_stopping">Deteniendo la grabación...</string>
+    <string name="recording_settings_title">Grabación</string>
     <string name="restrict_join_other_room_while_call">No es posible unirse a otras salas mientras se está en una llamada</string>
     <string name="save">Guardar</string>
     <string name="scope_federated_description">Solo sincronizar con servidores de confianza</string>

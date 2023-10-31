@@ -346,6 +346,7 @@
     <string name="raise_hand">Podigni ruku</string>
     <string name="reactions_tab_all">Sve</string>
     <string name="read_storage_no_permission">Dijeljenje datoteka iz pohrane nije moguće bez dopuštenja</string>
+    <string name="recording_settings_title">Snimanje</string>
     <string name="save">Spremi</string>
     <string name="scope_federated_description">Sinkroniziraj samo s pouzdanim poslužiteljima</string>
     <string name="scope_federated_title">Udruženo</string>

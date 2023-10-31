@@ -450,6 +450,11 @@
     <string name="record_stop_confirm_title">Stop Call recording</string>
     <string name="record_stop_description">Stop recording</string>
     <string name="record_stopping">Stopping recording …</string>
+    <string name="recording_consent_all">Recording consent is required for all calls</string>
+    <string name="recording_consent_for_conversation_description">Require recording consent before joining call in this conversation</string>
+    <string name="recording_consent_for_conversation_title">Recording consent</string>
+    <string name="recording_consent_title">The call might be recorded.</string>
+    <string name="recording_settings_title">Recording</string>
     <string name="removed_from_favorites">Removed conversation %1$s from favourites</string>
     <string name="renamed_conversation">Conversation %1$s was renamed</string>
     <string name="restrict_join_other_room_while_call">It is not possible to join other rooms while in a call</string>

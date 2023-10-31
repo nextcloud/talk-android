@@ -387,6 +387,7 @@ Kies er eentje van een provider.</string>
     <string name="record_start_description">Begin opname</string>
     <string name="record_stop_confirm_title">Beëindig opname van gesprek</string>
     <string name="record_stop_description">Beëindig opname</string>
+    <string name="recording_settings_title">Opnemen</string>
     <string name="save">Bewaren</string>
     <string name="scope_federated_description">Alleen synchroniseren met vertrouwde servers</string>
     <string name="scope_federated_title">Gefedereerd</string>

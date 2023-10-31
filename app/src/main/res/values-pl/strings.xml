@@ -443,6 +443,7 @@
     <string name="record_stop_confirm_title">Zatrzymaj nagrywanie rozmowy</string>
     <string name="record_stop_description">Zatrzymaj nagrywanie</string>
     <string name="record_stopping">Zatrzymywanie nagrywania…</string>
+    <string name="recording_settings_title">Nagranie</string>
     <string name="restrict_join_other_room_while_call">Podczas rozmowy nie można dołączać do innych pokoi</string>
     <string name="save">Zapisz</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>

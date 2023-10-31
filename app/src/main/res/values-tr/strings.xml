@@ -450,6 +450,11 @@
     <string name="record_stop_confirm_title">Çağrı kaydını durdur</string>
     <string name="record_stop_description">Kaydı durdur</string>
     <string name="record_stopping">Kayıt durduruluyor…</string>
+    <string name="recording_consent_all">Tüm çağrılar için kayıt alma onayı istensin</string>
+    <string name="recording_consent_for_conversation_description">Bu görüşmedeki çağrılara katılmadan önce kayıt alma onayı istensin</string>
+    <string name="recording_consent_for_conversation_title">Kayıt alma onayı</string>
+    <string name="recording_consent_title">Çağrının kaydı alınabilir.</string>
+    <string name="recording_settings_title">Kaydediliyor</string>
     <string name="removed_from_favorites">%1$s görüşmesi sık kullanılanlardan kaldırıldı</string>
     <string name="renamed_conversation">%1$s görüşmesi yeniden adlandırıldı</string>
     <string name="restrict_join_other_room_while_call">Bir çağrı sürerken diğer odalara katılamazsınız</string>

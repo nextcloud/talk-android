@@ -443,6 +443,7 @@
     <string name="record_stop_confirm_title">Stop Call recording</string>
     <string name="record_stop_description">Stop recording</string>
     <string name="record_stopping">Stopping recording …</string>
+    <string name="recording_settings_title">ضبط جلسه</string>
     <string name="restrict_join_other_room_while_call">It\'s not possible to join other rooms while being in a call</string>
     <string name="save">ذخیره</string>
     <string name="scope_federated_description">فقط با سرورهای قابل اعتماد همگام سازی شود</string>

@@ -420,6 +420,9 @@
     <string name="record_stop_confirm_message">Ali res želite ustaviti snemanje?</string>
     <string name="record_stop_confirm_title">Ustavi snemanje klica</string>
     <string name="record_stop_description">Ustavi snemanje</string>
+    <string name="recording_consent_for_conversation_title">Strinjanje s snemanjem</string>
+    <string name="recording_consent_title">Klic se morda snema.</string>
+    <string name="recording_settings_title">Snemanje</string>
     <string name="save">Shrani</string>
     <string name="scope_federated_description">Usklajuj le z zaupanja vrednimi strežniki</string>
     <string name="scope_federated_title">Zvezno</string>

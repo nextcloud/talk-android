@@ -450,6 +450,11 @@
     <string name="record_stop_confirm_title">Прекидање снимање позива</string>
     <string name="record_stop_description">Заустави снимање</string>
     <string name="record_stopping">Снимање се зауставља ...</string>
+    <string name="recording_consent_all">Сагласност за снимање се захтева за све позиве</string>
+    <string name="recording_consent_for_conversation_description">Захтевај сагласност за снимање пре приступања позиву у овом разговору</string>
+    <string name="recording_consent_for_conversation_title">Сагласност за снимање</string>
+    <string name="recording_consent_title">Овај позив би могао да се снима.</string>
+    <string name="recording_settings_title">Снимање</string>
     <string name="removed_from_favorites">Разговор %1$s је уклоњен из омиљених</string>
     <string name="renamed_conversation">Промењен је наслов разговора %1$s</string>
     <string name="restrict_join_other_room_while_call">Док сте у позиву не можете да приступите осталим собама</string>

@@ -417,6 +417,7 @@
     <string name="record_stop_confirm_message">Realment voleu aturar l\'enregistrament?</string>
     <string name="record_stop_confirm_title">Aturar l\'enregistrament de la trucada</string>
     <string name="record_stop_description">Aturar l\'enregistrament</string>
+    <string name="recording_settings_title">Enregistrament</string>
     <string name="save">Desa</string>
     <string name="scope_federated_description">Sincronitza només amb servidors de confiança</string>
     <string name="scope_federated_title">Federat</string>
