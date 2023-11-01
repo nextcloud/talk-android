@@ -166,7 +166,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.datastore:datastore-core:1.0.0'
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.3")
 	
     implementation fileTree(include: ['*'], dir: 'libs')
 
