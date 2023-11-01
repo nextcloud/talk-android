@@ -451,6 +451,7 @@
     <string name="record_stop_description">Kaydı durdur</string>
     <string name="record_stopping">Kayıt durduruluyor…</string>
     <string name="recording_consent_all">Tüm çağrılar için kayıt alma onayı istensin</string>
+    <string name="recording_consent_description">Kayıtta sesiniz, kamera görüntünüz ve ekran paylaşımlarınız bulunabilir. Çağrıya katılmadan önce kayıt alma onayı vermeniz gerekir. Onay veriyor musunuz?</string>
     <string name="recording_consent_for_conversation_description">Bu görüşmedeki çağrılara katılmadan önce kayıt alma onayı istensin</string>
     <string name="recording_consent_for_conversation_title">Kayıt alma onayı</string>
     <string name="recording_consent_title">Çağrının kaydı alınabilir.</string>

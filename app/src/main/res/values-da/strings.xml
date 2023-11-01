@@ -272,7 +272,7 @@
     <string name="scope_published_description">Synkroniser til betroede servere og den globale og offentlige adressebog</string>
     <string name="scope_published_title">Udgivet</string>
     <string name="scope_toggle_description">Skift privatlivsniveau for %1$s</string>
-    <string name="secondsAgo">sekunder siden</string>
+    <string name="secondsAgo">få sekunder siden</string>
     <string name="selected_list_item">Markeret</string>
     <string name="set">Sæt</string>
     <string name="set_status">Sæt status</string>

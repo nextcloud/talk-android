@@ -451,6 +451,7 @@
     <string name="record_stop_description">Zastavit nahrávání</string>
     <string name="record_stopping">Zastavování nahrávání</string>
     <string name="recording_consent_all">Souhlas s nahráváním je vyžadován pro všechna volání</string>
+    <string name="recording_consent_description">Nahrávka může obsahovat váš hlas, obraz z kamery a sdílení obrazovky. K hovoru se budete moci připojit až po odsouhlasení. Souhlasíte?</string>
     <string name="recording_consent_for_conversation_description">Vždy vyžadovat souhlas s nahráváním před připojením hovoru v této konverzaci.</string>
     <string name="recording_consent_for_conversation_title">Souhlas s nahráváním</string>
     <string name="recording_consent_title">Hovor může být nahráván.</string>

@@ -450,9 +450,10 @@
     <string name="record_stop_confirm_title">Anrufaufnahme beenden</string>
     <string name="record_stop_description">Aufnahme stoppen</string>
     <string name="record_stopping">Stoppe Aufnahme …</string>
-    <string name="recording_consent_all">Für alle Unterhaltungen ist eine Einwilligung zur Aufzeichnung erforderlich</string>
+    <string name="recording_consent_all">Für alle Unterhaltungen ist eine Zustimmung zur Aufzeichnung erforderlich</string>
+    <string name="recording_consent_description">Die Aufnahme kann Ihre Stimme sowie Video von der Kamera und einer Bildschirmfreigabe beinhalten. Vor der Teilnahme am Anruf ist Ihre Zustimmung hierzu erforderlich. Stimmen Sie zu?</string>
     <string name="recording_consent_for_conversation_description">Zur Teilnahme an dieser Unterhaltung ist die Zustimmung zur Aufzeichnung erforderlich.</string>
-    <string name="recording_consent_for_conversation_title">Einwilligung zur Aufzeichnung</string>
+    <string name="recording_consent_for_conversation_title">Zustimmung zur Aufzeichnung</string>
     <string name="recording_consent_title">Die Unterhaltung wird möglicherweise aufgezeichnet.</string>
     <string name="recording_settings_title">Aufnahme</string>
     <string name="removed_from_favorites">Unterhaltung %1$s aus Favoriten entfernt</string>

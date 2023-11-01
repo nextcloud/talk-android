@@ -451,6 +451,7 @@
     <string name="record_stop_description">停止錄音</string>
     <string name="record_stopping">停止錄製……</string>
     <string name="recording_consent_all">所有通話都需要獲得錄製同意</string>
+    <string name="recording_consent_description">錄製可能包含您的聲音、來自攝影機的影像與螢幕分享。在加入通話前，需要獲得您的同意。您同意嗎？</string>
     <string name="recording_consent_for_conversation_description">在此對話中，需要在加入通話前給予錄製同意</string>
     <string name="recording_consent_for_conversation_title">同意錄製</string>
     <string name="recording_consent_title">通話可能會被錄製。</string>

@@ -451,6 +451,7 @@
     <string name="record_stop_description">Заустави снимање</string>
     <string name="record_stopping">Снимање се зауставља ...</string>
     <string name="recording_consent_all">Сагласност за снимање се захтева за све позиве</string>
+    <string name="recording_consent_description">Може се снимати ваш глас, видео са камере и садржај екрана који делите. Пре него што приступите позиву, морате дати своју сагласност. Да ли пристајете?</string>
     <string name="recording_consent_for_conversation_description">Захтевај сагласност за снимање пре приступања позиву у овом разговору</string>
     <string name="recording_consent_for_conversation_title">Сагласност за снимање</string>
     <string name="recording_consent_title">Овај позив би могао да се снима.</string>

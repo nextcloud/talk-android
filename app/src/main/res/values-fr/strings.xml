@@ -451,6 +451,7 @@
     <string name="record_stop_description">Arrêter l\'enregistrement</string>
     <string name="record_stopping">Arrêt de l\'enregistrement…</string>
     <string name="recording_consent_all">Le consentement à l\'enregistrement est exigé pour tous les appels</string>
+    <string name="recording_consent_description">L\'enregistrement peut inclure votre voix, la vidéo de votre caméra et le partage d\'écran. Votre consentement est requis avant de rejoindre l\'appel. Consentez-vous ?</string>
     <string name="recording_consent_for_conversation_description">Exiger le consentement à l\'enregistrement avant de rejoindre l\'appel dans cette conversation</string>
     <string name="recording_consent_for_conversation_title">Consentement à l\'enregistrement</string>
     <string name="recording_consent_title">L\'appel peut être enregistré.</string>

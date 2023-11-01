@@ -451,6 +451,7 @@
     <string name="record_stop_description">إيقاف التسجيل</string>
     <string name="record_stopping">إيقاف التسجيل جارٍ ...</string>
     <string name="recording_consent_all">الإذن بالتسجيل مطلوبٌ لكل المكالمات</string>
+    <string name="recording_consent_description">قد يتضمن التسجيل صوتك و فيديو من كاميرتك و مشاركة لشاشتك. لذا، فإن موافقتك مطلوبة قبل الانضمام إلى المكالمة. هل توافق؟</string>
     <string name="recording_consent_for_conversation_description">أطلُب الإذن بالتسجيل قبل الانضمام لهذه المحادثة</string>
     <string name="recording_consent_for_conversation_title">الإذن بالتسجيل</string>
     <string name="recording_consent_title">المكالمة يُمكن أن يتم تسجيلها.</string>
