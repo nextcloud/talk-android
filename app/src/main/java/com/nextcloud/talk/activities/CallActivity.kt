@@ -2715,11 +2715,11 @@ class CallActivity : CallBaseActivity() {
             private set
 
         private inner class WebRtcMessageListener : SignalingMessageReceiver.WebRtcMessageListener {
-            override fun onOffer(sdp: String, nick: String) {
+            override fun onOffer(sdp: String, nick: String?) {
                 onOfferOrAnswer(nick)
             }
 
-            override fun onAnswer(sdp: String, nick: String) {
+            override fun onAnswer(sdp: String, nick: String?) {
                 onOfferOrAnswer(nick)
             }
 
@@ -2732,7 +2732,7 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
-        private fun onOfferOrAnswer(nick: String) {
+        private fun onOfferOrAnswer(nick: String?) {
             this.nick = nick
             if (callParticipants[sessionId] != null) {
                 callParticipants[sessionId]!!.setNick(nick)
