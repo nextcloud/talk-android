@@ -198,7 +198,7 @@ class ConversationsListActivity :
             FilterConversationFragment.MENTION to false,
             FilterConversationFragment.UNREAD to false
         )
-     val searchBehaviorSubject = BehaviorSubject.createDefault(false)
+    val searchBehaviorSubject = BehaviorSubject.createDefault(false)
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -221,7 +221,6 @@ class ConversationsListActivity :
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
-
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
@@ -277,6 +276,7 @@ class ConversationsListActivity :
 
         showSearchOrToolbar()
     }
+
     fun filterConversation() {
         val accountId = UserIdUtils.getIdForUser(userManager.currentUser.blockingGet())
         filterState[FilterConversationFragment.UNREAD] = (
@@ -329,6 +329,7 @@ class ConversationsListActivity :
                                     ) &&
                                 (conversation.unreadMessages > 0)
                             )
+
                     FilterConversationFragment.UNREAD -> result = result && (conversation.unreadMessages > 0)
                 }
             }
@@ -513,7 +514,7 @@ class ConversationsListActivity :
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
                         binding?.swipeRefreshLayoutView?.isRefreshing = false
-                        searchBehaviorSubject.onNext(false )
+                        searchBehaviorSubject.onNext(false)
                     }
                     binding?.swipeRefreshLayoutView?.isEnabled = true
                     searchView!!.onActionViewCollapsed()
@@ -605,6 +606,7 @@ class ConversationsListActivity :
     fun showSnackbar(text: String) {
         Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG).show()
     }
+
     fun fetchRooms() {
         val includeStatus = isUserStatusAvailable(userManager.currentUser.blockingGet())
 
@@ -649,8 +651,7 @@ class ConversationsListActivity :
                 if (!filterState.containsValue(true)) filterableConversationItems = conversationItems
                 filterConversation()
                 adapter!!.updateDataSet(filterableConversationItems, false)
-                Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY
-                    .toLong())
+                Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
                 fetchOpenConversations(apiVersion)
                 binding?.swipeRefreshLayoutView?.isRefreshing = false
             }, { throwable: Throwable ->
@@ -826,9 +827,9 @@ class ConversationsListActivity :
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val isSearchActive = searchBehaviorSubject.value
-                       if(!isSearchActive!!){
-                           checkToShowUnreadBubble()
-                        }
+                    if (!isSearchActive!!) {
+                        checkToShowUnreadBubble()
+                    }
                 }
             }
         })
@@ -877,7 +878,7 @@ class ConversationsListActivity :
         binding?.newMentionPopupBubble?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
     }
 
-
+    @SuppressLint("CheckResult")
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkToShowUnreadBubble() {
         searchBehaviorSubject.subscribe { value ->
@@ -904,12 +905,13 @@ class ConversationsListActivity :
                     Log.d(
                         TAG,
                         "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
-                            "user already left the conversations-list screen so the popup bubble is not available anymore.",
+                            "user already left the conversations-list screen so the popup bubble is not available " +
+                            "anymore.",
                         e
                     )
                 }
             }
-       }
+        }
     }
 
     private fun hasUnreadItems(conversation: Conversation) =
@@ -922,7 +924,6 @@ class ConversationsListActivity :
         intent.putExtra(KEY_NEW_CONVERSATION, true)
         startActivity(intent)
     }
-
 
     private fun dispose(disposable: Disposable?) {
         if (disposable != null && !disposable.isDisposed) {
