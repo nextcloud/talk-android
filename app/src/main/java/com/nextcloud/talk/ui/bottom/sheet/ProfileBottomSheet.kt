@@ -31,8 +31,8 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
-import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
+import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
+import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.hovercard.HoverCardAction

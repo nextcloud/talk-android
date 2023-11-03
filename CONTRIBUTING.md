@@ -289,7 +289,6 @@ We are using [Dagger 2](https://dagger.dev/) to inject dependencies into major A
 
  * `Activity`
  * `Fragment`
- * `Controller`
  * `Service`
  * `BroadcastReceiver`
  * `ContentProvider`

@@ -24,17 +24,26 @@ package com.nextcloud.talk.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
+import android.widget.EditText
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
+import com.nextcloud.talk.account.AccountVerificationActivity
+import com.nextcloud.talk.account.ServerSelectionActivity
+import com.nextcloud.talk.account.SwitchAccountActivity
+import com.nextcloud.talk.account.WebViewLoginActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -77,6 +86,8 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         super.onCreate(savedInstanceState)
+
+        cleanTempCertPreference()
     }
 
     public override fun onStart() {
@@ -86,6 +97,11 @@ open class BaseActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
+            val viewGroup = (findViewById<View>(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
+            disableKeyboardPersonalisedLearning(viewGroup)
+        }
 
         if (appPreferences.isScreenSecured) {
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -102,6 +118,19 @@ open class BaseActivity : AppCompatActivity() {
     fun setupSystemColors() {
         colorizeStatusBar()
         colorizeNavigationBar()
+    }
+
+    fun setupPrimaryColors() {
+        if (resources != null) {
+            DisplayUtils.applyColorToStatusBar(
+                this,
+                ResourcesCompat.getColor(resources!!, R.color.colorPrimary, null)
+            )
+            DisplayUtils.applyColorToNavigationBar(
+                window,
+                ResourcesCompat.getColor(resources!!, R.color.colorPrimary, null)
+            )
+        }
     }
 
     open fun colorizeStatusBar() {
@@ -123,7 +152,23 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun showCertificateDialog(
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private fun disableKeyboardPersonalisedLearning(viewGroup: ViewGroup) {
+        var view: View?
+        var editText: EditText
+        for (i in 0 until viewGroup.childCount) {
+            view = viewGroup.getChildAt(i)
+            if (view is EditText) {
+                editText = view
+                editText.imeOptions = editText.imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
+            } else if (view is ViewGroup) {
+                disableKeyboardPersonalisedLearning(view)
+            }
+        }
+    }
+
+    @Suppress("Detekt.NestedBlockDepth")
+    private fun showCertificateDialog(
         cert: X509Certificate,
         trustManager: TrustManager,
         sslErrorHandler: SslErrorHandler?
@@ -160,15 +205,17 @@ open class BaseActivity : AppCompatActivity() {
                 validUntil
             )
 
-            val dialogBuilder = MaterialAlertDialogBuilder(this)
-                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_security_white_24dp))
-                .setTitle(R.string.nc_certificate_dialog_title)
+            val dialogBuilder = MaterialAlertDialogBuilder(this).setIcon(
+                viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                    context,
+                    R.drawable.ic_security_white_24dp
+                )
+            ).setTitle(R.string.nc_certificate_dialog_title)
                 .setMessage(dialogText)
                 .setPositiveButton(R.string.nc_yes) { _, _ ->
                     trustManager.addCertInTrustStore(cert)
                     sslErrorHandler?.proceed()
-                }
-                .setNegativeButton(R.string.nc_no) { _, _ ->
+                }.setNegativeButton(R.string.nc_no) { _, _ ->
                     sslErrorHandler?.cancel()
                 }
 
@@ -185,12 +232,23 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
+    private fun cleanTempCertPreference() {
+        val temporaryClassNames: MutableList<String> = ArrayList()
+        temporaryClassNames.add(ServerSelectionActivity::class.java.name)
+        temporaryClassNames.add(AccountVerificationActivity::class.java.name)
+        temporaryClassNames.add(WebViewLoginActivity::class.java.name)
+        temporaryClassNames.add(SwitchAccountActivity::class.java.name)
+        if (!temporaryClassNames.contains(javaClass.name)) {
+            appPreferences.removeTemporaryClientCertAlias()
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: CertificateEvent) {
         showCertificateDialog(event.x509Certificate, event.magicTrustManager, event.sslErrorHandler)
     }
 
     companion object {
-        private val TAG = "BaseActivity"
+        private val TAG = BaseActivity::class.java.simpleName
     }
 }

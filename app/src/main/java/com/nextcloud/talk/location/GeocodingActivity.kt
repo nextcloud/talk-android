@@ -121,7 +121,7 @@ class GeocodingActivity :
         if (viewModel.getQuery().isNotEmpty() && adapter.itemCount == 0) {
             viewModel.searchLocation()
         } else {
-            Log.e(TAG, "search string that was passed to GeocodingController was null or empty")
+            Log.e(TAG, "search string that was passed to GeocodingActivity was null or empty")
         }
         adapter.setOnItemClickListener(object : GeocodingAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {

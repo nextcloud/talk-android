@@ -1605,7 +1605,7 @@ class ChatActivity :
             participantPermissions.hasChatPermission() &&
             !isReadOnlyConversation()
         ) {
-            val messageSwipeController = MessageSwipeCallback(
+            val messageSwipeCallback = MessageSwipeCallback(
                 this,
                 object : MessageSwipeActions {
                     override fun showReplyUI(position: Int) {
@@ -1617,7 +1617,7 @@ class ChatActivity :
                 }
             )
 
-            val itemTouchHelper = ItemTouchHelper(messageSwipeController)
+            val itemTouchHelper = ItemTouchHelper(messageSwipeCallback)
             itemTouchHelper.attachToRecyclerView(binding.messagesListView)
         }
     }
@@ -2561,7 +2561,7 @@ class ChatActivity :
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(ConversationsListActivity.TAG, "upload starting after permissions were granted")
+                Log.d(TAG, "upload starting after permissions were granted")
                 if (filesToUpload.isNotEmpty()) {
                     uploadFiles(filesToUpload)
                 }

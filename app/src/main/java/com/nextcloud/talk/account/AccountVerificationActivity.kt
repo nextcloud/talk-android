@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
+ * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *
@@ -19,7 +21,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.controllers
+package com.nextcloud.talk.account
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -28,25 +30,24 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
-import android.view.View
+import android.widget.Toast
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.BaseController
-import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ControllerAccountVerificationBinding
+import com.nextcloud.talk.databinding.ActivityAccountVerificationBinding
 import com.nextcloud.talk.events.EventStatus
+import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
@@ -63,6 +64,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ORIGINAL_PROTOCOL
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PASSWORD
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
@@ -71,20 +73,15 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.net.CookieManager
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class AccountVerificationController(args: Bundle? = null) : BaseController(
-    R.layout.controller_account_verification,
-    args
-) {
-    private val binding: ControllerAccountVerificationBinding? by viewBinding(
-        ControllerAccountVerificationBinding::bind
-    )
+class AccountVerificationActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityAccountVerificationBinding
 
     @Inject
     lateinit var ncApi: NcApi
@@ -95,9 +92,6 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
     @Inject
     lateinit var cookieManager: CookieManager
 
-    @Inject
-    lateinit var eventBus: EventBus
-
     private var internalAccountId: Long = -1
     private val disposables: MutableList<Disposable> = ArrayList()
     private var baseUrl: String? = null
@@ -106,41 +100,51 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
     private var isAccountImport = false
     private var originalProtocol: String? = null
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        eventBus.register(this)
-    }
-
-    override fun onDetach(view: View) {
-        super.onDetach(view)
-        eventBus.unregister(this)
-    }
-
-    override fun onViewBound(view: View) {
-        super.onViewBound(view)
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
+    @SuppressLint("SourceLockedOrientationActivity")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedApplication!!.componentApplication.inject(this)
+        binding = ActivityAccountVerificationBinding.inflate(layoutInflater)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        setContentView(binding.root)
         actionBar?.hide()
+        setupPrimaryColors()
+
+        handleIntent()
+    }
+
+    private fun handleIntent() {
+        val extras = intent.extras!!
+        baseUrl = extras.getString(KEY_BASE_URL)
+        username = extras.getString(KEY_USERNAME)
+        token = extras.getString(KEY_TOKEN)
+        if (extras.containsKey(KEY_IS_ACCOUNT_IMPORT)) {
+            isAccountImport = true
+        }
+        if (extras.containsKey(KEY_ORIGINAL_PROTOCOL)) {
+            originalProtocol = extras.getString(KEY_ORIGINAL_PROTOCOL)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         if (
             isAccountImport &&
             !UriUtils.hasHttpProtocolPrefixed(baseUrl!!) ||
-            isSameProtocol(baseUrl!!, originalProtocol!!)
+            isNotSameProtocol(baseUrl!!, originalProtocol)
         ) {
             determineBaseUrlProtocol(true)
         } else {
-            checkEverything()
+            findServerTalkApp()
         }
     }
 
-    private fun isSameProtocol(baseUrl: String, originalProtocol: String): Boolean {
+    private fun isNotSameProtocol(baseUrl: String, originalProtocol: String?): Boolean {
+        if (originalProtocol == null) {
+            return true
+        }
         return !TextUtils.isEmpty(originalProtocol) && !baseUrl.startsWith(originalProtocol)
-    }
-
-    private fun checkEverything() {
-        val credentials = ApiUtils.getCredentials(username, token)
-        cookieManager.cookieStore.removeAll()
-        findServerTalkApp(credentials)
     }
 
     private fun determineBaseUrlProtocol(checkForcedHttps: Boolean) {
@@ -166,20 +170,16 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
                         "http://$baseUrl"
                     }
                     if (isAccountImport) {
-                        router.replaceTopController(
-                            RouterTransaction.with(
-                                WebViewLoginController(
-                                    baseUrl,
-                                    false,
-                                    username,
-                                    ""
-                                )
-                            )
-                                .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler())
-                        )
+                        val bundle = Bundle()
+                        bundle.putString(KEY_BASE_URL, baseUrl)
+                        bundle.putString(KEY_USERNAME, username)
+                        bundle.putString(KEY_PASSWORD, "")
+
+                        val intent = Intent(context, WebViewLoginActivity::class.java)
+                        intent.putExtras(bundle)
+                        startActivity(intent)
                     } else {
-                        checkEverything()
+                        findServerTalkApp()
                     }
                 }
 
@@ -197,7 +197,10 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
             })
     }
 
-    private fun findServerTalkApp(credentials: String) {
+    private fun findServerTalkApp() {
+        val credentials = ApiUtils.getCredentials(username, token)
+        cookieManager.cookieStore.removeAll()
+
         ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
             .subscribeOn(Schedulers.io())
             .subscribe(object : Observer<CapabilitiesOverall> {
@@ -214,27 +217,24 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
                     if (hasTalk) {
                         fetchProfile(credentials, capabilitiesOverall)
                     } else {
-                        if (activity != null && resources != null) {
-                            activity!!.runOnUiThread {
-                                binding?.progressText?.setText(
-                                    String.format(
-                                        resources!!.getString(R.string.nc_nextcloud_talk_app_not_installed),
-                                        resources!!.getString(R.string.nc_app_product_name)
-                                    )
+                        if (resources != null) {
+                            runOnUiThread {
+                                binding.progressText.text = String.format(
+                                    resources!!.getString(R.string.nc_nextcloud_talk_app_not_installed),
+                                    resources!!.getString(R.string.nc_app_product_name)
                                 )
                             }
                         }
-                        ApplicationWideMessageHolder.getInstance().setMessageType(
+                        ApplicationWideMessageHolder.getInstance().messageType =
                             ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK
-                        )
                         abortVerification()
                     }
                 }
 
                 override fun onError(e: Throwable) {
-                    if (activity != null && resources != null) {
-                        activity!!.runOnUiThread {
-                            binding?.progressText?.text = String.format(
+                    if (resources != null) {
+                        runOnUiThread {
+                            binding.progressText.text = String.format(
                                 resources!!.getString(R.string.nc_nextcloud_talk_app_not_installed),
                                 resources!!.getString(R.string.nc_app_product_name)
                             )
@@ -263,7 +263,7 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
                 displayName = displayName,
                 pushConfigurationState = null,
                 capabilities = LoganSquare.serialize(capabilities),
-                certificateAlias = appPreferences!!.temporaryClientCertAlias,
+                certificateAlias = appPreferences.temporaryClientCertAlias,
                 externalSignalingServer = null
             )
         )
@@ -279,9 +279,9 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
                     if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
                         registerForPush()
                     } else {
-                        activity!!.runOnUiThread {
-                            binding?.progressText?.text =
-                                """ ${binding?.progressText?.text}
+                        runOnUiThread {
+                            binding.progressText.text =
+                                """ ${binding.progressText.text}
                                     ${resources!!.getString(R.string.nc_push_disabled)}
                                 """.trimIndent()
                         }
@@ -291,7 +291,7 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
 
                 @SuppressLint("SetTextI18n")
                 override fun onError(e: Throwable) {
-                    binding?.progressText?.text = """ ${binding?.progressText?.text}""".trimIndent() +
+                    binding.progressText.text = """ ${binding.progressText.text}""".trimIndent() +
                         resources!!.getString(R.string.nc_display_name_not_stored)
                     abortVerification()
                 }
@@ -328,14 +328,12 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
                             capabilities.ocs!!.data!!.capabilities!!
                         )
                     } else {
-                        if (activity != null) {
-                            activity!!.runOnUiThread {
-                                binding?.progressText?.text =
-                                    """
-                                        ${binding?.progressText?.text}
-                                        ${resources!!.getString(R.string.nc_display_name_not_fetched)}
-                                    """.trimIndent()
-                            }
+                        runOnUiThread {
+                            binding.progressText.text =
+                                """
+                                    ${binding.progressText.text}
+                                    ${resources!!.getString(R.string.nc_display_name_not_fetched)}
+                                """.trimIndent()
                         }
                         abortVerification()
                     }
@@ -343,14 +341,12 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
 
                 @SuppressLint("SetTextI18n")
                 override fun onError(e: Throwable) {
-                    if (activity != null) {
-                        activity!!.runOnUiThread {
-                            binding?.progressText?.text =
-                                """
-                                    ${binding?.progressText?.text}
-                                    ${resources!!.getString(R.string.nc_display_name_not_fetched)}
-                                """.trimIndent()
-                        }
+                    runOnUiThread {
+                        binding.progressText.text =
+                            """
+                                ${binding.progressText.text}
+                                ${resources!!.getString(R.string.nc_display_name_not_fetched)}
+                            """.trimIndent()
                     }
                     abortVerification()
                 }
@@ -364,7 +360,7 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
     private fun registerForPush() {
         val data =
             Data.Builder()
-                .putString(PushRegistrationWorker.ORIGIN, "AccountVerificationController#registerForPush")
+                .putString(PushRegistrationWorker.ORIGIN, "AccountVerificationActivity#registerForPush")
                 .build()
         val pushRegistrationWork =
             OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
@@ -377,11 +373,11 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(eventStatus: EventStatus) {
         if (eventStatus.eventType == EventStatus.EventType.PUSH_REGISTRATION) {
-            if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood && activity != null) {
-                activity!!.runOnUiThread {
-                    binding?.progressText?.text =
+            if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
+                runOnUiThread {
+                    binding.progressText.text =
                         """
-                            ${binding?.progressText?.text}
+                            ${binding.progressText.text}
                             ${resources!!.getString(R.string.nc_push_disabled)}
                         """.trimIndent()
                 }
@@ -389,14 +385,12 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
             fetchAndStoreCapabilities()
         } else if (eventStatus.eventType == EventStatus.EventType.CAPABILITIES_FETCH) {
             if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
-                if (activity != null) {
-                    activity!!.runOnUiThread {
-                        binding?.progressText?.text =
-                            """
-                                ${binding?.progressText?.text}
-                                ${resources!!.getString(R.string.nc_capabilities_failed)}
-                            """.trimIndent()
-                    }
+                runOnUiThread {
+                    binding.progressText.text =
+                        """
+                            ${binding.progressText.text}
+                            ${resources!!.getString(R.string.nc_capabilities_failed)}
+                        """.trimIndent()
                 }
                 abortVerification()
             } else if (internalAccountId == eventStatus.userId && eventStatus.isAllGood) {
@@ -404,14 +398,12 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
             }
         } else if (eventStatus.eventType == EventStatus.EventType.SIGNALING_SETTINGS) {
             if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
-                if (activity != null) {
-                    activity!!.runOnUiThread {
-                        binding?.progressText?.text =
-                            """
-                                ${binding?.progressText?.text}
-                                ${resources!!.getString(R.string.nc_external_server_failed)}
-                            """.trimIndent()
-                    }
+                runOnUiThread {
+                    binding.progressText.text =
+                        """
+                            ${binding.progressText.text}
+                            ${resources!!.getString(R.string.nc_external_server_failed)}
+                        """.trimIndent()
                 }
             }
             proceedWithLogin()
@@ -457,24 +449,22 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
             Log.d(TAG, "userToSetAsActive: " + userToSetAsActive.username)
 
             if (userManager.setUserAsActive(userToSetAsActive).blockingGet()) {
-                if (activity != null) {
-                    activity!!.runOnUiThread {
-                        if (userManager.users.blockingGet().size == 1) {
-                            val intent = Intent(context, ConversationsListActivity::class.java)
-                            startActivity(intent)
-                        } else {
-                            if (isAccountImport) {
-                                ApplicationWideMessageHolder.getInstance().messageType =
-                                    ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
-                            }
-                            val intent = Intent(context, ConversationsListActivity::class.java)
-                            startActivity(intent)
+                runOnUiThread {
+                    if (userManager.users.blockingGet().size == 1) {
+                        val intent = Intent(context, ConversationsListActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        if (isAccountImport) {
+                            ApplicationWideMessageHolder.getInstance().messageType =
+                                ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
                         }
+                        val intent = Intent(context, ConversationsListActivity::class.java)
+                        startActivity(intent)
                     }
                 }
             } else {
                 Log.e(TAG, "failed to set active user")
-                Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             }
         }
     }
@@ -487,70 +477,70 @@ class AccountVerificationController(args: Bundle? = null) : BaseController(
         }
     }
 
-    override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-    }
-
     public override fun onDestroy() {
         dispose()
         super.onDestroy()
     }
 
     private fun abortVerification() {
-        if (!isAccountImport) {
-            if (internalAccountId != -1L) {
-                val count = userManager.deleteUser(internalAccountId)
-                if (count > 0) {
-                    activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, DELAY_IN_MILLIS) }
-                }
-            } else {
-                activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, DELAY_IN_MILLIS) }
-            }
-        } else {
-            ApplicationWideMessageHolder.getInstance().setMessageType(
-                ApplicationWideMessageHolder.MessageType.FAILED_TO_IMPORT_ACCOUNT
-            )
-            activity?.runOnUiThread {
+        if (isAccountImport) {
+            ApplicationWideMessageHolder.getInstance().messageType = ApplicationWideMessageHolder.MessageType
+                .FAILED_TO_IMPORT_ACCOUNT
+            runOnUiThread {
                 Handler().postDelayed({
-                    if (router.hasRootController()) {
-                        if (activity != null) {
-                            router.popToRoot()
-                        }
-                    } else {
-                        if (userManager.users.blockingGet().isNotEmpty()) {
-                            val intent = Intent(context, ConversationsListActivity::class.java)
-                            startActivity(intent)
-                        } else {
-                            router.setRoot(
-                                RouterTransaction.with(ServerSelectionController())
-                                    .pushChangeHandler(HorizontalChangeHandler())
-                                    .popChangeHandler(HorizontalChangeHandler())
-                            )
-                        }
-                    }
+                    val intent = Intent(this, ServerSelectionActivity::class.java)
+                    startActivity(intent)
                 }, DELAY_IN_MILLIS)
             }
+        } else {
+            if (internalAccountId != -1L) {
+                runOnUiThread {
+                    deleteUserAndStartServerSelection(internalAccountId)
+                }
+            } else {
+                runOnUiThread {
+                    Handler().postDelayed({
+                        val intent = Intent(this, ServerSelectionActivity::class.java)
+                        startActivity(intent)
+                    }, DELAY_IN_MILLIS)
+                }
+            }
         }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun deleteUserAndStartServerSelection(userId: Long) {
+        userManager.scheduleUserForDeletionWithId(userId).blockingGet()
+        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+        WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
+            .observeForever { workInfo: WorkInfo ->
+
+                when (workInfo.state) {
+                    WorkInfo.State.SUCCEEDED -> {
+                        val intent = Intent(this, ServerSelectionActivity::class.java)
+                        startActivity(intent)
+                    }
+
+                    WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.nc_common_error_sorry),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        Log.e(TAG, "something went wrong when deleting user with id $userId")
+                        val intent = Intent(this, ServerSelectionActivity::class.java)
+                        startActivity(intent)
+                    }
+
+                    else -> {}
+                }
+            }
     }
 
     companion object {
-        const val TAG = "AccountVerification"
+        private val TAG = AccountVerificationActivity::class.java.simpleName
         const val DELAY_IN_MILLIS: Long = 7500
-    }
-
-    init {
-        sharedApplication!!.componentApplication.inject(this)
-        if (args != null) {
-            baseUrl = args.getString(KEY_BASE_URL)
-            username = args.getString(KEY_USERNAME)
-            token = args.getString(KEY_TOKEN)
-            if (args.containsKey(KEY_IS_ACCOUNT_IMPORT)) {
-                isAccountImport = true
-            }
-            if (args.containsKey(KEY_ORIGINAL_PROTOCOL)) {
-                originalProtocol = args.getString(KEY_ORIGINAL_PROTOCOL)
-            }
-        }
     }
 }
