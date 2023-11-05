@@ -72,7 +72,7 @@ class ChatViewModel @Inject constructor(private val repository: ChatRepository) 
     }
 
     fun joinRoom(user: User, token: String, roomPassword: String) {
-        _getRoomViewState.value = JoinRoomStartState
+        _joinRoomViewState.value = JoinRoomStartState
         repository.joinRoom(user, token, roomPassword)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
