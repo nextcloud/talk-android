@@ -131,6 +131,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import org.apache.commons.lang3.builder.CompareToBuilder
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -197,6 +198,7 @@ class ConversationsListActivity :
             FilterConversationFragment.MENTION to false,
             FilterConversationFragment.UNREAD to false
         )
+    val searchBehaviorSubject = BehaviorSubject.createDefault(false)
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -217,7 +219,6 @@ class ConversationsListActivity :
         viewThemeUtils.material.themeSearchBarText(binding.searchText)
 
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
-
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
@@ -266,7 +267,7 @@ class ConversationsListActivity :
 
             loadUserAvatar(binding.switchAccountButton)
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
-
+            searchBehaviorSubject.onNext(false)
             fetchRooms()
         } else {
             Log.e(TAG, "userManager.currentUser.blockingGet() returned null")
@@ -275,6 +276,7 @@ class ConversationsListActivity :
 
         showSearchOrToolbar()
     }
+
     fun filterConversation() {
         val accountId = UserIdUtils.getIdForUser(userManager.currentUser.blockingGet())
         filterState[FilterConversationFragment.UNREAD] = (
@@ -327,6 +329,7 @@ class ConversationsListActivity :
                                     ) &&
                                 (conversation.unreadMessages > 0)
                             )
+
                     FilterConversationFragment.UNREAD -> result = result && (conversation.unreadMessages > 0)
                 }
             }
@@ -498,6 +501,7 @@ class ConversationsListActivity :
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.showAllHeaders()
                     binding?.swipeRefreshLayoutView?.isEnabled = false
+                    searchBehaviorSubject.onNext(true)
                     return true
                 }
 
@@ -510,6 +514,7 @@ class ConversationsListActivity :
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
                         binding?.swipeRefreshLayoutView?.isRefreshing = false
+                        searchBehaviorSubject.onNext(false)
                     }
                     binding?.swipeRefreshLayoutView?.isEnabled = true
                     searchView!!.onActionViewCollapsed()
@@ -601,6 +606,7 @@ class ConversationsListActivity :
     fun showSnackbar(text: String) {
         Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG).show()
     }
+
     fun fetchRooms() {
         val includeStatus = isUserStatusAvailable(userManager.currentUser.blockingGet())
 
@@ -820,7 +826,10 @@ class ConversationsListActivity :
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    checkToShowUnreadBubble()
+                    val isSearchActive = searchBehaviorSubject.value
+                    if (!isSearchActive!!) {
+                        checkToShowUnreadBubble()
+                    }
                 }
             }
         })
@@ -869,30 +878,39 @@ class ConversationsListActivity :
         binding?.newMentionPopupBubble?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
     }
 
+    @SuppressLint("CheckResult")
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkToShowUnreadBubble() {
-        try {
-            val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
-            for (flexItem in conversationItems) {
-                val conversation: Conversation = (flexItem as ConversationItem).model
-                val position = adapter!!.getGlobalPositionOf(flexItem)
-                if (hasUnreadItems(conversation) && position > lastVisibleItem) {
-                    nextUnreadConversationScrollPosition = position
-                    if (!binding?.newMentionPopupBubble?.isShown!!) {
-                        binding?.newMentionPopupBubble?.show()
+        searchBehaviorSubject.subscribe { value ->
+            if (value) {
+                nextUnreadConversationScrollPosition = 0
+                binding.newMentionPopupBubble.hide()
+            } else {
+                try {
+                    val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
+                    for (flexItem in conversationItems) {
+                        val conversation: Conversation = (flexItem as ConversationItem).model
+                        val position = adapter!!.getGlobalPositionOf(flexItem)
+                        if (hasUnreadItems(conversation) && position > lastVisibleItem) {
+                            nextUnreadConversationScrollPosition = position
+                            if (!binding?.newMentionPopupBubble?.isShown!!) {
+                                binding?.newMentionPopupBubble?.show()
+                            }
+                            return@subscribe
+                        }
+                        nextUnreadConversationScrollPosition = 0
+                        binding?.newMentionPopupBubble?.hide()
                     }
-                    return
+                } catch (e: NullPointerException) {
+                    Log.d(
+                        TAG,
+                        "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
+                            "user already left the conversations-list screen so the popup bubble is not available " +
+                            "anymore.",
+                        e
+                    )
                 }
             }
-            nextUnreadConversationScrollPosition = 0
-            binding?.newMentionPopupBubble?.hide()
-        } catch (e: NullPointerException) {
-            Log.d(
-                TAG,
-                "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
-                    "user already left the conversations-list screen so the popup bubble is not available anymore.",
-                e
-            )
         }
     }
 
