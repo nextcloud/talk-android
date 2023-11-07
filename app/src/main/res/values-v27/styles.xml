@@ -8,6 +8,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="colorSurface">@color/bg_default</item>
     </style>
 
     <style name="FullScreenMediaTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -17,5 +18,6 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="colorSurface">@color/bg_default</item>
     </style>
 </resources>
