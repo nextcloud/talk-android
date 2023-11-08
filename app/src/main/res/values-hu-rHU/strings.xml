@@ -149,6 +149,8 @@
     <string name="nc_dialog_outdated_client_description">Az alkalmazás túl régi, és már nem támogatja ez a kiszolgáló. Frissítse.</string>
     <string name="nc_dialog_outdated_client_option_update">Frissítés</string>
     <string name="nc_dialog_reauth_or_delete">Újrahitelesíti vagy törli ezt a fiókot?</string>
+    <string name="nc_dialog_save_to_storage_no">Nem</string>
+    <string name="nc_dialog_save_to_storage_yes">Igen</string>
     <string name="nc_display_name_not_fetched">A megjelenítendő név nem kérhető le, megszakítás</string>
     <string name="nc_display_name_not_stored">A megjelenítendő név nem tárolható, megszakítás</string>
     <string name="nc_email">E-mail</string>
@@ -280,6 +282,7 @@
     <string name="nc_rename_confirm">Átnevezés</string>
     <string name="nc_reply">Válasz</string>
     <string name="nc_reply_privately">Válasz privátban</string>
+    <string name="nc_save_message">Mentés</string>
     <string name="nc_screen_lock_timeout_30">30 másodperc</string>
     <string name="nc_screen_lock_timeout_300">5 perc</string>
     <string name="nc_screen_lock_timeout_60">1 perc</string>

@@ -125,6 +125,8 @@
     <string name="nc_dialog_maintenance_mode">유지 보수 모드</string>
     <string name="nc_dialog_outdated_client_option_update">업데이트</string>
     <string name="nc_dialog_reauth_or_delete">이 계정을 재인증하거나 삭제하시겠습니까?</string>
+    <string name="nc_dialog_save_to_storage_no">아니오</string>
+    <string name="nc_dialog_save_to_storage_yes">예</string>
     <string name="nc_display_name_not_fetched">표시 이름을 가져올 수 없음, 중단함</string>
     <string name="nc_display_name_not_stored">표시 이름을 저장할 수 없음, 중단함</string>
     <string name="nc_email">이메일</string>
@@ -246,6 +248,7 @@
     <string name="nc_rename_confirm">이름 바꾸기</string>
     <string name="nc_reply">답장</string>
     <string name="nc_reply_privately">비공개로 답장</string>
+    <string name="nc_save_message">저장</string>
     <string name="nc_screen_lock_timeout_30">30 초</string>
     <string name="nc_screen_lock_timeout_300">5분</string>
     <string name="nc_screen_lock_timeout_60">1분</string>

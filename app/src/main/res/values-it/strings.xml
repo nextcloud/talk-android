@@ -126,6 +126,8 @@
     <string name="nc_dialog_maintenance_mode">Modalità Manutenzione</string>
     <string name="nc_dialog_outdated_client_option_update">Aggiorna</string>
     <string name="nc_dialog_reauth_or_delete">Vuoi autorizzare nuovamente o eliminare questo account?</string>
+    <string name="nc_dialog_save_to_storage_no">No</string>
+    <string name="nc_dialog_save_to_storage_yes">Si</string>
     <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
     <string name="nc_display_name_not_stored">Nome visualizzato non memorizzato, interruzione in corso</string>
     <string name="nc_email">Email</string>
@@ -234,6 +236,7 @@
     <string name="nc_rename_confirm">Rinomina</string>
     <string name="nc_reply">Rispondi</string>
     <string name="nc_reply_privately">Rispondi in privato</string>
+    <string name="nc_save_message">Salva</string>
     <string name="nc_screen_lock_timeout_30">30 secondi</string>
     <string name="nc_screen_lock_timeout_300">5 minuti</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>

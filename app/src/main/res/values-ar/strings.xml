@@ -151,6 +151,8 @@
     <string name="nc_dialog_outdated_client_description">التطبيق قديم جدًا ولم يعد مدعوماً من قبل هذا الخادوم. يُرجى التحديث.</string>
     <string name="nc_dialog_outdated_client_option_update">تحديث</string>
     <string name="nc_dialog_reauth_or_delete">هل تريد إعادة تفويض هذا الحساب أو مسحه؟</string>
+    <string name="nc_dialog_save_to_storage_no">لا</string>
+    <string name="nc_dialog_save_to_storage_yes">نعم</string>
     <string name="nc_display_name_not_fetched">لايمكن عرض الاسم، جارِ إلالغاء</string>
     <string name="nc_display_name_not_stored">تعذر تخزين اسم العرض ، جارِ إلالغاء</string>
     <string name="nc_email">البريد الإلكتروني</string>
@@ -283,6 +285,7 @@
     <string name="nc_rename_confirm">تغيير تسمية</string>
     <string name="nc_reply">رد</string>
     <string name="nc_reply_privately">ردّ على الخاص</string>
+    <string name="nc_save_message">حفظ</string>
     <string name="nc_screen_lock_timeout_30">30 ثانية</string>
     <string name="nc_screen_lock_timeout_300">5 دقائق</string>
     <string name="nc_screen_lock_timeout_60">1 دقيقة</string>

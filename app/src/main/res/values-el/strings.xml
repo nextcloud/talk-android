@@ -111,6 +111,8 @@
     <string name="nc_dialog_maintenance_mode">Κατάσταση συντήρησης</string>
     <string name="nc_dialog_outdated_client_option_update">Ενημέρωση</string>
     <string name="nc_dialog_reauth_or_delete">Θέλετε να εξουσιοδοτήσετε εκ νέου ή να διαγράψετε αυτόν τον λογαριασμό;</string>
+    <string name="nc_dialog_save_to_storage_no">Όχι</string>
+    <string name="nc_dialog_save_to_storage_yes">Ναι</string>
     <string name="nc_display_name_not_fetched">Το εμφανιζόμενο όνομα δεν ήταν δυνατό να ληφθεί, ματαίωση</string>
     <string name="nc_display_name_not_stored">Το εμφανιζόμενο όνομα δεν μπορεί να αποθηκευτεί, ματαίωση</string>
     <string name="nc_email">Ηλ. ταχυδρομείο</string>
@@ -211,6 +213,7 @@
     <string name="nc_rename_confirm">Μετονομασία</string>
     <string name="nc_reply">Απάντηση</string>
     <string name="nc_reply_privately">Απάντηση ιδιωτικά</string>
+    <string name="nc_save_message">Αποθήκευση</string>
     <string name="nc_screen_lock_timeout_30">30 δευτερόλεπτα</string>
     <string name="nc_screen_lock_timeout_300">5 λεπτά</string>
     <string name="nc_screen_lock_timeout_60">1 λεπτό</string>

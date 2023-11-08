@@ -160,6 +160,7 @@
     <string name="nc_rename">Endurnefna samtal</string>
     <string name="nc_rename_confirm">Endurnefna</string>
     <string name="nc_reply">Svara</string>
+    <string name="nc_save_message">Vista</string>
     <string name="nc_screen_lock_timeout_30">30 sekúndur</string>
     <string name="nc_screen_lock_timeout_300">5 mínútur</string>
     <string name="nc_screen_lock_timeout_60">1 mínúta</string>

@@ -144,6 +144,8 @@
     <string name="nc_dialog_outdated_client_description">Aplikacja jest zbyt stara i nie jest już obsługiwana przez ten serwer. Proszę zaktualizować.</string>
     <string name="nc_dialog_outdated_client_option_update">Aktualizuj</string>
     <string name="nc_dialog_reauth_or_delete">Czy chcesz ponownie autoryzować lub usunąć konto?</string>
+    <string name="nc_dialog_save_to_storage_no">Nie</string>
+    <string name="nc_dialog_save_to_storage_yes">Tak</string>
     <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerwano żądanie</string>
     <string name="nc_display_name_not_stored">Nie można zapisać wyświetlanej nazwy, przerwano żądanie</string>
     <string name="nc_email">E-mail</string>
@@ -276,6 +278,7 @@
     <string name="nc_rename_confirm">Zmień nazwę</string>
     <string name="nc_reply">Odpowiedz</string>
     <string name="nc_reply_privately">Odpowiedz prywatnie</string>
+    <string name="nc_save_message">Zapisz</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>

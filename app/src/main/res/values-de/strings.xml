@@ -151,6 +151,8 @@
     <string name="nc_dialog_outdated_client_description">Die App ist zu alt und wird von diesem Server nicht mehr unterstützt. Bitte aktualisieren.</string>
     <string name="nc_dialog_outdated_client_option_update">Aktualisieren</string>
     <string name="nc_dialog_reauth_or_delete">Möchten Sie das Konto erneut autorisieren oder löschen?</string>
+    <string name="nc_dialog_save_to_storage_no">Nein</string>
+    <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden. Breche ab.</string>
     <string name="nc_display_name_not_stored">Der Anzeigename konnte nicht gespeichert werden. Breche ab.</string>
     <string name="nc_email">E-Mail</string>
@@ -283,6 +285,7 @@
     <string name="nc_rename_confirm">Umbenennen</string>
     <string name="nc_reply">Antworten</string>
     <string name="nc_reply_privately">Privat antworten</string>
+    <string name="nc_save_message">Speichern</string>
     <string name="nc_screen_lock_timeout_30">30 Sekunden</string>
     <string name="nc_screen_lock_timeout_300">5 Minuten</string>
     <string name="nc_screen_lock_timeout_60">1 Minute</string>

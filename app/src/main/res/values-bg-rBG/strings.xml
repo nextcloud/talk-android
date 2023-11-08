@@ -132,6 +132,8 @@
     <string name="nc_dialog_maintenance_mode">Режим на поддръжка</string>
     <string name="nc_dialog_outdated_client_option_update">Обновяване</string>
     <string name="nc_dialog_reauth_or_delete">Искате ли да разрешите повторно този профил или да го изтриете?</string>
+    <string name="nc_dialog_save_to_storage_no">Не</string>
+    <string name="nc_dialog_save_to_storage_yes">Да</string>
     <string name="nc_display_name_not_fetched">Показваното име  не може да бъде извлечено, прекъсване</string>
     <string name="nc_display_name_not_stored">Името за визуализация не може да бъде записано, прекратяване</string>
     <string name="nc_email">Имейл</string>
@@ -255,6 +257,7 @@
     <string name="nc_rename_confirm">Преименуване</string>
     <string name="nc_reply">Отговори</string>
     <string name="nc_reply_privately">Отговаряне на лично </string>
+    <string name="nc_save_message">Запиши</string>
     <string name="nc_screen_lock_timeout_30">30 секунди</string>
     <string name="nc_screen_lock_timeout_300">5 минути</string>
     <string name="nc_screen_lock_timeout_60">1 минута</string>

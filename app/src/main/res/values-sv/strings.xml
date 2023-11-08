@@ -98,6 +98,8 @@
     <string name="nc_dialog_invalid_password">Felaktigt lösenord</string>
     <string name="nc_dialog_maintenance_mode">Underhållsläge</string>
     <string name="nc_dialog_outdated_client_option_update">Uppdatera</string>
+    <string name="nc_dialog_save_to_storage_no">Nej</string>
+    <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_display_name_not_fetched">Visningsnamn kunde inte hämtas, avbryter</string>
     <string name="nc_display_name_not_stored">Kunde inte lagra visningsnamnet, avbryter</string>
     <string name="nc_email">E-post</string>
@@ -185,6 +187,7 @@
     <string name="nc_rename">Byt namn på konversation</string>
     <string name="nc_rename_confirm">Döp om</string>
     <string name="nc_reply">Svara</string>
+    <string name="nc_save_message">Spara</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_300">5 minuter</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>

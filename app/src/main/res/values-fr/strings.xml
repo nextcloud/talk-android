@@ -151,6 +151,8 @@
     <string name="nc_dialog_outdated_client_description">L\'application est trop ancienne et n\'est plus prise en charge par ce serveur. Veuillez la mettre à jour.</string>
     <string name="nc_dialog_outdated_client_option_update">Mise à jour</string>
     <string name="nc_dialog_reauth_or_delete">Voulez-vous autoriser à nouveau ou supprimer ce compte ?</string>
+    <string name="nc_dialog_save_to_storage_no">Non</string>
+    <string name="nc_dialog_save_to_storage_yes">Oui</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
     <string name="nc_email">E-mail</string>

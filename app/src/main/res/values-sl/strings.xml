@@ -135,6 +135,8 @@
     <string name="nc_dialog_maintenance_mode">Vzdrževalni način</string>
     <string name="nc_dialog_outdated_client_option_update">Posodobi</string>
     <string name="nc_dialog_reauth_or_delete">Ali želite ponovno overiti ali odstraniti račun?</string>
+    <string name="nc_dialog_save_to_storage_no">Ne</string>
+    <string name="nc_dialog_save_to_storage_yes">Da</string>
     <string name="nc_display_name_not_fetched">Prikaznega imena ni mogoče pridobiti; opravilo je prekinjeno.</string>
     <string name="nc_display_name_not_stored">Prikaznega imena ni mogoče shraniti; opravilo je prekinjeno.</string>
     <string name="nc_email">Elektronski naslov</string>
@@ -258,6 +260,7 @@
     <string name="nc_rename_confirm">Preimenuj</string>
     <string name="nc_reply">Odgovori</string>
     <string name="nc_reply_privately">Odgovori zasebno</string>
+    <string name="nc_save_message">Shrani</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>

@@ -151,6 +151,8 @@
     <string name="nc_dialog_outdated_client_description">Uygulama çok eski ve artık bu sunucu tarafından desteklenmiyor. Lütfen güncelleyin.</string>
     <string name="nc_dialog_outdated_client_option_update">Güncelle</string>
     <string name="nc_dialog_reauth_or_delete">Bu hesabı yeniden etkinleştirmek ya da silmek ister misiniz?</string>
+    <string name="nc_dialog_save_to_storage_no">Hayır</string>
+    <string name="nc_dialog_save_to_storage_yes">Evet</string>
     <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>
     <string name="nc_display_name_not_stored">Görüntülenecek ad kaydedilemedi, vazgeçiliyor</string>
     <string name="nc_email">E-posta</string>
@@ -283,6 +285,7 @@
     <string name="nc_rename_confirm">Yeniden adlandır</string>
     <string name="nc_reply">Yanıtla</string>
     <string name="nc_reply_privately">Kişisel yanıt gönder</string>
+    <string name="nc_save_message">Kaydet</string>
     <string name="nc_screen_lock_timeout_30">30 saniye</string>
     <string name="nc_screen_lock_timeout_300">5 dakika</string>
     <string name="nc_screen_lock_timeout_60">1 dakika</string>

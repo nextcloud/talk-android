@@ -183,6 +183,7 @@
     <string name="nc_rename">Endre navn på samtale</string>
     <string name="nc_rename_confirm">Endre navn</string>
     <string name="nc_reply">Svar</string>
+    <string name="nc_save_message">Lagre</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_300">5 minutter</string>
     <string name="nc_screen_lock_timeout_60">1 minutt</string>

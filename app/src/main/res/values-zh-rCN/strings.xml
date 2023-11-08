@@ -140,6 +140,8 @@
     <string name="nc_dialog_outdated_client_description">应用版本过低，不再被服务器支持，请更新</string>
     <string name="nc_dialog_outdated_client_option_update">更新</string>
     <string name="nc_dialog_reauth_or_delete">你想重新授权还是删除此帐户？</string>
+    <string name="nc_dialog_save_to_storage_no">否</string>
+    <string name="nc_dialog_save_to_storage_yes">是</string>
     <string name="nc_display_name_not_fetched">无法获取显示名，中止</string>
     <string name="nc_display_name_not_stored">无法储存显示名称，正在终止</string>
     <string name="nc_email">电子邮件</string>
@@ -267,6 +269,7 @@
     <string name="nc_rename_confirm">重命名</string>
     <string name="nc_reply">回复</string>
     <string name="nc_reply_privately">私下回复</string>
+    <string name="nc_save_message">保存</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>
     <string name="nc_screen_lock_timeout_300">5分钟</string>
     <string name="nc_screen_lock_timeout_60">1分钟</string>

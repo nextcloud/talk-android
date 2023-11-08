@@ -151,6 +151,8 @@
     <string name="nc_dialog_outdated_client_description">Ова апликација је превише стара и овај сервер је више не подржава. Молимо вас да је ажурирате.</string>
     <string name="nc_dialog_outdated_client_option_update">Ажурирај</string>
     <string name="nc_dialog_reauth_or_delete">Да ли желите поново да ауторизујете или обришете овај налог?</string>
+    <string name="nc_dialog_save_to_storage_no">Не</string>
+    <string name="nc_dialog_save_to_storage_yes">Да</string>
     <string name="nc_display_name_not_fetched">Име за приказ се не може добавити. Прекидам</string>
     <string name="nc_display_name_not_stored">Не могу да сачувам име за приказ. Прекидам</string>
     <string name="nc_email">Е-пошта</string>
@@ -283,6 +285,7 @@
     <string name="nc_rename_confirm">Преименуј</string>
     <string name="nc_reply">Одговори</string>
     <string name="nc_reply_privately">Одговори приватно</string>
+    <string name="nc_save_message">Сачувај</string>
     <string name="nc_screen_lock_timeout_30">30 секунди</string>
     <string name="nc_screen_lock_timeout_300">5 минута</string>
     <string name="nc_screen_lock_timeout_60">1 минут</string>

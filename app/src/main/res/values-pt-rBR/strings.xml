@@ -144,6 +144,8 @@
     <string name="nc_dialog_outdated_client_description">O aplicativo é muito antigo e não é mais suportado por este servidor. Por favor atualize.</string>
     <string name="nc_dialog_outdated_client_option_update">Atualizar</string>
     <string name="nc_dialog_reauth_or_delete">Quer reautorizar ou excluir esta conta? </string>
+    <string name="nc_dialog_save_to_storage_no">Não</string>
+    <string name="nc_dialog_save_to_storage_yes">Sim</string>
     <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
     <string name="nc_display_name_not_stored">Não foi possível armazenar o nome de exibição, cancelando</string>
     <string name="nc_email">E-mail</string>
@@ -276,6 +278,7 @@
     <string name="nc_rename_confirm">Renomear</string>
     <string name="nc_reply">Responder</string>
     <string name="nc_reply_privately">Responder privadamente</string>
+    <string name="nc_save_message">Salvar</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>

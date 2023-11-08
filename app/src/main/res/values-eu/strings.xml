@@ -150,6 +150,8 @@
     <string name="nc_dialog_outdated_client_description">Aplikazio hau zaharregia da eta ez dago zerbitzari honengatik onartuta. Mesedez eguneratu.</string>
     <string name="nc_dialog_outdated_client_option_update">Eguneratu</string>
     <string name="nc_dialog_reauth_or_delete">Kontu hau birbaimendu edo ezabatu nahi duzu?</string>
+    <string name="nc_dialog_save_to_storage_no">Ez</string>
+    <string name="nc_dialog_save_to_storage_yes">Bai</string>
     <string name="nc_display_name_not_fetched">Ezin izan da erakusteko izena lortu, bertan behera uzten</string>
     <string name="nc_display_name_not_stored">Ezin izan da erakusteko izena biltegiratu, bertan behera uzten</string>
     <string name="nc_email">E-posta</string>

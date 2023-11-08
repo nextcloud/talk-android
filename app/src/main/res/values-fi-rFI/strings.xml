@@ -109,6 +109,8 @@
     <string name="nc_dialog_maintenance_mode">Huoltotila</string>
     <string name="nc_dialog_outdated_client_option_update">Päivitä</string>
     <string name="nc_dialog_reauth_or_delete">Haluatko valtuuttaa tämän tilin uudelleen vai poistaa tilin?</string>
+    <string name="nc_dialog_save_to_storage_no">Ei</string>
+    <string name="nc_dialog_save_to_storage_yes">Kyllä</string>
     <string name="nc_email">Sähköposti</string>
     <string name="nc_expire_message_eight_hours">8 tuntia</string>
     <string name="nc_expire_message_four_weeks">4 viikkoa</string>
