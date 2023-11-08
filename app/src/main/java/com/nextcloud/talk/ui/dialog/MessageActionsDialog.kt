@@ -170,8 +170,6 @@ class MessageActionsDialog(
         dialogMessageActionsBinding.emojiMore.installForceSingleEmoji()
     }
 
-
-
     /*
         This method is a hacky workaround to avoid bug #1914
         As the bug happens only for the very first time when the popup is opened,
@@ -355,8 +353,8 @@ class MessageActionsDialog(
         dialogMessageActionsBinding.menuOpenInNcApp.visibility = getVisibility(visible)
     }
 
-    private fun initMenuItemSave (visible:  Boolean) {
-        if (visible){
+    private fun initMenuItemSave(visible: Boolean) {
+        if (visible) {
             dialogMessageActionsBinding.menuSaveMessage.setOnClickListener {
                 chatActivity.checkIfSaveable(message)
                 dismiss()

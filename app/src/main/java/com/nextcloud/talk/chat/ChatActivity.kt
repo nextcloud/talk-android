@@ -899,7 +899,7 @@ class ChatActivity :
                 }
             } else {
                 Log.d(TAG, "Downloaded to cache")
-                downloadFileToCache(message,true ) {
+                downloadFileToCache(message, true) {
                     setUpWaveform(message)
                 }
             }
@@ -4141,13 +4141,13 @@ class ChatActivity :
         if (file.exists()) {
             share(message)
         } else {
-            downloadFileToCache(message,  false ) {
+            downloadFileToCache(message, false) {
                 share(message)
             }
         }
     }
 
-    private fun saveImage(message: ChatMessage){
+    private fun saveImage(message: ChatMessage) {
         if (permissionUtil.isFilesPermissionGranted()) {
             saveImageToStorage(message)
         } else {
@@ -4177,7 +4177,7 @@ class ChatActivity :
         if (file.exists()) {
             showSaveToStorageWarning(message)
         } else {
-            downloadFileToCache(message ,false) {
+            downloadFileToCache(message, false) {
                 showSaveToStorageWarning(message)
             }
         }

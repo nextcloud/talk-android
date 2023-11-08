@@ -522,8 +522,7 @@ How to translate with transifex:
     //save feature
     <string name="nc_save_message">Save</string>
     <string name="nc_dialog_save_to_storage_title">Save to storage?</string>
-    <string name="nc_dialog_save_to_storage_content">Saving this media to storage will allow any other apps on
-        your device to access it.\nContinue?</string>
+    <string name="nc_dialog_save_to_storage_content">Saving this media to storage will allow any other apps on your device to access it.\nContinue?</string>
     <string name="nc_dialog_save_to_storage_yes">Yes</string>
     <string name="nc_dialog_save_to_storage_no">No</string>
 
