@@ -27,7 +27,7 @@
     android:layout_height="match_parent"
     android:background="@color/bg_default"
     android:orientation="vertical"
-    tools:context=".activities.FullScreenTextViewerActivity">
+    tools:context=".fullscreenfile.FullScreenTextViewerActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

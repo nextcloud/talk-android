@@ -22,7 +22,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.activities
+package com.nextcloud.talk.fullscreenfile
 
 import android.content.Intent
 import android.os.Bundle
@@ -31,11 +31,13 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.DialogFragment
 import autodagger.AutoInjector
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityFullScreenTextBinding
+import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.Mimetype.TEXT_PREFIX_GENERIC
@@ -58,27 +60,44 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            onBackPressedDispatcher.onBackPressed()
-            true
-        } else if (item.itemId == R.id.share) {
-            val shareUri = FileProvider.getUriForFile(
-                this,
-                BuildConfig.APPLICATION_ID,
-                File(path)
-            )
-
-            val shareIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_STREAM, shareUri)
-                type = TEXT_PREFIX_GENERIC
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressedDispatcher.onBackPressed()
+                true
             }
-            startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
 
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+            R.id.share -> {
+                val shareUri = FileProvider.getUriForFile(
+                    this,
+                    BuildConfig.APPLICATION_ID,
+                    File(path)
+                )
+
+                val shareIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_STREAM, shareUri)
+                    type = TEXT_PREFIX_GENERIC
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
+
+                true
+            }
+
+            R.id.save -> {
+                val saveFragment: DialogFragment = SaveToStorageDialogFragment.newInstance(
+                    intent.getStringExtra("FILE_NAME").toString()
+                )
+                saveFragment.show(
+                    supportFragmentManager,
+                    SaveToStorageDialogFragment.TAG
+                )
+                true
+            }
+
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 
