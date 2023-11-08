@@ -180,6 +180,7 @@ dependencies {
     implementation "androidx.emoji2:emoji2-bundled:${emojiVersion}"
     implementation "androidx.emoji2:emoji2-views:${emojiVersion}"
     implementation "androidx.emoji2:emoji2-views-helper:${emojiVersion}"
+    implementation "androidx.emoji2:emoji2-emojipicker:${emojiVersion}"
     implementation 'org.michaelevans.colorart:library:0.0.3'
     implementation "androidx.work:work-runtime:${workVersion}"
     implementation "androidx.work:work-rxjava2:${workVersion}"

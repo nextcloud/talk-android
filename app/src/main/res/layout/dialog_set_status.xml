@@ -364,7 +364,7 @@
                 app:cardCornerRadius="24dp"
                 app:cardElevation="0dp">
 
-                <com.vanniktech.emoji.EmojiEditText
+                <androidx.emoji2.widget.EmojiButton
                     android:id="@+id/emoji"
                     android:layout_width="@dimen/activity_row_layout_height"
                     android:layout_height="@dimen/activity_row_layout_height"
@@ -461,5 +461,12 @@
             app:cornerRadius="@dimen/button_corner_radius" />
 
     </LinearLayout>
+
+    <androidx.emoji2.emojipicker.EmojiPickerView
+        android:id="@+id/emoji_picker"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        app:emojiGridColumns="9" />
 
 </LinearLayout>
