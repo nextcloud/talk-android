@@ -22,7 +22,6 @@ package com.nextcloud.talk.conversation
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -32,13 +31,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversation.viewmodel.RenameConversationViewModel
@@ -46,7 +43,6 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.databinding.DialogRenameConversationBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.vanniktech.emoji.EmojiPopup
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
@@ -64,8 +60,8 @@ class RenameConversationDialogFragment : DialogFragment() {
 
     private lateinit var binding: DialogRenameConversationBinding
     private lateinit var viewModel: RenameConversationViewModel
+    private var isEmojiPickerVisible = false
 
-    private var emojiPopup: EmojiPopup? = null
 
     private var roomToken = ""
     private var initialName = ""
@@ -106,7 +102,6 @@ class RenameConversationDialogFragment : DialogFragment() {
         setupListeners()
         setupStateObserver()
 
-        setupEmojiPopup()
     }
 
     override fun onStart() {
@@ -130,31 +125,20 @@ class RenameConversationDialogFragment : DialogFragment() {
     }
 
     private fun setupEmojiPopup() {
-        emojiPopup = binding.let {
-            EmojiPopup(
-                rootView = requireView(),
-                editText = it.textEdit,
-                onEmojiPopupShownListener = {
-                    viewThemeUtils.platform.colorImageView(it.smileyButton, ColorRole.PRIMARY)
-                },
-                onEmojiPopupDismissListener = {
-                    it.smileyButton.imageTintList = ColorStateList.valueOf(
-                        ResourcesCompat.getColor(
-                            resources,
-                            R.color.medium_emphasis_text,
-                            context?.theme
-                        )
-                    )
-                },
-                onEmojiClickListener = {
-                    binding.textEdit.editableText?.append(" ")
-                }
-            )
+        if (!isEmojiPickerVisible) {
+            binding.emojiPicker.visibility = View.VISIBLE
+            isEmojiPickerVisible = true
+        } else {
+            binding.emojiPicker.visibility = View.GONE
+            isEmojiPickerVisible = false
+        }
+        binding.emojiPicker.setOnEmojiPickedListener() {
+            binding.textEdit.editableText?.append(it.emoji)
         }
     }
 
     private fun setupListeners() {
-        binding.smileyButton.setOnClickListener { emojiPopup?.toggle() }
+        binding.smileyButton.setOnClickListener { setupEmojiPopup() }
         binding.textEdit.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // unused atm
@@ -216,7 +200,12 @@ class RenameConversationDialogFragment : DialogFragment() {
         Log.e(TAG, "Failed to rename conversation")
         Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
     }
-
+    override fun onResume() {
+        super.onResume()
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
     /**
      * Fragment creator
      */
