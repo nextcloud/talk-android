@@ -48,6 +48,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
+import androidx.emoji2.widget.EmojiTextView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.materialswitch.MaterialSwitch
@@ -62,7 +63,6 @@ import com.nextcloud.talk.ui.WaveformSeekBar
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.message.MessageUtils
-import com.vanniktech.emoji.EmojiTextView
 import com.wooplr.spotlight.SpotlightView
 import eu.davidea.flexibleadapter.utils.FlexibleUtils
 import javax.inject.Inject

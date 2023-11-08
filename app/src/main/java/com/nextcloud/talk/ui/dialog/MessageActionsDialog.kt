@@ -25,13 +25,12 @@ package com.nextcloud.talk.ui.dialog
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.emoji2.widget.EmojiTextView
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -49,10 +48,6 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
-import com.vanniktech.emoji.EmojiPopup
-import com.vanniktech.emoji.EmojiTextView
-import com.vanniktech.emoji.installDisableKeyboardInput
-import com.vanniktech.emoji.installForceSingleEmoji
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -78,7 +73,7 @@ class MessageActionsDialog(
 
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
 
-    private lateinit var popup: EmojiPopup
+ //   private lateinit var popup: EmojiPopup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,28 +141,10 @@ class MessageActionsDialog(
             true
         }
 
-        popup = EmojiPopup(
-            rootView = dialogMessageActionsBinding.root,
-            editText = dialogMessageActionsBinding.emojiMore,
-            onEmojiPopupShownListener = {
-                dialogMessageActionsBinding.emojiMore.clearFocus()
-                dialogMessageActionsBinding.messageActions.visibility = View.GONE
-            },
-            onEmojiClickListener = {
-                popup.dismiss()
-                clickOnEmoji(message, it.unicode)
-            },
-            onEmojiPopupDismissListener = {
-                dialogMessageActionsBinding.emojiMore.clearFocus()
-                dialogMessageActionsBinding.messageActions.visibility = View.VISIBLE
-
-                val imm: InputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as
-                    InputMethodManager
-                imm.hideSoftInputFromWindow(dialogMessageActionsBinding.emojiMore.windowToken, 0)
-            }
-        )
-        dialogMessageActionsBinding.emojiMore.installDisableKeyboardInput(popup)
-        dialogMessageActionsBinding.emojiMore.installForceSingleEmoji()
+        dialogMessageActionsBinding.emojiMore.setOnClickListener { toggleEmojiPopup()}
+        dialogMessageActionsBinding.emojiPicker.setOnEmojiPickedListener(){
+            clickOnEmoji(message, it.emoji)
+        }
     }
 
     /*
@@ -176,18 +153,9 @@ class MessageActionsDialog(
         it is closed after some milliseconds and opened again.
      */
     private fun toggleEmojiPopup() {
-        if (popup.isShowing) {
-            popup.dismiss()
-        } else {
-            popup.show()
-            Handler(Looper.getMainLooper()).postDelayed(
-                {
-                    popup.dismiss()
-                    popup.show()
-                },
-                DELAY
-            )
-        }
+        val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(dialogMessageActionsBinding.emojiMore.windowToken, 0)
+        dialogMessageActionsBinding.emojiPicker.visibility = View.VISIBLE
     }
 
     private fun initEmojiBar(hasChatPermission: Boolean) {
@@ -430,6 +398,7 @@ class MessageActionsDialog(
             dismiss()
         }
     }
+
 
     companion object {
         private val TAG = MessageActionsDialog::class.java.simpleName

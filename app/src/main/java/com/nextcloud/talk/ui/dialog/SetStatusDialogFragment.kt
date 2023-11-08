@@ -63,7 +63,6 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import com.vanniktech.emoji.EmojiPopup
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -106,7 +105,6 @@ class SetStatusDialogFragment : DialogFragment(), PredefinedStatusClickListener 
 
     private lateinit var adapter: PredefinedStatusListAdapter
     private var clearAt: Long? = null
-    private lateinit var popup: EmojiPopup
 
     @Inject
     lateinit var ncApi: NcApi

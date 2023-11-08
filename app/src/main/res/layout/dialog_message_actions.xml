@@ -26,6 +26,15 @@
     android:orientation="vertical"
     android:paddingBottom="@dimen/standard_half_padding">
 
+
+    <androidx.emoji2.emojipicker.EmojiPickerView
+        android:id="@+id/emoji_picker"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        app:emojiGridColumns="9" />
+
+
     <LinearLayout
         android:id="@+id/emojiBar"
         android:layout_width="match_parent"
@@ -37,7 +46,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.vanniktech.emoji.EmojiTextView
+        <androidx.emoji2.widget.EmojiTextView
             android:id="@+id/emojiThumbsUp"
             android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
             android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
@@ -48,7 +57,7 @@
             android:text="@string/emoji_thumbsUp"
             android:textSize="20sp" />
 
-        <com.vanniktech.emoji.EmojiTextView
+        <androidx.emoji2.widget.EmojiTextView
             android:id="@+id/emojiThumbsDown"
             android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
             android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
@@ -59,7 +68,7 @@
             android:text="@string/emoji_thumbsDown"
             android:textSize="20sp" />
 
-        <com.vanniktech.emoji.EmojiTextView
+        <androidx.emoji2.widget.EmojiTextView
             android:id="@+id/emojiHeart"
             android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
             android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
@@ -70,7 +79,7 @@
             android:text="@string/default_emoji"
             android:textSize="20sp" />
 
-        <com.vanniktech.emoji.EmojiTextView
+        <androidx.emoji2.widget.EmojiTextView
             android:id="@+id/emojiLaugh"
             android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
             android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
@@ -81,7 +90,7 @@
             android:text="@string/emoji_heart"
             android:textSize="20sp" />
 
-        <com.vanniktech.emoji.EmojiTextView
+        <androidx.emoji2.widget.EmojiTextView
             android:id="@+id/emojiConfused"
             android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
             android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
@@ -92,7 +101,7 @@
             android:text="@string/emoji_confused"
             android:textSize="20sp" />
 
-        <com.vanniktech.emoji.EmojiTextView
+        <androidx.emoji2.widget.EmojiTextView
             android:id="@+id/emojiSad"
             android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
             android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
@@ -103,7 +112,7 @@
             android:text="@string/emoji_sad"
             android:textSize="20sp" />
 
-        <com.vanniktech.emoji.EmojiEditText
+        <androidx.emoji2.widget.EmojiEditText
             android:id="@+id/emojiMore"
             android:layout_width="0dp"
             android:layout_height="@dimen/activity_row_layout_height"
