@@ -94,6 +94,7 @@ import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.text.bold
 import androidx.core.widget.doAfterTextChanged
+import androidx.emoji2.emojipicker.EmojiPickerView
 import androidx.emoji2.text.EmojiCompat
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.DialogFragment
@@ -237,7 +238,6 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageHolders.ContentChecker
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
-import com.vanniktech.emoji.EmojiPopup
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -322,7 +322,6 @@ class ChatActivity :
     lateinit var roomId: String
     var voiceOnly: Boolean = true
     var isFirstMessagesProcessing = true
-    private var emojiPopup: EmojiPopup? = null
     private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
@@ -351,6 +350,7 @@ class ChatActivity :
     private var voicePreviewObjectAnimator: ObjectAnimator? = null
     var mediaPlayer: MediaPlayer? = null
     lateinit var mediaPlayerHandler: Handler
+    private var isEmojiPickerVisible = false
     private var currentlyPlayedVoiceMessage: ChatMessage? = null
     private lateinit var micInputAudioRecorder: AudioRecord
     private var micInputAudioRecordThread: Thread? = null
@@ -452,7 +452,6 @@ class ChatActivity :
         binding.progressBar.visibility = View.VISIBLE
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-
         initObservers()
     }
 
@@ -644,7 +643,6 @@ class ChatActivity :
         logConversationInfos("onResume")
 
         pullChatMessagesPending = false
-
         setupWebsocket()
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
@@ -1429,30 +1427,18 @@ class ChatActivity :
     private fun initSmileyKeyboardToggler() {
         val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
 
-        emojiPopup = binding.messageInputView.inputEditText?.let {
-            EmojiPopup(
-                rootView = binding.root,
-                editText = it,
-                onEmojiPopupShownListener = {
-                    if (resources != null) {
-                        smileyButton?.setImageDrawable(
-                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_24)
-                        )
-                    }
-                },
-                onEmojiPopupDismissListener = {
-                    smileyButton?.setImageDrawable(
-                        ContextCompat.getDrawable(context, R.drawable.ic_insert_emoticon_black_24dp)
-                    )
-                },
-                onEmojiClickListener = {
-                    binding.messageInputView.inputEditText?.editableText?.append(" ")
-                }
-            )
-        }
-
         smileyButton?.setOnClickListener {
-            emojiPopup?.toggle()
+
+            if (!isEmojiPickerVisible) {
+                binding.messageInputView.findViewById<FrameLayout>(R.id.emoji_picker).visibility = View.VISIBLE
+                isEmojiPickerVisible = true
+            } else {
+                binding.messageInputView.findViewById<EmojiPickerView>(R.id.emoji_picker).visibility = View.GONE
+                isEmojiPickerVisible = false
+            }
+            binding.messageInputView.findViewById<EmojiPickerView>(R.id.emoji_picker).setOnEmojiPickedListener() {
+                binding.messageInputView.inputEditText.editableText?.append(it.emoji)
+            }
         }
     }
 

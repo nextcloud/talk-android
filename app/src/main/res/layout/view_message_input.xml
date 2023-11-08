@@ -78,8 +78,15 @@
             android:lineSpacingMultiplier="1.2"
             android:minHeight="48dp"
             android:textAlignment="viewStart"
-            android:layoutDirection="locale"
             tools:hint="@string/nc_hint_enter_a_message" />
+
+        <androidx.emoji2.emojipicker.EmojiPickerView
+            android:id="@+id/emoji_picker"
+            android:layout_width="match_parent"
+            android:layout_below="@id/messageInput"
+            android:visibility="gone"
+            android:layout_height="350dp"
+            app:emojiGridColumns="9" />
 
         <TextView
             android:id="@+id/slideToCancelDescription"
