@@ -152,6 +152,7 @@
     <string name="nc_dialog_outdated_client_option_update">تحديث</string>
     <string name="nc_dialog_reauth_or_delete">هل تريد إعادة تفويض هذا الحساب أو مسحه؟</string>
     <string name="nc_dialog_save_to_storage_no">لا</string>
+    <string name="nc_dialog_save_to_storage_title">حفظ على وحدة التخزين؟</string>
     <string name="nc_dialog_save_to_storage_yes">نعم</string>
     <string name="nc_display_name_not_fetched">لايمكن عرض الاسم، جارِ إلالغاء</string>
     <string name="nc_display_name_not_stored">تعذر تخزين اسم العرض ، جارِ إلالغاء</string>

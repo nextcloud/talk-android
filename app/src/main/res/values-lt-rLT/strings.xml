@@ -167,6 +167,7 @@
     <string name="nc_reply">Atsakyti</string>
     <string name="nc_reply_privately">Atsakyti privačiai</string>
     <string name="nc_save_message">Įrašyti</string>
+    <string name="nc_save_success">Sėkmingai įrašyta</string>
     <string name="nc_screen_lock_timeout_30">30 sekundžių</string>
     <string name="nc_screen_lock_timeout_300">5 minutės</string>
     <string name="nc_screen_lock_timeout_60">1 minutė</string>

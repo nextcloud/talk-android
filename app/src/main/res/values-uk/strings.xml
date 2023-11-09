@@ -258,6 +258,7 @@
     <string name="nc_reply">Відповісти</string>
     <string name="nc_reply_privately">Відповісти у приватній розмові</string>
     <string name="nc_save_message">Зберегти</string>
+    <string name="nc_save_success">Збережено успішно</string>
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_300">5 хвилин</string>
     <string name="nc_screen_lock_timeout_60">Одна хвилина</string>

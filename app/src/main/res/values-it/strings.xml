@@ -237,6 +237,7 @@
     <string name="nc_reply">Rispondi</string>
     <string name="nc_reply_privately">Rispondi in privato</string>
     <string name="nc_save_message">Salva</string>
+    <string name="nc_save_success">Salvato correttamente</string>
     <string name="nc_screen_lock_timeout_30">30 secondi</string>
     <string name="nc_screen_lock_timeout_300">5 minuti</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
