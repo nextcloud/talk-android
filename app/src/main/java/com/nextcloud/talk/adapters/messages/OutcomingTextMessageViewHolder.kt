@@ -41,7 +41,6 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
 import javax.inject.Inject
@@ -89,8 +88,7 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
 
         val messageParameters = message.messageParameters
         if (
-            (messageParameters == null || messageParameters.size <= 0) &&
-            TextMatchers.isMessageWithSingleEmoticonOnly(message.text)
+            (messageParameters == null || messageParameters.size <= 0)
         ) {
             textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
             layoutParams.isWrapBefore = true
