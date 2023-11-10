@@ -151,6 +151,8 @@
     <string name="nc_dialog_outdated_client_description">Die App ist zu alt und wird von diesem Server nicht mehr unterstützt. Bitte aktualisieren.</string>
     <string name="nc_dialog_outdated_client_option_update">Aktualisieren</string>
     <string name="nc_dialog_reauth_or_delete">Möchten Sie das Konto erneut autorisieren oder löschen?</string>
+    <string name="nc_dialog_save_to_storage_content">Wenn Sie dieses Medium im Speicher speichern, können alle anderen Apps auf Ihrem Gerät darauf zugreifen.</string>
+    <string name="nc_dialog_save_to_storage_continue">Fortsetzen?</string>
     <string name="nc_dialog_save_to_storage_no">Nein</string>
     <string name="nc_dialog_save_to_storage_title">Im Speicher speichern?</string>
     <string name="nc_dialog_save_to_storage_yes">Ja</string>

@@ -151,6 +151,8 @@
     <string name="nc_dialog_outdated_client_description">Ова апликација је превише стара и овај сервер је више не подржава. Молимо вас да је ажурирате.</string>
     <string name="nc_dialog_outdated_client_option_update">Ажурирај</string>
     <string name="nc_dialog_reauth_or_delete">Да ли желите поново да ауторизујете или обришете овај налог?</string>
+    <string name="nc_dialog_save_to_storage_content">Ако овај медијум сачувате на складиште, остале апликације на уређаје ће моћи да му приступе.</string>
+    <string name="nc_dialog_save_to_storage_continue">Желите ли да наставите?</string>
     <string name="nc_dialog_save_to_storage_no">Не</string>
     <string name="nc_dialog_save_to_storage_title">Да сачувам на складиште?`</string>
     <string name="nc_dialog_save_to_storage_yes">Да</string>

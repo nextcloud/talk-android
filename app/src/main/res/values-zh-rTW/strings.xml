@@ -151,6 +151,8 @@
     <string name="nc_dialog_outdated_client_description">應用程式太舊了，不再被此伺服器支援。請更新。</string>
     <string name="nc_dialog_outdated_client_option_update">更新</string>
     <string name="nc_dialog_reauth_or_delete">您要重新授權或刪除此帳號嗎？</string>
+    <string name="nc_dialog_save_to_storage_content">將此媒體儲存到儲存空間中將允許您裝置上的任何其他應用程式存取它。</string>
+    <string name="nc_dialog_save_to_storage_continue">繼續？</string>
     <string name="nc_dialog_save_to_storage_no">否</string>
     <string name="nc_dialog_save_to_storage_title">儲存到儲存裝置中？</string>
     <string name="nc_dialog_save_to_storage_yes">是</string>

@@ -151,6 +151,8 @@
     <string name="nc_dialog_outdated_client_description">التطبيق قديم جدًا ولم يعد مدعوماً من قبل هذا الخادوم. يُرجى التحديث.</string>
     <string name="nc_dialog_outdated_client_option_update">تحديث</string>
     <string name="nc_dialog_reauth_or_delete">هل تريد إعادة تفويض هذا الحساب أو مسحه؟</string>
+    <string name="nc_dialog_save_to_storage_content">حفظ هذه الوسائط على وحدة التخزين سيسمح لأي تطبيق آخر على الوحدة بالوصول إلى هذه الوسائط.</string>
+    <string name="nc_dialog_save_to_storage_continue">إستمرار؟</string>
     <string name="nc_dialog_save_to_storage_no">لا</string>
     <string name="nc_dialog_save_to_storage_title">حفظ على وحدة التخزين؟</string>
     <string name="nc_dialog_save_to_storage_yes">نعم</string>
@@ -287,6 +289,7 @@
     <string name="nc_reply">رد</string>
     <string name="nc_reply_privately">ردّ على الخاص</string>
     <string name="nc_save_message">حفظ</string>
+    <string name="nc_save_success">تمّ الحفط بنجاحٍ</string>
     <string name="nc_screen_lock_timeout_30">30 ثانية</string>
     <string name="nc_screen_lock_timeout_300">5 دقائق</string>
     <string name="nc_screen_lock_timeout_60">1 دقيقة</string>

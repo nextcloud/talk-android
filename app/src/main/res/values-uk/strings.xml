@@ -134,6 +134,8 @@
     <string name="nc_dialog_maintenance_mode">Режим технічного обслуговування</string>
     <string name="nc_dialog_outdated_client_option_update">Оновлення</string>
     <string name="nc_dialog_reauth_or_delete">Чи хочете ви повторно авторизувати чи вилучити цей акаунт?</string>
+    <string name="nc_dialog_save_to_storage_no">Ні</string>
+    <string name="nc_dialog_save_to_storage_yes">Так</string>
     <string name="nc_display_name_not_fetched">Ім\'я для показу не вдалося розпізнати. Скасування</string>
     <string name="nc_display_name_not_stored">Неможливо отримати ім\'я для показу. Скасування</string>
     <string name="nc_email">Електронна пошта</string>
