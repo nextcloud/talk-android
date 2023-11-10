@@ -441,7 +441,7 @@ class ConversationInfoActivity :
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.isNestedScrollingEnabled = false
+        binding.recyclerView.isNestedScrollingEnabled = true
         adapter!!.addListener(this)
     }
 
