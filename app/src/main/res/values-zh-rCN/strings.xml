@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">账户图标</string>
+    <string name="added_to_favorites">对话%1$s已添加至收藏</string>
     <string name="appbar_search_in">搜索位置 %s</string>
+    <string name="audio_call">语音通话</string>
     <string name="audio_output_bluetooth">蓝牙</string>
     <string name="audio_output_dialog_headline">音频输出</string>
     <string name="audio_output_phone">电话</string>
@@ -11,17 +13,20 @@
     <string name="away">离开</string>
     <string name="calendar">日历</string>
     <string name="call_more_actions_dialog_headline">高级呼叫选项</string>
+    <string name="call_running_since_one_hour">通话已持续一小时</string>
     <string name="call_without_notification">无通知呼叫</string>
     <string name="camera_permission_granted">摄像头访问已授权。请重新选择摄像头。</string>
     <string name="choose_avatar_from_cloud">从云端选择头像</string>
     <string name="clear_status_message">清除状态消息</string>
     <string name="clear_status_message_after">过多长时间清除状态消息</string>
     <string name="close">关闭</string>
+    <string name="continuous_voice_message_recording">锁定录音以连续录制语音信息</string>
     <string name="conversations">对话</string>
     <string name="create_conversation">建立对话</string>
     <string name="custom">自定义</string>
     <string name="danger_zone">危险区域</string>
     <string name="delete_avatar">删除头像</string>
+    <string name="deleted_conversation">对话%1$s已删除</string>
     <string name="dnd">不要打扰</string>
     <string name="dontClear">不要清除</string>
     <string name="edit">编辑</string>
@@ -35,9 +40,13 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小时</string>
     <string name="invisible">不可见</string>
+    <string name="later_today">今日稍晚</string>
+    <string name="left_conversation">你已离开对话%1$s</string>
     <string name="load_more_results">加载更多结果</string>
     <string name="lock_symbol">锁定头像</string>
     <string name="lower_hand">放下手 </string>
+    <string name="marked_as_read">已将对话%1$s标记为已读</string>
+    <string name="marked_as_unread">已将对话%1$s标记为未读</string>
     <string name="mentioned">已提及</string>
     <string name="menu_item_sort_by_date_newest_first">最新的在前</string>
     <string name="menu_item_sort_by_date_oldest_first">最旧的在前</string>
@@ -66,6 +75,7 @@
     <string name="nc_allow_guests">允许访客</string>
     <string name="nc_attendee_pin">固定：%1$s</string>
     <string name="nc_biometric_unlock">解锁 %1$s</string>
+    <string name="nc_bluetooth_permission_hint">使用蓝牙音箱需要“附近的设备”权限</string>
     <string name="nc_call_button_content_description_advanced">高级呼叫选项</string>
     <string name="nc_call_button_content_description_answer_video_call">以视频通话接听</string>
     <string name="nc_call_button_content_description_answer_voice_only">以语音通话接听</string>
@@ -89,6 +99,7 @@
     <string name="nc_call_unknown">%s 通话</string>
     <string name="nc_call_video">%s 语音通话</string>
     <string name="nc_call_voice">%s 语音通话</string>
+    <string name="nc_camera_permission_hint">使用视频通话需要“相机”权限</string>
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">获取容量已失败，正在中止</string>
     <string name="nc_certificate_dialog_text">您是否信任由 %1$s 颁发给 %2$s，生效时间从 %3$s 至 %4$s的未知证书？</string>
@@ -140,7 +151,10 @@
     <string name="nc_dialog_outdated_client_description">应用版本过低，不再被服务器支持，请更新</string>
     <string name="nc_dialog_outdated_client_option_update">更新</string>
     <string name="nc_dialog_reauth_or_delete">你想重新授权还是删除此帐户？</string>
+    <string name="nc_dialog_save_to_storage_content">将此媒体保存到存储空间中将允许您设备上的所有其他应用访问</string>
+    <string name="nc_dialog_save_to_storage_continue">是否继续？</string>
     <string name="nc_dialog_save_to_storage_no">否</string>
+    <string name="nc_dialog_save_to_storage_title">保存到存储空间中？</string>
     <string name="nc_dialog_save_to_storage_yes">是</string>
     <string name="nc_display_name_not_fetched">无法获取显示名，中止</string>
     <string name="nc_display_name_not_stored">无法储存显示名称，正在终止</string>
@@ -212,6 +226,7 @@
     <string name="nc_message_quote_cancel_reply">取消回复</string>
     <string name="nc_message_read">消息已读</string>
     <string name="nc_message_sent">消息已发送</string>
+    <string name="nc_microphone_permission_hint">使用语音通话需要“麦克风”权限</string>
     <string name="nc_missed_call">你错过了来自 %s 的一个通话</string>
     <string name="nc_moderator">主持人</string>
     <string name="nc_never">从未加入</string>
@@ -244,7 +259,11 @@
     <string name="nc_participants">参与者</string>
     <string name="nc_participants_add">添加参与者 </string>
     <string name="nc_password">密码</string>
+    <string name="nc_permissions_ask">设置权限</string>
+    <string name="nc_permissions_denied">部分权限被拒绝</string>
+    <string name="nc_permissions_rationale_dialog_title">请允许权限</string>
     <string name="nc_permissions_settings">打开设置</string>
+    <string name="nc_permissions_settings_hint">请在 “设置” > “权限” 中开启权限</string>
     <string name="nc_phone_book_integration_account_not_found">未找到账户</string>
     <string name="nc_phone_book_integration_chat_via">通过 %s 聊天</string>
     <string name="nc_pip_microphone_mute">将麦克风静音</string>
@@ -317,14 +336,15 @@
     <string name="nc_settings_advanced_title">高级</string>
     <string name="nc_settings_appearance">外观</string>
     <string name="nc_settings_call_ringtone">通话</string>
-    <string name="nc_settings_incognito_keyboard_desc">通知键盘禁用个性化学习（不保证键盘会执行）</string>
-    <string name="nc_settings_incognito_keyboard_title">匿名键盘</string>
+    <string name="nc_settings_incognito_keyboard_desc">要求输入法禁用个性化学习（不保证键盘会执行）</string>
+    <string name="nc_settings_incognito_keyboard_title">无痕键盘</string>
     <string name="nc_settings_no_ringtone">无声音</string>
     <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装通话应用</string>
     <string name="nc_settings_notification_sounds">通知声音</string>
     <string name="nc_settings_notification_sounds_post_oreo">通知</string>
     <string name="nc_settings_other_notifications_ringtone">消息</string>
     <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，以集成通话应用快捷方式到系统联系人应用</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">错误 429 请求太多</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">你可以设置你的电话号码，这样其他用户能够找到你 </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">无效电话号码</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">成功设置电话号码</string>
@@ -437,7 +457,14 @@
     <string name="record_stop_confirm_title">停止通话录制</string>
     <string name="record_stop_description">停止录制</string>
     <string name="record_stopping">正在停止录制……</string>
+    <string name="recording_consent_all">所有通话都需要同意才可录制</string>
+    <string name="recording_consent_description">录制内容可能包括您的声音、摄像头的画面，以及屏幕分享的内容。要加入通话，您需要同意录制。您是否同意？</string>
+    <string name="recording_consent_for_conversation_description">在此对话中加入通话前要求准许录制</string>
+    <string name="recording_consent_for_conversation_title">录制许可</string>
+    <string name="recording_consent_title">通话可能被录制</string>
     <string name="recording_settings_title">录音</string>
+    <string name="removed_from_favorites">对话%1$s已从收藏中移除</string>
+    <string name="renamed_conversation">对话%1$s已重命名</string>
     <string name="restrict_join_other_room_while_call">在通话时无法加入其他房间</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">只同步到受信任的服务器 </string>
@@ -452,6 +479,7 @@
     <string name="scope_toggle_description">更改 %1$s 的隐私级别</string>
     <string name="scroll_to_bottom">滚动到底部</string>
     <string name="secondsAgo">几秒前</string>
+    <string name="see_similar_system_messages">查看%1$s条相似的消息</string>
     <string name="selected_list_item">已选中</string>
     <string name="send_to">发送到</string>
     <string name="send_to_forbidden">你不能在此聊天中分享内容</string>
@@ -471,6 +499,7 @@
     <string name="shared_items_voice">语音</string>
     <string name="starred">收藏</string>
     <string name="startCallForbidden">您没有开始通话的权限。</string>
+    <string name="started_a_call">发起了通话</string>
     <string name="status_message">状态消息</string>
     <string name="switch_to_breakout_room">切换到分组讨论</string>
     <string name="switch_to_main_room">切换到主房间</string>
@@ -486,6 +515,7 @@
     <string name="thirtyMinutes">30分钟</string>
     <string name="thisWeek">本周</string>
     <string name="this_is_a_test_message">这是一个测试消息</string>
+    <string name="this_weekend">本周末</string>
     <string name="title_attachments">附件</string>
     <string name="today">今天</string>
     <string name="tomorrow">明天</string>
@@ -514,6 +544,7 @@
     <string name="userinfo_error_text">检索个人用户信息失败</string>
     <string name="userinfo_no_info_headline">未设置个人信息</string>
     <string name="userinfo_no_info_text">在你的个人资料页上添加姓名、图片和联系方式。</string>
+    <string name="video_call">视频通话</string>
     <string name="whats_your_status">你什么状态？</string>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 票</item>

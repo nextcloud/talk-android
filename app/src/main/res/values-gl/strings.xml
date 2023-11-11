@@ -162,7 +162,7 @@
     <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_failed_to_perform_operation">Desculpe, algo foi mal!</string>
     <string name="nc_file_browser_back">Atrás</string>
-    <string name="nc_file_storage_permission">Precisase permiso para acceder ao ficheiro</string>
+    <string name="nc_file_storage_permission">Precísase de permiso para acceder ao ficheiro</string>
     <string name="nc_filter">Filtrar conversas</string>
     <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
     <string name="nc_formatted_message_you">Vde.: %1$s</string>
@@ -373,7 +373,7 @@
     <string name="nc_settings_warning">Advertencia</string>
     <string name="nc_settings_wrong_account">Só pode volver autorizarse a conta actual</string>
     <string name="nc_share_contact">Compartir o contacto</string>
-    <string name="nc_share_contact_permission">Precisase permiso para ler a lista de contactos</string>
+    <string name="nc_share_contact_permission">Precísase de permiso para ler a lista de contactos</string>
     <string name="nc_share_current_location">Compartir a localización actual</string>
     <string name="nc_share_location">Compartir a localización</string>
     <string name="nc_share_subject">%1$s convite</string>
@@ -406,7 +406,7 @@
     <string name="nc_video_filename">Gravación de vídeo de %1$s</string>
     <string name="nc_voice_message_filename">Gravación da conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Manteña premido para gravar, solte para enviar.</string>
-    <string name="nc_voice_message_missing_audio_permission">Precisase permiso para gravar son</string>
+    <string name="nc_voice_message_missing_audio_permission">Precísase de permiso para gravar son</string>
     <string name="nc_voice_message_slide_to_cancel">« Esvare para cancelar</string>
     <string name="nc_webinar">Seminario web</string>
     <string name="nc_wrong_link">A ligazón da conversa non é válida</string>
