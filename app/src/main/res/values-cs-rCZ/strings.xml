@@ -151,7 +151,10 @@
     <string name="nc_dialog_outdated_client_description">Tato aplikace je příliš stará a už nepodporovaná tímto serverem. Prosíme aktualizujte ji.</string>
     <string name="nc_dialog_outdated_client_option_update">Aktualizovat</string>
     <string name="nc_dialog_reauth_or_delete">Chcete tento účet znovu ověřit nebo smazat?</string>
+    <string name="nc_dialog_save_to_storage_content">Uložení tohoto média na úložiště umožní ostatním aplikacím na vašem zařízení k němu přistupovat.</string>
+    <string name="nc_dialog_save_to_storage_continue">Pokračovat?</string>
     <string name="nc_dialog_save_to_storage_no">Ne</string>
+    <string name="nc_dialog_save_to_storage_title">Uložit na úložiště?</string>
     <string name="nc_dialog_save_to_storage_yes">Ano</string>
     <string name="nc_display_name_not_fetched">Nepodařilo se získat zobrazované jméno, přerušuje se</string>
     <string name="nc_display_name_not_stored">Nepodařilo se uložit zobrazované jméno, přerušuje se</string>
@@ -286,6 +289,7 @@
     <string name="nc_reply">Odpovědět</string>
     <string name="nc_reply_privately">Odpovědět soukromě</string>
     <string name="nc_save_message">Uložit</string>
+    <string name="nc_save_success">Úspěšně uloženo</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
