@@ -143,6 +143,7 @@ import com.nextcloud.talk.extensions.loadAvatarOrImagePreview
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.jobs.UploadAndShareFilesWorker.Companion.upload
 import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -3254,12 +3255,15 @@ class ChatActivity :
 
         try {
             require(fileUri.isNotEmpty())
-            UploadAndShareFilesWorker.upload(
+            upload(
+                context,
                 fileUri,
                 room,
                 currentConversation?.displayName!!,
                 metaData
-            )
+            ) { showProgressBar: Boolean ->
+                binding.idprogressbar.visibility = if (showProgressBar) View.VISIBLE else View.GONE
+            }
         } catch (e: IllegalArgumentException) {
             context.resources?.getString(R.string.nc_upload_failed)?.let {
                 Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG)

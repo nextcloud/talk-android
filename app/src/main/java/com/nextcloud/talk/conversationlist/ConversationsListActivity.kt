@@ -131,6 +131,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.DelicateCoroutinesApi
 import org.apache.commons.lang3.builder.CompareToBuilder
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -1343,11 +1344,26 @@ class ConversationsListActivity :
         try {
             filesToShare?.forEach {
                 UploadAndShareFilesWorker.upload(
+                    context,
                     it,
                     selectedConversation!!.token!!,
                     selectedConversation!!.displayName!!,
                     null
-                )
+                ) { success ->
+                    if (success) {
+                        Snackbar.make(
+                            binding.root,
+                            context.resources.getString(R.string.nc_upload_success),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    } else {
+                        Snackbar.make(
+                            binding.root,
+                            context.resources.getString(R.string.nc_upload_failed),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }
         } catch (e: IllegalArgumentException) {
             Snackbar.make(binding.root, context.resources.getString(R.string.nc_upload_failed), Snackbar.LENGTH_LONG)

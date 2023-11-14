@@ -157,6 +157,22 @@
             app:textAutoLink="all"
             tools:visibility="visible" />
 
+        <LinearLayout
+            android:id="@+id/idprogressbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
         <com.nextcloud.ui.popupbubble.PopupBubble
             android:id="@+id/popupBubbleView"
             android:layout_width="wrap_content"
