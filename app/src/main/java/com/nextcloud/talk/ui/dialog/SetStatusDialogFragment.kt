@@ -137,7 +137,8 @@ class SetStatusDialogFragment : DialogFragment(), PredefinedStatusClickListener 
 
                     override fun onNext(responseBody: ResponseBody) {
                         val predefinedStatusOverall: PredefinedStatusOverall = LoganSquare.parse(
-                            responseBody.string(), PredefinedStatusOverall::class.java
+                            responseBody.string(),
+                            PredefinedStatusOverall::class.java
                         )
                         predefinedStatusOverall.ocs?.data?.let { it1 -> predefinedStatusesList.addAll(it1) }
 
@@ -461,7 +462,11 @@ class SetStatusDialogFragment : DialogFragment(), PredefinedStatusClickListener 
             selectedPredefinedStatus!!.icon != binding.emoji.text.toString()
         ) {
             ncApi.setCustomStatusMessage(
-                credentials, ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl), statusIcon, inputText, clearAt
+                credentials,
+                ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
+                statusIcon,
+                inputText,
+                clearAt
             ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<GenericOverall> {
 
@@ -553,7 +558,8 @@ class SetStatusDialogFragment : DialogFragment(), PredefinedStatusClickListener 
     override fun onResume() {
         super.onResume()
         dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 

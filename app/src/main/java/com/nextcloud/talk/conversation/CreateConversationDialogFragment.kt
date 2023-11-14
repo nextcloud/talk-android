@@ -271,7 +271,8 @@ class CreateConversationDialogFragment : DialogFragment() {
     override fun onResume() {
         super.onResume()
         dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 

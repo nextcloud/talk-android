@@ -61,8 +61,6 @@ class RenameConversationDialogFragment : DialogFragment() {
     private lateinit var binding: DialogRenameConversationBinding
     private lateinit var viewModel: RenameConversationViewModel
     private var isEmojiPickerVisible = false
-
-
     private var roomToken = ""
     private var initialName = ""
 
@@ -98,10 +96,8 @@ class RenameConversationDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupListeners()
         setupStateObserver()
-
     }
 
     override fun onStart() {
@@ -200,12 +196,15 @@ class RenameConversationDialogFragment : DialogFragment() {
         Log.e(TAG, "Failed to rename conversation")
         Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
     }
+
     override fun onResume() {
         super.onResume()
         dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
+
     /**
      * Fragment creator
      */

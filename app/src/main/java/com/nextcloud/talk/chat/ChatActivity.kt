@@ -1428,7 +1428,6 @@ class ChatActivity :
         val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
 
         smileyButton?.setOnClickListener {
-
             if (!isEmojiPickerVisible) {
                 binding.messageInputView.findViewById<FrameLayout>(R.id.emoji_picker).visibility = View.VISIBLE
                 isEmojiPickerVisible = true
