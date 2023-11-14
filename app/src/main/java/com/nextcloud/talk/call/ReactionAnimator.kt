@@ -39,7 +39,6 @@ import androidx.emoji2.widget.EmojiTextView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
-
 class ReactionAnimator(
     val context: Context,
     private val startPointView: RelativeLayout,
@@ -63,7 +62,6 @@ class ReactionAnimator(
         callReaction: CallReaction
     ) {
         val reactionWrapper = getReactionWrapperView(callReaction)
-
         val params = RelativeLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -100,7 +98,6 @@ class ReactionAnimator(
 
         val animatorWithFullAlpha = AnimatorSet()
         animatorWithFullAlpha.play(moveWithFullAlpha)
-
         animatorWithFullAlpha.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 reactionsList.remove(callReaction)
@@ -183,6 +180,7 @@ class ReactionAnimator(
         private const val BOTTOM_MARGIN: Int = 5
     }
 }
+
 data class CallReaction(
     var emoji: String,
     var userName: String

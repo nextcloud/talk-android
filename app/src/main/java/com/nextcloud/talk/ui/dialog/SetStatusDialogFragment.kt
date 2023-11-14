@@ -141,7 +141,9 @@ class SetStatusDialogFragment : DialogFragment(), PredefinedStatusClickListener 
                         )
                         predefinedStatusOverall.ocs?.data?.let { it1 -> predefinedStatusesList.addAll(it1) }
 
-                        if (currentStatus?.messageIsPredefined == true && currentStatus?.messageId?.isNotEmpty() == true) {
+                        if (currentStatus?.messageIsPredefined == true &&
+                            currentStatus?.messageId?.isNotEmpty() == true
+                        ) {
                             val messageId = currentStatus!!.messageId
                             selectedPredefinedStatus = predefinedStatusesList.firstOrNull { ps -> messageId == ps.id }
                         }
@@ -454,7 +456,10 @@ class SetStatusDialogFragment : DialogFragment(), PredefinedStatusClickListener 
         // The endpoint '/message/custom' expects a valid emoji as string or null
         val statusIcon = binding.emoji.text.toString().ifEmpty { null }
 
-        if (selectedPredefinedStatus == null || selectedPredefinedStatus!!.message != inputText || selectedPredefinedStatus!!.icon != binding.emoji.text.toString()) {
+        if (selectedPredefinedStatus == null ||
+            selectedPredefinedStatus!!.message != inputText ||
+            selectedPredefinedStatus!!.icon != binding.emoji.text.toString()
+        ) {
             ncApi.setCustomStatusMessage(
                 credentials, ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl), statusIcon, inputText, clearAt
             ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

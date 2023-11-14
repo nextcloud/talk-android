@@ -73,8 +73,6 @@ class MessageActionsDialog(
 
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
 
- //   private lateinit var popup: EmojiPopup
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
@@ -141,8 +139,8 @@ class MessageActionsDialog(
             true
         }
 
-        dialogMessageActionsBinding.emojiMore.setOnClickListener { toggleEmojiPopup()}
-        dialogMessageActionsBinding.emojiPicker.setOnEmojiPickedListener(){
+        dialogMessageActionsBinding.emojiMore.setOnClickListener { toggleEmojiPopup() }
+        dialogMessageActionsBinding.emojiPicker.setOnEmojiPickedListener() {
             clickOnEmoji(message, it.emoji)
         }
     }
@@ -300,6 +298,7 @@ class MessageActionsDialog(
 
         dialogMessageActionsBinding.menuTranslateMessage.visibility = getVisibility(visible)
     }
+
     private fun initMenuShare(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuShare.setOnClickListener {
@@ -398,7 +397,6 @@ class MessageActionsDialog(
             dismiss()
         }
     }
-
 
     companion object {
         private val TAG = MessageActionsDialog::class.java.simpleName
