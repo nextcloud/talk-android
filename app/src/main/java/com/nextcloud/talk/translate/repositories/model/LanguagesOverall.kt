@@ -22,17 +22,14 @@ package com.nextcloud.talk.translate.repositories.model
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericMeta
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject
-data class TranslateOCS(
-    @JsonField(name = ["meta"])
-    var meta: GenericMeta?,
-    @JsonField(name = ["data"])
-    var data: TranslateData?
+class LanguagesOverall(
+    @JsonField(name = ["ocs"])
+    var ocs: LanguagesOCS?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, TranslateData())
+    constructor() : this(null)
 }

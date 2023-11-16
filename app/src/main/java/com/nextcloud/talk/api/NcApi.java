@@ -49,6 +49,7 @@ import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.polls.repositories.model.PollOverall;
+import com.nextcloud.talk.translate.repositories.model.LanguagesOverall;
 import com.nextcloud.talk.translate.repositories.model.TranslationsOverall;
 
 import java.util.List;
@@ -674,6 +675,10 @@ public interface NcApi {
                                                      @Query("text") String text,
                                                      @Query("toLanguage") String toLanguage,
                                                      @Nullable @Query("fromLanguage") String fromLanguage);
+
+    @GET
+    Observable<LanguagesOverall> getLanguages(@Header("Authorization") String authorization,
+                                              @Url String url);
 
     @GET
     Observable<ReminderOverall> getReminder(@Header("Authorization") String authorization,
