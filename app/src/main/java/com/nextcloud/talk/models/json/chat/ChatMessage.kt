@@ -285,6 +285,7 @@ data class ChatMessage(
             ""
         }
     }
+
     val lastMessageDisplayText: String
         get() {
             if (getCalculateMessageType() == MessageType.REGULAR_TEXT_MESSAGE ||

@@ -138,6 +138,8 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                 is RemoteFileBrowserItemsViewModel.FinishState -> {
                     finishWithResult(state.selectedPaths)
                 }
+
+                else -> {}
             }
         }
 
