@@ -156,7 +156,7 @@
     <string name="nc_file_storage_permission">Требуется разрешение на доступ к файлу</string>
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
     <string name="nc_formatted_message_you">Вы: %1$s</string>
-    <string name="nc_forward_message">Вперёд</string>
+    <string name="nc_forward_message">Переслать</string>
     <string name="nc_forward_to_three_dots">Вперёд к …</string>
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
     <string name="nc_get_source_code">Исходный код</string>
