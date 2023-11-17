@@ -169,6 +169,7 @@
     <string name="nc_reply">Besvar</string>
     <string name="nc_reply_privately">Svar privat</string>
     <string name="nc_save_message">Gem</string>
+    <string name="nc_save_success">Gemt</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_300">5 minutter</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
