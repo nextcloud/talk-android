@@ -5,7 +5,7 @@
  * @author Tim Krüger
  * @author Andy Scherzinger
  * @author Samanwith KSN
- * Copyright (C) 2023 Samanwith KSN <lcb2021048@iiitl.com>
+ * Copyright (C) 2023 Samanwith KSN <lcb2021048@iiitl.ac.in>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
