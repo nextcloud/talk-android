@@ -23,7 +23,6 @@
 package com.nextcloud.talk.adapters.messages;
 
 import android.text.Spanned;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -60,7 +59,6 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
         ) {
             Spanned processedMessageText = null;
             binding.outgoingPreviewMessageBubble.setBackgroundResource(R.drawable.shape_grouped_outcoming_message);
-            binding.outgoingPreviewMessageBubble.setOnClickListener(null);
             if (viewThemeUtils != null) {
                 processedMessageText = messageUtils.enrichChatMessageText(
                     binding.messageCaption.getContext(),
@@ -76,8 +74,9 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
                     viewThemeUtils,
                     processedMessageText,
                     message,
-                    itemView);
+                    binding.outgoingPreviewMessageBubble);
             }
+            binding.outgoingPreviewMessageBubble.setOnClickListener(null);
 
             float textSize = 0;
             if (context != null) {

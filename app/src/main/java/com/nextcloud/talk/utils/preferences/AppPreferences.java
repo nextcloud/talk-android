@@ -168,5 +168,9 @@ public interface AppPreferences {
 
     String getSorting();
 
+    void saveWaveFormForFile(String filename, Float[] array);
+
+    Float[] getWaveFormFromFile(String filename);
+
     void clear();
 }

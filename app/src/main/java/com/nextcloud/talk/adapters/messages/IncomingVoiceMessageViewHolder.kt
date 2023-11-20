@@ -89,6 +89,15 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
 
+        val filename = message.selectedIndividualHashMap!!["name"]
+        val retrieved = appPreferences!!.getWaveFormFromFile(filename)
+        if (retrieved.isNotEmpty() &&
+            message.voiceMessageFloatArray == null ||
+            message.voiceMessageFloatArray?.isEmpty() == true
+        ) {
+            message.voiceMessageFloatArray = retrieved.toFloatArray()
+            binding.seekbar.setWaveData(message.voiceMessageFloatArray!!)
+        }
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         setAvatarAndAuthorOnMessageItem(message)

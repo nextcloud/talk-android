@@ -156,10 +156,6 @@ class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs
                 invalidate() // needed to animate the other listeners as well
             }
         }
-
-        ovalOneAnimator?.start()
-        ovalTwoAnimator?.start()
-        ovalThreeAnimator?.start()
     }
 
     private fun destroyAnimators() {
@@ -358,6 +354,15 @@ class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs
         rotationSpeedMultiplier = speed
         radius = r
         invalidate()
+    }
+
+    /**
+     * Starts the growing and shrinking animation
+     */
+    fun startAnimators() {
+        ovalOneAnimator?.start()
+        ovalTwoAnimator?.start()
+        ovalThreeAnimator?.start()
     }
 
     companion object {
