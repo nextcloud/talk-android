@@ -60,7 +60,6 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
         ) {
             Spanned processedMessageText = null;
             binding.incomingPreviewMessageBubble.setBackgroundResource(R.drawable.shape_grouped_incoming_message);
-            binding.incomingPreviewMessageBubble.setOnClickListener(null);
             if (viewThemeUtils != null ) {
                 processedMessageText = messageUtils.enrichChatMessageText(
                     binding.messageCaption.getContext(),
@@ -76,8 +75,9 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
                     viewThemeUtils,
                     processedMessageText,
                     message,
-                    itemView);
+                    binding.incomingPreviewMessageBubble);
             }
+            binding.incomingPreviewMessageBubble.setOnClickListener(null);
 
             float textSize = 0;
             if (context != null) {
