@@ -129,6 +129,7 @@ public class AccountRemovalWorker extends Worker {
                         @Override
                         public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                             Log.e(TAG, "error while trying to unregister Device For Notifications", e);
+                            initiateUserDeletion(user);
                         }
 
                         @Override
@@ -137,7 +138,7 @@ public class AccountRemovalWorker extends Worker {
                         }
                     });
             } else {
-                deleteUser(user);
+                initiateUserDeletion(user);
             }
         }
 
@@ -172,15 +173,13 @@ public class AccountRemovalWorker extends Worker {
                             }
                         }
 
-                        if (user.getId() != null) {
-                            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(user.getId());
-                        }
-                        deleteAllEntriesForAccountIdentifier(user);
+                        initiateUserDeletion(user);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "error while trying to unregister Device For Notification With Proxy", e);
+                        initiateUserDeletion(user);
                     }
 
                     @Override
@@ -190,8 +189,10 @@ public class AccountRemovalWorker extends Worker {
                 });
     }
 
-    private void deleteAllEntriesForAccountIdentifier(User user) {
+    private void initiateUserDeletion(User user) {
         if (user.getId() != null) {
+            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(user.getId());
+
             try {
                 arbitraryStorageManager.deleteAllEntriesForAccountIdentifier(user.getId());
                 deleteUser(user);
