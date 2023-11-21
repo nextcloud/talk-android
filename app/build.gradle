@@ -152,7 +152,7 @@ ext {
     roomVersion = "2.6.0"
     workVersion = "2.8.1"
     espressoVersion = "3.5.1"
-    media3_version = "1.1.1"
+    media3_version = "1.2.0"
 }
 
 configurations.all {
