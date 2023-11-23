@@ -43,12 +43,18 @@ import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.BubbleMetadata
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
+import androidx.core.content.LocusIdCompat
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.emoji2.text.EmojiCompat
 import androidx.work.Data
@@ -65,6 +71,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
+import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -77,6 +84,7 @@ import com.nextcloud.talk.receivers.DirectReplyReceiver
 import com.nextcloud.talk.receivers.DismissRecordingAvailableReceiver
 import com.nextcloud.talk.receivers.MarkAsReadReceiver
 import com.nextcloud.talk.receivers.ShareRecordingToChatReceiver
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DoNotDisturbUtils.shouldPlaySound
 import com.nextcloud.talk.utils.NotificationUtils
@@ -99,6 +107,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -133,6 +142,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     @JvmField
     @Inject
     var retrofit: Retrofit? = null
+
+    @Inject
+    lateinit var userManager: UserManager
 
     @JvmField
     @Inject
@@ -174,6 +186,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             }
         } else if (isSpreedNotification()) {
             Log.d(TAG, "pushMessage.type: " + pushMessage.type)
+            val currentUser = userManager.currentUser.blockingGet()
+            val module = DatabaseStorageModule(currentUser, pushMessage.id)
+            importantConversation = module.getBoolean(ConversationInfoActivity.IMPORTANT_CONVERSATION_KEY, false)
             when (pushMessage.type) {
                 TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER -> handleNonCallPushMessage()
                 TYPE_CALL -> handleCallPushMessage()
@@ -319,6 +334,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
                 override fun onNext(notificationOverall: NotificationOverall) {
                     val ncNotification = notificationOverall.ocs!!.notification
+                    Log.d(TAG, "Notification is: $ncNotification")
                     if (ncNotification != null) {
                         enrichPushMessageByNcNotificationData(ncNotification)
                         showNotification(intent, ncNotification)
@@ -436,10 +452,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         val autoCancelOnClick = TYPE_RECORDING != pushMessage.type
 
-        val notificationBuilder = NotificationCompat.Builder(context!!, "1")
+        val notificationBuilder = NotificationCompat.Builder(context!!, "4")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
-            .setLargeIcon(getLargeIcon())
+            // .setLargeIcon(getLargeIcon())
             .setSmallIcon(R.drawable.ic_logo)
             .setContentTitle(contentTitle)
             .setContentText(contentText)
@@ -495,6 +511,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
             addReplyAction(notificationBuilder, systemNotificationId)
             addMarkAsReadAction(notificationBuilder, systemNotificationId)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                TYPE_REMINDER !=
+                pushMessage.type
+            ) {
+                setBubble(notificationBuilder)
+            }
         }
 
         if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
@@ -556,23 +578,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val person = Person.Builder()
             .setKey(signatureVerification.user!!.id.toString() + "@" + notificationUser.id)
             .setName(EmojiCompat.get().process(notificationUser.name!!))
-            .setBot("bot" == userType)
+            .setImportant(true)
+            .setBot(true)
         notificationBuilder.setOnlyAlertOnce(true)
-
-        if ("user" == userType || "guest" == userType) {
-            val baseUrl = signatureVerification.user!!.baseUrl
-            val avatarUrl = if ("user" == userType) {
-                ApiUtils.getUrlForAvatar(
-                    baseUrl,
-                    notificationUser.id,
-                    false
-                )
-            } else {
-                ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.name, false)
-            }
-            person.setIcon(loadAvatarSync(avatarUrl, context!!))
-        }
-        notificationBuilder.setStyle(getStyle(person.build(), style))
+        person.setIcon(getAvatarIcon())
+        val personBuilt = person.build()
+        notificationBuilder.setStyle(getStyle(personBuilt, style))
+        notificationBuilder.addPerson(personBuilt)
     }
 
     private fun buildIntentForAction(cls: Class<*>, systemNotificationId: Int, messageId: Int): PendingIntent {
@@ -617,6 +629,60 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .build()
             notificationBuilder.addAction(markAsReadAction)
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun setBubble(notificationBuilder: NotificationCompat.Builder) {
+        val intent = getIntentToOpenConversation()!!
+
+        val shortcutId = pushMessage.notificationUser!!.id!!
+        val shortcuts = ShortcutManagerCompat.getDynamicShortcuts(context!!)
+        val index = shortcuts.firstOrNull {
+            it.id == shortcutId
+        }
+
+        if (index == null) {
+            val shortCutInfo = ShortcutInfoCompat.Builder(context!!, shortcutId)
+                .setCategories(setOf(Notification.CATEGORY_MESSAGE))
+                .setIntent(Intent(Intent.ACTION_DEFAULT))
+                .setLongLived(true)
+                .setShortLabel(pushMessage.notificationUser!!.name!!)
+                .build()
+            ShortcutManagerCompat.pushDynamicShortcut(context!!, shortCutInfo)
+        }
+
+        val bubbleData =
+            BubbleMetadata.Builder(intent, getAvatarIcon())
+                .setDesiredHeight(DESIRED_SIZE)
+                .setIntent(intent)
+
+        bubbleData.setIcon(getAvatarIcon())
+
+        notificationBuilder
+            .setBubbleMetadata(bubbleData.build())
+            .setShortcutId(shortcutId)
+            .setLocusId(LocusIdCompat(shortcutId))
+    }
+
+    private fun getAvatarIcon(): IconCompat {
+        val notificationUser = pushMessage.notificationUser
+        val userType = notificationUser!!.type
+        var result: IconCompat? = null
+        if ("user" == userType || "guest" == userType) {
+            val baseUrl = signatureVerification.user!!.baseUrl
+            val avatarUrl = if ("user" == userType) {
+                ApiUtils.getUrlForAvatar(
+                    baseUrl,
+                    notificationUser.type,
+                    false
+                )
+            } else {
+                ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.name, false)
+            }
+            result = loadAvatarSync(avatarUrl, context!!)
+        }
+
+        return result ?: IconCompat.createWithResource(context!!, R.drawable.account_circle_96dp)
     }
 
     private fun addReplyAction(notificationBuilder: NotificationCompat.Builder, systemNotificationId: Int) {
@@ -994,5 +1060,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TIMER_COUNT = 12
         private const val TIMER_DELAY: Long = 5
         private const val GET_ROOM_RETRY_COUNT: Long = 3
+        private const val DESIRED_SIZE = 600
     }
 }
