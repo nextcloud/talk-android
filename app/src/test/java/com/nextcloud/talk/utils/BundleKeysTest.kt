@@ -97,7 +97,7 @@ class BundleKeysTest {
         assertEquals("KEY_DISMISS_RECORDING_URL", BundleKeys.KEY_DISMISS_RECORDING_URL)
         assertEquals("KEY_SHARE_RECORDING_TO_CHAT_URL", BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL)
         assertEquals("KEY_GEOCODING_RESULT", BundleKeys.KEY_GEOCODING_RESULT)
-        assertEquals("ADD_ACCOUNT", BundleKeys.ADD_ACCOUNT)
+        assertEquals("ADD_ADDITIONAL_ACCOUNT", BundleKeys.ADD_ADDITIONAL_ACCOUNT)
         assertEquals("SAVED_TRANSLATED_MESSAGE", BundleKeys.SAVED_TRANSLATED_MESSAGE)
     }
 }

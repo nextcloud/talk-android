@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
+ * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *
@@ -19,9 +21,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.controllers
+package com.nextcloud.talk.account
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.net.http.SslError
@@ -40,34 +43,30 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
-import androidx.work.Data
+import androidx.activity.OnBackPressedCallback
 import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.BaseController
-import com.nextcloud.talk.controllers.util.viewBinding
-import com.nextcloud.talk.databinding.ControllerWebViewLoginBinding
+import com.nextcloud.talk.databinding.ActivityWebViewLoginBinding
 import com.nextcloud.talk.events.CertificateEvent
-import com.nextcloud.talk.jobs.PushRegistrationWorker
+import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.models.LoginData
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ORIGINAL_PROTOCOL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
-import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.nextcloud.talk.utils.ssl.TrustManager
 import de.cotech.hw.fido.WebViewFidoBridge
 import io.reactivex.disposables.Disposable
-import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.Field
 import java.net.CookieManager
 import java.net.URLDecoder
@@ -78,11 +77,9 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class WebViewLoginController(args: Bundle? = null) : BaseController(
-    R.layout.controller_web_view_login,
-    args
-) {
-    private val binding: ControllerWebViewLoginBinding? by viewBinding(ControllerWebViewLoginBinding::bind)
+class WebViewLoginActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityWebViewLoginBinding
 
     @Inject
     lateinit var userManager: UserManager
@@ -91,33 +88,25 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
     lateinit var trustManager: TrustManager
 
     @Inject
-    lateinit var eventBus: EventBus
-
-    @Inject
     lateinit var cookieManager: CookieManager
 
     private var assembledPrefix: String? = null
     private var userQueryDisposable: Disposable? = null
     private var baseUrl: String? = null
-    private var isPasswordUpdate = false
+    private var reauthorizeAccount = false
     private var username: String? = null
     private var password: String? = null
     private var loginStep = 0
     private var automatedLoginAttempted = false
     private var webViewFidoBridge: WebViewFidoBridge? = null
 
-    constructor(baseUrl: String?, isPasswordUpdate: Boolean) : this() {
-        this.baseUrl = baseUrl
-        this.isPasswordUpdate = isPasswordUpdate
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            val intent = Intent(context, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+        }
     }
-
-    constructor(baseUrl: String?, isPasswordUpdate: Boolean, username: String?, password: String?) : this() {
-        this.baseUrl = baseUrl
-        this.isPasswordUpdate = isPasswordUpdate
-        this.username = username
-        this.password = password
-    }
-
     private val webLoginUserAgent: String
         get() = (
             Build.MANUFACTURER.substring(0, 1).toUpperCase(Locale.getDefault()) +
@@ -129,33 +118,57 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                 ")"
             )
 
-    @SuppressLint("SetJavaScriptEnabled")
-    override fun onViewBound(view: View) {
-        super.onViewBound(view)
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
+    @SuppressLint("SourceLockedOrientationActivity")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedApplication!!.componentApplication.inject(this)
+        binding = ActivityWebViewLoginBinding.inflate(layoutInflater)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        setContentView(binding.root)
         actionBar?.hide()
+        setupPrimaryColors()
 
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        handleIntent()
+        setupWebView()
+    }
+
+    private fun handleIntent() {
+        val extras = intent.extras!!
+        baseUrl = extras.getString(KEY_BASE_URL)
+        username = extras.getString(KEY_USERNAME)
+
+        if (extras.containsKey(BundleKeys.KEY_REAUTHORIZE_ACCOUNT)) {
+            reauthorizeAccount = extras.getBoolean(BundleKeys.KEY_REAUTHORIZE_ACCOUNT)
+        }
+
+        if (extras.containsKey(BundleKeys.KEY_PASSWORD)) {
+            password = extras.getString(BundleKeys.KEY_PASSWORD)
+        }
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun setupWebView() {
         assembledPrefix = resources!!.getString(R.string.nc_talk_login_scheme) + PROTOCOL_SUFFIX + "login/"
-        binding?.webview?.settings?.allowFileAccess = false
-        binding?.webview?.settings?.allowFileAccessFromFileURLs = false
-        binding?.webview?.settings?.javaScriptEnabled = true
-        binding?.webview?.settings?.javaScriptCanOpenWindowsAutomatically = false
-        binding?.webview?.settings?.domStorageEnabled = true
-        binding?.webview?.settings?.setUserAgentString(webLoginUserAgent)
-        binding?.webview?.settings?.saveFormData = false
-        binding?.webview?.settings?.savePassword = false
-        binding?.webview?.settings?.setRenderPriority(WebSettings.RenderPriority.HIGH)
-        binding?.webview?.clearCache(true)
-        binding?.webview?.clearFormData()
-        binding?.webview?.clearHistory()
+        binding.webview.settings.allowFileAccess = false
+        binding.webview.settings.allowFileAccessFromFileURLs = false
+        binding.webview.settings.javaScriptEnabled = true
+        binding.webview.settings.javaScriptCanOpenWindowsAutomatically = false
+        binding.webview.settings.domStorageEnabled = true
+        binding.webview.settings.userAgentString = webLoginUserAgent
+        binding.webview.settings.saveFormData = false
+        binding.webview.settings.savePassword = false
+        binding.webview.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
+        binding.webview.clearCache(true)
+        binding.webview.clearFormData()
+        binding.webview.clearHistory()
         WebView.clearClientCertPreferences(null)
-        webViewFidoBridge = WebViewFidoBridge.createInstanceForWebView(activity as AppCompatActivity?, binding?.webview)
-        CookieSyncManager.createInstance(activity)
+        webViewFidoBridge = WebViewFidoBridge.createInstanceForWebView(this, binding.webview)
+        CookieSyncManager.createInstance(this)
         android.webkit.CookieManager.getInstance().removeAllCookies(null)
         val headers: MutableMap<String, String> = HashMap()
-        headers.put("OCS-APIRequest", "true")
-        binding?.webview?.webViewClient = object : WebViewClient() {
+        headers["OCS-APIRequest"] = "true"
+        binding.webview.webViewClient = object : WebViewClient() {
             private var basePageLoaded = false
             override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
                 webViewFidoBridge?.delegateShouldInterceptRequest(view, request)
@@ -180,24 +193,24 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
             override fun onPageFinished(view: WebView, url: String) {
                 loginStep++
                 if (!basePageLoaded) {
-                    binding?.progressBar?.visibility = View.GONE
-                    binding?.webview?.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+                    binding.webview.visibility = View.VISIBLE
 
                     basePageLoaded = true
                 }
                 if (!TextUtils.isEmpty(username)) {
                     if (loginStep == 1) {
-                        binding?.webview?.loadUrl(
+                        binding.webview.loadUrl(
                             "javascript: {document.getElementsByClassName('login')[0].click(); };"
                         )
                     } else if (!automatedLoginAttempted) {
                         automatedLoginAttempted = true
                         if (TextUtils.isEmpty(password)) {
-                            binding?.webview?.loadUrl(
+                            binding.webview.loadUrl(
                                 "javascript:var justStore = document.getElementById('user').value = '$username';"
                             )
                         } else {
-                            binding?.webview?.loadUrl(
+                            binding.webview.loadUrl(
                                 "javascript: {" +
                                     "document.getElementById('user').value = '" + username + "';" +
                                     "document.getElementById('password').value = '" + password + "';" +
@@ -213,8 +226,8 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
             override fun onReceivedClientCertRequest(view: WebView, request: ClientCertRequest) {
                 val user = userManager.currentUser.blockingGet()
                 var alias: String? = null
-                if (!isPasswordUpdate) {
-                    alias = appPreferences!!.temporaryClientCertAlias
+                if (!reauthorizeAccount) {
+                    alias = appPreferences.temporaryClientCertAlias
                 }
                 if (TextUtils.isEmpty(alias) && user != null) {
                     alias = user.clientCertificate
@@ -223,9 +236,9 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                     val finalAlias = alias
                     Thread {
                         try {
-                            val privateKey = KeyChain.getPrivateKey(activity!!, finalAlias!!)
+                            val privateKey = KeyChain.getPrivateKey(applicationContext, finalAlias!!)
                             val certificates = KeyChain.getCertificateChain(
-                                activity!!,
+                                applicationContext,
                                 finalAlias
                             )
                             if (privateKey != null && certificates != null) {
@@ -241,16 +254,16 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                     }.start()
                 } else {
                     KeyChain.choosePrivateKeyAlias(
-                        activity!!,
+                        this@WebViewLoginActivity,
                         { chosenAlias: String? ->
                             if (chosenAlias != null) {
                                 appPreferences!!.temporaryClientCertAlias = chosenAlias
                                 Thread {
                                     var privateKey: PrivateKey? = null
                                     try {
-                                        privateKey = KeyChain.getPrivateKey(activity!!, chosenAlias)
+                                        privateKey = KeyChain.getPrivateKey(applicationContext, chosenAlias)
                                         val certificates = KeyChain.getCertificateChain(
-                                            activity!!,
+                                            applicationContext,
                                             chosenAlias
                                         )
                                         if (privateKey != null && certificates != null) {
@@ -304,7 +317,7 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
                 super.onReceivedError(view, errorCode, description, failingUrl)
             }
         }
-        binding?.webview?.loadUrl("$baseUrl/index.php/login/flow", headers)
+        binding.webview.loadUrl("$baseUrl/index.php/login/flow", headers)
     }
 
     private fun dispose() {
@@ -318,80 +331,77 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
         val loginData = parseLoginData(assembledPrefix, dataString)
         if (loginData != null) {
             dispose()
-            val currentUser = userManager.currentUser.blockingGet()
-            var messageType: ApplicationWideMessageHolder.MessageType? = null
-            if (!isPasswordUpdate &&
-                userManager.checkIfUserExists(loginData.username!!, baseUrl!!).blockingGet()
-            ) {
-                messageType = ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED
-            }
-            if (userManager.checkIfUserIsScheduledForDeletion(loginData.username!!, baseUrl!!).blockingGet()) {
-                ApplicationWideMessageHolder.getInstance().messageType =
-                    ApplicationWideMessageHolder.MessageType.ACCOUNT_SCHEDULED_FOR_DELETION
-                if (!isPasswordUpdate) {
-                    router.popToRoot()
-                } else {
-                    router.popCurrentController()
-                }
-            }
-            val finalMessageType = messageType
             cookieManager.cookieStore.removeAll()
-            if (!isPasswordUpdate && finalMessageType == null) {
-                val bundle = Bundle()
-                bundle.putString(KEY_USERNAME, loginData.username)
-                bundle.putString(KEY_TOKEN, loginData.token)
-                bundle.putString(KEY_BASE_URL, loginData.serverUrl)
-                var protocol = ""
-                if (baseUrl!!.startsWith("http://")) {
-                    protocol = "http://"
-                } else if (baseUrl!!.startsWith("https://")) {
-                    protocol = "https://"
-                }
-                if (!TextUtils.isEmpty(protocol)) {
-                    bundle.putString(KEY_ORIGINAL_PROTOCOL, protocol)
-                }
-                router.pushController(
-                    RouterTransaction.with(AccountVerificationController(bundle))
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler())
-                )
-            } else {
-                if (isPasswordUpdate) {
-                    if (currentUser != null) {
-                        currentUser.clientCertificate = appPreferences!!.temporaryClientCertAlias
-                        currentUser.token = loginData.token
-                        val rowsUpdated = userManager.updateOrCreateUser(currentUser).blockingGet()
-                        Log.d(TAG, "User rows updated: $rowsUpdated")
 
-                        if (finalMessageType != null) {
-                            ApplicationWideMessageHolder.getInstance().messageType = finalMessageType
-                        }
-
-                        val data = Data.Builder().putString(
-                            PushRegistrationWorker.ORIGIN,
-                            "WebViewLoginController#parseAndLoginFromWebView"
-                        ).build()
-
-                        val pushRegistrationWork = OneTimeWorkRequest.Builder(
-                            PushRegistrationWorker::class.java
-                        )
-                            .setInputData(data)
-                            .build()
-
-                        WorkManager.getInstance().enqueue(pushRegistrationWork)
-                        router.popCurrentController()
-                    }
+            if (userManager.checkIfUserIsScheduledForDeletion(loginData.username!!, baseUrl!!).blockingGet()) {
+                Log.e(TAG, "Tried to add already existing user who is scheduled for deletion.")
+                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                // however the user is not yet deleted, just start AccountRemovalWorker again to make sure to delete it.
+                startAccountRemovalWorkerAndRestartApp()
+            } else if (userManager.checkIfUserExists(loginData.username!!, baseUrl!!).blockingGet()) {
+                if (reauthorizeAccount) {
+                    updateUserAndRestartApp(loginData)
                 } else {
-                    if (finalMessageType != null) {
-                        // FIXME when the user registers a new account that was setup before (aka
-                        //  ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED)
-                        //  The token is not updated in the database and therefore the account not visible/usable
-                        ApplicationWideMessageHolder.getInstance().messageType = finalMessageType
-                    }
-                    router.popToRoot()
+                    Log.w(TAG, "It was tried to add an account that account already exists. Skipped user creation.")
+                    restartApp()
                 }
+            } else {
+                startAccountVerification(loginData)
             }
         }
+    }
+
+    private fun startAccountVerification(loginData: LoginData) {
+        val bundle = Bundle()
+        bundle.putString(KEY_USERNAME, loginData.username)
+        bundle.putString(KEY_TOKEN, loginData.token)
+        bundle.putString(KEY_BASE_URL, loginData.serverUrl)
+        var protocol = ""
+        if (baseUrl!!.startsWith("http://")) {
+            protocol = "http://"
+        } else if (baseUrl!!.startsWith("https://")) {
+            protocol = "https://"
+        }
+        if (!TextUtils.isEmpty(protocol)) {
+            bundle.putString(KEY_ORIGINAL_PROTOCOL, protocol)
+        }
+        val intent = Intent(context, AccountVerificationActivity::class.java)
+        intent.putExtras(bundle)
+        startActivity(intent)
+    }
+
+    private fun restartApp() {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+    }
+
+    private fun updateUserAndRestartApp(loginData: LoginData) {
+        val currentUser = userManager.currentUser.blockingGet()
+        if (currentUser != null) {
+            currentUser.clientCertificate = appPreferences.temporaryClientCertAlias
+            currentUser.token = loginData.token
+            val rowsUpdated = userManager.updateOrCreateUser(currentUser).blockingGet()
+            Log.d(TAG, "User rows updated: $rowsUpdated")
+            restartApp()
+        }
+    }
+
+    private fun startAccountRemovalWorkerAndRestartApp() {
+        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+        WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
+            .observeForever { workInfo: WorkInfo ->
+
+                when (workInfo.state) {
+                    WorkInfo.State.SUCCEEDED, WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        restartApp()
+                    }
+
+                    else -> {}
+                }
+            }
     }
 
     private fun parseLoginData(prefix: String?, dataString: String): LoginData? {
@@ -432,28 +442,9 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
         }
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        if (activity != null && resources != null) {
-            DisplayUtils.applyColorToStatusBar(
-                activity,
-                ResourcesCompat.getColor(resources!!, R.color.colorPrimary, null)
-            )
-            DisplayUtils.applyColorToNavigationBar(
-                activity!!.window,
-                ResourcesCompat.getColor(resources!!, R.color.colorPrimary, null)
-            )
-        }
-    }
-
     public override fun onDestroy() {
         super.onDestroy()
         dispose()
-    }
-
-    override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
     }
 
     init {
@@ -464,7 +455,7 @@ class WebViewLoginController(args: Bundle? = null) : BaseController(
         get() = AppBarLayoutType.EMPTY
 
     companion object {
-        const val TAG = "WebViewLoginController"
+        private val TAG = WebViewLoginActivity::class.java.simpleName
         private const val PROTOCOL_SUFFIX = "://"
         private const val LOGIN_URL_DATA_KEY_VALUE_SEPARATOR = ":"
         private const val PARAMETER_COUNT = 3

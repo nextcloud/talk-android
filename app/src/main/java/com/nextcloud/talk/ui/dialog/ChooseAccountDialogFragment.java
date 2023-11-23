@@ -35,7 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.nextcloud.talk.activities.MainActivity;
+import com.nextcloud.talk.account.ServerSelectionActivity;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -71,7 +71,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ACCOUNT;
+import static com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChooseAccountDialogFragment extends DialogFragment {
@@ -185,11 +185,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         // Creating listeners for quick-actions
         binding.currentAccount.getRoot().setOnClickListener(v -> dismiss());
 
-
         binding.addAccount.setOnClickListener(v -> {
-            // TODO: change this when conductor is removed
-            Intent intent = new Intent(getContext(), MainActivity.class);
-            intent.putExtra(ADD_ACCOUNT, true);
+            Intent intent = new Intent(getContext(), ServerSelectionActivity.class);
+            intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true);
             startActivity(intent);
             dismiss();
         });

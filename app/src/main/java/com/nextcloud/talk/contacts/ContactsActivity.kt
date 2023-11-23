@@ -488,17 +488,13 @@ class ContactsActivity :
                     } else {
                         adapter?.filterItems()
                     }
-
-                    binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
                 }
 
                 override fun onError(e: Throwable) {
-                    binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
                     dispose(contactsQueryDisposable)
                 }
 
                 override fun onComplete() {
-                    binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = false
                     dispose(contactsQueryDisposable)
                     alreadyFetching = false
                     disengageProgressBar()
@@ -656,12 +652,9 @@ class ContactsActivity :
 
     private fun prepareViews() {
         layoutManager = SmoothScrollLinearLayoutManager(this)
-        binding.controllerGenericRv.recyclerView.layoutManager = layoutManager
-        binding.controllerGenericRv.recyclerView.setHasFixedSize(true)
-        binding.controllerGenericRv.recyclerView.adapter = adapter
-        binding.controllerGenericRv.swipeRefreshLayout.setOnRefreshListener { fetchData() }
-
-        binding.controllerGenericRv.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it.swipeRefreshLayout) }
+        binding.contactsRv.layoutManager = layoutManager
+        binding.contactsRv.setHasFixedSize(true)
+        binding.contactsRv.adapter = adapter
 
         binding.listOpenConversationsImage.background?.setColorFilter(
             ResourcesCompat.getColor(resources!!, R.color.colorBackgroundDarker, null),
@@ -677,7 +670,7 @@ class ContactsActivity :
     private fun disengageProgressBar() {
         if (!alreadyFetching) {
             binding.loadingContent.visibility = View.GONE
-            binding.controllerGenericRv.root.visibility = View.VISIBLE
+            binding.root.visibility = View.VISIBLE
             if (isNewConversationView) {
                 binding.callHeaderLayout.visibility = View.VISIBLE
             }
@@ -712,8 +705,6 @@ class ContactsActivity :
             adapter?.setFilter("")
             adapter?.updateDataSet(contactItems as List<Nothing>?)
         }
-
-        binding.controllerGenericRv?.swipeRefreshLayout?.isEnabled = !adapter!!.hasFilter()
 
         return true
     }

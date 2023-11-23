@@ -91,8 +91,6 @@ class ShareRecordingToChatReceiver : BroadcastReceiver() {
                     // However, as we are in a broadcast receiver, this needs a TaskStackBuilder
                     // combined with addNextIntentWithParentStack. For further reading, see
                     // https://developer.android.com/develop/ui/views/notifications/navigation#DirectEntry
-                    // As we are using the conductor framework it might be hard the combine this or to keep an overview.
-                    // For this reason there is only a Snackbar for now until we got rid of conductor.
 
                     Snackbar.make(
                         View(context),

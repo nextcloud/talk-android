@@ -231,6 +231,6 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) :
     }
 
     companion object {
-        private val TAG = NextcloudTalkApplication::class.java.simpleName
+        private val TAG = IncomingPollMessageViewHolder::class.java.simpleName
     }
 }

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.controllers.bottomsheet.items
+package com.nextcloud.talk.bottomsheet.items
 
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
