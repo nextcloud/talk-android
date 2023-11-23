@@ -857,6 +857,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Error in getPeersForCall", e)
+                    if (isCallNotificationVisible) {
+                        showMissedCallNotification()
+                    }
+                    removeNotification(pushMessage.timestamp.toInt())
                 }
 
                 override fun onComplete() {
