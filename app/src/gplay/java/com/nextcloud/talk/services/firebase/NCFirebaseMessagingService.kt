@@ -79,10 +79,8 @@ class NCFirebaseMessagingService : FirebaseMessagingService() {
 
         appPreferences.pushToken = token
 
-        val data: Data = Data.Builder().putString(
-            PushRegistrationWorker.ORIGIN,
-            "NCFirebaseMessagingService#onNewToken"
-        ).build()
+        val data: Data =
+            Data.Builder().putString(PushRegistrationWorker.ORIGIN, "NCFirebaseMessagingService#onNewToken").build()
         val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
             .setInputData(data)
             .build()

@@ -28,20 +28,24 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import autodagger.AutoInjector
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import javax.inject.Inject
 
+@AutoInjector(NextcloudTalkApplication::class)
 class GetFirebasePushTokenWorker(val context: Context, workerParameters: WorkerParameters) :
     Worker(context, workerParameters) {
 
-    @JvmField
     @Inject
-    var appPreferences: AppPreferences? = null
+    lateinit var appPreferences: AppPreferences
 
     @SuppressLint("LongLogTag")
     override fun doWork(): Result {
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+
         FirebaseMessaging.getInstance().token.addOnCompleteListener(
             OnCompleteListener { task ->
                 if (!task.isSuccessful) {
@@ -49,14 +53,13 @@ class GetFirebasePushTokenWorker(val context: Context, workerParameters: WorkerP
                     return@OnCompleteListener
                 }
 
-                val token = task.result
+                val pushToken = task.result
+                Log.d(TAG, "Fetched firebase push token is: $pushToken")
 
-                appPreferences?.pushToken = token
+                appPreferences.pushToken = pushToken
 
                 val data: Data =
-                    Data.Builder()
-                        .putString(PushRegistrationWorker.ORIGIN, "GetFirebasePushTokenWorker")
-                        .build()
+                    Data.Builder().putString(PushRegistrationWorker.ORIGIN, "GetFirebasePushTokenWorker").build()
                 val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
                     .setInputData(data)
                     .build()
@@ -68,6 +71,6 @@ class GetFirebasePushTokenWorker(val context: Context, workerParameters: WorkerP
     }
 
     companion object {
-        const val TAG = "GetFirebasePushTokenWorker"
+        private val TAG = GetFirebasePushTokenWorker::class.simpleName
     }
 }

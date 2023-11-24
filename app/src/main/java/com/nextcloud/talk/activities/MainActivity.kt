@@ -32,6 +32,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -52,6 +53,7 @@ import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -78,7 +80,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: Activity: " + System.identityHashCode(this).toString())
 
@@ -280,6 +281,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
                 override fun onSuccess(users: List<User>) {
                     if (users.isNotEmpty()) {
+                        ClosedInterfaceImpl().setUpPushTokenRegistration()
                         runOnUiThread {
                             openConversationList()
                         }
@@ -292,6 +294,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Error loading existing users", e)
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.nc_common_error_sorry),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }

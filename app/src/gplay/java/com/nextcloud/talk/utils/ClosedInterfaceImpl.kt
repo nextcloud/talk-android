@@ -24,7 +24,7 @@
 package com.nextcloud.talk.utils
 
 import android.content.Intent
-import androidx.work.Data
+import android.util.Log
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
@@ -36,7 +36,6 @@ import com.google.android.gms.security.ProviderInstaller
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.interfaces.ClosedInterface
 import com.nextcloud.talk.jobs.GetFirebasePushTokenWorker
-import com.nextcloud.talk.jobs.PushRegistrationWorker
 import java.util.concurrent.TimeUnit
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -65,77 +64,43 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
         val api = GoogleApiAvailability.getInstance()
         val code =
             NextcloudTalkApplication.sharedApplication?.let {
-                api.isGooglePlayServicesAvailable(
-                    it.applicationContext
-                )
+                api.isGooglePlayServicesAvailable(it.applicationContext)
             }
-        return code == ConnectionResult.SUCCESS
+        return if (code == ConnectionResult.SUCCESS) {
+            true
+        } else {
+            Log.w(TAG, "GooglePlayServices are not available. Code:$code")
+            false
+        }
     }
 
     override fun setUpPushTokenRegistration() {
-        registerLocalToken()
-        setUpPeriodicLocalTokenRegistration()
+        val firebasePushTokenWorker = OneTimeWorkRequest.Builder(GetFirebasePushTokenWorker::class.java).build()
+        WorkManager.getInstance().enqueue(firebasePushTokenWorker)
+
         setUpPeriodicTokenRefreshFromFCM()
-    }
-
-    private fun registerLocalToken() {
-        val data: Data = Data.Builder().putString(
-            PushRegistrationWorker.ORIGIN,
-            "ClosedInterfaceImpl#registerLocalToken"
-        )
-            .build()
-        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
-            .setInputData(data)
-            .build()
-        WorkManager.getInstance().enqueue(pushRegistrationWork)
-    }
-
-    private fun setUpPeriodicLocalTokenRegistration() {
-        val data: Data = Data.Builder().putString(
-            PushRegistrationWorker.ORIGIN,
-            "ClosedInterfaceImpl#setUpPeriodicLocalTokenRegistration"
-        )
-            .build()
-
-        val periodicTokenRegistration = PeriodicWorkRequest.Builder(
-            PushRegistrationWorker::class.java,
-            DAILY,
-            TimeUnit.HOURS,
-            FLEX_INTERVAL,
-            TimeUnit.HOURS
-        )
-            .setInputData(data)
-            .build()
-
-        WorkManager.getInstance()
-            .enqueueUniquePeriodicWork(
-                "periodicTokenRegistration",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                periodicTokenRegistration
-            )
     }
 
     private fun setUpPeriodicTokenRefreshFromFCM() {
         val periodicTokenRefreshFromFCM = PeriodicWorkRequest.Builder(
             GetFirebasePushTokenWorker::class.java,
-            MONTHLY,
-            TimeUnit.DAYS,
+            DAILY,
+            TimeUnit.HOURS,
             FLEX_INTERVAL,
-            TimeUnit.DAYS
-        )
-            .build()
+            TimeUnit.HOURS
+        ).build()
 
         WorkManager.getInstance()
             .enqueueUniquePeriodicWork(
                 "periodicTokenRefreshFromFCM",
-                ExistingPeriodicWorkPolicy.REPLACE,
+                ExistingPeriodicWorkPolicy.UPDATE,
                 periodicTokenRefreshFromFCM
             )
     }
 
     companion object {
+        private val TAG = ClosedInterfaceImpl::class.java.simpleName
         const val DAILY: Long = 24
-        const val MONTHLY: Long = 30
         const val FLEX_INTERVAL: Long = 10
     }
 }
