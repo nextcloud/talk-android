@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Зображення облікового запису</string>
     <string name="appbar_search_in">Пошук у %s</string>
+    <string name="audio_call">Голосовий виклик</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Вивід аудіо</string>
     <string name="audio_output_phone">Телефон</string>
