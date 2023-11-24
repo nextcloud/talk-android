@@ -49,7 +49,6 @@ import com.nextcloud.talk.databinding.ActivityAccountVerificationBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
-import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.models.json.capabilities.Capabilities
@@ -277,8 +276,9 @@ class AccountVerificationActivity : BaseActivity() {
                 override fun onSuccess(user: User) {
                     internalAccountId = user.id!!
                     if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-                        registerForPush()
+                        ClosedInterfaceImpl().setUpPushTokenRegistration()
                     } else {
+                        Log.w(TAG, "Skipping push registration.")
                         runOnUiThread {
                             binding.progressText.text =
                                 """ ${binding.progressText.text}
@@ -357,21 +357,10 @@ class AccountVerificationActivity : BaseActivity() {
             })
     }
 
-    private fun registerForPush() {
-        val data =
-            Data.Builder()
-                .putString(PushRegistrationWorker.ORIGIN, "AccountVerificationActivity#registerForPush")
-                .build()
-        val pushRegistrationWork =
-            OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
-                .setInputData(data)
-                .build()
-        WorkManager.getInstance().enqueue(pushRegistrationWork)
-    }
-
     @SuppressLint("SetTextI18n")
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(eventStatus: EventStatus) {
+        Log.d(TAG, "caught EventStatus of type " + eventStatus.eventType.toString())
         if (eventStatus.eventType == EventStatus.EventType.PUSH_REGISTRATION) {
             if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
                 runOnUiThread {
@@ -415,11 +404,11 @@ class AccountVerificationActivity : BaseActivity() {
             Data.Builder()
                 .putLong(KEY_INTERNAL_USER_ID, internalAccountId)
                 .build()
-        val pushNotificationWork =
+        val capabilitiesWork =
             OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
                 .setInputData(userData)
                 .build()
-        WorkManager.getInstance().enqueue(pushNotificationWork)
+        WorkManager.getInstance().enqueue(capabilitiesWork)
     }
 
     private fun fetchAndStoreExternalSignalingSettings() {
@@ -427,19 +416,18 @@ class AccountVerificationActivity : BaseActivity() {
             Data.Builder()
                 .putLong(KEY_INTERNAL_USER_ID, internalAccountId)
                 .build()
-        val signalingSettings = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
+        val signalingSettingsWorker = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
             .setInputData(userData)
             .build()
         val websocketConnectionsWorker = OneTimeWorkRequest.Builder(WebsocketConnectionsWorker::class.java).build()
 
         WorkManager.getInstance(applicationContext!!)
-            .beginWith(signalingSettings)
+            .beginWith(signalingSettingsWorker)
             .then(websocketConnectionsWorker)
             .enqueue()
     }
 
     private fun proceedWithLogin() {
-        Log.d(TAG, "proceedWithLogin...")
         cookieManager.cookieStore.removeAll()
 
         if (userManager.users.blockingGet().size == 1 ||
@@ -466,6 +454,8 @@ class AccountVerificationActivity : BaseActivity() {
                 Log.e(TAG, "failed to set active user")
                 Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             }
+        } else {
+            Log.d(TAG, "continuing proceedWithLogin was skipped for this user")
         }
     }
 

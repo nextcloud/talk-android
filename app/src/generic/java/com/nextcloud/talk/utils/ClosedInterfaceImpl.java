@@ -38,9 +38,6 @@ public class ClosedInterfaceImpl implements ClosedInterface {
 
     @Override
     public void setUpPushTokenRegistration() {
-        // no push notifications for generic build flavour :(
-        // If you want to develop push notifications without google play services, here is a good place to start...
-        // Also have a look at app/src/gplay/AndroidManifest.xml to see how to include a service that handles push
-        // notifications.
+        // no push notifications for generic build variant
     }
 }

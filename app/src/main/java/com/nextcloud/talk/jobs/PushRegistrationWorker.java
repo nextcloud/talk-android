@@ -64,7 +64,7 @@ public class PushRegistrationWorker extends Worker {
     @Override
     public Result doWork() {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        if(new ClosedInterfaceImpl().isGooglePlayServicesAvailable()){
+        if (new ClosedInterfaceImpl().isGooglePlayServicesAvailable()) {
             Data data = getInputData();
             String origin = data.getString("origin");
             Log.d(TAG, "PushRegistrationWorker called via " + origin);

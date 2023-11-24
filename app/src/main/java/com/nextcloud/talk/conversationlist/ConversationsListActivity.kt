@@ -107,7 +107,6 @@ import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -254,7 +253,6 @@ class ConversationsListActivity :
 
         showShareToScreen = hasActivityActionSendIntent()
 
-        ClosedInterfaceImpl().setUpPushTokenRegistration()
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
         }
