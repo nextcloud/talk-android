@@ -144,6 +144,7 @@
     <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de silinecek.</string>
     <string name="nc_delete_message">Sil</string>
     <string name="nc_delete_message_leaked_to_matterbridge">İleti silindi ancak başka hizmetlere aktarılmış olabilir</string>
+    <string name="nc_deleted_user">%1$s kullanıcısı kaldırıldı</string>
     <string name="nc_demote">Sorumluluktan çıkar</string>
     <string name="nc_description_record_voice">Ses iletisi kaydet</string>
     <string name="nc_description_send_message_button">İleti gönder</string>

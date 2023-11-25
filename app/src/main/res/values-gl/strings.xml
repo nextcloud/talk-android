@@ -144,6 +144,7 @@
     <string name="nc_delete_conversation_more">Se elimina a conversa, tamén se eliminará para todos os demais participantes.</string>
     <string name="nc_delete_message">Eliminar</string>
     <string name="nc_delete_message_leaked_to_matterbridge">A mensaxe foi eliminada correctamente, pero é posíbel que se filtrase a outros servizos</string>
+    <string name="nc_deleted_user">O usuario %1$s foi retirado</string>
     <string name="nc_demote">Relegar de moderador</string>
     <string name="nc_description_record_voice">Gravar mensaxe de voz</string>
     <string name="nc_description_send_message_button">Enviar a mensaxe</string>

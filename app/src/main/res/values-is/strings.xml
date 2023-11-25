@@ -231,6 +231,7 @@
     <string name="nc_sort_by">Raða sem</string>
     <string name="nc_start_time">Upphafstími</string>
     <string name="nc_switch_account">Skipta um notandaaðgang</string>
+    <string name="nc_upload_from_device">Senda inn frá tæki</string>
     <string name="nc_upload_in_progess">Sendi inn</string>
     <string name="nc_user">Notandi</string>
     <string name="nc_webinar">Webinar</string>
@@ -273,6 +274,7 @@
     <string name="tomorrow">Á morgun</string>
     <string name="translate">Þýða</string>
     <string name="translation_device_settings">Stillingar tækis</string>
+    <string name="translation_error_message">Gat ekki greint tungumálið</string>
     <string name="translation_from">Frá</string>
     <string name="translation_to">Til</string>
     <string name="user_info_address">Vistfang</string>
