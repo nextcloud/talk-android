@@ -420,8 +420,10 @@
     <string name="today">今日</string>
     <string name="tomorrow">明日</string>
     <string name="translate">翻訳</string>
+    <string name="translation_detect_language">言語を検出する</string>
     <string name="translation_device_settings">デバイスの設定</string>
     <string name="translation_error_message">言語を検出できませんでした</string>
+    <string name="translation_error_title">翻訳に失敗しました</string>
     <string name="translation_from">差出人</string>
     <string name="translation_to">宛先</string>
     <string name="unread">未読</string>

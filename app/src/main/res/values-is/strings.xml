@@ -15,6 +15,7 @@
     <string name="dnd">Ónáðið ekki</string>
     <string name="dontClear">Ekki hreinsa</string>
     <string name="edit">Breyta</string>
+    <string name="emoji_backspace">Baklykill (backspace)</string>
     <string name="emoji_category_recent">Nýlegt</string>
     <string name="encrypted">Dulritað</string>
     <string name="file_list_folder">mappa</string>
@@ -273,8 +274,10 @@
     <string name="today">Í dag</string>
     <string name="tomorrow">Á morgun</string>
     <string name="translate">Þýða</string>
+    <string name="translation_detect_language">Greina tungumál</string>
     <string name="translation_device_settings">Stillingar tækis</string>
     <string name="translation_error_message">Gat ekki greint tungumálið</string>
+    <string name="translation_error_title">Þýðing mistókst</string>
     <string name="translation_from">Frá</string>
     <string name="translation_to">Til</string>
     <string name="user_info_address">Vistfang</string>
