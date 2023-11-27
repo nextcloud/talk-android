@@ -40,6 +40,8 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小時</string>
     <string name="invisible">隱藏</string>
+    <string name="languages_error_message">無法擷取語言</string>
+    <string name="languages_error_title">擷取失敗</string>
     <string name="later_today">今天稍後</string>
     <string name="left_conversation">您離開了對話 %1$s</string>
     <string name="load_more_results">載入更多結果</string>
@@ -102,6 +104,7 @@
     <string name="nc_camera_permission_hint">要啟用影像通訊，請授予「相機」權限。</string>
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">無法獲取功能，正在中止</string>
+    <string name="nc_caption">字幕</string>
     <string name="nc_certificate_dialog_text">您是否信任 %1$s 為 %2$s 發行的，有效期從 %3$s 到 %4$s，迄今不詳的 SSL 憑證？</string>
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
@@ -141,6 +144,7 @@
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
     <string name="nc_delete_message">刪除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">訊息已成功刪除，但可能已分發到其他服務</string>
+    <string name="nc_deleted_user">使用 %1$s 已移除</string>
     <string name="nc_demote">取消主持人資格</string>
     <string name="nc_description_record_voice">錄製語音訊息</string>
     <string name="nc_description_send_message_button">傳送訊息</string>

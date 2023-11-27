@@ -40,6 +40,8 @@
     <string name="filename_progress">%1$s（%2$d）</string>
     <string name="fourHours">4 小時</string>
     <string name="invisible">隱藏</string>
+    <string name="languages_error_message">無法擷取語言</string>
+    <string name="languages_error_title">擷取失敗</string>
     <string name="later_today">今日稍後</string>
     <string name="left_conversation">你離開了對話 %1$s</string>
     <string name="load_more_results">正在載入更多結果</string>
@@ -102,6 +104,7 @@
     <string name="nc_camera_permission_hint">要啟用影像通訊，請授予「相機」權限。</string>
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">無法獲取功能，正在中止</string>
+    <string name="nc_caption">說明</string>
     <string name="nc_certificate_dialog_text">您是否信任 %1$s 為 %2$s 發行的，有效期從 %3$s 到 %4$s，迄今不詳的SSL證書？</string>
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
@@ -141,6 +144,7 @@
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
     <string name="nc_delete_message">刪除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">消息已成功刪除，但可能已分發到其他服務</string>
+    <string name="nc_deleted_user">用户 %1$s 已被移除</string>
     <string name="nc_demote">從主持人降級</string>
     <string name="nc_description_record_voice">錄製話音短訊</string>
     <string name="nc_description_send_message_button">傳送訊息</string>
@@ -151,7 +155,10 @@
     <string name="nc_dialog_outdated_client_description">該應用程式太舊，不再受此伺服器支持。請更新。</string>
     <string name="nc_dialog_outdated_client_option_update">更新</string>
     <string name="nc_dialog_reauth_or_delete">您要重新授權或刪除此賬戶嗎？</string>
+    <string name="nc_dialog_save_to_storage_content">將此媒體儲存到儲存空間中將允許您裝置上的任何其他應用程式存取它。</string>
+    <string name="nc_dialog_save_to_storage_continue">繼續？</string>
     <string name="nc_dialog_save_to_storage_no">否</string>
+    <string name="nc_dialog_save_to_storage_title">保存到儲存裝置中？</string>
     <string name="nc_dialog_save_to_storage_yes">是</string>
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止操作。</string>
     <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
@@ -455,6 +462,7 @@
     <string name="record_stop_description">停止錄音</string>
     <string name="record_stopping">停止錄音 ...</string>
     <string name="recording_consent_all">所有通話都需要獲得錄製同意</string>
+    <string name="recording_consent_description">錄製可能包括您的聲音、視像和螢幕共享。在您加入通話之前，需要獲得您的同意。您同意嗎？</string>
     <string name="recording_consent_for_conversation_description">在此次對話中，需要在加入通話前給予錄製同意</string>
     <string name="recording_consent_for_conversation_title">錄製同意</string>
     <string name="recording_consent_title">通話可能會被錄製。</string>

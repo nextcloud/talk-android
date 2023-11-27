@@ -144,6 +144,7 @@
     <string name="nc_delete_conversation_more">If you delete the conversation, it will also be deleted for all other participants.</string>
     <string name="nc_delete_message">Delete</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message deleted successfully, but it might have been leaked to other services</string>
+    <string name="nc_deleted_user">User %1$s was removed</string>
     <string name="nc_demote">Demote from moderator</string>
     <string name="nc_description_record_voice">Record voice message</string>
     <string name="nc_description_send_message_button">Send message</string>
