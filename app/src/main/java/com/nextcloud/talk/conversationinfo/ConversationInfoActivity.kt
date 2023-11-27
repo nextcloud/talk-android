@@ -57,9 +57,9 @@ import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.items.ParticipantItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
+import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
@@ -663,7 +663,15 @@ class ConversationInfoActivity :
                         showOptionsMenu()
                     } else {
                         binding.addParticipantsAction.visibility = GONE
-                        binding.clearConversationHistory.visibility = GONE
+
+                        if (ConversationUtils.isNoteToSelfConversation(
+                                ConversationModel.mapToConversationModel(conversation!!)
+                            )
+                        ) {
+                            binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
+                        } else {
+                            binding.clearConversationHistory.visibility = GONE
+                        }
                     }
 
                     if (!isDestroyed) {
@@ -823,7 +831,6 @@ class ConversationInfoActivity :
 
     private fun initExpiringMessageOption() {
         if (conversation!!.isParticipantOwnerOrModerator &&
-            !ConversationUtils.isNoteToSelfConversation(ConversationModel.mapToConversationModel(conversation!!)) &&
             CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")
         ) {
             databaseStorageModule?.setMessageExpiration(conversation!!.messageExpiration)
