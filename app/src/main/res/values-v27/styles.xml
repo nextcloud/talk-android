@@ -9,6 +9,8 @@
         <item name="android:windowActionBar">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="colorSurface">@color/bg_default</item>
+        <item name="alertDialogTheme">@style/Theme.AppCompat.DayNight.Dialog</item>
+        <item name="android:alertDialogTheme">?alertDialogTheme</item>
     </style>
 
     <style name="FullScreenMediaTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -19,5 +21,7 @@
         <item name="android:windowActionBar">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="colorSurface">@color/bg_default</item>
+        <item name="alertDialogTheme">@style/Theme.AppCompat.DayNight.Dialog</item>
+        <item name="android:alertDialogTheme">?alertDialogTheme</item>
     </style>
 </resources>
