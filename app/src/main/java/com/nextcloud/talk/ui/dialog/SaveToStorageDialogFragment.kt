@@ -26,9 +26,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.work.Data
@@ -40,7 +37,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.databinding.DialogChooseAccountShareToBinding
 import com.nextcloud.talk.jobs.SaveFileToStorageWorker
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import java.util.concurrent.ExecutionException
@@ -51,8 +47,6 @@ class SaveToStorageDialogFragment : DialogFragment() {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
-    private var binding: DialogChooseAccountShareToBinding? = null
-    private var dialogView: View? = null
     lateinit var fileName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,24 +80,6 @@ class SaveToStorageDialogFragment : DialogFragment() {
         )
 
         return dialog
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        themeViews()
-    }
-
-    private fun themeViews() {
-        viewThemeUtils.platform.themeDialog(binding!!.root)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return dialogView
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
     }
 
     @SuppressLint("LongLogTag")
