@@ -1302,7 +1302,6 @@ class ChatActivity :
 
     private fun initPreviewVoiceRecording() {
         voicePreviewMediaPlayer = MediaPlayer().apply {
-            Log.e(TAG, currentVoiceRecordFile)
             setDataSource(currentVoiceRecordFile)
             prepare()
             setOnPreparedListener {
@@ -2221,6 +2220,7 @@ class ChatActivity :
             try {
                 if (mediaRecorderState == MediaRecorderState.RECORDING) {
                     stop()
+                    reset()
                     mediaRecorderState = MediaRecorderState.INITIAL
                     Log.d(TAG, "stopped recorder")
                 }
