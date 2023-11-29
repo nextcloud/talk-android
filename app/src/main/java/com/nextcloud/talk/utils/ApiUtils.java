@@ -247,7 +247,7 @@ public class ApiUtils {
     }
 
     public static String getUrlForRoomWebinaryLobby(int version, String baseUrl, String token) {
-        return getUrlForRoom(version, baseUrl, token) + "/webinary/lobby";
+        return getUrlForRoom(version, baseUrl, token) + "/webinar/lobby";
     }
 
     public static String getUrlForRoomNotificationCalls(int version, String baseUrl, String token) {
