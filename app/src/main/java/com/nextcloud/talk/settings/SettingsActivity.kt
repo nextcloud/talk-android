@@ -587,7 +587,9 @@ class SettingsActivity : BaseActivity() {
             }
         }
 
-        if (("No proxy" == appPreferences.proxyType) || appPreferences.proxyType == null) {
+        if (((context.resources.getString(R.string.nc_no_proxy)) == appPreferences.proxyType) ||
+            appPreferences.proxyType == null
+        ) {
             hideProxySettings()
         } else {
             showProxySettings()
@@ -987,7 +989,7 @@ class SettingsActivity : BaseActivity() {
             proxyTypeFlow.collect { newString ->
                 if (newString != state) {
                     state = newString
-                    if (("No proxy" == newString) || newString.isEmpty()) {
+                    if (((context.resources.getString(R.string.nc_no_proxy)) == newString) || newString.isEmpty()) {
                         hideProxySettings()
                     } else {
                         when (newString) {
