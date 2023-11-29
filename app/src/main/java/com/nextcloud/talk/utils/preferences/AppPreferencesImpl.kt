@@ -41,7 +41,9 @@ import kotlinx.coroutines.runBlocking
 class AppPreferencesImpl(val context: Context) : AppPreferences {
 
     override fun getProxyType(): String {
-        return runBlocking { async { readString(PROXY_TYPE, "No proxy").first() } }.getCompleted()
+        return runBlocking {
+            async { readString(PROXY_TYPE, context.resources.getString(R.string.nc_no_proxy)).first() }
+        }.getCompleted()
     }
 
     override fun setProxyType(proxyType: String?) = runBlocking<Unit> {
