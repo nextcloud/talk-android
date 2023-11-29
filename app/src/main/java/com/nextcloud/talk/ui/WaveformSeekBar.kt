@@ -38,7 +38,9 @@ class WaveformSeekBar : AppCompatSeekBar {
 
     @ColorInt
     private var secondary: Int = Color.parseColor("#a6c6f7")
+    private var rawData: FloatArray = floatArrayOf()
     private var waveData: FloatArray = floatArrayOf()
+    private var savedMeasure: Int = 0
     private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     constructor(context: Context) : super(context) {
@@ -67,12 +69,7 @@ class WaveformSeekBar : AppCompatSeekBar {
      * therefore, the gap is determined by the width of the seekBar by extension.
      */
     fun setWaveData(data: FloatArray) {
-        val usableWidth = width - paddingLeft - paddingRight
-        if (usableWidth > 0) {
-            val numBars = if (usableWidth > VALUE_100) (usableWidth / WIDTH_DIVISOR) else usableWidth / 2f
-            waveData = AudioUtils.shrinkFloatArray(data, numBars.roundToInt())
-            invalidate()
-        }
+        rawData = data
     }
 
     private fun init() {
@@ -80,6 +77,17 @@ class WaveformSeekBar : AppCompatSeekBar {
             strokeCap = Paint.Cap.ROUND
             strokeWidth = DEFAULT_BAR_WIDTH.dp.toFloat()
             color = Color.RED
+        }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        val usableWidth = measuredWidth - paddingLeft - paddingRight
+        if (usableWidth > MINIMUM_WIDTH && rawData.isNotEmpty() && usableWidth != savedMeasure) {
+            savedMeasure = usableWidth
+            val numBars = if (usableWidth > VALUE_100) (usableWidth / WIDTH_DIVISOR) else usableWidth / 2f
+            waveData = AudioUtils.shrinkFloatArray(rawData, numBars.roundToInt())
+            invalidate()
         }
     }
 
@@ -123,6 +131,7 @@ class WaveformSeekBar : AppCompatSeekBar {
         private const val MAX_HEIGHT_DIVISOR: Float = 4.0f
         private const val WIDTH_DIVISOR = 20f
         private const val VALUE_100 = 100
+        private const val MINIMUM_WIDTH = 50
         private val Int.dp: Int
             get() = (this * Resources.getSystem().displayMetrics.density).roundToInt()
     }
