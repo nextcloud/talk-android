@@ -412,6 +412,17 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return read.ifEmpty { default }
     }
 
+    override fun saveWaveFormForFile(filename: String, array: Array<Float>) = runBlocking<Unit> {
+        async {
+            writeString(filename, array.contentToString())
+        }
+    }
+
+    override fun getWaveFormFromFile(filename: String): Array<Float> {
+        val string = runBlocking { async { readString(filename).first() } }.getCompleted()
+        return if (string.isNotEmpty()) string.convertStringToArray() else floatArrayOf().toTypedArray()
+    }
+
     override fun clear() {}
 
     private suspend fun writeString(key: String, value: String) = context.dataStore.edit { settings ->
@@ -487,5 +498,13 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val DB_ROOM_MIGRATED = "db_room_migrated"
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
         const val TYPING_STATUS = "typing_status"
+        private fun String.convertStringToArray(): Array<Float> {
+            var varString = this
+            val floatList = mutableListOf<Float>()
+            varString = varString.replace("\\[".toRegex(), "")
+            varString = varString.replace("]".toRegex(), "")
+            varString.split(",").forEach { floatList.add(it.toFloat()) }
+            return floatList.toTypedArray()
+        }
     }
 }

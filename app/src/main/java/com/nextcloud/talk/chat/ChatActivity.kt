@@ -258,6 +258,8 @@ import java.util.Objects
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.collections.set
+import kotlin.math.abs
+import kotlin.math.log10
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -340,16 +342,24 @@ class ChatActivity :
 
     private val filesToUpload: MutableList<String> = ArrayList()
     private lateinit var sharedText: String
-    var isVoiceRecordingInProgress: Boolean = false
     var currentVoiceRecordFile: String = ""
     var isVoiceRecordingLocked: Boolean = false
     private var isVoicePreviewPlaying: Boolean = false
+
     private var recorder: MediaRecorder? = null
+    private enum class MediaRecorderState {
+        INITIAL, INITIALIZED, CONFIGURED, PREPARED, RECORDING, RELEASED, ERROR
+    }
+    private var mediaRecorderState: MediaRecorderState = MediaRecorderState.INITIAL
+
     private var voicePreviewMediaPlayer: MediaPlayer? = null
     private var voicePreviewObjectAnimator: ObjectAnimator? = null
+
     var mediaPlayer: MediaPlayer? = null
     lateinit var mediaPlayerHandler: Handler
+
     private var currentlyPlayedVoiceMessage: ChatMessage? = null
+
     private lateinit var micInputAudioRecorder: AudioRecord
     private var micInputAudioRecordThread: Thread? = null
     private var isMicInputAudioThreadRunning: Boolean = false
@@ -358,7 +368,9 @@ class ChatActivity :
         AudioFormat.CHANNEL_IN_MONO,
         AudioFormat.ENCODING_PCM_16BIT
     )
+
     private var voiceRecordDuration = 0L
+    private var voiceRecordPauseTime = 0L
 
     // messy workaround for a mediaPlayer bug, don't delete
     private var lastRecordMediaPosition: Int = 0
@@ -517,7 +529,7 @@ class ChatActivity :
         if (isMicInputAudioThreadRunning) {
             stopMicInputRecordingAnimation()
         }
-        if (isVoiceRecordingInProgress) {
+        if (mediaRecorderState == MediaRecorderState.RECORDING) {
             stopAudioRecording()
         }
         if (currentlyPlayedVoiceMessage != null) {
@@ -893,7 +905,12 @@ class ChatActivity :
                 if (message.isPlayingVoiceMessage) {
                     pausePlayback(message)
                 } else {
-                    setUpWaveform(message)
+                    val retrieved = appPreferences.getWaveFormFromFile(filename)
+                    if (retrieved.isEmpty()) {
+                        setUpWaveform(message)
+                    } else {
+                        startPlayback(message)
+                    }
                 }
             } else {
                 Log.d(TAG, "Downloaded to cache")
@@ -912,6 +929,7 @@ class ChatActivity :
             adapter?.update(message)
             CoroutineScope(Dispatchers.Default).launch {
                 val r = AudioUtils.audioFileToFloatArray(file)
+                appPreferences.saveWaveFormForFile(filename, r.toTypedArray())
                 message.voiceMessageFloatArray = r
                 withContext(Dispatchers.Main) {
                     startPlayback(message)
@@ -1036,10 +1054,13 @@ class ChatActivity :
             } else {
                 showMicrophoneButton(true)
             }
-        } else if (isVoiceRecordingInProgress) {
+        } else if (mediaRecorderState == MediaRecorderState.RECORDING) {
             binding.messageInputView.playPauseBtn.visibility = View.GONE
             binding.messageInputView.seekBar.visibility = View.GONE
         } else {
+            showVoiceRecordingLockedInterface(true)
+            showPreviewVoiceRecording(true)
+            stopMicInputRecordingAnimation()
             binding.messageInputView.micInputCloud.setState(MicInputCloud.ViewState.PAUSED_STATE)
         }
 
@@ -1060,57 +1081,22 @@ class ChatActivity :
 
         var voiceRecordStartTime = 0L
         var voiceRecordEndTime = 0L
-        var voiceRecordPauseTime = 0L
-        val micInputCloudLayoutParams: LayoutParams = binding.messageInputView.micInputCloud
-            .layoutParams as LayoutParams
-
-        val deleteVoiceRecordingLayoutParams: LayoutParams = binding.messageInputView.deleteVoiceRecording
-            .layoutParams as LayoutParams
-
-        val sendVoiceRecordingLayoutParams: LayoutParams = binding.messageInputView.sendVoiceRecording
-            .layoutParams as LayoutParams
 
         // this is so that the seekbar is no longer draggable
         binding.messageInputView.seekBar.setOnTouchListener(OnTouchListener { _, _ -> true })
 
         binding.messageInputView.micInputCloud.setOnClickListener {
-            if (isVoiceRecordingInProgress) {
+            if (mediaRecorderState == MediaRecorderState.RECORDING) {
                 recorder?.stop()
+                mediaRecorderState = MediaRecorderState.INITIAL
                 stopMicInputRecordingAnimation()
-                voiceRecordPauseTime = binding.messageInputView.audioRecordDuration.base - SystemClock.elapsedRealtime()
-                binding.messageInputView.audioRecordDuration.stop()
-                binding.messageInputView.audioRecordDuration.visibility = View.GONE
-                binding.messageInputView.playPauseBtn.visibility = View.VISIBLE
-                binding.messageInputView.playPauseBtn.icon = ContextCompat.getDrawable(
-                    context,
-                    R.drawable.ic_baseline_play_arrow_voice_message_24
-                )
-                binding.messageInputView.seekBar.visibility = View.VISIBLE
-                binding.messageInputView.seekBar.progress = 0
-                binding.messageInputView.seekBar.max = 0
-                micInputCloudLayoutParams.removeRule(BELOW)
-                micInputCloudLayoutParams.addRule(BELOW, R.id.voice_preview_container)
-                deleteVoiceRecordingLayoutParams.removeRule(BELOW)
-                deleteVoiceRecordingLayoutParams.addRule(BELOW, R.id.voice_preview_container)
-                sendVoiceRecordingLayoutParams.removeRule(BELOW)
-                sendVoiceRecordingLayoutParams.addRule(BELOW, R.id.voice_preview_container)
+                showPreviewVoiceRecording(true)
             } else {
-                restartAudio()
+                stopPreviewVoicePlaying()
+                initMediaRecorder(currentVoiceRecordFile)
                 startMicInputRecordingAnimation()
-                binding.messageInputView.audioRecordDuration.base = SystemClock.elapsedRealtime()
-                binding.messageInputView.audioRecordDuration.start()
-                binding.messageInputView.playPauseBtn.visibility = View.GONE
-                binding.messageInputView.seekBar.visibility = View.GONE
-                binding.messageInputView.audioRecordDuration.visibility = View.VISIBLE
-                micInputCloudLayoutParams.removeRule(BELOW)
-                micInputCloudLayoutParams.addRule(BELOW, R.id.audioRecordDuration)
-                deleteVoiceRecordingLayoutParams.removeRule(BELOW)
-                deleteVoiceRecordingLayoutParams.addRule(BELOW, R.id.audioRecordDuration)
-                sendVoiceRecordingLayoutParams.removeRule(BELOW)
-                sendVoiceRecordingLayoutParams.addRule(BELOW, R.id.audioRecordDuration)
+                showPreviewVoiceRecording(false)
             }
-
-            isVoiceRecordingInProgress = !isVoiceRecordingInProgress
         }
 
         binding.messageInputView.deleteVoiceRecording.setOnClickListener {
@@ -1175,7 +1161,7 @@ class ChatActivity :
 
                     MotionEvent.ACTION_CANCEL -> {
                         Log.d(TAG, "ACTION_CANCEL. same as for UP")
-                        if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
+                        if (mediaRecorderState != MediaRecorderState.RECORDING || !isRecordAudioPermissionGranted()) {
                             return true
                         }
 
@@ -1186,7 +1172,7 @@ class ChatActivity :
 
                     MotionEvent.ACTION_UP -> {
                         Log.d(TAG, "ACTION_UP. stop recording??")
-                        if (!isVoiceRecordingInProgress ||
+                        if (mediaRecorderState != MediaRecorderState.RECORDING ||
                             !isRecordAudioPermissionGranted() ||
                             isVoiceRecordingLocked
                         ) {
@@ -1217,7 +1203,7 @@ class ChatActivity :
                     MotionEvent.ACTION_MOVE -> {
                         Log.d(TAG, "ACTION_MOVE.")
 
-                        if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
+                        if (mediaRecorderState != MediaRecorderState.RECORDING || !isRecordAudioPermissionGranted()) {
                             return true
                         }
 
@@ -1234,6 +1220,7 @@ class ChatActivity :
                                 isVoiceRecordingLocked = true
                                 showVoiceRecordingLocked(true)
                                 showVoiceRecordingLockedInterface(true)
+                                startMicInputRecordingAnimation()
                             } else if (deltaY < 0f) {
                                 binding.voiceRecordingLock.translationY = deltaY
                             }
@@ -1270,9 +1257,51 @@ class ChatActivity :
         })
     }
 
+    private fun showPreviewVoiceRecording(value: Boolean) {
+        val micInputCloudLayoutParams: LayoutParams = binding.messageInputView.micInputCloud
+            .layoutParams as LayoutParams
+
+        val deleteVoiceRecordingLayoutParams: LayoutParams = binding.messageInputView.deleteVoiceRecording
+            .layoutParams as LayoutParams
+
+        val sendVoiceRecordingLayoutParams: LayoutParams = binding.messageInputView.sendVoiceRecording
+            .layoutParams as LayoutParams
+
+        if (value) {
+            voiceRecordPauseTime = binding.messageInputView.audioRecordDuration.base - SystemClock.elapsedRealtime()
+            binding.messageInputView.audioRecordDuration.stop()
+            binding.messageInputView.audioRecordDuration.visibility = View.GONE
+            binding.messageInputView.playPauseBtn.visibility = View.VISIBLE
+            binding.messageInputView.playPauseBtn.icon = ContextCompat.getDrawable(
+                context,
+                R.drawable.ic_baseline_play_arrow_voice_message_24
+            )
+            binding.messageInputView.seekBar.visibility = View.VISIBLE
+            binding.messageInputView.seekBar.progress = 0
+            binding.messageInputView.seekBar.max = 0
+            micInputCloudLayoutParams.removeRule(BELOW)
+            micInputCloudLayoutParams.addRule(BELOW, R.id.voice_preview_container)
+            deleteVoiceRecordingLayoutParams.removeRule(BELOW)
+            deleteVoiceRecordingLayoutParams.addRule(BELOW, R.id.voice_preview_container)
+            sendVoiceRecordingLayoutParams.removeRule(BELOW)
+            sendVoiceRecordingLayoutParams.addRule(BELOW, R.id.voice_preview_container)
+        } else {
+            binding.messageInputView.audioRecordDuration.base = SystemClock.elapsedRealtime()
+            binding.messageInputView.audioRecordDuration.start()
+            binding.messageInputView.playPauseBtn.visibility = View.GONE
+            binding.messageInputView.seekBar.visibility = View.GONE
+            binding.messageInputView.audioRecordDuration.visibility = View.VISIBLE
+            micInputCloudLayoutParams.removeRule(BELOW)
+            micInputCloudLayoutParams.addRule(BELOW, R.id.audioRecordDuration)
+            deleteVoiceRecordingLayoutParams.removeRule(BELOW)
+            deleteVoiceRecordingLayoutParams.addRule(BELOW, R.id.audioRecordDuration)
+            sendVoiceRecordingLayoutParams.removeRule(BELOW)
+            sendVoiceRecordingLayoutParams.addRule(BELOW, R.id.audioRecordDuration)
+        }
+    }
+
     private fun initPreviewVoiceRecording() {
         voicePreviewMediaPlayer = MediaPlayer().apply {
-            Log.e(TAG, currentVoiceRecordFile)
             setDataSource(currentVoiceRecordFile)
             prepare()
             setOnPreparedListener {
@@ -1326,20 +1355,6 @@ class ChatActivity :
         }
     }
 
-    private fun restartAudio() {
-        recorder = MediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            setOutputFile(currentVoiceRecordFile)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-            setAudioSamplingRate(VOICE_MESSAGE_SAMPLING_RATE)
-            setAudioEncodingBitRate(VOICE_MESSAGE_ENCODING_BIT_RATE)
-            setAudioChannels(VOICE_MESSAGE_CHANNELS)
-            prepare()
-            start()
-        }
-    }
-
     private fun endVoiceRecordingUI() {
         stopPreviewVoicePlaying()
         showRecordAudioUi(false)
@@ -1347,6 +1362,7 @@ class ChatActivity :
         isVoiceRecordingLocked = false
         showVoiceRecordingLocked(false)
         showVoiceRecordingLockedInterface(false)
+        stopMicInputRecordingAnimation()
     }
 
     private fun showVoiceRecordingLocked(value: Boolean) {
@@ -1407,10 +1423,7 @@ class ChatActivity :
             audioDurationLayoutParams.removeRule(RelativeLayout.END_OF)
             audioDurationLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, R.bool.value_true)
             audioDurationLayoutParams.setMargins(0, standardQuarterMargin, 0, 0)
-            startMicInputRecordingAnimation()
-            Log.d(TAG, "MicInputRecording Started")
         } else {
-            stopMicInputRecordingAnimation()
             binding.messageInputView.deleteVoiceRecording.visibility = View.GONE
             binding.messageInputView.micInputCloud.visibility = View.GONE
             binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
@@ -2075,34 +2088,39 @@ class ChatActivity :
             )
             isMicInputAudioThreadRunning = true
             micInputAudioRecorder.startRecording()
-            micInputAudioRecordThread = Thread(
-                Runnable {
-                    while (isMicInputAudioThreadRunning) {
-                        val byteArr = ByteArray(bufferSize / 2)
-                        micInputAudioRecorder.read(byteArr, 0, byteArr.size)
-                        val d = Math.abs(byteArr[0].toDouble())
-                        if (d > AUDIO_VALUE_MAX) {
-                            binding.messageInputView.micInputCloud.setRotationSpeed(
-                                Math.log10(d).toFloat(),
-                                MicInputCloud.MAXIMUM_RADIUS
-                            )
-                        } else if (d > AUDIO_VALUE_MIN) {
-                            binding.messageInputView.micInputCloud.setRotationSpeed(
-                                Math.log10(d).toFloat(),
-                                MicInputCloud.EXTENDED_RADIUS
-                            )
-                        } else {
-                            binding.messageInputView.micInputCloud.setRotationSpeed(
-                                1f,
-                                MicInputCloud.DEFAULT_RADIUS
-                            )
-                        }
-                        Thread.sleep(AUDIO_VALUE_SLEEP)
-                    }
-                }
-            )
+            initMicInputAudioRecordThread()
             micInputAudioRecordThread!!.start()
+            binding.messageInputView.micInputCloud.startAnimators()
         }
+    }
+
+    private fun initMicInputAudioRecordThread() {
+        micInputAudioRecordThread = Thread(
+            Runnable {
+                while (isMicInputAudioThreadRunning) {
+                    val byteArr = ByteArray(bufferSize / 2)
+                    micInputAudioRecorder.read(byteArr, 0, byteArr.size)
+                    val d = abs(byteArr[0].toDouble())
+                    if (d > AUDIO_VALUE_MAX) {
+                        binding.messageInputView.micInputCloud.setRotationSpeed(
+                            log10(d).toFloat(),
+                            MicInputCloud.MAXIMUM_RADIUS
+                        )
+                    } else if (d > AUDIO_VALUE_MIN) {
+                        binding.messageInputView.micInputCloud.setRotationSpeed(
+                            log10(d).toFloat(),
+                            MicInputCloud.EXTENDED_RADIUS
+                        )
+                    } else {
+                        binding.messageInputView.micInputCloud.setRotationSpeed(
+                            1f,
+                            MicInputCloud.DEFAULT_RADIUS
+                        )
+                    }
+                    Thread.sleep(AUDIO_VALUE_SLEEP)
+                }
+            }
+        )
     }
 
     private fun stopMicInputRecordingAnimation() {
@@ -2133,10 +2151,19 @@ class ChatActivity :
         animation.repeatMode = Animation.REVERSE
         binding.messageInputView.microphoneEnabledInfo.startAnimation(animation)
 
+        initMediaRecorder(file)
+        VibrationUtils.vibrateShort(context)
+    }
+
+    private fun initMediaRecorder(file: String) {
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFile(file)
+            mediaRecorderState = MediaRecorderState.INITIALIZED
+
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            mediaRecorderState = MediaRecorderState.CONFIGURED
+
+            setOutputFile(file)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setAudioSamplingRate(VOICE_MESSAGE_SAMPLING_RATE)
             setAudioEncodingBitRate(VOICE_MESSAGE_ENCODING_BIT_RATE)
@@ -2144,35 +2171,44 @@ class ChatActivity :
 
             try {
                 prepare()
+                mediaRecorderState = MediaRecorderState.PREPARED
             } catch (e: IOException) {
+                mediaRecorderState = MediaRecorderState.ERROR
                 Log.e(TAG, "prepare for audio recording failed")
             }
 
             try {
                 start()
+                mediaRecorderState = MediaRecorderState.RECORDING
                 Log.d(TAG, "recording started")
-                isVoiceRecordingInProgress = true
             } catch (e: IllegalStateException) {
+                mediaRecorderState = MediaRecorderState.ERROR
                 Log.e(TAG, "start for audio recording failed")
             }
-
-            VibrationUtils.vibrateShort(context)
         }
     }
 
     private fun stopAndSendAudioRecording() {
         stopAudioRecording()
         Log.d(TAG, "stopped and sent audio recording")
-        val uri = Uri.fromFile(File(currentVoiceRecordFile))
-        uploadFile(uri.toString(), true)
+
+        if (mediaRecorderState != MediaRecorderState.ERROR) {
+            val uri = Uri.fromFile(File(currentVoiceRecordFile))
+            uploadFile(uri.toString(), true)
+        } else {
+            mediaRecorderState = MediaRecorderState.INITIAL
+        }
     }
 
     private fun stopAndDiscardAudioRecording() {
         stopAudioRecording()
         Log.d(TAG, "stopped and discarded audio recording")
-
         val cachedFile = File(currentVoiceRecordFile)
         cachedFile.delete()
+
+        if (mediaRecorderState == MediaRecorderState.ERROR) {
+            mediaRecorderState = MediaRecorderState.INITIAL
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -2182,17 +2218,22 @@ class ChatActivity :
 
         recorder?.apply {
             try {
-                Log.d(TAG, "recording stopped with $voiceRecordDuration")
-                if (voiceRecordDuration > MINIMUM_VOICE_RECORD_TO_STOP) {
+                if (mediaRecorderState == MediaRecorderState.RECORDING) {
                     stop()
+                    reset()
+                    mediaRecorderState = MediaRecorderState.INITIAL
+                    Log.d(TAG, "stopped recorder")
                 }
                 release()
-                isVoiceRecordingInProgress = false
-                Log.d(TAG, "stopped recorder. isVoiceRecordingInProgress = false")
-            } catch (e: java.lang.IllegalStateException) {
-                error("error while stopping recorder!" + e)
-            } catch (e: java.lang.RuntimeException) {
-                error("error while stopping recorder!" + e)
+                mediaRecorderState = MediaRecorderState.RELEASED
+            } catch (e: Exception) {
+                when (e) {
+                    is java.lang.IllegalStateException,
+                    is java.lang.RuntimeException -> {
+                        mediaRecorderState = MediaRecorderState.ERROR
+                        Log.e(TAG, "error while stopping recorder! with state $mediaRecorderState $e")
+                    }
+                }
             }
 
             VibrationUtils.vibrateShort(context)
@@ -2356,7 +2397,9 @@ class ChatActivity :
         } else {
             binding.lobby.lobbyView.visibility = View.GONE
             binding.messagesListView.visibility = View.VISIBLE
-            binding.messageInputView.inputEditText?.visibility = View.VISIBLE
+            if (!isVoiceRecordingLocked) {
+                binding.messageInputView.inputEditText?.visibility = View.VISIBLE
+            }
         }
     }
 
