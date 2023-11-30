@@ -71,7 +71,7 @@
         android:layout_below="@id/text_input_layout"
         android:visibility="gone"
         android:layout_height="match_parent"
-        app:emojiGridColumns="7" />
+        app:emojiGridColumns="9" />
 
 
 </RelativeLayout>
