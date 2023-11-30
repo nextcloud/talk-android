@@ -467,6 +467,6 @@
         android:layout_width="match_parent"
         android:visibility="gone"
         android:layout_height="match_parent"
-        app:emojiGridColumns="9" />
+        app:emojiGridColumns="7" />
 
 </LinearLayout>
