@@ -394,7 +394,8 @@ class ConversationInfoActivity :
                 }
 
                 override fun onError(e: Throwable) {
-                    // unused atm
+                    Log.e(TAG, "Failed to setLobbyForConversation", e)
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
             })
     }
