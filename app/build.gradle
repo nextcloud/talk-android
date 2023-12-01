@@ -150,7 +150,7 @@ ext {
     prismVersion = "2.0.0"
     retrofit2Version = "2.9.0"
     roomVersion = "2.6.1"
-    workVersion = "2.8.1"
+    workVersion = "2.9.0"
     espressoVersion = "3.5.1"
     media3_version = "1.2.0"
 }
