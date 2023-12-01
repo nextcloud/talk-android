@@ -57,6 +57,7 @@ import java.util.Map;
 
 import androidx.annotation.Nullable;
 import io.reactivex.Observable;
+import kotlin.Unit;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -333,7 +334,7 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<Void> registerDeviceForNotificationsWithPushProxy(@Url String url,
+    Observable<Unit> registerDeviceForNotificationsWithPushProxy(@Url String url,
                                                                  @FieldMap Map<String, String> fields);
 
 
