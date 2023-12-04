@@ -24,6 +24,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import com.github.spotbugs.snom.SpotBugsTask
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.Effort
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -322,8 +324,8 @@ task installGitHooks(type: Copy, group: "development") {
 
 spotbugs {
     ignoreFailures = true // should continue checking
-    effort = "max"
-    reportLevel = "medium"
+    effort = Effort.MAX
+    reportLevel = Confidence.valueOf('MEDIUM')
 }
 
 tasks.withType(SpotBugsTask) { task ->
