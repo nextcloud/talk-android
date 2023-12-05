@@ -81,8 +81,11 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvid
         private const val ATTRIBUTE_CONVERSATION = "conversation"
         private const val ATTRIBUTE_MESSAGE_ID = "messageId"
 
-        private fun mapToMessageResults(data: UnifiedSearchResponseData, searchTerm: String, limit: Int):
-            UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry> {
+        private fun mapToMessageResults(
+            data: UnifiedSearchResponseData,
+            searchTerm: String,
+            limit: Int
+        ): UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry> {
             val entries = data.entries?.map { it -> mapToMessage(it, searchTerm) }
             val cursor = data.cursor ?: 0
             val hasMore = entries?.size == limit
