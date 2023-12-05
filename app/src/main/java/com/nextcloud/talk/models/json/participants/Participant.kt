@@ -124,11 +124,22 @@ data class Participant(
         }
 
     enum class ActorType {
-        DUMMY, EMAILS, GROUPS, GUESTS, USERS, CIRCLES
+        DUMMY,
+        EMAILS,
+        GROUPS,
+        GUESTS,
+        USERS,
+        CIRCLES
     }
 
     enum class ParticipantType {
-        DUMMY, OWNER, MODERATOR, USER, GUEST, USER_FOLLOWING_LINK, GUEST_MODERATOR
+        DUMMY,
+        OWNER,
+        MODERATOR,
+        USER,
+        GUEST,
+        USER_FOLLOWING_LINK,
+        GUEST_MODERATOR
     }
 
     object InCallFlags {

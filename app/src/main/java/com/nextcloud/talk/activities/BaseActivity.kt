@@ -62,7 +62,9 @@ import javax.inject.Inject
 open class BaseActivity : AppCompatActivity() {
 
     enum class AppBarLayoutType {
-        TOOLBAR, SEARCH_BAR, EMPTY
+        TOOLBAR,
+        SEARCH_BAR,
+        EMPTY
     }
 
     @Inject

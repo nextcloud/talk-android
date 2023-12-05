@@ -113,7 +113,13 @@ enum class ConversationType {
 }
 
 enum class ParticipantType {
-    DUMMY, OWNER, MODERATOR, USER, GUEST, USER_FOLLOWING_LINK, GUEST_MODERATOR
+    DUMMY,
+    OWNER,
+    MODERATOR,
+    USER,
+    GUEST,
+    USER_FOLLOWING_LINK,
+    GUEST_MODERATOR
 }
 
 enum class ObjectType {
@@ -124,13 +130,18 @@ enum class ObjectType {
 }
 
 enum class NotificationLevel {
-    DEFAULT, ALWAYS, MENTION, NEVER
+    DEFAULT,
+    ALWAYS,
+    MENTION,
+    NEVER
 }
 
 enum class ConversationReadOnlyState {
-    CONVERSATION_READ_WRITE, CONVERSATION_READ_ONLY
+    CONVERSATION_READ_WRITE,
+    CONVERSATION_READ_ONLY
 }
 
 enum class LobbyState {
-    LOBBY_STATE_ALL_PARTICIPANTS, LOBBY_STATE_MODERATORS_ONLY
+    LOBBY_STATE_ALL_PARTICIPANTS,
+    LOBBY_STATE_MODERATORS_ONLY
 }

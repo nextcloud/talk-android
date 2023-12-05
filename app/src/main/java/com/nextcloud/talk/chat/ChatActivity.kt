@@ -348,7 +348,13 @@ class ChatActivity :
 
     private var recorder: MediaRecorder? = null
     private enum class MediaRecorderState {
-        INITIAL, INITIALIZED, CONFIGURED, PREPARED, RECORDING, RELEASED, ERROR
+        INITIAL,
+        INITIALIZED,
+        CONFIGURED,
+        PREPARED,
+        RECORDING,
+        RELEASED,
+        ERROR
     }
     private var mediaRecorderState: MediaRecorderState = MediaRecorderState.INITIAL
 
