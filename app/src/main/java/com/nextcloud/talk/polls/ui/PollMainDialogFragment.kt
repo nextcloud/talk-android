@@ -121,7 +121,7 @@ class PollMainDialogFragment : DialogFragment() {
 
     private fun showLoadingScreen() {
         binding.root.post {
-            run() {
+            run {
                 val fragmentHeight = binding.messagePollContentFragment.measuredHeight
 
                 val contentFragment = PollLoadingFragment.newInstance(fragmentHeight)
