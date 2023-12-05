@@ -1050,10 +1050,7 @@ class CallActivity : CallBaseActivity() {
     private val isConnectionEstablished: Boolean
         get() = currentCallStatus === CallStatus.JOINED || currentCallStatus === CallStatus.IN_CONVERSATION
 
-    private fun onAudioManagerDevicesChanged(
-        currentDevice: AudioDevice,
-        availableDevices: Set<AudioDevice>
-    ) {
+    private fun onAudioManagerDevicesChanged(currentDevice: AudioDevice, availableDevices: Set<AudioDevice>) {
         Log.d(TAG, "onAudioManagerDevicesChanged: $availableDevices, currentDevice: $currentDevice")
         val shouldDisableProximityLock =
             currentDevice == AudioDevice.WIRED_HEADSET ||
@@ -1529,10 +1526,7 @@ class CallActivity : CallBaseActivity() {
             })
     }
 
-    private fun addIceServers(
-        signalingSettingsOverall: SignalingSettingsOverall,
-        apiVersion: Int
-    ) {
+    private fun addIceServers(signalingSettingsOverall: SignalingSettingsOverall, apiVersion: Int) {
         if (signalingSettingsOverall.ocs!!.settings!!.stunServers != null) {
             val stunServers = signalingSettingsOverall.ocs!!.settings!!.stunServers
             if (apiVersion == ApiUtils.APIv3) {
@@ -3035,11 +3029,7 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    private fun updatePictureInPictureActions(
-        @DrawableRes iconId: Int,
-        title: String?,
-        requestCode: Int
-    ) {
+    private fun updatePictureInPictureActions(@DrawableRes iconId: Int, title: String?, requestCode: Int) {
         if (isGreaterEqualOreo && isPipModePossible) {
             val actions = ArrayList<RemoteAction>()
             val icon = Icon.createWithResource(this, iconId)

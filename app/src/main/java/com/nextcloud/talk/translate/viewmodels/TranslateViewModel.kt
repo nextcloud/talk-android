@@ -39,7 +39,12 @@ class TranslateViewModel @Inject constructor(
         val currentUser: User = userManager.currentUser.blockingGet()
         val authorization: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val url: String = ApiUtils.getUrlForTranslation(currentUser.baseUrl)
-        val calculatedFromLanguage = if (fromLanguage == null || fromLanguage == "") { null } else { fromLanguage }
+        val calculatedFromLanguage =
+            if (fromLanguage == null || fromLanguage == "") {
+                null
+            } else {
+                fromLanguage
+            }
         Log.i(TAG, "translateMessage Called")
         repository.translateMessage(
             authorization,

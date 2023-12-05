@@ -27,15 +27,7 @@ import io.reactivex.Observable
 
 interface ReactionsRepository {
 
-    fun addReaction(
-        roomToken: String,
-        message: ChatMessage,
-        emoji: String
-    ): Observable<ReactionAddedModel>
+    fun addReaction(roomToken: String, message: ChatMessage, emoji: String): Observable<ReactionAddedModel>
 
-    fun deleteReaction(
-        roomToken: String,
-        message: ChatMessage,
-        emoji: String
-    ): Observable<ReactionDeletedModel>
+    fun deleteReaction(roomToken: String, message: ChatMessage, emoji: String): Observable<ReactionDeletedModel>
 }

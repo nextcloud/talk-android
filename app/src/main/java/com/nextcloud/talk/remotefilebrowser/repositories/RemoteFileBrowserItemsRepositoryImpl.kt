@@ -36,8 +36,7 @@ class RemoteFileBrowserItemsRepositoryImpl @Inject constructor(
     private val user: User
         get() = userProvider.currentUser.blockingGet()
 
-    override fun listFolder(path: String):
-        Observable<List<RemoteFileBrowserItem>> {
+    override fun listFolder(path: String): Observable<List<RemoteFileBrowserItem>> {
         return Observable.fromCallable {
             val operation =
                 ReadFolderListingOperation(

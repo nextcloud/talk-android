@@ -48,10 +48,7 @@ import javax.inject.Inject
 class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, private val dateUtils: DateUtils) :
     SharedItemsRepository {
 
-    override fun media(
-        parameters: SharedItemsRepository.Parameters,
-        type: SharedItemType
-    ): Observable<SharedItems>? {
+    override fun media(parameters: SharedItemsRepository.Parameters, type: SharedItemType): Observable<SharedItems>? {
         return media(parameters, type, null)
     }
 

@@ -38,10 +38,7 @@ class ConversationRepositoryImpl(private val ncApi: NcApi, currentUserProvider: 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
     val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
 
-    override fun renameConversation(
-        roomToken: String,
-        roomNameNew: String
-    ): Observable<GenericOverall> {
+    override fun renameConversation(roomToken: String, roomNameNew: String): Observable<GenericOverall> {
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
 
         return ncApi.renameRoom(

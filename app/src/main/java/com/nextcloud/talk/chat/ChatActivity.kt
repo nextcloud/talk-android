@@ -348,7 +348,13 @@ class ChatActivity :
 
     private var recorder: MediaRecorder? = null
     private enum class MediaRecorderState {
-        INITIAL, INITIALIZED, CONFIGURED, PREPARED, RECORDING, RELEASED, ERROR
+        INITIAL,
+        INITIALIZED,
+        CONFIGURED,
+        PREPARED,
+        RECORDING,
+        RELEASED,
+        ERROR
     }
     private var mediaRecorderState: MediaRecorderState = MediaRecorderState.INITIAL
 
@@ -1708,14 +1714,17 @@ class ChatActivity :
         }
     }
 
-    fun isOneToOneConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+    fun isOneToOneConversation() =
+        currentConversation != null && currentConversation?.type != null &&
+            currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
-    private fun isGroupConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == ConversationType.ROOM_GROUP_CALL
+    private fun isGroupConversation() =
+        currentConversation != null && currentConversation?.type != null &&
+            currentConversation?.type == ConversationType.ROOM_GROUP_CALL
 
-    private fun isPublicConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == ConversationType.ROOM_PUBLIC_CALL
+    private fun isPublicConversation() =
+        currentConversation != null && currentConversation?.type != null &&
+            currentConversation?.type == ConversationType.ROOM_PUBLIC_CALL
 
     private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
         if (conversationUser != null) {
@@ -2973,9 +2982,7 @@ class ChatActivity :
         }
     }
 
-    fun leaveRoom(
-        funToCallWhenLeaveSuccessful: (() -> Unit)?
-    ) {
+    fun leaveRoom(funToCallWhenLeaveSuccessful: (() -> Unit)?) {
         logConversationInfos("leaveRoom")
 
         var apiVersion = 1
@@ -3141,11 +3148,7 @@ class ChatActivity :
         signalingMessageSender = webSocketInstance?.signalingMessageSender
     }
 
-    fun pullChatMessages(
-        lookIntoFuture: Boolean,
-        setReadMarker: Boolean = true,
-        xChatLastCommonRead: Int? = null
-    ) {
+    fun pullChatMessages(lookIntoFuture: Boolean, setReadMarker: Boolean = true, xChatLastCommonRead: Int? = null) {
         if (!validSessionId()) {
             return
         }
@@ -3465,10 +3468,7 @@ class ChatActivity :
         }
     }
 
-    private fun addMessagesToAdapter(
-        shouldAddNewMessagesNotice: Boolean,
-        chatMessageList: List<ChatMessage>
-    ) {
+    private fun addMessagesToAdapter(shouldAddNewMessagesNotice: Boolean, chatMessageList: List<ChatMessage>) {
         val isThereANewNotice =
             shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
         for (chatMessage in chatMessageList) {
@@ -3721,19 +3721,15 @@ class ChatActivity :
                     chatMessageMap[currentMessage.value.parentMessage!!.id]!!.isDeleted = true
                 }
                 chatMessageIterator.remove()
-            }
-
-            // delete reactions system messages
-            else if (isReactionsMessage(currentMessage)) {
+            } else if (isReactionsMessage(currentMessage)) {
+                // delete reactions system messages
                 if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
                     updateAdapterForReaction(currentMessage.value.parentMessage)
                 }
 
                 chatMessageIterator.remove()
-            }
-
-            // delete poll system messages
-            else if (isPollVotedMessage(currentMessage)) {
+            } else if (isPollVotedMessage(currentMessage)) {
+                // delete poll system messages
                 chatMessageIterator.remove()
             }
         }

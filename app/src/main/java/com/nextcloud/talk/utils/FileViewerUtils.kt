@@ -73,10 +73,7 @@ import java.util.concurrent.ExecutionException
  */
 class FileViewerUtils(private val context: Context, private val user: User) {
 
-    fun openFile(
-        message: ChatMessage,
-        progressUi: ProgressUi
-    ) {
+    fun openFile(message: ChatMessage, progressUi: ProgressUi) {
         val fileName = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_NAME]!!
         val mimetype = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_MIMETYPE]!!
         val link = message.selectedIndividualHashMap!!["link"]!!

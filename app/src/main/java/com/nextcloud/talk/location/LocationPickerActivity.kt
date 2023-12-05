@@ -335,41 +335,42 @@ class LocationPickerActivity :
         )
     }
 
-    private fun delayedMapListener() = DelayedMapListener(
-        object : MapListener {
-            @Suppress("Detekt.TooGenericExceptionCaught")
-            override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
-                try {
-                    when {
-                        moveToCurrentLocation -> {
-                            setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
-                            moveToCurrentLocation = false
-                        }
+    private fun delayedMapListener() =
+        DelayedMapListener(
+            object : MapListener {
+                @Suppress("Detekt.TooGenericExceptionCaught")
+                override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
+                    try {
+                        when {
+                            moveToCurrentLocation -> {
+                                setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
+                                moveToCurrentLocation = false
+                            }
 
-                        geocodingResult != null -> {
-                            binding.shareLocation.isClickable = true
-                            setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
-                            geocodingResult = null
-                        }
+                            geocodingResult != null -> {
+                                binding.shareLocation.isClickable = true
+                                setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
+                                geocodingResult = null
+                            }
 
-                        else -> {
-                            binding.shareLocation.isClickable = true
-                            setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
+                            else -> {
+                                binding.shareLocation.isClickable = true
+                                setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
+                            }
                         }
+                    } catch (e: NullPointerException) {
+                        Log.d(TAG, "UI already closed")
                     }
-                } catch (e: NullPointerException) {
-                    Log.d(TAG, "UI already closed")
+
+                    readyToShareLocation = true
+                    return true
                 }
 
-                readyToShareLocation = true
-                return true
+                override fun onZoom(event: ZoomEvent): Boolean {
+                    return false
+                }
             }
-
-            override fun onZoom(event: ZoomEvent): Boolean {
-                return false
-            }
-        }
-    )
+        )
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun requestLocationUpdates() {
@@ -524,11 +525,7 @@ class LocationPickerActivity :
         )
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         fun areAllGranted(grantResults: IntArray): Boolean {

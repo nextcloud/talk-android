@@ -83,9 +83,7 @@ class SaveToStorageDialogFragment : DialogFragment() {
     }
 
     @SuppressLint("LongLogTag")
-    private fun saveImageToStorage(
-        fileName: String
-    ) {
+    private fun saveImageToStorage(fileName: String) {
         val sourceFilePath = requireContext().cacheDir.path
         val workerTag = SAVE_TO_STORAGE_WORKER_PREFIX + fileName
 

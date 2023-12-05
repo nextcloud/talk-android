@@ -352,9 +352,7 @@ class ConversationsListActivity :
         viewThemeUtils.material.themeToolbar(binding.conversationListToolbar)
     }
 
-    private fun loadUserAvatar(
-        target: Target
-    ) {
+    private fun loadUserAvatar(target: Target) {
         if (currentUser != null) {
             val url = ApiUtils.getUrlForAvatar(
                 currentUser!!.baseUrl,

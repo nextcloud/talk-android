@@ -93,8 +93,7 @@ class FileAttachmentPreviewFragment(
             filenames: String,
             filesToUpload: MutableList<String>,
             functionToCall: (files: MutableList<String>, caption: String) -> Unit
-        ) =
-            FileAttachmentPreviewFragment(filenames, filesToUpload, functionToCall)
+        ) = FileAttachmentPreviewFragment(filenames, filesToUpload, functionToCall)
         val TAG: String = FilterConversationFragment::class.java.simpleName
     }
 }

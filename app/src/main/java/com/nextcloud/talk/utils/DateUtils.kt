@@ -37,14 +37,17 @@ class DateUtils(val context: Context) {
 
     /* date formatter in local timezone and locale */
     private var format: DateFormat = DateFormat.getDateTimeInstance(
-        DateFormat.DEFAULT, // dateStyle
-        DateFormat.SHORT, // timeStyle
+        // dateStyle
+        DateFormat.DEFAULT,
+        // timeStyle
+        DateFormat.SHORT,
         context.resources.configuration.locales[0]
     )
 
     /* date formatter in local timezone and locale */
     private var formatTime: DateFormat = DateFormat.getTimeInstance(
-        DateFormat.SHORT, // timeStyle
+        // timeStyle
+        DateFormat.SHORT,
         context.resources.configuration.locales[0]
     )
 

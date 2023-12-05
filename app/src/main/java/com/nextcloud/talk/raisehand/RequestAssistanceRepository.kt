@@ -24,11 +24,7 @@ import io.reactivex.Observable
 
 interface RequestAssistanceRepository {
 
-    fun requestAssistance(
-        roomToken: String
-    ): Observable<RequestAssistanceModel>
+    fun requestAssistance(roomToken: String): Observable<RequestAssistanceModel>
 
-    fun withdrawRequestAssistance(
-        roomToken: String
-    ): Observable<WithdrawRequestAssistanceModel>
+    fun withdrawRequestAssistance(roomToken: String): Observable<WithdrawRequestAssistanceModel>
 }

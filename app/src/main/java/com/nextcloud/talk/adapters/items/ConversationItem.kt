@@ -203,9 +203,7 @@ class ConversationItem(
         }
     }
 
-    private fun shouldLoadAvatar(
-        holder: ConversationItemViewHolder
-    ): Boolean {
+    private fun shouldLoadAvatar(holder: ConversationItemViewHolder): Boolean {
         return when (model.objectType) {
             Conversation.ObjectType.SHARE_PASSWORD -> {
                 holder.binding.dialogAvatar.setImageDrawable(
@@ -237,10 +235,7 @@ class ConversationItem(
         }
     }
 
-    private fun setLastMessage(
-        holder: ConversationItemViewHolder,
-        appContext: Context
-    ) {
+    private fun setLastMessage(holder: ConversationItemViewHolder, appContext: Context) {
         if (model.lastMessage != null) {
             holder.binding.dialogDate.visibility = View.VISIBLE
             holder.binding.dialogDate.text = DateUtils.getRelativeTimeSpanString(

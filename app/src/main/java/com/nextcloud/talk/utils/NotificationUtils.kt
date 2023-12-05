@@ -102,10 +102,7 @@ object NotificationUtils {
         }
     }
 
-    private fun createCallsNotificationChannel(
-        context: Context,
-        appPreferences: AppPreferences
-    ) {
+    private fun createCallsNotificationChannel(context: Context, appPreferences: AppPreferences) {
         val audioAttributes =
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -126,10 +123,7 @@ object NotificationUtils {
         )
     }
 
-    private fun createMessagesNotificationChannel(
-        context: Context,
-        appPreferences: AppPreferences
-    ) {
+    private fun createMessagesNotificationChannel(context: Context, appPreferences: AppPreferences) {
         val audioAttributes =
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -150,9 +144,7 @@ object NotificationUtils {
         )
     }
 
-    private fun createUploadsNotificationChannel(
-        context: Context
-    ) {
+    private fun createUploadsNotificationChannel(context: Context) {
         createNotificationChannel(
             context,
             Channel(
@@ -166,10 +158,7 @@ object NotificationUtils {
         )
     }
 
-    fun registerNotificationChannels(
-        context: Context,
-        appPreferences: AppPreferences
-    ) {
+    fun registerNotificationChannels(context: Context, appPreferences: AppPreferences) {
         createCallsNotificationChannel(context, appPreferences)
         createMessagesNotificationChannel(context, appPreferences)
         createUploadsNotificationChannel(context)
@@ -197,10 +186,7 @@ object NotificationUtils {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    private fun getNotificationChannel(
-        context: Context,
-        channelId: String
-    ): NotificationChannel? {
+    private fun getNotificationChannel(context: Context, channelId: String): NotificationChannel? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             return notificationManager.getNotificationChannel(channelId)
@@ -275,10 +261,7 @@ object NotificationUtils {
         }
     }
 
-    fun isNotificationVisible(
-        context: Context?,
-        notificationId: Int
-    ): Boolean {
+    fun isNotificationVisible(context: Context?, notificationId: Int): Boolean {
         var isVisible = false
 
         val notificationManager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -319,10 +302,7 @@ object NotificationUtils {
         }
     }
 
-    fun getCallRingtoneUri(
-        context: Context,
-        appPreferences: AppPreferences
-    ): Uri? {
+    fun getCallRingtoneUri(context: Context, appPreferences: AppPreferences): Uri? {
         return getRingtoneUri(
             context,
             appPreferences.callRingtoneUri,
@@ -331,10 +311,7 @@ object NotificationUtils {
         )
     }
 
-    fun getMessageRingtoneUri(
-        context: Context,
-        appPreferences: AppPreferences
-    ): Uri? {
+    fun getMessageRingtoneUri(context: Context, appPreferences: AppPreferences): Uri? {
         return getRingtoneUri(
             context,
             appPreferences.messageRingtoneUri,
