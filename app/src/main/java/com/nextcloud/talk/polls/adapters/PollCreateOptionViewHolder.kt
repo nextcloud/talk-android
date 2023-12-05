@@ -75,20 +75,19 @@ class PollCreateOptionViewHolder(
     private fun getTextWatcher(
         pollCreateOptionItem: PollCreateOptionItem,
         itemsListener: PollCreateOptionsItemListener
-    ) =
-        object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                // unused atm
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // unused atm
-            }
-
-            override fun onTextChanged(option: CharSequence, start: Int, before: Int, count: Int) {
-                pollCreateOptionItem.pollOption = option.toString()
-
-                itemsListener.onOptionsItemTextChanged(pollCreateOptionItem)
-            }
+    ) = object : TextWatcher {
+        override fun afterTextChanged(s: Editable) {
+            // unused atm
         }
+
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            // unused atm
+        }
+
+        override fun onTextChanged(option: CharSequence, start: Int, before: Int, count: Int) {
+            pollCreateOptionItem.pollOption = option.toString()
+
+            itemsListener.onOptionsItemTextChanged(pollCreateOptionItem)
+        }
+    }
 }
