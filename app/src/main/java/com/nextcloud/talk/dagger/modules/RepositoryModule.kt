@@ -149,10 +149,7 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideConversationRepository(
-        ncApi: NcApi,
-        userProvider: CurrentUserProviderNew
-    ): ConversationRepository {
+    fun provideConversationRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ConversationRepository {
         return ConversationRepositoryImpl(ncApi, userProvider)
     }
 }
