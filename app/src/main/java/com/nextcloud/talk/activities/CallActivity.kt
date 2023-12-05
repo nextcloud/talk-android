@@ -2043,7 +2043,7 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    if (!switchToRoomToken.isEmpty()) {
+                    if (switchToRoomToken.isNotEmpty()) {
                         val intent = Intent(context, ChatActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         val bundle = Bundle()
@@ -2064,8 +2064,8 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    Log.e(TAG, "Error while leaving the call", e)
+                    Log.w(TAG, "Something went wrong when leaving the call", e)
+                    finish()
                 }
 
                 override fun onComplete() {
