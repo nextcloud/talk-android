@@ -38,6 +38,11 @@ indent_size=2
 
 [*.{kt,kts}]
 # IDE does not follow this Ktlint rule strictly, but the default ordering is pretty good anyway, so let's ditch it
+ktlint_code_style = android_studio
+insert_final_newline = true
+ktlint_function_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than=unset
+ktlint_function_signature_body_expression_wrapping=multiline
 ktlint_standard_import-ordering = disabled
+ktlint_standard_wrapping = enabled
 ij_kotlin_allow_trailing_comma = false
 ij_kotlin_allow_trailing_comma_on_call_site = false
