@@ -131,14 +131,12 @@ class RepositoryModule {
     }
 
     @Provides
-    fun translateRepository(ncApi: NcApi):
-        TranslateRepository {
+    fun translateRepository(ncApi: NcApi): TranslateRepository {
         return TranslateRepositoryImpl(ncApi)
     }
 
     @Provides
-    fun provideChatRepository(ncApi: NcApi):
-        ChatRepository {
+    fun provideChatRepository(ncApi: NcApi): ChatRepository {
         return ChatRepositoryImpl(ncApi)
     }
 
