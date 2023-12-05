@@ -1714,14 +1714,17 @@ class ChatActivity :
         }
     }
 
-    fun isOneToOneConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+    fun isOneToOneConversation() =
+        currentConversation != null && currentConversation?.type != null &&
+            currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
-    private fun isGroupConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == ConversationType.ROOM_GROUP_CALL
+    private fun isGroupConversation() =
+        currentConversation != null && currentConversation?.type != null &&
+            currentConversation?.type == ConversationType.ROOM_GROUP_CALL
 
-    private fun isPublicConversation() = currentConversation != null && currentConversation?.type != null &&
-        currentConversation?.type == ConversationType.ROOM_PUBLIC_CALL
+    private fun isPublicConversation() =
+        currentConversation != null && currentConversation?.type != null &&
+            currentConversation?.type == ConversationType.ROOM_PUBLIC_CALL
 
     private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
         if (conversationUser != null) {

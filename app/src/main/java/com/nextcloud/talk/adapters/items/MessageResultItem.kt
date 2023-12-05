@@ -95,10 +95,11 @@ data class MessageResultItem constructor(
         const val VIEW_TYPE = FlexibleItemViewType.MESSAGE_RESULT_ITEM
     }
 
-    override fun getHeader(): GenericTextHeaderItem = MessagesTextHeaderItem(context, viewThemeUtils)
-        .apply {
-            isHidden = showHeader // FlexibleAdapter needs this hack for some reason
-        }
+    override fun getHeader(): GenericTextHeaderItem =
+        MessagesTextHeaderItem(context, viewThemeUtils)
+            .apply {
+                isHidden = showHeader // FlexibleAdapter needs this hack for some reason
+            }
 
     override fun setHeader(header: GenericTextHeaderItem?) {
         // nothing, header is always the same

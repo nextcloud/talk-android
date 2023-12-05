@@ -46,13 +46,14 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         }.getCompleted()
     }
 
-    override fun setProxyType(proxyType: String?) = runBlocking<Unit> {
-        async {
-            if (proxyType != null) {
-                writeString(PROXY_TYPE, proxyType)
+    override fun setProxyType(proxyType: String?) =
+        runBlocking<Unit> {
+            async {
+                if (proxyType != null) {
+                    writeString(PROXY_TYPE, proxyType)
+                }
             }
         }
-    }
 
     override fun removeProxyType() {
         proxyType = ""
@@ -62,13 +63,14 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readString(PROXY_HOST).first() } }.getCompleted()
     }
 
-    override fun setProxyHost(proxyHost: String?) = runBlocking<Unit> {
-        async {
-            if (proxyHost != null) {
-                writeString(PROXY_HOST, proxyHost)
+    override fun setProxyHost(proxyHost: String?) =
+        runBlocking<Unit> {
+            async {
+                if (proxyHost != null) {
+                    writeString(PROXY_HOST, proxyHost)
+                }
             }
         }
-    }
 
     override fun removeProxyHost() {
         proxyHost = ""
@@ -78,13 +80,14 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readString(PROXY_PORT).first() } }.getCompleted()
     }
 
-    override fun setProxyPort(proxyPort: String?) = runBlocking<Unit> {
-        async {
-            if (proxyPort != null) {
-                writeString(PROXY_PORT, proxyPort)
+    override fun setProxyPort(proxyPort: String?) =
+        runBlocking<Unit> {
+            async {
+                if (proxyPort != null) {
+                    writeString(PROXY_PORT, proxyPort)
+                }
             }
         }
-    }
 
     override fun removeProxyPort() {
         proxyPort = ""
@@ -94,11 +97,12 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readBoolean(PROXY_CRED).first() } }.getCompleted()
     }
 
-    override fun setProxyNeedsCredentials(proxyNeedsCredentials: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(PROXY_CRED, proxyNeedsCredentials)
+    override fun setProxyNeedsCredentials(proxyNeedsCredentials: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(PROXY_CRED, proxyNeedsCredentials)
+            }
         }
-    }
 
     override fun removeProxyCredentials() {
         setProxyNeedsCredentials(false)
@@ -108,13 +112,14 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readString(PROXY_USERNAME).first() } }.getCompleted()
     }
 
-    override fun setProxyUsername(proxyUsername: String?) = runBlocking<Unit> {
-        async {
-            if (proxyUsername != null) {
-                writeString(PROXY_USERNAME, proxyUsername)
+    override fun setProxyUsername(proxyUsername: String?) =
+        runBlocking<Unit> {
+            async {
+                if (proxyUsername != null) {
+                    writeString(PROXY_USERNAME, proxyUsername)
+                }
             }
         }
-    }
 
     override fun removeProxyUsername() {
         proxyUsername = ""
@@ -124,13 +129,14 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readString(PROXY_PASSWORD).first() } }.getCompleted()
     }
 
-    override fun setProxyPassword(proxyPassword: String?) = runBlocking<Unit> {
-        async {
-            if (proxyPassword != null) {
-                writeString(PROXY_PASSWORD, proxyPassword)
+    override fun setProxyPassword(proxyPassword: String?) =
+        runBlocking<Unit> {
+            async {
+                if (proxyPassword != null) {
+                    writeString(PROXY_PASSWORD, proxyPassword)
+                }
             }
         }
-    }
 
     override fun removeProxyPassword() {
         proxyPassword = ""
@@ -140,13 +146,14 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readString(PUSH_TOKEN).first() } }.getCompleted()
     }
 
-    override fun setPushToken(pushToken: String?) = runBlocking<Unit> {
-        async {
-            if (pushToken != null) {
-                writeString(PUSH_TOKEN, pushToken)
+    override fun setPushToken(pushToken: String?) =
+        runBlocking<Unit> {
+            async {
+                if (pushToken != null) {
+                    writeString(PUSH_TOKEN, pushToken)
+                }
             }
         }
-    }
 
     override fun removePushToken() {
         pushToken = ""
@@ -156,13 +163,14 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readString(TEMP_CLIENT_CERT_ALIAS).first() } }.getCompleted()
     }
 
-    override fun setTemporaryClientCertAlias(alias: String?) = runBlocking<Unit> {
-        async {
-            if (alias != null) {
-                writeString(TEMP_CLIENT_CERT_ALIAS, alias)
+    override fun setTemporaryClientCertAlias(alias: String?) =
+        runBlocking<Unit> {
+            async {
+                if (alias != null) {
+                    writeString(TEMP_CLIENT_CERT_ALIAS, alias)
+                }
             }
         }
-    }
 
     override fun removeTemporaryClientCertAlias() {
         temporaryClientCertAlias = ""
@@ -172,11 +180,12 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readBoolean(PUSH_TO_TALK_INTRO_SHOWN).first() } }.getCompleted()
     }
 
-    override fun setPushToTalkIntroShown(shown: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(PUSH_TO_TALK_INTRO_SHOWN, shown)
+    override fun setPushToTalkIntroShown(shown: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(PUSH_TO_TALK_INTRO_SHOWN, shown)
+            }
         }
-    }
 
     override fun removePushToTalkIntroShown() {
         pushToTalkIntroShown = false
@@ -186,13 +195,14 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readString(CALL_RINGTONE).first() } }.getCompleted()
     }
 
-    override fun setCallRingtoneUri(value: String?) = runBlocking<Unit> {
-        async {
-            if (value != null) {
-                writeString(CALL_RINGTONE, value)
+    override fun setCallRingtoneUri(value: String?) =
+        runBlocking<Unit> {
+            async {
+                if (value != null) {
+                    writeString(CALL_RINGTONE, value)
+                }
             }
         }
-    }
 
     override fun removeCallRingtoneUri() {
         callRingtoneUri = ""
@@ -202,13 +212,14 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readString(MESSAGE_RINGTONE).first() } }.getCompleted()
     }
 
-    override fun setMessageRingtoneUri(value: String?) = runBlocking<Unit> {
-        async {
-            if (value != null) {
-                writeString(MESSAGE_RINGTONE, value)
+    override fun setMessageRingtoneUri(value: String?) =
+        runBlocking<Unit> {
+            async {
+                if (value != null) {
+                    writeString(MESSAGE_RINGTONE, value)
+                }
             }
         }
-    }
 
     override fun removeMessageRingtoneUri() {
         messageRingtoneUri = ""
@@ -218,11 +229,12 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readBoolean(NOTIFY_UPGRADE_V2).first() } }.getCompleted()
     }
 
-    override fun setNotificationChannelIsUpgradedToV2(value: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(NOTIFY_UPGRADE_V2, value)
+    override fun setNotificationChannelIsUpgradedToV2(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(NOTIFY_UPGRADE_V2, value)
+            }
         }
-    }
 
     override fun removeNotificationChannelUpgradeToV2() {
         setNotificationChannelIsUpgradedToV2(false)
@@ -232,11 +244,12 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readBoolean(NOTIFY_UPGRADE_V3).first() } }.getCompleted()
     }
 
-    override fun setNotificationChannelIsUpgradedToV3(value: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(NOTIFY_UPGRADE_V3, value)
+    override fun setNotificationChannelIsUpgradedToV3(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(NOTIFY_UPGRADE_V3, value)
+            }
         }
-    }
 
     override fun removeNotificationChannelUpgradeToV3() {
         setNotificationChannelIsUpgradedToV3(false)
@@ -246,11 +259,12 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readBoolean(SCREEN_SECURITY).first() } }.getCompleted()
     }
 
-    override fun setScreenSecurity(value: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(SCREEN_SECURITY, value)
+    override fun setScreenSecurity(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(SCREEN_SECURITY, value)
+            }
         }
-    }
 
     override fun removeScreenSecurity() {
         setScreenSecurity(false)
@@ -260,11 +274,12 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readBoolean(SCREEN_LOCK).first() } }.getCompleted()
     }
 
-    override fun setScreenLock(value: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(SCREEN_LOCK, value)
+    override fun setScreenLock(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(SCREEN_LOCK, value)
+            }
         }
-    }
 
     override fun removeScreenLock() {
         setScreenLock(false)
@@ -275,11 +290,12 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return read
     }
 
-    override fun setIncognitoKeyboard(value: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(INCOGNITO_KEYBOARD, value)
+    override fun setIncognitoKeyboard(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(INCOGNITO_KEYBOARD, value)
+            }
         }
-    }
 
     override fun removeIncognitoKeyboard() {
         setIncognitoKeyboard(false)
@@ -289,17 +305,19 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return runBlocking { async { readBoolean(PHONE_BOOK_INTEGRATION).first() } }.getCompleted()
     }
 
-    override fun setPhoneBookIntegration(value: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(PHONE_BOOK_INTEGRATION, value)
+    override fun setPhoneBookIntegration(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(PHONE_BOOK_INTEGRATION, value)
+            }
         }
-    }
 
-    override fun removeLinkPreviews() = runBlocking<Unit> {
-        async {
-            writeBoolean(LINK_PREVIEWS, false)
+    override fun removeLinkPreviews() =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(LINK_PREVIEWS, false)
+            }
         }
-    }
 
     override fun getScreenLockTimeout(): String {
         val default = context.resources.getString(R.string.nc_screen_lock_timeout_sixty)
@@ -307,13 +325,14 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return read.ifEmpty { default }
     }
 
-    override fun setScreenLockTimeout(value: String?) = runBlocking<Unit> {
-        async {
-            if (value != null) {
-                writeString(SCREEN_LOCK_TIMEOUT, value)
+    override fun setScreenLockTimeout(value: String?) =
+        runBlocking<Unit> {
+            async {
+                if (value != null) {
+                    writeString(SCREEN_LOCK_TIMEOUT, value)
+                }
             }
         }
-    }
 
     override fun removeScreenLockTimeout() {
         screenLockTimeout = ""
@@ -326,14 +345,15 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return read.ifEmpty { default }
     }
 
-    override fun setTheme(value: String?) = runBlocking<Unit> {
-        async {
-            if (value != null) {
-                val key = context.resources.getString(R.string.nc_settings_theme_key)
-                writeString(key, value)
+    override fun setTheme(value: String?) =
+        runBlocking<Unit> {
+            async {
+                if (value != null) {
+                    val key = context.resources.getString(R.string.nc_settings_theme_key)
+                    writeString(key, value)
+                }
             }
         }
-    }
 
     override fun removeTheme() {
         theme = ""
@@ -344,27 +364,30 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return read
     }
 
-    override fun setDbCypherToUpgrade(value: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(DB_CYPHER_V4_UPGRADE, value)
+    override fun setDbCypherToUpgrade(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(DB_CYPHER_V4_UPGRADE, value)
+            }
         }
-    }
 
     override fun getIsDbRoomMigrated(): Boolean {
         return runBlocking { async { readBoolean(DB_ROOM_MIGRATED).first() } }.getCompleted()
     }
 
-    override fun setIsDbRoomMigrated(value: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(DB_ROOM_MIGRATED, value)
+    override fun setIsDbRoomMigrated(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(DB_ROOM_MIGRATED, value)
+            }
         }
-    }
 
-    override fun setPhoneBookIntegrationLastRun(currentTimeMillis: Long) = runBlocking<Unit> {
-        async {
-            writeLong(PHONE_BOOK_INTEGRATION_LAST_RUN, currentTimeMillis)
+    override fun setPhoneBookIntegrationLastRun(currentTimeMillis: Long) =
+        runBlocking<Unit> {
+            async {
+                writeLong(PHONE_BOOK_INTEGRATION_LAST_RUN, currentTimeMillis)
+            }
         }
-    }
 
     override fun getPhoneBookIntegrationLastRun(defaultValue: Long?): Long {
         val result = if (defaultValue != null) {
@@ -376,36 +399,39 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return result
     }
 
-    override fun setReadPrivacy(value: Boolean) = runBlocking<Unit> {
-        val key = context.resources.getString(R.string.nc_settings_read_privacy_key)
-        async {
-            writeBoolean(key, value)
+    override fun setReadPrivacy(value: Boolean) =
+        runBlocking<Unit> {
+            val key = context.resources.getString(R.string.nc_settings_read_privacy_key)
+            async {
+                writeBoolean(key, value)
+            }
         }
-    }
 
     override fun getReadPrivacy(): Boolean {
         val key = context.resources.getString(R.string.nc_settings_read_privacy_key)
         return runBlocking { async { readBoolean(key).first() } }.getCompleted()
     }
 
-    override fun setTypingStatus(value: Boolean) = runBlocking<Unit> {
-        async {
-            writeBoolean(TYPING_STATUS, value)
+    override fun setTypingStatus(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(TYPING_STATUS, value)
+            }
         }
-    }
 
     override fun getTypingStatus(): Boolean {
         return runBlocking { async { readBoolean(TYPING_STATUS).first() } }.getCompleted()
     }
 
-    override fun setSorting(value: String?) = runBlocking<Unit> {
-        val key = context.resources.getString(R.string.nc_file_browser_sort_by_key)
-        async {
-            if (value != null) {
-                writeString(key, value)
+    override fun setSorting(value: String?) =
+        runBlocking<Unit> {
+            val key = context.resources.getString(R.string.nc_file_browser_sort_by_key)
+            async {
+                if (value != null) {
+                    writeString(key, value)
+                }
             }
         }
-    }
 
     override fun getSorting(): String {
         val key = context.resources.getString(R.string.nc_file_browser_sort_by_key)
@@ -414,11 +440,12 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return read.ifEmpty { default }
     }
 
-    override fun saveWaveFormForFile(filename: String, array: Array<Float>) = runBlocking<Unit> {
-        async {
-            writeString(filename, array.contentToString())
+    override fun saveWaveFormForFile(filename: String, array: Array<Float>) =
+        runBlocking<Unit> {
+            async {
+                writeString(filename, array.contentToString())
+            }
         }
-    }
 
     override fun getWaveFormFromFile(filename: String): Array<Float> {
         val string = runBlocking { async { readString(filename).first() } }.getCompleted()
@@ -427,29 +454,32 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
 
     override fun clear() {}
 
-    private suspend fun writeString(key: String, value: String) = context.dataStore.edit { settings ->
-        settings[
-            stringPreferencesKey(
-                key
-            )
-        ] = value
-    }
+    private suspend fun writeString(key: String, value: String) =
+        context.dataStore.edit { settings ->
+            settings[
+                stringPreferencesKey(
+                    key
+                )
+            ] = value
+        }
 
     /**
      * Returns a Flow of type String
      * @param key the key of the persisted data to be observed
      */
-    fun readString(key: String, defaultValue: String = ""): Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[stringPreferencesKey(key)] ?: defaultValue
-    }
+    fun readString(key: String, defaultValue: String = ""): Flow<String> =
+        context.dataStore.data.map { preferences ->
+            preferences[stringPreferencesKey(key)] ?: defaultValue
+        }
 
-    private suspend fun writeBoolean(key: String, value: Boolean) = context.dataStore.edit { settings ->
-        settings[
-            booleanPreferencesKey(
-                key
-            )
-        ] = value
-    }
+    private suspend fun writeBoolean(key: String, value: Boolean) =
+        context.dataStore.edit { settings ->
+            settings[
+                booleanPreferencesKey(
+                    key
+                )
+            ] = value
+        }
 
     /**
      * Returns a Flow of type Boolean
@@ -460,17 +490,15 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             preferences[booleanPreferencesKey(key)] ?: defaultValue
         }
 
-    private suspend fun writeLong(key: String, value: Long) = context.dataStore.edit { settings ->
-        settings[
-            longPreferencesKey(
-                key
-            )
-        ] = value
-    }
+    private suspend fun writeLong(key: String, value: Long) =
+        context.dataStore.edit { settings ->
+            settings[longPreferencesKey(key)] = value
+        }
 
-    private fun readLong(key: String, defaultValue: Long = 0): Flow<Long> = context.dataStore.data.map { preferences ->
-        preferences[longPreferencesKey(key)] ?: defaultValue
-    }
+    private fun readLong(key: String, defaultValue: Long = 0): Flow<Long> =
+        context.dataStore.data.map { preferences ->
+            preferences[longPreferencesKey(key)] ?: defaultValue
+        }
 
     companion object {
         @Suppress("UnusedPrivateProperty")

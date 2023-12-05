@@ -98,10 +98,11 @@ class SharedItemsViewModel @Inject constructor(
             })
     }
 
-    private fun chooseInitialType(newTypes: Set<SharedItemType>): SharedItemType = when {
-        newTypes.contains(SharedItemType.MEDIA) -> SharedItemType.MEDIA
-        else -> newTypes.toList().first()
-    }
+    private fun chooseInitialType(newTypes: Set<SharedItemType>): SharedItemType =
+        when {
+            newTypes.contains(SharedItemType.MEDIA) -> SharedItemType.MEDIA
+            else -> newTypes.toList().first()
+        }
 
     fun initialLoadItems(type: SharedItemType) {
         val state = _viewState.value

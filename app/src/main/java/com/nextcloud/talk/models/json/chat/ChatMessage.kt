@@ -374,11 +374,12 @@ data class ChatMessage(
             return ""
         }
 
-    private fun getNullsafeActorDisplayName() = if (!TextUtils.isEmpty(actorDisplayName)) {
-        actorDisplayName
-    } else {
-        sharedApplication!!.getString(R.string.nc_guest)
-    }
+    private fun getNullsafeActorDisplayName() =
+        if (!TextUtils.isEmpty(actorDisplayName)) {
+            actorDisplayName
+        } else {
+            sharedApplication!!.getString(R.string.nc_guest)
+        }
 
     override fun getUser(): IUser {
         return object : IUser {
