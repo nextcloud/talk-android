@@ -27,19 +27,19 @@ import java.util.Collections
 
 open class FileSortOrder(var name: String, var isAscending: Boolean) {
     companion object {
-        const val sort_a_to_z_id = "sort_a_to_z"
-        const val sort_z_to_a_id = "sort_z_to_a"
-        const val sort_old_to_new_id = "sort_old_to_new"
-        const val sort_new_to_old_id = "sort_new_to_old"
-        const val sort_small_to_big_id = "sort_small_to_big"
-        const val sort_big_to_small_id = "sort_big_to_small"
+        const val SORT_A_TO_Z_ID = "sort_a_to_z"
+        const val SORT_Z_TO_A_ID = "sort_z_to_a"
+        const val SORT_OLD_TO_NEW_ID = "sort_old_to_new"
+        const val SORT_NEW_TO_OLD_ID = "sort_new_to_old"
+        const val SORT_SMALL_TO_BIG_ID = "sort_small_to_big"
+        const val SORT_BIG_TO_SMALL_ID = "sort_big_to_small"
 
-        val sort_a_to_z: FileSortOrder = FileSortOrderByName(sort_a_to_z_id, true)
-        val sort_z_to_a: FileSortOrder = FileSortOrderByName(sort_z_to_a_id, false)
-        val sort_old_to_new: FileSortOrder = FileSortOrderByDate(sort_old_to_new_id, true)
-        val sort_new_to_old: FileSortOrder = FileSortOrderByDate(sort_new_to_old_id, false)
-        val sort_small_to_big: FileSortOrder = FileSortOrderBySize(sort_small_to_big_id, true)
-        val sort_big_to_small: FileSortOrder = FileSortOrderBySize(sort_big_to_small_id, false)
+        val sort_a_to_z: FileSortOrder = FileSortOrderByName(SORT_A_TO_Z_ID, true)
+        val sort_z_to_a: FileSortOrder = FileSortOrderByName(SORT_Z_TO_A_ID, false)
+        val sort_old_to_new: FileSortOrder = FileSortOrderByDate(SORT_OLD_TO_NEW_ID, true)
+        val sort_new_to_old: FileSortOrder = FileSortOrderByDate(SORT_NEW_TO_OLD_ID, false)
+        val sort_small_to_big: FileSortOrder = FileSortOrderBySize(SORT_SMALL_TO_BIG_ID, true)
+        val sort_big_to_small: FileSortOrder = FileSortOrderBySize(SORT_BIG_TO_SMALL_ID, false)
 
         val sortOrders: Map<String, FileSortOrder> = mapOf(
             sort_a_to_z.name to sort_a_to_z,

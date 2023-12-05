@@ -89,12 +89,12 @@ import coil.target.Target;
 import coil.transform.CircleCropTransformation;
 import third.parties.fresco.BetterImageSpan;
 
-import static com.nextcloud.talk.utils.FileSortOrder.sort_a_to_z_id;
-import static com.nextcloud.talk.utils.FileSortOrder.sort_big_to_small_id;
-import static com.nextcloud.talk.utils.FileSortOrder.sort_new_to_old_id;
-import static com.nextcloud.talk.utils.FileSortOrder.sort_old_to_new_id;
-import static com.nextcloud.talk.utils.FileSortOrder.sort_small_to_big_id;
-import static com.nextcloud.talk.utils.FileSortOrder.sort_z_to_a_id;
+import static com.nextcloud.talk.utils.FileSortOrder.SORT_A_TO_Z_ID;
+import static com.nextcloud.talk.utils.FileSortOrder.SORT_BIG_TO_SMALL_ID;
+import static com.nextcloud.talk.utils.FileSortOrder.SORT_NEW_TO_OLD_ID;
+import static com.nextcloud.talk.utils.FileSortOrder.SORT_OLD_TO_NEW_ID;
+import static com.nextcloud.talk.utils.FileSortOrder.SORT_SMALL_TO_BIG_ID;
+import static com.nextcloud.talk.utils.FileSortOrder.SORT_Z_TO_A_ID;
 
 public class DisplayUtils {
     private static final String TAG = DisplayUtils.class.getSimpleName();
@@ -476,17 +476,17 @@ public class DisplayUtils {
     public static @StringRes
     int getSortOrderStringId(FileSortOrder sortOrder) {
         switch (sortOrder.getName()) {
-            case sort_z_to_a_id:
+            case SORT_Z_TO_A_ID:
                 return R.string.menu_item_sort_by_name_z_a;
-            case sort_new_to_old_id:
+            case SORT_NEW_TO_OLD_ID:
                 return R.string.menu_item_sort_by_date_newest_first;
-            case sort_old_to_new_id:
+            case SORT_OLD_TO_NEW_ID:
                 return R.string.menu_item_sort_by_date_oldest_first;
-            case sort_big_to_small_id:
+            case SORT_BIG_TO_SMALL_ID:
                 return R.string.menu_item_sort_by_size_biggest_first;
-            case sort_small_to_big_id:
+            case SORT_SMALL_TO_BIG_ID:
                 return R.string.menu_item_sort_by_size_smallest_first;
-            case sort_a_to_z_id:
+            case SORT_A_TO_Z_ID:
             default:
                 return R.string.menu_item_sort_by_name_a_z;
         }
