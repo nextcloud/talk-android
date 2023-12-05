@@ -64,12 +64,12 @@ abstract class TalkDatabase : RoomDatabase() {
         const val TAG = "TalkDatabase"
 
         @Volatile
-        private var INSTANCE: TalkDatabase? = null
+        private var instance: TalkDatabase? = null
 
         @JvmStatic
         fun getInstance(context: Context, appPreferences: AppPreferences): TalkDatabase =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: build(context, appPreferences).also { INSTANCE = it }
+            instance ?: synchronized(this) {
+                instance ?: build(context, appPreferences).also { instance = it }
             }
 
         private fun build(context: Context, appPreferences: AppPreferences): TalkDatabase {
