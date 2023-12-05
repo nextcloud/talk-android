@@ -3721,19 +3721,15 @@ class ChatActivity :
                     chatMessageMap[currentMessage.value.parentMessage!!.id]!!.isDeleted = true
                 }
                 chatMessageIterator.remove()
-            }
-
-            // delete reactions system messages
-            else if (isReactionsMessage(currentMessage)) {
+            } else if (isReactionsMessage(currentMessage)) {
+                // delete reactions system messages
                 if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
                     updateAdapterForReaction(currentMessage.value.parentMessage)
                 }
 
                 chatMessageIterator.remove()
-            }
-
-            // delete poll system messages
-            else if (isPollVotedMessage(currentMessage)) {
+            } else if (isPollVotedMessage(currentMessage)) {
+                // delete poll system messages
                 chatMessageIterator.remove()
             }
         }
