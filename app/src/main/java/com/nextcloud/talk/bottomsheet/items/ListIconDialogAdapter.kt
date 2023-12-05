@@ -79,10 +79,7 @@ internal class ListIconDialogAdapter<IT : ListItemWithImage>(
         }
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ListItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListItemViewHolder {
         val listItemView: View = parent.inflate(dialog.windowContext, R.layout.menu_item_sheet)
         val viewHolder = ListItemViewHolder(
             itemView = listItemView,
@@ -94,10 +91,7 @@ internal class ListIconDialogAdapter<IT : ListItemWithImage>(
 
     override fun getItemCount() = items.size
 
-    override fun onBindViewHolder(
-        holder: ListItemViewHolder,
-        position: Int
-    ) {
+    override fun onBindViewHolder(holder: ListItemViewHolder, position: Int) {
         holder.itemView.isEnabled = !disabledIndices.contains(position)
         val currentItem = items[position]
 
@@ -120,10 +114,7 @@ internal class ListIconDialogAdapter<IT : ListItemWithImage>(
         }
     }
 
-    override fun replaceItems(
-        items: List<IT>,
-        listener: ListItemListener<IT>
-    ) {
+    override fun replaceItems(items: List<IT>, listener: ListItemListener<IT>) {
         this.items = items
         if (listener != null) {
             this.selection = listener

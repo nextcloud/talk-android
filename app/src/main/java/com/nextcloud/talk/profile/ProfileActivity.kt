@@ -688,10 +688,7 @@ class ProfileActivity : BaseActivity() {
             }
         }
 
-        private fun initUserInfoEditText(
-            holder: ViewHolder,
-            item: UserInfoDetailsItem
-        ) {
+        private fun initUserInfoEditText(holder: ViewHolder, item: UserInfoDetailsItem) {
             holder.binding.userInfoEditTextEdit.setText(item.text)
             holder.binding.userInfoInputLayout.hint = item.hint
             holder.binding.userInfoEditTextEdit.addTextChangedListener(object : TextWatcher {
@@ -714,10 +711,7 @@ class ProfileActivity : BaseActivity() {
             })
         }
 
-        private fun initScopeElements(
-            item: UserInfoDetailsItem,
-            holder: ViewHolder
-        ) {
+        private fun initScopeElements(item: UserInfoDetailsItem, holder: ViewHolder) {
             if (item.scope == null) {
                 holder.binding.scope.visibility = View.GONE
             } else {

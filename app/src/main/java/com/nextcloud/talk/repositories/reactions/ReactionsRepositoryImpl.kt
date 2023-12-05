@@ -36,11 +36,7 @@ class ReactionsRepositoryImpl(private val ncApi: NcApi, currentUserProvider: Cur
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
     val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
 
-    override fun addReaction(
-        roomToken: String,
-        message: ChatMessage,
-        emoji: String
-    ): Observable<ReactionAddedModel> {
+    override fun addReaction(roomToken: String, message: ChatMessage, emoji: String): Observable<ReactionAddedModel> {
         return ncApi.sendReaction(
             credentials,
             ApiUtils.getUrlForMessageReaction(

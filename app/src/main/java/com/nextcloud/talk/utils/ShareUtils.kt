@@ -25,11 +25,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.Conversation
 
 object ShareUtils {
-    fun getStringForIntent(
-        context: Context,
-        user: User,
-        conversation: Conversation?
-    ): String {
+    fun getStringForIntent(context: Context, user: User, conversation: Conversation?): String {
         return String.format(
             context.resources.getString(R.string.nc_share_text),
             user.baseUrl,

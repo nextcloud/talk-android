@@ -65,11 +65,7 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
         parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[PollMainViewModel::class.java]
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogPollResultsBinding.inflate(inflater, container, false)
         return binding.root
     }

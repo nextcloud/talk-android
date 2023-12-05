@@ -42,9 +42,7 @@ class OpenConversationsRepositoryImpl(private val ncApi: NcApi, currentUserProvi
         ).map { mapToOpenConversationsModel(it.ocs?.data!!) }
     }
 
-    private fun mapToOpenConversationsModel(
-        conversations: List<Conversation>
-    ): OpenConversationsModel {
+    private fun mapToOpenConversationsModel(conversations: List<Conversation>): OpenConversationsModel {
         return OpenConversationsModel(
             conversations.map { conversation ->
                 OpenConversation(

@@ -35,21 +35,13 @@ object BitmapShrinker {
     private const val DEGREES_270 = 270f
 
     @JvmStatic
-    fun shrinkBitmap(
-        path: String,
-        reqWidth: Int,
-        reqHeight: Int
-    ): Bitmap {
+    fun shrinkBitmap(path: String, reqWidth: Int, reqHeight: Int): Bitmap {
         val bitmap = decodeBitmap(path, reqWidth, reqHeight)
         return rotateBitmap(path, bitmap)
     }
 
     // solution inspired by https://developer.android.com/topic/performance/graphics/load-bitmap
-    private fun decodeBitmap(
-        path: String,
-        requestedWidth: Int,
-        requestedHeight: Int
-    ): Bitmap {
+    private fun decodeBitmap(path: String, requestedWidth: Int, requestedHeight: Int): Bitmap {
         return BitmapFactory.Options().run {
             inJustDecodeBounds = true
             BitmapFactory.decodeFile(path, this)
@@ -60,11 +52,7 @@ object BitmapShrinker {
     }
 
     // solution inspired by https://developer.android.com/topic/performance/graphics/load-bitmap
-    private fun getInSampleSize(
-        options: BitmapFactory.Options,
-        requestedWidth: Int,
-        requestedHeight: Int
-    ): Int {
+    private fun getInSampleSize(options: BitmapFactory.Options, requestedWidth: Int, requestedHeight: Int): Int {
         val (height: Int, width: Int) = options.run { outHeight to outWidth }
         var inSampleSize = 1
         if (height > requestedHeight || width > requestedWidth) {

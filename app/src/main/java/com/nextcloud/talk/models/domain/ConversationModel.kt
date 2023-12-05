@@ -46,9 +46,7 @@ class ConversationModel(
 ) {
 
     companion object {
-        fun mapToConversationModel(
-            conversation: Conversation
-        ): ConversationModel {
+        fun mapToConversationModel(conversation: Conversation): ConversationModel {
             return ConversationModel(
                 roomId = conversation.roomId,
                 token = conversation.token,

@@ -2979,9 +2979,7 @@ class ChatActivity :
         }
     }
 
-    fun leaveRoom(
-        funToCallWhenLeaveSuccessful: (() -> Unit)?
-    ) {
+    fun leaveRoom(funToCallWhenLeaveSuccessful: (() -> Unit)?) {
         logConversationInfos("leaveRoom")
 
         var apiVersion = 1
@@ -3147,11 +3145,7 @@ class ChatActivity :
         signalingMessageSender = webSocketInstance?.signalingMessageSender
     }
 
-    fun pullChatMessages(
-        lookIntoFuture: Boolean,
-        setReadMarker: Boolean = true,
-        xChatLastCommonRead: Int? = null
-    ) {
+    fun pullChatMessages(lookIntoFuture: Boolean, setReadMarker: Boolean = true, xChatLastCommonRead: Int? = null) {
         if (!validSessionId()) {
             return
         }
@@ -3471,10 +3465,7 @@ class ChatActivity :
         }
     }
 
-    private fun addMessagesToAdapter(
-        shouldAddNewMessagesNotice: Boolean,
-        chatMessageList: List<ChatMessage>
-    ) {
+    private fun addMessagesToAdapter(shouldAddNewMessagesNotice: Boolean, chatMessageList: List<ChatMessage>) {
         val isThereANewNotice =
             shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
         for (chatMessage in chatMessageList) {

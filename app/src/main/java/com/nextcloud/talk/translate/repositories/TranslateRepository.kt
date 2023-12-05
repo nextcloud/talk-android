@@ -13,8 +13,5 @@ interface TranslateRepository {
         fromLanguage: String?
     ): Observable<String>
 
-    fun getLanguages(
-        authorization: String,
-        url: String
-    ): Observable<List<Language>>
+    fun getLanguages(authorization: String, url: String): Observable<List<Language>>
 }

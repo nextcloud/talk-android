@@ -65,13 +65,7 @@ open class BetterImageSpan @JvmOverloads constructor(
     /**
      * Returns the width of the image span and increases the height if font metrics are available.
      */
-    override fun getSize(
-        paint: Paint,
-        text: CharSequence,
-        start: Int,
-        end: Int,
-        fontMetrics: FontMetricsInt?
-    ): Int {
+    override fun getSize(paint: Paint, text: CharSequence, start: Int, end: Int, fontMetrics: FontMetricsInt?): Int {
         updateBounds()
         if (fontMetrics == null) {
             return mWidth

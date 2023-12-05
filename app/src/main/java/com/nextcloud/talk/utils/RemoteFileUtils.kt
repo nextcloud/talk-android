@@ -31,11 +31,7 @@ import io.reactivex.schedulers.Schedulers
 object RemoteFileUtils {
     private val TAG = RemoteFileUtils::class.java.simpleName
 
-    fun getNewPathIfFileExists(
-        ncApi: NcApi,
-        currentUser: User,
-        remotePath: String
-    ): String {
+    fun getNewPathIfFileExists(ncApi: NcApi, currentUser: User, remotePath: String): String {
         var finalPath = remotePath
         val fileExists = doesFileExist(
             ncApi,
@@ -53,11 +49,7 @@ object RemoteFileUtils {
         return finalPath
     }
 
-    private fun doesFileExist(
-        ncApi: NcApi,
-        currentUser: User,
-        remotePath: String
-    ): Observable<Boolean> {
+    private fun doesFileExist(ncApi: NcApi, currentUser: User, remotePath: String): Observable<Boolean> {
         return ncApi.checkIfFileExists(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
             ApiUtils.getUrlForFileUpload(
@@ -72,11 +64,7 @@ object RemoteFileUtils {
             }
     }
 
-    private fun getFileNameWithoutCollision(
-        ncApi: NcApi,
-        currentUser: User,
-        remotePath: String
-    ): String {
+    private fun getFileNameWithoutCollision(ncApi: NcApi, currentUser: User, remotePath: String): String {
         val extPos = remotePath.lastIndexOf('.')
         var suffix: String
         var extension = ""

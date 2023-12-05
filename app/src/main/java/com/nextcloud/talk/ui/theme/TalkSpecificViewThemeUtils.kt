@@ -295,11 +295,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    fun themeAndHighlightText(
-        textView: TextView,
-        originalText: String?,
-        c: String?
-    ) {
+    fun themeAndHighlightText(textView: TextView, originalText: String?, c: String?) {
         withScheme(textView) { scheme ->
             var constraint = c
             constraint = FlexibleUtils.toLowerCase(constraint)
@@ -374,11 +370,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    fun getTextColor(
-        isOutgoingMessage: Boolean,
-        isSelfReaction: Boolean,
-        binding: ReactionsInsideMessageBinding
-    ): Int {
+    fun getTextColor(isOutgoingMessage: Boolean, isSelfReaction: Boolean, binding: ReactionsInsideMessageBinding): Int {
         return withScheme(binding.root) { scheme ->
             return@withScheme if (!isOutgoingMessage || isSelfReaction) {
                 ContextCompat.getColor(binding.root.context, R.color.high_emphasis_text)

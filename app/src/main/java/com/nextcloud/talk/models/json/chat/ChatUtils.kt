@@ -35,10 +35,7 @@ class ChatUtils {
         }
 
         @Suppress("Detekt.ComplexMethod")
-        private fun parse(
-            messageParameters: HashMap<String?, HashMap<String?, String?>>,
-            message: String?
-        ): String? {
+        private fun parse(messageParameters: HashMap<String?, HashMap<String?, String?>>, message: String?): String? {
             var resultMessage = message
             for (key in messageParameters.keys) {
                 val individualHashMap = messageParameters[key]

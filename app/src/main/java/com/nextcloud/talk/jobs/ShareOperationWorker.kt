@@ -93,12 +93,7 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
     companion object {
         private val TAG = ShareOperationWorker::class.simpleName
 
-        fun shareFile(
-            roomToken: String?,
-            currentUser: User,
-            remotePath: String,
-            metaData: String?
-        ) {
+        fun shareFile(roomToken: String?,   currentUser: User, remotePath: String, metaData: String?) {
             val paths: MutableList<String> = ArrayList()
             paths.add(remotePath)
 

@@ -160,10 +160,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         }
     }
 
-    private fun loadList(
-        state: RemoteFileBrowserItemsViewModel.LoadedState,
-        mimeTypeSelectionFilter: String?
-    ) {
+    private fun loadList(state: RemoteFileBrowserItemsViewModel.LoadedState, mimeTypeSelectionFilter: String?) {
         val remoteFileBrowserItems = state.items
         Log.d(TAG, "Items received: $remoteFileBrowserItems")
 

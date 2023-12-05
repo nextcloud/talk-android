@@ -49,11 +49,7 @@ class PollLoadingFragment : Fragment() {
         fragmentHeight = arguments?.getInt(KEY_FRAGMENT_HEIGHT)!!
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogPollLoadingBinding.inflate(inflater, container, false)
         binding.root.layoutParams.height = fragmentHeight
         viewThemeUtils.platform.colorCircularProgressBar(binding.pollLoadingProgressbar, ColorRole.PRIMARY)
@@ -65,9 +61,7 @@ class PollLoadingFragment : Fragment() {
         private const val KEY_FRAGMENT_HEIGHT = "keyFragmentHeight"
 
         @JvmStatic
-        fun newInstance(
-            fragmentHeight: Int
-        ): PollLoadingFragment {
+        fun newInstance(fragmentHeight: Int): PollLoadingFragment {
             val args = bundleOf(
                 KEY_FRAGMENT_HEIGHT to fragmentHeight
             )
