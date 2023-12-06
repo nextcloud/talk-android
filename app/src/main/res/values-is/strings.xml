@@ -88,6 +88,7 @@
     <string name="nc_display_name_not_fetched">Gat ekki náð í birtingarnafn, hætti</string>
     <string name="nc_display_name_not_stored">Gat ekki geymt birtingarnafn, hætti</string>
     <string name="nc_email">Tölvupóstur</string>
+    <string name="nc_expire_message_eight_hours">8 klukkustundir</string>
     <string name="nc_expire_message_off">Slökkt</string>
     <string name="nc_expire_message_one_day">1 day</string>
     <string name="nc_expire_message_one_hour">1 klukkustund</string>

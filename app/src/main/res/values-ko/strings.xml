@@ -406,6 +406,7 @@
     <string name="record_failed_info">녹음/녹화가 실패했습니다. 관리자에게 연락해 주세요.</string>
     <string name="record_start_description">녹음/녹화 시작</string>
     <string name="record_stop_description">녹음/녹화 중단</string>
+    <string name="recording_consent_for_conversation_title">녹음/녹화 동의</string>
     <string name="recording_settings_title">녹음/녹화 중</string>
     <string name="save">저장</string>
     <string name="scope_federated_description">신뢰할 수 있는 서버만 동기화할 수 있습니다.</string>
