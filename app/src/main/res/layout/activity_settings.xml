@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/settings_appbar"
         android:layout_width="match_parent"
@@ -196,6 +195,70 @@
                     android:textStyle="bold"/>
 
                 <LinearLayout
+                    android:id="@+id/settings_gplay_only_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/settings_notifications_permission_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/standard_padding"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/headline_text_size"
+                            android:text="@string/nc_diagnose_notification_permission" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/nc_diagnose_notification_permission_subtitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/settings_battery_optimization_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/standard_padding"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/headline_text_size"
+                            android:text="@string/nc_diagnose_battery_optimization_title" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/battery_optimization_ignored"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="@string/nc_diagnose_battery_optimization_ignored"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_gplay_not_available"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/standard_padding"
+                    android:visibility="gone"
+                    android:orientation="vertical"
+                    tools:visibility="visible">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nc_diagnose_gplay_available_no"/>
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/settings_call_sound"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -242,6 +305,7 @@
                         android:textSize="@dimen/supporting_text_text_size"/>
 
                 </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -514,6 +578,28 @@
                     android:text="@string/nc_settings_advanced_title"
                     android:textSize="@dimen/headline_text_size"
                     android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:id="@+id/diagnose_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/standard_padding"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/diagnose_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/headline_text_size"
+                        android:text="@string/nc_settings_diagnose_title"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/diagnose_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nc_settings_diagnose_subtitle"/>
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/settings_client_cert"

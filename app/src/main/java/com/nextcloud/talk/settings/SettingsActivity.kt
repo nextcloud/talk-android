@@ -3,11 +3,13 @@
  *
  * @author Andy Scherzinger
  * @author Mario Danic
+ * @author Marcel Hibbe
  * @author Tim Krüger
  * @author Ezhil Shanmugham
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021-2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,6 +27,7 @@
  */
 package com.nextcloud.talk.settings
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
@@ -56,6 +59,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
@@ -72,8 +76,10 @@ import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppTheme
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySettingsBinding
+import com.nextcloud.talk.diagnose.DiagnoseActivity
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
@@ -84,6 +90,7 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.profile.ProfileActivity
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
 import com.nextcloud.talk.utils.NotificationUtils
@@ -92,6 +99,8 @@ import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
+import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import io.reactivex.Observer
@@ -123,6 +132,9 @@ class SettingsActivity : BaseActivity() {
 
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderNew
+
+    @Inject
+    lateinit var platformPermissionUtil: PlatformPermissionUtil
 
     private var currentUser: User? = null
     private var credentials: String? = null
@@ -163,11 +175,10 @@ class SettingsActivity : BaseActivity() {
             resources!!.getString(R.string.nc_app_product_name)
         )
 
+        setupDiagnose()
         setupPrivacyUrl()
         setupSourceCodeUrl()
         binding.settingsVersionSummary.text = String.format("v" + BuildConfig.VERSION_NAME)
-
-        setupSoundSettings()
 
         setupPhoneBookIntegration()
 
@@ -193,18 +204,7 @@ class SettingsActivity : BaseActivity() {
 
         setupCheckables()
         setupScreenLockSetting()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            binding.settingsNotificationsTitle.text = resources!!.getString(
-                R.string.nc_settings_notification_sounds_post_oreo
-            )
-        }
-
-        val callRingtoneUri = getCallRingtoneUri(context, (appPreferences))
-        binding.callsRingtone.text = getRingtoneName(context, callRingtoneUri)
-        val messageRingtoneUri = getMessageRingtoneUri(context, (appPreferences))
-        binding.messagesRingtone.text = getRingtoneName(context, messageRingtoneUri)
-
+        setupNotificationSettings()
         setupProxyTypeSettings()
         setupProxyCredentialSettings()
         registerChangeListeners()
@@ -273,7 +273,112 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
-    private fun setupSoundSettings() {
+    private fun setupNotificationSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            binding.settingsNotificationsTitle.text = resources!!.getString(
+                R.string.nc_settings_notification_sounds_post_oreo
+            )
+        }
+        setupNotificationSoundsSettings()
+        setupNotificationPermissionSettings()
+    }
+
+    @Suppress("LongMethod")
+    private fun setupNotificationPermissionSettings() {
+        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+            binding.settingsGplayOnlyWrapper.visibility = View.VISIBLE
+
+            setTroubleshootingClickListenersIfNecessary()
+
+            if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
+                binding.batteryOptimizationIgnored.text =
+                    resources!!.getString(R.string.nc_diagnose_battery_optimization_ignored)
+                binding.batteryOptimizationIgnored.setTextColor(
+                    resources.getColor(R.color.high_emphasis_text, null)
+                )
+            } else {
+                binding.batteryOptimizationIgnored.text =
+                    resources!!.getString(R.string.nc_diagnose_battery_optimization_not_ignored)
+                binding.batteryOptimizationIgnored.setTextColor(resources.getColor(R.color.nc_darkRed, null))
+
+                binding.settingsBatteryOptimizationWrapper.setOnClickListener {
+                    val dialogText = String.format(
+                        context.resources.getString(R.string.nc_ignore_battery_optimization_dialog_text),
+                        context.resources.getString(R.string.nc_app_name)
+                    )
+
+                    val dialogBuilder = MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.nc_ignore_battery_optimization_dialog_title)
+                        .setMessage(dialogText)
+                        .setPositiveButton(R.string.nc_ok) { _, _ ->
+                            startActivity(
+                                Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                            )
+                        }
+                        .setNegativeButton(R.string.nc_common_dismiss, null)
+                    viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+                    val dialog = dialogBuilder.show()
+                    viewThemeUtils.platform.colorTextButtons(
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                    )
+                }
+            }
+
+            // handle notification permission on API level >= 33
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (platformPermissionUtil.isPostNotificationsPermissionGranted()) {
+                    binding.ncDiagnoseNotificationPermissionSubtitle.text =
+                        resources.getString(R.string.nc_settings_notifications_granted)
+                    binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
+                        resources.getColor(R.color.high_emphasis_text, null)
+                    )
+                } else {
+                    binding.ncDiagnoseNotificationPermissionSubtitle.text =
+                        resources.getString(R.string.nc_settings_notifications_declined)
+                    binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
+                        resources.getColor(R.color.nc_darkRed, null)
+                    )
+                    binding.settingsNotificationsPermissionWrapper.setOnClickListener {
+                        requestPermissions(
+                            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                            ConversationsListActivity.REQUEST_POST_NOTIFICATIONS_PERMISSION
+                        )
+                    }
+                }
+            } else {
+                binding.settingsNotificationsPermissionWrapper.visibility = View.GONE
+            }
+        } else {
+            binding.settingsGplayOnlyWrapper.visibility = View.GONE
+            binding.settingsGplayNotAvailable.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupNotificationSoundsSettings() {
+        if (NotificationUtils.isCallsNotificationChannelEnabled(this)) {
+            val callRingtoneUri = getCallRingtoneUri(context, (appPreferences))
+
+            binding.callsRingtone.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
+            binding.callsRingtone.text = getRingtoneName(context, callRingtoneUri)
+        } else {
+            binding.callsRingtone.setTextColor(
+                ResourcesCompat.getColor(context.resources, R.color.nc_darkRed, null)
+            )
+            binding.callsRingtone.text = resources!!.getString(R.string.nc_common_disabled)
+        }
+
+        if (NotificationUtils.isMessagesNotificationChannelEnabled(this)) {
+            val messageRingtoneUri = getMessageRingtoneUri(context, (appPreferences))
+            binding.messagesRingtone.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
+            binding.messagesRingtone.text = getRingtoneName(context, messageRingtoneUri)
+        } else {
+            binding.messagesRingtone.setTextColor(
+                ResourcesCompat.getColor(context.resources, R.color.nc_darkRed, null)
+            )
+            binding.messagesRingtone.text = resources!!.getString(R.string.nc_common_disabled)
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             binding.settingsCallSound.setOnClickListener {
                 val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
@@ -295,7 +400,53 @@ class SettingsActivity : BaseActivity() {
                 startActivity(intent)
             }
         } else {
-            Log.e(TAG, "setupSoundSettings currently not supported for versions < Build.VERSION_CODES.O")
+            Log.w(TAG, "setupSoundSettings currently not supported for versions < Build.VERSION_CODES.O")
+        }
+    }
+
+    private fun setTroubleshootingClickListenersIfNecessary() {
+        fun click() {
+            val dialogBuilder = MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.nc_notifications_troubleshooting_dialog_title)
+                .setMessage(R.string.nc_notifications_troubleshooting_dialog_text)
+                .setNegativeButton(R.string.nc_diagnose_dialog_open_checklist) { _, _ ->
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(resources.getString(R.string.notification_checklist_url))
+                        )
+                    )
+                }
+                .setPositiveButton(R.string.nc_diagnose_dialog_open_dontkillmyapp_website) { _, _ ->
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(resources.getString(R.string.dontkillmyapp_url))
+                        )
+                    )
+                }
+                .setNeutralButton(R.string.nc_diagnose_dialog_open_diagnose) { _, _ ->
+                    val intent = Intent(context, DiagnoseActivity::class.java)
+                    startActivity(intent)
+                }
+            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+            )
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (platformPermissionUtil.isPostNotificationsPermissionGranted() &&
+                PowerManagerUtils().isIgnoringBatteryOptimizations()
+            ) {
+                binding.settingsNotificationsPermissionWrapper.setOnClickListener { click() }
+                binding.settingsBatteryOptimizationWrapper.setOnClickListener { click() }
+            }
+        } else if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
+            binding.settingsBatteryOptimizationWrapper.setOnClickListener { click() }
         }
     }
 
@@ -311,6 +462,13 @@ class SettingsActivity : BaseActivity() {
             }
         } else {
             binding.settingsSourceCode.visibility = View.GONE
+        }
+    }
+
+    private fun setupDiagnose() {
+        binding.diagnoseWrapper.setOnClickListener {
+            val intent = Intent(context, DiagnoseActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -490,6 +648,7 @@ class SettingsActivity : BaseActivity() {
                         ).show()
                         restartApp()
                     }
+
                     WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
                         Toast.makeText(
                             context,
@@ -915,22 +1074,39 @@ class SettingsActivity : BaseActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == ContactAddressBookWorker.REQUEST_PERMISSION &&
-            grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            WorkManager
-                .getInstance(this)
-                .enqueue(OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java).build())
-            checkForPhoneNumber()
-        } else {
-            appPreferences.setPhoneBookIntegration(false)
-            binding.settingsPhoneBookIntegrationSwitch.isChecked = appPreferences.isPhoneBookIntegrationEnabled
-            Snackbar.make(
-                binding.root,
-                context.resources.getString(R.string.no_phone_book_integration_due_to_permissions),
-                Snackbar.LENGTH_LONG
-            ).show()
+
+        when (requestCode) {
+            ContactAddressBookWorker.REQUEST_PERMISSION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    WorkManager
+                        .getInstance(this)
+                        .enqueue(OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java).build())
+                    checkForPhoneNumber()
+                } else {
+                    appPreferences.setPhoneBookIntegration(false)
+                    binding.settingsPhoneBookIntegrationSwitch.isChecked = appPreferences.isPhoneBookIntegrationEnabled
+                    Snackbar.make(
+                        binding.root,
+                        context.resources.getString(R.string.no_phone_book_integration_due_to_permissions),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+            ConversationsListActivity.REQUEST_POST_NOTIFICATIONS_PERMISSION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    Snackbar.make(
+                        binding.root,
+                        context.resources.getString(R.string.nc_settings_notifications_declined_hint),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    Log.d(
+                        TAG,
+                        "Notification permission is denied. Either because user denied it when being asked. " +
+                            "Or permission is already denied and android decided to not offer the dialog."
+                    )
+                }
+            }
         }
     }
 
@@ -1140,6 +1316,7 @@ class SettingsActivity : BaseActivity() {
                                 Snackbar.LENGTH_LONG
                             ).show()
                         }
+
                         else -> {
                             textInputLayout.helperText = context.resources.getString(
                                 R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid

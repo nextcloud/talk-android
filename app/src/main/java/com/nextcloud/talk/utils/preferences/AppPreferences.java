@@ -69,6 +69,14 @@ public interface AppPreferences {
 
     void setPushToken(String pushToken);
 
+    Long getPushTokenLatestGeneration();
+
+    void setPushTokenLatestGeneration(Long date);
+
+    Long getPushTokenLatestFetch();
+
+    void setPushTokenLatestFetch(Long date);
+
     void removePushToken();
 
     String getTemporaryClientCertAlias();

@@ -31,6 +31,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.models.SignatureVerification
@@ -72,6 +73,9 @@ class PushUtils {
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
     @JvmField
     @Inject
@@ -243,6 +247,13 @@ class PushUtils {
                 }
 
                 override fun onNext(pushRegistrationOverall: PushRegistrationOverall) {
+                    arbitraryStorageManager.storeStorageSetting(
+                        getIdForUser(user),
+                        LATEST_PUSH_REGISTRATION_AT_SERVER,
+                        System.currentTimeMillis().toString(),
+                        ""
+                    )
+
                     Log.d(TAG, "pushTokenHash successfully registered at nextcloud server.")
                     val proxyMap: MutableMap<String, String?> = HashMap()
                     proxyMap["pushToken"] = token
@@ -273,6 +284,13 @@ class PushUtils {
 
                 override fun onNext(t: Unit) {
                     try {
+                        arbitraryStorageManager.storeStorageSetting(
+                            getIdForUser(user),
+                            LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY,
+                            System.currentTimeMillis().toString(),
+                            ""
+                        )
+
                         Log.d(TAG, "pushToken successfully registered at pushproxy.")
                         updatePushStateForUser(proxyMap, user)
                     } catch (e: IOException) {
@@ -396,5 +414,7 @@ class PushUtils {
 
     companion object {
         private const val TAG = "PushUtils"
+        const val LATEST_PUSH_REGISTRATION_AT_SERVER: String = "LATEST_PUSH_REGISTRATION_AT_SERVER"
+        const val LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY: String = "LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY"
     }
 }

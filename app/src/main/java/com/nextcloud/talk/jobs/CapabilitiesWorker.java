@@ -80,6 +80,7 @@ public class CapabilitiesWorker extends Worker {
             capabilitiesOverall.getOcs().getData().getCapabilities() != null) {
 
             user.setCapabilities(capabilitiesOverall.getOcs().getData().getCapabilities());
+            user.setServerVersion(capabilitiesOverall.getOcs().getData().getServerVersion());
 
             try {
                 int rowsCount = userManager.updateOrCreateUser(user).blockingGet();

@@ -159,6 +159,28 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         pushToken = ""
     }
 
+    override fun getPushTokenLatestGeneration(): Long {
+        return runBlocking { async { readLong(PUSH_TOKEN_LATEST_GENERATION).first() } }.getCompleted()
+    }
+
+    override fun setPushTokenLatestGeneration(date: Long) =
+        runBlocking<Unit> {
+            async {
+                writeLong(PUSH_TOKEN_LATEST_GENERATION, date)
+            }
+        }
+
+    override fun getPushTokenLatestFetch(): Long {
+        return runBlocking { async { readLong(PUSH_TOKEN_LATEST_FETCH).first() } }.getCompleted()
+    }
+
+    override fun setPushTokenLatestFetch(date: Long) =
+        runBlocking<Unit> {
+            async {
+                writeLong(PUSH_TOKEN_LATEST_FETCH, date)
+            }
+        }
+
     override fun getTemporaryClientCertAlias(): String {
         return runBlocking { async { readString(TEMP_CLIENT_CERT_ALIAS).first() } }.getCompleted()
     }
@@ -512,6 +534,8 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val PROXY_USERNAME = "proxy_username"
         const val PROXY_PASSWORD = "proxy_password"
         const val PUSH_TOKEN = "push_token"
+        const val PUSH_TOKEN_LATEST_GENERATION = "push_token_latest_generation"
+        const val PUSH_TOKEN_LATEST_FETCH = "push_token_latest_fetch"
         const val TEMP_CLIENT_CERT_ALIAS = "tempClientCertAlias"
         const val PUSH_TO_TALK_INTRO_SHOWN = "pushToTalk_intro_shown"
         const val CALL_RINGTONE = "call_ringtone"

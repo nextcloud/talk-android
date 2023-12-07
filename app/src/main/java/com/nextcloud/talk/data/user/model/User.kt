@@ -22,6 +22,7 @@ package com.nextcloud.talk.data.user.model
 import android.os.Parcelable
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
+import com.nextcloud.talk.models.json.capabilities.ServerVersion
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.parcelize.Parcelize
@@ -37,6 +38,7 @@ data class User(
     var displayName: String? = null,
     var pushConfigurationState: PushConfigurationState? = null,
     var capabilities: Capabilities? = null,
+    var serverVersion: ServerVersion? = null,
     var clientCertificate: String? = null,
     var externalSignalingServer: ExternalSignalingServer? = null,
     var current: Boolean = FALSE,

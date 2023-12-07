@@ -32,6 +32,7 @@ import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
 import com.nextcloud.talk.data.source.local.converters.ExternalSignalingServerConverter
 import com.nextcloud.talk.data.source.local.converters.HashMapHashMapConverter
 import com.nextcloud.talk.data.source.local.converters.PushConfigurationConverter
+import com.nextcloud.talk.data.source.local.converters.ServerVersionConverter
 import com.nextcloud.talk.data.source.local.converters.SignalingSettingsConverter
 import com.nextcloud.talk.data.storage.ArbitraryStoragesDao
 import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
@@ -42,15 +43,20 @@ import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteDatabaseHook
 import net.sqlcipher.database.SupportFactory
 import java.util.Locale
+import androidx.room.AutoMigration
 
 @Database(
     entities = [UserEntity::class, ArbitraryStorageEntity::class],
-    version = 9,
+    version = 10,
+    autoMigrations = [
+        AutoMigration(from = 9, to = 10)
+    ],
     exportSchema = true
 )
 @TypeConverters(
     PushConfigurationConverter::class,
     CapabilitiesConverter::class,
+    ServerVersionConverter::class,
     ExternalSignalingServerConverter::class,
     SignalingSettingsConverter::class,
     HashMapHashMapConverter::class

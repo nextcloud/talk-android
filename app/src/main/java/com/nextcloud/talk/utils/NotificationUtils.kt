@@ -34,6 +34,7 @@ import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import coil.executeBlocking
 import coil.imageLoader
@@ -273,6 +274,30 @@ object NotificationUtils {
             }
         }
         return isVisible
+    }
+
+    fun isCallsNotificationChannelEnabled(context: Context): Boolean {
+        val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name)
+        if (channel != null) {
+            return isNotificationChannelEnabled(context, channel)
+        }
+        return false
+    }
+
+    fun isMessagesNotificationChannelEnabled(context: Context): Boolean {
+        val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name)
+        if (channel != null) {
+            return isNotificationChannelEnabled(context, channel)
+        }
+        return false
+    }
+
+    private fun isNotificationChannelEnabled(context: Context, channel: NotificationChannel): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            channel.importance != NotificationManager.IMPORTANCE_NONE
+        } else {
+            NotificationManagerCompat.from(context).areNotificationsEnabled()
+        }
     }
 
     private fun getRingtoneUri(

@@ -51,7 +51,6 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
-import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
@@ -250,7 +249,7 @@ class AccountVerificationActivity : BaseActivity() {
             })
     }
 
-    private fun storeProfile(displayName: String?, userId: String, capabilities: Capabilities) {
+    private fun storeProfile(displayName: String?, userId: String, capabilitiesOverall: CapabilitiesOverall) {
         userManager.storeProfile(
             username,
             UserManager.UserAttributes(
@@ -261,7 +260,8 @@ class AccountVerificationActivity : BaseActivity() {
                 token = token,
                 displayName = displayName,
                 pushConfigurationState = null,
-                capabilities = LoganSquare.serialize(capabilities),
+                capabilities = LoganSquare.serialize(capabilitiesOverall.ocs!!.data!!.capabilities),
+                serverVersion = LoganSquare.serialize(capabilitiesOverall.ocs!!.data!!.serverVersion),
                 certificateAlias = appPreferences.temporaryClientCertAlias,
                 externalSignalingServer = null
             )
@@ -302,7 +302,7 @@ class AccountVerificationActivity : BaseActivity() {
             })
     }
 
-    private fun fetchProfile(credentials: String, capabilities: CapabilitiesOverall) {
+    private fun fetchProfile(credentials: String, capabilitiesOverall: CapabilitiesOverall) {
         ncApi.getUserProfile(
             credentials,
             ApiUtils.getUrlForUserProfile(baseUrl)
@@ -325,7 +325,7 @@ class AccountVerificationActivity : BaseActivity() {
                         storeProfile(
                             displayName,
                             userProfileOverall.ocs!!.data!!.userId!!,
-                            capabilities.ocs!!.data!!.capabilities!!
+                            capabilitiesOverall
                         )
                     } else {
                         runOnUiThread {
