@@ -120,8 +120,10 @@
     <string name="nc_license_title">Notkunarleyfi</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_locked_tap_to_unlock">Ýttu til að aflæsa</string>
+    <string name="nc_manual">Ekki stillt</string>
     <string name="nc_mark_as_read">Merkja sem lesið</string>
     <string name="nc_mark_as_unread">Merkja allt sem ólesið</string>
+    <string name="nc_message_quote_cancel_reply">Hætta við svar</string>
     <string name="nc_message_read">Skilaboðin hafa verið lesið</string>
     <string name="nc_message_sent">Skilaboðin hafa verið send</string>
     <string name="nc_moderator">Umsjónarmaður</string>
