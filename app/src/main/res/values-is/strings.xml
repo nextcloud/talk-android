@@ -30,6 +30,7 @@
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Stærsta fyrst</string>
     <string name="menu_item_sort_by_size_smallest_first">Minnsta fyrst</string>
+    <string name="message_search_begin_empty">Engar leitarniðurstöður</string>
     <string name="messages">Skilaboð</string>
     <string name="nc_Server_account_imported">Valinn aðgangur er núna fluttur inn og tiltækur</string>
     <string name="nc_about">Um hugbúnaðinn</string>
@@ -232,6 +233,7 @@
     <string name="nc_share_text_pass">\nLykilorð: %1$s</string>
     <string name="nc_share_this_location">Deila þessari staðsetningu</string>
     <string name="nc_share_to_choose_account">Veldu aðgang</string>
+    <string name="nc_shared_items_deck_card">Deck-spjald</string>
     <string name="nc_shared_items_location">Staðsetning</string>
     <string name="nc_sort_by">Raða sem</string>
     <string name="nc_start_time">Upphafstími</string>
@@ -273,7 +275,10 @@
     <string name="shared_items_voice">Raddskilaboð</string>
     <string name="starred">Eftirlæti</string>
     <string name="status_message">Stöðuskilaboð</string>
+    <string name="take_photo">Taka ljósmynd</string>
     <string name="take_photo_send">Senda</string>
+    <string name="take_photo_switch_camera">Skipta á milli myndavéla</string>
+    <string name="take_photo_toggle_torch">Víxla vasaljósi af/á</string>
     <string name="thirtyMinutes">30 mínútur</string>
     <string name="thisWeek">Í þessari viku</string>
     <string name="title_attachments">Viðhengi</string>
