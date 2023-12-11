@@ -166,7 +166,6 @@ class ConversationInfoActivity :
 
     override fun onResume() {
         super.onResume()
-
         if (databaseStorageModule == null) {
             databaseStorageModule = DatabaseStorageModule(conversationUser, conversationToken)
         }

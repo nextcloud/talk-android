@@ -26,7 +26,7 @@ import androidx.room.Entity
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "ArbitraryStorage", primaryKeys = ["accountIdentifier", "key"])
+@Entity(tableName = "ArbitraryStorage", primaryKeys = ["accountIdentifier", "key", "object"])
 data class ArbitraryStorageEntity(
     @ColumnInfo(name = "accountIdentifier")
     var accountIdentifier: Long = 0,
@@ -35,7 +35,7 @@ data class ArbitraryStorageEntity(
     var key: String = "",
 
     @ColumnInfo(name = "object")
-    var storageObject: String? = null,
+    var storageObject: String = "",
 
     @ColumnInfo(name = "value")
     var value: String? = null

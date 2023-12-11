@@ -33,7 +33,9 @@ class ArbitraryStoragesRepositoryImpl(private val arbitraryStoragesDao: Arbitrar
     ): Maybe<ArbitraryStorage> {
         return arbitraryStoragesDao
             .getStorageSetting(accountIdentifier, key, objectString)
-            .map { ArbitraryStorageMapper.toModel(it) }
+            .map {
+                ArbitraryStorageMapper.toModel(it)
+            }
     }
 
     override fun getAll(): Maybe<List<ArbitraryStorageEntity>> {

@@ -45,7 +45,7 @@ import java.util.Locale
 
 @Database(
     entities = [UserEntity::class, ArbitraryStorageEntity::class],
-    version = 9,
+    version = 10,
     exportSchema = true
 )
 @TypeConverters(
@@ -94,9 +94,14 @@ abstract class TalkDatabase : RoomDatabase() {
 
             return Room
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
-                // comment out openHelperFactory to view the database entries in Android Studio for debugging
+                // NOTE: comment out openHelperFactory to view the database entries in Android Studio for debugging
                 .openHelperFactory(factory)
-                .addMigrations(Migrations.MIGRATION_6_8, Migrations.MIGRATION_7_8, Migrations.MIGRATION_8_9)
+                .addMigrations(
+                    Migrations.MIGRATION_6_8,
+                    Migrations.MIGRATION_7_8,
+                    Migrations.MIGRATION_8_9,
+                    Migrations.MIGRATION_9_10
+                )
                 .allowMainThreadQueries()
                 .addCallback(
                     object : RoomDatabase.Callback() {

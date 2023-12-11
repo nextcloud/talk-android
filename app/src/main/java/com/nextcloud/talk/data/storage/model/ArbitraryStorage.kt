@@ -27,6 +27,6 @@ import kotlinx.parcelize.Parcelize
 data class ArbitraryStorage(
     var accountIdentifier: Long,
     var key: String,
-    var storageObject: String? = null,
+    var storageObject: String,
     var value: String? = null
 ) : Parcelable

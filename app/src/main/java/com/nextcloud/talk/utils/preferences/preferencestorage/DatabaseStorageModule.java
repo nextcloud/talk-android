@@ -251,4 +251,10 @@ public class DatabaseStorageModule {
     public void setMessageExpiration(int messageExpiration) {
         this.messageExpiration = messageExpiration;
     }
+
+    @androidx.annotation.NonNull
+    public String toString() {
+        return "Conversation token: " + conversationToken
+            + "\nAccount Number: " + accountIdentifier;
+    }
 }
