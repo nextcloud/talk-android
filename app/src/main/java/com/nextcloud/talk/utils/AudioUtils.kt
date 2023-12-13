@@ -43,7 +43,7 @@ import kotlin.math.abs
 object AudioUtils : DefaultLifecycleObserver {
     private val TAG = AudioUtils::class.java.simpleName
     private const val VALUE_10 = 10
-    private const val TIME_LIMIT = 5000
+    private const val TIME_LIMIT = 3000
     private const val DEFAULT_SIZE = 500
     private enum class LifeCycleFlag {
         PAUSED,
@@ -115,21 +115,21 @@ object AudioUtils : DefaultLifecycleObserver {
             mediaCodec.setCallback(object : MediaCodec.Callback() {
                 private var extractor: MediaExtractor? = null
                 val tempList = mutableListOf<Float>()
-                override fun onInputBufferAvailable(codec: MediaCodec, index: Int) {
-                    // Setting up the extractor if not already done
-                    if (extractor == null) {
-                        extractor = MediaExtractor()
-                        try {
-                            extractor!!.setDataSource(path)
-                            extractor!!.selectTrack(0)
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
+                init {
+                    // Setting up the extractor to be guaranteed not null
+                    extractor = MediaExtractor()
+                    try {
+                        extractor!!.setDataSource(path)
+                        extractor!!.selectTrack(0)
+                    } catch (e: IOException) {
+                        e.printStackTrace()
                     }
+                }
 
+                override fun onInputBufferAvailable(codec: MediaCodec, index: Int) {
                     // Boiler plate, Extracts a buffer of encoded audio data to be sent to the codec for processing
                     val byteBuffer = codec.getInputBuffer(index)
-                    if (byteBuffer != null) {
+                    if (byteBuffer != null && extractor != null) {
                         val sampleSize = extractor!!.readSampleData(byteBuffer, 0)
                         if (sampleSize > 0) {
                             val isOver = !extractor!!.advance()
@@ -208,9 +208,14 @@ object AudioUtils : DefaultLifecycleObserver {
             mediaCodec.configure(mediaFormat, null, null, 0)
             mediaCodec.start()
 
-            // This runs until the codec finishes or the time limit is exceeded, or an error occurs
-            // If the time limit is exceed or an error occurs, the result should be null
-            while (result != null && result!!.size <= 0) {
+            // This runs until the codec finishes, the time limit is exceeded, or an error occurs
+            // If the time limit is exceed or an error occurs, the result should be null or empty
+            var currTime = SystemClock.elapsedRealtime() - startTime
+            while (result != null &&
+                result!!.size <= 0 &&
+                currTime < TIME_LIMIT // Guarantees Execution stops after 3 seconds
+            ) {
+                currTime = SystemClock.elapsedRealtime() - startTime
                 continue
             }
 
