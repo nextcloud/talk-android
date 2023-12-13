@@ -948,7 +948,7 @@ class ChatActivity :
 
     private fun initMessageHolders(): MessageHolders {
         val messageHolders = MessageHolders()
-        val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!)
+        val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!, viewThemeUtils)
 
         val payload = MessagePayload(
             roomToken,
