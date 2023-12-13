@@ -158,7 +158,7 @@ ext {
     media3_version = "1.2.0"
 }
 
-configurations.all {
+configurations.configureEach {
     exclude group: 'com.google.firebase', module: 'firebase-core'
     exclude group: 'com.google.firebase', module: 'firebase-analytics'
     exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
@@ -315,7 +315,7 @@ dependencies {
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:110.5481.0'
 }
 
-task installGitHooks(type: Copy, group: "development") {
+tasks.register('installGitHooks', Copy) {
     description = "Install git hooks"
     from("../scripts/hooks") {
         include '*'
@@ -329,7 +329,7 @@ spotbugs {
     reportLevel = Confidence.valueOf('MEDIUM')
 }
 
-tasks.withType(SpotBugsTask) { task ->
+tasks.withType(SpotBugsTask).configureEach { task ->
     String variantNameCap = task.name.replace("spotbugs", "")
     String variantName = variantNameCap.substring(0, 1).toLowerCase() + variantNameCap.substring(1)
 
@@ -360,6 +360,6 @@ tasks.named("detekt").configure {
 }
 
 detekt {
-    config = files("../detekt.yml")
-    input = files("src/")
+    config.setFrom("../detekt.yml")
+    source.setFrom("src/")
 }
