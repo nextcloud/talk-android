@@ -5,6 +5,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [18.0.0] - 2023-12-11
+
+### Added
+- File captions
+- Note To Self
+- Recording consent
+- Share files by long press context menu (@Smarshal21)
+- Save files to storage (@FaribaKhandani)
+- Show active call in chat with accept call buttons
+
+### Fixed
+- Not possible to delete voice, video, image, contact and location messages (@Smarshal21)
+- Hide "unread mention" bubble in search mode (@sowjanyakch)
+- Call notification screen remains open
+- Minor bug fixes (@parneet-guraya et al.)
+
+Minimum: Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/75?closed=1
+
+## [17.1.3] - 2023-11-17
+
+### Fixed
+- Login via Active Directory fails when using Umlauts in username
+- Crash when guest without name joins a call
+- Chat messages disappear on initial configuration change (e.g. screen rotation)
+
+Minimum: Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/78?closed=1
+
 ## [17.1.2] - 2023-10-19
 
 ### Fixed
