@@ -46,7 +46,7 @@ buildscript {
     }
 }
 
-configurations.all {
+configurations.configureEach {
     exclude group: 'org.jetbrains', module: 'annotations-java5' // via prism4j, already using annotations explicitly
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 3600, 'seconds'
@@ -61,6 +61,6 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
