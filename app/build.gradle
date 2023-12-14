@@ -308,7 +308,7 @@ dependencies {
     gplayImplementation 'com.google.android.gms:play-services-base:18.2.0'
     gplayImplementation "com.google.firebase:firebase-messaging:23.4.0"
 
-     implementation 'androidx.activity:activity-ktx:1.8.1'
+     implementation 'androidx.activity:activity-ktx:1.8.2'
 
     implementation 'com.github.nextcloud.android-common:ui:0.13.0'
 
