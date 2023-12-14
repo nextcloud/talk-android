@@ -26,6 +26,10 @@
     android:orientation="vertical"
     android:paddingBottom="@dimen/standard_half_padding">
 
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:id="@+id/emojiBar"
         android:layout_width="match_parent"
