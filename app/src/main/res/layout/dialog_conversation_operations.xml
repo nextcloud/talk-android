@@ -20,242 +20,256 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Material3.BottomSheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/standard_half_padding">
+    android:layout_gravity="bottom"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <LinearLayout
-        android:id="@+id/operation_items_layout"
+        android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:ignore="UseCompoundDrawables">
+        android:paddingBottom="@dimen/standard_half_padding">
 
-        <TextView
-            android:id="@+id/conversation_operation_header"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_padding"
-            android:paddingEnd="@dimen/standard_padding"
-            android:textColor="@color/medium_emphasis_text"
-            android:textSize="@dimen/bottom_sheet_text_size"
-            tools:text="conversation name" />
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:id="@+id/conversation_remove_from_favorites"
+            android:id="@+id/operation_items_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/standard_padding"
-            android:paddingEnd="@dimen/standard_padding"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             tools:ignore="UseCompoundDrawables">
 
-            <ImageView
+            <TextView
+                android:id="@+id/conversation_operation_header"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_star_border_black_24dp"
-                app:tint="@color/high_emphasis_menu_icon" />
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                android:textColor="@color/medium_emphasis_text"
+                android:textSize="@dimen/bottom_sheet_text_size"
+                tools:text="conversation name" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <LinearLayout
+                android:id="@+id/conversation_remove_from_favorites"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="40dp"
-                android:paddingEnd="@dimen/zero"
-                android:text="@string/nc_remove_from_favorites"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
-        </LinearLayout>
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/conversation_add_to_favorites"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/standard_padding"
-            android:paddingEnd="@dimen/standard_padding"
-            tools:ignore="UseCompoundDrawables">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_star_border_black_24dp"
+                    app:tint="@color/high_emphasis_menu_icon" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_star_black_24dp"
-                app:tint="@color/high_emphasis_menu_icon" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="@dimen/zero"
+                    android:text="@string/nc_remove_from_favorites"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+            </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <LinearLayout
+                android:id="@+id/conversation_add_to_favorites"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="40dp"
-                android:paddingEnd="@dimen/zero"
-                android:text="@string/nc_add_to_favorites"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
-        </LinearLayout>
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/conversation_mark_as_read"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/standard_padding"
-            android:paddingEnd="@dimen/standard_padding"
-            tools:ignore="UseCompoundDrawables">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_star_black_24dp"
+                    app:tint="@color/high_emphasis_menu_icon" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_eye"
-                app:tint="@color/high_emphasis_menu_icon" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="@dimen/zero"
+                    android:text="@string/nc_add_to_favorites"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+            </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <LinearLayout
+                android:id="@+id/conversation_mark_as_read"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="40dp"
-                android:paddingEnd="@dimen/zero"
-                android:text="@string/nc_mark_as_read"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
-        </LinearLayout>
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/conversation_mark_as_unread"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/standard_padding"
-            android:paddingEnd="@dimen/standard_padding"
-            tools:ignore="UseCompoundDrawables">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_eye"
+                    app:tint="@color/high_emphasis_menu_icon" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_eye_off"
-                app:tint="@color/high_emphasis_menu_icon" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="@dimen/zero"
+                    android:text="@string/nc_mark_as_read"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+            </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <LinearLayout
+                android:id="@+id/conversation_mark_as_unread"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="40dp"
-                android:paddingEnd="@dimen/zero"
-                android:text="@string/nc_mark_as_unread"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
-        </LinearLayout>
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/conversation_operation_rename"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/standard_padding"
-            android:paddingEnd="@dimen/standard_padding"
-            tools:ignore="UseCompoundDrawables">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_eye_off"
+                    app:tint="@color/high_emphasis_menu_icon" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_pencil_grey600_24dp"
-                app:tint="@color/high_emphasis_menu_icon" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="@dimen/zero"
+                    android:text="@string/nc_mark_as_unread"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+            </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <LinearLayout
+                android:id="@+id/conversation_operation_rename"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="40dp"
-                android:paddingEnd="@dimen/zero"
-                android:text="@string/nc_rename"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
-        </LinearLayout>
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/conversation_operation_delete"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/standard_padding"
-            android:paddingEnd="@dimen/standard_padding"
-            tools:ignore="UseCompoundDrawables">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_pencil_grey600_24dp"
+                    app:tint="@color/high_emphasis_menu_icon" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_delete_grey600_24dp"
-                app:tint="@color/high_emphasis_menu_icon" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="@dimen/zero"
+                    android:text="@string/nc_rename"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+            </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <LinearLayout
+                android:id="@+id/conversation_operation_delete"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="40dp"
-                android:paddingEnd="@dimen/zero"
-                android:text="@string/nc_delete_call"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
-        </LinearLayout>
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/conversation_operation_leave"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/standard_padding"
-            android:paddingEnd="@dimen/standard_padding"
-            tools:ignore="UseCompoundDrawables">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_delete_grey600_24dp"
+                    app:tint="@color/high_emphasis_menu_icon" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_exit_to_app_black_24dp"
-                app:tint="@color/high_emphasis_menu_icon" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="@dimen/zero"
+                    android:text="@string/nc_delete_call"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+            </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <LinearLayout
+                android:id="@+id/conversation_operation_leave"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="40dp"
-                android:paddingEnd="@dimen/zero"
-                android:text="@string/nc_leave"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_exit_to_app_black_24dp"
+                    app:tint="@color/high_emphasis_menu_icon" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="@dimen/zero"
+                    android:text="@string/nc_leave"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>
