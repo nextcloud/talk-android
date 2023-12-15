@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Ícone da conta</string>
+    <string name="added_to_favorites">Conversa adicionada %1$s para favoritos</string>
     <string name="appbar_search_in">Pesquisar em %s</string>
+    <string name="audio_call">Chamada de áudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Saída de áudio</string>
     <string name="audio_output_phone">Celular</string>
@@ -24,6 +26,7 @@
     <string name="custom">Personalizar</string>
     <string name="danger_zone">Zona de perigo</string>
     <string name="delete_avatar">Excluir avatar</string>
+    <string name="deleted_conversation">Conversa excluída %1$s</string>
     <string name="dnd">Não perturbe</string>
     <string name="dontClear">Não limpe</string>
     <string name="edit">Editar</string>
@@ -37,10 +40,15 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisível</string>
+    <string name="languages_error_message">Não foi possível recuperar os idiomas</string>
+    <string name="languages_error_title">Falha na recuperação</string>
     <string name="later_today">Hoje mais tarde</string>
+    <string name="left_conversation">Você saiu da conversa %1$s</string>
     <string name="load_more_results">Carregar mais resultados </string>
     <string name="lock_symbol">Símbolo de cadeado</string>
     <string name="lower_hand">Baixar a mão</string>
+    <string name="marked_as_read">Conversa marcada %1$s como lida</string>
+    <string name="marked_as_unread">Conversa marcada %1$s como não lida</string>
     <string name="mentioned">Mentioned</string>
     <string name="menu_item_sort_by_date_newest_first">Mais novo primeiro</string>
     <string name="menu_item_sort_by_date_oldest_first">Mais antigo primeiro</string>
@@ -48,6 +56,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Maior primeiro</string>
     <string name="menu_item_sort_by_size_smallest_first">Menor primeiro</string>
+    <string name="message_expiration_title">Expiração da mensagem</string>
     <string name="message_poll_tap_to_open">Toque para abrir a enquete</string>
     <string name="message_search_begin_empty">Nenhum resultado encontrado</string>
     <string name="message_search_begin_typing">Comece a digitar para pesquisar …</string>
@@ -95,6 +104,7 @@
     <string name="nc_camera_permission_hint">Para ativar a comunicação por vídeo, conceda a permissão \"Câmera\".</string>
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Falhou ao buscar recursos, interrompendo</string>
+    <string name="nc_caption">Rubrica</string>
     <string name="nc_certificate_dialog_text">Quer confiar em um certificado SSL desconhecido, emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
@@ -134,6 +144,7 @@
     <string name="nc_delete_conversation_more">Se você excluir a conversa, ela também será excluída para todos os outros participantes.</string>
     <string name="nc_delete_message">Excluir</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter sido vazada para outros serviços </string>
+    <string name="nc_deleted_user">Usuário %1$s foi removido</string>
     <string name="nc_demote">Rebaixar de moderador</string>
     <string name="nc_description_record_voice">Gravar mensagem de voz</string>
     <string name="nc_description_send_message_button">Enviar mensagem</string>
@@ -144,7 +155,10 @@
     <string name="nc_dialog_outdated_client_description">O aplicativo é muito antigo e não é mais suportado por este servidor. Por favor atualize.</string>
     <string name="nc_dialog_outdated_client_option_update">Atualizar</string>
     <string name="nc_dialog_reauth_or_delete">Quer reautorizar ou excluir esta conta? </string>
+    <string name="nc_dialog_save_to_storage_content">Salvar esta mídia no armazenamento permitirá que qualquer outro aplicativo em seu dispositivo a acesse.</string>
+    <string name="nc_dialog_save_to_storage_continue">Continuar?</string>
     <string name="nc_dialog_save_to_storage_no">Não</string>
+    <string name="nc_dialog_save_to_storage_title">Salvar no armazenamento?</string>
     <string name="nc_dialog_save_to_storage_yes">Sim</string>
     <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
     <string name="nc_display_name_not_stored">Não foi possível armazenar o nome de exibição, cancelando</string>
@@ -334,6 +348,7 @@
     <string name="nc_settings_notification_sounds_post_oreo">Notificações</string>
     <string name="nc_settings_other_notifications_ringtone">Mensagens</string>
     <string name="nc_settings_phone_book_integration_desc">Combine os contatos com base no número de telefone para integrar o atalho do Bate Papo no aplicativo de contatos do sistema</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erro 429 Muitas Solicitações</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Você pode definir seu número de telefone para que outros usuários possam encontrar você</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de telefone inválido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Número de telefone definido com sucesso</string>
@@ -446,7 +461,14 @@
     <string name="record_stop_confirm_title">Parar gravação de chamada</string>
     <string name="record_stop_description">Pare de gravar</string>
     <string name="record_stopping">Stopping recording …</string>
+    <string name="recording_consent_all">O consentimento de gravação é necessário para todas as chamadas</string>
+    <string name="recording_consent_description">A gravação pode incluir sua voz, vídeo da câmera e compartilhamento de tela. Seu consentimento é necessário antes de entrar na chamada. Você consente?</string>
+    <string name="recording_consent_for_conversation_description">Exigir consentimento de gravação antes de participar da chamada nesta conversa</string>
+    <string name="recording_consent_for_conversation_title">Consentimento de gravação</string>
+    <string name="recording_consent_title">A chamada pode ser gravada.</string>
     <string name="recording_settings_title">Gravação</string>
+    <string name="removed_from_favorites">Conversa removida %1$s dos favoritos</string>
+    <string name="renamed_conversation">Conversação %1$s foi renomeada</string>
     <string name="restrict_join_other_room_while_call">It\'s not possible to join other rooms while being in a call</string>
     <string name="save">Salvar</string>
     <string name="scope_federated_description">Sincronizar apenas com servidores confiáveis </string>
@@ -481,6 +503,7 @@
     <string name="shared_items_voice">Voz</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">Você não tem permissão para iniciar uma ligação</string>
+    <string name="started_a_call">iniciou uma chamada</string>
     <string name="status_message">Mensagem de status</string>
     <string name="switch_to_breakout_room">Switch to breakout room</string>
     <string name="switch_to_main_room">Switch to main room</string>
@@ -525,6 +548,7 @@
     <string name="userinfo_error_text">Falha ao recuperar informações pessoais do usuário.</string>
     <string name="userinfo_no_info_headline">Nenhuma informação pessoal definida</string>
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
+    <string name="video_call">Video Chamada</string>
     <string name="whats_your_status">Qual é o seu status?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d votos</item>
