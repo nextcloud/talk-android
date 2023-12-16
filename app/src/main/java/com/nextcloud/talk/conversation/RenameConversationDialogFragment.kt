@@ -22,6 +22,7 @@ package com.nextcloud.talk.conversation
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -30,6 +31,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -120,10 +122,21 @@ class RenameConversationDialogFragment : DialogFragment() {
         viewThemeUtils.material.colorTextInputLayout(binding.textInputLayout)
     }
 
+    private fun hideKeyboard() {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.textEdit.windowToken, 0)
+    }
+
+    private fun KeyboardToggle() {
+        binding.emojiPicker.visibility = View.GONE
+        isEmojiPickerVisible = false
+    }
+
     private fun setupEmojiPopup() {
         if (!isEmojiPickerVisible) {
             binding.emojiPicker.visibility = View.VISIBLE
             isEmojiPickerVisible = true
+            hideKeyboard()
         } else {
             binding.emojiPicker.visibility = View.GONE
             isEmojiPickerVisible = false
@@ -135,6 +148,12 @@ class RenameConversationDialogFragment : DialogFragment() {
 
     private fun setupListeners() {
         binding.smileyButton.setOnClickListener { setupEmojiPopup() }
+        binding.textEdit.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                KeyboardToggle()
+            }
+        }
+        binding.textEdit.setOnClickListener { KeyboardToggle() }
         binding.textEdit.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // unused atm

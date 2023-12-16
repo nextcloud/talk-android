@@ -73,6 +73,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
+import android.view.inputmethod.InputMethodManager
 import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.ImageButton
@@ -654,7 +655,7 @@ class ChatActivity :
         }
 
         initSmileyKeyboardToggler()
-
+        initMessageInputToggler()
         themeMessageInputView()
 
         cancelNotificationsForCurrentConversation()
@@ -1424,13 +1425,30 @@ class ChatActivity :
         }
     }
 
+    private fun initMessageInputToggler() {
+        val messageInput = binding.messageInputView.findViewById<ImageEmojiEditText>(R.id.messageInput)
+        messageInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                KeyboardToggle()
+            }
+        }
+        messageInput.setOnClickListener {
+            KeyboardToggle()
+        }
+    }
+
+    private fun KeyboardToggle() {
+        binding.messageInputView.findViewById<FrameLayout>(R.id.emoji_picker).visibility = View.GONE
+        isEmojiPickerVisible = false
+    }
+
     private fun initSmileyKeyboardToggler() {
         val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
-
         smileyButton?.setOnClickListener {
             if (!isEmojiPickerVisible) {
                 binding.messageInputView.findViewById<FrameLayout>(R.id.emoji_picker).visibility = View.VISIBLE
                 isEmojiPickerVisible = true
+                hideKeyboard()
             } else {
                 binding.messageInputView.findViewById<EmojiPickerView>(R.id.emoji_picker).visibility = View.GONE
                 isEmojiPickerVisible = false
@@ -1439,6 +1457,11 @@ class ChatActivity :
                 binding.messageInputView.inputEditText.editableText?.append(it.emoji)
             }
         }
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
     }
 
     @Suppress("MagicNumber", "LongMethod")
