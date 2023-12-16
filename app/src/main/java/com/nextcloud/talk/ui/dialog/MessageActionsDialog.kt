@@ -138,7 +138,7 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.emojiMore.setOnClickListener { toggleEmojiPopup() }
-        dialogMessageActionsBinding.emojiPicker.setOnEmojiPickedListener() {
+        dialogMessageActionsBinding.emojiPicker.setOnEmojiPickedListener {
             clickOnEmoji(message, it.emoji)
         }
     }

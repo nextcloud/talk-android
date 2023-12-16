@@ -160,7 +160,7 @@ class CreateConversationDialogFragment : DialogFragment() {
         imm.hideSoftInputFromWindow(binding.textEdit.windowToken, 0)
     }
 
-    private fun KeyboardToggle() {
+    private fun keyboardtoggle() {
         binding.emojiPicker.visibility = View.GONE
         isEmojiPickerVisible = false
     }
@@ -174,7 +174,7 @@ class CreateConversationDialogFragment : DialogFragment() {
             binding.emojiPicker.visibility = View.GONE
             isEmojiPickerVisible = false
         }
-        binding.emojiPicker.setOnEmojiPickedListener() {
+        binding.emojiPicker.setOnEmojiPickedListener {
             binding.textEdit.editableText?.append(it.emoji)
         }
     }
@@ -183,10 +183,10 @@ class CreateConversationDialogFragment : DialogFragment() {
         binding.smileyButton.setOnClickListener { setupEmojiPopup() }
         binding.textEdit.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                KeyboardToggle()
+                keyboardtoggle()
             }
         }
-        binding.textEdit.setOnClickListener { KeyboardToggle() }
+        binding.textEdit.setOnClickListener { keyboardtoggle() }
         binding.textEdit.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // unused atm

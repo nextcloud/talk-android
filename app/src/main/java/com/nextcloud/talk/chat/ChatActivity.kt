@@ -1447,15 +1447,15 @@ class ChatActivity :
         val messageInput = binding.messageInputView.findViewById<ImageEmojiEditText>(R.id.messageInput)
         messageInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                KeyboardToggle()
+                keyboardtoggle()
             }
         }
         messageInput.setOnClickListener {
-            KeyboardToggle()
+            keyboardtoggle()
         }
     }
 
-    private fun KeyboardToggle() {
+    private fun keyboardtoggle() {
         binding.messageInputView.findViewById<FrameLayout>(R.id.emoji_picker).visibility = View.GONE
         isEmojiPickerVisible = false
     }
@@ -1471,7 +1471,7 @@ class ChatActivity :
                 binding.messageInputView.findViewById<EmojiPickerView>(R.id.emoji_picker).visibility = View.GONE
                 isEmojiPickerVisible = false
             }
-            binding.messageInputView.findViewById<EmojiPickerView>(R.id.emoji_picker).setOnEmojiPickedListener() {
+            binding.messageInputView.findViewById<EmojiPickerView>(R.id.emoji_picker).setOnEmojiPickedListener {
                 binding.messageInputView.inputEditText.editableText?.append(it.emoji)
             }
         }

@@ -189,7 +189,7 @@ class SetStatusDialogFragment : DialogFragment(), PredefinedStatusClickListener 
 
         binding.clearStatus.setOnClickListener { clearStatus() }
         binding.setStatus.setOnClickListener { setStatusMessage() }
-        binding.emojiPicker.setOnEmojiPickedListener() {
+        binding.emojiPicker.setOnEmojiPickedListener {
             binding.emoji.text = (it.emoji)
             binding.emojiPicker.visibility = GONE
             isEmojiPickerVisible = false
