@@ -186,9 +186,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         return remotePath
     }
 
-    override fun onTransferProgress(
-        percentage: Int
-    ) {
+    override fun onTransferProgress(percentage: Int) {
         notification = mBuilder!!
             .setProgress(HUNDRED_PERCENT, percentage, false)
             .setContentText(getNotificationContentText(percentage))
@@ -322,12 +320,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             }
         }
 
-        fun upload(
-            fileUri: String,
-            roomToken: String,
-            conversationName: String,
-            metaData: String?
-        ) {
+        fun upload(fileUri: String, roomToken: String, conversationName: String, metaData: String?) {
             val data: Data = Data.Builder()
                 .putString(DEVICE_SOURCE_FILE, fileUri)
                 .putString(ROOM_TOKEN, roomToken)

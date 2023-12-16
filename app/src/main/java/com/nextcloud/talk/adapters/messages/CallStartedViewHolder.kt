@@ -124,6 +124,6 @@ class CallStartedViewHolder(incomingView: View, payload: Any) :
     }
 
     companion object {
-        var TAG: String? = CallStartedViewHolder::class.simpleName
+        val TAG: String? = CallStartedViewHolder::class.simpleName
     }
 }

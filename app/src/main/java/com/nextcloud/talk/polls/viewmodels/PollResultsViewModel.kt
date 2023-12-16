@@ -41,8 +41,8 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
     val poll: Poll?
         get() = _poll
 
-    private var _itemsOverviewList: ArrayList<PollResultItem> = ArrayList()
-    private var _itemsDetailsList: ArrayList<PollResultItem> = ArrayList()
+    private var itemsOverviewList: ArrayList<PollResultItem> = ArrayList()
+    private var itemsDetailsList: ArrayList<PollResultItem> = ArrayList()
 
     private var _items: MutableLiveData<ArrayList<PollResultItem>?> = MutableLiveData<ArrayList<PollResultItem>?>()
     val items: MutableLiveData<ArrayList<PollResultItem>?>
@@ -77,23 +77,23 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
                 optionsPercent,
                 isOptionSelfVoted(poll, index)
             )
-            _itemsOverviewList.add(pollResultHeaderItem)
-            _itemsDetailsList.add(pollResultHeaderItem)
+            itemsOverviewList.add(pollResultHeaderItem)
+            itemsDetailsList.add(pollResultHeaderItem)
 
             val voters = poll.details?.filter { it.optionId == index }
 
             if (!voters.isNullOrEmpty()) {
-                _itemsOverviewList.add(PollResultVotersOverviewItem(voters))
+                itemsOverviewList.add(PollResultVotersOverviewItem(voters))
             }
 
             if (!voters.isNullOrEmpty()) {
                 voters.forEach {
-                    _itemsDetailsList.add(PollResultVoterItem(it))
+                    itemsDetailsList.add(PollResultVoterItem(it))
                 }
             }
         }
 
-        _items.value = _itemsOverviewList
+        _items.value = itemsOverviewList
     }
 
     private fun getVotersAmountForOption(poll: Poll, index: Int): Int {
@@ -114,10 +114,10 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
     }
 
     fun toggleDetails() {
-        if (_items.value?.containsAll(_itemsDetailsList) == true) {
-            _items.value = _itemsOverviewList
+        if (_items.value?.containsAll(itemsDetailsList) == true) {
+            _items.value = itemsOverviewList
         } else {
-            _items.value = _itemsDetailsList
+            _items.value = itemsDetailsList
         }
     }
 

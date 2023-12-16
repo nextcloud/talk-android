@@ -229,15 +229,20 @@ data class Conversation(
     }
 
     enum class NotificationLevel {
-        DEFAULT, ALWAYS, MENTION, NEVER
+        DEFAULT,
+        ALWAYS,
+        MENTION,
+        NEVER
     }
 
     enum class LobbyState {
-        LOBBY_STATE_ALL_PARTICIPANTS, LOBBY_STATE_MODERATORS_ONLY
+        LOBBY_STATE_ALL_PARTICIPANTS,
+        LOBBY_STATE_MODERATORS_ONLY
     }
 
     enum class ConversationReadOnlyState {
-        CONVERSATION_READ_WRITE, CONVERSATION_READ_ONLY
+        CONVERSATION_READ_WRITE,
+        CONVERSATION_READ_ONLY
     }
 
     @Parcelize

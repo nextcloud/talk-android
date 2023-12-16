@@ -26,8 +26,10 @@ package com.nextcloud.talk.models.json.chat
 
 class ChatUtils {
     companion object {
-        fun getParsedMessage(message: String?, messageParameters: HashMap<String?, HashMap<String?, String?>>?):
-            String? {
+        fun getParsedMessage(
+            message: String?,
+            messageParameters: HashMap<String?, HashMap<String?, String?>>?
+        ): String? {
             if (messageParameters != null && messageParameters.size > 0) {
                 return parse(messageParameters, message)
             }
@@ -35,10 +37,7 @@ class ChatUtils {
         }
 
         @Suppress("Detekt.ComplexMethod")
-        private fun parse(
-            messageParameters: HashMap<String?, HashMap<String?, String?>>,
-            message: String?
-        ): String? {
+        private fun parse(messageParameters: HashMap<String?, HashMap<String?, String?>>, message: String?): String? {
             var resultMessage = message
             for (key in messageParameters.keys) {
                 val individualHashMap = messageParameters[key]

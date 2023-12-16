@@ -40,6 +40,8 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ساعات</string>
     <string name="invisible">غير مرئي</string>
+    <string name="languages_error_message">تعذّرت استعادة اللغات</string>
+    <string name="languages_error_title">فشلت الاستعادة</string>
     <string name="later_today">في وقت لاحقٍ اليوم</string>
     <string name="left_conversation">أنت غادرت المحادثة %1$s</string>
     <string name="load_more_results">تحميل المزيد من النتائج</string>
@@ -102,6 +104,7 @@
     <string name="nc_camera_permission_hint">لتمكين اتصال الفيديو ، يرجى منح إذن \"الكاميرا\".</string>
     <string name="nc_cancel">إلغاء</string>
     <string name="nc_capabilities_failed">فشل في جلب الإمكانيات، جارِ إلالغاء</string>
+    <string name="nc_caption">الشرح</string>
     <string name="nc_certificate_dialog_text">هل تثق في شهادة SSL غير المعروفة حتى الآن ، الصادرة من%1$sإلى %2$s  ، الصالحة %3$s إلى%4$s؟</string>
     <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
     <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
@@ -141,6 +144,7 @@
     <string name="nc_delete_conversation_more">إذا قمت بحذف المحادثة، سوف يتم حذفها أيضًا لدى المشاركين الآخرين.</string>
     <string name="nc_delete_message">حذف </string>
     <string name="nc_delete_message_leaked_to_matterbridge">تم حذف الرسالة بنجاح، لكن من الممكن أن تم تسريبها لخدمات أخرى</string>
+    <string name="nc_deleted_user">تمّ حذف المستخدِم %1$s </string>
     <string name="nc_demote">تخفيض رتبة مشرف</string>
     <string name="nc_description_record_voice">تسجيل رسالة صوتية</string>
     <string name="nc_description_send_message_button">أرسل رسالة</string>
@@ -151,6 +155,11 @@
     <string name="nc_dialog_outdated_client_description">التطبيق قديم جدًا ولم يعد مدعوماً من قبل هذا الخادوم. يُرجى التحديث.</string>
     <string name="nc_dialog_outdated_client_option_update">تحديث</string>
     <string name="nc_dialog_reauth_or_delete">هل تريد إعادة تفويض هذا الحساب أو مسحه؟</string>
+    <string name="nc_dialog_save_to_storage_content">حفظ هذه الوسائط على وحدة التخزين سيسمح لأي تطبيق آخر على الوحدة بالوصول إلى هذه الوسائط.</string>
+    <string name="nc_dialog_save_to_storage_continue">إستمرار؟</string>
+    <string name="nc_dialog_save_to_storage_no">لا</string>
+    <string name="nc_dialog_save_to_storage_title">حفظ على وحدة التخزين؟</string>
+    <string name="nc_dialog_save_to_storage_yes">نعم</string>
     <string name="nc_display_name_not_fetched">لايمكن عرض الاسم، جارِ إلالغاء</string>
     <string name="nc_display_name_not_stored">تعذر تخزين اسم العرض ، جارِ إلالغاء</string>
     <string name="nc_email">البريد الإلكتروني</string>
@@ -283,6 +292,8 @@
     <string name="nc_rename_confirm">تغيير تسمية</string>
     <string name="nc_reply">رد</string>
     <string name="nc_reply_privately">ردّ على الخاص</string>
+    <string name="nc_save_message">حفظ</string>
+    <string name="nc_save_success">تمّ الحفط بنجاحٍ</string>
     <string name="nc_screen_lock_timeout_30">30 ثانية</string>
     <string name="nc_screen_lock_timeout_300">5 دقائق</string>
     <string name="nc_screen_lock_timeout_60">1 دقيقة</string>

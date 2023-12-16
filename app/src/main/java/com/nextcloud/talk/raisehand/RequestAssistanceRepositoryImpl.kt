@@ -57,18 +57,14 @@ class RequestAssistanceRepositoryImpl(private val ncApi: NcApi, currentUserProvi
         ).map { mapToWithdrawRequestAssistanceModel(it.ocs?.meta!!) }
     }
 
-    private fun mapToRequestAssistanceModel(
-        response: GenericMeta
-    ): RequestAssistanceModel {
+    private fun mapToRequestAssistanceModel(response: GenericMeta): RequestAssistanceModel {
         val success = response.statusCode == HTTP_OK
         return RequestAssistanceModel(
             success
         )
     }
 
-    private fun mapToWithdrawRequestAssistanceModel(
-        response: GenericMeta
-    ): WithdrawRequestAssistanceModel {
+    private fun mapToWithdrawRequestAssistanceModel(response: GenericMeta): WithdrawRequestAssistanceModel {
         val success = response.statusCode == HTTP_OK
         return WithdrawRequestAssistanceModel(
             success

@@ -28,6 +28,7 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -38,14 +39,14 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityTranslateBinding
+import com.nextcloud.talk.translate.repositories.model.Language
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
-import org.json.JSONArray
 import java.util.Locale
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
 class TranslateActivity : BaseActivity() {
 
@@ -60,6 +61,7 @@ class TranslateActivity : BaseActivity() {
 
     private var toLanguages: Array<String>? = null
     private var fromLanguages: Array<String>? = null
+    private var languages: List<Language>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,8 +81,20 @@ class TranslateActivity : BaseActivity() {
                     onTranslatedState(state.msg)
                 }
 
-                is TranslateViewModel.ErrorState -> {
-                    onErrorState()
+                is TranslateViewModel.TranslationErrorState -> {
+                    onTranslationErrorState()
+                }
+
+                is TranslateViewModel.LanguagesErrorState -> {
+                    onLanguagesErrorState()
+                }
+
+                is TranslateViewModel.LanguagesRetrievedState -> {
+                    Log.d(TAG, "Languages are: ${state.list}")
+                    languages = state.list
+                    getLanguageOptions()
+                    setupSpinners()
+                    setItems()
                 }
             }
         }
@@ -88,8 +102,7 @@ class TranslateActivity : BaseActivity() {
         setContentView(binding.root)
         setupSystemColors()
         setupTextViews()
-        getLanguageOptions()
-        setupSpinners()
+        viewModel.getLanguages()
         setupCopyButton()
 
         if (savedInstanceState == null) {
@@ -102,7 +115,7 @@ class TranslateActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        setItems()
+        languages?.let { setItems() }
     }
     override fun onSaveInstanceState(outState: Bundle) {
         outState.run {
@@ -155,19 +168,16 @@ class TranslateActivity : BaseActivity() {
     }
 
     private fun getLanguageOptions() {
-        val currentUser = userManager.currentUser.blockingGet()
-        val json = JSONArray((CapabilitiesUtilNew.getLanguages(currentUser) as ArrayList<*>).toArray())
-
         val fromLanguagesSet = mutableSetOf(resources.getString(R.string.translation_detect_language))
         val toLanguagesSet = mutableSetOf(resources.getString(R.string.translation_device_settings))
 
-        for (i in 0 until json.length()) {
-            val current = json.getJSONObject(i)
-            if (current.getString(FROM_ID) != Locale.getDefault().language) {
-                toLanguagesSet.add(current.getString(FROM_LABEL))
+        for (language in languages!!) {
+            val locale = Locale.getDefault().language
+            if (language.from != locale) {
+                toLanguagesSet.add(language.fromLabel!!)
             }
 
-            fromLanguagesSet.add(current.getString(TO_LABEL))
+            fromLanguagesSet.add(language.toLabel!!)
         }
 
         toLanguages = toLanguagesSet.toTypedArray()
@@ -179,7 +189,7 @@ class TranslateActivity : BaseActivity() {
         binding.toLanguageInputLayout.isEnabled = value
     }
 
-    private fun showDialog() {
+    private fun showDialog(titleInt: Int, messageInt: Int) {
         val dialogBuilder = MaterialAlertDialogBuilder(this@TranslateActivity)
             .setIcon(
                 viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
@@ -187,8 +197,8 @@ class TranslateActivity : BaseActivity() {
                     R.drawable.ic_warning_white
                 )
             )
-            .setTitle(R.string.translation_error_title)
-            .setMessage(R.string.translation_error_message)
+            .setTitle(titleInt)
+            .setMessage(messageInt)
             .setPositiveButton(R.string.nc_ok) { dialog, _ ->
                 dialog.dismiss()
             }
@@ -210,18 +220,15 @@ class TranslateActivity : BaseActivity() {
         return getISOFromServer(language)
     }
 
-    private fun getISOFromServer(language: String): String {
-        val currentUser = userManager.currentUser.blockingGet()
-        val json = JSONArray((CapabilitiesUtilNew.getLanguages(currentUser) as ArrayList<*>).toArray())
-
-        for (i in 0 until json.length()) {
-            val current = json.getJSONObject(i)
-            if (current.getString(FROM_LABEL) == language) {
-                return current.getString(FROM_ID)
+    private fun getISOFromServer(label: String): String {
+        var result = ""
+        for (language in languages!!) {
+            if (language.fromLabel == label) {
+                result = language.from!!
             }
         }
 
-        return ""
+        return result
     }
 
     private fun setupSpinners() {
@@ -279,15 +286,19 @@ class TranslateActivity : BaseActivity() {
         enableSpinners(true)
     }
 
-    private fun onErrorState() {
+    private fun onTranslationErrorState() {
         binding.progressBar.visibility = View.GONE
         enableSpinners(true)
-        showDialog()
+        showDialog(R.string.translation_error_title, R.string.translation_error_message)
+    }
+
+    private fun onLanguagesErrorState() {
+        binding.progressBar.visibility = View.GONE
+        enableSpinners(true)
+        showDialog(R.string.languages_error_title, R.string.languages_error_message)
     }
 
     companion object {
-        private const val FROM_ID = "from"
-        private const val FROM_LABEL = "fromLabel"
-        private const val TO_LABEL = "toLabel"
+        val TAG = TranslateActivity::class.simpleName
     }
 }

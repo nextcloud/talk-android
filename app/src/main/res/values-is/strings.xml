@@ -15,6 +15,7 @@
     <string name="dnd">Ónáðið ekki</string>
     <string name="dontClear">Ekki hreinsa</string>
     <string name="edit">Breyta</string>
+    <string name="emoji_backspace">Baklykill (backspace)</string>
     <string name="emoji_category_recent">Nýlegt</string>
     <string name="encrypted">Dulritað</string>
     <string name="file_list_folder">mappa</string>
@@ -29,6 +30,7 @@
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Stærsta fyrst</string>
     <string name="menu_item_sort_by_size_smallest_first">Minnsta fyrst</string>
+    <string name="message_search_begin_empty">Engar leitarniðurstöður</string>
     <string name="messages">Skilaboð</string>
     <string name="nc_Server_account_imported">Valinn aðgangur er núna fluttur inn og tiltækur</string>
     <string name="nc_about">Um hugbúnaðinn</string>
@@ -55,6 +57,7 @@
     <string name="nc_circles">Hringir</string>
     <string name="nc_client_cert_change">Skipta um skilríki biðlara</string>
     <string name="nc_client_cert_setup">Setja upp skilríki biðlara</string>
+    <string name="nc_common_create">Búa til</string>
     <string name="nc_common_dismiss">Dismiss</string>
     <string name="nc_common_error_sorry">Því miður, eitthvað fór úrskeiðis!</string>
     <string name="nc_common_set">Setja</string>
@@ -86,6 +89,7 @@
     <string name="nc_display_name_not_fetched">Gat ekki náð í birtingarnafn, hætti</string>
     <string name="nc_display_name_not_stored">Gat ekki geymt birtingarnafn, hætti</string>
     <string name="nc_email">Tölvupóstur</string>
+    <string name="nc_expire_message_eight_hours">8 klukkustundir</string>
     <string name="nc_expire_message_off">Slökkt</string>
     <string name="nc_expire_message_one_day">1 day</string>
     <string name="nc_expire_message_one_hour">1 klukkustund</string>
@@ -117,8 +121,10 @@
     <string name="nc_license_title">Notkunarleyfi</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_locked_tap_to_unlock">Ýttu til að aflæsa</string>
+    <string name="nc_manual">Ekki stillt</string>
     <string name="nc_mark_as_read">Merkja sem lesið</string>
     <string name="nc_mark_as_unread">Merkja allt sem ólesið</string>
+    <string name="nc_message_quote_cancel_reply">Hætta við svar</string>
     <string name="nc_message_read">Skilaboðin hafa verið lesið</string>
     <string name="nc_message_sent">Skilaboðin hafa verið send</string>
     <string name="nc_moderator">Umsjónarmaður</string>
@@ -161,6 +167,7 @@
     <string name="nc_rename_confirm">Endurnefna</string>
     <string name="nc_reply">Svara</string>
     <string name="nc_save_message">Vista</string>
+    <string name="nc_save_success">Tókst að vista</string>
     <string name="nc_screen_lock_timeout_30">30 sekúndur</string>
     <string name="nc_screen_lock_timeout_300">5 mínútur</string>
     <string name="nc_screen_lock_timeout_60">1 mínúta</string>
@@ -226,10 +233,12 @@
     <string name="nc_share_text_pass">\nLykilorð: %1$s</string>
     <string name="nc_share_this_location">Deila þessari staðsetningu</string>
     <string name="nc_share_to_choose_account">Veldu aðgang</string>
+    <string name="nc_shared_items_deck_card">Deck-spjald</string>
     <string name="nc_shared_items_location">Staðsetning</string>
     <string name="nc_sort_by">Raða sem</string>
     <string name="nc_start_time">Upphafstími</string>
     <string name="nc_switch_account">Skipta um notandaaðgang</string>
+    <string name="nc_upload_from_device">Senda inn frá tæki</string>
     <string name="nc_upload_in_progess">Sendi inn</string>
     <string name="nc_user">Notandi</string>
     <string name="nc_webinar">Webinar</string>
@@ -246,7 +255,9 @@
     <string name="polls_submit_vote">Greiðsla atkvæða</string>
     <string name="reactions_tab_all">Allt</string>
     <string name="save">Vista</string>
+    <string name="scope_federated_description">Aðeins samstilla við treysta þjóna</string>
     <string name="scope_federated_title">Deilt milli þjóna (skýjasambandssameign)</string>
+    <string name="scope_local_description">Einungis sýnilegt staðværum notendum og gestum</string>
     <string name="scope_local_title">Staðvært</string>
     <string name="scope_private_title">Einka</string>
     <string name="scope_published_title">Útgefið</string>
@@ -264,14 +275,20 @@
     <string name="shared_items_voice">Raddskilaboð</string>
     <string name="starred">Eftirlæti</string>
     <string name="status_message">Stöðuskilaboð</string>
+    <string name="take_photo">Taka ljósmynd</string>
     <string name="take_photo_send">Senda</string>
+    <string name="take_photo_switch_camera">Skipta á milli myndavéla</string>
+    <string name="take_photo_toggle_torch">Víxla vasaljósi af/á</string>
     <string name="thirtyMinutes">30 mínútur</string>
     <string name="thisWeek">Í þessari viku</string>
     <string name="title_attachments">Viðhengi</string>
     <string name="today">Í dag</string>
     <string name="tomorrow">Á morgun</string>
     <string name="translate">Þýða</string>
+    <string name="translation_detect_language">Greina tungumál</string>
     <string name="translation_device_settings">Stillingar tækis</string>
+    <string name="translation_error_message">Gat ekki greint tungumálið</string>
+    <string name="translation_error_title">Þýðing mistókst</string>
     <string name="translation_from">Frá</string>
     <string name="translation_to">Til</string>
     <string name="user_info_address">Vistfang</string>

@@ -87,8 +87,10 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideRemoteFileBrowserItemsRepository(okHttpClient: OkHttpClient, userProvider: CurrentUserProviderNew):
-        RemoteFileBrowserItemsRepository {
+    fun provideRemoteFileBrowserItemsRepository(
+        okHttpClient: OkHttpClient,
+        userProvider: CurrentUserProviderNew
+    ): RemoteFileBrowserItemsRepository {
         return RemoteFileBrowserItemsRepositoryImpl(okHttpClient, userProvider)
     }
 
@@ -113,38 +115,41 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideRequestAssistanceRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew):
-        RequestAssistanceRepository {
+    fun provideRequestAssistanceRepository(
+        ncApi: NcApi,
+        userProvider: CurrentUserProviderNew
+    ): RequestAssistanceRepository {
         return RequestAssistanceRepositoryImpl(ncApi, userProvider)
     }
 
     @Provides
-    fun provideOpenConversationsRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew):
-        OpenConversationsRepository {
+    fun provideOpenConversationsRepository(
+        ncApi: NcApi,
+        userProvider: CurrentUserProviderNew
+    ): OpenConversationsRepository {
         return OpenConversationsRepositoryImpl(ncApi, userProvider)
     }
 
     @Provides
-    fun translateRepository(ncApi: NcApi):
-        TranslateRepository {
+    fun translateRepository(ncApi: NcApi): TranslateRepository {
         return TranslateRepositoryImpl(ncApi)
     }
 
     @Provides
-    fun provideChatRepository(ncApi: NcApi):
-        ChatRepository {
+    fun provideChatRepository(ncApi: NcApi): ChatRepository {
         return ChatRepositoryImpl(ncApi)
     }
 
     @Provides
-    fun provideConversationInfoEditRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew):
-        ConversationInfoEditRepository {
+    fun provideConversationInfoEditRepository(
+        ncApi: NcApi,
+        userProvider: CurrentUserProviderNew
+    ): ConversationInfoEditRepository {
         return ConversationInfoEditRepositoryImpl(ncApi, userProvider)
     }
 
     @Provides
-    fun provideConversationRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew):
-        ConversationRepository {
+    fun provideConversationRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ConversationRepository {
         return ConversationRepositoryImpl(ncApi, userProvider)
     }
 }

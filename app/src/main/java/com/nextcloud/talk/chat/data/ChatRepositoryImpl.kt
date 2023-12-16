@@ -29,10 +29,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 
 class ChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
-    override fun getRoom(
-        user: User,
-        roomToken: String
-    ): Observable<ConversationModel> {
+    override fun getRoom(user: User, roomToken: String): Observable<ConversationModel> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv3, 1))
 
@@ -42,11 +39,7 @@ class ChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!) }
     }
 
-    override fun joinRoom(
-        user: User,
-        roomToken: String,
-        roomPassword: String
-    ): Observable<ConversationModel> {
+    override fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.APIv4, 1))
 

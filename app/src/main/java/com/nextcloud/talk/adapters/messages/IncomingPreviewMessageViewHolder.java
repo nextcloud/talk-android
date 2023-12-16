@@ -24,6 +24,8 @@
 
 package com.nextcloud.talk.adapters.messages;
 
+import android.text.Spanned;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -33,6 +35,10 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.ItemCustomIncomingPreviewMessageBinding;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.utils.TextMatchers;
+
+import java.util.HashMap;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -49,7 +55,49 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
     @Override
     public void onBind(@NonNull ChatMessage message) {
         super.onBind(message);
+        if(!message.isVoiceMessage()
+            && !Objects.equals(message.getMessage(), "{file}")
+        ) {
+            Spanned processedMessageText = null;
+            binding.incomingPreviewMessageBubble.setBackgroundResource(R.drawable.shape_grouped_incoming_message);
+            if (viewThemeUtils != null ) {
+                processedMessageText = messageUtils.enrichChatMessageText(
+                    binding.messageCaption.getContext(),
+                    message,
+                    true,
+                    viewThemeUtils);
+                viewThemeUtils.talk.themeIncomingMessageBubble(binding.incomingPreviewMessageBubble, true, false);
+            }
 
+            if (processedMessageText != null) {
+                processedMessageText = messageUtils.processMessageParameters(
+                    binding.messageCaption.getContext(),
+                    viewThemeUtils,
+                    processedMessageText,
+                    message,
+                    binding.incomingPreviewMessageBubble);
+            }
+            binding.incomingPreviewMessageBubble.setOnClickListener(null);
+
+            float textSize = 0;
+            if (context != null) {
+                textSize = context.getResources().getDimension(R.dimen.chat_text_size);
+            }
+            HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
+            if (
+                (messageParameters == null || messageParameters.size() <= 0) &&
+                    TextMatchers.isMessageWithSingleEmoticonOnly(message.getText())
+            ) {
+                textSize = (float) (textSize * IncomingTextMessageViewHolder.TEXT_SIZE_MULTIPLIER);
+                itemView.setSelected(true);
+            }
+            binding.messageCaption.setVisibility(View.VISIBLE);
+            binding.messageCaption.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            binding.messageCaption.setText(processedMessageText);
+        } else {
+            binding.incomingPreviewMessageBubble.setBackground(null);
+            binding.messageCaption.setVisibility(View.GONE);
+        }
         binding.messageAuthor.setText(message.getActorDisplayName());
         binding.messageText.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
                                                                 R.color.no_emphasis_text));
@@ -61,6 +109,12 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
     @Override
     public EmojiTextView getMessageText() {
         return binding.messageText;
+    }
+
+    @NonNull
+    @Override
+    public EmojiTextView getMessageCaption() {
+        return binding.messageCaption;
     }
 
     @Override
@@ -99,5 +153,4 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
 
     @Override
     public ReactionsInsideMessageBinding getReactionsBinding(){ return binding.reactions; }
-
 }

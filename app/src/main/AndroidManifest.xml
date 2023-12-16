@@ -4,7 +4,7 @@
   ~ @author Mario Danic
   ~ @author Marcel Hibbe
   ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
-  ~ Copyright (C) 2021-2022 Marcel Hibbe <dev@mhibbe.de>
+  ~ Copyright (C) 2021-2023 Marcel Hibbe <dev@mhibbe.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -132,6 +132,44 @@
         </activity>
 
         <activity
+            android:name=".account.ServerSelectionActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".account.WebViewLoginActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".account.AccountVerificationActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".account.SwitchAccountActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".conversationlist.ConversationsListActivity"
+            android:theme="@style/AppTheme"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".chat.ChatActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".activities.CallActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:excludeFromRecents="true"
@@ -152,17 +190,17 @@
             android:theme="@style/AppTheme.CallLauncher" />
 
         <activity
-            android:name=".activities.FullScreenImageActivity"
+            android:name=".fullscreenfile.FullScreenImageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/FullScreenImageTheme"/>
 
         <activity
-            android:name=".activities.FullScreenMediaActivity"
+            android:name=".fullscreenfile.FullScreenMediaActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/FullScreenMediaTheme"/>
 
         <activity
-            android:name=".activities.FullScreenTextViewerActivity"
+            android:name=".fullscreenfile.FullScreenTextViewerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/FullScreenTextTheme"/>
 
@@ -216,30 +254,8 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".chat.ChatActivity"
-            android:theme="@style/AppTheme" />
-
-        <activity
             android:name=".openconversations.ListOpenConversationsActivity"
             android:theme="@style/AppTheme" />
-
-        <activity
-            android:name=".conversationlist.ConversationsListActivity"
-            android:theme="@style/AppTheme"
-            android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="*/*" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEND_MULTIPLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="*/*" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name=".lock.LockedActivity"

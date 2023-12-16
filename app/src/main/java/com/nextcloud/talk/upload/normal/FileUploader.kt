@@ -21,12 +21,7 @@ class FileUploader(
     val roomToken: String,
     val ncApi: NcApi
 ) {
-    fun upload(
-        sourceFileUri: Uri,
-        fileName: String,
-        remotePath: String,
-        metaData: String?
-    ): Observable<Boolean> {
+    fun upload(sourceFileUri: Uri, fileName: String, remotePath: String, metaData: String?): Observable<Boolean> {
         return ncApi.uploadFile(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
             ApiUtils.getUrlForFileUpload(currentUser.baseUrl, currentUser.userId, remotePath),

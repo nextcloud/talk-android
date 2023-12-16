@@ -40,6 +40,8 @@
     <string name="filename_progress">%1$s(%2$d)</string>
     <string name="fourHours">4 ordu</string>
     <string name="invisible">Ikusezina</string>
+    <string name="languages_error_message">Ezin izan dira hizkuntzak berreskuratu</string>
+    <string name="languages_error_title">Ezin izan da berreskuratu</string>
     <string name="later_today">Beranduago gaur</string>
     <string name="left_conversation"> %1$s elkarrizketa utzi duzu</string>
     <string name="load_more_results">Kargatu emaitza gehiago </string>
@@ -54,6 +56,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Handienak lehenengo</string>
     <string name="menu_item_sort_by_size_smallest_first">Txikienak lehenengo</string>
+    <string name="message_expiration_title">Mezuen iraungitzea</string>
     <string name="message_poll_tap_to_open">Sakatu galdeketa irekitzeko</string>
     <string name="message_search_begin_empty">Ez dago bilaketaren emaitzarik</string>
     <string name="message_search_begin_typing">Hasi idazten bilatzeko …</string>
@@ -101,6 +104,7 @@
     <string name="nc_camera_permission_hint">Bideo komunikazioa gaitzeko, eman \"Kamera\" baimena.</string>
     <string name="nc_cancel">Utzi</string>
     <string name="nc_capabilities_failed">Akatsak gaitasunak berreskuratzean. Bertan behera uzten.</string>
+    <string name="nc_caption">Epigrafea</string>
     <string name="nc_certificate_dialog_text">Fio zara %1$s (e)k  %2$s(e)ntzat emandako SSL ziurtagiri ezezagunaz?,  %3$s tik %4$sra baliagarria?</string>
     <string name="nc_certificate_dialog_title">Egiaztatu ziurtagiria</string>
     <string name="nc_certificate_error">Zure SSL konfigurazioak konexioa eragotzi du</string>
@@ -140,6 +144,7 @@
     <string name="nc_delete_conversation_more">Elkarrizketa hau ezabatzen baduzu beste kideentzat ere ezabatuko da.</string>
     <string name="nc_delete_message">Ezabatu</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mezua ondo ezabatu da, baina baliteke beste zerbitzu batzuetara filtratu izana</string>
+    <string name="nc_deleted_user"> %1$s erabiltzailea kendu da</string>
     <string name="nc_demote">Moderatzailetik degradatua</string>
     <string name="nc_description_record_voice">Grabatu ahots mezua</string>
     <string name="nc_description_send_message_button">Bidali mezua</string>
@@ -150,7 +155,10 @@
     <string name="nc_dialog_outdated_client_description">Aplikazio hau zaharregia da eta ez dago zerbitzari honengatik onartuta. Mesedez eguneratu.</string>
     <string name="nc_dialog_outdated_client_option_update">Eguneratu</string>
     <string name="nc_dialog_reauth_or_delete">Kontu hau birbaimendu edo ezabatu nahi duzu?</string>
+    <string name="nc_dialog_save_to_storage_content">Multimedia hau biltegian gordetzen baduzu, zure gailuko beste edozein aplikaziok atzitu ahal izango du.</string>
+    <string name="nc_dialog_save_to_storage_continue">Jarraitu?</string>
     <string name="nc_dialog_save_to_storage_no">Ez</string>
+    <string name="nc_dialog_save_to_storage_title">Biltegian gorde nahi duzu?</string>
     <string name="nc_dialog_save_to_storage_yes">Bai</string>
     <string name="nc_display_name_not_fetched">Ezin izan da erakusteko izena lortu, bertan behera uzten</string>
     <string name="nc_display_name_not_stored">Ezin izan da erakusteko izena biltegiratu, bertan behera uzten</string>
@@ -284,6 +292,8 @@
     <string name="nc_rename_confirm">Berrizendatu</string>
     <string name="nc_reply">Erantzun</string>
     <string name="nc_reply_privately">Erantzun pribatuki</string>
+    <string name="nc_save_message">Gorde</string>
+    <string name="nc_save_success">Ondo gorde da</string>
     <string name="nc_screen_lock_timeout_30">30 segundo</string>
     <string name="nc_screen_lock_timeout_300">5 minutu</string>
     <string name="nc_screen_lock_timeout_60">Minutu 1</string>
@@ -451,6 +461,11 @@
     <string name="record_stop_confirm_title">Gelditu grabaketa</string>
     <string name="record_stop_description">Utzi grabaketa</string>
     <string name="record_stopping">Grabazioa gelditzen…</string>
+    <string name="recording_consent_all">Dei guztietan grabatzeko baimena behar da</string>
+    <string name="recording_consent_description">Baliteke grabazioan zure ahotsa, kamerako bideoa eta pantaila partekatzea. Zure baimena beharrezkoa da deian sartu aurretik. Onartzen al duzu?</string>
+    <string name="recording_consent_for_conversation_description">Eskatu grabatzeko baimena elkarrizketa honetako deian sartu aurretik</string>
+    <string name="recording_consent_for_conversation_title">Grabatzeko baimena</string>
+    <string name="recording_consent_title">Baliteke deia grabatzea.</string>
     <string name="recording_settings_title">Grabatzea</string>
     <string name="removed_from_favorites">%1$s elkarrizketa gogokoetatik kendu da</string>
     <string name="renamed_conversation"> %1$s elkarrizketa kendu da</string>

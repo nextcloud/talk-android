@@ -608,7 +608,7 @@ class ProfileActivity : BaseActivity() {
     class UserInfoAdapter(
         displayList: List<UserInfoDetailsItem>?,
         private val viewThemeUtils: ViewThemeUtils,
-        private val controller: ProfileActivity
+        private val profileActivity: ProfileActivity
     ) : RecyclerView.Adapter<UserInfoAdapter.ViewHolder>() {
         var displayList: List<UserInfoDetailsItem>?
         var filteredDisplayList: MutableList<UserInfoDetailsItem> = LinkedList()
@@ -643,7 +643,7 @@ class ProfileActivity : BaseActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item: UserInfoDetailsItem = if (controller.edit) {
+            val item: UserInfoDetailsItem = if (profileActivity.edit) {
                 displayList!![position]
             } else {
                 filteredDisplayList[position]
@@ -656,11 +656,11 @@ class ProfileActivity : BaseActivity() {
 
             holder.binding.icon.contentDescription = item.hint
             viewThemeUtils.platform.colorImageView(holder.binding.icon, ColorRole.PRIMARY)
-            if (!TextUtils.isEmpty(item.text) || controller.edit) {
+            if (!TextUtils.isEmpty(item.text) || profileActivity.edit) {
                 holder.binding.userInfoDetailContainer.visibility = View.VISIBLE
-                controller.viewThemeUtils.material.colorTextInputLayout(holder.binding.userInfoInputLayout)
-                if (controller.edit &&
-                    controller.editableFields.contains(item.field.toString().lowercase())
+                profileActivity.viewThemeUtils.material.colorTextInputLayout(holder.binding.userInfoInputLayout)
+                if (profileActivity.edit &&
+                    profileActivity.editableFields.contains(item.field.toString().lowercase())
                 ) {
                     holder.binding.userInfoEditTextEdit.isEnabled = true
                     holder.binding.userInfoEditTextEdit.isFocusableInTouchMode = true
@@ -688,10 +688,7 @@ class ProfileActivity : BaseActivity() {
             }
         }
 
-        private fun initUserInfoEditText(
-            holder: ViewHolder,
-            item: UserInfoDetailsItem
-        ) {
+        private fun initUserInfoEditText(holder: ViewHolder, item: UserInfoDetailsItem) {
             holder.binding.userInfoEditTextEdit.setText(item.text)
             holder.binding.userInfoInputLayout.hint = item.hint
             holder.binding.userInfoEditTextEdit.addTextChangedListener(object : TextWatcher {
@@ -700,7 +697,7 @@ class ProfileActivity : BaseActivity() {
                 }
 
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if (controller.edit) {
+                    if (profileActivity.edit) {
                         displayList!![holder.adapterPosition].text = holder.binding.userInfoEditTextEdit.text.toString()
                     } else {
                         filteredDisplayList[holder.adapterPosition].text =
@@ -714,10 +711,7 @@ class ProfileActivity : BaseActivity() {
             })
         }
 
-        private fun initScopeElements(
-            item: UserInfoDetailsItem,
-            holder: ViewHolder
-        ) {
+        private fun initScopeElements(item: UserInfoDetailsItem, holder: ViewHolder) {
             if (item.scope == null) {
                 holder.binding.scope.visibility = View.GONE
             } else {
@@ -739,7 +733,7 @@ class ProfileActivity : BaseActivity() {
         }
 
         override fun getItemCount(): Int {
-            return if (controller.edit) {
+            return if (profileActivity.edit) {
                 displayList!!.size
             } else {
                 filteredDisplayList.size
@@ -762,7 +756,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     companion object {
-        private const val TAG: String = "ProfileController"
+        private val TAG = ProfileActivity::class.java.simpleName
         private const val DEFAULT_CACHE_SIZE: Int = 20
         private const val DEFAULT_RETRIES: Long = 3
         private const val HIGH_EMPHASIS_ALPHA: Float = 0.87f

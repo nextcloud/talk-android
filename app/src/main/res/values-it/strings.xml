@@ -237,6 +237,7 @@
     <string name="nc_reply">Rispondi</string>
     <string name="nc_reply_privately">Rispondi in privato</string>
     <string name="nc_save_message">Salva</string>
+    <string name="nc_save_success">Salvato correttamente</string>
     <string name="nc_screen_lock_timeout_30">30 secondi</string>
     <string name="nc_screen_lock_timeout_300">5 minuti</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
@@ -343,6 +344,7 @@
     <string name="nc_upload_confirm_send_multiple">Inviare questi file a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Inviare questo file a %1$s?</string>
     <string name="nc_upload_failed">Spiacenti, caricamento non riuscito</string>
+    <string name="nc_upload_failed_notification_title">Fallimento</string>
     <string name="nc_upload_from_cloud">Condividi da %1$s</string>
     <string name="nc_upload_in_progess">Caricamento</string>
     <string name="nc_upload_picture_from_cam">Scatta foto</string>
@@ -366,6 +368,7 @@
     <string name="polls_add_option">Aggiungi opzione</string>
     <string name="polls_options">Opzioni</string>
     <string name="polls_private_poll">Sondaggio privato</string>
+    <string name="polls_question">Domanda</string>
     <string name="polls_results_subtitle">Risultati</string>
     <string name="polls_settings">Impostazioni</string>
     <string name="polls_submit_vote">Votare</string>
@@ -397,6 +400,7 @@
     <string name="shared_items_file">File</string>
     <string name="shared_items_media">Media</string>
     <string name="shared_items_other">Altro</string>
+    <string name="shared_items_poll">Sondaggio</string>
     <string name="shared_items_voice">Voce</string>
     <string name="starred">Preferito</string>
     <string name="startCallForbidden">Non ti è consentito avviare una chiamata</string>

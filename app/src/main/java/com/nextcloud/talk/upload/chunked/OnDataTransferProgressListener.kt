@@ -25,7 +25,5 @@
 package com.nextcloud.talk.upload.chunked
 
 interface OnDataTransferProgressListener {
-    fun onTransferProgress(
-        percentage: Int
-    )
+    fun onTransferProgress(percentage: Int)
 }

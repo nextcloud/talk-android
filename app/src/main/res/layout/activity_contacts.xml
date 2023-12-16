@@ -178,7 +178,15 @@
             android:textAppearance="@style/ListItem" />
     </RelativeLayout>
 
-    <include
-        android:id="@+id/controller_generic_rv"
-        layout="@layout/controller_generic_rv" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/contacts_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_anchorGravity="center" />
+    </RelativeLayout>
 </LinearLayout>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Ikona konta</string>
+    <string name="added_to_favorites">Dodano rozmowę %1$s do ulubionych</string>
     <string name="appbar_search_in">Szukaj w %s</string>
+    <string name="audio_call">Rozmowa audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Wyjście audio</string>
     <string name="audio_output_phone">Telefon</string>
@@ -24,6 +26,7 @@
     <string name="custom">Dowolnie</string>
     <string name="danger_zone">Strefa niebezpieczeństwa</string>
     <string name="delete_avatar">Usuń awatar</string>
+    <string name="deleted_conversation">Usunięto rozmowę %1$s</string>
     <string name="dnd">Nie przeszkadzać</string>
     <string name="dontClear">Nie czyść</string>
     <string name="edit">Edytuj</string>
@@ -37,10 +40,15 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 godziny</string>
     <string name="invisible">Niewidoczny</string>
+    <string name="languages_error_message">Nie udało się pobrać języków</string>
+    <string name="languages_error_title">Pobieranie nie powiodło się</string>
     <string name="later_today">Później dzisiaj</string>
+    <string name="left_conversation">Opuściłeś rozmowę %1$s</string>
     <string name="load_more_results">Wczytaj więcej wyników</string>
     <string name="lock_symbol">Symbol zamknięcia</string>
     <string name="lower_hand">Opuścić rękę</string>
+    <string name="marked_as_read">Oznaczono rozmowę %1$s jako przeczytaną</string>
+    <string name="marked_as_unread">Oznaczono rozmowę %1$s jako nieprzeczytaną</string>
     <string name="mentioned">Wspomniany</string>
     <string name="menu_item_sort_by_date_newest_first">Od najnowszych</string>
     <string name="menu_item_sort_by_date_oldest_first">Od najstarszych</string>
@@ -48,6 +56,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Od największych</string>
     <string name="menu_item_sort_by_size_smallest_first">Od najmniejszych</string>
+    <string name="message_expiration_title">Wygaśnięcie wiadomości</string>
     <string name="message_poll_tap_to_open">Dotknij, aby otworzyć sondę</string>
     <string name="message_search_begin_empty">Brak wyników wyszukiwania</string>
     <string name="message_search_begin_typing">Zacznij pisać, aby wyszukać…</string>
@@ -95,6 +104,7 @@
     <string name="nc_camera_permission_hint">Aby umożliwić komunikację wideo, należy udzielić dostępu dla \"Kamera\".</string>
     <string name="nc_cancel">Anuluj</string>
     <string name="nc_capabilities_failed">Błąd pobierania, przerwano żądanie</string>
+    <string name="nc_caption">Podpis</string>
     <string name="nc_certificate_dialog_text">Czy ufasz dotychczas nieznanemu certyfikatowi SSL, wydanemu przez %1$s dla %2$s, ważnemu od %3$s do %4$s?</string>
     <string name="nc_certificate_dialog_title">Sprawdź certyfikat</string>
     <string name="nc_certificate_error">Twoje ustawienia SSL uniemożliwiają połaczenie</string>
@@ -134,6 +144,7 @@
     <string name="nc_delete_conversation_more">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla wszystkich pozostałych uczestników.</string>
     <string name="nc_delete_message">Usuń</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Wiadomość została pomyślnie usunięta, ale mogła przedostać się do innych usług</string>
+    <string name="nc_deleted_user">Użytkownik %1$s został usunięty</string>
     <string name="nc_demote">Zdegraduj z moderatora</string>
     <string name="nc_description_record_voice">Nagraj wiadomość głosową</string>
     <string name="nc_description_send_message_button">Wyślij wiadomość</string>
@@ -144,7 +155,10 @@
     <string name="nc_dialog_outdated_client_description">Aplikacja jest zbyt stara i nie jest już obsługiwana przez ten serwer. Proszę zaktualizować.</string>
     <string name="nc_dialog_outdated_client_option_update">Aktualizuj</string>
     <string name="nc_dialog_reauth_or_delete">Czy chcesz ponownie autoryzować lub usunąć konto?</string>
+    <string name="nc_dialog_save_to_storage_content">Zapisanie tych multimediów do pamięci umożliwi dostęp do nich innym aplikacjom na Twoim urządzeniu.</string>
+    <string name="nc_dialog_save_to_storage_continue">Kontynuować?</string>
     <string name="nc_dialog_save_to_storage_no">Nie</string>
+    <string name="nc_dialog_save_to_storage_title">Zapisać w pamięci?</string>
     <string name="nc_dialog_save_to_storage_yes">Tak</string>
     <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerwano żądanie</string>
     <string name="nc_display_name_not_stored">Nie można zapisać wyświetlanej nazwy, przerwano żądanie</string>
@@ -279,6 +293,7 @@
     <string name="nc_reply">Odpowiedz</string>
     <string name="nc_reply_privately">Odpowiedz prywatnie</string>
     <string name="nc_save_message">Zapisz</string>
+    <string name="nc_save_success">Zapisano pomyślnie</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
@@ -407,7 +422,7 @@
     <string name="nc_voice_message_hold_to_record_info">Przytrzymaj, aby nagrać, zwolnij, aby wysłać.</string>
     <string name="nc_voice_message_missing_audio_permission">Wymagane jest uprawnienie na nagrywanie dźwięku</string>
     <string name="nc_voice_message_slide_to_cancel">« Przesuń, aby anulować</string>
-    <string name="nc_webinar">Webinar</string>
+    <string name="nc_webinar">Webinarium</string>
     <string name="nc_wrong_link">Link rozmowy jest nieprawidłowy</string>
     <string name="nc_wrong_password">Złe hasło</string>
     <string name="nc_yes">Tak</string>
@@ -446,7 +461,14 @@
     <string name="record_stop_confirm_title">Zatrzymaj nagrywanie rozmowy</string>
     <string name="record_stop_description">Zatrzymaj nagrywanie</string>
     <string name="record_stopping">Zatrzymywanie nagrywania…</string>
+    <string name="recording_consent_all">W przypadku wszystkich rozmów wymagana jest zgoda na nagrywanie</string>
+    <string name="recording_consent_description">Nagranie może obejmować Twój głos, wideo z kamery i udostępniony ekran. Przed dołączeniem do rozmowy wymagana jest Twoja zgoda. Czy wyrażasz zgodę?</string>
+    <string name="recording_consent_for_conversation_description">Wymagaj zgody na nagrywanie przed dołączeniem do tej rozmowy</string>
+    <string name="recording_consent_for_conversation_title">Zgoda na nagrywanie</string>
+    <string name="recording_consent_title">Rozmowa może zostać nagrana.</string>
     <string name="recording_settings_title">Nagranie</string>
+    <string name="removed_from_favorites">Usunięto rozmowę %1$s z ulubionych</string>
+    <string name="renamed_conversation">Nazwa rozmowy %1$s została zmieniona</string>
     <string name="restrict_join_other_room_while_call">Podczas rozmowy nie można dołączać do innych pokoi</string>
     <string name="save">Zapisz</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>
@@ -481,6 +503,7 @@
     <string name="shared_items_voice">Połączenie głosowe</string>
     <string name="starred">Ulubione</string>
     <string name="startCallForbidden">Nie możesz rozpocząć połączenia</string>
+    <string name="started_a_call">rozpoczął połączenie</string>
     <string name="status_message">Komunikat statusu</string>
     <string name="switch_to_breakout_room">Przełącz się do pokoju podgrupy</string>
     <string name="switch_to_main_room">Przełącz się do głównego pokoju</string>
@@ -507,8 +530,8 @@
     <string name="translation_device_settings">Ustawienia urządzenia</string>
     <string name="translation_error_message">Nie można wykryć języka</string>
     <string name="translation_error_title">Tłumaczenie nie powiodło się</string>
-    <string name="translation_from">Od</string>
-    <string name="translation_to">Do</string>
+    <string name="translation_from">Z</string>
+    <string name="translation_to">Na</string>
     <string name="typing_1_other">i 1 inny pisze…</string>
     <string name="typing_are_typing">piszą…</string>
     <string name="typing_is_typing">pisze…</string>
@@ -525,6 +548,7 @@
     <string name="userinfo_error_text">Nie udało się pobrać osobistych informacji o użytkowniku.</string>
     <string name="userinfo_no_info_headline">Brak informacji osobistych</string>
     <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
+    <string name="video_call">Wideo rozmowa</string>
     <string name="whats_your_status">Jaki jest Twój status?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d głos</item>

@@ -27,6 +27,7 @@ package com.nextcloud.talk.settings
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.DialogInterface
@@ -51,6 +52,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
@@ -66,6 +68,7 @@ import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppTheme
@@ -465,17 +468,47 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("CheckResult")
     private fun removeCurrentAccount() {
-        val otherUserExists = userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
+        userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
-        if (otherUserExists) {
-            // TODO: find better solution once Conductor is removed
-            finish()
-            startActivity(intent)
-        } else if (!otherUserExists) {
-            Log.d(TAG, "No other users found. AccountRemovalWorker will restart the app.")
-        }
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
+            .observeForever { workInfo: WorkInfo ->
+
+                when (workInfo.state) {
+                    WorkInfo.State.SUCCEEDED -> {
+                        val text = String.format(
+                            context.resources.getString(R.string.nc_deleted_user),
+                            currentUser!!.displayName
+                        )
+                        Toast.makeText(
+                            context,
+                            text,
+                            Toast.LENGTH_LONG
+                        ).show()
+                        restartApp()
+                    }
+                    WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.nc_common_error_sorry),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        Log.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
+                        restartApp()
+                    }
+
+                    else -> {}
+                }
+            }
+    }
+
+    private fun restartApp() {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
     }
 
     private fun getRingtoneName(context: Context, ringtoneUri: Uri?): String {
@@ -554,7 +587,9 @@ class SettingsActivity : BaseActivity() {
             }
         }
 
-        if (("No proxy" == appPreferences.proxyType) || appPreferences.proxyType == null) {
+        if (((context.resources.getString(R.string.nc_no_proxy)) == appPreferences.proxyType) ||
+            appPreferences.proxyType == null
+        ) {
             hideProxySettings()
         } else {
             showProxySettings()
@@ -954,7 +989,7 @@ class SettingsActivity : BaseActivity() {
             proxyTypeFlow.collect { newString ->
                 if (newString != state) {
                     state = newString
-                    if (("No proxy" == newString) || newString.isEmpty()) {
+                    if (((context.resources.getString(R.string.nc_no_proxy)) == newString) || newString.isEmpty()) {
                         hideProxySettings()
                     } else {
                         when (newString) {
@@ -1205,7 +1240,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     companion object {
-        private const val TAG = "SettingsController"
+        private val TAG = SettingsActivity::class.java.simpleName
         private const val DURATION: Long = 2500
         private const val START_DELAY: Long = 5000
         private const val DISABLED_ALPHA: Float = 0.38f

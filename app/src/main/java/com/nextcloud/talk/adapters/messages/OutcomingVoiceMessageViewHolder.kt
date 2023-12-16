@@ -86,6 +86,17 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
+
+        val filename = message.selectedIndividualHashMap!!["name"]
+        val retrieved = appPreferences!!.getWaveFormFromFile(filename)
+        if (retrieved.isNotEmpty() &&
+            message.voiceMessageFloatArray == null ||
+            message.voiceMessageFloatArray?.isEmpty() == true
+        ) {
+            message.voiceMessageFloatArray = retrieved.toFloatArray()
+            binding.seekbar.setWaveData(message.voiceMessageFloatArray!!)
+        }
+
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         colorizeMessageBubble(message)

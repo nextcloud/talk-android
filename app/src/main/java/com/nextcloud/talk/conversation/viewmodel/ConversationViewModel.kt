@@ -54,10 +54,7 @@ class ConversationViewModel @Inject constructor(private val repository: Conversa
         disposable?.dispose()
     }
 
-    fun createConversation(
-        roomName: String,
-        conversationType: Conversation.ConversationType?
-    ) {
+    fun createConversation(roomName: String, conversationType: Conversation.ConversationType?) {
         _viewState.value = CreatingState
 
         repository.createConversation(

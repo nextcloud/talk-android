@@ -1050,10 +1050,7 @@ class CallActivity : CallBaseActivity() {
     private val isConnectionEstablished: Boolean
         get() = currentCallStatus === CallStatus.JOINED || currentCallStatus === CallStatus.IN_CONVERSATION
 
-    private fun onAudioManagerDevicesChanged(
-        currentDevice: AudioDevice,
-        availableDevices: Set<AudioDevice>
-    ) {
+    private fun onAudioManagerDevicesChanged(currentDevice: AudioDevice, availableDevices: Set<AudioDevice>) {
         Log.d(TAG, "onAudioManagerDevicesChanged: $availableDevices, currentDevice: $currentDevice")
         val shouldDisableProximityLock =
             currentDevice == AudioDevice.WIRED_HEADSET ||
@@ -1529,10 +1526,7 @@ class CallActivity : CallBaseActivity() {
             })
     }
 
-    private fun addIceServers(
-        signalingSettingsOverall: SignalingSettingsOverall,
-        apiVersion: Int
-    ) {
+    private fun addIceServers(signalingSettingsOverall: SignalingSettingsOverall, apiVersion: Int) {
         if (signalingSettingsOverall.ocs!!.settings!!.stunServers != null) {
             val stunServers = signalingSettingsOverall.ocs!!.settings!!.stunServers
             if (apiVersion == ApiUtils.APIv3) {
@@ -2049,7 +2043,7 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    if (!switchToRoomToken.isEmpty()) {
+                    if (switchToRoomToken.isNotEmpty()) {
                         val intent = Intent(context, ChatActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         val bundle = Bundle()
@@ -2070,8 +2064,8 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    Log.e(TAG, "Error while leaving the call", e)
+                    Log.w(TAG, "Something went wrong when leaving the call", e)
+                    finish()
                 }
 
                 override fun onComplete() {
@@ -3035,11 +3029,7 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    private fun updatePictureInPictureActions(
-        @DrawableRes iconId: Int,
-        title: String?,
-        requestCode: Int
-    ) {
+    private fun updatePictureInPictureActions(@DrawableRes iconId: Int, title: String?, requestCode: Int) {
         if (isGreaterEqualOreo && isPipModePossible) {
             val actions = ArrayList<RemoteAction>()
             val icon = Icon.createWithResource(this, iconId)
@@ -3096,7 +3086,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     override fun suppressFitsSystemWindows() {
-        binding!!.controllerCallLayout.fitsSystemWindows = false
+        binding!!.callLayout.fitsSystemWindows = false
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

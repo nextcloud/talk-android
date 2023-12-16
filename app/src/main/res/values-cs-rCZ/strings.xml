@@ -40,6 +40,8 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
     <string name="invisible">Není vidět</string>
+    <string name="languages_error_message">Jazyky se nepodařilo získat</string>
+    <string name="languages_error_title">Získání se nezdařil</string>
     <string name="later_today">Později dnes</string>
     <string name="left_conversation">Opustili jste konverzaci %1$s</string>
     <string name="load_more_results">Načíst další výsledky</string>
@@ -102,6 +104,7 @@
     <string name="nc_camera_permission_hint">Pro zapnutí videokomunikace udělte oprávnění „Kamera“ .</string>
     <string name="nc_cancel">Storno</string>
     <string name="nc_capabilities_failed">Nepodařilo se získat schopnosti, přerušuje se</string>
+    <string name="nc_caption">Titulek</string>
     <string name="nc_certificate_dialog_text">Věříte doposud neznámému SSL certifikátu, vydaném %1$s pro %2$s, platnému od %3$s do %4$s?</string>
     <string name="nc_certificate_dialog_title">Zkontrolovat certifikát</string>
     <string name="nc_certificate_error">Vaše nastavení SSL zabránilo připojení</string>
@@ -141,6 +144,7 @@
     <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude smazána také pro všechny její ostatní účastníky.</string>
     <string name="nc_delete_message">Smazat</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Zpráva úspěšně smazána, ale možná unikla do jiných služeb</string>
+    <string name="nc_deleted_user">Uživatel %1$s byl odebrán</string>
     <string name="nc_demote">Odebrat oprávnění moderátora</string>
     <string name="nc_description_record_voice">Nahrát hlasovou zprávu</string>
     <string name="nc_description_send_message_button">Poslat zprávu</string>
@@ -151,6 +155,11 @@
     <string name="nc_dialog_outdated_client_description">Tato aplikace je příliš stará a už nepodporovaná tímto serverem. Prosíme aktualizujte ji.</string>
     <string name="nc_dialog_outdated_client_option_update">Aktualizovat</string>
     <string name="nc_dialog_reauth_or_delete">Chcete tento účet znovu ověřit nebo smazat?</string>
+    <string name="nc_dialog_save_to_storage_content">Uložení tohoto média na úložiště umožní ostatním aplikacím na vašem zařízení k němu přistupovat.</string>
+    <string name="nc_dialog_save_to_storage_continue">Pokračovat?</string>
+    <string name="nc_dialog_save_to_storage_no">Ne</string>
+    <string name="nc_dialog_save_to_storage_title">Uložit na úložiště?</string>
+    <string name="nc_dialog_save_to_storage_yes">Ano</string>
     <string name="nc_display_name_not_fetched">Nepodařilo se získat zobrazované jméno, přerušuje se</string>
     <string name="nc_display_name_not_stored">Nepodařilo se uložit zobrazované jméno, přerušuje se</string>
     <string name="nc_email">E-mail</string>
@@ -283,6 +292,8 @@
     <string name="nc_rename_confirm">Přejmenovat</string>
     <string name="nc_reply">Odpovědět</string>
     <string name="nc_reply_privately">Odpovědět soukromě</string>
+    <string name="nc_save_message">Uložit</string>
+    <string name="nc_save_success">Úspěšně uloženo</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>

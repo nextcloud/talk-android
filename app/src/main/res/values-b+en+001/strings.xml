@@ -40,6 +40,8 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hours</string>
     <string name="invisible">Invisible</string>
+    <string name="languages_error_message">Languages could not be retrieved</string>
+    <string name="languages_error_title">Retrieval failed</string>
     <string name="later_today">Later today</string>
     <string name="left_conversation">You left the conversation %1$s</string>
     <string name="load_more_results">Load more results</string>
@@ -102,6 +104,7 @@
     <string name="nc_camera_permission_hint">To enable video communication please grant \"Camera\" permission.</string>
     <string name="nc_cancel">Cancel</string>
     <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
+    <string name="nc_caption">Caption</string>
     <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
@@ -141,6 +144,7 @@
     <string name="nc_delete_conversation_more">If you delete the conversation, it will also be deleted for all other participants.</string>
     <string name="nc_delete_message">Delete</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message deleted successfully, but it might have been leaked to other services</string>
+    <string name="nc_deleted_user">User %1$s was removed</string>
     <string name="nc_demote">Demote from moderator</string>
     <string name="nc_description_record_voice">Record voice message</string>
     <string name="nc_description_send_message_button">Send message</string>
@@ -151,7 +155,10 @@
     <string name="nc_dialog_outdated_client_description">The app is too old and no longer supported by this server. Please update.</string>
     <string name="nc_dialog_outdated_client_option_update">Update</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorise or delete this account?</string>
+    <string name="nc_dialog_save_to_storage_content">Saving this media to storage will allow any other apps on your device to access it.</string>
+    <string name="nc_dialog_save_to_storage_continue">Continue?</string>
     <string name="nc_dialog_save_to_storage_no">No</string>
+    <string name="nc_dialog_save_to_storage_title">Save to storage?</string>
     <string name="nc_dialog_save_to_storage_yes">Yes</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
@@ -285,6 +292,8 @@
     <string name="nc_rename_confirm">Rename</string>
     <string name="nc_reply">Reply</string>
     <string name="nc_reply_privately">Reply privately</string>
+    <string name="nc_save_message">Save</string>
+    <string name="nc_save_success">Saved successfully</string>
     <string name="nc_screen_lock_timeout_30">30 seconds</string>
     <string name="nc_screen_lock_timeout_300">5 minutes</string>
     <string name="nc_screen_lock_timeout_60">1 minute</string>
@@ -453,6 +462,7 @@
     <string name="record_stop_description">Stop recording</string>
     <string name="record_stopping">Stopping recording …</string>
     <string name="recording_consent_all">Recording consent is required for all calls</string>
+    <string name="recording_consent_description">The recording might include your voice, video from camera, and screen share. Your consent is required before joining the call. Do you consent?</string>
     <string name="recording_consent_for_conversation_description">Require recording consent before joining call in this conversation</string>
     <string name="recording_consent_for_conversation_title">Recording consent</string>
     <string name="recording_consent_title">The call might be recorded.</string>

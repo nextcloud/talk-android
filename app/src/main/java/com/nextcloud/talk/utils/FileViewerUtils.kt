@@ -37,9 +37,9 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.FullScreenImageActivity
-import com.nextcloud.talk.activities.FullScreenMediaActivity
-import com.nextcloud.talk.activities.FullScreenTextViewerActivity
+import com.nextcloud.talk.fullscreenfile.FullScreenImageActivity
+import com.nextcloud.talk.fullscreenfile.FullScreenMediaActivity
+import com.nextcloud.talk.fullscreenfile.FullScreenTextViewerActivity
 import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
@@ -73,10 +73,7 @@ import java.util.concurrent.ExecutionException
  */
 class FileViewerUtils(private val context: Context, private val user: User) {
 
-    fun openFile(
-        message: ChatMessage,
-        progressUi: ProgressUi
-    ) {
+    fun openFile(message: ChatMessage, progressUi: ProgressUi) {
         val fileName = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_NAME]!!
         val mimetype = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_MIMETYPE]!!
         val link = message.selectedIndividualHashMap!!["link"]!!

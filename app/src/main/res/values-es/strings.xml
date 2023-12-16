@@ -285,6 +285,8 @@
     <string name="nc_rename_confirm">Renombrar</string>
     <string name="nc_reply">Responder</string>
     <string name="nc_reply_privately">Responder en privado</string>
+    <string name="nc_save_message">Guardar</string>
+    <string name="nc_save_success">Guardado correctamente</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
@@ -453,7 +455,10 @@
     <string name="record_stop_confirm_title">Detener grabación de la llamada</string>
     <string name="record_stop_description">Detener la grabación</string>
     <string name="record_stopping">Deteniendo grabación ...</string>
+    <string name="recording_consent_all">El consentimiento para grabar es obligatorio para todas las llamadas</string>
+    <string name="recording_consent_for_conversation_description">Obtener consentimiento para grabar antes de unirse a llamadas en esta conversación</string>
     <string name="recording_consent_for_conversation_title">Consentimiento de grabación</string>
+    <string name="recording_consent_title">La llamada puede ser grabada.</string>
     <string name="recording_settings_title">Grabando</string>
     <string name="removed_from_favorites">Se quitó la conversación %1$s de los favoritos</string>
     <string name="renamed_conversation">La conversación %1$s fue renombrada</string>

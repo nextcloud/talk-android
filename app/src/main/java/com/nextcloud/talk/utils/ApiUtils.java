@@ -247,7 +247,7 @@ public class ApiUtils {
     }
 
     public static String getUrlForRoomWebinaryLobby(int version, String baseUrl, String token) {
-        return getUrlForRoom(version, baseUrl, token) + "/webinary/lobby";
+        return getUrlForRoom(version, baseUrl, token) + "/webinar/lobby";
     }
 
     public static String getUrlForRoomNotificationCalls(int version, String baseUrl, String token) {
@@ -530,6 +530,10 @@ public class ApiUtils {
 
     public static String getUrlForTranslation(String baseUrl) {
         return baseUrl + ocsApiVersion + "/translation/translate";
+    }
+
+    public static String getUrlForLanguages(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/translation/languages";
     }
 
     public static String getUrlForReminder(User user, String roomToken, String messageId, int version) {

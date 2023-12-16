@@ -51,11 +51,13 @@ import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.FileViewerUtils.ProgressUi
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.stfalcon.chatkit.messages.MessageHolders.IncomingImageMessageViewHolder
 import io.reactivex.Single
 import io.reactivex.SingleObserver
@@ -79,6 +81,12 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
 
     @Inject
     lateinit var dateUtils: DateUtils
+
+    @Inject
+    lateinit var messageUtils: MessageUtils
+
+    @Inject
+    lateinit var userManager: UserManager
 
     @JvmField
     @Inject
@@ -111,6 +119,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         if (message.getCalculateMessageType() === ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
             fileViewerUtils = FileViewerUtils(context!!, message.activeUser!!)
             val fileName = message.selectedIndividualHashMap!![KEY_NAME]
+
             messageText.text = fileName
 
             if (message.activeUser != null &&
@@ -123,7 +132,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                         ProgressUi(progressBar, messageText, image)
                     )
                 }
-                clickView!!.setOnLongClickListener { l: View? ->
+                clickView!!.setOnLongClickListener {
                     previewMessageInterface!!.onPreviewMessageLongClick(message)
                     true
                 }
@@ -187,6 +196,12 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                     userAvatar.loadChangelogBotAvatar()
                 }
             }
+        }
+
+        messageCaption.setOnClickListener(null)
+        messageCaption.setOnLongClickListener {
+            previewMessageInterface!!.onPreviewMessageLongClick(message)
+            true
         }
     }
 
@@ -312,6 +327,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     }
 
     abstract val messageText: EmojiTextView
+    abstract val messageCaption: EmojiTextView
     abstract val previewContainer: View
     abstract val previewContactContainer: MaterialCardView
     abstract val previewContactPhoto: ImageView

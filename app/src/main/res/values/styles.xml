@@ -221,6 +221,9 @@
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">true</item>
+        <item name="colorSurface">@color/bg_default</item>
+        <item name="alertDialogTheme">@style/Theme.AppCompat.DayNight.Dialog</item>
+        <item name="android:alertDialogTheme">?alertDialogTheme</item>
     </style>
 
     <style name="FullScreenMediaTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -229,6 +232,9 @@
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">true</item>
+        <item name="colorSurface">@color/bg_default</item>
+        <item name="alertDialogTheme">@style/Theme.AppCompat.DayNight.Dialog</item>
+        <item name="android:alertDialogTheme">?alertDialogTheme</item>
     </style>
 
     <style name="TextInputLayoutTheme" parent="Theme.AppCompat">

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Icona da conta</string>
+    <string name="added_to_favorites">Engadiuse a conversa %1$s aos favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
+    <string name="audio_call">Chamada de voz</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Saída de son</string>
     <string name="audio_output_phone">Teléfono</string>
@@ -24,6 +26,7 @@
     <string name="custom">Personalizado</string>
     <string name="danger_zone">Zona de perigo</string>
     <string name="delete_avatar">Eliminar avatar</string>
+    <string name="deleted_conversation">A conversa %1$s foi eliminada</string>
     <string name="dnd">Non molestar</string>
     <string name="dontClear">Non limpar</string>
     <string name="edit">Editar</string>
@@ -37,10 +40,15 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisíbel</string>
+    <string name="languages_error_message">Non foi posíbel recuperar os idiomas</string>
+    <string name="languages_error_title">Produciuse un fallo na recuperación</string>
     <string name="later_today">Hoxe máis tarde</string>
+    <string name="left_conversation">Vde. deixou a conversa %1$s</string>
     <string name="load_more_results">Cargando máis resultados</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
     <string name="lower_hand">Baixar a man</string>
+    <string name="marked_as_read">A conversa %1$s foi marcada como lida</string>
+    <string name="marked_as_unread">A conversa %1$s foi marcada como sen ler</string>
     <string name="mentioned">Mencionado</string>
     <string name="menu_item_sort_by_date_newest_first">Primeiro o máis recente</string>
     <string name="menu_item_sort_by_date_oldest_first">Primeiro o máis antigo</string>
@@ -96,6 +104,7 @@
     <string name="nc_camera_permission_hint">Para activar a comunicación por vídeo, conceda o permiso de «Cámara».</string>
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Produciuse un fallo ao recuperar as funcionalidades. Interrompendo.</string>
+    <string name="nc_caption">Lenda</string>
     <string name="nc_certificate_dialog_text">Quere confiar nun certificado SSL descoñecido, emitido por %1$s para %2$s, válido dende %3$s ata %4$s?</string>
     <string name="nc_certificate_dialog_title">Verificar o certificado</string>
     <string name="nc_certificate_error">A súa configuración SSL impediu a conexión</string>
@@ -135,6 +144,7 @@
     <string name="nc_delete_conversation_more">Se elimina a conversa, tamén se eliminará para todos os demais participantes.</string>
     <string name="nc_delete_message">Eliminar</string>
     <string name="nc_delete_message_leaked_to_matterbridge">A mensaxe foi eliminada correctamente, pero é posíbel que se filtrase a outros servizos</string>
+    <string name="nc_deleted_user">O usuario %1$s foi retirado</string>
     <string name="nc_demote">Relegar de moderador</string>
     <string name="nc_description_record_voice">Gravar mensaxe de voz</string>
     <string name="nc_description_send_message_button">Enviar a mensaxe</string>
@@ -145,7 +155,10 @@
     <string name="nc_dialog_outdated_client_description">A aplicación é demasiado antiga e xa non é compatíbel con este servidor. Actualícea.</string>
     <string name="nc_dialog_outdated_client_option_update">Actualizar</string>
     <string name="nc_dialog_reauth_or_delete">Quere volver autorizar ou eliminar esta conta?</string>
+    <string name="nc_dialog_save_to_storage_content">Se garda este multimedia no almacenamento, calquera outra aplicación do seu dispositivo poderá acceder a el.</string>
+    <string name="nc_dialog_save_to_storage_continue">Continuar?</string>
     <string name="nc_dialog_save_to_storage_no">Non</string>
+    <string name="nc_dialog_save_to_storage_title">Quere gardalo no almacenamento?</string>
     <string name="nc_dialog_save_to_storage_yes">Si</string>
     <string name="nc_display_name_not_fetched">Non foi posíbel recuperar o nome para amosar, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
@@ -162,7 +175,7 @@
     <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_failed_to_perform_operation">Desculpe, algo foi mal!</string>
     <string name="nc_file_browser_back">Atrás</string>
-    <string name="nc_file_storage_permission">Precisase permiso para acceder ao ficheiro</string>
+    <string name="nc_file_storage_permission">Precísase de permiso para acceder ao ficheiro</string>
     <string name="nc_filter">Filtrar conversas</string>
     <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
     <string name="nc_formatted_message_you">Vde.: %1$s</string>
@@ -225,7 +238,7 @@
     <string name="nc_new_mention">Mencións sen ler</string>
     <string name="nc_new_messages">Mensaxes sen ler</string>
     <string name="nc_new_password">Novo contrasinal</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s non dispoñíbel (non instalado nin restrinxido pola administración da instancia.)</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s non está dispoñíbel (nin instalado nin restrinxido pola administración da instancia.)</string>
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_no">Non</string>
     <string name="nc_no_open_conversations_headline">Non hai conversas abertas</string>
@@ -280,6 +293,7 @@
     <string name="nc_reply">Responder</string>
     <string name="nc_reply_privately">Responder en privado</string>
     <string name="nc_save_message">Gardar</string>
+    <string name="nc_save_success">Gardadao satisfactoriamente</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
@@ -334,6 +348,7 @@
     <string name="nc_settings_notification_sounds_post_oreo">Notificacións</string>
     <string name="nc_settings_other_notifications_ringtone">Mensaxes</string>
     <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Talk na lista de teléfonos</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erro 429, demasiadas solicitudes</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Pode estabelecer o seu número de teléfono para que outros usuarios poidan atopalo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono non válido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">O número de teléfono foi estabelecido correctamente</string>
@@ -361,7 +376,7 @@
     <string name="nc_settings_server_eol_title">Servidor non admitido</string>
     <string name="nc_settings_theme_battery_saver">Estabelecido polo aforrador de batería</string>
     <string name="nc_settings_theme_dark">Escuro</string>
-    <string name="nc_settings_theme_follow_system">Usar o redeterminado do sistema</string>
+    <string name="nc_settings_theme_follow_system">Usar o predeterminado do sistema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Claro</string>
     <string name="nc_settings_theme_title">Tema</string>
@@ -372,7 +387,7 @@
     <string name="nc_settings_warning">Advertencia</string>
     <string name="nc_settings_wrong_account">Só pode volver autorizarse a conta actual</string>
     <string name="nc_share_contact">Compartir o contacto</string>
-    <string name="nc_share_contact_permission">Precisase permiso para ler a lista de contactos</string>
+    <string name="nc_share_contact_permission">Precísase de permiso para ler a lista de contactos</string>
     <string name="nc_share_current_location">Compartir a localización actual</string>
     <string name="nc_share_location">Compartir a localización</string>
     <string name="nc_share_subject">%1$s convite</string>
@@ -405,7 +420,7 @@
     <string name="nc_video_filename">Gravación de vídeo de %1$s</string>
     <string name="nc_voice_message_filename">Gravación da conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Manteña premido para gravar, solte para enviar.</string>
-    <string name="nc_voice_message_missing_audio_permission">Precisase permiso para gravar son</string>
+    <string name="nc_voice_message_missing_audio_permission">Precísase de permiso para gravar son</string>
     <string name="nc_voice_message_slide_to_cancel">« Esvare para cancelar</string>
     <string name="nc_webinar">Seminario web</string>
     <string name="nc_wrong_link">A ligazón da conversa non é válida</string>
@@ -446,7 +461,14 @@
     <string name="record_stop_confirm_title">Deter a gravación da chamada</string>
     <string name="record_stop_description">Deter a gravación</string>
     <string name="record_stopping">Deter a gravación</string>
+    <string name="recording_consent_all">O consentimento de gravación é necesario para todas as chamadas</string>
+    <string name="recording_consent_description">A gravación pode incluír a súa voz, o vídeo da cámara e da pantalla compartida. É preciso o seu consentimento antes de unirse á chamada. Consinte?</string>
+    <string name="recording_consent_for_conversation_description">Esixir o consentimento de gravación antes de unirse á chamada nesta conversa</string>
+    <string name="recording_consent_for_conversation_title">Consentimento de gravación</string>
+    <string name="recording_consent_title">É posíbel que a chamada sexa gravada.</string>
     <string name="recording_settings_title">Gravando</string>
+    <string name="removed_from_favorites">Retirouse a conversa %1$s dos favoritos</string>
+    <string name="renamed_conversation">Cambióuselle o nome a conversa %1$s</string>
     <string name="restrict_join_other_room_while_call">Non é posible unirse a outras salas mentres está nunha chamada</string>
     <string name="save">Gardar</string>
     <string name="scope_federated_description">Sincronizar só con servidores de confianza</string>
@@ -481,6 +503,7 @@
     <string name="shared_items_voice">Voz</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">Non ten permiso para iniciar unha chamada</string>
+    <string name="started_a_call">iniciar unha chamada</string>
     <string name="status_message">Mensaxe de estado</string>
     <string name="switch_to_breakout_room">Cambiar á sala parcial</string>
     <string name="switch_to_main_room">Cambiar á sala principal</string>
@@ -525,6 +548,7 @@
     <string name="userinfo_error_text">Produciuse un erro ao recuperar a información persoal do usuario.</string>
     <string name="userinfo_no_info_headline">Non foi estabelecida a información persoal</string>
     <string name="userinfo_no_info_text">Engada o seu nome, imaxe e detalles de contacto na súa páxina de perfil.</string>
+    <string name="video_call">Vídeo chamada</string>
     <string name="whats_your_status">Cal é o seu estado?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d voto</item>

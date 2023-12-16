@@ -52,7 +52,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import org.json.JSONArray
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -87,8 +86,7 @@ class MessageActionsDialog(
         initMenuItemTranslate(
             !message.isDeleted &&
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
-                CapabilitiesUtilNew.isTranslationsSupported(user) &&
-                JSONArray((CapabilitiesUtilNew.getLanguages(user) as ArrayList<*>).toArray()).length() > 0
+                CapabilitiesUtilNew.isTranslationsSupported(user)
         )
         initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(

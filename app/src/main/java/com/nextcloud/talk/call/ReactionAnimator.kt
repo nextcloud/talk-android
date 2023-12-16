@@ -46,10 +46,7 @@ class ReactionAnimator(
 ) {
     private val reactionsList: MutableList<CallReaction> = ArrayList()
 
-    fun addReaction(
-        emoji: String,
-        displayName: String
-    ) {
+    fun addReaction(emoji: String, displayName: String) {
         val callReaction = CallReaction(emoji, displayName)
         reactionsList.add(callReaction)
 
@@ -58,9 +55,7 @@ class ReactionAnimator(
         }
     }
 
-    private fun animateReaction(
-        callReaction: CallReaction
-    ) {
+    private fun animateReaction(callReaction: CallReaction) {
         val reactionWrapper = getReactionWrapperView(callReaction)
         val params = RelativeLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,

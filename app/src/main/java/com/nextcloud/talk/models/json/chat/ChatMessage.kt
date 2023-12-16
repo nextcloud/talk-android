@@ -285,6 +285,7 @@ data class ChatMessage(
             ""
         }
     }
+
     val lastMessageDisplayText: String
         get() {
             if (getCalculateMessageType() == MessageType.REGULAR_TEXT_MESSAGE ||
@@ -373,11 +374,12 @@ data class ChatMessage(
             return ""
         }
 
-    private fun getNullsafeActorDisplayName() = if (!TextUtils.isEmpty(actorDisplayName)) {
-        actorDisplayName
-    } else {
-        sharedApplication!!.getString(R.string.nc_guest)
-    }
+    private fun getNullsafeActorDisplayName() =
+        if (!TextUtils.isEmpty(actorDisplayName)) {
+            actorDisplayName
+        } else {
+            sharedApplication!!.getString(R.string.nc_guest)
+        }
 
     override fun getUser(): IUser {
         return object : IUser {
@@ -470,7 +472,8 @@ data class ChatMessage(
      * see https://nextcloud-talk.readthedocs.io/en/latest/chat/#system-messages
      */
     enum class SystemMessageType {
-        DUMMY, CONVERSATION_CREATED,
+        DUMMY,
+        CONVERSATION_CREATED,
         CONVERSATION_RENAMED,
         DESCRIPTION_REMOVED,
         DESCRIPTION_SET,
@@ -504,7 +507,8 @@ data class ChatMessage(
         GUEST_MODERATOR_PROMOTED,
         GUEST_MODERATOR_DEMOTED,
         MESSAGE_DELETED,
-        FILE_SHARED, OBJECT_SHARED,
+        FILE_SHARED,
+        OBJECT_SHARED,
         MATTERBRIDGE_CONFIG_ADDED,
         MATTERBRIDGE_CONFIG_EDITED,
         MATTERBRIDGE_CONFIG_REMOVED,

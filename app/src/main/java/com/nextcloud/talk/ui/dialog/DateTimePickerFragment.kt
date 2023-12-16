@@ -299,14 +299,11 @@ class DateTimePickerFragment(
         private const val HOUR_SIX_PM = 18
 
         @JvmStatic
-        fun newInstance(
-            token: String,
-            id: String,
-            chatViewModel: ChatViewModel
-        ) = DateTimePickerFragment(
-            token,
-            id,
-            chatViewModel
-        )
+        fun newInstance(token: String, id: String, chatViewModel: ChatViewModel) =
+            DateTimePickerFragment(
+                token,
+                id,
+                chatViewModel
+            )
     }
 }

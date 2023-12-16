@@ -1,8 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Mario Danic
- * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+ * @author Julius Linus
+ * Copyright (C) 2023 Julius Linus <julius.linus@nextcloud.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,23 +17,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.nextcloud.talk.translate.repositories.model
 
-package com.nextcloud.talk.controllers.bottomsheet.items
+import android.os.Parcelable
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.parcelize.Parcelize
 
-import android.widget.ImageView
-import androidx.annotation.DrawableRes
-
-interface ListItemWithImage {
-    val title: String
-    fun populateIcon(imageView: ImageView)
-}
-
-data class BasicListItemWithImage(
-    @DrawableRes val iconRes: Int,
-    override val title: String
-) : ListItemWithImage {
-
-    override fun populateIcon(imageView: ImageView) {
-        imageView.setImageResource(iconRes)
-    }
+@Parcelize
+@JsonObject
+class LanguagesOverall(
+    @JsonField(name = ["ocs"])
+    var ocs: LanguagesOCS?
+) : Parcelable {
+    // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
+    constructor() : this(null)
 }

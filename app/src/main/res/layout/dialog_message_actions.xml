@@ -26,7 +26,6 @@
     android:orientation="vertical"
     android:paddingBottom="@dimen/standard_half_padding">
 
-
     <androidx.emoji2.emojipicker.EmojiPickerView
         android:id="@+id/emoji_picker"
         android:layout_width="match_parent"
@@ -34,6 +33,9 @@
         android:layout_height="match_parent"
         app:emojiGridColumns="9" />
 
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/emojiBar"
@@ -477,7 +479,7 @@
                 android:contentDescription="@null"
                 android:paddingStart="@dimen/standard_padding"
                 android:paddingEnd="@dimen/zero"
-                android:src="@drawable/ic_baseline_arrow_downward_24px"
+                android:src="@drawable/baseline_download_24"
                 app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView

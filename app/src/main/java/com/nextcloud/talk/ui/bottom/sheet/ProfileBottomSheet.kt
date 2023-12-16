@@ -31,8 +31,8 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
-import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
+import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
+import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.hovercard.HoverCardAction
@@ -40,6 +40,7 @@ import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.EMAIL
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.PROFILE
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.SPREED
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import io.reactivex.Observer
@@ -49,7 +50,7 @@ import io.reactivex.schedulers.Schedulers
 
 private const val TAG = "ProfileBottomSheet"
 
-class ProfileBottomSheet(val ncApi: NcApi, val userModel: User) {
+class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUtils: ViewThemeUtils) {
 
     private val allowedAppIds = listOf(SPREED.stringValue, PROFILE.stringValue, EMAIL.stringValue)
 
@@ -89,6 +90,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User) {
 
         MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
             cornerRadius(res = R.dimen.corner_radius)
+            viewThemeUtils.platform.themeDialog(this.view)
 
             title(text = displayName)
             listItemsWithImage(items = items) { _, index, _ ->

@@ -50,6 +50,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
@@ -71,8 +72,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
+import com.nextcloud.talk.account.ServerSelectionActivity
+import com.nextcloud.talk.account.WebViewLoginActivity
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
@@ -84,7 +88,7 @@ import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ControllerConversationsRvBinding
+import com.nextcloud.talk.databinding.ActivityConversationsBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.AccountRemovalWorker
@@ -103,12 +107,12 @@ import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_FLAG
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXT
@@ -146,7 +150,7 @@ class ConversationsListActivity :
     FlexibleAdapter.OnItemClickListener,
     FlexibleAdapter.OnItemLongClickListener {
 
-    private lateinit var binding: ControllerConversationsRvBinding
+    private lateinit var binding: ActivityConversationsBinding
 
     @Inject
     lateinit var userManager: UserManager
@@ -202,7 +206,6 @@ class ConversationsListActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            // TODO: replace this when conductor is removed. For now it avoids to load the MainActiviy which has no UI.
             finishAffinity()
         }
     }
@@ -211,7 +214,7 @@ class ConversationsListActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        binding = ControllerConversationsRvBinding.inflate(layoutInflater)
+        binding = ActivityConversationsBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
@@ -250,7 +253,6 @@ class ConversationsListActivity :
 
         showShareToScreen = hasActivityActionSendIntent()
 
-        ClosedInterfaceImpl().setUpPushTokenRegistration()
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
         }
@@ -350,9 +352,7 @@ class ConversationsListActivity :
         viewThemeUtils.material.themeToolbar(binding.conversationListToolbar)
     }
 
-    private fun loadUserAvatar(
-        target: Target
-    ) {
+    private fun loadUserAvatar(target: Target) {
         if (currentUser != null) {
             val url = ApiUtils.getUrlForAvatar(
                 currentUser!!.baseUrl,
@@ -740,11 +740,20 @@ class ConversationsListActivity :
                 }
             }
 
+            if (resources!!.getBoolean(R.bool.multiaccount_support)) {
+                dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
+                    val intent = Intent(this, ServerSelectionActivity::class.java)
+                    intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
+                    startActivity(intent)
+                }
+            }
+
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
             val dialog = dialogBuilder.show()
             viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
             )
         }
     }
@@ -819,10 +828,10 @@ class ConversationsListActivity :
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareViews() {
         layoutManager = SmoothScrollLinearLayoutManager(this)
-        binding?.recyclerView?.layoutManager = layoutManager
-        binding?.recyclerView?.setHasFixedSize(true)
-        binding?.recyclerView?.adapter = adapter
-        binding?.recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -1131,7 +1140,7 @@ class ConversationsListActivity :
                     selectedConversation!!.displayName
                 )
             }
-            binding?.floatingActionButton?.let {
+            binding.floatingActionButton.let {
                 val dialogBuilder = MaterialAlertDialogBuilder(it.context)
                     .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.upload))
                     .setTitle(confirmationQuestion)
@@ -1358,30 +1367,17 @@ class ConversationsListActivity :
                 .setTitle(R.string.nc_dialog_invalid_password)
                 .setMessage(R.string.nc_dialog_reauth_or_delete)
                 .setCancelable(false)
-                .setPositiveButton(R.string.nc_delete) { _, _ ->
-                    val otherUserExists = userManager
-                        .scheduleUserForDeletionWithId(currentUser!!.id!!)
-                        .blockingGet()
-                    val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
-                    WorkManager.getInstance().enqueue(accountRemovalWork)
-                    if (otherUserExists) {
-                        finish()
-                        startActivity(intent)
-                    } else if (!otherUserExists) {
-                        Log.d(TAG, "No other users found. AccountRemovalWorker will restart the app.")
-                    }
+                .setPositiveButton(R.string.nc_settings_remove_account) { _, _ ->
+                    deleteUserAndRestartApp()
                 }
-
-            // TODO: show negative button again when conductor is removed
-            // .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
-            //     // router.pushController(
-            //     //     RouterTransaction.with(
-            //     //         WebViewLoginController(currentUser!!.baseUrl, true)
-            //     //     )
-            //     //         .pushChangeHandler(VerticalChangeHandler())
-            //     //         .popChangeHandler(VerticalChangeHandler())
-            //     // )
-            // }
+                .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
+                    val intent = Intent(context, WebViewLoginActivity::class.java)
+                    val bundle = Bundle()
+                    bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl)
+                    bundle.putBoolean(BundleKeys.KEY_REAUTHORIZE_ACCOUNT, true)
+                    intent.putExtras(bundle)
+                    startActivity(intent)
+                }
 
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
             val dialog = dialogBuilder.show()
@@ -1390,6 +1386,50 @@ class ConversationsListActivity :
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
         }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun deleteUserAndRestartApp() {
+        userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
+        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+        WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
+            .observeForever { workInfo: WorkInfo ->
+
+                when (workInfo.state) {
+                    WorkInfo.State.SUCCEEDED -> {
+                        val text = String.format(
+                            context.resources.getString(R.string.nc_deleted_user),
+                            currentUser!!.displayName
+                        )
+                        Toast.makeText(
+                            context,
+                            text,
+                            Toast.LENGTH_LONG
+                        ).show()
+                        restartApp()
+                    }
+
+                    WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.nc_common_error_sorry),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        Log.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
+                        restartApp()
+                    }
+
+                    else -> {}
+                }
+            }
+    }
+
+    private fun restartApp() {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
     }
 
     private fun showOutdatedClientDialog() {
@@ -1423,11 +1463,20 @@ class ConversationsListActivity :
                 }
             }
 
+            if (resources!!.getBoolean(R.bool.multiaccount_support)) {
+                dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
+                    val intent = Intent(this, ServerSelectionActivity::class.java)
+                    intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
+                    startActivity(intent)
+                }
+            }
+
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
             val dialog = dialogBuilder.show()
             viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
             )
         }
     }
@@ -1445,23 +1494,31 @@ class ConversationsListActivity :
                     .setTitle(R.string.nc_dialog_maintenance_mode)
                     .setMessage(R.string.nc_dialog_maintenance_mode_description)
                     .setCancelable(false)
+                    .setNegativeButton(R.string.nc_settings_remove_account) { _, _ ->
+                        deleteUserAndRestartApp()
+                    }
 
                 if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
                     dialogBuilder.setPositiveButton(R.string.nc_switch_account) { _, _ ->
                         val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
                         newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
                     }
-                } else {
-                    dialogBuilder.setPositiveButton(R.string.nc_close_app) { _, _ ->
-                        finishAffinity()
-                        finish()
+                }
+
+                if (resources!!.getBoolean(R.bool.multiaccount_support)) {
+                    dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
+                        val intent = Intent(this, ServerSelectionActivity::class.java)
+                        intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
+                        startActivity(intent)
                     }
                 }
 
                 viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
                 val dialog = dialogBuilder.show()
                 viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
                 )
             }
         } else {
@@ -1470,53 +1527,39 @@ class ConversationsListActivity :
     }
 
     private fun showServerEOLDialog() {
-        binding?.floatingActionButton?.let {
+        binding.floatingActionButton.let {
             val dialogBuilder = MaterialAlertDialogBuilder(it.context)
                 .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_warning_white))
                 .setTitle(R.string.nc_settings_server_eol_title)
                 .setMessage(R.string.nc_settings_server_eol)
                 .setCancelable(false)
                 .setPositiveButton(R.string.nc_settings_remove_account) { _, _ ->
-                    val otherUserExists = userManager
-                        .scheduleUserForDeletionWithId(currentUser!!.id!!)
-                        .blockingGet()
-                    val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
-                    WorkManager.getInstance().enqueue(accountRemovalWork)
-                    if (otherUserExists) {
-                        finish()
-                        startActivity(intent)
-                    } else if (!otherUserExists) {
-                        restartApp(this)
-                    }
+                    deleteUserAndRestartApp()
                 }
-                .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                    if (userManager.users.blockingGet().isNotEmpty()) {
-                        // TODO show SwitchAccount screen again when conductor is removed instead to close app
-                        // router.pushController(RouterTransaction.with(SwitchAccountController()))
-                        finishAffinity()
-                        finish()
-                    } else {
-                        finishAffinity()
-                        finish()
-                    }
+
+            if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
+                dialogBuilder.setNegativeButton(R.string.nc_switch_account) { _, _ ->
+                    val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
+                    newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
                 }
+            }
+
+            if (resources!!.getBoolean(R.bool.multiaccount_support)) {
+                dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
+                    val intent = Intent(this, ServerSelectionActivity::class.java)
+                    intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
+                    startActivity(intent)
+                }
+            }
 
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
             val dialog = dialogBuilder.show()
             viewThemeUtils.platform.colorTextButtons(
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
             )
         }
-    }
-
-    fun restartApp(context: Context) {
-        val packageManager = context.packageManager
-        val intent = packageManager.getLaunchIntentForPackage(context.packageName)
-        val componentName = intent!!.component
-        val mainIntent = Intent.makeRestartActivityTask(componentName)
-        context.startActivity(mainIntent)
-        Runtime.getRuntime().exit(0)
     }
 
     private fun deleteConversation(conversation: Conversation) {
@@ -1613,10 +1656,10 @@ class ConversationsListActivity :
     }
 
     companion object {
-        const val TAG = "ConvListController"
+        private val TAG = ConversationsListActivity::class.java.simpleName
         const val UNREAD_BUBBLE_DELAY = 2500
         const val BOTTOM_SHEET_DELAY: Long = 2500
-        private const val KEY_SEARCH_QUERY = "ContactsController.searchQuery"
+        private const val KEY_SEARCH_QUERY = "ConversationsListActivity.searchQuery"
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
         const val SEARCH_MIN_CHARS = 2
         const val HTTP_UNAUTHORIZED = 401

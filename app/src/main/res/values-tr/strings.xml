@@ -40,6 +40,8 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 saat</string>
     <string name="invisible">Görünmez</string>
+    <string name="languages_error_message">Diller alınamadı</string>
+    <string name="languages_error_title">Alınamadı</string>
     <string name="later_today">Bugün daha sonra</string>
     <string name="left_conversation">%1$s görüşmesinden ayrıldınız</string>
     <string name="load_more_results">Diğer sonuçları yükle</string>
@@ -102,6 +104,7 @@
     <string name="nc_camera_permission_hint">Görüntülü iletişim kurabilmek için \"Kamera\" için erişme izni verin.</string>
     <string name="nc_cancel">İptal</string>
     <string name="nc_capabilities_failed">Yeterlilikler alınamadı, vazgeçiliyor</string>
+    <string name="nc_caption">Alt yazı</string>
     <string name="nc_certificate_dialog_text">Şimdiye kadar bilinmeyen, %1$s tarafından %2$s için yayınlanmış %3$s ile %4$s tarihleri arasında geçerli olan sertifikaya güvenilsin mi?</string>
     <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
     <string name="nc_certificate_error">SSL kurulumunuz bağlantı kurulmasını engelliyor</string>
@@ -141,6 +144,7 @@
     <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de silinecek.</string>
     <string name="nc_delete_message">Sil</string>
     <string name="nc_delete_message_leaked_to_matterbridge">İleti silindi ancak başka hizmetlere aktarılmış olabilir</string>
+    <string name="nc_deleted_user">%1$s kullanıcısı kaldırıldı</string>
     <string name="nc_demote">Sorumluluktan çıkar</string>
     <string name="nc_description_record_voice">Ses iletisi kaydet</string>
     <string name="nc_description_send_message_button">İleti gönder</string>
@@ -151,7 +155,10 @@
     <string name="nc_dialog_outdated_client_description">Uygulama çok eski ve artık bu sunucu tarafından desteklenmiyor. Lütfen güncelleyin.</string>
     <string name="nc_dialog_outdated_client_option_update">Güncelle</string>
     <string name="nc_dialog_reauth_or_delete">Bu hesabı yeniden etkinleştirmek ya da silmek ister misiniz?</string>
+    <string name="nc_dialog_save_to_storage_content">Bu ortamı depolama alanına kaydetmek, aygıtınızdaki diğer uygulamaların da buna erişmesine izin verir.</string>
+    <string name="nc_dialog_save_to_storage_continue">İlerlemek istiyor musunuz?</string>
     <string name="nc_dialog_save_to_storage_no">Hayır</string>
+    <string name="nc_dialog_save_to_storage_title">Depolama alanına kaydedilsin mi?</string>
     <string name="nc_dialog_save_to_storage_yes">Evet</string>
     <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>
     <string name="nc_display_name_not_stored">Görüntülenecek ad kaydedilemedi, vazgeçiliyor</string>
@@ -286,6 +293,7 @@
     <string name="nc_reply">Yanıtla</string>
     <string name="nc_reply_privately">Kişisel yanıt gönder</string>
     <string name="nc_save_message">Kaydet</string>
+    <string name="nc_save_success">Kaydedildi</string>
     <string name="nc_screen_lock_timeout_30">30 saniye</string>
     <string name="nc_screen_lock_timeout_300">5 dakika</string>
     <string name="nc_screen_lock_timeout_60">1 dakika</string>

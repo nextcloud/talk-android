@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.activities
+package com.nextcloud.talk.fullscreenfile
 
 import android.content.Intent
 import android.os.Bundle
@@ -43,6 +43,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.marginBottom
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.fragment.app.DialogFragment
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -53,6 +54,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityFullScreenMediaBinding
+import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX_GENERIC
 import java.io.File
 
@@ -78,6 +80,7 @@ class FullScreenMediaActivity : AppCompatActivity() {
                 onBackPressedDispatcher.onBackPressed()
                 true
             }
+
             R.id.share -> {
                 val shareUri = FileProvider.getUriForFile(
                     this,
@@ -95,6 +98,18 @@ class FullScreenMediaActivity : AppCompatActivity() {
 
                 true
             }
+
+            R.id.save -> {
+                val saveFragment: DialogFragment = SaveToStorageDialogFragment.newInstance(
+                    intent.getStringExtra("FILE_NAME").toString()
+                )
+                saveFragment.show(
+                    supportFragmentManager,
+                    SaveToStorageDialogFragment.TAG
+                )
+                true
+            }
+
             else -> {
                 super.onOptionsItemSelected(item)
             }

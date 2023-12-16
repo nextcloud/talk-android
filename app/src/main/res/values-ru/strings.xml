@@ -156,7 +156,7 @@
     <string name="nc_file_storage_permission">Требуется разрешение на доступ к файлу</string>
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
     <string name="nc_formatted_message_you">Вы: %1$s</string>
-    <string name="nc_forward_message">Вперёд</string>
+    <string name="nc_forward_message">Переслать</string>
     <string name="nc_forward_to_three_dots">Вперёд к …</string>
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
     <string name="nc_get_source_code">Исходный код</string>
@@ -201,7 +201,7 @@
     <string name="nc_locked_tap_to_unlock">Коснитесь для разблокирования</string>
     <string name="nc_manual">Не задано</string>
     <string name="nc_mark_as_read">Отметить прочитанным</string>
-    <string name="nc_mark_as_unread">Отметить не прочитанным</string>
+    <string name="nc_mark_as_unread">Отметить непрочитанным</string>
     <string name="nc_message_failed_to_send">Не удалось отправить сообщение:</string>
     <string name="nc_message_quote_cancel_reply">Отменить ответ</string>
     <string name="nc_message_read">Сообщение прочитано</string>
@@ -262,6 +262,7 @@
     <string name="nc_reply">Ответить</string>
     <string name="nc_reply_privately">Ответить личным сообщением</string>
     <string name="nc_save_message">Сохранить</string>
+    <string name="nc_save_success">Сохранено успешно</string>
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_300">5 минут</string>
     <string name="nc_screen_lock_timeout_60">1 минута</string>

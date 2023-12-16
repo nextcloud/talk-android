@@ -32,26 +32,20 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import autodagger.AutoInjector
-import com.bluelinelabs.conductor.Conductor
-import com.bluelinelabs.conductor.Router
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.snackbar.Snackbar
-import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.account.ServerSelectionActivity
+import com.nextcloud.talk.account.WebViewLoginActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.controllers.ServerSelectionController
-import com.nextcloud.talk.controllers.WebViewLoginController
-import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
@@ -59,9 +53,9 @@ import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import io.reactivex.Observer
 import io.reactivex.SingleObserver
@@ -80,17 +74,12 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     @Inject
     lateinit var userManager: UserManager
 
-    private var router: Router? = null
-
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (!router!!.handleBack()) {
-                finish()
-            }
+            finish()
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: Activity: " + System.identityHashCode(this).toString())
 
@@ -111,8 +100,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         setSupportActionBar(binding.toolbar)
 
-        router = Conductor.attachRouter(this, binding.controllerContainer, savedInstanceState)
-
         handleIntent(intent)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
@@ -128,28 +115,24 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
     }
 
-    private fun launchLoginScreen() {
-        if (!TextUtils.isEmpty(resources.getString(R.string.weblogin_url))) {
-            router!!.pushController(
-                RouterTransaction.with(
-                    WebViewLoginController(resources.getString(R.string.weblogin_url), false)
-                )
-                    .pushChangeHandler(HorizontalChangeHandler())
-                    .popChangeHandler(HorizontalChangeHandler())
-            )
+    private fun launchServerSelection() {
+        if (isBrandingUrlSet()) {
+            val intent = Intent(context, WebViewLoginActivity::class.java)
+            val bundle = Bundle()
+            bundle.putString(BundleKeys.KEY_BASE_URL, resources.getString(R.string.weblogin_url))
+            intent.putExtras(bundle)
+            startActivity(intent)
         } else {
-            router!!.setRoot(
-                RouterTransaction.with(ServerSelectionController())
-                    .pushChangeHandler(HorizontalChangeHandler())
-                    .popChangeHandler(HorizontalChangeHandler())
-            )
+            val intent = Intent(context, ServerSelectionActivity::class.java)
+            startActivity(intent)
         }
     }
+
+    private fun isBrandingUrlSet() = !TextUtils.isEmpty(resources.getString(R.string.weblogin_url))
 
     override fun onStart() {
         Log.d(TAG, "onStart: Activity: " + System.identityHashCode(this).toString())
         super.onStart()
-        logRouterBackStack(router!!)
     }
 
     override fun onResume() {
@@ -178,14 +161,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         startActivity(intent)
     }
 
-    fun addAccount() {
-        router!!.pushController(
-            RouterTransaction.with(ServerSelectionController())
-                .pushChangeHandler(VerticalChangeHandler())
-                .popChangeHandler(VerticalChangeHandler())
-        )
-    }
-
     private fun handleActionFromContact(intent: Intent) {
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
             val cursor = contentResolver.query(intent.data!!, null, null, null, null)
@@ -209,7 +184,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                         startConversation(user)
                     } else {
                         Snackbar.make(
-                            binding.controllerContainer,
+                            binding.root,
                             R.string.nc_phone_book_integration_account_not_found,
                             Snackbar.LENGTH_LONG
                         ).show()
@@ -283,28 +258,18 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
 
         if (user != null && userManager.setUserAsActive(user).blockingGet()) {
-            // this should be avoided (it's still from conductor architecture). activities should be opened directly.
             if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
                 if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
-                    if (!router!!.hasRootController()) {
-                        openConversationList()
-                    }
                     val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
                     intent.extras?.let { callNotificationIntent.putExtras(it) }
                     startActivity(callNotificationIntent)
                 } else {
-                    logRouterBackStack(router!!)
-
                     val chatIntent = Intent(context, ChatActivity::class.java)
                     chatIntent.putExtras(intent.extras!!)
                     startActivity(chatIntent)
-
-                    logRouterBackStack(router!!)
                 }
             }
-        } else if (intent.hasExtra(ADD_ACCOUNT) && intent.getBooleanExtra(ADD_ACCOUNT, false)) {
-            addAccount()
-        } else if (!router!!.hasRootController()) {
+        } else {
             if (!appPreferences.isDbRoomMigrated) {
                 appPreferences.isDbRoomMigrated = true
             }
@@ -316,36 +281,30 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
                 override fun onSuccess(users: List<User>) {
                     if (users.isNotEmpty()) {
+                        ClosedInterfaceImpl().setUpPushTokenRegistration()
                         runOnUiThread {
                             openConversationList()
                         }
                     } else {
                         runOnUiThread {
-                            launchLoginScreen()
+                            launchServerSelection()
                         }
                     }
                 }
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Error loading existing users", e)
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.nc_common_error_sorry),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }
     }
 
-    private fun logRouterBackStack(router: Router) {
-        if (BuildConfig.DEBUG) {
-            val backstack = router.backstack
-            var routerTransaction: RouterTransaction?
-            Log.d(TAG, "   backstack size: " + router.backstackSize)
-            for (i in 0 until router.backstackSize) {
-                routerTransaction = backstack[i]
-                Log.d(TAG, "     controller: " + routerTransaction.controller)
-            }
-        }
-    }
-
     companion object {
-        private const val TAG = "MainActivity"
+        private val TAG = MainActivity::class.java.simpleName
     }
 }

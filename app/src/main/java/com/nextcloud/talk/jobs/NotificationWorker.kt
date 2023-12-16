@@ -42,7 +42,7 @@ import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
-import android.view.View
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -56,7 +56,6 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
-import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
@@ -329,11 +328,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     Log.e(TAG, "Failed to get NC notification", e)
                     if (BuildConfig.DEBUG) {
                         Handler(Looper.getMainLooper()).post {
-                            Snackbar.make(
-                                View(applicationContext),
-                                "Failed to get NC notification",
-                                Snackbar.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(context, "Failed to get NC notification", Toast.LENGTH_LONG).show()
                         }
                     }
                 }
@@ -857,6 +852,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Error in getPeersForCall", e)
+                    if (isCallNotificationVisible) {
+                        showMissedCallNotification()
+                    }
+                    removeNotification(pushMessage.timestamp.toInt())
                 }
 
                 override fun onComplete() {

@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
+ * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
@@ -22,25 +24,23 @@
  * Parts related to account import were either copied from or inspired by the great work done by David Luhmer at:
  * https://github.com/nextcloud/ownCloud-Account-Importer
  */
-package com.nextcloud.talk.controllers
+package com.nextcloud.talk.account
 
 import android.accounts.Account
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.View
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.adapters.items.AdvancedUserItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.controllers.base.BaseController
-import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ControllerGenericRvBinding
+import com.nextcloud.talk.databinding.ActivitySwitchAccountBinding
 import com.nextcloud.talk.models.ImportAccount
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.users.UserManager
@@ -56,14 +56,11 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import org.osmdroid.config.Configuration
 import java.net.CookieManager
 import javax.inject.Inject
+import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 
 @AutoInjector(NextcloudTalkApplication::class)
-class SwitchAccountController(args: Bundle? = null) :
-    BaseController(
-        R.layout.controller_generic_rv,
-        args
-    ) {
-    private val binding: ControllerGenericRvBinding? by viewBinding(ControllerGenericRvBinding::bind)
+class SwitchAccountActivity : BaseActivity() {
+    private lateinit var binding: ActivitySwitchAccountBinding
 
     @Inject
     lateinit var userManager: UserManager
@@ -89,41 +86,52 @@ class SwitchAccountController(args: Bundle? = null) :
 
             if (userManager.setUserAsActive(user).blockingGet()) {
                 cookieManager.cookieStore.removeAll()
-                if (activity != null) {
-                    activity!!.runOnUiThread { router.popCurrentController() }
-                }
+                finish()
             }
         }
         true
     }
 
-    init {
-        setHasOptionsMenu(true)
+    @SuppressLint("SourceLockedOrientationActivity")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
+        binding = ActivitySwitchAccountBinding.inflate(layoutInflater)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        setContentView(binding.root)
+        setupActionBar()
+        setupPrimaryColors()
+
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
-        if (args?.containsKey(KEY_IS_ACCOUNT_IMPORT) == true) {
-            isAccountImport = true
-        }
+
+        handleIntent()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                router.popCurrentController()
-                true
+    private fun handleIntent() {
+        intent.extras?.let {
+            if (it.containsKey(KEY_IS_ACCOUNT_IMPORT)) {
+                isAccountImport = true
             }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
-    override fun onViewBound(view: View) {
-        super.onViewBound(view)
-        binding?.swipeRefreshLayout?.isEnabled = false
+    private fun setupActionBar() {
+        setSupportActionBar(binding.toolbar)
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
+        supportActionBar?.title = resources!!.getString(R.string.nc_select_an_account)
+    }
 
-        actionBar?.show()
+    @Suppress("Detekt.NestedBlockDepth")
+    override fun onResume() {
+        super.onResume()
 
         if (adapter == null) {
-            adapter = FlexibleAdapter(userItems, activity, false)
+            adapter = FlexibleAdapter(userItems, this, false)
             var participant: Participant
 
             if (!isAccountImport) {
@@ -166,11 +174,10 @@ class SwitchAccountController(args: Bundle? = null) :
     }
 
     private fun prepareViews() {
-        val layoutManager: LinearLayoutManager = SmoothScrollLinearLayoutManager(activity)
-        binding?.recyclerView?.layoutManager = layoutManager
-        binding?.recyclerView?.setHasFixedSize(true)
-        binding?.recyclerView?.adapter = adapter
-        binding?.swipeRefreshLayout?.isEnabled = false
+        val layoutManager: LinearLayoutManager = SmoothScrollLinearLayoutManager(this)
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.adapter = adapter
     }
 
     private fun reauthorizeFromImport(account: Account?) {
@@ -180,14 +187,9 @@ class SwitchAccountController(args: Bundle? = null) :
         bundle.putString(KEY_USERNAME, importAccount.getUsername())
         bundle.putString(KEY_TOKEN, importAccount.getToken())
         bundle.putBoolean(KEY_IS_ACCOUNT_IMPORT, true)
-        router.pushController(
-            RouterTransaction.with(AccountVerificationController(bundle))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
-    }
 
-    override val title: String
-        get() =
-            resources!!.getString(R.string.nc_select_an_account)
+        val intent = Intent(context, AccountVerificationActivity::class.java)
+        intent.putExtras(bundle)
+        startActivity(intent)
+    }
 }

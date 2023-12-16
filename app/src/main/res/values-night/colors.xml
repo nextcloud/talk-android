@@ -53,7 +53,7 @@
     <color name="conversation_unread_bubble">#373737</color>
     <color name="conversation_unread_bubble_text">#D8D8D8</color>
 
-    <color name="controller_chat_separator">#484848</color>
+    <color name="chat_separator">#484848</color>
 
     <color name="colorBackgroundDarker">#2C2C2C</color>
 

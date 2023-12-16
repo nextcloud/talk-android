@@ -27,7 +27,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject
-data class TranslateOCS( // TODO finish this model
+data class TranslateOCS(
     @JsonField(name = ["meta"])
     var meta: GenericMeta?,
     @JsonField(name = ["data"])

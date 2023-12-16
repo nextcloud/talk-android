@@ -40,37 +40,38 @@
         android:layout_marginEnd="6dp"
         android:contentDescription="@string/avatar" />
 
+    <androidx.emoji2.widget.EmojiTextView
+        android:id="@+id/messageAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/messageUserAvatar"
+        android:layout_marginBottom="4dp"
+        android:alpha="0.6"
+        android:textAlignment="viewStart"
+        android:textColor="@color/no_emphasis_text"
+        android:textIsSelectable="false"
+        android:textSize="12sp"
+        tools:ignore="TextContrastCheck"
+        tools:text="Jane Doe" />
+
     <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/incoming_preview_message_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_toEndOf="@id/messageUserAvatar"
+        android:layout_below="@id/messageAuthor"
         android:orientation="vertical"
         app:alignContent="stretch"
         app:alignItems="stretch"
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
-        <androidx.emoji2.widget.EmojiTextView
-            android:id="@+id/messageAuthor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:alpha="0.6"
-            android:textAlignment="viewStart"
-            android:textColor="@color/no_emphasis_text"
-            android:textIsSelectable="false"
-            android:textSize="12sp"
-            tools:ignore="TextContrastCheck"
-            tools:text="Jane Doe" />
-
         <FrameLayout
             android:id="@+id/preview_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
             android:adjustViewBounds="true"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
@@ -163,6 +164,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
+            android:paddingHorizontal="@dimen/standard_half_padding"
             android:alpha="0.6"
             android:autoLink="none"
             android:textAlignment="viewStart"
@@ -180,6 +182,7 @@
             android:id="@id/messageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/standard_half_padding"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="2dp"
@@ -189,6 +192,21 @@
             app:layout_alignSelf="center"
             tools:ignore="TextContrastCheck"
             tools:text="12:38" />
+
+        <androidx.emoji2.widget.EmojiTextView
+            android:id="@+id/messageCaption"
+            android:padding="@dimen/standard_half_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/high_emphasis_text"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/chat_text_size"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:ignore="TextContrastCheck"
+            tools:text="This is my caption" />
 
         <include
             android:id="@+id/reactions"

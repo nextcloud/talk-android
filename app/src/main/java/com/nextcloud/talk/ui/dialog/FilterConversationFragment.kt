@@ -62,11 +62,7 @@ class FilterConversationFragment(
         return MaterialAlertDialogBuilder(requireContext()).setView(dialogView).create()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         setUpColors()
         setUpListeners()

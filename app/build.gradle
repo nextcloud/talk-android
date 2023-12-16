@@ -7,7 +7,7 @@
  * @author Tim Krüger
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
- * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2021-2023 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,6 +24,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import com.github.spotbugs.snom.SpotBugsTask
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.Effort
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -46,8 +48,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode 180000001
-        versionName "18.0.0 Alpha 1"
+        versionCode 180010004
+        versionName "18.1.0 Alpha 04"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
@@ -127,6 +129,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig = true
     }
 
     lint {
@@ -138,9 +141,9 @@ android {
 }
 
 ext {
-    androidxCameraVersion = "1.3.0"
+    androidxCameraVersion = "1.3.1"
     coilKtVersion = "2.5.0"
-    daggerVersion = "2.48.1"
+    daggerVersion = "2.49"
     emojiVersion = "1.4.0"
     lifecycleVersion = '2.6.2'
     okhttpVersion = "4.12.0"
@@ -149,13 +152,13 @@ ext {
     parcelerVersion = "1.1.13"
     prismVersion = "2.0.0"
     retrofit2Version = "2.9.0"
-    roomVersion = "2.6.0"
-    workVersion = "2.8.1"
+    roomVersion = "2.6.1"
+    workVersion = "2.9.0"
     espressoVersion = "3.5.1"
-    media3_version = "1.1.1"
+    media3_version = "1.2.0"
 }
 
-configurations.all {
+configurations.configureEach {
     exclude group: 'com.google.firebase', module: 'firebase-core'
     exclude group: 'com.google.firebase', module: 'firebase-analytics'
     exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
@@ -166,14 +169,14 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.datastore:datastore-core:1.0.0'
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.3")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.4")
 	
     implementation fileTree(include: ['*'], dir: 'libs')
 
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.emoji2:emoji2:${emojiVersion}"
     implementation "androidx.emoji2:emoji2-bundled:${emojiVersion}"
@@ -195,7 +198,7 @@ dependencies {
     implementation "androidx.camera:camera-camera2:${androidxCameraVersion}"
     implementation "androidx.camera:camera-lifecycle:${androidxCameraVersion}"
     implementation "androidx.camera:camera-view:${androidxCameraVersion}"
-    implementation "androidx.exifinterface:exifinterface:1.3.6"
+    implementation "androidx.exifinterface:exifinterface:1.3.7"
 
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:${lifecycleVersion}"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:${lifecycleVersion}"
@@ -209,8 +212,6 @@ dependencies {
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation "io.reactivex.rxjava2:rxjava:2.2.21"
-
-    implementation 'com.bluelinelabs:conductor:3.2.0'
 
     implementation "com.squareup.okhttp3:okhttp:${okhttpVersion}"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:${okhttpVersion}"
@@ -241,7 +242,7 @@ dependencies {
     implementation "org.parceler:parceler-api:$parcelerVersion"
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-    implementation 'org.apache.commons:commons-lang3:3.13.0'
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
     implementation 'com.github.wooplr:Spotlight:1.3'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.github.nextcloud-deps:ChatKit:0.4.2'
@@ -286,8 +287,8 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.12.0'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:5.7.0'
-    androidTestImplementation 'org.mockito:mockito-android:5.7.0'
+    testImplementation 'org.mockito:mockito-core:5.8.0'
+    androidTestImplementation 'org.mockito:mockito-android:5.8.0'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
 
     androidTestImplementation "androidx.test:core:1.5.0"
@@ -302,19 +303,19 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-intents:3.0.2')
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
-    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.0'
+    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.3'
 
     gplayImplementation 'com.google.android.gms:play-services-base:18.2.0'
-    gplayImplementation "com.google.firebase:firebase-messaging:23.3.1"
+    gplayImplementation "com.google.firebase:firebase-messaging:23.4.0"
 
-     implementation 'androidx.activity:activity-ktx:1.8.0'
+     implementation 'androidx.activity:activity-ktx:1.8.2'
 
-    implementation 'com.github.nextcloud.android-common:ui:0.12.0'
+    implementation 'com.github.nextcloud.android-common:ui:0.13.0'
 
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:110.5481.0'
 }
 
-task installGitHooks(type: Copy, group: "development") {
+tasks.register('installGitHooks', Copy) {
     description = "Install git hooks"
     from("../scripts/hooks") {
         include '*'
@@ -324,11 +325,11 @@ task installGitHooks(type: Copy, group: "development") {
 
 spotbugs {
     ignoreFailures = true // should continue checking
-    effort = "max"
-    reportLevel = "medium"
+    effort = Effort.MAX
+    reportLevel = Confidence.valueOf('MEDIUM')
 }
 
-tasks.withType(SpotBugsTask) { task ->
+tasks.withType(SpotBugsTask).configureEach { task ->
     String variantNameCap = task.name.replace("spotbugs", "")
     String variantName = variantNameCap.substring(0, 1).toLowerCase() + variantNameCap.substring(1)
 
@@ -359,6 +360,6 @@ tasks.named("detekt").configure {
 }
 
 detekt {
-    config = files("../detekt.yml")
-    input = files("src/")
+    config.setFrom("../detekt.yml")
+    source.setFrom("src/")
 }

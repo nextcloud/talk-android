@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Зображення облікового запису</string>
     <string name="appbar_search_in">Пошук у %s</string>
+    <string name="audio_call">Голосовий виклик</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Вивід аудіо</string>
     <string name="audio_output_phone">Телефон</string>
@@ -134,6 +135,8 @@
     <string name="nc_dialog_maintenance_mode">Режим технічного обслуговування</string>
     <string name="nc_dialog_outdated_client_option_update">Оновлення</string>
     <string name="nc_dialog_reauth_or_delete">Чи хочете ви повторно авторизувати чи вилучити цей акаунт?</string>
+    <string name="nc_dialog_save_to_storage_no">Ні</string>
+    <string name="nc_dialog_save_to_storage_yes">Так</string>
     <string name="nc_display_name_not_fetched">Ім\'я для показу не вдалося розпізнати. Скасування</string>
     <string name="nc_display_name_not_stored">Неможливо отримати ім\'я для показу. Скасування</string>
     <string name="nc_email">Електронна пошта</string>
@@ -258,6 +261,7 @@
     <string name="nc_reply">Відповісти</string>
     <string name="nc_reply_privately">Відповісти у приватній розмові</string>
     <string name="nc_save_message">Зберегти</string>
+    <string name="nc_save_success">Збережено успішно</string>
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_300">5 хвилин</string>
     <string name="nc_screen_lock_timeout_60">Одна хвилина</string>
@@ -267,7 +271,7 @@
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Пошук</string>
-    <string name="nc_select_an_account">Обрати акаунт</string>
+    <string name="nc_select_an_account">Оберіть обліковий запис</string>
     <string name="nc_select_participants">Виберіть учасників</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s надсилає GIF.</string>
     <string name="nc_sent_a_gif_you">Ви надіслали GIF.</string>

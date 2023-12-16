@@ -41,6 +41,8 @@ data class ReactionVoter(
     constructor() : this(null, null, null, 0)
 
     enum class ReactionActorType {
-        DUMMY, GUESTS, USERS
+        DUMMY,
+        GUESTS,
+        USERS
     }
 }

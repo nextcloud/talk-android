@@ -337,9 +337,7 @@ class SetStatusDialogFragment : DialogFragment(), PredefinedStatusClickListener 
         return returnValue
     }
 
-    private fun clearAtToUnixTimeTypeEndOf(
-        clearAt: ClearAt
-    ): Long {
+    private fun clearAtToUnixTimeTypeEndOf(clearAt: ClearAt): Long {
         var returnValue = -1L
         if (clearAt.time == "day") {
             val date = Calendar.getInstance().apply {

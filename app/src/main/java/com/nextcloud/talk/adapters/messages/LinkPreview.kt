@@ -38,12 +38,7 @@ import io.reactivex.schedulers.Schedulers
 
 class LinkPreview {
 
-    fun showLink(
-        message: ChatMessage,
-        ncApi: NcApi,
-        binding: ReferenceInsideMessageBinding,
-        context: Context
-    ) {
+    fun showLink(message: ChatMessage, ncApi: NcApi, binding: ReferenceInsideMessageBinding, context: Context) {
         binding.referenceName.text = ""
         binding.referenceDescription.text = ""
         binding.referenceLink.text = ""

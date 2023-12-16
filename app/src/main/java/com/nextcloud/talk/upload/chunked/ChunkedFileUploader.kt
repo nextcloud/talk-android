@@ -83,11 +83,7 @@ class ChunkedFileUploader(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun upload(
-        localFile: File,
-        mimeType: MediaType?,
-        targetPath: String
-    ): Boolean {
+    fun upload(localFile: File, mimeType: MediaType?, targetPath: String): Boolean {
         try {
             val uploadFolderUri: String = remoteChunkUrl + "/" + FileUtils.md5Sum(localFile)
             val davResource = DavResource(
@@ -137,10 +133,7 @@ class ChunkedFileUploader(
     }
 
     @Suppress("Detekt.ComplexMethod")
-    private fun getUploadedChunks(
-        davResource: DavResource,
-        uploadFolderUri: String
-    ): MutableList<Chunk> {
+    private fun getUploadedChunks(davResource: DavResource, uploadFolderUri: String): MutableList<Chunk> {
         val davResponse = DavResponse()
         val memberElements: MutableList<at.bitfire.dav4jvm.Response> = ArrayList()
         val rootElement = arrayOfNulls<at.bitfire.dav4jvm.Response>(1)

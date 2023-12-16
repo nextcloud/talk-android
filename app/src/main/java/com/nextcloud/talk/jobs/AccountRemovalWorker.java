@@ -23,10 +23,7 @@
 package com.nextcloud.talk.jobs;
 
 import android.app.NotificationManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -129,6 +126,7 @@ public class AccountRemovalWorker extends Worker {
                         @Override
                         public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                             Log.e(TAG, "error while trying to unregister Device For Notifications", e);
+                            initiateUserDeletion(user);
                         }
 
                         @Override
@@ -137,7 +135,7 @@ public class AccountRemovalWorker extends Worker {
                         }
                     });
             } else {
-                deleteUser(user);
+                initiateUserDeletion(user);
             }
         }
 
@@ -172,15 +170,13 @@ public class AccountRemovalWorker extends Worker {
                             }
                         }
 
-                        if (user.getId() != null) {
-                            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(user.getId());
-                        }
-                        deleteAllEntriesForAccountIdentifier(user);
+                        initiateUserDeletion(user);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "error while trying to unregister Device For Notification With Proxy", e);
+                        initiateUserDeletion(user);
                     }
 
                     @Override
@@ -190,8 +186,10 @@ public class AccountRemovalWorker extends Worker {
                 });
     }
 
-    private void deleteAllEntriesForAccountIdentifier(User user) {
+    private void initiateUserDeletion(User user) {
         if (user.getId() != null) {
+            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(user.getId());
+
             try {
                 arbitraryStorageManager.deleteAllEntriesForAccountIdentifier(user.getId());
                 deleteUser(user);
@@ -211,17 +209,5 @@ public class AccountRemovalWorker extends Worker {
                 Log.e(TAG, "error while trying to delete user", e);
             }
         }
-        if (userManager.getUsers().blockingGet().isEmpty()) {
-            restartApp(getApplicationContext());
-        }
-    }
-
-    public static void restartApp(Context context) {
-        PackageManager packageManager = context.getPackageManager();
-        Intent intent = packageManager.getLaunchIntentForPackage(context.getPackageName());
-        ComponentName componentName = intent.getComponent();
-        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
-        context.startActivity(mainIntent);
-        Runtime.getRuntime().exit(0);
     }
 }

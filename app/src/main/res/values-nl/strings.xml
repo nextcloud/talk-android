@@ -241,6 +241,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_reply">Antwoord</string>
     <string name="nc_reply_privately">Antwoord privé</string>
     <string name="nc_save_message">Opslaan</string>
+    <string name="nc_save_success">Succesvol opgeslagen</string>
     <string name="nc_screen_lock_timeout_30">30 seconden</string>
     <string name="nc_screen_lock_timeout_300">5 minuten</string>
     <string name="nc_screen_lock_timeout_60">1 minuut</string>

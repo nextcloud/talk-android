@@ -27,13 +27,7 @@ import io.reactivex.Observable
 
 interface ConversationRepository {
 
-    fun renameConversation(
-        roomToken: String,
-        roomNameNew: String
-    ): Observable<GenericOverall>
+    fun renameConversation(roomToken: String, roomNameNew: String): Observable<GenericOverall>
 
-    fun createConversation(
-        roomName: String,
-        conversationType: Conversation.ConversationType?
-    ): Observable<RoomOverall>
+    fun createConversation(roomName: String, conversationType: Conversation.ConversationType?): Observable<RoomOverall>
 }
