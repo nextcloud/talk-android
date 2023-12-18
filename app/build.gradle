@@ -145,6 +145,7 @@ ext {
     coilKtVersion = "2.5.0"
     daggerVersion = "2.49"
     emojiVersion = "1.4.0"
+    fidoVersion = "4.1.0-patch2"
     lifecycleVersion = '2.6.2'
     okhttpVersion = "4.12.0"
     markwonVersion = "4.6.2"
@@ -252,7 +253,8 @@ dependencies {
     implementation "io.coil-kt:coil-svg:${coilKtVersion}"
     implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
-    implementation 'com.github.cotechde.hwsecurity:hwsecurity-fido:2.4.5'
+    implementation "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido:${fidoVersion}"
+    implementation "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2:${fidoVersion}"
 
     implementation 'com.novoda:merlin:1.2.1'
 

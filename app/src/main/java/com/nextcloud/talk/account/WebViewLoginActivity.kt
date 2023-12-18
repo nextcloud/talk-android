@@ -66,6 +66,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
 import com.nextcloud.talk.utils.ssl.TrustManager
 import de.cotech.hw.fido.WebViewFidoBridge
+import de.cotech.hw.fido2.WebViewWebauthnBridge
+import de.cotech.hw.fido2.ui.WebauthnDialogOptions
 import io.reactivex.disposables.Disposable
 import java.lang.reflect.Field
 import java.net.CookieManager
@@ -99,6 +101,7 @@ class WebViewLoginActivity : BaseActivity() {
     private var loginStep = 0
     private var automatedLoginAttempted = false
     private var webViewFidoBridge: WebViewFidoBridge? = null
+    private var webViewWebauthnBridge: WebViewWebauthnBridge? = null
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -164,6 +167,12 @@ class WebViewLoginActivity : BaseActivity() {
         binding.webview.clearHistory()
         WebView.clearClientCertPreferences(null)
         webViewFidoBridge = WebViewFidoBridge.createInstanceForWebView(this, binding.webview)
+
+        val webauthnOptionsBuilder = WebauthnDialogOptions.builder().setShowSdkLogo(true).setAllowSkipPin(true)
+        webViewWebauthnBridge = WebViewWebauthnBridge.createInstanceForWebView(
+            this, binding.webview, webauthnOptionsBuilder
+        )
+
         CookieSyncManager.createInstance(this)
         android.webkit.CookieManager.getInstance().removeAllCookies(null)
         val headers: MutableMap<String, String> = HashMap()
@@ -172,12 +181,14 @@ class WebViewLoginActivity : BaseActivity() {
             private var basePageLoaded = false
             override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
                 webViewFidoBridge?.delegateShouldInterceptRequest(view, request)
+                webViewWebauthnBridge?.delegateShouldInterceptRequest(view, request)
                 return super.shouldInterceptRequest(view, request)
             }
 
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 webViewFidoBridge?.delegateOnPageStarted(view, url, favicon)
+                webViewWebauthnBridge?.delegateOnPageStarted(view, url, favicon)
             }
 
             @Deprecated("Use shouldOverrideUrlLoading(WebView view, WebResourceRequest request)")
