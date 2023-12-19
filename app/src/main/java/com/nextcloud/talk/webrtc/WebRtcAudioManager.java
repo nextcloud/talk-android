@@ -44,6 +44,8 @@ import android.media.AudioManager;
 import android.util.Log;
 
 import com.nextcloud.talk.events.ProximitySensorEvent;
+import com.nextcloud.talk.utils.ContextExtensionsKt;
+import com.nextcloud.talk.utils.ReceiverFlag;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -339,7 +341,7 @@ public class WebRtcAudioManager {
      * Helper method for receiver registration.
      */
     private void registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
-        magicContext.registerReceiver(receiver, filter);
+        ContextExtensionsKt.registerBroadcastReceiver(magicContext, receiver, filter, ReceiverFlag.NotExported);
     }
 
     /**
