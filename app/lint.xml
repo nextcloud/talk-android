@@ -17,7 +17,7 @@
     <issue id="MissingQuantity">
         <ignore path="**/values-ka-rGE/strings.xml"/>
         <ignore path="**/values-ar/strings.xml" />
-		<ignore path="**/es/values-ca/strings.xml" />
+		<ignore path="**/values-ca/strings.xml" />
     </issue>
 
     <issue id="TypographyEllipsis">
