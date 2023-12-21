@@ -29,6 +29,7 @@
     android:paddingBottom="@dimen/standard_half_padding">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/bottom_sheet_drag_handle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
