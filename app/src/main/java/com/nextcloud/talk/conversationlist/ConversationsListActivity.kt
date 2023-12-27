@@ -206,7 +206,11 @@ class ConversationsListActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            finishAffinity()
+            if (forwardMessage) {
+                finish()
+            } else {
+                finishAffinity()
+            }
         }
     }
 
