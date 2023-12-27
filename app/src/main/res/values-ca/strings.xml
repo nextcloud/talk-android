@@ -132,6 +132,8 @@
     <string name="nc_dialog_maintenance_mode">Mode de manteniment</string>
     <string name="nc_dialog_outdated_client_option_update">Actualització</string>
     <string name="nc_dialog_reauth_or_delete">Voleu reautoritzar o suprimir aquest compte?</string>
+    <string name="nc_dialog_save_to_storage_no">No</string>
+    <string name="nc_dialog_save_to_storage_yes">Sí</string>
     <string name="nc_display_name_not_fetched">No s’ha pogut obtenir el nom de visualització, s\'està avortant</string>
     <string name="nc_display_name_not_stored">No s\'ha pogut emmagatzemar el nom de visualització, s\'està avortant</string>
     <string name="nc_email">Correu</string>
@@ -419,6 +421,10 @@
     <string name="record_stop_confirm_message">Realment voleu aturar l\'enregistrament?</string>
     <string name="record_stop_confirm_title">Aturar l\'enregistrament de la trucada</string>
     <string name="record_stop_description">Aturar l\'enregistrament</string>
+    <string name="recording_consent_all">Cal el consentiment de gravació per a totes les trucades</string>
+    <string name="recording_consent_for_conversation_description">Requereix el consentiment per gravar abans d\'unir-te a la trucada en aquesta conversa</string>
+    <string name="recording_consent_for_conversation_title">Consentiment de gravació</string>
+    <string name="recording_consent_title">És possible que la trucada sigui gravada.</string>
     <string name="recording_settings_title">Enregistrament</string>
     <string name="save">Desa</string>
     <string name="scope_federated_description">Sincronitza només amb servidors de confiança</string>
