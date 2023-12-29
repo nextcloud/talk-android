@@ -415,6 +415,7 @@
     <string name="record_cancel_start">Відмінити початок запису</string>
     <string name="record_failed_info">Запис не відбувся. Зверніться до адміністратора.</string>
     <string name="record_start_description">Почати запис</string>
+    <string name="recording_consent_for_conversation_title">Згода на запис</string>
     <string name="recording_settings_title">Запис</string>
     <string name="save">Зберегти</string>
     <string name="scope_federated_description">Синхронізовувати лише з серверами, яким довіряємо</string>
