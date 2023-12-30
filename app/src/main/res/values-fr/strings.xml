@@ -41,6 +41,7 @@
     <string name="fourHours">4 heures</string>
     <string name="invisible">Invisible</string>
     <string name="languages_error_message">Les langues n\'ont pas pu être récupérées</string>
+    <string name="languages_error_title">Récupération échouée</string>
     <string name="later_today">Plus tard aujourd\'hui</string>
     <string name="left_conversation">Vous avez quitté la conversation %1$s</string>
     <string name="load_more_results">Charger plus de résultats</string>
@@ -154,8 +155,10 @@
     <string name="nc_dialog_outdated_client_description">L\'application est trop ancienne et n\'est plus prise en charge par ce serveur. Veuillez la mettre à jour.</string>
     <string name="nc_dialog_outdated_client_option_update">Mise à jour</string>
     <string name="nc_dialog_reauth_or_delete">Voulez-vous autoriser à nouveau ou supprimer ce compte ?</string>
+    <string name="nc_dialog_save_to_storage_content">Sauvegarder ce média autorisera toutes les autres applications de votre appareil à y accéder.</string>
     <string name="nc_dialog_save_to_storage_continue">Poursuivre ?</string>
     <string name="nc_dialog_save_to_storage_no">Non</string>
+    <string name="nc_dialog_save_to_storage_title">Sauvegarder ?</string>
     <string name="nc_dialog_save_to_storage_yes">Oui</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
