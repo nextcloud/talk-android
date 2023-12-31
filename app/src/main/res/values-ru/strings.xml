@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Значок учётной записи</string>
     <string name="appbar_search_in">Искать в %s</string>
+    <string name="audio_call">Аудиозвонок</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Аудиовыход</string>
     <string name="audio_output_phone">Телефон</string>
@@ -21,7 +22,9 @@
     <string name="conversations">Разговоры</string>
     <string name="create_conversation">Создать обсуждение</string>
     <string name="custom">Задать</string>
+    <string name="danger_zone">Опасная зона</string>
     <string name="delete_avatar">Удалить аватар</string>
+    <string name="deleted_conversation">Удалённый чат %1$s</string>
     <string name="dnd">Не беспокоить</string>
     <string name="dontClear">Не очищать</string>
     <string name="edit">Редактировать</string>
@@ -36,9 +39,12 @@
     <string name="fourHours">4 часа</string>
     <string name="invisible">Невидимый</string>
     <string name="later_today">Позже сегодня</string>
+    <string name="left_conversation">Вы покинули чат %1$s </string>
     <string name="load_more_results">Показать больше результатов</string>
     <string name="lock_symbol">Символ блокировки</string>
     <string name="lower_hand">Опустить руку</string>
+    <string name="marked_as_read">Отметить чат %1$s как прочитанный</string>
+    <string name="marked_as_unread">Отметить чат %1$s как непрочитанный</string>
     <string name="menu_item_sort_by_date_newest_first">Самый новый первый</string>
     <string name="menu_item_sort_by_date_oldest_first">Самый старый первый</string>
     <string name="menu_item_sort_by_name_a_z">А - Я</string>
@@ -91,6 +97,7 @@
     <string name="nc_call_voice">%s голосовой вызов</string>
     <string name="nc_cancel">Отмена</string>
     <string name="nc_capabilities_failed">Не удалось получить список поддерживаемых протоколов</string>
+    <string name="nc_caption">Подпись</string>
     <string name="nc_certificate_dialog_text">Доверять неизвестному сертификату SSL: выпущен %1$s для %2$s, действителен с %3$s по %4$s?</string>
     <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
     <string name="nc_certificate_error">Заданные параметры SSL не позволяют подключиться</string>
@@ -102,6 +109,7 @@
     <string name="nc_clear_history_warning">Вы действительно хотите удалить все сообщения в этой беседе?</string>
     <string name="nc_client_cert_change">Изменение клиентского сертификата</string>
     <string name="nc_client_cert_setup">Установка клиентского сертификата</string>
+    <string name="nc_close_app">Закрыть приложение</string>
     <string name="nc_common_and">и</string>
     <string name="nc_common_create">Создать</string>
     <string name="nc_common_dismiss">Отклонить</string>
@@ -134,9 +142,13 @@
     <string name="nc_description_send_message_button">Отправить сообщение</string>
     <string name="nc_dialog_invalid_password">Неверный пароль</string>
     <string name="nc_dialog_maintenance_mode">Режим обслуживания</string>
+    <string name="nc_dialog_maintenance_mode_description">В настоящее время сервер находится в режиме технического обслуживания.</string>
+    <string name="nc_dialog_outdated_client_description">Версия приложения слишком старая и больше не поддерживается этим сервером. Пожалуйста обносите приложение.</string>
     <string name="nc_dialog_outdated_client_option_update">Обновить</string>
     <string name="nc_dialog_reauth_or_delete">Вы хотите повторно авторизоваться или удалить эту учётную запись?</string>
+    <string name="nc_dialog_save_to_storage_continue">Продолжить?</string>
     <string name="nc_dialog_save_to_storage_no">Нет</string>
+    <string name="nc_dialog_save_to_storage_title">Сохранить в хранилище?</string>
     <string name="nc_dialog_save_to_storage_yes">Да</string>
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
     <string name="nc_display_name_not_stored">Не удалось сохранить отображаемое имя, продолжение невозможно</string>
@@ -190,6 +202,7 @@
     <string name="nc_license_summary">Открытое лицензионное соглашение GNU, версия 3</string>
     <string name="nc_license_title">Лицензия</string>
     <string name="nc_limit_hit">Достигнуто ограничение в %s знаков</string>
+    <string name="nc_list_open_conversations">Список открытых чатов</string>
     <string name="nc_lobby">Лобби</string>
     <string name="nc_lobby_start_date">Эта встреча запланирована на %1$s</string>
     <string name="nc_lobby_start_soon">Встреча скоро начнётся</string>

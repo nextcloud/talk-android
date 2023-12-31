@@ -454,6 +454,7 @@
     <string name="translation_error_title">Не вдалося перекласти</string>
     <string name="translation_from">Від</string>
     <string name="translation_to">Кому</string>
+    <string name="unread">Непрочитано</string>
     <string name="user_info_address">Адреса</string>
     <string name="user_info_displayname">Повна назва</string>
     <string name="user_info_email">Електронна пошта</string>
