@@ -79,6 +79,12 @@ class MessageActionsDialog(
 
     private lateinit var popup: EmojiPopup
 
+    private val messageHasFileAttachment =
+        ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType()
+
+    private val messageHasRegularText = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message
+        .getCalculateMessageType() && !message.isDeleted
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
@@ -112,7 +118,7 @@ class MessageActionsDialog(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType()
         )
-        initMenuShare(ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType())
+        initMenuShare(messageHasFileAttachment || messageHasRegularText)
         initMenuItemOpenNcApp(
             ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType()
         )
@@ -330,10 +336,17 @@ class MessageActionsDialog(
 
         dialogMessageActionsBinding.menuTranslateMessage.visibility = getVisibility(visible)
     }
+
     private fun initMenuShare(visible: Boolean) {
-        if (visible) {
+        if (messageHasFileAttachment) {
             dialogMessageActionsBinding.menuShare.setOnClickListener {
                 chatActivity.checkIfSharable(message)
+                dismiss()
+            }
+        }
+        if (messageHasRegularText) {
+            dialogMessageActionsBinding.menuShare.setOnClickListener {
+                message.message?.let { messageText -> chatActivity.shareMessageText(messageText) }
                 dismiss()
             }
         }
