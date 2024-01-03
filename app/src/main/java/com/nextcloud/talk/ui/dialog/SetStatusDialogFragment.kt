@@ -29,6 +29,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
@@ -61,9 +63,6 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import com.vanniktech.emoji.EmojiPopup
-import com.vanniktech.emoji.installDisableKeyboardInput
-import com.vanniktech.emoji.installForceSingleEmoji
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -90,10 +89,10 @@ private const val FOUR_HOURS = 4
 private const val LAST_HOUR_OF_DAY = 23
 private const val LAST_MINUTE_OF_HOUR = 59
 private const val LAST_SECOND_OF_MINUTE = 59
+private var isEmojiPickerVisible = false
 
 @AutoInjector(NextcloudTalkApplication::class)
-class SetStatusDialogFragment :
-    DialogFragment(), PredefinedStatusClickListener {
+class SetStatusDialogFragment : DialogFragment(), PredefinedStatusClickListener {
 
     private var selectedPredefinedStatus: PredefinedStatus? = null
 
@@ -106,7 +105,6 @@ class SetStatusDialogFragment :
 
     private lateinit var adapter: PredefinedStatusListAdapter
     private var clearAt: Long? = null
-    private lateinit var popup: EmojiPopup
 
     @Inject
     lateinit var ncApi: NcApi
@@ -130,8 +128,7 @@ class SetStatusDialogFragment :
 
             credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
             ncApi.getPredefinedStatuses(credentials, ApiUtils.getUrlForPredefinedStatuses(currentUser?.baseUrl))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<ResponseBody> {
 
                     override fun onSubscribe(d: Disposable) {
@@ -140,8 +137,7 @@ class SetStatusDialogFragment :
 
                     override fun onNext(responseBody: ResponseBody) {
                         val predefinedStatusOverall: PredefinedStatusOverall = LoganSquare.parse(
-                            responseBody
-                                .string(),
+                            responseBody.string(),
                             PredefinedStatusOverall::class.java
                         )
                         predefinedStatusOverall.ocs?.data?.let { it1 -> predefinedStatusesList.addAll(it1) }
@@ -193,22 +189,13 @@ class SetStatusDialogFragment :
 
         binding.clearStatus.setOnClickListener { clearStatus() }
         binding.setStatus.setOnClickListener { setStatusMessage() }
-        binding.emoji.setOnClickListener { openEmojiPopup() }
-
-        popup = EmojiPopup(
-            rootView = view,
-            editText = binding.emoji,
-            onEmojiClickListener = {
-                popup.dismiss()
-                binding.emoji.clearFocus()
-                val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as
-                    InputMethodManager
-                imm.hideSoftInputFromWindow(binding.emoji.windowToken, 0)
-            }
-        )
-        binding.emoji.installDisableKeyboardInput(popup)
-        binding.emoji.installForceSingleEmoji()
-
+        binding.emojiPicker.setOnEmojiPickedListener {
+            binding.emoji.text = (it.emoji)
+            binding.emojiPicker.visibility = GONE
+            isEmojiPickerVisible = false
+            val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.emoji.windowToken, 0)
+        }
         binding.clearStatusAfterSpinner.apply {
             this.adapter = createClearTimesArrayAdapter()
             onItemSelectedListener = object : OnItemSelectedListener {
@@ -247,9 +234,9 @@ class SetStatusDialogFragment :
                 binding.remainingClearTime.apply {
                     binding.clearStatusMessageTextView.text = getString(R.string.clear_status_message)
                     visibility = View.VISIBLE
-                    text = DisplayUtils.getRelativeTimestamp(context, it.clearAt * ONE_SECOND_IN_MILLIS, true)
-                        .toString()
-                        .decapitalize(Locale.getDefault())
+                    text =
+                        DisplayUtils.getRelativeTimestamp(context, it.clearAt * ONE_SECOND_IN_MILLIS, true).toString()
+                            .decapitalize(Locale.getDefault())
                     setOnClickListener {
                         visibility = View.GONE
                         binding.clearStatusAfterSpinner.visibility = View.VISIBLE
@@ -363,15 +350,23 @@ class SetStatusDialogFragment :
         return returnValue
     }
 
-    private fun openEmojiPopup() {
-        popup.show()
+    private fun toggleEmojiPicker() {
+        if (!isEmojiPickerVisible) {
+            val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.emoji.windowToken, 0)
+            binding.emojiPicker.visibility = VISIBLE
+            isEmojiPickerVisible = true
+        } else {
+            binding.emojiPicker.visibility = GONE
+            isEmojiPickerVisible = false
+        }
     }
 
     private fun clearStatus() {
         val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
         ncApi.statusDeleteMessage(credentials, ApiUtils.getUrlForStatusMessage(currentUser?.baseUrl))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
@@ -395,10 +390,8 @@ class SetStatusDialogFragment :
 
         ncApi.setStatusType(credentials, ApiUtils.getUrlForSetStatusType(currentUser?.baseUrl), statusType.string)
             .subscribeOn(
-                Schedulers
-                    .io()
-            )
-            .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
+                Schedulers.io()
+            ).observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
@@ -472,9 +465,7 @@ class SetStatusDialogFragment :
                 statusIcon,
                 inputText,
                 clearAt
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<GenericOverall> {
 
                     override fun onSubscribe(d: Disposable) {
@@ -502,9 +493,8 @@ class SetStatusDialogFragment :
                 ApiUtils.getUrlForSetPredefinedStatus(currentUser?.baseUrl),
                 selectedPredefinedStatus!!.id,
                 if (clearAt == -1L) null else clearAt
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())?.subscribe(object : Observer<GenericOverall> {
+            ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<GenericOverall> {
                     override fun onSubscribe(d: Disposable) = Unit
 
                     override fun onNext(t: GenericOverall) {
@@ -522,6 +512,7 @@ class SetStatusDialogFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding.emoji.setOnClickListener { toggleEmojiPicker() }
         return binding.root
     }
 
@@ -560,6 +551,14 @@ class SetStatusDialogFragment :
                 else -> binding.clearStatusAfterSpinner.setSelection(POS_DONT_CLEAR)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     /**

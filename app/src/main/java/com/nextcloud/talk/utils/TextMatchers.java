@@ -4,6 +4,8 @@
  * @author Mario Danic
  * @author Tim Krüger
  * @author Andy Scherzinger
+ * @author Samanwith KSN
+ * Copyright (C) 2023 Samanwith KSN <lcb2021048@iiitl.ac.in>
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -26,15 +28,25 @@
 
 package com.nextcloud.talk.utils;
 
-import com.vanniktech.emoji.EmojiInformation;
-import com.vanniktech.emoji.Emojis;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import androidx.annotation.Nullable;
 
 public final class TextMatchers {
 
     public static boolean isMessageWithSingleEmoticonOnly(@Nullable final String text) {
-        final EmojiInformation emojiInformation = Emojis.emojiInformation(text);
-        return (emojiInformation.isOnlyEmojis && emojiInformation.emojis.size() == 1);
+        if (text == null || text.isEmpty()) {
+            return false;
+        }
+        String emojiRegex = "([\\p{So}\\p{Sk}])";
+        Pattern pattern = Pattern.compile(emojiRegex);
+        Matcher matcher = pattern.matcher(text);
+
+        int emojiCount = 0;
+        while (matcher.find()) {
+            emojiCount++;
+        }
+        return emojiCount == 1;
     }
 }

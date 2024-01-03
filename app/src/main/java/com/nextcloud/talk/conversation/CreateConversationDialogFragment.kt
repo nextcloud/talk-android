@@ -22,8 +22,8 @@ package com.nextcloud.talk.conversation
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -33,8 +33,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.Data
@@ -44,7 +44,6 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
@@ -55,7 +54,6 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import com.vanniktech.emoji.EmojiPopup
 import org.greenrobot.eventbus.EventBus
 import org.parceler.Parcels
 import javax.inject.Inject
@@ -77,9 +75,7 @@ class CreateConversationDialogFragment : DialogFragment() {
 
     private lateinit var binding: DialogCreateConversationBinding
     private lateinit var viewModel: ConversationViewModel
-
-    private var emojiPopup: EmojiPopup? = null
-
+    private var isEmojiPickerVisible = false
     private var conversationType: Conversation.ConversationType? = null
     private var usersToInvite: ArrayList<String> = ArrayList()
     private var groupsToInvite: ArrayList<String> = ArrayList()
@@ -135,8 +131,6 @@ class CreateConversationDialogFragment : DialogFragment() {
 
         setupListeners()
         setupStateObserver()
-
-        setupEmojiPopup()
     }
 
     override fun onStart() {
@@ -161,32 +155,38 @@ class CreateConversationDialogFragment : DialogFragment() {
         viewThemeUtils.material.colorTextInputLayout(binding.textInputLayout)
     }
 
+    private fun hideKeyboard() {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.textEdit.windowToken, 0)
+    }
+
+    private fun keyboardtoggle() {
+        binding.emojiPicker.visibility = View.GONE
+        isEmojiPickerVisible = false
+    }
+
     private fun setupEmojiPopup() {
-        emojiPopup = binding.let {
-            EmojiPopup(
-                rootView = requireView(),
-                editText = it.textEdit,
-                onEmojiPopupShownListener = {
-                    viewThemeUtils.platform.colorImageView(it.smileyButton, ColorRole.PRIMARY)
-                },
-                onEmojiPopupDismissListener = {
-                    it.smileyButton.imageTintList = ColorStateList.valueOf(
-                        ResourcesCompat.getColor(
-                            resources,
-                            R.color.medium_emphasis_text,
-                            context?.theme
-                        )
-                    )
-                },
-                onEmojiClickListener = {
-                    binding.textEdit.editableText?.append(" ")
-                }
-            )
+        if (!isEmojiPickerVisible) {
+            binding.emojiPicker.visibility = View.VISIBLE
+            isEmojiPickerVisible = true
+            hideKeyboard()
+        } else {
+            binding.emojiPicker.visibility = View.GONE
+            isEmojiPickerVisible = false
+        }
+        binding.emojiPicker.setOnEmojiPickedListener {
+            binding.textEdit.editableText?.append(it.emoji)
         }
     }
 
     private fun setupListeners() {
-        binding.smileyButton.setOnClickListener { emojiPopup?.toggle() }
+        binding.smileyButton.setOnClickListener { setupEmojiPopup() }
+        binding.textEdit.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                keyboardtoggle()
+            }
+        }
+        binding.textEdit.setOnClickListener { keyboardtoggle() }
         binding.textEdit.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // unused atm
@@ -222,6 +222,7 @@ class CreateConversationDialogFragment : DialogFragment() {
                     Log.e(TAG, "Failed to create conversation")
                     showError()
                 }
+
                 else -> {}
             }
         }
@@ -284,6 +285,14 @@ class CreateConversationDialogFragment : DialogFragment() {
     private fun showError() {
         dismiss()
         Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     /**

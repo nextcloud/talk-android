@@ -72,6 +72,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
+import android.view.inputmethod.InputMethodManager
 import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.ImageButton
@@ -92,6 +93,7 @@ import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.text.bold
 import androidx.core.widget.doAfterTextChanged
+import androidx.emoji2.emojipicker.EmojiPickerView
 import androidx.emoji2.text.EmojiCompat
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.DialogFragment
@@ -235,7 +237,6 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageHolders.ContentChecker
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
-import com.vanniktech.emoji.EmojiPopup
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -322,7 +323,6 @@ class ChatActivity :
     lateinit var roomId: String
     var voiceOnly: Boolean = true
     var isFirstMessagesProcessing = true
-    private var emojiPopup: EmojiPopup? = null
     private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
@@ -363,6 +363,8 @@ class ChatActivity :
 
     var mediaPlayer: MediaPlayer? = null
     lateinit var mediaPlayerHandler: Handler
+
+    private var isEmojiPickerVisible = false
 
     private var currentlyPlayedVoiceMessage: ChatMessage? = null
 
@@ -468,7 +470,6 @@ class ChatActivity :
         binding.progressBar.visibility = View.VISIBLE
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-
         initObservers()
     }
 
@@ -660,7 +661,6 @@ class ChatActivity :
         logConversationInfos("onResume")
 
         pullChatMessagesPending = false
-
         setupWebsocket()
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
@@ -672,7 +672,7 @@ class ChatActivity :
         }
 
         initSmileyKeyboardToggler()
-
+        initMessageInputToggler()
         themeMessageInputView()
 
         cancelNotificationsForCurrentConversation()
@@ -1443,34 +1443,43 @@ class ChatActivity :
         }
     }
 
+    private fun initMessageInputToggler() {
+        val messageInput = binding.messageInputView.findViewById<ImageEmojiEditText>(R.id.messageInput)
+        messageInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                keyboardtoggle()
+            }
+        }
+        messageInput.setOnClickListener {
+            keyboardtoggle()
+        }
+    }
+
+    private fun keyboardtoggle() {
+        binding.messageInputView.findViewById<FrameLayout>(R.id.emoji_picker).visibility = View.GONE
+        isEmojiPickerVisible = false
+    }
+
     private fun initSmileyKeyboardToggler() {
         val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
-
-        emojiPopup = binding.messageInputView.inputEditText?.let {
-            EmojiPopup(
-                rootView = binding.root,
-                editText = it,
-                onEmojiPopupShownListener = {
-                    if (resources != null) {
-                        smileyButton?.setImageDrawable(
-                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_24)
-                        )
-                    }
-                },
-                onEmojiPopupDismissListener = {
-                    smileyButton?.setImageDrawable(
-                        ContextCompat.getDrawable(context, R.drawable.ic_insert_emoticon_black_24dp)
-                    )
-                },
-                onEmojiClickListener = {
-                    binding.messageInputView.inputEditText?.editableText?.append(" ")
-                }
-            )
-        }
-
         smileyButton?.setOnClickListener {
-            emojiPopup?.toggle()
+            if (!isEmojiPickerVisible) {
+                binding.messageInputView.findViewById<FrameLayout>(R.id.emoji_picker).visibility = View.VISIBLE
+                isEmojiPickerVisible = true
+                hideKeyboard()
+            } else {
+                binding.messageInputView.findViewById<EmojiPickerView>(R.id.emoji_picker).visibility = View.GONE
+                isEmojiPickerVisible = false
+            }
+            binding.messageInputView.findViewById<EmojiPickerView>(R.id.emoji_picker).setOnEmojiPickedListener {
+                binding.messageInputView.inputEditText.editableText?.append(it.emoji)
+            }
         }
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
     }
 
     @Suppress("MagicNumber", "LongMethod")

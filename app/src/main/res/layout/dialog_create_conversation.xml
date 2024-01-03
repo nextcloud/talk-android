@@ -65,4 +65,13 @@
         app:tint="@color/medium_emphasis_text"
         tools:visibility="visible" />
 
+    <androidx.emoji2.emojipicker.EmojiPickerView
+        android:id="@+id/emoji_picker"
+        android:layout_width="match_parent"
+        android:layout_below="@id/text_input_layout"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        app:emojiGridColumns="9" />
+
+
 </RelativeLayout>

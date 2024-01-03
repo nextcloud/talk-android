@@ -35,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.vanniktech.emoji.EmojiEditText
+    <androidx.emoji2.widget.EmojiEditText
         android:id="@+id/participant_status_emoji"
         android:layout_width="22dp"
         android:layout_height="wrap_content"
