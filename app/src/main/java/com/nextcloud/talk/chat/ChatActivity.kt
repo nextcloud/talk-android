@@ -347,6 +347,7 @@ class ChatActivity :
     private var isVoicePreviewPlaying: Boolean = false
 
     private var recorder: MediaRecorder? = null
+
     private enum class MediaRecorderState {
         INITIAL,
         INITIALIZED,
@@ -356,6 +357,7 @@ class ChatActivity :
         RELEASED,
         ERROR
     }
+
     private var mediaRecorderState: MediaRecorderState = MediaRecorderState.INITIAL
 
     private var voicePreviewMediaPlayer: MediaPlayer? = null
@@ -4516,6 +4518,16 @@ class ChatActivity :
         Log.d(TAG, " | currentConversation?.displayName: ${currentConversation?.displayName}")
         Log.d(TAG, " | sessionIdAfterRoomJoined: $sessionIdAfterRoomJoined")
         Log.d(TAG, " |-----------------------------------------------")
+    }
+
+    fun shareMessageText(message: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, getString(R.string.share))
+        startActivity(shareIntent)
     }
 
     companion object {
