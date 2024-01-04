@@ -525,7 +525,9 @@ class ChatActivity :
         active = true
         context.getSharedPreferences(localClassName, MODE_PRIVATE).apply {
             val text = getString(roomToken, "")
+            val cursor = getInt(roomToken + CURSOR_KEY, 0)
             binding.messageInputView.messageInput.setText(text)
+            binding.messageInputView.messageInput.setSelection(cursor)
         }
         this.lifecycle.addObserver(AudioUtils)
     }
@@ -544,10 +546,12 @@ class ChatActivity :
             stopMediaPlayer(currentlyPlayedVoiceMessage!!)
         }
         val text = binding.messageInputView.messageInput.text.toString()
+        val cursor = binding.messageInputView.messageInput.selectionStart
         val previous = context.getSharedPreferences(localClassName, MODE_PRIVATE).getString(roomToken, "null")
         if (text != previous) {
             context.getSharedPreferences(localClassName, MODE_PRIVATE).edit().apply {
                 putString(roomToken, text)
+                putInt(roomToken + CURSOR_KEY, cursor)
                 apply()
             }
         }
@@ -4603,5 +4607,6 @@ class ChatActivity :
         private const val CALL_STARTED_ID = -2
         private const val MILISEC_15: Long = 15
         private const val LINEBREAK = "\n"
+        private const val CURSOR_KEY = "_cursor"
     }
 }
