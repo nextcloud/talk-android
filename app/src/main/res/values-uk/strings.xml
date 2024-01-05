@@ -89,7 +89,7 @@
     <string name="nc_call_video">%s, відеодзвінок</string>
     <string name="nc_call_voice">%s, голосовий дзвінок</string>
     <string name="nc_cancel">Скасувати</string>
-    <string name="nc_capabilities_failed">Не вдалося розпізнати можливості, відміна</string>
+    <string name="nc_capabilities_failed">Не вдалося розпізнати можливості, скасування</string>
     <string name="nc_certificate_dialog_text">Чи довіряєте ви невідомому сертифікату, виданому %1$s для %2$s, що дійсний з %3$s до %4$s?</string>
     <string name="nc_certificate_dialog_title">Перевірка сертифікату</string>
     <string name="nc_certificate_error">Ваші налаштування SSL завадили з’єднанню</string>
@@ -412,7 +412,7 @@
     <string name="reactions_tab_all">Всі</string>
     <string name="read_storage_no_permission">Загальний доступ до файлів зі сховища неможливий без дозволів</string>
     <string name="record_active_info">Дзвінок записується</string>
-    <string name="record_cancel_start">Відмінити початок запису</string>
+    <string name="record_cancel_start">Скасувати початок запису</string>
     <string name="record_failed_info">Запис не відбувся. Зверніться до адміністратора.</string>
     <string name="record_start_description">Почати запис</string>
     <string name="recording_consent_for_conversation_title">Згода на запис</string>
