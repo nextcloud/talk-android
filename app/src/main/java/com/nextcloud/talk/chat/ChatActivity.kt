@@ -31,10 +31,12 @@ package com.nextcloud.talk.chat
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.content.res.Resources
@@ -387,6 +389,18 @@ class ChatActivity :
     private var lastRecordedSeeked: Boolean = false
 
     private val audioFocusChangeListener = getAudioFocusChangeListener()
+
+    private val noisyAudioStreamReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            chatViewModel.isPausedDueToBecomingNoisy = true
+            if (isVoicePreviewPlaying) {
+                pausePreviewVoicePlaying()
+            }
+            if (currentlyPlayedVoiceMessage != null) {
+                pausePlayback(currentlyPlayedVoiceMessage!!)
+            }
+        }
+    }
 
     private lateinit var participantPermissions: ParticipantPermissions
 
@@ -1337,6 +1351,7 @@ class ChatActivity :
                 audioFocusRequest(true) {
                     voicePreviewMediaPlayer!!.start()
                     voicePreviewObjectAnimator!!.start()
+                    handleBecomingNoisyBroadcast(register = true)
                 }
             }
 
@@ -1354,6 +1369,7 @@ class ChatActivity :
             audioFocusRequest(true) {
                 voicePreviewMediaPlayer!!.start()
                 voicePreviewObjectAnimator!!.resume()
+                handleBecomingNoisyBroadcast(register = true)
             }
         }
     }
@@ -1363,6 +1379,7 @@ class ChatActivity :
         audioFocusRequest(false) {
             voicePreviewMediaPlayer!!.pause()
             voicePreviewObjectAnimator!!.pause()
+            handleBecomingNoisyBroadcast(register = false)
         }
     }
 
@@ -1377,6 +1394,7 @@ class ChatActivity :
                 voicePreviewMediaPlayer!!.stop()
                 voicePreviewMediaPlayer!!.release()
                 voicePreviewMediaPlayer = null
+                handleBecomingNoisyBroadcast(register = false)
             }
         }
     }
@@ -1835,6 +1853,7 @@ class ChatActivity :
         return AudioManager.OnAudioFocusChangeListener { flag ->
             when (flag) {
                 AudioManager.AUDIOFOCUS_LOSS -> {
+                    chatViewModel.isPausedDueToBecomingNoisy = false
                     if (isVoicePreviewPlaying) {
                         stopPreviewVoicePlaying()
                     }
@@ -1844,6 +1863,7 @@ class ChatActivity :
                 }
 
                 AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                    chatViewModel.isPausedDueToBecomingNoisy = false
                     if (isVoicePreviewPlaying) {
                         pausePreviewVoicePlaying()
                     }
@@ -1856,6 +1876,10 @@ class ChatActivity :
     }
 
     private fun audioFocusRequest(shouldRequestFocus: Boolean, onGranted: () -> Unit) {
+        if (chatViewModel.isPausedDueToBecomingNoisy) {
+            onGranted()
+            return
+        }
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val duration = AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
 
@@ -1881,6 +1905,17 @@ class ChatActivity :
         }
     }
 
+    private fun handleBecomingNoisyBroadcast(register: Boolean) {
+        if (register && !chatViewModel.receiverRegistered) {
+            registerReceiver(noisyAudioStreamReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+            chatViewModel.receiverRegistered = true
+        } else if (!chatViewModel.receiverUnregistered) {
+            unregisterReceiver(noisyAudioStreamReceiver)
+            chatViewModel.receiverUnregistered = true
+            chatViewModel.receiverRegistered = false
+        }
+    }
+
     private fun startPlayback(message: ChatMessage) {
         if (!active) {
             // don't begin to play voice message if screen is not visible anymore.
@@ -1896,6 +1931,7 @@ class ChatActivity :
             if (!it.isPlaying) {
                 audioFocusRequest(true) {
                     it.start()
+                    handleBecomingNoisyBroadcast(register = true)
                 }
             }
 
@@ -1933,6 +1969,7 @@ class ChatActivity :
         if (mediaPlayer!!.isPlaying) {
             audioFocusRequest(false) {
                 mediaPlayer!!.pause()
+                handleBecomingNoisyBroadcast(register = false)
             }
         }
 
@@ -1993,6 +2030,7 @@ class ChatActivity :
                     Log.d(TAG, "media player is stopped")
                     audioFocusRequest(false) {
                         it.stop()
+                        handleBecomingNoisyBroadcast(register = false)
                     }
                 }
             }
