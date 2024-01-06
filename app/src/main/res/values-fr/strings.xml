@@ -15,7 +15,7 @@
     <string name="call_more_actions_dialog_headline">Options d\'appel avancées</string>
     <string name="call_running_since_one_hour">L\'appel est en cours depuis une heure.</string>
     <string name="call_without_notification">Appeler sans notification</string>
-    <string name="camera_permission_granted">Caméra autorisée. Merci de choisir à nouveau la caméra .</string>
+    <string name="camera_permission_granted">Caméra autorisée. Merci de choisir à nouveau la caméra.</string>
     <string name="choose_avatar_from_cloud">Sélectionner l\'avatar depuis le cloud</string>
     <string name="clear_status_message">Effacer le message d\'état</string>
     <string name="clear_status_message_after">Effacer le message d\'état après</string>
