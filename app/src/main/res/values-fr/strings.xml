@@ -487,7 +487,7 @@
     <string name="selected_list_item">Sélectionné</string>
     <string name="send_to">Envoyer a</string>
     <string name="send_to_forbidden">Vous n\'êtes pas autorisé à partager du contenu dans cette conversation</string>
-    <string name="send_to_three_dots">Envoyer a…</string>
+    <string name="send_to_three_dots">Envoyer à…</string>
     <string name="send_without_notification">Envoyer sans notification</string>
     <string name="set">Affecter</string>
     <string name="set_avatar_from_camera">Définir l\'avatar depuis la caméra</string>
