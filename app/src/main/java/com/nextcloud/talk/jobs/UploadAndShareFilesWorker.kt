@@ -168,7 +168,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             }
 
             if (uploadSuccess) {
-                mNotifyManager?.cancel(notificationId)
+                cancelNotification()
                 return Result.success()
             } else if (isStopped) {
                 // since work is cancelled the result would be ignored anyways
@@ -230,6 +230,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             .setOngoing(true)
             .setProgress(HUNDRED_PERCENT, ZERO_PERCENT, false)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setGroup(NotificationUtils.KEY_UPLOAD_GROUP)
             .setContentIntent(getIntentToOpenConversation())
             .addAction(
                 R.drawable.ic_cancel_white_24dp, getResourceString(context, R.string.nc_cancel),
@@ -237,8 +238,39 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             )
             .build()
 
+
         notificationId = SystemClock.uptimeMillis().toInt()
         mNotifyManager!!.notify(notificationId, notification)
+        // only need one summary notification but multiple upload worker can call it more than once but it is safe
+        // because of the same notification object config and id.
+        makeSummaryNotification()
+    }
+
+    private fun makeSummaryNotification() {
+        // summary notification encapsulating the group of notifications
+        val summaryNotification = NotificationCompat.Builder(
+            context, NotificationUtils.NotificationChannels
+                .NOTIFICATION_CHANNEL_UPLOADS.name
+        ).setSmallIcon(R.drawable.upload_white)
+            .setGroup(NotificationUtils.KEY_UPLOAD_GROUP)
+            .setGroupSummary(true)
+            .build()
+
+        mNotifyManager?.notify(NotificationUtils.GROUP_SUMMARY_NOTIFICATION_ID, summaryNotification)
+    }
+
+    private fun getActiveUploadNotifications(): Int? {
+        // filter out active notifications that are upload notifications using group
+        return mNotifyManager?.activeNotifications?.filter { notification.group == NotificationUtils.KEY_UPLOAD_GROUP }?.size
+    }
+
+    private fun cancelNotification() {
+        mNotifyManager?.cancel(notificationId)
+        // summary notification would not get dismissed automatically if child notifications are cancelled programmatically
+        // so check if only 1 notification left if yes then cancel it because that would be summary notification
+        if(getActiveUploadNotifications() == 1){
+            mNotifyManager?.cancel(NotificationUtils.GROUP_SUMMARY_NOTIFICATION_ID)
+        }
     }
 
     private fun getNotificationContentText(percentage: Int): String {
