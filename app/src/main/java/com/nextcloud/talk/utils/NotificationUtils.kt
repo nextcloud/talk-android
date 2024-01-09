@@ -71,6 +71,7 @@ object NotificationUtils {
     // notification group keys
     const val KEY_UPLOAD_GROUP = "com.nextcloud.talk.utils.KEY_UPLOAD_GROUP"
     const val GROUP_SUMMARY_NOTIFICATION_ID = -1
+
     @TargetApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(
         context: Context,
