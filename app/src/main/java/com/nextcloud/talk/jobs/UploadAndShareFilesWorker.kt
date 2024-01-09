@@ -268,7 +268,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         mNotifyManager?.cancel(notificationId)
         // summary notification would not get dismissed automatically if child notifications are cancelled programmatically
         // so check if only 1 notification left if yes then cancel it because that would be summary notification
-        if(getActiveUploadNotifications() == 1){
+        if (getActiveUploadNotifications() == 1) {
             mNotifyManager?.cancel(NotificationUtils.GROUP_SUMMARY_NOTIFICATION_ID)
         }
     }
@@ -321,17 +321,20 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             getResourceString(context, R.string.nc_upload_failed_notification_text),
             fileName
         )
-        notification = mBuilder!!
+        val failureNotification = NotificationCompat.Builder(
+            context, NotificationUtils.NotificationChannels
+                .NOTIFICATION_CHANNEL_UPLOADS.name
+        )
             .setContentTitle(failureTitle)
             .setContentText(failureText)
             .setSmallIcon(R.drawable.baseline_error_24)
+            .setGroup(NotificationUtils.KEY_UPLOAD_GROUP)
             .setOngoing(false)
             .build()
 
-        // Cancel original notification
         mNotifyManager?.cancel(notificationId)
-        // Then show information about failure
-        mNotifyManager!!.notify(SystemClock.uptimeMillis().toInt(), notification)
+        // update current notification with failure info
+        mNotifyManager!!.notify(SystemClock.uptimeMillis().toInt(), failureNotification)
     }
 
     private fun getResourceString(context: Context, resourceId: Int): String {
