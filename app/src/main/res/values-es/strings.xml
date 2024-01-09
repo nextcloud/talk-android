@@ -40,6 +40,8 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisible</string>
+    <string name="languages_error_message">Los lenguajes no pudieron ser recuperados</string>
+    <string name="languages_error_title">Recuperación fallida</string>
     <string name="later_today">Más tarde hoy</string>
     <string name="left_conversation">Ud. Abandonó la conversación %1$s</string>
     <string name="load_more_results">Cargar más resultados</string>
@@ -102,6 +104,7 @@
     <string name="nc_camera_permission_hint">Para habilitar la comunicación por vídeo, por favor, otorgue el permiso \"Cámara\".</string>
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Fallo al recuperar capacidades. Abortando.</string>
+    <string name="nc_caption">Leyenda</string>
     <string name="nc_certificate_dialog_text">¿Confías en el certificado SSL antes desconocido emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
     <string name="nc_certificate_dialog_title">Comprobar el certificado</string>
     <string name="nc_certificate_error">Tu configuración SSL impidió la conexión</string>
@@ -141,6 +144,7 @@
     <string name="nc_delete_conversation_more">Si borras la conversación, también se borrará para los demás participantes.</string>
     <string name="nc_delete_message">Eliminar</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensaje borrado con éxito, pero puede haber sido filtrado a otros servicios</string>
+    <string name="nc_deleted_user">El Usuario %1$s fue eliminado</string>
     <string name="nc_demote">Degradar de moderador</string>
     <string name="nc_description_record_voice">Grabar mensaje de voz</string>
     <string name="nc_description_send_message_button">Enviar mensaje</string>
@@ -151,7 +155,10 @@
     <string name="nc_dialog_outdated_client_description">La app es muy antigua y ya no está soportada por este servidor. Por favor, actualice.</string>
     <string name="nc_dialog_outdated_client_option_update">Actualizar</string>
     <string name="nc_dialog_reauth_or_delete">¿Quieres volver a autorizar o eliminar esta cuenta?</string>
+    <string name="nc_dialog_save_to_storage_content">Guardar este medio al almacenamiento permitirá a otras apps cualquiera acceder a él.</string>
+    <string name="nc_dialog_save_to_storage_continue">¿Continuar?</string>
     <string name="nc_dialog_save_to_storage_no">No</string>
+    <string name="nc_dialog_save_to_storage_title">¿Guardar al almacenamiento?</string>
     <string name="nc_dialog_save_to_storage_yes">Sí</string>
     <string name="nc_display_name_not_fetched">Nombre para mostrar no pudo ser obtenido, abortando</string>
     <string name="nc_display_name_not_stored">No se ha podido almacenar el nombre para mostrar. Abortando</string>
@@ -456,6 +463,7 @@
     <string name="record_stop_description">Detener la grabación</string>
     <string name="record_stopping">Deteniendo grabación ...</string>
     <string name="recording_consent_all">El consentimiento para grabar es obligatorio para todas las llamadas</string>
+    <string name="recording_consent_description">La grabación podría incluir su voz, vídeo de su cámara y la pantalla compartida. Se requiere su consentimiento antes de unirse a la llamada. ¿Da Ud. su consentimiento?</string>
     <string name="recording_consent_for_conversation_description">Obtener consentimiento para grabar antes de unirse a llamadas en esta conversación</string>
     <string name="recording_consent_for_conversation_title">Consentimiento de grabación</string>
     <string name="recording_consent_title">La llamada puede ser grabada.</string>
