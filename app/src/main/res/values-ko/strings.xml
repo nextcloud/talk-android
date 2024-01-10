@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">계정 아이콘</string>
     <string name="appbar_search_in">%s 검색</string>
+    <string name="audio_call">음성 통화</string>
     <string name="audio_output_bluetooth">블루투스</string>
     <string name="audio_output_dialog_headline">오디오 출력</string>
     <string name="audio_output_phone">전화 번호</string>
@@ -421,11 +422,13 @@
     <string name="scope_toggle_description">%1$s의 프라이버시 수준에 대한 변경</string>
     <string name="scroll_to_bottom">아래로 스크롤</string>
     <string name="secondsAgo">초 전</string>
+    <string name="see_similar_system_messages">비슷한 %1$s개의 메시지 보기</string>
     <string name="selected_list_item">선택</string>
     <string name="send_to">에게 전송</string>
     <string name="send_to_forbidden">이 채팅에 콘텐츠를 공유할 수 없습니다.</string>
     <string name="send_to_three_dots">... 에게 전송</string>
     <string name="send_without_notification">알림 없이 전송</string>
+    <string name="set">설정</string>
     <string name="set_avatar_from_camera">카메라에서 아바타를 설정하다</string>
     <string name="set_status">상태 설정</string>
     <string name="set_status_message">상태 메시지 설정</string>
@@ -435,6 +438,7 @@
     <string name="shared_items_media">미디어</string>
     <string name="shared_items_other">기타</string>
     <string name="shared_items_poll">투표</string>
+    <string name="shared_items_recording">통화 녹음</string>
     <string name="shared_items_voice">음성 번호</string>
     <string name="starred">즐겨찾기</string>
     <string name="startCallForbidden">통화를 시작하도록 허가되지 않았습니다.</string>
@@ -450,15 +454,23 @@
     <string name="take_photo_toggle_torch">토치 전환</string>
     <string name="thirtyMinutes">30분</string>
     <string name="thisWeek">이번 주</string>
+    <string name="this_weekend">이번 주말</string>
     <string name="title_attachments">첨부파일</string>
     <string name="today">오늘</string>
     <string name="tomorrow">내일</string>
     <string name="translate">번역:</string>
+    <string name="translation">번역</string>
     <string name="translation_copy_translated_text">번역한 텍스트 복사</string>
+    <string name="translation_detect_language">언어 감지</string>
     <string name="translation_device_settings">디바이스 설정</string>
     <string name="translation_error_message">언어를 감지할 수 없음</string>
+    <string name="translation_error_title">번역 실패</string>
     <string name="translation_from">보낸사람</string>
     <string name="translation_to">받는사람</string>
+    <string name="typing_1_other">및 다른 1 명이 입력 중 ...</string>
+    <string name="typing_is_typing">이(가) 입력 중 ...</string>
+    <string name="typing_x_others">및 다른 %1$s명이 입력 중 ...</string>
+    <string name="unread">읽지 않음</string>
     <string name="upload_new_avatar_from_device">장치에서 새로운 아바타를 업로드하다</string>
     <string name="user_info_address">주소</string>
     <string name="user_info_displayname">전체 이름</string>
@@ -470,6 +482,7 @@
     <string name="userinfo_error_text">개인 사용자 정보를 검색하지 못했습니다.</string>
     <string name="userinfo_no_info_headline">개인 정보 설정되지 않음</string>
     <string name="userinfo_no_info_text">프로필 페이지에 이름, 사진, 연락처를 추가하십시오.</string>
+    <string name="video_call">영상 통화</string>
     <string name="whats_your_status">당신의 상태는?</string>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 표</item>
