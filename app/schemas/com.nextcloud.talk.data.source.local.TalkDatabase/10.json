@@ -2,7 +2,7 @@
     "formatVersion": 1,
     "database": {
         "version": 9,
-        "identityHash": "666fcc4bbbdf3ff121b8f1ace8fcbcb8",
+        "identityHash": "250a3a56f3943f0d72f7ca0aac08fd1e",
         "entities": [
             {
                 "tableName": "User",
@@ -92,7 +92,7 @@
             },
             {
                 "tableName": "ArbitraryStorage",
-                "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`accountIdentifier` INTEGER NOT NULL, `key` TEXT NOT NULL, `object` TEXT, `value` TEXT, PRIMARY KEY(`accountIdentifier`, `key`))",
+                "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`accountIdentifier` INTEGER NOT NULL, `key` TEXT NOT NULL, `object` TEXT NOT NULL, `value` TEXT, PRIMARY KEY(`accountIdentifier`, `key`))",
                 "fields": [
                     {
                         "fieldPath": "accountIdentifier",
@@ -110,7 +110,7 @@
                         "fieldPath": "storageObject",
                         "columnName": "object",
                         "affinity": "TEXT",
-                        "notNull": false
+                        "notNull": true
                     },
                     {
                         "fieldPath": "value",
@@ -123,7 +123,8 @@
                     "autoGenerate": false,
                     "columnNames": [
                         "accountIdentifier",
-                        "key"
+                        "key",
+                        "object"
                     ]
                 },
                 "indices": [],
@@ -133,7 +134,7 @@
         "views": [],
         "setupQueries": [
             "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-            "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '666fcc4bbbdf3ff121b8f1ace8fcbcb8')"
+            "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '250a3a56f3943f0d72f7ca0aac08fd1e')"
         ]
     }
 }

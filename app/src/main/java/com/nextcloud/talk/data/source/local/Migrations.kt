@@ -136,9 +136,9 @@ object Migrations {
         db.execSQL(
             "CREATE TABLE ArbitraryStorage_triplePK (" +
                 "accountIdentifier INTEGER NOT NULL, " +
-                "value TEXT, " +
                 "\"key\" TEXT  NOT NULL, " +
                 "object TEXT NOT NULL, " +
+                "value TEXT, " +
                 "PRIMARY KEY(accountIdentifier, \"key\", object)" +
                 ")"
         )
