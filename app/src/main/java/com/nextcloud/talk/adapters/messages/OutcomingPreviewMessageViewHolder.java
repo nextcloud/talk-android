@@ -56,6 +56,7 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
         super.onBind(message);
         if(!message.isVoiceMessage()
             && !Objects.equals(message.getMessage(), "{file}")
+            && message.getEnableCaption()
         ) {
             Spanned processedMessageText = null;
             binding.outgoingPreviewMessageBubble.setBackgroundResource(R.drawable.shape_grouped_outcoming_message);

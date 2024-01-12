@@ -147,7 +147,9 @@ data class ChatMessage(
 
     var hiddenByCollapse: Boolean = false,
 
-    var openWhenDownloaded: Boolean = true
+    var openWhenDownloaded: Boolean = true,
+
+    var enableCaption: Boolean = false
 
 ) : Parcelable, MessageContentType, MessageContentType.Image {
 

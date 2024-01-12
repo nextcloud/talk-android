@@ -38,6 +38,9 @@ import io.noties.markwon.core.MarkwonTheme
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 
 class MessageUtils(val context: Context) {
     fun enrichChatReplyMessageText(
@@ -171,7 +174,20 @@ class MessageUtils(val context: Context) {
         return markwon.toMarkdown(markdown)
     }
 
+    @Suppress("SwallowedException")
     companion object {
+        fun isJSONValid(test: String): Boolean {
+            try {
+                JSONObject(test)
+            } catch (ex: JSONException) {
+                try {
+                    JSONArray(test)
+                } catch (ex1: JSONException) {
+                    return false
+                }
+            }
+            return true
+        }
         private const val TAG = "MessageUtils"
         const val MAX_REPLY_LENGTH = 250
     }

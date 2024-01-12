@@ -246,6 +246,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.File
@@ -2673,16 +2675,25 @@ class ChatActivity :
     }
 
     private fun uploadFiles(files: MutableList<String>, caption: String = "") {
-        for (i in 0 until files.size) {
-            if (i == files.size - 1) {
-                uploadFile(files[i], false, caption)
-            } else {
-                uploadFile(files[i], false)
-            }
+        val captionJsonObject = if (caption != "") {
+            JSONObject(
+                mapOf(
+                    "caption" to mapOf(
+                        "groupID" to SystemClock.elapsedRealtime(),
+                        "captionText" to "\"$caption\""
+                    ).toString()
+                )
+            )
+        } else {
+            null
+        }
+
+        for (file in files) {
+            uploadFile(file, false, captionJsonObject)
         }
     }
 
-    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "") {
+    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, metaDataJSONObject: JSONObject? = null) {
         var metaData = ""
 
         if (!participantPermissions.hasChatPermission()) {
@@ -2694,8 +2705,9 @@ class ChatActivity :
             metaData = VOICE_MESSAGE_META_DATA
         }
 
-        if (caption != "") {
-            metaData = "{\"caption\":\"$caption\"}"
+        metaDataJSONObject?.let {
+            metaData = metaDataJSONObject.toString()
+            Log.d("Julius", "MetaData: $metaData")
         }
 
         try {
@@ -3256,6 +3268,14 @@ class ChatActivity :
 
                             processCallStartedMessages(chatMessageList)
 
+                            val lastTen = adapter?.items?.take(ADAPTER_FILTER_LIMIT)
+                            val prunedList = mutableListOf<ChatMessage>()
+                            for (item in lastTen!!) {
+                                if (item.item is ChatMessage) prunedList.add(item.item as ChatMessage)
+                            }
+                            prunedList.addAll(chatMessageList)
+                            processFileCaptions(prunedList)
+
                             updateReadStatusOfAllMessages(newXChatLastCommonRead)
                             adapter?.notifyDataSetChanged()
 
@@ -3313,6 +3333,28 @@ class ChatActivity :
             }
         } catch (e: NoSuchElementException) {
             Log.d(TAG, "No System messages found $e")
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged", "NestedBlockDepth")
+    private fun processFileCaptions(chatMessageList: List<ChatMessage>) {
+        val captionMap = mutableMapOf<Long, ChatMessage>()
+        for (message in chatMessageList.reversed()) {
+            if (message.hasFileAttachment()) {
+                try {
+                    val obj = JSONObject(message.message!!)
+                    val groupID = obj.getLong("groupID")
+                    val caption = obj.getString("captionText")
+                    message.message = caption
+                    if (captionMap.contains(groupID)) {
+                        captionMap[groupID]!!.enableCaption = false
+                    }
+                    captionMap[groupID] = message
+                    captionMap[groupID]!!.enableCaption = true
+                } catch (e: JSONException) {
+                    Log.w(TAG, "File caption not in JSON form: $e")
+                }
+            }
         }
     }
 
@@ -4608,5 +4650,6 @@ class ChatActivity :
         private const val MILISEC_15: Long = 15
         private const val LINEBREAK = "\n"
         private const val CURSOR_KEY = "_cursor"
+        private const val ADAPTER_FILTER_LIMIT = 3
     }
 }
