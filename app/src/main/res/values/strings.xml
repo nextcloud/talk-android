@@ -6,7 +6,7 @@
   ~ @author Marcel Hibbe
   ~ @author Tim Krüger
   ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
-  ~ Copyright (C) 2022-2023 Marcel Hibbe <dev@mhibbe.de>
+  ~ Copyright (C) 2022-2024 Marcel Hibbe <dev@mhibbe.de>
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
@@ -50,6 +50,10 @@ How to translate with transifex:
     <string name="nc_common_dismiss">Dismiss</string>
     <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
     <string name="nc_common_create">Create</string>
+    <string name="nc_common_unknown">Unknown</string>
+    <string name="nc_common_disabled">Disabled</string>
+    <string name="nc_common_copy">Copy</string>
+    <string name="nc_common_copy_success">Copied to clipboard</string>
 
     <!-- Bottom Navigation -->
     <string name="nc_settings">Settings</string>
@@ -179,6 +183,63 @@ How to translate with transifex:
     <string name="nc_account_chooser_active_user">Active user</string>
 
     <string name="nc_profile_personal_info_title">Personal Info</string>
+
+    <string name="nc_settings_diagnose_title">Diagnose</string>
+    <string name="nc_settings_diagnose_subtitle">Open Diagnose screen to check settings or create bug report</string>
+
+    <string name="nc_settings_notifications_granted">Notifications are granted</string>
+    <string name="nc_settings_notifications_declined">Notifications are declined</string>
+    <string name="nc_settings_notifications_declined_hint">Notifications are declined. Please allow notifications in android settings</string>
+
+    <!-- Diagnose -->
+    <string name="nc_notifications_troubleshooting_dialog_title">Notification troubleshooting</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Notification permission and battery settings are correctly set up to receive notifications. If you have problems to receive notifications anyway, please check if the notification channels for calls and messages are enabled. Further help can be found at DontKillMyApp.com or at the troubleshooting checklist. If this does not help, please go to diagnose screen and send a bug report.</string>
+    <string name="nc_diagnose_dialog_open_checklist">Open troubleshooting checklist</string>
+    <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Open dontkillmyapp.com</string>
+    <string name="nc_diagnose_dialog_open_diagnose">Open diagnose screen</string>
+
+    <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Battery optimization is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s -> Don\'t optimize</string>
+
+    <string name="nc_diagnose_meta_category_title">Meta information</string>
+    <string name="nc_diagnose_meta_system_report_date">Generation of system report</string>
+    <string name="nc_diagnose_phone_category_title">Phone</string>
+    <string name="nc_diagnose_device_name_title">Device</string>
+    <string name="nc_diagnose_android_version_title">Android version</string>
+    <string name="nc_diagnose_app_category_title">App</string>
+    <string name="nc_diagnose_app_name_title">App name</string>
+    <string name="nc_diagnose_app_version_title">App version</string>
+    <string name="nc_diagnose_app_users_amount">Registered users</string>
+    <string name="nc_diagnose_gplay_available_title">Google play services</string>
+    <string name="nc_diagnose_build_flavor">Build flavor</string>
+    <string name="nc_diagnose_gplay_available_yes">Google play services are available</string>
+    <string name="nc_diagnose_gplay_available_no">Google play services are not available. Notifications are not supported</string>
+    <string name="nc_diagnose_battery_optimization_title">Battery settings</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Battery optimization is not ignored. This should be changed!</string>
+    <string name="nc_diagnose_battery_optimization_ignored">Battery optimization is ignored, all fine</string>
+    <string name="nc_diagnose_notification_permission">Notification permissions</string>
+    <string name="nc_diagnose_notification_calls_channel_permission">Calls notification channel enabled?</string>
+    <string name="nc_diagnose_notification_messages_channel_permission">Messages notification channel enabled?</string>
+    <string name="nc_diagnose_firebase_push_token_title">Firebase push token</string>
+    <string name="nc_diagnose_firebase_push_token_latest_generated">Latest firebase push token generation</string>
+    <string name="nc_diagnose_firebase_push_token_latest_fetch">Latest firebase push token fetch</string>
+    <string name="nc_diagnose_firebase_push_token_missing">No firebase push token set. Please create a bug report.</string>
+    <string name="nc_diagnose_account_category_title">Current account</string>
+    <string name="nc_diagnose_account_server">Server</string>
+    <string name="nc_diagnose_account_user_name">User</string>
+    <string name="nc_diagnose_account_server_notification_app">Server notification app installed?</string>
+    <string name="nc_diagnose_account_user_status_enabled">User status enabled?</string>
+    <string name="nc_diagnose_latest_push_registration_at_server">Latest push registration at server</string>
+    <string name="nc_diagnose_latest_push_registration_at_server_fail">Not yet registered at server</string>
+    <string name="nc_diagnose_latest_push_registration_at_push_proxy">Latest push registration at push proxy</string>
+    <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">Not yet registered at push proxy</string>
+    <string name="nc_diagnose_server_version">Server version</string>
+    <string name="nc_diagnose_server_talk_version">Server Talk version</string>
+    <string name="nc_diagnose_signaling_mode_title">Signaling Mode</string>
+    <string name="nc_diagnose_signaling_mode_intern">Internal</string>
+    <string name="nc_diagnose_signaling_mode_extern">External</string>
+    <string name="send_email">Send email</string>
+    <string name="create_issue">Create issue</string>
 
     <!-- Conversation menu -->
     <string name="nc_leave">Leave conversation</string>

@@ -78,6 +78,7 @@ class NCFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "onNewToken. token = $token")
 
         appPreferences.pushToken = token
+        appPreferences.pushTokenLatestGeneration = System.currentTimeMillis()
 
         val data: Data =
             Data.Builder().putString(PushRegistrationWorker.ORIGIN, "NCFirebaseMessagingService#onNewToken").build()

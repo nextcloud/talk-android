@@ -57,6 +57,7 @@ class GetFirebasePushTokenWorker(val context: Context, workerParameters: WorkerP
                 Log.d(TAG, "Fetched firebase push token is: $pushToken")
 
                 appPreferences.pushToken = pushToken
+                appPreferences.pushTokenLatestFetch = System.currentTimeMillis()
 
                 val data: Data =
                     Data.Builder().putString(PushRegistrationWorker.ORIGIN, "GetFirebasePushTokenWorker").build()

@@ -27,6 +27,7 @@ import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
+import com.nextcloud.talk.models.json.capabilities.ServerVersion
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -194,6 +195,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             user.capabilities = LoganSquare
                 .parse(userAttributes.capabilities, Capabilities::class.java)
         }
+        if (userAttributes.serverVersion != null) {
+            user.serverVersion = LoganSquare
+                .parse(userAttributes.serverVersion, ServerVersion::class.java)
+        }
         user.clientCertificate = userAttributes.certificateAlias
         if (userAttributes.externalSignalingServer != null) {
             user.externalSignalingServer = LoganSquare
@@ -219,6 +224,9 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }
         if (!TextUtils.isEmpty(userAttributes.capabilities)) {
             user.capabilities = LoganSquare.parse(userAttributes.capabilities, Capabilities::class.java)
+        }
+        if (!TextUtils.isEmpty(userAttributes.serverVersion)) {
+            user.serverVersion = LoganSquare.parse(userAttributes.serverVersion, ServerVersion::class.java)
         }
         if (!TextUtils.isEmpty(userAttributes.certificateAlias)) {
             user.clientCertificate = userAttributes.certificateAlias
@@ -248,6 +256,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         val displayName: String?,
         val pushConfigurationState: String?,
         val capabilities: String?,
+        val serverVersion: String?,
         val certificateAlias: String?,
         val externalSignalingServer: String?
     )

@@ -41,6 +41,7 @@ object UserMapper {
                 entity.displayName,
                 entity.pushConfigurationState,
                 entity.capabilities,
+                entity.serverVersion,
                 entity.clientCertificate,
                 entity.externalSignalingServer,
                 entity.current,
@@ -59,6 +60,7 @@ object UserMapper {
             displayName = model.displayName
             pushConfigurationState = model.pushConfigurationState
             capabilities = model.capabilities
+            serverVersion = model.serverVersion
             clientCertificate = model.clientCertificate
             externalSignalingServer = model.externalSignalingServer
             current = model.current

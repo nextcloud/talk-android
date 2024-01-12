@@ -41,6 +41,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
@@ -107,6 +108,7 @@ import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -126,6 +128,7 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
+import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -234,7 +237,8 @@ class ConversationsListActivity :
 
         // handle notification permission on API level >= 33
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            !platformPermissionUtil.isPostNotificationsPermissionGranted()
+            !platformPermissionUtil.isPostNotificationsPermissionGranted() &&
+            ClosedInterfaceImpl().isGooglePlayServicesAvailable
         ) {
             requestPermissions(
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
@@ -1269,16 +1273,55 @@ class ConversationsListActivity :
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "upload starting after permissions were granted")
-                showSendFilesConfirmDialog()
-            } else {
-                Snackbar.make(
-                    binding.root,
-                    context.getString(R.string.read_storage_no_permission),
-                    Snackbar.LENGTH_LONG
-                ).show()
+
+        when (requestCode) {
+            UploadAndShareFilesWorker.REQUEST_PERMISSION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "upload starting after permissions were granted")
+                    showSendFilesConfirmDialog()
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.read_storage_no_permission),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+            REQUEST_POST_NOTIFICATIONS_PERMISSION -> {
+                // whenever user allowed notifications, also check to ignore battery optimization
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (!PowerManagerUtils().isIgnoringBatteryOptimizations() &&
+                        ClosedInterfaceImpl().isGooglePlayServicesAvailable
+                    ) {
+                        val dialogText = String.format(
+                            context.resources.getString(R.string.nc_ignore_battery_optimization_dialog_text),
+                            context.resources.getString(R.string.nc_app_name)
+                        )
+
+                        val dialogBuilder = MaterialAlertDialogBuilder(this)
+                            .setTitle(R.string.nc_ignore_battery_optimization_dialog_title)
+                            .setMessage(dialogText)
+                            .setPositiveButton(R.string.nc_ok) { _, _ ->
+                                startActivity(
+                                    Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                                )
+                            }
+                            .setNegativeButton(R.string.nc_common_dismiss, null)
+                        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+                        val dialog = dialogBuilder.show()
+                        viewThemeUtils.platform.colorTextButtons(
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                        )
+                    }
+                } else {
+                    Log.d(
+                        TAG,
+                        "Notification permission is denied. Either because user denied it when being asked. " +
+                            "Or permission is already denied and android decided to not offer the dialog."
+                    )
+                }
             }
         }
     }

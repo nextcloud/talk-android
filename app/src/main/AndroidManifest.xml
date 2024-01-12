@@ -242,6 +242,10 @@
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".diagnose.DiagnoseActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".conversationinfo.ConversationInfoActivity"
             android:theme="@style/AppTheme" />
 

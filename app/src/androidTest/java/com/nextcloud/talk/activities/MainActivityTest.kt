@@ -29,6 +29,7 @@ class MainActivityTest {
                 displayName = "Test Name",
                 pushConfigurationState = null,
                 capabilities = null,
+                serverVersion = null,
                 certificateAlias = null,
                 externalSignalingServer = null
             )
