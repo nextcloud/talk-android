@@ -35,6 +35,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 시간</string>
     <string name="invisible">숨겨짐</string>
+    <string name="later_today">오늘 중</string>
     <string name="load_more_results">더 많은 결과 불러오기</string>
     <string name="lock_symbol">자물쇠 기호</string>
     <string name="lower_hand">손 내리기</string>
