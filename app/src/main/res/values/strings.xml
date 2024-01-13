@@ -185,7 +185,7 @@ How to translate with transifex:
     <string name="nc_profile_personal_info_title">Personal Info</string>
 
     <string name="nc_settings_diagnose_title">Diagnosis</string>
-    <string name="nc_settings_diagnose_subtitle">Open Diagnosis screen to check settings or create bug report</string>
+    <string name="nc_settings_diagnose_subtitle">Open diagnosis screen to check settings or create bug report</string>
 
     <string name="nc_settings_notifications_granted">Notifications are granted</string>
     <string name="nc_settings_notifications_declined">Notifications are declined</string>
