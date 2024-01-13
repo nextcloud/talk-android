@@ -105,6 +105,7 @@
     <string name="nc_client_cert_setup">Configura un certificado de cliente</string>
     <string name="nc_close_app">Cerrar aplicación</string>
     <string name="nc_common_and">y</string>
+    <string name="nc_common_copy_success">Copiado al portapapeles</string>
     <string name="nc_common_create">Crear</string>
     <string name="nc_common_dismiss">Descartar</string>
     <string name="nc_common_error_sorry">¡Lo sentimos, algo salió mal!</string>
@@ -134,6 +135,12 @@
     <string name="nc_demote">Degradar de moderador</string>
     <string name="nc_description_record_voice">Grabar mensaje de voz</string>
     <string name="nc_description_send_message_button">Enviar mensaje</string>
+    <string name="nc_diagnose_account_category_title">Cuenta actual</string>
+    <string name="nc_diagnose_account_server">Servidor</string>
+    <string name="nc_diagnose_app_name_title">Nombre de la aplicación</string>
+    <string name="nc_diagnose_battery_optimization_title">Configuración de la batería</string>
+    <string name="nc_diagnose_device_name_title">Dispositivo</string>
+    <string name="nc_diagnose_signaling_mode_extern">Externo</string>
     <string name="nc_dialog_invalid_password">Contraseña inválida</string>
     <string name="nc_dialog_maintenance_mode">Modo de mantenimiento</string>
     <string name="nc_dialog_maintenance_mode_description">El servidor está actualmente en modo de mantenimiento.</string>

@@ -148,6 +148,7 @@
     <string name="nc_demote">Odebrat oprávnění moderátora</string>
     <string name="nc_description_record_voice">Nahrát hlasovou zprávu</string>
     <string name="nc_description_send_message_button">Poslat zprávu</string>
+    <string name="nc_diagnose_signaling_mode_extern">Externí</string>
     <string name="nc_dialog_invalid_password">Neplatné heslo</string>
     <string name="nc_dialog_maintenance_mode">Režim údržby</string>
     <string name="nc_dialog_maintenance_mode_description">Server se nachází v režimu údržby.</string>

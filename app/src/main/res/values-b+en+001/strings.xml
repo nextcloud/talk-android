@@ -148,6 +148,9 @@
     <string name="nc_demote">Demote from moderator</string>
     <string name="nc_description_record_voice">Record voice message</string>
     <string name="nc_description_send_message_button">Send message</string>
+    <string name="nc_diagnose_account_category_title">Current account</string>
+    <string name="nc_diagnose_battery_optimization_title">Battery settings</string>
+    <string name="nc_diagnose_signaling_mode_extern">External</string>
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_maintenance_mode">Maintenance mode</string>
     <string name="nc_dialog_maintenance_mode_description">Server is currently in maintenance mode.</string>
