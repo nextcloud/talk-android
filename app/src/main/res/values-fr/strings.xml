@@ -162,6 +162,7 @@
     <string name="nc_diagnose_battery_optimization_title">Paramètres pour la batterie</string>
     <string name="nc_diagnose_device_name_title">Appareil</string>
     <string name="nc_diagnose_phone_category_title">Téléphone</string>
+    <string name="nc_diagnose_server_version">Version du serveur</string>
     <string name="nc_diagnose_signaling_mode_extern">Externe</string>
     <string name="nc_diagnose_signaling_mode_intern">Interne</string>
     <string name="nc_dialog_invalid_password">Mot de passe incorrect</string>
