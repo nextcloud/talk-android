@@ -118,6 +118,7 @@
     <string name="nc_client_cert_setup">Configurar o certificado do cliente</string>
     <string name="nc_close_app">Pechar a aplicación</string>
     <string name="nc_common_and">e</string>
+    <string name="nc_common_copy">Copiar</string>
     <string name="nc_common_copy_success">Copiado no portapapeis.</string>
     <string name="nc_common_create">Crear</string>
     <string name="nc_common_disabled">Desactivado</string>
@@ -155,10 +156,13 @@
     <string name="nc_diagnose_account_server">Servidor</string>
     <string name="nc_diagnose_account_user_name">Usuario</string>
     <string name="nc_diagnose_android_version_title">Versión Android</string>
+    <string name="nc_diagnose_app_category_title">Aplicación</string>
     <string name="nc_diagnose_app_name_title">Nome da aplicación</string>
+    <string name="nc_diagnose_app_users_amount">Usuarios rexistrados</string>
     <string name="nc_diagnose_battery_optimization_title">Axustes da batería</string>
     <string name="nc_diagnose_device_name_title">Dispositivo</string>
     <string name="nc_diagnose_signaling_mode_extern">Externo</string>
+    <string name="nc_diagnose_signaling_mode_intern">Interna</string>
     <string name="nc_dialog_invalid_password">Contrasinal incorrecto </string>
     <string name="nc_dialog_maintenance_mode">Modo de mantemento</string>
     <string name="nc_dialog_maintenance_mode_description">O servidor neste momento está en modo de mantemento.</string>
@@ -496,6 +500,7 @@
     <string name="secondsAgo">segundos atrás</string>
     <string name="see_similar_system_messages">Ver %1$s mensaxes similares</string>
     <string name="selected_list_item">Seleccionado</string>
+    <string name="send_email">Enviar o correo</string>
     <string name="send_to">Enviar a</string>
     <string name="send_to_forbidden">Non ten permiso para compartir contido nesta parola</string>
     <string name="send_to_three_dots">Enviar a…</string>

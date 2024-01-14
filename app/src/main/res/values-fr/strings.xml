@@ -118,6 +118,7 @@
     <string name="nc_client_cert_setup">Configurer le certificat du client</string>
     <string name="nc_close_app">Fermer l\'application</string>
     <string name="nc_common_and">et</string>
+    <string name="nc_common_copy">Copier</string>
     <string name="nc_common_copy_success">Copié dans le presse-papier</string>
     <string name="nc_common_create">Créer</string>
     <string name="nc_common_disabled">Désactivé</string>
@@ -153,11 +154,17 @@
     <string name="nc_description_send_message_button">Envoyer un message</string>
     <string name="nc_diagnose_account_category_title">Compte actuel</string>
     <string name="nc_diagnose_account_server">Serveur</string>
+    <string name="nc_diagnose_account_user_name">Utilisateur</string>
+    <string name="nc_diagnose_android_version_title">Version Android</string>
+    <string name="nc_diagnose_app_category_title">App</string>
     <string name="nc_diagnose_app_name_title">Nom de l\'application</string>
+    <string name="nc_diagnose_app_users_amount">Utilisateurs enregistrés</string>
     <string name="nc_diagnose_battery_optimization_title">Paramètres pour la batterie</string>
     <string name="nc_diagnose_device_name_title">Appareil</string>
     <string name="nc_diagnose_phone_category_title">Téléphone</string>
+    <string name="nc_diagnose_server_version">Version du serveur</string>
     <string name="nc_diagnose_signaling_mode_extern">Externe</string>
+    <string name="nc_diagnose_signaling_mode_intern">Interne</string>
     <string name="nc_dialog_invalid_password">Mot de passe incorrect</string>
     <string name="nc_dialog_maintenance_mode">Mode maintenance</string>
     <string name="nc_dialog_maintenance_mode_description">Le serveur est actuellement en mode maintenance.</string>
@@ -495,6 +502,7 @@
     <string name="secondsAgo">secondes avant</string>
     <string name="see_similar_system_messages">Voir les %1$s messages similaires</string>
     <string name="selected_list_item">Sélectionné</string>
+    <string name="send_email">Envoyer un e-mail</string>
     <string name="send_to">Envoyer a</string>
     <string name="send_to_forbidden">Vous n\'êtes pas autorisé à partager du contenu dans cette conversation</string>
     <string name="send_to_three_dots">Envoyer à…</string>

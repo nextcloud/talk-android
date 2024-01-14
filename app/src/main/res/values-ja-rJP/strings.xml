@@ -403,6 +403,7 @@
     <string name="scroll_to_bottom">下にスクロール</string>
     <string name="secondsAgo">秒前</string>
     <string name="selected_list_item">選択済み</string>
+    <string name="send_email">メールを送信</string>
     <string name="send_to">送信</string>
     <string name="send_to_forbidden">このチャットにコンテンツを許可する権限がありません</string>
     <string name="send_to_three_dots">送信…</string>

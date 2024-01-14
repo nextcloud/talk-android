@@ -116,11 +116,13 @@
     <string name="nc_diagnose_account_server">Poslužitelj</string>
     <string name="nc_diagnose_account_user_name">@string/user_icon</string>
     <string name="nc_diagnose_android_version_title">Inačica Androida</string>
+    <string name="nc_diagnose_app_category_title">Aplikacija</string>
     <string name="nc_diagnose_app_name_title">Naziv aplikacije</string>
     <string name="nc_diagnose_battery_optimization_title">Postavke baterije</string>
     <string name="nc_diagnose_device_name_title">Uređaj</string>
     <string name="nc_diagnose_phone_category_title">Telefon</string>
     <string name="nc_diagnose_signaling_mode_extern">Vanjsko</string>
+    <string name="nc_diagnose_signaling_mode_intern">Interno</string>
     <string name="nc_dialog_invalid_password">Netočna zaporka</string>
     <string name="nc_dialog_maintenance_mode">Način održavanja</string>
     <string name="nc_dialog_outdated_client_option_update">Ažuriraj</string>
@@ -378,6 +380,7 @@
     <string name="scroll_to_bottom">Pomakni se na dno</string>
     <string name="secondsAgo">prije par sekundi</string>
     <string name="selected_list_item">Odabrano</string>
+    <string name="send_email">Pošalji poruku e-pošte</string>
     <string name="send_to">Pošalji na</string>
     <string name="send_to_three_dots">Pošalji na…</string>
     <string name="set">Postavi</string>
