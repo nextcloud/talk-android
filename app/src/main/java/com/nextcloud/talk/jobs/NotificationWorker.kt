@@ -155,6 +155,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         notificationManager = NotificationManagerCompat.from(context!!)
 
+
         pushMessage.timestamp = System.currentTimeMillis()
 
         Log.d(TAG, pushMessage.toString())
@@ -195,6 +196,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun handleCallPushMessage() {
+
         val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
@@ -221,6 +223,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
         val uri = Uri.parse(signatureVerification.user!!.baseUrl)
         val baseUrl = uri.host
+
 
         val notification =
             NotificationCompat.Builder(applicationContext, notificationChannelId)
@@ -434,6 +437,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val notificationBuilder = NotificationCompat.Builder(context!!, "1")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
+            .setGroup(signatureVerification.user!!.id.toString())
+            //.setGroupAlertBehavior(GROUP_ALERT_CHILDREN)
             .setLargeIcon(getLargeIcon())
             .setSmallIcon(R.drawable.ic_logo)
             .setContentTitle(contentTitle)
@@ -471,8 +476,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         notificationBuilder.setContentIntent(pendingIntent)
-        val groupName = signatureVerification.user!!.id.toString() + "@" + pushMessage.id
-        notificationBuilder.setGroup(calculateCRC32(groupName).toString())
+        // val groupName = signatureVerification.user!!.id.toString() + "@" + pushMessage.id
+        // notificationBuilder.setGroup(calculateCRC32(groupName).toString())
         val activeStatusBarNotification = findNotificationForRoom(
             context,
             signatureVerification.user!!,
@@ -741,6 +746,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun sendNotification(notificationId: Int, notification: Notification) {
         Log.d(TAG, "show notification with id $notificationId")
+
         if (ActivityCompat.checkSelfPermission(
                 applicationContext,
                 Manifest.permission.POST_NOTIFICATIONS
@@ -751,9 +757,19 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+
             return
         }
-        notificationManager.notify(notificationId, notification)
+
+        val summaryNotification = NotificationCompat.Builder(context!!, "1")
+            .setContentTitle("Talk app notifications")
+            //.setGroup(signatureVerification.user!!.id.toString())
+            .setGroup(signatureVerification.user!!.id.toString())
+            .setGroupSummary(true)
+            .build()
+
+        notificationManager.notify(pushMessage.notificationId!!.toInt(), notification)
+        notificationManager.notify(1, summaryNotification)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // On devices with Android 8.0 (Oreo) or later, notification sound will be handled by the system
