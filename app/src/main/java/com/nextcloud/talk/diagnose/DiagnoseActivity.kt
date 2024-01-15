@@ -251,7 +251,7 @@ class DiagnoseActivity : BaseActivity() {
         addKey(context.resources.getString(R.string.nc_diagnose_app_version_title))
         addValue(String.format("v" + BuildConfig.VERSION_NAME))
 
-        addKey(context.resources.getString(R.string.nc_diagnose_build_flavor))
+        addKey(context.resources.getString(R.string.nc_diagnose_flavor))
         addValue(BuildConfig.FLAVOR)
 
         if (isGooglePlayServicesAvailable) {

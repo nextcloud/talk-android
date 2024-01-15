@@ -211,7 +211,6 @@ How to translate with transifex:
     <string name="nc_diagnose_app_version_title">App version</string>
     <string name="nc_diagnose_app_users_amount">Registered users</string>
     <string name="nc_diagnose_gplay_available_title">Google Play services</string>
-    <string name="nc_diagnose_build_flavor">Build flavor</string>
     <string name="nc_diagnose_gplay_available_yes">Google Play services are available</string>
     <string name="nc_diagnose_gplay_available_no">Google Play services are not available. Notifications are not supported</string>
     <string name="nc_diagnose_battery_optimization_title">Battery settings</string>
@@ -240,6 +239,7 @@ How to translate with transifex:
     <string name="nc_diagnose_signaling_mode_extern">External</string>
     <string name="send_email">Send email</string>
     <string name="create_issue">Create issue</string>
+    <string name="nc_diagnose_flavor" translatable="false">Build flavor</string>
 
     <!-- Conversation menu -->
     <string name="nc_leave">Leave conversation</string>
