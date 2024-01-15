@@ -166,6 +166,7 @@
     <string name="nc_diagnose_battery_optimization_ignored">Batterieoptimierung wird ignoriert, alles in Ordnung</string>
     <string name="nc_diagnose_battery_optimization_not_ignored">Die Batterieoptimierung wird nicht ignoriert. Dies sollte geändert werden!</string>
     <string name="nc_diagnose_battery_optimization_title">Batterie-Einstellungen</string>
+    <string name="nc_diagnose_build_flavor">Kompiliert für </string>
     <string name="nc_diagnose_device_name_title">Gerät</string>
     <string name="nc_diagnose_dialog_open_checklist">Checkliste zur Fehlerbehebung öffnen</string>
     <string name="nc_diagnose_dialog_open_diagnose">Diagnosebildschirm öffnen</string>
@@ -300,7 +301,7 @@
     <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_channel_uploads_description">Über den Hochlade-Fortschritt benachrichtigen</string>
     <string name="nc_notification_settings">Benachrichtigungseinstellungen</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">Benachrichtigungsberechtigung und Akkueinstellungen sind für den Empfang von Benachrichtigungen korrekt eingerichtet. Sollten Sie trotzdem Probleme mit dem Empfang von Benachrichtigungen haben, prüfen Sie bitte, ob die Benachrichtigungskanäle für Anrufe und Nachrichten aktiviert sind. Weitere Hilfe finden Sie auf DontKillMyApp.com oder in der Checkliste zur Fehlerbehebung. Wenn dies nicht hilft, gehen Sie bitte zum Diagnosebildschirm und senden Sie einen Fehlerbericht.</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Benachrichtigungsberechtigung und Akkueinstellungen sind korrekt eingerichtet, um Benachrichtigungen zu erhalten. Sollten Sie trotzdem Probleme mit den Benachrichtigungen haben, prüfen Sie bitte, ob die Benachrichtigungskanäle für Anrufe und Nachrichten aktiviert sind. Weitere Hilfe finden Sie unter  DontKillMyApp.com oder in der Checkliste zur Fehlerbehebung. Wenn dies nicht hilft, gehen Sie bitte zum Diagnoseseite und senden Sie einen Fehlerbericht.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Fehlerbehebung bei Benachrichtigungen</string>
     <string name="nc_notify_me_always">Immer benachrichtigen</string>
     <string name="nc_notify_me_mention">Bei Erwähnung benachrichtigen</string>
