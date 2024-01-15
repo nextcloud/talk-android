@@ -114,7 +114,6 @@
     <string name="nc_description_send_message_button">Pošalji poruku</string>
     <string name="nc_diagnose_account_category_title">Trenutni račun</string>
     <string name="nc_diagnose_account_server">Poslužitelj</string>
-    <string name="nc_diagnose_account_user_name">@string/user_icon</string>
     <string name="nc_diagnose_android_version_title">Inačica Androida</string>
     <string name="nc_diagnose_app_category_title">Aplikacija</string>
     <string name="nc_diagnose_app_name_title">Naziv aplikacije</string>

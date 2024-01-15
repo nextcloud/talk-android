@@ -169,15 +169,11 @@
     <string name="nc_diagnose_build_flavor">بناء نُكهَة</string>
     <string name="nc_diagnose_device_name_title">الجهاز</string>
     <string name="nc_diagnose_dialog_open_checklist">فتح قائمة التحقق لاكتشاف الأعطال و إصلاحها</string>
-    <string name="nc_diagnose_dialog_open_diagnose">فتح شاشة الفحص</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">فتح dontkillmyapp.com</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">آخر أَمَارَات إدخال push token في \"فاير بيس\" firebase تمّ جلبها</string>
     <string name="nc_diagnose_firebase_push_token_latest_generated">آخر أَمَارَات إدخال push token في \"فاير بيس\" firebase تمّ توليدها</string>
     <string name="nc_diagnose_firebase_push_token_missing">لم يتم تعيين أيّ أَمَارَات إدخال push token. من فضلك، أنشيء تقريراً حول هذا الخطأ.</string>
     <string name="nc_diagnose_firebase_push_token_title">أَمَارَة إدخال push token في \"فاير بيس\" firebase  </string>
-    <string name="nc_diagnose_gplay_available_no">خدمات متجر قوقل للتطبيقات Google play غير متاحة. الإشعارات غير مدعومة</string>
-    <string name="nc_diagnose_gplay_available_title">خدمات متجر تطبيقات قوقل Google play services</string>
-    <string name="nc_diagnose_gplay_available_yes">خدمات متجر تطبيقات قوقل Google play services متاحة</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy">آخر تسجيل لعملية إدخال push في وكيل الإدخال push proxy</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">لم يتم التسجيل بعدُ في وكيل الإدخال push proxy</string>
     <string name="nc_diagnose_latest_push_registration_at_server">آخر تسجيل لعملية إدخال push في الخادوم</string>
@@ -301,7 +297,6 @@
     <string name="nc_notification_channel_uploads">المرفوعات</string>
     <string name="nc_notification_channel_uploads_description">الإخطار بنتيجة الرفع</string>
     <string name="nc_notification_settings">إعدادات الإشعار</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">تم ضبط إذن الإشعارات وإعدادات البطارية بشكل صحيح لتلقي الإشعارات. إذا كانت لديك مشاكل في تلقي الإشعارات بالرغم من ذلك، فيرجى التحقق من تمكين قنوات الإشعارات للمكالمات والرسائل. يمكن العثور على مزيد من المساعدة على DontKillMyApp.com أو في قائمة التحقق من استكشاف الأخطاء وإصلاحها. إذا لم يساعدك ذلك في حل المشكل، يرجى الانتقال إلى شاشة فحص الأعطال و إرسال تقرير بالحالة.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">فحص و حل أعطال الإشعارات</string>
     <string name="nc_notify_me_always">أخبرني دومًا </string>
     <string name="nc_notify_me_mention">أخطرني عند الإشارة إليَّ</string>
@@ -389,8 +384,6 @@
     <string name="nc_settings_advanced_title">مُتقدّمة</string>
     <string name="nc_settings_appearance">المظهر</string>
     <string name="nc_settings_call_ringtone">المكالمات</string>
-    <string name="nc_settings_diagnose_subtitle">إفتح شاشة فحص الأعطال لاختبار الإعدادات أو لإنشاء تقرير بالحالة</string>
-    <string name="nc_settings_diagnose_title">فحص</string>
     <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
     <string name="nc_settings_incognito_keyboard_title">لوحة المفاتيح في وضع المجهول</string>
     <string name="nc_settings_no_ringtone">بدون صوت</string>
@@ -398,7 +391,6 @@
     <string name="nc_settings_notification_sounds">أصوات الإشعارات</string>
     <string name="nc_settings_notification_sounds_post_oreo">التنبيهات</string>
     <string name="nc_settings_notifications_declined">الإشعارات تمّ رفضها</string>
-    <string name="nc_settings_notifications_declined_hint">الإشعارات تمّ رفضها. قم رجاءً بتمكين الإشعارات في إعدادات أندرويد</string>
     <string name="nc_settings_notifications_granted">تمّ منح أدونات الإشعارات</string>
     <string name="nc_settings_other_notifications_ringtone">الرسائل</string>
     <string name="nc_settings_phone_book_integration_desc">مُطابقة جهات الاتصال بناءً على رقم الهاتف لدمج اختصارات تطبيق \"المحادثة\" Talk في تطبيق \"جهات الاتصال\" على الهاتف</string>
