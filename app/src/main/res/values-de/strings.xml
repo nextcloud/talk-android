@@ -169,15 +169,11 @@
     <string name="nc_diagnose_build_flavor">Kompiliert für </string>
     <string name="nc_diagnose_device_name_title">Gerät</string>
     <string name="nc_diagnose_dialog_open_checklist">Checkliste zur Fehlerbehebung öffnen</string>
-    <string name="nc_diagnose_dialog_open_diagnose">Diagnosebildschirm öffnen</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">dontkillmyapp.com öffnen</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">Neuester Firebase-Push-Token-Abruf</string>
     <string name="nc_diagnose_firebase_push_token_latest_generated">Neueste Firebase-Push-Token-Generation</string>
     <string name="nc_diagnose_firebase_push_token_missing">Kein Firebase-Push-Token festgelegt. Bitte erstellen Sie einen Fehlerbericht.</string>
     <string name="nc_diagnose_firebase_push_token_title">Firebase-Push-Token</string>
-    <string name="nc_diagnose_gplay_available_no">Google Play-Dienste sind nicht verfügbar. Benachrichtigungen werden nicht unterstützt</string>
-    <string name="nc_diagnose_gplay_available_title">Google Play-Dienste</string>
-    <string name="nc_diagnose_gplay_available_yes">Google Play-Dienste sind verfügbar</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy">Aktuelle Push-Registrierung beim Push-Proxy</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">Noch nicht beim Push-Proxy registriert</string>
     <string name="nc_diagnose_latest_push_registration_at_server">Aktuelle Push-Registrierung am Server</string>
@@ -301,7 +297,6 @@
     <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_channel_uploads_description">Über den Hochlade-Fortschritt benachrichtigen</string>
     <string name="nc_notification_settings">Benachrichtigungseinstellungen</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">Benachrichtigungsberechtigung und Akkueinstellungen sind korrekt eingerichtet, um Benachrichtigungen zu erhalten. Sollten Sie trotzdem Probleme mit den Benachrichtigungen haben, prüfen Sie bitte, ob die Benachrichtigungskanäle für Anrufe und Nachrichten aktiviert sind. Weitere Hilfe finden Sie unter  DontKillMyApp.com oder in der Checkliste zur Fehlerbehebung. Wenn dies nicht hilft, gehen Sie bitte zum Diagnoseseite und senden Sie einen Fehlerbericht.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Fehlerbehebung bei Benachrichtigungen</string>
     <string name="nc_notify_me_always">Immer benachrichtigen</string>
     <string name="nc_notify_me_mention">Bei Erwähnung benachrichtigen</string>
@@ -389,8 +384,6 @@
     <string name="nc_settings_advanced_title">Erweitert</string>
     <string name="nc_settings_appearance">Aussehen</string>
     <string name="nc_settings_call_ringtone">Anrufe</string>
-    <string name="nc_settings_diagnose_subtitle">Den Diagnosebildschirm öffnen, um die Einstellungen zu überprüfen oder einen Fehlerbericht zu erstellen</string>
-    <string name="nc_settings_diagnose_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Weist die Tastatur an, das personalisierte Lernen zu deaktivieren (ohne Garantien)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-Tastatur</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
@@ -398,7 +391,6 @@
     <string name="nc_settings_notification_sounds">Benachrichtigungstöne</string>
     <string name="nc_settings_notification_sounds_post_oreo">Benachrichtigungen</string>
     <string name="nc_settings_notifications_declined">Benachrichtigungen werden abgelehnt</string>
-    <string name="nc_settings_notifications_declined_hint">Benachrichtigungen werden abgelehnt. Bitte erlauben Sie Benachrichtigungen in den Android-Einstellungen</string>
     <string name="nc_settings_notifications_granted">Benachrichtigungen werden gewährt</string>
     <string name="nc_settings_other_notifications_ringtone">Nachrichten</string>
     <string name="nc_settings_phone_book_integration_desc">Abgleich von Kontakten basierend auf der Telefonnummer zur Integration der Talk-Verknüpfung im Telefonbuch</string>

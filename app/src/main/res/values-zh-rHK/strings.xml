@@ -169,15 +169,11 @@
     <string name="nc_diagnose_build_flavor">建立口味</string>
     <string name="nc_diagnose_device_name_title">裝置</string>
     <string name="nc_diagnose_dialog_open_checklist">打開排憂解難清單：</string>
-    <string name="nc_diagnose_dialog_open_diagnose">打開診斷屏幕</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">打開 dontkillmyapp.com</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">最新的 firebase 推送權杖擷取</string>
     <string name="nc_diagnose_firebase_push_token_latest_generated">最新的 firebase 推送權杖産生</string>
     <string name="nc_diagnose_firebase_push_token_missing">沒有設置 Firebase 推送權杖。請創建一個錯誤報告。</string>
     <string name="nc_diagnose_firebase_push_token_title">Firebase 推送權杖</string>
-    <string name="nc_diagnose_gplay_available_no">Google Play 服務不可用。不支援通知功能。</string>
-    <string name="nc_diagnose_gplay_available_title">Google Play 服務</string>
-    <string name="nc_diagnose_gplay_available_yes">Google Play 服務可用</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy">在推送代理伺服器上的最新推送註冊</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">尚未在推送代理伺服器上進行註冊</string>
     <string name="nc_diagnose_latest_push_registration_at_server">在伺服器上的最新推送註冊</string>
@@ -301,7 +297,6 @@
     <string name="nc_notification_channel_uploads">上傳</string>
     <string name="nc_notification_channel_uploads_description">通知上傳進度</string>
     <string name="nc_notification_settings">通知設定</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">通知權限和電池設定已正確設置以接收通知。如果您仍然無法接收通知，請檢查是否已啟用通話和訊息的通知通道。您可以在 DontKillMyApp.com 或故障排除檢查清單中找到進一步的幫助。如果這些方法無法解決問題，請轉到診斷畫面並發送錯誤報告。</string>
     <string name="nc_notifications_troubleshooting_dialog_title">解決通知問題</string>
     <string name="nc_notify_me_always">一律通知</string>
     <string name="nc_notify_me_mention">當有人提及你時通知</string>
@@ -389,8 +384,6 @@
     <string name="nc_settings_advanced_title">進階</string>
     <string name="nc_settings_appearance">外觀</string>
     <string name="nc_settings_call_ringtone">通話</string>
-    <string name="nc_settings_diagnose_subtitle">打開診斷畫面以檢查設定或建立錯誤報告</string>
-    <string name="nc_settings_diagnose_title">診斷</string>
     <string name="nc_settings_incognito_keyboard_desc">指示鍵盤禁用個性化學習（無保證）</string>
     <string name="nc_settings_incognito_keyboard_title">隱身鍵盤</string>
     <string name="nc_settings_no_ringtone">無聲</string>
@@ -398,7 +391,6 @@
     <string name="nc_settings_notification_sounds">通知聲響</string>
     <string name="nc_settings_notification_sounds_post_oreo">通知</string>
     <string name="nc_settings_notifications_declined">通知被婉拒</string>
-    <string name="nc_settings_notifications_declined_hint">通知已被婉拒。請在 Android 設定中允許通知功能</string>
     <string name="nc_settings_notifications_granted">已授予通知功能</string>
     <string name="nc_settings_other_notifications_ringtone">訊息</string>
     <string name="nc_settings_phone_book_integration_desc">根據電話號碼匹配聯絡人以將 Talk 快捷方式集成到電話簿中</string>

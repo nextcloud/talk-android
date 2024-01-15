@@ -169,15 +169,11 @@
     <string name="nc_diagnose_build_flavor">Build flavour</string>
     <string name="nc_diagnose_device_name_title">Device</string>
     <string name="nc_diagnose_dialog_open_checklist">Open troubleshooting checklist</string>
-    <string name="nc_diagnose_dialog_open_diagnose">Open diagnose screen</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Open dontkillmyapp.com</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">Latest firebase push token fetch</string>
     <string name="nc_diagnose_firebase_push_token_latest_generated">Latest firebase push token generation</string>
     <string name="nc_diagnose_firebase_push_token_missing">No firebase push token set. Please create a bug report.</string>
     <string name="nc_diagnose_firebase_push_token_title">Firebase push token</string>
-    <string name="nc_diagnose_gplay_available_no">Google play services are not available. Notifications are not supported</string>
-    <string name="nc_diagnose_gplay_available_title">Google play services</string>
-    <string name="nc_diagnose_gplay_available_yes">Google play services are available</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy">Latest push registration at push proxy</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">Not yet registered at push proxy</string>
     <string name="nc_diagnose_latest_push_registration_at_server">Latest push registration at server</string>
@@ -301,7 +297,6 @@
     <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_channel_uploads_description">Notify about upload progress</string>
     <string name="nc_notification_settings">Notification settings</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">Notification permission and battery settings are correctly set up to receive notifications. If you have problems to receive notifications anyway, please check if the notification channels for calls and messages are enabled. Further help can be found at DontKillMyApp.com or at the troubleshooting checklist. If this does not help, please go to diagnose screen and send a bug report.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Notification troubleshooting</string>
     <string name="nc_notify_me_always">Always notify</string>
     <string name="nc_notify_me_mention">Notify when mentioned</string>
@@ -389,8 +384,6 @@
     <string name="nc_settings_advanced_title">Advanced</string>
     <string name="nc_settings_appearance">Appearance</string>
     <string name="nc_settings_call_ringtone">Calls</string>
-    <string name="nc_settings_diagnose_subtitle">Open Diagnose screen to check settings or create bug report</string>
-    <string name="nc_settings_diagnose_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Instructs keyboard to disable personalized learning (without guarantees)</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
     <string name="nc_settings_no_ringtone">No sound</string>
@@ -398,7 +391,6 @@
     <string name="nc_settings_notification_sounds">Notification sounds</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notifications</string>
     <string name="nc_settings_notifications_declined">Notifications are declined</string>
-    <string name="nc_settings_notifications_declined_hint">Notifications are declined. Please allow notifications in android settings</string>
     <string name="nc_settings_notifications_granted">Notifications are granted</string>
     <string name="nc_settings_other_notifications_ringtone">Messages</string>
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>
