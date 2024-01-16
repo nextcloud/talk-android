@@ -166,7 +166,6 @@
     <string name="nc_diagnose_battery_optimization_ignored">已忽略電池最佳化，一切都好</string>
     <string name="nc_diagnose_battery_optimization_not_ignored">電池最佳化不被忽略。這應該要變更！</string>
     <string name="nc_diagnose_battery_optimization_title">電池設定</string>
-    <string name="nc_diagnose_build_flavor">建置風味</string>
     <string name="nc_diagnose_device_name_title">裝置</string>
     <string name="nc_diagnose_dialog_open_checklist">開啟疑難排解檢查表</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">開啟 dontkillmyapp.com</string>
