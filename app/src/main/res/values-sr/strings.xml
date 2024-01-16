@@ -166,14 +166,17 @@
     <string name="nc_diagnose_battery_optimization_ignored">Игнорише се оптимизација батерије, све је у реду</string>
     <string name="nc_diagnose_battery_optimization_not_ignored">Оптимизација батерије се не игнорише. Ово би требало да се промени!</string>
     <string name="nc_diagnose_battery_optimization_title">Подешавања батерије</string>
-    <string name="nc_diagnose_build_flavor">Врста изградње</string>
     <string name="nc_diagnose_device_name_title">Уређај</string>
     <string name="nc_diagnose_dialog_open_checklist">Отвори контролну листу за отклањање проблема</string>
+    <string name="nc_diagnose_dialog_open_diagnose">Отвори дијагностички екран</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Отвори dontkillmyapp.com</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">Добављање најновијег firebase push жетона</string>
     <string name="nc_diagnose_firebase_push_token_latest_generated">Генерисање најновијег firebase push жетона</string>
     <string name="nc_diagnose_firebase_push_token_missing">Није постављен ниједан firebase push жетон. Молимо вас да креирате извештај о багу.</string>
     <string name="nc_diagnose_firebase_push_token_title">Firebase push жетон</string>
+    <string name="nc_diagnose_gplay_available_no">Нису доступни Google Play сервиси. Не подржавају се обавештења</string>
+    <string name="nc_diagnose_gplay_available_title">Google Play сервиси</string>
+    <string name="nc_diagnose_gplay_available_yes">Google Play services су доступни</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy">Најновија push регистрација на push прокси</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">Још увек није регистровано на push прокси</string>
     <string name="nc_diagnose_latest_push_registration_at_server">Најновија push регистрација на сервер</string>
@@ -297,6 +300,7 @@
     <string name="nc_notification_channel_uploads">Отпремања</string>
     <string name="nc_notification_channel_uploads_description">Обавештавај ме о напретку отпремања</string>
     <string name="nc_notification_settings">Поставке обавештења</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Дозволе за обавештења и подешавања батерије су исправно подешени за примање обавештења. Ако ипак имате проблеме са пријемом обавештења, молимо вас да проверите да ли су укључени канали обавештења за позиве и поруке. Више помоћи можете да пронађете на DontKillMyApp.com или у контролној листи за отклањање проблема. Ако ово не помогне, молимо вас да одете на дијагностички екран и пошаљете извештај о багу.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Отклањање проблема у вези са обавештењима</string>
     <string name="nc_notify_me_always">Увек обавести</string>
     <string name="nc_notify_me_mention">Обавести на помињањe</string>
@@ -384,6 +388,8 @@
     <string name="nc_settings_advanced_title">Напредно</string>
     <string name="nc_settings_appearance">Изглед</string>
     <string name="nc_settings_call_ringtone">Позиви</string>
+    <string name="nc_settings_diagnose_subtitle">Отвара дијагностички екран да проверите поставке или да креирате извештај о багу</string>
+    <string name="nc_settings_diagnose_title">Дијагностика</string>
     <string name="nc_settings_incognito_keyboard_desc">Наложи тастатури да искључи персонализовано учење (без гаранција)</string>
     <string name="nc_settings_incognito_keyboard_title">Инкогнито тастатура</string>
     <string name="nc_settings_no_ringtone">Нема звука</string>
@@ -391,6 +397,7 @@
     <string name="nc_settings_notification_sounds">Звуци обавештења</string>
     <string name="nc_settings_notification_sounds_post_oreo">Обавештења</string>
     <string name="nc_settings_notifications_declined">Обавештења су одбијена</string>
+    <string name="nc_settings_notifications_declined_hint">Обавештења су одбијена. Молимо вас да дозволите обавештења у Android подешавањима</string>
     <string name="nc_settings_notifications_granted">Обавештења су дозвољена</string>
     <string name="nc_settings_other_notifications_ringtone">Поруке</string>
     <string name="nc_settings_phone_book_integration_desc">Подудара контакте према броју телефона тако да се Talk пречица интегрише у системску апликацију контаката</string>
