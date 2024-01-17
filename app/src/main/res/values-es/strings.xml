@@ -180,9 +180,18 @@
     <string name="nc_diagnose_latest_push_registration_at_push_proxy">Último registro de envío en el proxy de envíos</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">Aún no está registrado en el proxy de envío</string>
     <string name="nc_diagnose_latest_push_registration_at_server">Último registro de envío en el servidor</string>
+    <string name="nc_diagnose_latest_push_registration_at_server_fail">Aún no está registrado en el servidor</string>
+    <string name="nc_diagnose_meta_category_title">Meta-información</string>
+    <string name="nc_diagnose_meta_system_report_date">Generación del reporte del sistema</string>
+    <string name="nc_diagnose_notification_calls_channel_permission">¿Habilitar el canal de notificación de llamadas?</string>
+    <string name="nc_diagnose_notification_messages_channel_permission">¿Habilitar el canal de notificación de mensajes?</string>
+    <string name="nc_diagnose_notification_permission">Permisos de notificaciones</string>
     <string name="nc_diagnose_phone_category_title">Teléfono</string>
+    <string name="nc_diagnose_server_talk_version">Versión de Talk del servidor</string>
+    <string name="nc_diagnose_server_version">Versión del servidor</string>
     <string name="nc_diagnose_signaling_mode_extern">Externo</string>
     <string name="nc_diagnose_signaling_mode_intern">Interno</string>
+    <string name="nc_diagnose_signaling_mode_title">Modo de señalización</string>
     <string name="nc_dialog_invalid_password">Contraseña no válida</string>
     <string name="nc_dialog_maintenance_mode">Modo de mantenimiento</string>
     <string name="nc_dialog_maintenance_mode_description">El servidor se encuentra actualmente en modo de mantenimiento.</string>
@@ -217,7 +226,7 @@
     <string name="nc_forward_message">Reenviar</string>
     <string name="nc_forward_to_three_dots">Reenviar a …</string>
     <string name="nc_get_from_provider">¿No tienes todavía un servidor?\nClic aquí para conseguir uno de un proveedor</string>
-    <string name="nc_get_source_code">Conseguir el código fuente</string>
+    <string name="nc_get_source_code">Obtener el código fuente</string>
     <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Invitado</string>
@@ -236,6 +245,8 @@
     <string name="nc_guest_access_resend_invitations_successful">Las invitaciones fueron enviadas nuevamente.</string>
     <string name="nc_guest_access_share_link">Compartir enlace de la conversación</string>
     <string name="nc_hint_enter_a_message">Escriba un mensaje …</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">La optimización de batería no se está ignorando. ¡Esto debería ser cambiado para garantizar que las notificaciones funcionen en segundo plano!. Por favor, haga clic en OK y seleccione \"Todas las apps\" -> %1$s -> No optimizar</string>
+    <string name="nc_ignore_battery_optimization_dialog_title">Ignorar la optimización de batería</string>
     <string name="nc_important_conversation">Conversación importante</string>
     <string name="nc_important_conversation_desc">Las notificaciones de esta conversación anularán el ajuste de No Molestar</string>
     <string name="nc_join_via_link">Unirse con un enlace</string>
@@ -289,6 +300,8 @@
     <string name="nc_notification_channel_uploads">Subidas</string>
     <string name="nc_notification_channel_uploads_description">Notificar el progreso de la subida</string>
     <string name="nc_notification_settings">Configuración de las notificaciones</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Los permisos de notificaciones y las configuraciones de batería están correctamente definidas para recibir notificaciones. Si de igual manera tiene problemas para recibir notificaciones, por favor, chequee si los canales de notificación para llamadas y mensajes están habilitados. Se puede conseguir ayuda adicional en DontKillMyApp.com, o, en la lista de verificación de solución de problemas. Si esto no es de ayuda, por favor, vaya a la pantalla de diagnósticos y envíe un reporte de fallos.</string>
+    <string name="nc_notifications_troubleshooting_dialog_title">Solución de problemas para las notificaciones</string>
     <string name="nc_notify_me_always">Notificar siempre</string>
     <string name="nc_notify_me_mention">Notificar cuando eres mencionado</string>
     <string name="nc_notify_me_never">No notificar nunca</string>
@@ -375,12 +388,17 @@
     <string name="nc_settings_advanced_title">Avanzado</string>
     <string name="nc_settings_appearance">Apariencia</string>
     <string name="nc_settings_call_ringtone">Llamadas</string>
-    <string name="nc_settings_incognito_keyboard_desc">Indica al teclado que desactive el aprendizaje personalizado (sin garantías)</string>
+    <string name="nc_settings_diagnose_subtitle">Abrir la pantalla de diagnóstico para verificar los ajustes o para crear un informe de fallos</string>
+    <string name="nc_settings_diagnose_title">Diagnóstico</string>
+    <string name="nc_settings_incognito_keyboard_desc">Indica que el teclado tendrá desactivado el aprendizaje personalizado (no hay garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
     <string name="nc_settings_no_ringtone">Sin sonido</string>
     <string name="nc_settings_no_talk_installed">La app Talk no está instalada en el servidor contra el que has intentado autorizarte</string>
     <string name="nc_settings_notification_sounds">Sonidos de notificación</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificaciones</string>
+    <string name="nc_settings_notifications_declined">Las notificaciones no están permitidas</string>
+    <string name="nc_settings_notifications_declined_hint">Las notificaciones no están permitidas. Por favor, otorgue los permisos para las notificaciones en las configuraciones de Android</string>
+    <string name="nc_settings_notifications_granted">Las notificaciones están permitidas</string>
     <string name="nc_settings_other_notifications_ringtone">Mensajes</string>
     <string name="nc_settings_phone_book_integration_desc">Comparar el número de teléfono de los contactos para integrar un acceso directo a Talk en la app de contactos del sistema
 </string>
