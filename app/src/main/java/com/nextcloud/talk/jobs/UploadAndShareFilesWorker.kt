@@ -60,6 +60,7 @@ import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
+import java.io.File
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -91,6 +92,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     lateinit var roomToken: String
     lateinit var conversationName: String
     lateinit var currentUser: User
+    private var isChunkedUploading = false
+    private var file: File? = null
+    private var chunkedFileUploader: ChunkedFileUploader? = null
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun doWork(): Result {
@@ -120,28 +124,30 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
             val sourceFileUri = Uri.parse(sourceFile)
             fileName = FileUtils.getFileName(sourceFileUri, context)
-            val file = FileUtils.getFileFromUri(context, sourceFileUri)
+            file = FileUtils.getFileFromUri(context, sourceFileUri)
             val remotePath = getRemotePath(currentUser)
             val uploadSuccess: Boolean
 
             initNotificationSetup()
-
+            file?.let { isChunkedUploading = it.length() > CHUNK_UPLOAD_THRESHOLD_SIZE }
             if (file == null) {
                 uploadSuccess = false
-            } else if (file.length() > CHUNK_UPLOAD_THRESHOLD_SIZE) {
-                Log.d(TAG, "starting chunked upload because size is " + file.length())
+            } else if (isChunkedUploading) {
+                Log.d(TAG, "starting chunked upload because size is " + file!!.length())
 
                 initNotificationWithPercentage()
                 val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
 
-                uploadSuccess = ChunkedFileUploader(
+                chunkedFileUploader = ChunkedFileUploader(
                     okHttpClient,
                     currentUser,
                     roomToken,
                     metaData,
                     this
-                ).upload(
-                    file,
+                )
+
+                uploadSuccess = chunkedFileUploader!!.upload(
+                    file!!,
                     mimeType,
                     remotePath
                 )
@@ -164,6 +170,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             if (uploadSuccess) {
                 mNotifyManager?.cancel(notificationId)
                 return Result.success()
+            } else if (isStopped) {
+                // since work is cancelled the result would be ignored anyways
+                return Result.failure()
             }
 
             Log.e(TAG, "Something went wrong when trying to upload file")
@@ -195,6 +204,15 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         mNotifyManager!!.notify(notificationId, notification)
     }
 
+    override fun onStopped() {
+        if (file != null && isChunkedUploading) {
+            chunkedFileUploader?.abortUpload {
+                mNotifyManager?.cancel(notificationId)
+            }
+        }
+        super.onStopped()
+    }
+
     private fun initNotificationSetup() {
         mNotifyManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         mBuilder = NotificationCompat.Builder(
@@ -206,13 +224,17 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     private fun initNotificationWithPercentage() {
         notification = mBuilder!!
-            .setContentTitle(context.resources.getString(R.string.nc_upload_in_progess))
+            .setContentTitle(getResourceString(context, R.string.nc_upload_in_progess))
             .setContentText(getNotificationContentText(ZERO_PERCENT))
             .setSmallIcon(R.drawable.upload_white)
             .setOngoing(true)
             .setProgress(HUNDRED_PERCENT, ZERO_PERCENT, false)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentIntent(getIntentToOpenConversation())
+            .addAction(
+                R.drawable.ic_cancel_white_24dp, getResourceString(context, R.string.nc_cancel),
+                getCancelUploadIntent()
+            )
             .build()
 
         notificationId = SystemClock.uptimeMillis().toInt()
@@ -221,7 +243,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     private fun getNotificationContentText(percentage: Int): String {
         return String.format(
-            context.resources.getString(R.string.nc_upload_notification_text),
+            getResourceString(context, R.string.nc_upload_notification_text),
             getShortenedFileName(),
             conversationName,
             percentage
@@ -234,6 +256,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         } else {
             fileName
         }
+    }
+
+    private fun getCancelUploadIntent(): PendingIntent {
+        return WorkManager.getInstance(applicationContext)
+            .createCancelPendingIntent(id)
     }
 
     private fun getIntentToOpenConversation(): PendingIntent? {
@@ -257,9 +284,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     }
 
     private fun showFailedToUploadNotification() {
-        val failureTitle = context.resources.getString(R.string.nc_upload_failed_notification_title)
+        val failureTitle = getResourceString(context, R.string.nc_upload_failed_notification_title)
         val failureText = String.format(
-            context.resources.getString(R.string.nc_upload_failed_notification_text),
+            getResourceString(context, R.string.nc_upload_failed_notification_text),
             fileName
         )
         notification = mBuilder!!
@@ -273,6 +300,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         mNotifyManager?.cancel(notificationId)
         // Then show information about failure
         mNotifyManager!!.notify(SystemClock.uptimeMillis().toInt(), notification)
+    }
+
+    private fun getResourceString(context: Context, resourceId: Int): String {
+        return context.resources.getString(resourceId)
     }
 
     companion object {
@@ -301,6 +332,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                         REQUEST_PERMISSION
                     )
                 }
+
                 Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
                     activity.requestPermissions(
                         arrayOf(
@@ -309,6 +341,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                         REQUEST_PERMISSION
                     )
                 }
+
                 else -> {
                     activity.requestPermissions(
                         arrayOf(

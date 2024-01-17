@@ -76,6 +76,8 @@ class ChunkedFileUploader(
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
     private var remoteChunkUrl: String
+    private var uploadFolderUri: String = ""
+    private var isUploadAborted = false
 
     init {
         initHttpClient(okHttpClient, currentUser)
@@ -85,7 +87,7 @@ class ChunkedFileUploader(
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun upload(localFile: File, mimeType: MediaType?, targetPath: String): Boolean {
         try {
-            val uploadFolderUri: String = remoteChunkUrl + "/" + FileUtils.md5Sum(localFile)
+            uploadFolderUri = remoteChunkUrl + "/" + FileUtils.md5Sum(localFile)
             val davResource = DavResource(
                 okHttpClientNoRedirects!!,
                 uploadFolderUri.toHttpUrlOrNull()!!
@@ -100,6 +102,7 @@ class ChunkedFileUploader(
             Log.d(TAG, "missingChunks: " + missingChunks.size)
 
             for (missingChunk in missingChunks) {
+                if (isUploadAborted) return false
                 uploadChunk(localFile, uploadFolderUri, mimeType, missingChunk, missingChunk.length())
             }
 
@@ -327,6 +330,19 @@ class ChunkedFileUploader(
         }
     }
 
+    fun abortUpload(onSuccess: () -> Unit) {
+        isUploadAborted = true
+        DavResource(
+            okHttpClientNoRedirects!!,
+            uploadFolderUri.toHttpUrlOrNull()!!
+        ).delete { response: Response ->
+            when {
+                response.isSuccessful -> onSuccess()
+                else -> isUploadAborted = false
+            }
+        }
+    }
+
     private fun getModelFromResponse(response: at.bitfire.dav4jvm.Response, remotePath: String): RemoteFileBrowserItem {
         val remoteFileBrowserItem = RemoteFileBrowserItem()
         remoteFileBrowserItem.path = Uri.decode(remotePath)
@@ -353,30 +369,39 @@ class ChunkedFileUploader(
             is OCId -> {
                 remoteFileBrowserItem.remoteId = property.ocId
             }
+
             is ResourceType -> {
                 remoteFileBrowserItem.isFile = !property.types.contains(ResourceType.COLLECTION)
             }
+
             is GetLastModified -> {
                 remoteFileBrowserItem.modifiedTimestamp = property.lastModified
             }
+
             is GetContentType -> {
                 remoteFileBrowserItem.mimeType = property.type
             }
+
             is OCSize -> {
                 remoteFileBrowserItem.size = property.ocSize
             }
+
             is NCPreview -> {
                 remoteFileBrowserItem.hasPreview = property.isNcPreview
             }
+
             is OCFavorite -> {
                 remoteFileBrowserItem.isFavorite = property.isOcFavorite
             }
+
             is DisplayName -> {
                 remoteFileBrowserItem.displayName = property.displayName
             }
+
             is NCEncrypted -> {
                 remoteFileBrowserItem.isEncrypted = property.isNcEncrypted
             }
+
             is NCPermission -> {
                 remoteFileBrowserItem.permissions = property.ncPermission
             }
