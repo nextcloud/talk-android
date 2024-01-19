@@ -4534,6 +4534,9 @@ class ChatActivity :
         startActivity(shareIntent)
     }
 
+    fun editMessage(message: ChatMessage) {
+    }
+
     companion object {
         private val TAG = ChatActivity::class.simpleName
         private const val CONTENT_TYPE_CALL_STARTED: Byte = 1

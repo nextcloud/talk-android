@@ -108,6 +108,7 @@ class MessageActionsDialog(
                 hasUserActorId(message) &&
                 currentConversation?.type != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
+        initMenuEditMessage(CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "edit-messages"))
         initMenuDeleteMessage(showMessageDeletionButton)
         initMenuForwardMessage(
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
@@ -291,6 +292,15 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuDeleteMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuEditMessage(visible: Boolean) {
+        dialogMessageActionsBinding.menuEditMessage.setOnClickListener {
+            chatActivity.editMessage(message)
+            dismiss()
+        }
+
+        dialogMessageActionsBinding.menuEditMessage.visibility = getVisibility(visible)
     }
 
     private fun initMenuReplyPrivately(visible: Boolean) {
