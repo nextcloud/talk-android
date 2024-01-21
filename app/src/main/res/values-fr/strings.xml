@@ -162,6 +162,7 @@
     <string name="nc_diagnose_battery_optimization_title">Paramètres pour la batterie</string>
     <string name="nc_diagnose_device_name_title">Appareil</string>
     <string name="nc_diagnose_phone_category_title">Téléphone</string>
+    <string name="nc_diagnose_server_talk_version">Version du serveur Talk</string>
     <string name="nc_diagnose_server_version">Version du serveur</string>
     <string name="nc_diagnose_signaling_mode_extern">Externe</string>
     <string name="nc_diagnose_signaling_mode_intern">Interne</string>
@@ -502,7 +503,7 @@
     <string name="secondsAgo">secondes avant</string>
     <string name="see_similar_system_messages">Voir les %1$s messages similaires</string>
     <string name="selected_list_item">Sélectionné</string>
-    <string name="send_email">Envoyer un e-mail</string>
+    <string name="send_email">Envoyer un courriel</string>
     <string name="send_to">Envoyer a</string>
     <string name="send_to_forbidden">Vous n\'êtes pas autorisé à partager du contenu dans cette conversation</string>
     <string name="send_to_three_dots">Envoyer à…</string>
