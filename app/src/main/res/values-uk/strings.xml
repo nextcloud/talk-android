@@ -52,7 +52,7 @@
     <string name="message_search_hint">Пошук …</string>
     <string name="messages">Повідомлення</string>
     <string name="nc_Server_account_imported">Обраний обліковий запис імпортовано і він доступний</string>
-    <string name="nc_about">Про програму</string>
+    <string name="nc_about">Про застосунок</string>
     <string name="nc_account_chooser_active_user">Активний користувач</string>
     <string name="nc_account_chooser_add_account">Додати обліковий запис</string>
     <string name="nc_account_scheduled_for_deletion">Заплановано вилучення облікового запису, тому до нього неможливо внести зміни</string>
@@ -351,7 +351,7 @@
     <string name="nc_settings_screen_security_desc">Запобігає збереженню скріншотів усередині додатка і в списку недавніх додатків</string>
     <string name="nc_settings_screen_security_title">Безпека екрану</string>
     <string name="nc_settings_server_almost_eol">Ця версія серверу дуже застаріла і не буде підтримуватися в наступному випуску!</string>
-    <string name="nc_settings_server_eol">Версія сервера застаріла і не підтримується цією версією програми для Android</string>
+    <string name="nc_settings_server_eol">Версія сервера застаріла і не підтримується цією версією застосунку для Android</string>
     <string name="nc_settings_server_eol_title">Непідтримуваний сервер</string>
     <string name="nc_settings_theme_battery_saver">Встановлено режимом збереження батареї</string>
     <string name="nc_settings_theme_dark">Темна</string>
