@@ -22,6 +22,7 @@ package com.nextcloud.talk.chat.data
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
 import io.reactivex.Observable
@@ -32,4 +33,18 @@ interface ChatRepository {
     fun setReminder(user: User, roomToken: String, messageId: String, timeStamp: Int): Observable<Reminder>
     fun getReminder(user: User, roomToken: String, messageId: String): Observable<Reminder>
     fun deleteReminder(user: User, roomToken: String, messageId: String): Observable<GenericOverall>
+    fun shareToNotes(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String
+    ): Observable<GenericOverall> // last two fields are false
+    fun checkForNoteToSelf(credentials: String, url: String, includeStatus: Boolean): Observable<RoomsOverall>
+    fun shareLocationToNotes(
+        credentials: String,
+        url: String,
+        objectType: String,
+        objectId: String,
+        metadata: String
+    ): Observable<GenericOverall>
 }

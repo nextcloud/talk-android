@@ -23,6 +23,7 @@ package com.nextcloud.talk.chat.data
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.utils.ApiUtils
@@ -82,5 +83,41 @@ class ChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
         ).map {
             it
         }
+    }
+
+    override fun shareToNotes(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String
+    ): Observable<GenericOverall> {
+        return ncApi.sendChatMessage(
+            credentials,
+            url,
+            message,
+            displayName,
+            null,
+            false
+        ).map {
+            it
+        }
+    }
+
+    override fun checkForNoteToSelf(
+        credentials: String,
+        url: String,
+        includeStatus: Boolean
+    ): Observable<RoomsOverall> {
+        return ncApi.getRooms(credentials, url, includeStatus).map { it }
+    }
+
+    override fun shareLocationToNotes(
+        credentials: String,
+        url: String,
+        objectType: String,
+        objectId: String,
+        metadata: String
+    ): Observable<GenericOverall> {
+        return ncApi.sendLocation(credentials, url, objectType, objectId, metadata).map { it }
     }
 }

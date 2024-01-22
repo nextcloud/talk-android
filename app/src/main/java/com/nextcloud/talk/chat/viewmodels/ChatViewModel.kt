@@ -27,8 +27,10 @@ import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
+import com.nextcloud.talk.utils.ConversationUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -48,6 +50,13 @@ class ChatViewModel @Inject constructor(private val repository: ChatRepository) 
     private val _getReminderExistState: MutableLiveData<ViewState> = MutableLiveData(GetReminderStartState)
     val getReminderExistState: LiveData<ViewState>
         get() = _getReminderExistState
+
+    object NoteToSelfNotAvaliableState : ViewState
+    open class NoteToSelfAvaliableState(val roomToken: String) : ViewState
+
+    private val _getNoteToSelfAvaliability: MutableLiveData<ViewState> = MutableLiveData(NoteToSelfNotAvaliableState)
+    val getNoteToSelfAvaliability: LiveData<ViewState>
+        get() = _getNoteToSelfAvaliability
 
     open class GetRoomSuccessState(val conversationModel: ConversationModel) : ViewState
 
@@ -109,6 +118,58 @@ class ChatViewModel @Inject constructor(private val repository: ChatRepository) 
 
                 override fun onError(e: Throwable) {
                     Log.d(TAG, "Error when deleting reminder $e")
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
+    }
+
+    fun shareToNotes(credentials: String, url: String, message: String, displayName: String) {
+        repository.shareToNotes(credentials, url, message, displayName)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    // unused atm
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.d(TAG, "Error when sharing to notes $e")
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
+    }
+
+    fun checkForNoteToSelf(credentials: String, baseUrl: String, includeStatus: Boolean) {
+        repository.checkForNoteToSelf(credentials, baseUrl, includeStatus).subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(CheckForNoteToSelfObserver())
+    }
+
+    fun shareLocationToNotes(credentials: String, url: String, objectType: String, objectId: String, metadata: String) {
+        repository.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    // unused atm
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Error when sharing location to notes $e")
                 }
 
                 override fun onComplete() {
@@ -185,6 +246,36 @@ class ChatViewModel @Inject constructor(private val repository: ChatRepository) 
         override fun onError(e: Throwable) {
             Log.d(TAG, "Error when getting reminder $e")
             _getReminderExistState.value = GetReminderStartState
+        }
+
+        override fun onComplete() {
+            // unused atm
+        }
+    }
+
+    inner class CheckForNoteToSelfObserver : Observer<RoomsOverall> {
+        override fun onSubscribe(d: Disposable) {
+            // unused atm
+        }
+
+        override fun onNext(roomsOverall: RoomsOverall) {
+            val rooms = roomsOverall.ocs?.data
+            rooms?.let {
+                try {
+                    val noteToSelf = rooms.first {
+                        val model = ConversationModel.mapToConversationModel(it)
+                        ConversationUtils.isNoteToSelfConversation(model)
+                    }
+                    _getNoteToSelfAvaliability.value = NoteToSelfAvaliableState(noteToSelf.token!!)
+                } catch (e: NoSuchElementException) {
+                    _getNoteToSelfAvaliability.value = NoteToSelfNotAvaliableState
+                    Log.e(TAG, "Note to self not found $e")
+                }
+            }
+        }
+
+        override fun onError(e: Throwable) {
+            Log.d(TAG, "Error when getting rooms for Note to Self Observer $e")
         }
 
         override fun onComplete() {
