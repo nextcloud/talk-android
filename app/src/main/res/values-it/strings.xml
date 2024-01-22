@@ -364,6 +364,7 @@
     <string name="nc_upload_failed">Spiacenti, caricamento non riuscito</string>
     <string name="nc_upload_failed_notification_title">Problema</string>
     <string name="nc_upload_from_cloud">Condividi da %1$s</string>
+    <string name="nc_upload_from_device">Carica dal dispositivo</string>
     <string name="nc_upload_in_progess">Caricamento</string>
     <string name="nc_upload_picture_from_cam">Scatta foto</string>
     <string name="nc_user">Utente</string>
