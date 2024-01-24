@@ -109,6 +109,7 @@
     <string name="nc_common_skip">Hopp over</string>
     <string name="nc_common_unknown">Ukjent</string>
     <string name="nc_configure_cert_auth">Velg sertifikat for autentisering</string>
+    <string name="nc_connecting_call">Kobler til...</string>
     <string name="nc_contacts_done">Ferdig</string>
     <string name="nc_conversation_link">Samtale lenke</string>
     <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
@@ -330,6 +331,7 @@
     <string name="polls_submit_vote">Stemme</string>
     <string name="raise_hand">Løft hånden</string>
     <string name="reactions_tab_all">Alle</string>
+    <string name="recording_consent_for_conversation_title">Samtykke til opptak</string>
     <string name="recording_settings_title">Innspilling</string>
     <string name="save">Lagre</string>
     <string name="scope_federated_description">Synkroniser kun til betrodde servere</string>
