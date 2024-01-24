@@ -332,6 +332,7 @@ public interface NcApi {
     @POST
     Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization, @Url String url, @Field("message") CharSequence message, @Field("actorDisplayName") String actorDisplayName, @Field("replyTo") Integer replyTo, @Field("silent") Boolean sendWithoutNotification);
 
+    @FormUrlEncoded
     @PUT
     Observable<ChatOCSSingleMessage> editChatMessage(@Header("Authorization") String authorization, @Url String url, @Field("message") String message);
 

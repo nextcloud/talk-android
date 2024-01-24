@@ -66,6 +66,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.GONE
 import android.view.View.OnTouchListener
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
@@ -166,6 +167,7 @@ import com.nextcloud.talk.models.domain.ObjectType
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.models.json.chat.ChatOCSSingleMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
@@ -240,6 +242,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -299,6 +302,8 @@ class ChatActivity :
 
     lateinit var chatViewModel: ChatViewModel
 
+    val editableBehaviorSubject = BehaviorSubject.createDefault(false)
+
     override val view: View
         get() = binding.root
 
@@ -347,6 +352,9 @@ class ChatActivity :
     private var isVoicePreviewPlaying: Boolean = false
 
     private var recorder: MediaRecorder? = null
+
+    private lateinit var originalMessage:ChatMessage
+
 
     private enum class MediaRecorderState {
         INITIAL,
@@ -756,12 +764,18 @@ class ChatActivity :
         val filters = arrayOfNulls<InputFilter>(1)
         val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
 
+        if(!editableBehaviorSubject.value!!){
+            binding.messageInputView.editMessageButton.visibility = View.GONE
+            binding.messageInputView.messageSendButton.visibility = View.VISIBLE
+        }
+
         filters[0] = InputFilter.LengthFilter(lengthFilter)
         binding.messageInputView.inputEditText?.filters = filters
-
         binding.messageInputView.inputEditText?.addTextChangedListener(object : TextWatcher {
+
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // unused atm
+
             }
 
             @Suppress("Detekt.TooGenericExceptionCaught")
@@ -778,6 +792,111 @@ class ChatActivity :
                 }
 
                 val editable = binding.messageInputView.inputEditText?.editableText
+
+                if (editable != null && binding.messageInputView.inputEditText != null) {
+                    val mentionSpans = editable.getSpans(
+                        0,
+                        binding.messageInputView.inputEditText!!.length(),
+                        Spans.MentionChipSpan::class.java
+                    )
+                    var mentionSpan: Spans.MentionChipSpan
+                    for (i in mentionSpans.indices) {
+                        mentionSpan = mentionSpans[i]
+                        if (start >= editable.getSpanStart(mentionSpan) &&
+                            start < editable.getSpanEnd(mentionSpan)
+                        ) {
+                            if (editable.subSequence(
+                                    editable.getSpanStart(mentionSpan),
+                                    editable.getSpanEnd(mentionSpan)
+                                ).toString().trim { it <= ' ' } != mentionSpan.label
+                            ) {
+                                editable.removeSpan(mentionSpan)
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                // unused atm
+            }
+        })
+
+        // Image keyboard support
+        // See: https://developer.android.com/guide/topics/text/image-keyboard
+            (binding.messageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
+                uploadFile(it.toString(), false)
+            }
+
+            initVoiceRecordButton()
+
+            if (sharedText.isNotEmpty()) {
+                binding.messageInputView.inputEditText?.setText(sharedText)
+            }
+
+            binding.messageInputView.setAttachmentsListener {
+                AttachmentDialog(this, this).show()
+            }
+
+               binding.messageInputView.button?.setOnClickListener {
+                   submitMessage(false)
+               }
+
+            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
+                binding.messageInputView.button?.setOnLongClickListener {
+                    showSendButtonMenu()
+                    true
+                }
+            }
+
+            binding.messageInputView.button?.contentDescription =
+                resources?.getString(R.string.nc_description_send_message_button)
+    }
+
+
+    private fun editMessageInputView(message:ChatMessage) {
+        editableBehaviorSubject.onNext(true)
+
+        val filters = arrayOfNulls<InputFilter>(1)
+        val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
+        var editText = ""
+
+        filters[0] = InputFilter.LengthFilter(lengthFilter)
+        binding.messageInputView.inputEditText?.filters = filters
+
+        val editableText = Editable.Factory.getInstance().newEditable(message.message)
+        binding.messageInputView.inputEditText.text = editableText
+        if(editableBehaviorSubject.value!!){
+            binding.messageInputView.editMessageButton.visibility = View.VISIBLE
+            binding.messageInputView.messageSendButton.visibility = View.GONE
+            binding.messageInputView.button.visibility = GONE
+        }
+
+        binding.messageInputView.inputEditText?.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // unused atm
+
+            }
+
+            @Suppress("Detekt.TooGenericExceptionCaught")
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+
+                updateOwnTypingStatus(s)
+
+                if (s.length >= lengthFilter) {
+                    binding.messageInputView.inputEditText?.error = String.format(
+                        Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
+                        lengthFilter.toString()
+                    )
+                } else {
+                    binding.messageInputView.inputEditText?.error = null
+                }
+
+                val editable = binding.messageInputView.inputEditText?.editableText
+                editText = editable.toString()
+
                 if (editable != null && binding.messageInputView.inputEditText != null) {
                     val mentionSpans = editable.getSpans(
                         0,
@@ -804,35 +923,57 @@ class ChatActivity :
 
             override fun afterTextChanged(s: Editable) {
                 // unused atm
+                binding.messageInputView.messageSendButton.visibility = GONE
             }
         })
 
-        // Image keyboard support
-        // See: https://developer.android.com/guide/topics/text/image-keyboard
-        (binding.messageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
-            uploadFile(it.toString(), false)
-        }
-
-        initVoiceRecordButton()
-
-        if (sharedText.isNotEmpty()) {
-            binding.messageInputView.inputEditText?.setText(sharedText)
-        }
         binding.messageInputView.setAttachmentsListener {
             AttachmentDialog(this, this).show()
         }
 
-        binding.messageInputView.button?.setOnClickListener { submitMessage(false) }
-
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
-            binding.messageInputView.button?.setOnLongClickListener {
-                showSendButtonMenu()
-                true
-            }
+        binding.messageInputView.editMessageButton.setOnClickListener {
+            editMessageAPI(message, editedMessage = editText)
         }
 
-        binding.messageInputView.button?.contentDescription =
-            resources?.getString(R.string.nc_description_send_message_button)
+    }
+
+    private fun editMessageAPI(message:ChatMessage, editedMessage:String){
+        var apiVersion = 1
+        // FIXME Fix API checking with guests?
+        if (conversationUser != null) {
+            apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+        }
+
+        ncApi.editChatMessage(
+            credentials,
+            ApiUtils.getUrlForChatMessage(
+                apiVersion,
+                conversationUser?.baseUrl,
+                roomToken,
+                message?.id
+            ),editedMessage
+        )?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<ChatOCSSingleMessage> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(t: ChatOCSSingleMessage) {
+                    //unused atm
+                }
+
+                override fun onError(e: Throwable) {
+
+                }
+
+                override fun onComplete() {
+                    binding.messageInputView.editMessageButton.visibility = GONE
+                    binding.messageInputView.messageSendButton.visibility = View.VISIBLE
+                    editableBehaviorSubject.onNext(false)
+                    binding.messageInputView.inputEditText.setText("")
+                }
+            })
     }
 
     private fun themeMessageInputView() {
@@ -4534,7 +4675,13 @@ class ChatActivity :
         startActivity(shareIntent)
     }
 
+
+
+
     fun editMessage(message: ChatMessage) {
+
+        editMessageInputView(message)
+
     }
 
     companion object {
