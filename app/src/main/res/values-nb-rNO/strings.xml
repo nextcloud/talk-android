@@ -140,6 +140,8 @@
     <string name="nc_dialog_invalid_password">Ugyldig passord</string>
     <string name="nc_dialog_maintenance_mode">Modus for vedlikehold</string>
     <string name="nc_dialog_outdated_client_option_update">Oppdater</string>
+    <string name="nc_dialog_save_to_storage_no">Nei</string>
+    <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_display_name_not_fetched">Kunne ikke hente visningsnavn, avbryter</string>
     <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
     <string name="nc_email">E-post</string>
@@ -149,6 +151,7 @@
     <string name="nc_expire_message_one_day">1 dag</string>
     <string name="nc_expire_message_one_hour">1 time</string>
     <string name="nc_expire_message_one_week">1 uke</string>
+    <string name="nc_expire_messages_explanation">Chatmeldinger kan utløpe etter en viss tid. Merk: filer som deles i chat, slettes ikke for eieren, men deles ikke lenger i samtalen.</string>
     <string name="nc_external_server_failed">Feilet ved henting av settinger for signalering</string>
     <string name="nc_failed_signaling_settings">Målserveren støtter ikke å delta i offentlige samtaler via mobiltelefoner. Du kan prøve å bli med i samtalen via nettleseren.</string>
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
@@ -168,6 +171,7 @@
     <string name="nc_guest_access_password_dialog_title">Gjestetilgang-passord</string>
     <string name="nc_guest_access_password_title">Passordbeskyttelse</string>
     <string name="nc_guest_access_password_weak_alert_title">Svakt passord</string>
+    <string name="nc_guest_access_resend_invitations">Send invitasjoner på nytt</string>
     <string name="nc_hint_enter_a_message">Enter a message …</string>
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_join_via_link">Bli med via en lenke</string>
@@ -180,6 +184,7 @@
     <string name="nc_license_title">Lisens</string>
     <string name="nc_limit_hit">%s grensen for maks antall tegn er nådd</string>
     <string name="nc_lobby">Lobby</string>
+    <string name="nc_lobby_start_soon">Møtet starter snart</string>
     <string name="nc_lobby_waiting">Du venter for øyeblikket i lobbyen.</string>
     <string name="nc_location_current_position_description">Dine nåværende posisjon</string>
     <string name="nc_locked_tap_to_unlock">Trykk for å låse opp</string>
@@ -230,6 +235,7 @@
     <string name="nc_rename">Endre navn på samtale</string>
     <string name="nc_rename_confirm">Endre navn</string>
     <string name="nc_reply">Svar</string>
+    <string name="nc_reply_privately">Svar privat</string>
     <string name="nc_save_message">Lagre</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_300">5 minutter</string>
@@ -324,6 +330,7 @@
     <string name="oneHour">1 time</string>
     <string name="online">Pålogget</string>
     <string name="online_status">Online-status</string>
+    <string name="openConversations">Åpne samtaler</string>
     <string name="open_in_files_app">Åpne i Filer-appen</string>
     <string name="polls_options">Valg</string>
     <string name="polls_results_subtitle">Resultater</string>
@@ -331,7 +338,10 @@
     <string name="polls_submit_vote">Stemme</string>
     <string name="raise_hand">Løft hånden</string>
     <string name="reactions_tab_all">Alle</string>
+    <string name="recording_consent_all">Det kreves samtykke til opptak for alle samtaler</string>
+    <string name="recording_consent_for_conversation_description">Krev samtykke til opptak før du blir med i samtalen i denne samtalen</string>
     <string name="recording_consent_for_conversation_title">Samtykke til opptak</string>
+    <string name="recording_consent_title">Samtalen kan bli tatt opp.</string>
     <string name="recording_settings_title">Innspilling</string>
     <string name="save">Lagre</string>
     <string name="scope_federated_description">Synkroniser kun til betrodde servere</string>
@@ -342,6 +352,7 @@
     <string name="scope_private_title">Privat</string>
     <string name="scope_published_description">Synkroniser til betrodde servere og den globale og offentlige adresseboken</string>
     <string name="scope_published_title">Publisert</string>
+    <string name="scroll_to_bottom">Rull til bunnen</string>
     <string name="secondsAgo">sekunder siden</string>
     <string name="selected_list_item">Valgt</string>
     <string name="send_email">Send e-post</string>
@@ -372,6 +383,7 @@
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
     <string name="translate">Oversette</string>
+    <string name="translation_copy_translated_text">Kopier oversatt tekst</string>
     <string name="translation_device_settings">Enhetsinnstillinger</string>
     <string name="translation_from">Fra</string>
     <string name="translation_to">Til</string>
