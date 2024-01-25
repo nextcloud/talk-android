@@ -788,4 +788,6 @@ How to translate with transifex:
     <string name="languages_error_message">Languages could not be retrieved</string>
     <string name="edit_message_icon_description">Edit Message Icon</string>
     <string name="nc_edit_message">Edit message</string>
+    <string name="nc_send_edit_message">Send Edit Message</string>
+    <string name="nc_clear_edit_message">Clear Edit Message</string>
 </resources>

@@ -303,6 +303,8 @@ class ChatActivity :
     lateinit var chatViewModel: ChatViewModel
 
     val editableBehaviorSubject = BehaviorSubject.createDefault(false)
+    val editedTextBehaviorSubject = BehaviorSubject.createDefault("")
+    private lateinit var editMessage: ChatMessage
 
     override val view: View
         get() = binding.root
@@ -352,9 +354,6 @@ class ChatActivity :
     private var isVoicePreviewPlaying: Boolean = false
 
     private var recorder: MediaRecorder? = null
-
-    private lateinit var originalMessage:ChatMessage
-
 
     private enum class MediaRecorderState {
         INITIAL,
@@ -753,7 +752,6 @@ class ChatActivity :
         })
 
         initMessageInputView()
-
         loadAvatarForStatusBar()
         setActionBarTitle()
 
@@ -764,18 +762,20 @@ class ChatActivity :
         val filters = arrayOfNulls<InputFilter>(1)
         val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
 
-        if(!editableBehaviorSubject.value!!){
-            binding.messageInputView.editMessageButton.visibility = View.GONE
-            binding.messageInputView.messageSendButton.visibility = View.VISIBLE
+        if (editableBehaviorSubject.value!!) {
+            val editableText = Editable.Factory.getInstance().newEditable(editMessage.message)
+            binding.messageInputView.inputEditText.text = editableText
+            binding.messageInputView.inputEditText.setSelection(editableText.length)
+
         }
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
         binding.messageInputView.inputEditText?.filters = filters
+
         binding.messageInputView.inputEditText?.addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // unused atm
-
             }
 
             @Suppress("Detekt.TooGenericExceptionCaught")
@@ -792,6 +792,7 @@ class ChatActivity :
                 }
 
                 val editable = binding.messageInputView.inputEditText?.editableText
+                editedTextBehaviorSubject.onNext(editable.toString().trim())
 
                 if (editable != null && binding.messageInputView.inputEditText != null) {
                     val mentionSpans = editable.getSpans(
@@ -815,7 +816,6 @@ class ChatActivity :
                         }
                     }
                 }
-
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -825,119 +825,53 @@ class ChatActivity :
 
         // Image keyboard support
         // See: https://developer.android.com/guide/topics/text/image-keyboard
-            (binding.messageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
-                uploadFile(it.toString(), false)
-            }
 
-            initVoiceRecordButton()
-
-            if (sharedText.isNotEmpty()) {
-                binding.messageInputView.inputEditText?.setText(sharedText)
-            }
-
-            binding.messageInputView.setAttachmentsListener {
-                AttachmentDialog(this, this).show()
-            }
-
-               binding.messageInputView.button?.setOnClickListener {
-                   submitMessage(false)
-               }
-
-            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
-                binding.messageInputView.button?.setOnLongClickListener {
-                    showSendButtonMenu()
-                    true
-                }
-            }
-
-            binding.messageInputView.button?.contentDescription =
-                resources?.getString(R.string.nc_description_send_message_button)
-    }
-
-
-    private fun editMessageInputView(message:ChatMessage) {
-        editableBehaviorSubject.onNext(true)
-
-        val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
-        var editText = ""
-
-        filters[0] = InputFilter.LengthFilter(lengthFilter)
-        binding.messageInputView.inputEditText?.filters = filters
-
-        val editableText = Editable.Factory.getInstance().newEditable(message.message)
-        binding.messageInputView.inputEditText.text = editableText
-        if(editableBehaviorSubject.value!!){
-            binding.messageInputView.editMessageButton.visibility = View.VISIBLE
+        (binding.messageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
+            uploadFile(it.toString(), false)
+        }
+        initVoiceRecordButton()
+        if (editableBehaviorSubject.value!!) {
             binding.messageInputView.messageSendButton.visibility = View.GONE
-            binding.messageInputView.button.visibility = GONE
+            binding.messageInputView.recordAudioButton.visibility = View.GONE
+            binding.messageInputView.editMessageButton.visibility = View.VISIBLE
+            binding.messageInputView.clearEditMessage.visibility = View.VISIBLE
         }
 
-        binding.messageInputView.inputEditText?.addTextChangedListener(object : TextWatcher {
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // unused atm
-
-            }
-
-            @Suppress("Detekt.TooGenericExceptionCaught")
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-
-                updateOwnTypingStatus(s)
-
-                if (s.length >= lengthFilter) {
-                    binding.messageInputView.inputEditText?.error = String.format(
-                        Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
-                        lengthFilter.toString()
-                    )
-                } else {
-                    binding.messageInputView.inputEditText?.error = null
-                }
-
-                val editable = binding.messageInputView.inputEditText?.editableText
-                editText = editable.toString()
-
-                if (editable != null && binding.messageInputView.inputEditText != null) {
-                    val mentionSpans = editable.getSpans(
-                        0,
-                        binding.messageInputView.inputEditText!!.length(),
-                        Spans.MentionChipSpan::class.java
-                    )
-                    var mentionSpan: Spans.MentionChipSpan
-                    for (i in mentionSpans.indices) {
-                        mentionSpan = mentionSpans[i]
-                        if (start >= editable.getSpanStart(mentionSpan) &&
-                            start < editable.getSpanEnd(mentionSpan)
-                        ) {
-                            if (editable.subSequence(
-                                    editable.getSpanStart(mentionSpan),
-                                    editable.getSpanEnd(mentionSpan)
-                                ).toString().trim { it <= ' ' } != mentionSpan.label
-                            ) {
-                                editable.removeSpan(mentionSpan)
-                            }
-                        }
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                // unused atm
-                binding.messageInputView.messageSendButton.visibility = GONE
-            }
-        })
+        if (sharedText.isNotEmpty()) {
+            binding.messageInputView.inputEditText?.setText(sharedText)
+        }
 
         binding.messageInputView.setAttachmentsListener {
             AttachmentDialog(this, this).show()
         }
 
-        binding.messageInputView.editMessageButton.setOnClickListener {
-            editMessageAPI(message, editedMessage = editText)
+        binding.messageInputView.button?.setOnClickListener {
+            submitMessage(false)
         }
 
+        binding.messageInputView.editMessageButton.setOnClickListener {
+            if(editMessage.message == editedTextBehaviorSubject.value!!){
+                clearEditUI()
+                return@setOnClickListener
+            }
+            editMessageAPI(editMessage, editedMessageText = editedTextBehaviorSubject.value!!)
+        }
+        binding.messageInputView.clearEditMessage.setOnClickListener {
+            clearEditUI()
+        }
+
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
+            binding.messageInputView.button?.setOnLongClickListener {
+                showSendButtonMenu()
+                true
+            }
+        }
+
+        binding.messageInputView.button?.contentDescription =
+            resources?.getString(R.string.nc_description_send_message_button)
     }
 
-    private fun editMessageAPI(message:ChatMessage, editedMessage:String){
+    private fun editMessageAPI(message: ChatMessage, editedMessageText: String) {
         var apiVersion = 1
         // FIXME Fix API checking with guests?
         if (conversationUser != null) {
@@ -951,7 +885,7 @@ class ChatActivity :
                 conversationUser?.baseUrl,
                 roomToken,
                 message?.id
-            ),editedMessage
+            ), editedMessageText
         )?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ChatOCSSingleMessage> {
@@ -964,16 +898,20 @@ class ChatActivity :
                 }
 
                 override fun onError(e: Throwable) {
-
                 }
 
                 override fun onComplete() {
-                    binding.messageInputView.editMessageButton.visibility = GONE
-                    binding.messageInputView.messageSendButton.visibility = View.VISIBLE
-                    editableBehaviorSubject.onNext(false)
-                    binding.messageInputView.inputEditText.setText("")
+                    clearEditUI()
                 }
             })
+        // remove last item from list
+    }
+
+    private fun clearEditUI() {
+        binding.messageInputView.editMessageButton.visibility = GONE
+        binding.messageInputView.clearEditMessage.visibility = View.GONE
+        editableBehaviorSubject.onNext(false)
+        binding.messageInputView.inputEditText.setText("")
     }
 
     private fun themeMessageInputView() {
@@ -1202,10 +1140,12 @@ class ChatActivity :
     @SuppressLint("ClickableViewAccessibility")
     private fun initVoiceRecordButton() {
         if (!isVoiceRecordingLocked) {
-            if (binding.messageInputView.messageInput.text!!.isNotEmpty()) {
-                showMicrophoneButton(false)
-            } else {
-                showMicrophoneButton(true)
+            if (!editableBehaviorSubject.value!!) {
+                if (binding.messageInputView.messageInput.text!!.isNotEmpty()) {
+                    showMicrophoneButton(false)
+                } else {
+                    showMicrophoneButton(true)
+                }
             }
         } else if (mediaRecorderState == MediaRecorderState.RECORDING) {
             binding.messageInputView.playPauseBtn.visibility = View.GONE
@@ -1219,10 +1159,12 @@ class ChatActivity :
 
         isVoicePreviewPlaying = false
         binding.messageInputView.messageInput.doAfterTextChanged {
-            if (binding.messageInputView.messageInput.text?.isEmpty() == true) {
-                showMicrophoneButton(true)
-            } else {
-                showMicrophoneButton(false)
+            if (!editableBehaviorSubject.value!!) {
+                if (binding.messageInputView.messageInput.text?.isEmpty() == true) {
+                    showMicrophoneButton(true)
+                } else {
+                    showMicrophoneButton(false)
+                }
             }
         }
 
@@ -4381,6 +4323,7 @@ class ChatActivity :
     }
 
     private fun showMicrophoneButton(show: Boolean) {
+
         if (show && CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "voice-message-sharing")) {
             Log.d(TAG, "Microphone shown")
             binding.messageInputView.messageSendButton.visibility = View.GONE
@@ -4675,13 +4618,10 @@ class ChatActivity :
         startActivity(shareIntent)
     }
 
-
-
-
     fun editMessage(message: ChatMessage) {
-
-        editMessageInputView(message)
-
+        editableBehaviorSubject.onNext(true)
+        editMessage = message
+        initMessageInputView()
     }
 
     companion object {

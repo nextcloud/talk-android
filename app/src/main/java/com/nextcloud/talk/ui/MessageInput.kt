@@ -44,6 +44,7 @@ class MessageInput : MessageInput {
     lateinit var micInputCloud: MicInputCloud
     lateinit var playPauseBtn: MaterialButton
     lateinit var editMessageButton:ImageButton
+    lateinit var clearEditMessage:ImageButton
     lateinit var seekBar: SeekBar
 
     constructor(context: Context?) : super(context) {
@@ -71,6 +72,7 @@ class MessageInput : MessageInput {
         playPauseBtn = findViewById(R.id.playPauseBtn)
         seekBar = findViewById(R.id.seekbar)
         editMessageButton = findViewById(R.id.editMessageButton)
+        clearEditMessage = findViewById(R.id.clearEditButton)
     }
 
     var messageInput: EmojiEditText
