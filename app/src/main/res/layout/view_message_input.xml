@@ -230,7 +230,6 @@
             android:contentDescription="@string/nc_description_send_message_button" />
 
 
-
         <ImageButton
             android:id="@+id/recordAudioButton"
             android:layout_width="48dp"
@@ -250,8 +249,23 @@
             android:layout_alignParentEnd="true"
             android:background="@color/transparent"
             android:src="@drawable/ic_check_24"
-            android:visibility = "visible"
-            android:contentDescription="@string/nc_description_record_voice" />
+            android:visibility = "gone"
+            tools:visibility = "visible"
+            android:contentDescription="@string/nc_send_edit_message" />
+
+        <ImageButton
+            android:id="@+id/clearEditButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_below="@id/quotedChatMessageView"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="48dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/nc_clear_edit_message"
+            android:src="@drawable/ic_clear_24"
+            android:visibility="gone"
+            tools:visibility = "visible"
+            app:layout_constraintEnd_toStartOf="@id/editMessageButton" />
 
         <Space
             android:id="@id/attachmentButtonSpace"
