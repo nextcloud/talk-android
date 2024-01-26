@@ -117,6 +117,7 @@
     <string name="nc_conversation_menu_voice_call">Samtale</string>
     <string name="nc_conversation_settings">Samtale innstillinger</string>
     <string name="nc_conversations_empty">Ta del i en samtale eller start en ny</string>
+    <string name="nc_conversations_empty_details">Si hei til venner og kolleger!</string>
     <string name="nc_copy_message">Kopier</string>
     <string name="nc_create_poll">Opprett avstemning</string>
     <string name="nc_date_header_today">I dag</string>
@@ -126,6 +127,7 @@
     <string name="nc_delete_call">Slett samtale</string>
     <string name="nc_delete_message">Slett</string>
     <string name="nc_demote">Fjern moderatorstatus</string>
+    <string name="nc_description_record_voice">Ta opp talemelding</string>
     <string name="nc_description_send_message_button">Send melding</string>
     <string name="nc_diagnose_account_category_title">Nåværende konto</string>
     <string name="nc_diagnose_account_server">Server</string>
@@ -231,6 +233,7 @@
     <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk &amp; hold for å bruke klikk-for-å-snakke</string>
     <string name="nc_remind">Påminnn meg senere</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
+    <string name="nc_remove_group_and_members">Fjern gruppe og medlemmer</string>
     <string name="nc_remove_participant">Fjern deltaker</string>
     <string name="nc_rename">Endre navn på samtale</string>
     <string name="nc_rename_confirm">Endre navn</string>
@@ -289,6 +292,7 @@
     <string name="nc_settings_proxy_host_title">Mellomserver </string>
     <string name="nc_settings_proxy_port_title">Mellomserver port</string>
     <string name="nc_settings_proxy_type_title">Type mellomserver</string>
+    <string name="nc_settings_read_privacy_desc">Del min lesestatus og vis andres lesestatus</string>
     <string name="nc_settings_reauthorize">Autoriser kontoen på nytt</string>
     <string name="nc_settings_remove">Fjern</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
@@ -304,6 +308,7 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Lys</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_typing_status_desc">Del min skrivestatus og vis andres skrivestatus</string>
     <string name="nc_settings_use_credentials_title">Proxy krever legitimasjon</string>
     <string name="nc_settings_warning">Advarsel</string>
     <string name="nc_settings_wrong_account">Bare gjeldende konto kan reautoriseres</string>
@@ -312,7 +317,9 @@
     <string name="nc_share_text">Delta i samtalen via %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nPassord: %1$s</string>
     <string name="nc_share_to_choose_account">Velg konto</string>
+    <string name="nc_shared_items">Delte elementer</string>
     <string name="nc_shared_items_deck_card">Deck kort</string>
+    <string name="nc_shared_items_empty">Ingen delte elementer</string>
     <string name="nc_shared_items_location">Sted</string>
     <string name="nc_sort_by">Sorter etter</string>
     <string name="nc_start_time">Start tidspunkt</string>
@@ -332,12 +339,19 @@
     <string name="online_status">Online-status</string>
     <string name="openConversations">Åpne samtaler</string>
     <string name="open_in_files_app">Åpne i Filer-appen</string>
+    <string name="polls_end_poll">Avslutt avstemning</string>
+    <string name="polls_multiple_answers">Flere svar</string>
     <string name="polls_options">Valg</string>
+    <string name="polls_private_poll">Privat avstemning</string>
+    <string name="polls_question">Spørsmål</string>
     <string name="polls_results_subtitle">Resultater</string>
     <string name="polls_settings">Innstillinger</string>
     <string name="polls_submit_vote">Stemme</string>
     <string name="raise_hand">Løft hånden</string>
     <string name="reactions_tab_all">Alle</string>
+    <string name="record_cancel_start">Avbryt opptaksstart</string>
+    <string name="record_start_description">Start opptak</string>
+    <string name="record_stop_description">Stopp opptak</string>
     <string name="recording_consent_all">Det kreves samtykke til opptak for alle samtaler</string>
     <string name="recording_consent_for_conversation_description">Krev samtykke til opptak før du blir med i samtalen i denne samtalen</string>
     <string name="recording_consent_for_conversation_title">Samtykke til opptak</string>
@@ -358,6 +372,7 @@
     <string name="send_email">Send e-post</string>
     <string name="send_to">Send til</string>
     <string name="send_to_three_dots">Send til...</string>
+    <string name="send_without_notification">Send uten varsel</string>
     <string name="set">Sett</string>
     <string name="set_status">Velg status</string>
     <string name="set_status_message">Velg statusmelding</string>
