@@ -5,6 +5,7 @@
       <verify-signatures>true</verify-signatures>
       <trusted-artifacts>
          <trust group="com.android.tools.build" name="aapt2" version="8.2.2-10154469" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
+		 <trust group="com.github.nextcloud-deps" name="android-talk-webrtc" version="110.5481.0" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
       </trusted-artifacts>
       <ignored-keys>
          <ignored-key id="C21CE653B639E41A" reason="Key couldn't be downloaded from any key server"/>
