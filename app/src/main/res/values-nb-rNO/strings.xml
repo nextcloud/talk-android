@@ -339,6 +339,7 @@
     <string name="online_status">Online-status</string>
     <string name="openConversations">Åpne samtaler</string>
     <string name="open_in_files_app">Åpne i Filer-appen</string>
+    <string name="polls_add_option">Legg til alternativ</string>
     <string name="polls_end_poll">Avslutt avstemning</string>
     <string name="polls_multiple_answers">Flere svar</string>
     <string name="polls_options">Valg</string>
