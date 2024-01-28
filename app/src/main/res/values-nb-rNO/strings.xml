@@ -135,6 +135,7 @@
     <string name="nc_diagnose_android_version_title">Android-versjon</string>
     <string name="nc_diagnose_app_category_title">App</string>
     <string name="nc_diagnose_app_name_title">App-navn</string>
+    <string name="nc_diagnose_app_users_amount">Registrerte brukere</string>
     <string name="nc_diagnose_battery_optimization_title">Batteri innstillinger</string>
     <string name="nc_diagnose_device_name_title">Enhet</string>
     <string name="nc_diagnose_signaling_mode_extern">Ekstern</string>
@@ -351,6 +352,7 @@
     <string name="raise_hand">Løft hånden</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="record_cancel_start">Avbryt opptaksstart</string>
+    <string name="record_failed_info">Opptaket feilet, vennligst kontakt administratoren din.</string>
     <string name="record_start_description">Start opptak</string>
     <string name="record_stop_description">Stopp opptak</string>
     <string name="recording_consent_all">Det kreves samtykke til opptak for alle samtaler</string>
