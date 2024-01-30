@@ -84,6 +84,7 @@ import android.widget.RelativeLayout.BELOW
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
@@ -893,8 +894,25 @@ class ChatActivity :
                     // unused atm
                 }
 
-                override fun onNext(t: ChatOCSSingleMessage) {
+                override fun onNext(message: ChatOCSSingleMessage) {
                     //unused atm
+                    when(message.meta!!.statusCode){
+                        HTTP_BAD_REQUEST -> {
+                            Toast.makeText(context,
+                                getString(R.string.edit_error_24_hours_old_message),Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        HTTP_FORBIDDEN -> {
+                            Toast.makeText(context,
+                                getString(R.string.conversation_is_read_only),
+                                Toast.LENGTH_SHORT).show()
+                        }
+                        HTTP_NOT_FOUND -> {
+                            Toast.makeText(context,
+                                "Conversation Cannot be Found",
+                                Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
 
                 override fun onError(e: Throwable) {
@@ -904,7 +922,7 @@ class ChatActivity :
                     clearEditUI()
                 }
             })
-        // remove last item from list
+
     }
 
     private fun clearEditUI() {
@@ -912,6 +930,7 @@ class ChatActivity :
         binding.messageInputView.clearEditMessage.visibility = View.GONE
         editableBehaviorSubject.onNext(false)
         binding.messageInputView.inputEditText.setText("")
+
     }
 
     private fun themeMessageInputView() {
@@ -3820,6 +3839,10 @@ class ChatActivity :
             } else if (isPollVotedMessage(currentMessage)) {
                 // delete poll system messages
                 chatMessageIterator.remove()
+            }else if(isEditMessage(currentMessage)){
+               if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)){
+                    chatMessageIterator.remove()
+                }
             }
         }
         return chatMessageMap.values.toList()
@@ -3858,6 +3881,11 @@ class ChatActivity :
         return currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
+    }
+
+    private fun isEditMessage(currentMessage:MutableMap.MutableEntry<String,ChatMessage>):Boolean{
+        return currentMessage.value.parentMessage != null && currentMessage.value.systemMessageType == ChatMessage
+            .SystemMessageType.MESSAGE_EDITED
     }
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
@@ -4672,6 +4700,9 @@ class ChatActivity :
         private const val STATUS_SIZE_IN_DP = 9f
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
+        private const val HTTP_BAD_REQUEST = 400
+        private const val HTTP_FORBIDDEN = 403
+        private const val HTTP_NOT_FOUND = 404
         private const val QUOTED_MESSAGE_IMAGE_MAX_HEIGHT = 96f
         private const val MENTION_AUTO_COMPLETE_ELEVATION = 6f
         private const val MESSAGE_PULL_LIMIT = 100

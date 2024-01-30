@@ -127,6 +127,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "guest_moderator_promoted" -> GUEST_MODERATOR_PROMOTED
             "guest_moderator_demoted" -> GUEST_MODERATOR_DEMOTED
             "message_deleted" -> MESSAGE_DELETED
+            "message_edited" -> ChatMessage.SystemMessageType.MESSAGE_EDITED
             "file_shared" -> FILE_SHARED
             "object_shared" -> OBJECT_SHARED
             "matterbridge_config_added" -> MATTERBRIDGE_CONFIG_ADDED
@@ -193,6 +194,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             GUEST_MODERATOR_PROMOTED -> "guest_moderator_promoted"
             GUEST_MODERATOR_DEMOTED -> "guest_moderator_demoted"
             MESSAGE_DELETED -> "message_deleted"
+            ChatMessage.SystemMessageType.MESSAGE_EDITED -> "message_edited"
             FILE_SHARED -> "file_shared"
             OBJECT_SHARED -> "object_shared"
             MATTERBRIDGE_CONFIG_ADDED -> "matterbridge_config_added"
