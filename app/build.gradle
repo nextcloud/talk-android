@@ -135,7 +135,7 @@ android {
     lint {
         abortOnError false
         disable 'MissingTranslation','PrivateResource'
-        htmlOutput file("$project.buildDir/reports/lint/lint.html")
+        htmlOutput file("$project.layout.buildDirectory/reports/lint/lint.html")
         htmlReport true
     }
 }
@@ -338,14 +338,14 @@ tasks.withType(SpotBugsTask).configureEach { task ->
     dependsOn "compile${variantNameCap}Sources"
 
     excludeFilter = file("${project.rootDir}/spotbugs-filter.xml")
-    classes = fileTree("$project.buildDir/intermediates/javac/${variantName}/classes/")
+    classes = fileTree("$project.layout.buildDirectory/intermediates/javac/${variantName}/classes/")
     reports {
         xml {
             required = true
         }
         html {
             required = true
-            outputLocation = file("$project.buildDir/reports/spotbugs/spotbugs.html")
+            outputLocation = file("$project.layout.buildDirectory/reports/spotbugs/spotbugs.html")
             stylesheet = 'fancy.xsl'
         }
     }
