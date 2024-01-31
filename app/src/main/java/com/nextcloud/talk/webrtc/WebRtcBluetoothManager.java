@@ -51,6 +51,9 @@ import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
 
+import com.nextcloud.talk.utils.ContextExtensionsKt;
+import com.nextcloud.talk.utils.ReceiverFlag;
+
 import org.webrtc.ThreadUtils;
 
 import java.util.List;
@@ -300,7 +303,11 @@ public class WebRtcBluetoothManager {
     }
 
     protected void registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
-        apprtcContext.registerReceiver(receiver, filter);
+        ContextExtensionsKt.registerBroadcastReceiver(
+            apprtcContext,
+            receiver,
+            filter,
+            ReceiverFlag.NotExported);
     }
 
     protected void unregisterReceiver(BroadcastReceiver receiver) {
