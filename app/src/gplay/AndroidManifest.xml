@@ -42,8 +42,7 @@
 
         <service
             android:name=".services.firebase.NCFirebaseMessagingService"
-            android:exported="false"
-            android:foregroundServiceType="phoneCall">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
