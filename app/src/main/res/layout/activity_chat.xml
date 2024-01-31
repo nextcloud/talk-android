@@ -133,6 +133,7 @@
             <include layout="@layout/item_custom_incoming_text_message_shimmer" />
 
             <include layout="@layout/item_custom_incoming_text_message_shimmer" />
+
         </LinearLayout>
 
         <com.stfalcon.chatkit.messages.MessagesList
@@ -258,6 +259,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+            <include
+                layout = "@layout/edit_message_view"
+                android:layout_width = "match_parent"
+                android:layout_height = "wrap_content"
+                android:layout_above = "@id/messageInputView">
+            </include>
 
         <com.nextcloud.talk.ui.MessageInput
             android:id="@+id/messageInputView"
