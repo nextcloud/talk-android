@@ -334,7 +334,8 @@ public interface NcApi {
 
     @FormUrlEncoded
     @PUT
-    Observable<ChatOCSSingleMessage> editChatMessage(@Header("Authorization") String authorization, @Url String url, @Field("message") String message);
+    Observable<ChatOverallSingleMessage> editChatMessage(@Header("Authorization") String authorization, @Url String url, @Field(
+        "message") String message);
 
     @GET
     Observable<Response<ChatShareOverall>> getSharedItems(@Header("Authorization") String authorization, @Url String url, @Query("objectType") String objectType, @Nullable @Query("lastKnownMessageId") Integer lastKnownMessageId, @Nullable @Query("limit") Integer limit);
