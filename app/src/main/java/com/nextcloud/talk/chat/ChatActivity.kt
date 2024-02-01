@@ -84,7 +84,6 @@ import android.widget.RelativeLayout.BELOW
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.SeekBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
@@ -168,7 +167,6 @@ import com.nextcloud.talk.models.domain.ObjectType
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.models.json.chat.ChatOCSSingleMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
@@ -762,12 +760,13 @@ class ChatActivity :
     private fun initMessageInputView() {
         val filters = arrayOfNulls<InputFilter>(1)
         val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
+        binding.editView.editMessageView.visibility = GONE
 
         if (editableBehaviorSubject.value!!) {
             val editableText = Editable.Factory.getInstance().newEditable(editMessage.message)
             binding.messageInputView.inputEditText.text = editableText
             binding.messageInputView.inputEditText.setSelection(editableText.length)
-
+            binding.editView.editMessage.setText(editMessage.message)
         }
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
@@ -835,7 +834,7 @@ class ChatActivity :
             binding.messageInputView.messageSendButton.visibility = View.GONE
             binding.messageInputView.recordAudioButton.visibility = View.GONE
             binding.messageInputView.editMessageButton.visibility = View.VISIBLE
-            binding.messageInputView.clearEditMessage.visibility = View.VISIBLE
+            binding.editView.editMessageView.visibility = View.VISIBLE
         }
 
         if (sharedText.isNotEmpty()) {
@@ -851,13 +850,13 @@ class ChatActivity :
         }
 
         binding.messageInputView.editMessageButton.setOnClickListener {
-            if(editMessage.message == editedTextBehaviorSubject.value!!){
+            if (editMessage.message == editedTextBehaviorSubject.value!!) {
                 clearEditUI()
                 return@setOnClickListener
             }
             editMessageAPI(editMessage, editedMessageText = editedTextBehaviorSubject.value!!)
         }
-        binding.messageInputView.clearEditMessage.setOnClickListener {
+        binding.editView.clearEdit.setOnClickListener {
             clearEditUI()
         }
 
@@ -889,48 +888,33 @@ class ChatActivity :
             ), editedMessageText
         )?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ChatOCSSingleMessage> {
+            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
 
-                override fun onNext(message: ChatOCSSingleMessage) {
-                    //unused atm
-                    when(message.meta!!.statusCode){
-                        HTTP_BAD_REQUEST -> {
-                            Toast.makeText(context,
-                                getString(R.string.edit_error_24_hours_old_message),Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        HTTP_FORBIDDEN -> {
-                            Toast.makeText(context,
-                                getString(R.string.conversation_is_read_only),
-                                Toast.LENGTH_SHORT).show()
-                        }
-                        HTTP_NOT_FOUND -> {
-                            Toast.makeText(context,
-                                "Conversation Cannot be Found",
-                                Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                override fun onNext(messageEdited: ChatOverallSingleMessage) {
+                    message.message = messageEdited.ocs?.data?.parentMessage?.text
+                    adapter?.update(message)
+                    adapter?.notifyDataSetChanged()
+                    clearEditUI()
                 }
 
                 override fun onError(e: Throwable) {
+
                 }
 
                 override fun onComplete() {
-                    clearEditUI()
+
                 }
             })
-
     }
 
     private fun clearEditUI() {
         binding.messageInputView.editMessageButton.visibility = GONE
-        binding.messageInputView.clearEditMessage.visibility = View.GONE
         editableBehaviorSubject.onNext(false)
         binding.messageInputView.inputEditText.setText("")
-
+        binding.editView.editMessageView.visibility = GONE
     }
 
     private fun themeMessageInputView() {
@@ -1004,7 +988,7 @@ class ChatActivity :
         )
 
         adapter?.setLoadMoreListener(this)
-        adapter?.setDateHeadersFormatter { format(it) }
+        adapter?.setDateHeadersFormatter {format(it)}
         adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
         adapter?.registerViewClickListener(
             R.id.playPauseBtn
@@ -3839,10 +3823,8 @@ class ChatActivity :
             } else if (isPollVotedMessage(currentMessage)) {
                 // delete poll system messages
                 chatMessageIterator.remove()
-            }else if(isEditMessage(currentMessage)){
-               if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)){
-                    chatMessageIterator.remove()
-                }
+            } else if (isEditMessage(currentMessage)) {
+                chatMessageIterator.remove()
             }
         }
         return chatMessageMap.values.toList()
@@ -3883,7 +3865,7 @@ class ChatActivity :
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
     }
 
-    private fun isEditMessage(currentMessage:MutableMap.MutableEntry<String,ChatMessage>):Boolean{
+    private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
         return currentMessage.value.parentMessage != null && currentMessage.value.systemMessageType == ChatMessage
             .SystemMessageType.MESSAGE_EDITED
     }

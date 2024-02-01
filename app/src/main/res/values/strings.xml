@@ -792,4 +792,5 @@ How to translate with transifex:
     <string name="nc_clear_edit_message">Clear Edit Message</string>
     <string name="edit_error_24_hours_old_message">Cannot Edit Messages older than 24 hours</string>
     <string name="conversation_is_read_only">Conversation is read Only</string>
+    <string name="nc_edit_message_text">Edit Message Text</string>
 </resources>
