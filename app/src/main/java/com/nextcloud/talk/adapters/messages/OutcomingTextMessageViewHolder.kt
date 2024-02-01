@@ -100,6 +100,13 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         setBubbleOnChatMessage(message)
 
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+        if (message.parentMessage?.id != null && message.systemMessageType == ChatMessage.SystemMessageType
+                .MESSAGE_EDITED
+        ) {
+            binding.messageType.visibility = View.VISIBLE
+        } else {
+            binding.messageType.visibility = View.GONE
+        }
         binding.messageTime.layoutParams = layoutParams
         viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
         binding.messageText.text = processedMessageText
