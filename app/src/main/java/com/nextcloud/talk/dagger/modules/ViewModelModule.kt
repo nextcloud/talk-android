@@ -28,6 +28,8 @@ import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.conversation.viewmodel.ConversationViewModel
 import com.nextcloud.talk.conversation.viewmodel.RenameConversationViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
+import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
+import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
 import com.nextcloud.talk.messagesearch.MessageSearchViewModel
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
@@ -122,6 +124,11 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(ConversationsListViewModel::class)
+    abstract fun conversationsListViewModel(viewModel: ConversationsListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(ChatViewModel::class)
     abstract fun chatViewModel(viewModel: ChatViewModel): ViewModel
 
@@ -144,4 +151,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ConversationViewModel::class)
     abstract fun conversationViewModel(viewModel: ConversationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(InvitationsViewModel::class)
+    abstract fun invitationsViewModel(viewModel: InvitationsViewModel): ViewModel
 }

@@ -104,5 +104,6 @@
     <color name="dialog_background">#FFFFFF</color>
 
     <color name="icon_on_bg_default">#99000000</color>
+    <color name="badge_color">#EF3B02</color>
 
 </resources>

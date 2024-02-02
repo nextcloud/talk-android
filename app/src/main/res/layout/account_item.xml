@@ -99,5 +99,18 @@
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/action_required"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:contentDescription="@null"
+            android:focusable="true"
+            android:padding="@dimen/standard_padding"
+            android:src="@drawable/accent_circle"
+            app:tint="@color/badge_color" />
+
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -59,9 +59,8 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
     @Inject
     var cookieManager: CookieManager? = null
 
-    @JvmField
     @Inject
-    var viewThemeUtils: ViewThemeUtils? = null
+    lateinit var viewThemeUtils: ViewThemeUtils
     private var binding: DialogChooseAccountShareToBinding? = null
     private var dialogView: View? = null
     private var adapter: FlexibleAdapter<AdvancedUserItem>? = null
@@ -121,7 +120,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
                     participant.actorType = Participant.ActorType.USERS
                     participant.actorId = userId
                     participant.displayName = userEntity.displayName
-                    userItems.add(AdvancedUserItem(participant, userEntity, null, viewThemeUtils))
+                    userItems.add(AdvancedUserItem(participant, userEntity, null, viewThemeUtils, 0))
                 }
             }
             adapter!!.addListener(onSwitchItemClickListener)
@@ -158,7 +157,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
     private val onSwitchItemClickListener = FlexibleAdapter.OnItemClickListener { view, position ->
         if (userItems.size > position) {
             val user = userItems[position].user
-            if (userManager!!.setUserAsActive(user).blockingGet()) {
+            if (userManager!!.setUserAsActive(user!!).blockingGet()) {
                 cookieManager!!.cookieStore.removeAll()
                 activity?.recreate()
                 dismiss()

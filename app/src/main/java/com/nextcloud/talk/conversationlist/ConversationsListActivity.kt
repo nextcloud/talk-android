@@ -8,7 +8,7 @@
  * @author Ezhil Shanmugham
  * Copyright (C) 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
  * Copyright (C) 2022 Andy Scherzinger (info@andy-scherzinger.de)
- * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
+ * Copyright (C) 2022-2024 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2017-2020 Mario Danic (mario@lovelyhq.com)
  * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  *
@@ -53,10 +53,12 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -68,6 +70,9 @@ import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -88,10 +93,12 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
+import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationsBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.events.EventStatus
+import com.nextcloud.talk.invitation.InvitationsActivity
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
@@ -170,6 +177,11 @@ class ConversationsListActivity :
     @Inject
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    lateinit var conversationsListViewModel: ConversationsListViewModel
+
     override val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.SEARCH_BAR
 
@@ -206,6 +218,7 @@ class ConversationsListActivity :
             FilterConversationFragment.UNREAD to false
         )
     val searchBehaviorSubject = BehaviorSubject.createDefault(false)
+    private lateinit var accountIconBadge: BadgeDrawable
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -221,6 +234,8 @@ class ConversationsListActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
+        conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
+
         binding = ActivityConversationsBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
@@ -230,6 +245,8 @@ class ConversationsListActivity :
 
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        initObservers()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -279,12 +296,55 @@ class ConversationsListActivity :
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
             searchBehaviorSubject.onNext(false)
             fetchRooms()
+            fetchPendingInvitations()
         } else {
             Log.e(TAG, "userManager.currentUser.blockingGet() returned null")
             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
 
         showSearchOrToolbar()
+    }
+
+    private fun initObservers() {
+        conversationsListViewModel.getFederationInvitationsViewState.observe(this) { state ->
+            when (state) {
+                is ConversationsListViewModel.GetFederationInvitationsStartState -> {
+                    binding.conversationListHintInclude.conversationListHintLayout.visibility = View.GONE
+                }
+
+                is ConversationsListViewModel.GetFederationInvitationsSuccessState -> {
+                    if (state.showInvitationsHint) {
+                        binding.conversationListHintInclude.conversationListHintLayout.visibility = View.VISIBLE
+                    } else {
+                        binding.conversationListHintInclude.conversationListHintLayout.visibility = View.GONE
+                    }
+                }
+
+                is ConversationsListViewModel.GetFederationInvitationsErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
+
+        conversationsListViewModel.showBadgeViewState.observe(this) { state ->
+            when (state) {
+                is ConversationsListViewModel.ShowBadgeStartState -> {
+                    showAccountIconBadge(false)
+                }
+
+                is ConversationsListViewModel.ShowBadgeSuccessState -> {
+                    showAccountIconBadge(state.showBadge)
+                }
+
+                is ConversationsListViewModel.ShowBadgeErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
     }
 
     fun filterConversation() {
@@ -467,6 +527,22 @@ class ConversationsListActivity :
         }
         initSearchView()
         return true
+    }
+
+    @OptIn(ExperimentalBadgeUtils::class)
+    fun showAccountIconBadge(showBadge: Boolean) {
+        if (!::accountIconBadge.isInitialized) {
+            accountIconBadge = BadgeDrawable.create(binding.switchAccountButton.context)
+            accountIconBadge.verticalOffset = BADGE_OFFSET
+            accountIconBadge.horizontalOffset = BADGE_OFFSET
+            accountIconBadge.backgroundColor = resources.getColor(R.color.badge_color, null)
+        }
+
+        if (showBadge) {
+            BadgeUtils.attachBadgeDrawable(accountIconBadge, binding.switchAccountButton)
+        } else {
+            BadgeUtils.detachBadgeDrawable(accountIconBadge, binding.switchAccountButton)
+        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
@@ -673,6 +749,18 @@ class ConversationsListActivity :
             }
     }
 
+    private fun fetchPendingInvitations() {
+        binding.conversationListHintInclude.conversationListHintLayout.setOnClickListener {
+            val intent = Intent(this, InvitationsActivity::class.java)
+            startActivity(intent)
+        }
+
+        // TODO create mvvm, fetch pending invitations for all users and store in database for users, if current user
+        //  has invitation -> show hint, if one or more other users have invitations -> show badge
+
+        conversationsListViewModel.getFederationInvitations()
+    }
+
     private fun initOverallLayout(isConversationListNotEmpty: Boolean) {
         if (isConversationListNotEmpty) {
             if (binding?.emptyLayout?.visibility != View.GONE) {
@@ -857,7 +945,10 @@ class ConversationsListActivity :
             }
             false
         }
-        binding?.swipeRefreshLayoutView?.setOnRefreshListener { fetchRooms() }
+        binding?.swipeRefreshLayoutView?.setOnRefreshListener {
+            fetchRooms()
+            fetchPendingInvitations()
+        }
         binding?.swipeRefreshLayoutView?.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it) }
         binding?.emptyLayout?.setOnClickListener { showNewConversationsScreen() }
         binding?.floatingActionButton?.setOnClickListener {
@@ -1716,5 +1807,6 @@ class ConversationsListActivity :
         const val HTTP_SERVICE_UNAVAILABLE = 503
         const val MAINTENANCE_MODE_HEADER_KEY = "X-Nextcloud-Maintenance-Mode"
         const val REQUEST_POST_NOTIFICATIONS_PERMISSION = 111
+        const val BADGE_OFFSET = 35
     }
 }

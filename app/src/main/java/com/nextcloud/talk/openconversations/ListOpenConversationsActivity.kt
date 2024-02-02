@@ -33,6 +33,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.ActivityOpenConversationsBinding
+import com.nextcloud.talk.openconversations.adapters.OpenConversationsAdapter
 import com.nextcloud.talk.openconversations.data.OpenConversation
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys

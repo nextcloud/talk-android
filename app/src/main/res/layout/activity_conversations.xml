@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Marcel Hibbe
+  ~ Copyright (C) 2023-2024 Marcel Hibbe <dev@mhibbe.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -108,7 +110,8 @@
                     android:layout_centerVertical="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:theme="@style/Theme.MaterialComponents.DayNight.Bridge">
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/switch_account_button"
@@ -215,16 +218,21 @@
         android:visibility="gone"
         app:layout_behavior="com.nextcloud.talk.utils.FABAwareScrollingViewBehavior">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/conversation_list_hint_include"
+                layout="@layout/federated_invitation_hint" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </FrameLayout>
+        </LinearLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

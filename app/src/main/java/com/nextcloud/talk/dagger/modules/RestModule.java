@@ -250,6 +250,7 @@ public class RestModule {
                 .header("User-Agent", ApiUtils.getUserAgent())
                 .header("Accept", "application/json")
                 .header("OCS-APIRequest", "true")
+                .header("ngrok-skip-browser-warning", "true")
                 .method(original.method(), original.body())
                 .build();
 

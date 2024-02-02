@@ -262,6 +262,10 @@
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".invitation.InvitationsActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".lock.LockedActivity"
             android:theme="@style/AppTheme" />
 
