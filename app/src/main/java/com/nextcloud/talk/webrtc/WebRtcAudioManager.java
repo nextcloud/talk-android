@@ -44,6 +44,8 @@ import android.media.AudioManager;
 import android.util.Log;
 
 import com.nextcloud.talk.events.ProximitySensorEvent;
+import com.nextcloud.talk.utils.ContextExtensionsKt;
+import com.nextcloud.talk.utils.ReceiverFlag;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -55,7 +57,7 @@ import java.util.Set;
 
 public class WebRtcAudioManager {
     private static final String TAG = WebRtcAudioManager.class.getSimpleName();
-    private final Context magicContext;
+    private final Context context;
     private final WebRtcBluetoothManager bluetoothManager;
     private final boolean useProximitySensor;
     private final AudioManager audioManager;
@@ -81,7 +83,7 @@ public class WebRtcAudioManager {
     private WebRtcAudioManager(Context context, boolean useProximitySensor) {
         Log.d(TAG, "ctor");
         ThreadUtils.checkIsOnMainThread();
-        magicContext = context;
+        this.context = context;
         audioManager = ((AudioManager) context.getSystemService(Context.AUDIO_SERVICE));
         bluetoothManager = WebRtcBluetoothManager.create(context, this);
         wiredHeadsetReceiver = new WiredHeadsetReceiver();
@@ -339,14 +341,14 @@ public class WebRtcAudioManager {
      * Helper method for receiver registration.
      */
     private void registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
-        magicContext.registerReceiver(receiver, filter);
+        ContextExtensionsKt.registerBroadcastReceiver(context, receiver, filter, ReceiverFlag.NotExported);
     }
 
     /**
      * Helper method for unregistration of an existing receiver.
      */
     private void unregisterReceiver(BroadcastReceiver receiver) {
-        magicContext.unregisterReceiver(receiver);
+        context.unregisterReceiver(receiver);
     }
 
     /**
@@ -375,7 +377,7 @@ public class WebRtcAudioManager {
      * Gets the current earpiece state.
      */
     private boolean hasEarpiece() {
-        return magicContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
     }
 
     /**

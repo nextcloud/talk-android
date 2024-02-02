@@ -152,7 +152,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     remotePath
                 )
             } else {
-                Log.d(TAG, "starting normal upload (not chunked)")
+                Log.d(TAG, "starting normal upload (not chunked) of $fileName")
 
                 uploadSuccess = FileUploader(
                     context,

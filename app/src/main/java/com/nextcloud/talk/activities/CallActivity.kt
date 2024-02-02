@@ -113,6 +113,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationsForRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
+import com.nextcloud.talk.utils.ReceiverFlag
 import com.nextcloud.talk.utils.VibrationUtils.vibrateShort
 import com.nextcloud.talk.utils.animations.PulseAnimation
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
@@ -136,6 +137,7 @@ import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isCallRecordin
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
+import com.nextcloud.talk.utils.registerPermissionHandlerBroadcastReceiver
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingConfirmStopState
@@ -3015,11 +3017,12 @@ class CallActivity : CallBaseActivity() {
                     }
                 }
             }
-            registerReceiver(
+            registerPermissionHandlerBroadcastReceiver(
                 mReceiver,
                 IntentFilter(MICROPHONE_PIP_INTENT_NAME),
                 permissionUtil!!.privateBroadcastPermission,
-                null
+                null,
+                ReceiverFlag.NotExported
             )
             updateUiForPipMode()
         } else {

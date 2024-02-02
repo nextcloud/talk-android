@@ -38,6 +38,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -48,6 +49,8 @@ import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
@@ -96,6 +99,31 @@ class MessageActionsDialog(
         viewThemeUtils.platform.themeDialog(dialogMessageActionsBinding.root)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv3, 1))
+        chatActivity.chatViewModel.checkForNoteToSelf(
+            ApiUtils.getCredentials(user!!.username, user.token),
+            ApiUtils.getUrlForRooms(
+                apiVersion,
+                user.baseUrl
+            ),
+            false
+        )
+        chatActivity.chatViewModel.getNoteToSelfAvaliability.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.NoteToSelfAvaliableState -> {
+                    initMenuAddToNote(
+                        !message.isDeleted && !ConversationUtils.isNoteToSelfConversation(currentConversation),
+                        state.roomToken
+                    )
+                }
+                else -> {
+                    initMenuAddToNote(
+                        false
+                    )
+                }
+            }
+        }
+
         initMenuItemTranslate(
             !message.isDeleted &&
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
@@ -382,6 +410,16 @@ class MessageActionsDialog(
             }
         }
         dialogMessageActionsBinding.menuSaveMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuAddToNote(visible: Boolean, roomToken: String = "") {
+        if (visible) {
+            dialogMessageActionsBinding.menuShareToNote.setOnClickListener {
+                chatActivity.shareToNotes(message, roomToken)
+                dismiss()
+            }
+        }
+        dialogMessageActionsBinding.menuShareToNote.visibility = getVisibility(visible)
     }
 
     private fun getVisibility(visible: Boolean): Int {
