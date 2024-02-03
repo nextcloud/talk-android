@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Account icon</string>
+    <string name="add_to_notes">Add to Notes</string>
     <string name="added_to_favorites">Added conversation %1$s to favourites</string>
     <string name="appbar_search_in">Search in %s</string>
     <string name="audio_call">Audio Call</string>
