@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">أيقونة الحساب </string>
+    <string name="add_to_notes">أضِف إلى الملاحظات</string>
     <string name="added_to_favorites">أضِف المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
     <string name="audio_call">مكالمة صوتية</string>
