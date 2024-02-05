@@ -422,7 +422,10 @@
     <string name="record_failed_info">녹음/녹화가 실패했습니다. 관리자에게 연락해 주세요.</string>
     <string name="record_start_description">녹음/녹화 시작</string>
     <string name="record_stop_description">녹음/녹화 중단</string>
+    <string name="recording_consent_all">모든 통화에서 녹음/녹화 동의 필요</string>
+    <string name="recording_consent_for_conversation_description">이 대화에 참여하기 전 녹음/녹화 동의 필요</string>
     <string name="recording_consent_for_conversation_title">녹음/녹화 동의</string>
+    <string name="recording_consent_title">통화가 녹음/녹화됩니다.</string>
     <string name="recording_settings_title">녹음/녹화 중</string>
     <string name="restrict_join_other_room_while_call">통화 중 다른 대화방에 접속할 수 없습니다</string>
     <string name="save">저장</string>

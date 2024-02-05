@@ -168,7 +168,7 @@
     <string name="nc_diagnose_battery_optimization_title">Batterie-Einstellungen</string>
     <string name="nc_diagnose_device_name_title">Gerät</string>
     <string name="nc_diagnose_dialog_open_checklist">Checkliste zur Fehlerbehebung öffnen</string>
-    <string name="nc_diagnose_dialog_open_diagnose">Diagnosebildschirm öffnen</string>
+    <string name="nc_diagnose_dialog_open_diagnose">Diagnoseseite öffnen</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">dontkillmyapp.com öffnen</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">Neuester Firebase-Push-Token-Abruf</string>
     <string name="nc_diagnose_firebase_push_token_latest_generated">Neueste Firebase-Push-Token-Generation</string>
@@ -300,7 +300,7 @@
     <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_channel_uploads_description">Über den Hochlade-Fortschritt benachrichtigen</string>
     <string name="nc_notification_settings">Benachrichtigungseinstellungen</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">Benachrichtigungsberechtigung und Akkueinstellungen sind korrekt eingerichtet, um Benachrichtigungen zu erhalten. Sollten Sie trotzdem Probleme mit den Benachrichtigungen haben, prüfen Sie bitte, ob die Benachrichtigungskanäle für Anrufe und Nachrichten aktiviert sind. Weitere Hilfe finden Sie unter  DontKillMyApp.com oder in der Checkliste zur Fehlerbehebung. Wenn dies nicht hilft, gehen Sie bitte zum Diagnoseseite und senden Sie einen Fehlerbericht.</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Benachrichtigungsberechtigung und Akkueinstellungen sind korrekt eingerichtet, um Benachrichtigungen zu erhalten. Sollten Sie trotzdem Probleme mit den Benachrichtigungen haben, prüfen Sie bitte, ob die Benachrichtigungskanäle für Anrufe und Nachrichten aktiviert sind. Weitere Hilfe finden Sie unter DontKillMyApp.com oder in der Checkliste zur Fehlerbehebung. Wenn dies nicht hilft, gehen Sie bitte zur Diagnoseseite und senden Sie einen Fehlerbericht.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Fehlerbehebung bei Benachrichtigungen</string>
     <string name="nc_notify_me_always">Immer benachrichtigen</string>
     <string name="nc_notify_me_mention">Bei Erwähnung benachrichtigen</string>
@@ -388,7 +388,7 @@
     <string name="nc_settings_advanced_title">Erweitert</string>
     <string name="nc_settings_appearance">Aussehen</string>
     <string name="nc_settings_call_ringtone">Anrufe</string>
-    <string name="nc_settings_diagnose_subtitle">Den Diagnosebildschirm öffnen, um die Einstellungen zu überprüfen oder einen Fehlerbericht zu erstellen</string>
+    <string name="nc_settings_diagnose_subtitle">Die Diagnoseseite öffnen, um die Einstellungen zu überprüfen oder einen Fehlerbericht zu erstellen</string>
     <string name="nc_settings_diagnose_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Weist die Tastatur an, das personalisierte Lernen zu deaktivieren (ohne Garantien)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-Tastatur</string>

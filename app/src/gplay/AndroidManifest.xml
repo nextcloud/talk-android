@@ -23,6 +23,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+
     <application
         android:name=".application.NextcloudTalkApplication"
         android:allowBackup="true"
@@ -40,8 +42,7 @@
 
         <service
             android:name=".services.firebase.NCFirebaseMessagingService"
-            android:exported="false"
-            android:foregroundServiceType="phoneCall">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

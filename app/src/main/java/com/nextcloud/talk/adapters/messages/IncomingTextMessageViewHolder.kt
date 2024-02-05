@@ -113,6 +113,14 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageText.text = processedMessageText
 
+        if (message.parentMessage?.id != null && message.systemMessageType == ChatMessage.SystemMessageType
+                .MESSAGE_EDITED
+        ) {
+            binding.messageType.visibility = View.VISIBLE
+        } else {
+            binding.messageType.visibility = View.GONE
+        }
+
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         // parent message handling

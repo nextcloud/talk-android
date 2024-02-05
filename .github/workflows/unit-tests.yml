@@ -25,12 +25,12 @@ jobs:
                     distribution: "temurin"
                     java-version: 17
             -   name: Run unit tests with coverage
-                uses: gradle/gradle-build-action@982da8e78c05368c70dac0351bb82647a9e9a5d2 # v2.11.1
+                uses: gradle/gradle-build-action@3b1b3b9a2104c2b47fbae53f3938079c00c9bb87 # v3.0.0
                 with:
                     arguments: testGplayDebugUnit
             -   name: Upload test artifacts
                 if: ${{ failure() }}
-                uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
+                uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
                 with:
                     name: test-results
                     path: app/build/reports/tests/testGplayDebugUnitTest/
