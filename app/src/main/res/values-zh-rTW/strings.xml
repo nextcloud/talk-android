@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">帳號圖示</string>
+    <string name="add_to_notes">新增至筆記</string>
     <string name="added_to_favorites">已新增對話 %1$s 至最愛</string>
     <string name="appbar_search_in">在 %s內搜尋</string>
     <string name="audio_call">音訊通話</string>
