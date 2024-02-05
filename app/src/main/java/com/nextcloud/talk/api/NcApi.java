@@ -24,7 +24,6 @@
 package com.nextcloud.talk.api;
 
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
-import com.nextcloud.talk.models.json.chat.ChatOCSSingleMessage;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage;
 import com.nextcloud.talk.models.json.chat.ChatShareOverall;
@@ -97,14 +96,19 @@ public interface NcApi {
 
      */
     @GET
-    Observable<ResponseBody> getContactsWithSearchParam(@Header("Authorization") String authorization, @Url String url, @Nullable @Query("shareTypes[]") List<String> listOfShareTypes, @QueryMap Map<String, Object> options);
+    Observable<ResponseBody> getContactsWithSearchParam(@Header("Authorization") String authorization,
+                                                        @Url String url,
+                                                        @Nullable @Query("shareTypes[]") List<String> listOfShareTypes,
+                                                        @QueryMap Map<String, Object> options);
 
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
      */
     @GET
-    Observable<RoomsOverall> getRooms(@Header("Authorization") String authorization, @Url String url, @Nullable @Query("includeStatus") Boolean includeStatus);
+    Observable<RoomsOverall> getRooms(@Header("Authorization") String authorization,
+                                      @Url String url,
+                                      @Nullable @Query("includeStatus") Boolean includeStatus);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken
@@ -121,7 +125,9 @@ public interface NcApi {
      */
 
     @POST
-    Observable<RoomOverall> createRoom(@Header("Authorization") String authorization, @Url String url, @QueryMap Map<String, String> options);
+    Observable<RoomOverall> createRoom(@Header("Authorization") String authorization,
+                                       @Url String url,
+                                       @QueryMap Map<String, String> options);
 
     /*
         QueryMap items are as follows:
@@ -132,12 +138,16 @@ public interface NcApi {
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> renameRoom(@Header("Authorization") String authorization, @Url String url, @Field("roomName") String roomName);
+    Observable<GenericOverall> renameRoom(@Header("Authorization") String authorization,
+                                          @Url String url,
+                                          @Field("roomName") String roomName);
 
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> setConversationDescription(@Header("Authorization") String authorization, @Url String url, @Field("description") String description);
+    Observable<GenericOverall> setConversationDescription(@Header("Authorization") String authorization,
+                                                          @Url String url,
+                                                          @Field("description") String description);
 
     /*
         QueryMap items are as follows:
@@ -146,32 +156,48 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/participants
     */
     @POST
-    Observable<AddParticipantOverall> addParticipant(@Header("Authorization") String authorization, @Url String url, @QueryMap Map<String, String> options);
+    Observable<AddParticipantOverall> addParticipant(@Header("Authorization") String authorization,
+                                                     @Url String url,
+                                                     @QueryMap Map<String,
+                                                         String> options);
 
     @POST
-    Observable<GenericOverall> resendParticipantInvitations(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> resendParticipantInvitations(@Header("Authorization") String authorization,
+                                                            @Url String url);
 
     // also used for removing a guest from a conversation
     @Deprecated
     @DELETE
-    Observable<GenericOverall> removeParticipantFromConversation(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
+    Observable<GenericOverall> removeParticipantFromConversation(@Header("Authorization") String authorization,
+                                                                 @Url String url,
+                                                                 @Query("participant") String participantId);
 
     @DELETE
-    Observable<GenericOverall> removeAttendeeFromConversation(@Header("Authorization") String authorization, @Url String url, @Query("attendeeId") Long attendeeId);
+    Observable<GenericOverall> removeAttendeeFromConversation(@Header("Authorization") String authorization,
+                                                              @Url String url,
+                                                              @Query("attendeeId") Long attendeeId);
 
     @Deprecated
     @POST
-    Observable<GenericOverall> promoteUserToModerator(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
+    Observable<GenericOverall> promoteUserToModerator(@Header("Authorization") String authorization,
+                                                      @Url String url,
+                                                      @Query("participant") String participantId);
 
     @Deprecated
     @DELETE
-    Observable<GenericOverall> demoteModeratorToUser(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
+    Observable<GenericOverall> demoteModeratorToUser(@Header("Authorization") String authorization,
+                                                     @Url String url,
+                                                     @Query("participant") String participantId);
 
     @POST
-    Observable<GenericOverall> promoteAttendeeToModerator(@Header("Authorization") String authorization, @Url String url, @Query("attendeeId") Long attendeeId);
+    Observable<GenericOverall> promoteAttendeeToModerator(@Header("Authorization") String authorization,
+                                                          @Url String url,
+                                                          @Query("attendeeId") Long attendeeId);
 
     @DELETE
-    Observable<GenericOverall> demoteAttendeeFromModerator(@Header("Authorization") String authorization, @Url String url, @Query("attendeeId") Long attendeeId);
+    Observable<GenericOverall> demoteAttendeeFromModerator(@Header("Authorization") String authorization,
+                                                           @Url String url,
+                                                           @Query("attendeeId") Long attendeeId);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/participants/self
@@ -202,11 +228,15 @@ public interface NcApi {
     Observable<ParticipantsOverall> getPeersForCall(@Header("Authorization") String authorization, @Url String url);
 
     @GET
-    Observable<ParticipantsOverall> getPeersForCall(@Header("Authorization") String authorization, @Url String url, @QueryMap Map<String, Boolean> fields);
+    Observable<ParticipantsOverall> getPeersForCall(@Header("Authorization") String authorization,
+                                                    @Url String url,
+                                                    @QueryMap Map<String, Boolean> fields);
 
     @FormUrlEncoded
     @POST
-    Observable<RoomOverall> joinRoom(@Nullable @Header("Authorization") String authorization, @Url String url, @Nullable @Field("password") String password);
+    Observable<RoomOverall> joinRoom(@Nullable @Header("Authorization") String authorization,
+                                     @Url String url,
+                                     @Nullable @Field("password") String password);
 
     @DELETE
     Observable<GenericOverall> leaveRoom(@Nullable @Header("Authorization") String authorization, @Url String url);
@@ -217,7 +247,11 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> joinCall(@Nullable @Header("Authorization") String authorization, @Url String url, @Field("flags") Integer inCall, @Field("silent") Boolean callWithoutNotification, @Nullable @Field("recordingConsent") Boolean recordingConsent);
+    Observable<GenericOverall> joinCall(@Nullable @Header("Authorization") String authorization,
+                                        @Url String url,
+                                        @Field("flags") Integer inCall,
+                                        @Field("silent") Boolean callWithoutNotification,
+                                        @Nullable @Field("recordingConsent") Boolean recordingConsent);
 
     /*
     Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
@@ -226,7 +260,8 @@ public interface NcApi {
     Observable<GenericOverall> leaveCall(@Nullable @Header("Authorization") String authorization, @Url String url);
 
     @GET
-    Observable<SignalingSettingsOverall> getSignalingSettings(@Nullable @Header("Authorization") String authorization, @Url String url);
+    Observable<SignalingSettingsOverall> getSignalingSettings(@Nullable @Header("Authorization") String authorization,
+                                                              @Url String url);
 
     /*
         QueryMap items are as follows:
@@ -236,13 +271,16 @@ public interface NcApi {
     */
     @FormUrlEncoded
     @POST
-    Observable<SignalingOverall> sendSignalingMessages(@Nullable @Header("Authorization") String authorization, @Url String url, @Field("messages") String messages);
+    Observable<SignalingOverall> sendSignalingMessages(@Nullable @Header("Authorization") String authorization,
+                                                       @Url String url,
+                                                       @Field("messages") String messages);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
     */
     @GET
-    Observable<SignalingOverall> pullSignalingMessages(@Nullable @Header("Authorization") String authorization, @Url String url);
+    Observable<SignalingOverall> pullSignalingMessages(@Nullable @Header("Authorization") String authorization,
+                                                       @Url String url);
 
      /*
         QueryMap items are as follows:
@@ -260,7 +298,11 @@ public interface NcApi {
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> setUserData(@Header("Authorization") String authorization, @Url String url, @Field("key") String key, @Field("value") String value);
+    Observable<GenericOverall> setUserData(@Header("Authorization") String authorization,
+                                           @Url String url,
+                                           @Field("key") String key,
+                                           @Field("value") String value);
+
 
     /*
         Server URL is: baseUrl + /status.php
@@ -280,14 +322,21 @@ public interface NcApi {
      */
 
     @POST
-    Observable<PushRegistrationOverall> registerDeviceForNotificationsWithNextcloud(@Header("Authorization") String authorization, @Url String url, @QueryMap Map<String, String> options);
+    Observable<PushRegistrationOverall> registerDeviceForNotificationsWithNextcloud(
+        @Header("Authorization") String authorization,
+        @Url String url,
+        @QueryMap Map<String, String> options);
 
     @DELETE
-    Observable<GenericOverall> unregisterDeviceForNotificationsWithNextcloud(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> unregisterDeviceForNotificationsWithNextcloud(
+        @Header("Authorization") String authorization,
+        @Url String url);
 
     @FormUrlEncoded
     @POST
-    Observable<Unit> registerDeviceForNotificationsWithPushProxy(@Url String url, @FieldMap Map<String, String> fields);
+    Observable<Unit> registerDeviceForNotificationsWithPushProxy(@Url String url,
+                                                                 @FieldMap Map<String, String> fields);
+
 
     /*
         QueryMap items are as follows:
@@ -296,15 +345,20 @@ public interface NcApi {
           - "userPublicKey": "{{userPublicKey}}"
     */
     @DELETE
-    Observable<Void> unregisterDeviceForNotificationsWithProxy(@Url String url, @QueryMap Map<String, String> fields);
+    Observable<Void> unregisterDeviceForNotificationsWithProxy(@Url String url,
+                                                               @QueryMap Map<String,String> fields);
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> setPassword(@Header("Authorization") String authorization, @Url String url, @Field("password") String password);
+    Observable<GenericOverall> setPassword(@Header("Authorization") String authorization,
+                                           @Url String url,
+                                           @Field("password") String password);
 
     @FormUrlEncoded
     @PUT
-    Observable<Response<GenericOverall>> setPassword2(@Header("Authorization") String authorization, @Url String url, @Field("password") String password);
+    Observable<Response<GenericOverall>> setPassword2(@Header("Authorization") String authorization,
+                                                      @Url String url,
+                                                      @Field("password") String password);
 
     @GET
     Observable<CapabilitiesOverall> getCapabilities(@Header("Authorization") String authorization, @Url String url);
@@ -320,7 +374,9 @@ public interface NcApi {
          - "lastKnownMessageId", int, use one from X-Chat-Last-Given
    */
     @GET
-    Observable<Response<ChatOverall>> pullChatMessages(@Header("Authorization") String authorization, @Url String url, @QueryMap Map<String, Integer> fields);
+    Observable<Response<ChatOverall>> pullChatMessages(@Header("Authorization") String authorization,
+                                                       @Url String url,
+                                                       @QueryMap Map<String, Integer> fields);
 
     /*
         Fieldmap items are as follows:
@@ -330,70 +386,113 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization, @Url String url, @Field("message") CharSequence message, @Field("actorDisplayName") String actorDisplayName, @Field("replyTo") Integer replyTo, @Field("silent") Boolean sendWithoutNotification);
+    Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization,
+                                               @Url String url,
+                                               @Field("message") CharSequence message,
+                                               @Field("actorDisplayName") String actorDisplayName,
+                                               @Field("replyTo") Integer replyTo,
+                                               @Field("silent") Boolean sendWithoutNotification);
 
     @FormUrlEncoded
     @PUT
-    Observable<ChatOverallSingleMessage> editChatMessage(@Header("Authorization") String authorization, @Url String url, @Field(
-        "message") String message);
+    Observable<ChatOverallSingleMessage> editChatMessage(@Header("Authorization") String authorization,
+                                                         @Url String url,
+                                                         @Field("message") String message);
 
     @GET
-    Observable<Response<ChatShareOverall>> getSharedItems(@Header("Authorization") String authorization, @Url String url, @Query("objectType") String objectType, @Nullable @Query("lastKnownMessageId") Integer lastKnownMessageId, @Nullable @Query("limit") Integer limit);
+    Observable<Response<ChatShareOverall>> getSharedItems(
+        @Header("Authorization") String authorization,
+        @Url String url,
+        @Query("objectType") String objectType,
+        @Nullable @Query("lastKnownMessageId") Integer lastKnownMessageId,
+        @Nullable @Query("limit") Integer limit);
 
     @GET
-    Observable<Response<ChatShareOverviewOverall>> getSharedItemsOverview(@Header("Authorization") String authorization, @Url String url, @Nullable @Query("limit") Integer limit);
+    Observable<Response<ChatShareOverviewOverall>> getSharedItemsOverview(@Header("Authorization") String authorization,
+                                                                          @Url String url,
+                                                                          @Nullable @Query("limit") Integer limit);
 
 
     @GET
-    Observable<MentionOverall> getMentionAutocompleteSuggestions(@Header("Authorization") String authorization, @Url String url, @Query("search") String query, @Nullable @Query("limit") Integer limit, @QueryMap Map<String, String> fields);
+    Observable<MentionOverall> getMentionAutocompleteSuggestions(@Header("Authorization") String authorization,
+                                                                 @Url String url,
+                                                                 @Query("search") String query,
+                                                                 @Nullable @Query("limit") Integer limit,
+                                                                 @QueryMap Map<String, String> fields);
 
     // Url is: /api/{apiVersion}/room/{token}/pin
     @POST
-    Observable<GenericOverall> addConversationToFavorites(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> addConversationToFavorites(@Header("Authorization") String authorization,
+                                                          @Url String url);
 
     // Url is: /api/{apiVersion}/room/{token}/favorites
     @DELETE
-    Observable<GenericOverall> removeConversationFromFavorites(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> removeConversationFromFavorites(@Header("Authorization") String authorization,
+                                                               @Url String url);
 
     @GET
-    Observable<NotificationOverall> getNcNotification(@Header("Authorization") String authorization, @Url String url);
+    Observable<NotificationOverall> getNcNotification(@Header("Authorization") String authorization,
+                                                      @Url String url);
 
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> setNotificationLevel(@Header("Authorization") String authorization, @Url String url, @Field("level") int level);
-
-    @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> setReadOnlyState(@Header("Authorization") String authorization, @Url String url, @Field("state") int state);
-
-    @FormUrlEncoded
-    @POST
-    Observable<GenericOverall> createRemoteShare(@Nullable @Header("Authorization") String authorization, @Url String url, @Field("path") String remotePath, @Field("shareWith") String roomToken, @Field("shareType") String shareType, @Field("talkMetaData") String talkMetaData);
+    Observable<GenericOverall> setNotificationLevel(@Header("Authorization") String authorization,
+                                                    @Url String url,
+                                                    @Field("level") int level);
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> setLobbyForConversation(@Header("Authorization") String authorization, @Url String url, @Field("state") Integer state, @Field("timer") Long timer);
+    Observable<GenericOverall> setReadOnlyState(@Header("Authorization") String authorization,
+                                                @Url String url,
+                                                @Field("state") int state);
+
+    @FormUrlEncoded
+    @POST
+    Observable<GenericOverall> createRemoteShare(@Nullable @Header("Authorization") String authorization,
+                                                 @Url String url,
+                                                 @Field("path") String remotePath,
+                                                 @Field("shareWith") String roomToken,
+                                                 @Field("shareType") String shareType,
+                                                 @Field("talkMetaData") String talkMetaData);
+
+    @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> setLobbyForConversation(@Header("Authorization") String authorization,
+                                                       @Url String url,
+                                                       @Field("state") Integer state,
+                                                       @Field("timer") Long timer);
 
     @POST
-    Observable<GenericOverall> setReadStatusPrivacy(@Header("Authorization") String authorization, @Url String url, @Body RequestBody body);
+    Observable<GenericOverall> setReadStatusPrivacy(@Header("Authorization") String authorization,
+                                                    @Url String url,
+                                                    @Body RequestBody body);
 
     @POST
-    Observable<GenericOverall> setTypingStatusPrivacy(@Header("Authorization") String authorization, @Url String url, @Body RequestBody body);
+    Observable<GenericOverall> setTypingStatusPrivacy(@Header("Authorization") String authorization,
+                                                      @Url String url,
+                                                      @Body RequestBody body);
 
     @POST
-    Observable<ContactsByNumberOverall> searchContactsByPhoneNumber(@Header("Authorization") String authorization, @Url String url, @Body RequestBody search);
+    Observable<ContactsByNumberOverall> searchContactsByPhoneNumber(@Header("Authorization") String authorization,
+                                                                    @Url String url,
+                                                                    @Body RequestBody search);
 
     @PUT
-    Observable<Response<GenericOverall>> uploadFile(@Header("Authorization") String authorization, @Url String url, @Body RequestBody body);
+    Observable<Response<GenericOverall>> uploadFile(@Header("Authorization") String authorization,
+                                                    @Url String url,
+                                                    @Body RequestBody body);
 
     @HEAD
-    Observable<Response<Void>> checkIfFileExists(@Header("Authorization") String authorization, @Url String url);
+    Observable<Response<Void>> checkIfFileExists(@Header("Authorization") String authorization,
+                                                 @Url String url);
 
     @GET
-    Call<ResponseBody> downloadFile(@Header("Authorization") String authorization, @Url String url);
+    Call<ResponseBody> downloadFile(@Header("Authorization") String authorization,
+                                    @Url String url);
 
     @DELETE
-    Observable<ChatOverallSingleMessage> deleteChatMessage(@Header("Authorization") String authorization, @Url String url);
+    Observable<ChatOverallSingleMessage> deleteChatMessage(@Header("Authorization") String authorization,
+                                                           @Url String url);
 
     @DELETE
     Observable<GenericOverall> deleteAvatar(@Header("Authorization") String authorization, @Url String url);
@@ -404,28 +503,40 @@ public interface NcApi {
 
     @Multipart
     @POST
-    Observable<GenericOverall> uploadAvatar(@Header("Authorization") String authorization, @Url String url, @Part MultipartBody.Part attachment);
+    Observable<GenericOverall> uploadAvatar(@Header("Authorization") String authorization,
+                                            @Url String url,
+                                            @Part MultipartBody.Part attachment);
 
     @Multipart
     @POST
-    Observable<RoomOverall> uploadConversationAvatar(@Header("Authorization") String authorization, @Url String url, @Part MultipartBody.Part attachment);
+    Observable<RoomOverall> uploadConversationAvatar(@Header("Authorization") String authorization,
+                                                     @Url String url,
+                                                     @Part MultipartBody.Part attachment);
 
     @GET
-    Observable<UserProfileFieldsOverall> getEditableUserProfileFields(@Header("Authorization") String authorization, @Url String url);
+    Observable<UserProfileFieldsOverall> getEditableUserProfileFields(@Header("Authorization") String authorization,
+                                                                      @Url String url);
 
     @GET
-    Call<ResponseBody> downloadResizedImage(@Header("Authorization") String authorization, @Url String url);
+    Call<ResponseBody> downloadResizedImage(@Header("Authorization") String authorization,
+                                            @Url String url);
 
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> sendLocation(@Header("Authorization") String authorization, @Url String url, @Field("objectType") String objectType, @Field("objectId") String objectId, @Field("metaData") String metaData);
+    Observable<GenericOverall> sendLocation(@Header("Authorization") String authorization,
+                                            @Url String url,
+                                            @Field("objectType") String objectType,
+                                            @Field("objectId") String objectId,
+                                            @Field("metaData") String metaData);
 
     @DELETE
     Observable<GenericOverall> clearChatHistory(@Header("Authorization") String authorization, @Url String url);
 
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> notificationCalls(@Header("Authorization") String authorization, @Url String url, @Field("level") Integer level);
+    Observable<GenericOverall> notificationCalls(@Header("Authorization") String authorization,
+                                                 @Url String url,
+                                                 @Field("level") Integer level);
 
     @GET
     Observable<HoverCardOverall> hoverCard(@Header("Authorization") String authorization, @Url String url);
@@ -433,7 +544,9 @@ public interface NcApi {
     // Url is: /api/{apiVersion}/chat/{token}/read
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> setChatReadMarker(@Header("Authorization") String authorization, @Url String url, @Field("lastReadMessage") int lastReadMessage);
+    Observable<GenericOverall> setChatReadMarker(@Header("Authorization") String authorization,
+                                                 @Url String url,
+                                                 @Field("lastReadMessage") int lastReadMessage);
 
     // Url is: /api/{apiVersion}/chat/{token}/read
     @DELETE
@@ -461,62 +574,100 @@ public interface NcApi {
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> setPredefinedStatusMessage(@Header("Authorization") String authorization, @Url String url, @Field("messageId") String selectedPredefinedMessageId, @Field("clearAt") Long clearAt);
+    Observable<GenericOverall> setPredefinedStatusMessage(@Header("Authorization") String authorization,
+                                                          @Url String url,
+                                                          @Field("messageId") String selectedPredefinedMessageId,
+                                                          @Field("clearAt") Long clearAt);
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> setCustomStatusMessage(@Header("Authorization") String authorization, @Url String url, @Field("statusIcon") String statusIcon, @Field("message") String message, @Field("clearAt") Long clearAt);
+    Observable<GenericOverall> setCustomStatusMessage(@Header("Authorization") String authorization,
+                                                      @Url String url,
+                                                      @Field("statusIcon") String statusIcon,
+                                                      @Field("message") String message,
+                                                      @Field("clearAt") Long clearAt);
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> setStatusType(@Header("Authorization") String authorization, @Url String url, @Field("statusType") String statusType);
+    Observable<GenericOverall> setStatusType(@Header("Authorization") String authorization,
+                                             @Url String url,
+                                             @Field("statusType") String statusType);
 
 
     @POST
-    Observable<GenericOverall> sendReaction(@Header("Authorization") String authorization, @Url String url, @Query("reaction") String reaction);
+    Observable<GenericOverall> sendReaction(@Header("Authorization") String authorization,
+                                            @Url String url,
+                                            @Query("reaction") String reaction);
 
     @DELETE
-    Observable<GenericOverall> deleteReaction(@Header("Authorization") String authorization, @Url String url, @Query("reaction") String reaction);
+    Observable<GenericOverall> deleteReaction(@Header("Authorization") String authorization,
+                                              @Url String url,
+                                              @Query("reaction") String reaction);
 
     @GET
-    Observable<ReactionsOverall> getReactions(@Header("Authorization") String authorization, @Url String url, @Query("reaction") String reaction);
+    Observable<ReactionsOverall> getReactions(@Header("Authorization") String authorization,
+                                              @Url String url,
+                                              @Query("reaction") String reaction);
 
     @GET
-    Observable<UnifiedSearchOverall> performUnifiedSearch(@Header("Authorization") String authorization, @Url String url, @Query("term") String term, @Query("from") String fromUrl, @Query("limit") Integer limit, @Query("cursor") Integer cursor);
+    Observable<UnifiedSearchOverall> performUnifiedSearch(@Header("Authorization") String authorization,
+                                                          @Url String url,
+                                                          @Query("term") String term,
+                                                          @Query("from") String fromUrl,
+                                                          @Query("limit") Integer limit,
+                                                          @Query("cursor") Integer cursor);
 
     @GET
-    Observable<PollOverall> getPoll(@Header("Authorization") String authorization, @Url String url);
+    Observable<PollOverall> getPoll(@Header("Authorization") String authorization,
+                                    @Url String url);
 
     @FormUrlEncoded
     @POST
-    Observable<PollOverall> createPoll(@Header("Authorization") String authorization, @Url String url, @Query("question") String question, @Field("options[]") List<String> options, @Query("resultMode") Integer resultMode, @Query("maxVotes") Integer maxVotes);
+    Observable<PollOverall> createPoll(@Header("Authorization") String authorization,
+                                       @Url String url,
+                                       @Query("question") String question,
+                                       @Field("options[]") List<String> options,
+                                       @Query("resultMode") Integer resultMode,
+                                       @Query("maxVotes") Integer maxVotes);
 
     @FormUrlEncoded
     @POST
-    Observable<PollOverall> votePoll(@Header("Authorization") String authorization, @Url String url, @Field("optionIds[]") List<Integer> optionIds);
+    Observable<PollOverall> votePoll(@Header("Authorization") String authorization,
+                                     @Url String url,
+                                     @Field("optionIds[]") List<Integer> optionIds);
 
     @DELETE
-    Observable<PollOverall> closePoll(@Header("Authorization") String authorization, @Url String url);
+    Observable<PollOverall> closePoll(@Header("Authorization") String authorization,
+                                      @Url String url);
 
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> setMessageExpiration(@Header("Authorization") String authorization, @Url String url, @Field("seconds") Integer seconds);
+    Observable<GenericOverall> setMessageExpiration(@Header("Authorization") String authorization,
+                                                    @Url String url,
+                                                    @Field("seconds") Integer seconds);
 
     @GET
-    Observable<OpenGraphOverall> getOpenGraph(@Header("Authorization") String authorization, @Url String url, @Query("reference") String urlToFindPreviewFor);
+    Observable<OpenGraphOverall> getOpenGraph(@Header("Authorization") String authorization,
+                                              @Url String url,
+                                              @Query("reference") String urlToFindPreviewFor);
 
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> startRecording(@Header("Authorization") String authorization, @Url String url, @Field("status") Integer status);
+    Observable<GenericOverall> startRecording(@Header("Authorization") String authorization,
+                                              @Url String url,
+                                              @Field("status") Integer status);
 
     @DELETE
-    Observable<GenericOverall> stopRecording(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> stopRecording(@Header("Authorization") String authorization,
+                                             @Url String url);
 
     @POST
-    Observable<GenericOverall> requestAssistance(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> requestAssistance(@Header("Authorization") String authorization,
+                                                 @Url String url);
 
     @DELETE
-    Observable<GenericOverall> withdrawRequestAssistance(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> withdrawRequestAssistance(@Header("Authorization") String authorization,
+                                                         @Url String url);
 
     @POST
     Observable<GenericOverall> sendCommonPostRequest(@Header("Authorization") String authorization, @Url String url);
@@ -526,22 +677,33 @@ public interface NcApi {
 
 
     @POST
-    Observable<TranslationsOverall> translateMessage(@Header("Authorization") String authorization, @Url String url, @Query("text") String text, @Query("toLanguage") String toLanguage, @Nullable @Query("fromLanguage") String fromLanguage);
+    Observable<TranslationsOverall> translateMessage(@Header("Authorization") String authorization,
+                                                     @Url String url,
+                                                     @Query("text") String text,
+                                                     @Query("toLanguage") String toLanguage,
+                                                     @Nullable @Query("fromLanguage") String fromLanguage);
 
     @GET
-    Observable<LanguagesOverall> getLanguages(@Header("Authorization") String authorization, @Url String url);
+    Observable<LanguagesOverall> getLanguages(@Header("Authorization") String authorization,
+                                              @Url String url);
 
     @GET
-    Observable<ReminderOverall> getReminder(@Header("Authorization") String authorization, @Url String url);
+    Observable<ReminderOverall> getReminder(@Header("Authorization") String authorization,
+                                            @Url String url);
 
     @DELETE
-    Observable<GenericOverall> deleteReminder(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> deleteReminder(@Header("Authorization") String authorization,
+                                              @Url String url);
 
     @FormUrlEncoded
     @POST
-    Observable<ReminderOverall> setReminder(@Header("Authorization") String authorization, @Url String url, @Field("timestamp") int timestamp);
+    Observable<ReminderOverall> setReminder(@Header("Authorization") String authorization,
+                                            @Url String url,
+                                            @Field("timestamp") int timestamp);
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> setRecordingConsent(@Header("Authorization") String authorization, @Url String url, @Field("recordingConsent") int recordingConsent);
+    Observable<GenericOverall> setRecordingConsent(@Header("Authorization") String authorization,
+                                                   @Url String url,
+                                                   @Field("recordingConsent") int recordingConsent);
 }

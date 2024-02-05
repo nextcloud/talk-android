@@ -835,6 +835,7 @@ class ChatActivity :
             binding.messageInputView.recordAudioButton.visibility = View.GONE
             binding.messageInputView.editMessageButton.visibility = View.VISIBLE
             binding.editView.editMessageView.visibility = View.VISIBLE
+            binding.messageInputView.attachmentButton.visibility = View.GONE
         }
 
         if (sharedText.isNotEmpty()) {
@@ -885,7 +886,8 @@ class ChatActivity :
                 conversationUser?.baseUrl,
                 roomToken,
                 message?.id
-            ), editedMessageText
+            ),
+            editedMessageText
         )?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ChatOverallSingleMessage> {
@@ -894,6 +896,29 @@ class ChatActivity :
                 }
 
                 override fun onNext(messageEdited: ChatOverallSingleMessage) {
+                    when (messageEdited.ocs?.meta?.statusCode) {
+                        HTTP_BAD_REQUEST -> {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.edit_error_24_hours_old_message),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        HTTP_FORBIDDEN -> {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.conversation_is_read_only),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        HTTP_NOT_FOUND -> {
+                            Snackbar.make(
+                                binding.root,
+                                "Conversation not found",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                    }
                     message.message = messageEdited.ocs?.data?.parentMessage?.text
                     adapter?.update(message)
                     adapter?.notifyDataSetChanged()
@@ -901,11 +926,9 @@ class ChatActivity :
                 }
 
                 override fun onError(e: Throwable) {
-
                 }
 
                 override fun onComplete() {
-
                 }
             })
     }
@@ -915,6 +938,7 @@ class ChatActivity :
         editableBehaviorSubject.onNext(false)
         binding.messageInputView.inputEditText.setText("")
         binding.editView.editMessageView.visibility = GONE
+        binding.messageInputView.attachmentButton.visibility = View.VISIBLE
     }
 
     private fun themeMessageInputView() {
@@ -988,7 +1012,7 @@ class ChatActivity :
         )
 
         adapter?.setLoadMoreListener(this)
-        adapter?.setDateHeadersFormatter {format(it)}
+        adapter?.setDateHeadersFormatter { format(it) }
         adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
         adapter?.registerViewClickListener(
             R.id.playPauseBtn
@@ -1084,7 +1108,6 @@ class ChatActivity :
             R.layout.item_system_message,
             this
         )
-
         messageHolders.registerContentType(
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
             UnreadNoticeMessageViewHolder::class.java,
@@ -4333,7 +4356,6 @@ class ChatActivity :
     }
 
     private fun showMicrophoneButton(show: Boolean) {
-
         if (show && CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "voice-message-sharing")) {
             Log.d(TAG, "Microphone shown")
             binding.messageInputView.messageSendButton.visibility = View.GONE

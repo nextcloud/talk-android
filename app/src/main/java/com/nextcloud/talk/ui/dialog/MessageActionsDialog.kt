@@ -108,7 +108,7 @@ class MessageActionsDialog(
                 hasUserActorId(message) &&
                 currentConversation?.type != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
-        initMenuEditMessage(CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "edit-messages"))
+        initMenuEditMessage(CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "edit-messages") && !message.isDeleted)
         initMenuDeleteMessage(showMessageDeletionButton)
         initMenuForwardMessage(
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&

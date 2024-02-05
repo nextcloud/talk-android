@@ -794,4 +794,6 @@ How to translate with transifex:
     <string name="conversation_is_read_only">Conversation is read Only</string>
     <string name="nc_edit_message_text">Edit Message Text</string>
     <string name="hint_edited_message">(edited)</string>
+    <string name="nc_conversation_not_found">Conversation not found</string>
+
 </resources>

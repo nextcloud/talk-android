@@ -43,7 +43,7 @@ class MessageInput : MessageInput {
     lateinit var sendVoiceRecording: ImageView
     lateinit var micInputCloud: MicInputCloud
     lateinit var playPauseBtn: MaterialButton
-    lateinit var editMessageButton:ImageButton
+    lateinit var editMessageButton: ImageButton
     lateinit var seekBar: SeekBar
 
     constructor(context: Context?) : super(context) {
