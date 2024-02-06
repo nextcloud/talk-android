@@ -27,7 +27,7 @@ package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.ChatRepository
-import com.nextcloud.talk.chat.data.ChatRepositoryImpl
+import com.nextcloud.talk.chat.data.network.NetworkChatRepositoryImpl
 import com.nextcloud.talk.conversation.repository.ConversationRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
@@ -146,7 +146,7 @@ class RepositoryModule {
 
     @Provides
     fun provideChatRepository(ncApi: NcApi): ChatRepository {
-        return ChatRepositoryImpl(ncApi)
+        return NetworkChatRepositoryImpl(ncApi)
     }
 
     @Provides

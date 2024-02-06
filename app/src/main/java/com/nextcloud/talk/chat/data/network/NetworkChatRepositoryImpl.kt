@@ -18,18 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.chat.data
+package com.nextcloud.talk.chat.data.network
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
+import retrofit2.Response
 
-class ChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
+class NetworkChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
     override fun getRoom(user: User, roomToken: String): Observable<ConversationModel> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv3, 1))
@@ -119,5 +123,50 @@ class ChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
         metadata: String
     ): Observable<GenericOverall> {
         return ncApi.sendLocation(credentials, url, objectType, objectId, metadata).map { it }
+    }
+
+    override fun leaveRoom(credentials: String, url: String): Observable<GenericOverall> {
+        return ncApi.leaveRoom(credentials, url).map { it }
+    }
+
+    override fun sendChatMessage(
+        credentials: String,
+        url: String,
+        message: CharSequence,
+        displayName: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean
+    ): Observable<GenericOverall> {
+        return ncApi.sendChatMessage(credentials, url, message, displayName, replyTo, sendWithoutNotification).map {
+            it
+        }
+    }
+
+    override fun pullChatMessages(
+        credentials: String,
+        url: String,
+        fieldMap: HashMap<String, Int>
+    ): Observable<Response<*>> {
+        return ncApi.pullChatMessages(credentials, url, fieldMap).map { it }
+    }
+
+    override fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage> {
+        return ncApi.deleteChatMessage(credentials, url).map { it }
+    }
+
+    override fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall> {
+        return ncApi.createRoom(credentials, url, map).map { it }
+    }
+
+    override fun setChatReadMarker(
+        credentials: String,
+        url: String,
+        previousMessageId: Int
+    ): Observable<GenericOverall> {
+        return ncApi.setChatReadMarker(credentials, url, previousMessageId).map { it }
+    }
+
+    override fun editChatMessage(credentials: String, url: String, text: String): Observable<ChatOverallSingleMessage> {
+        return ncApi.editChatMessage(credentials, url, text).map { it }
     }
 }

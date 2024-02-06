@@ -22,11 +22,15 @@ package com.nextcloud.talk.chat.data
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
 import io.reactivex.Observable
+import retrofit2.Response
 
+@Suppress("LongParameterList", "TooManyFunctions")
 interface ChatRepository {
     fun getRoom(user: User, roomToken: String): Observable<ConversationModel>
     fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel>
@@ -47,4 +51,18 @@ interface ChatRepository {
         objectId: String,
         metadata: String
     ): Observable<GenericOverall>
+    fun leaveRoom(credentials: String, url: String): Observable<GenericOverall>
+    fun sendChatMessage(
+        credentials: String,
+        url: String,
+        message: CharSequence,
+        displayName: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean
+    ): Observable<GenericOverall>
+    fun pullChatMessages(credentials: String, url: String, fieldMap: HashMap<String, Int>): Observable<Response<*>>
+    fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage>
+    fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall>
+    fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
+    fun editChatMessage(credentials: String, url: String, text: String): Observable<ChatOverallSingleMessage>
 }
