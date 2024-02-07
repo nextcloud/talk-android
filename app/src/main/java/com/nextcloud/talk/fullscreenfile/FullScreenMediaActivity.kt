@@ -44,6 +44,7 @@ import androidx.core.view.marginBottom
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
+import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -165,7 +166,10 @@ class FullScreenMediaActivity : AppCompatActivity() {
     }
 
     private fun initializePlayer() {
-        player = ExoPlayer.Builder(applicationContext).build()
+        player = ExoPlayer.Builder(applicationContext)
+            .setAudioAttributes(AudioAttributes.DEFAULT, true)
+            .setHandleAudioBecomingNoisy(true)
+            .build()
         binding.playerView.player = player
     }
 
@@ -202,6 +206,7 @@ class FullScreenMediaActivity : AppCompatActivity() {
         windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         supportActionBar?.show()
     }
+
     private fun applyWindowInsets() {
         val playerView = binding.playerView
         val exoControls = playerView.findViewById<FrameLayout>(R.id.exo_bottom_bar)

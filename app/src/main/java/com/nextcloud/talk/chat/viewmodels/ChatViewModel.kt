@@ -48,6 +48,11 @@ class ChatViewModel @Inject constructor(private val repository: ChatRepository) 
     open class GetReminderExistState(val reminder: Reminder) : ViewState
 
     private val _getReminderExistState: MutableLiveData<ViewState> = MutableLiveData(GetReminderStartState)
+
+    var isPausedDueToBecomingNoisy = false
+    var receiverRegistered = false
+    var receiverUnregistered = false
+
     val getReminderExistState: LiveData<ViewState>
         get() = _getReminderExistState
 
