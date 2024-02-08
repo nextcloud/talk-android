@@ -144,6 +144,7 @@
     <string name="nc_expire_message_one_day">1日</string>
     <string name="nc_expire_message_one_hour">1時間</string>
     <string name="nc_expire_message_one_week">1週間</string>
+    <string name="nc_expire_messages_explanation">チャットメッセージは、一定時間経過後に期限切れにすることができます。注意: チャットで共有されたファイルは、ファイル所有者は削除されませんが、会話では共有されなくなります。</string>
     <string name="nc_external_server_failed">シグナリング設定を取得できませんでした</string>
     <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。Webブラウザー経由で会話への参加を試みてください。</string>
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
@@ -377,6 +378,7 @@
     <string name="open_in_files_app">アプリでファイルを開く</string>
     <string name="play_pause_voice_message">音声メッセージを再生／一時停止</string>
     <string name="polls_add_option">オプションを追加</string>
+    <string name="polls_end_poll">投票を終了する</string>
     <string name="polls_options">オプション</string>
     <string name="polls_private_poll">プライベート投票</string>
     <string name="polls_results_subtitle">結果</string>
@@ -388,7 +390,10 @@
     <string name="record_cancel_start">録画開始をキャンセル</string>
     <string name="record_start_description">録画を開始</string>
     <string name="record_stop_description">録画を停止</string>
+    <string name="recording_consent_all">全ての通話には録音の同意が必要です。</string>
+    <string name="recording_consent_for_conversation_description">この会話に参加する前に、録音の同意が必要です。</string>
     <string name="recording_consent_for_conversation_title">レコーディングの同意</string>
+    <string name="recording_consent_title">通話は録音されるかもしれません。</string>
     <string name="recording_settings_title">記録中</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">信頼できるサーバーのみと同期</string>
@@ -417,6 +422,7 @@
     <string name="shared_items_file">ファイル</string>
     <string name="shared_items_media">メディア</string>
     <string name="shared_items_other">その他</string>
+    <string name="shared_items_poll">投票</string>
     <string name="shared_items_voice">音声番号</string>
     <string name="starred">お気に入り</string>
     <string name="startCallForbidden">通話を開始することが許可されていません</string>
@@ -436,6 +442,7 @@
     <string name="today">今日</string>
     <string name="tomorrow">明日</string>
     <string name="translate">翻訳</string>
+    <string name="translation_copy_translated_text">翻訳されたテキストをコピー</string>
     <string name="translation_detect_language">言語を検出する</string>
     <string name="translation_device_settings">デバイスの設定</string>
     <string name="translation_error_message">言語を検出できませんでした</string>
