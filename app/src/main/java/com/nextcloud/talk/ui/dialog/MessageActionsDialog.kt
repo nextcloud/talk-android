@@ -51,6 +51,7 @@ import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
@@ -78,6 +79,9 @@ class MessageActionsDialog(
     @Inject
     lateinit var reactionsRepository: ReactionsRepository
 
+    @Inject
+    lateinit var dateUtils: DateUtils
+
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
 
     private lateinit var popup: EmojiPopup
@@ -87,6 +91,11 @@ class MessageActionsDialog(
 
     private val messageHasRegularText = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message
         .getCalculateMessageType() && !message.isDeleted
+
+    private val isMessageEditable = CapabilitiesUtilNew.hasSpreedFeatureCapability(
+        user,
+        "edit-messages"
+    ) && !message.isDeleted
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,6 +138,7 @@ class MessageActionsDialog(
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
                 CapabilitiesUtilNew.isTranslationsSupported(user)
         )
+        initMenuEditorDetails(message.lastEditTimestamp != 0L && isMessageEditable)
         initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(
             message.replyable &&
@@ -136,7 +146,7 @@ class MessageActionsDialog(
                 hasUserActorId(message) &&
                 currentConversation?.type != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
-        initMenuEditMessage(CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "edit-messages"))
+        initMenuEditMessage(isMessageEditable)
         initMenuDeleteMessage(showMessageDeletionButton)
         initMenuForwardMessage(
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
@@ -318,13 +328,13 @@ class MessageActionsDialog(
                 dismiss()
             }
         }
-
         dialogMessageActionsBinding.menuDeleteMessage.visibility = getVisibility(visible)
     }
 
     private fun initMenuEditMessage(visible: Boolean) {
         dialogMessageActionsBinding.menuEditMessage.setOnClickListener {
             chatActivity.editMessage(message)
+            Log.d("EDIT MESSAGE", "$message")
             dismiss()
         }
 
@@ -351,6 +361,16 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuReplyToMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuEditorDetails(showEditorDetails: Boolean) {
+        if (showEditorDetails) {
+            val editedTime = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
+            val editorName = "Edited by " + message.lastEditActorDisplayName
+            dialogMessageActionsBinding.editorName.setText(editorName)
+            dialogMessageActionsBinding.editedTime.setText(editedTime)
+        }
+        dialogMessageActionsBinding.menuMessageEditedInfo.visibility = getVisibility(showEditorDetails)
     }
 
     private fun initMenuItemCopy(visible: Boolean) {
