@@ -128,6 +128,41 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/menu_message_edited_info"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_sheet_item_height"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            tools:ignore="UseCompoundDrawables">
+
+            <TextView
+                android:id="@+id/editor_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                tools:text="@string/nc_edited_by_admin"
+                android:textAlignment="viewStart"
+                android:textColor="@color/high_emphasis_text"
+                android:textSize="@dimen/bottom_sheet_text_size" />
+
+            <TextView
+                android:id="@+id/edited_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                tools:text="12:30 AM"
+                android:textAlignment="viewStart"
+                android:textColor="@color/high_emphasis_text"
+                android:textSize="@dimen/bottom_sheet_text_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/menu_reply_to_message"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_sheet_item_height"

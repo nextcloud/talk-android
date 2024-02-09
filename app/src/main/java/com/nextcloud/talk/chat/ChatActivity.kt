@@ -922,6 +922,13 @@ class ChatActivity :
                     message.message = messageEdited.ocs?.data?.parentMessage?.text
                     adapter?.update(message)
                     adapter?.notifyDataSetChanged()
+
+                    // val inflater = LayoutInflater.from(context)
+                    // val outgoingTextViewLayout = inflater.inflate(R.layout.item_custom_incoming_text_message, null)
+                    // val messageType = outgoingTextViewLayout.findViewById<TextView>(R.id.messageType)
+                    // val messageTime = outgoingTextViewLayout.findViewById<TextView>(R.id.messageTime)
+                    // messageType.visibility = View.VISIBLE
+                    // messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
                     clearEditUI()
                 }
 
@@ -2791,8 +2798,9 @@ class ChatActivity :
         }
     }
 
-    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "") {
+    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "", token: String = "") {
         var metaData = ""
+        var room = ""
 
         if (!participantPermissions.hasChatPermission()) {
             Log.w(TAG, "uploading file(s) is forbidden because of missing attendee permissions")
@@ -2807,11 +2815,13 @@ class ChatActivity :
             metaData = "{\"caption\":\"$caption\"}"
         }
 
+        if (token == "") room = roomToken else room = token
+
         try {
             require(fileUri.isNotEmpty())
             UploadAndShareFilesWorker.upload(
                 fileUri,
-                roomToken,
+                room,
                 currentConversation?.displayName!!,
                 metaData
             )
@@ -4284,6 +4294,82 @@ class ChatActivity :
             downloadFileToCache(message, false) {
                 showSaveToStorageWarning(message)
             }
+        }
+    }
+
+    fun shareToNotes(message: ChatMessage, roomToken: String) {
+        val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+        val type = message.getCalculateMessageType()
+        var shareUri: Uri? = null
+        var data: HashMap<String?, String?>?
+        var metaData: String = ""
+        var objectId: String = ""
+        if (message.hasFileAttachment()) {
+            val filename = message.selectedIndividualHashMap!!["name"]
+            path = applicationContext.cacheDir.absolutePath + "/" + filename
+            shareUri = FileProvider.getUriForFile(
+                this,
+                BuildConfig.APPLICATION_ID,
+                File(path)
+            )
+
+            this.grantUriPermission(
+                applicationContext.packageName,
+                shareUri,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        } else if (message.hasGeoLocation()) {
+            data = message.messageParameters?.get("object")
+            objectId = data?.get("id")!!
+            val name = data.get("name")!!
+            val lat = data.get("latitude")!!
+            val lon = data.get("longitude")!!
+            metaData =
+                "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
+                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+        }
+
+        when (type) {
+            ChatMessage.MessageType.VOICE_MESSAGE -> {
+                uploadFile(shareUri.toString(), true, token = roomToken)
+                Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+            }
+            ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE -> {
+                val caption = if (message.message != "{file}") message.message else ""
+                if (null != shareUri) {
+                    try {
+                        context.contentResolver.openInputStream(shareUri)?.close()
+                        uploadFile(shareUri.toString(), false, caption!!, roomToken)
+                        Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                    } catch (e: java.lang.Exception) {
+                        Log.w(TAG, "File corresponding to the uri does not exist " + shareUri.toString())
+                        downloadFileToCache(message, false) {
+                            uploadFile(shareUri.toString(), false, caption!!, roomToken)
+                            Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+            ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE -> {
+                chatViewModel.shareLocationToNotes(
+                    credentials!!,
+                    ApiUtils.getUrlToSendLocation(apiVersion, conversationUser!!.baseUrl, roomToken),
+                    "geo-location",
+                    objectId,
+                    metaData
+                )
+                Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+            }
+            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
+                chatViewModel.shareToNotes(
+                    credentials!!,
+                    ApiUtils.getUrlForChat(apiVersion, conversationUser!!.baseUrl, roomToken),
+                    message.message!!,
+                    conversationUser!!.displayName!!
+                )
+                Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+            }
+            else -> {}
         }
     }
 
