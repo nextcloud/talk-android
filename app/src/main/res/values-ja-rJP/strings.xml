@@ -109,6 +109,7 @@
     <string name="nc_conversations_empty">会話に参加するか、新しいのを開始</string>
     <string name="nc_conversations_empty_details">友達や同僚に挨拶しましょう！</string>
     <string name="nc_copy_message">コピー</string>
+    <string name="nc_create_poll">投票を作成</string>
     <string name="nc_date_header_today">今日</string>
     <string name="nc_date_header_yesterday">昨日</string>
     <string name="nc_delete">削除</string>
@@ -331,6 +332,7 @@
     <string name="nc_settings_theme_key">テーマ</string>
     <string name="nc_settings_theme_light">ライト</string>
     <string name="nc_settings_theme_title">テーマ</string>
+    <string name="nc_settings_typing_status_desc">自分のタイピング状況を共有し、他の人のタイピング状況を表示する</string>
     <string name="nc_settings_use_credentials_title">プロキシは資格情報を必要とします</string>
     <string name="nc_settings_warning">警告</string>
     <string name="nc_settings_wrong_account">現在のアカウントのみ再認可できます</string>
@@ -379,8 +381,10 @@
     <string name="play_pause_voice_message">音声メッセージを再生／一時停止</string>
     <string name="polls_add_option">オプションを追加</string>
     <string name="polls_end_poll">投票を終了する</string>
+    <string name="polls_multiple_answers">複数の答え</string>
     <string name="polls_options">オプション</string>
     <string name="polls_private_poll">プライベート投票</string>
+    <string name="polls_question">質問</string>
     <string name="polls_results_subtitle">結果</string>
     <string name="polls_settings">設定</string>
     <string name="polls_submit_vote">投票</string>
