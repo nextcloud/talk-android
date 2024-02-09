@@ -920,6 +920,7 @@ class ChatActivity :
                         }
                     }
                     message.message = messageEdited.ocs?.data?.parentMessage?.text
+                    message.lastEditTimestamp = System.currentTimeMillis()
                     adapter?.update(message)
                     adapter?.notifyDataSetChanged()
 
