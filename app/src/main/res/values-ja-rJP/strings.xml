@@ -392,6 +392,7 @@
     <string name="reactions_tab_all">すべて</string>
     <string name="read_storage_no_permission">ストレージからのファイル共有は権限がなければ不可能です</string>
     <string name="record_cancel_start">録画開始をキャンセル</string>
+    <string name="record_failed_info">レコーディングが失敗しました。あなたの管理者に連絡してください。</string>
     <string name="record_start_description">録画を開始</string>
     <string name="record_stop_description">録画を停止</string>
     <string name="recording_consent_all">全ての通話には録音の同意が必要です。</string>
