@@ -920,6 +920,7 @@ class ChatActivity :
                         }
                     }
                     message.message = messageEdited.ocs?.data?.parentMessage?.text
+                    message.lastEditTimestamp = System.currentTimeMillis()
                     adapter?.update(message)
                     adapter?.notifyDataSetChanged()
 
@@ -3857,6 +3858,10 @@ class ChatActivity :
                 // delete poll system messages
                 chatMessageIterator.remove()
             } else if (isEditMessage(currentMessage)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
+                    setMessageAsEdited(currentMessage.value.parentMessage)
+                }
+
                 chatMessageIterator.remove()
             }
         }
@@ -4456,6 +4461,17 @@ class ChatActivity :
     private fun setMessageAsDeleted(message: IMessage?) {
         val messageTemp = message as ChatMessage
         messageTemp.isDeleted = true
+
+        messageTemp.isOneToOneConversation =
+            currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        messageTemp.activeUser = conversationUser
+
+        adapter?.update(messageTemp)
+    }
+
+    private fun setMessageAsEdited(message: IMessage?) {
+        val messageTemp = message as ChatMessage
+        messageTemp.lastEditTimestamp = message.timestamp
 
         messageTemp.isOneToOneConversation =
             currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
