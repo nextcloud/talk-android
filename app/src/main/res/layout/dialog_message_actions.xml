@@ -146,6 +146,8 @@
                 tools:text="@string/nc_edited_by_admin"
                 android:textAlignment="viewStart"
                 android:textColor="@color/high_emphasis_text"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textSize="@dimen/bottom_sheet_text_size" />
 
             <TextView
@@ -189,40 +191,6 @@
                 android:paddingStart="@dimen/standard_double_padding"
                 android:paddingEnd="@dimen/standard_padding"
                 android:text="@string/nc_reply"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/menu_edit_message"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-
-            <ImageView
-                android:id="@+id/menu_icon_edit_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/edit_message_icon_description"
-                android:paddingStart="@dimen/standard_padding"
-                android:paddingEnd="@dimen/zero"
-                android:src="@drawable/ic_edit_24"
-                app:tint="@color/high_emphasis_menu_icon" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/menu_text_edit_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
-                android:paddingEnd="@dimen/standard_padding"
-                android:text="@string/nc_edit_message"
                 android:textAlignment="viewStart"
                 android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
@@ -520,6 +488,41 @@
                 android:paddingStart="@dimen/standard_double_padding"
                 android:paddingEnd="@dimen/standard_padding"
                 android:text="@string/open_in_files_app"
+                android:textAlignment="viewStart"
+                android:textColor="@color/high_emphasis_text"
+                android:textSize="@dimen/bottom_sheet_text_size" />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/menu_edit_message"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_sheet_item_height"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/menu_icon_edit_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/edit_message_icon_description"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/zero"
+                android:src="@drawable/ic_edit_24"
+                app:tint="@color/high_emphasis_menu_icon" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/menu_text_edit_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                android:text="@string/nc_edit_message"
                 android:textAlignment="viewStart"
                 android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />

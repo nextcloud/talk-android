@@ -61,6 +61,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.Date
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -92,10 +93,19 @@ class MessageActionsDialog(
     private val messageHasRegularText = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message
         .getCalculateMessageType() && !message.isDeleted
 
+    private val isOlderThanTwentyFourHours = message.createdAt.before(
+        Date(
+            System.currentTimeMillis() -
+                AGE_THRESHOLD_FOR_EDIT_MESSAGE
+        )
+    )
+
+    private val isUserAllowedToEdit = chatActivity.userAllowedByPrivilages(message)
+
     private val isMessageEditable = CapabilitiesUtilNew.hasSpreedFeatureCapability(
         user,
         "edit-messages"
-    ) && !message.isDeleted
+    ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -138,7 +148,7 @@ class MessageActionsDialog(
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
                 CapabilitiesUtilNew.isTranslationsSupported(user)
         )
-        initMenuEditorDetails(message.lastEditTimestamp != 0L && isMessageEditable)
+        initMenuEditorDetails(message.lastEditTimestamp != 0L && !message.isDeleted)
         initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(
             message.replyable &&
@@ -366,7 +376,7 @@ class MessageActionsDialog(
     private fun initMenuEditorDetails(showEditorDetails: Boolean) {
         if (showEditorDetails) {
             val editedTime = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
-            val editorName = "Edited by " + message.lastEditActorDisplayName
+            val editorName = context.getString(R.string.nc_edited_by) + message.lastEditActorDisplayName
             dialogMessageActionsBinding.editorName.setText(editorName)
             dialogMessageActionsBinding.editedTime.setText(editedTime)
         }
@@ -515,5 +525,6 @@ class MessageActionsDialog(
         private const val ACTOR_LENGTH = 6
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
         private const val DELAY: Long = 200
+        private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
     }
 }

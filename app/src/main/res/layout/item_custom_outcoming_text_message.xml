@@ -59,19 +59,6 @@
 
 
         <TextView
-            android:id="@+id/messageType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/messageText"
-            android:layout_marginStart="8dp"
-            app:layout_alignSelf="center"
-            app:layout_flexGrow="1"
-            app:layout_wrapBefore="false"
-            android:text = "@string/hint_edited_message">
-
-        </TextView>
-
-        <TextView
             android:id="@id/messageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -96,6 +83,20 @@
             android:contentDescription="@null"
             app:layout_alignSelf="center"
             app:tint="@color/high_emphasis_text" />
+
+
+
+        <TextView
+            android:id="@+id/messageType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/messageText"
+            android:layout_marginStart="8dp"
+            app:layout_alignSelf="center"
+            android:text = "@string/hint_edited_message"
+            android:textSize="12sp">
+
+        </TextView>
 
         <include
             android:id="@+id/reactions"

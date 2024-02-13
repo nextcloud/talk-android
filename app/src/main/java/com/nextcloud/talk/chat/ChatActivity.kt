@@ -66,7 +66,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.GONE
 import android.view.View.OnTouchListener
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
@@ -301,8 +300,6 @@ class ChatActivity :
 
     lateinit var chatViewModel: ChatViewModel
 
-    val editableBehaviorSubject = BehaviorSubject.createDefault(false)
-    val editedTextBehaviorSubject = BehaviorSubject.createDefault("")
     private lateinit var editMessage: ChatMessage
 
     override val view: View
@@ -363,6 +360,8 @@ class ChatActivity :
         RELEASED,
         ERROR
     }
+    private val editableBehaviorSubject = BehaviorSubject.createDefault(false)
+    private val editedTextBehaviorSubject = BehaviorSubject.createDefault("")
 
     private var mediaRecorderState: MediaRecorderState = MediaRecorderState.INITIAL
 
@@ -532,6 +531,8 @@ class ChatActivity :
         context.getSharedPreferences(localClassName, MODE_PRIVATE).apply {
             val text = getString(roomToken, "")
             val cursor = getInt(roomToken + CURSOR_KEY, 0)
+            //  val editFlag = getBoolean(EDIT_FLAG, false)
+            //  editableBehaviorSubject.onNext(editFlag)
             binding.messageInputView.messageInput.setText(text)
             binding.messageInputView.messageInput.setSelection(cursor)
         }
@@ -558,6 +559,7 @@ class ChatActivity :
             context.getSharedPreferences(localClassName, MODE_PRIVATE).edit().apply {
                 putString(roomToken, text)
                 putInt(roomToken + CURSOR_KEY, cursor)
+                //  putBoolean(EDIT_FLAG, editableBehaviorSubject.value!!)
                 apply()
             }
         }
@@ -760,13 +762,14 @@ class ChatActivity :
     private fun initMessageInputView() {
         val filters = arrayOfNulls<InputFilter>(1)
         val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
-        binding.editView.editMessageView.visibility = GONE
 
         if (editableBehaviorSubject.value!!) {
             val editableText = Editable.Factory.getInstance().newEditable(editMessage.message)
             binding.messageInputView.inputEditText.text = editableText
             binding.messageInputView.inputEditText.setSelection(editableText.length)
             binding.editView.editMessage.setText(editMessage.message)
+        } else {
+            binding.editView.editMessageView.visibility = View.GONE
         }
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
@@ -831,11 +834,7 @@ class ChatActivity :
         }
         initVoiceRecordButton()
         if (editableBehaviorSubject.value!!) {
-            binding.messageInputView.messageSendButton.visibility = View.GONE
-            binding.messageInputView.recordAudioButton.visibility = View.GONE
-            binding.messageInputView.editMessageButton.visibility = View.VISIBLE
-            binding.editView.editMessageView.visibility = View.VISIBLE
-            binding.messageInputView.attachmentButton.visibility = View.GONE
+            setEditUI()
         }
 
         if (sharedText.isNotEmpty()) {
@@ -920,16 +919,9 @@ class ChatActivity :
                         }
                     }
                     message.message = messageEdited.ocs?.data?.parentMessage?.text
-                    message.lastEditTimestamp = System.currentTimeMillis()
+                    message.lastEditTimestamp = messageEdited.ocs?.data?.lastEditTimestamp!!
                     adapter?.update(message)
                     adapter?.notifyDataSetChanged()
-
-                    // val inflater = LayoutInflater.from(context)
-                    // val outgoingTextViewLayout = inflater.inflate(R.layout.item_custom_incoming_text_message, null)
-                    // val messageType = outgoingTextViewLayout.findViewById<TextView>(R.id.messageType)
-                    // val messageTime = outgoingTextViewLayout.findViewById<TextView>(R.id.messageTime)
-                    // messageType.visibility = View.VISIBLE
-                    // messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
                     clearEditUI()
                 }
 
@@ -941,11 +933,19 @@ class ChatActivity :
             })
     }
 
+    private fun setEditUI() {
+        binding.messageInputView.messageSendButton.visibility = View.GONE
+        binding.messageInputView.recordAudioButton.visibility = View.GONE
+        binding.messageInputView.editMessageButton.visibility = View.VISIBLE
+        binding.editView.editMessageView.visibility = View.VISIBLE
+        binding.messageInputView.attachmentButton.visibility = View.GONE
+    }
+
     private fun clearEditUI() {
-        binding.messageInputView.editMessageButton.visibility = GONE
+        binding.messageInputView.editMessageButton.visibility = View.GONE
         editableBehaviorSubject.onNext(false)
         binding.messageInputView.inputEditText.setText("")
-        binding.editView.editMessageView.visibility = GONE
+        binding.editView.editMessageView.visibility = View.GONE
         binding.messageInputView.attachmentButton.visibility = View.VISIBLE
     }
 
@@ -986,6 +986,9 @@ class ChatActivity :
 
         binding.messageInputView.findViewById<MicInputCloud>(R.id.micInputCloud)?.let {
             viewThemeUtils.talk.themeMicInputCloud(it)
+        }
+        binding.messageInputView.findViewById<ImageView>(R.id.editMessageButton)?.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
         }
     }
 
@@ -4471,7 +4474,7 @@ class ChatActivity :
 
     private fun setMessageAsEdited(message: IMessage?) {
         val messageTemp = message as ChatMessage
-        messageTemp.lastEditTimestamp = message.timestamp
+        messageTemp.lastEditTimestamp = message.lastEditTimestamp
 
         messageTemp.isOneToOneConversation =
             currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
@@ -4527,6 +4530,19 @@ class ChatActivity :
     }
 
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
+        val isUserAllowedByPrivileges = userAllowedByPrivilages(message)
+
+        return when {
+            !isUserAllowedByPrivileges -> false
+            message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
+            message.isDeleted -> false
+            !CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
+            !participantPermissions.hasChatPermission() -> false
+            else -> true
+        }
+    }
+
+    fun userAllowedByPrivilages(message: ChatMessage): Boolean {
         if (conversationUser == null) return false
 
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser!!.userId) {
@@ -4534,20 +4550,7 @@ class ChatActivity :
         } else {
             ConversationUtils.canModerate(currentConversation!!, conversationUser!!)
         }
-
-        val isOlderThanSixHours = message
-            .createdAt
-            .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_DELETE_MESSAGE))
-
-        return when {
-            !isUserAllowedByPrivileges -> false
-            isOlderThanSixHours -> false
-            message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
-            message.isDeleted -> false
-            !CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
-            !participantPermissions.hasChatPermission() -> false
-            else -> true
-        }
+        return isUserAllowedByPrivileges
     }
 
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
@@ -4771,7 +4774,6 @@ class ChatActivity :
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val HTTP_CODE_OK: Int = 200
-        private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
         private const val REQUEST_CODE_MESSAGE_SEARCH: Int = 777
@@ -4835,5 +4837,6 @@ class ChatActivity :
         private const val MILISEC_15: Long = 15
         private const val LINEBREAK = "\n"
         private const val CURSOR_KEY = "_cursor"
+        private const val EDIT_FLAG = "_editFlag"
     }
 }

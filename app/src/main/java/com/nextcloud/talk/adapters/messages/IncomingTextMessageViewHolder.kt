@@ -242,12 +242,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         }
     }
 
-    fun updateMessage(message: ChatMessage) {
-        binding.messageText.text = message.message
-        binding.messageType.visibility = View.VISIBLE
-        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
-    }
-
     fun assignCommonMessageInterface(commonMessageInterface: CommonMessageInterface) {
         this.commonMessageInterface = commonMessageInterface
     }
