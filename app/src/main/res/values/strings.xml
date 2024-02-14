@@ -798,4 +798,6 @@ How to translate with transifex:
     <string name="add_to_notes">Add to Notes</string>
     <string name="nc_edited_by_admin">Edited by admin</string>
     <string name="nc_edited_by">"Edited by "</string>
+    <string name="nc_clear_edit_button">clear Edit Button</string>
+    <string name="nc_edit_icon">Edit Icon</string>
 </resources>
