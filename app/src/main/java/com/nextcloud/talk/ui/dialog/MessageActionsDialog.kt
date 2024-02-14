@@ -51,6 +51,7 @@ import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.vanniktech.emoji.EmojiPopup
@@ -93,12 +94,9 @@ class MessageActionsDialog(
     private val messageHasRegularText = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message
         .getCalculateMessageType() && !message.isDeleted
 
-    private val isOlderThanTwentyFourHours = message.createdAt.before(
-        Date(
-            System.currentTimeMillis() -
-                AGE_THRESHOLD_FOR_EDIT_MESSAGE
-        )
-    )
+    private val isOlderThanTwentyFourHours = message
+        .createdAt
+        .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
 
     private val isUserAllowedToEdit = chatActivity.userAllowedByPrivilages(message)
 
@@ -375,7 +373,11 @@ class MessageActionsDialog(
 
     private fun initMenuEditorDetails(showEditorDetails: Boolean) {
         if (showEditorDetails) {
-            val editedTime = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
+            val editedTime = dateUtils.getLocalDateTimeStringFromTimestamp(
+                message.lastEditTimestamp *
+                    DateConstants.SECOND_DIVIDER
+            )
+
             val editorName = context.getString(R.string.nc_edited_by) + message.lastEditActorDisplayName
             dialogMessageActionsBinding.editorName.setText(editorName)
             dialogMessageActionsBinding.editedTime.setText(editedTime)

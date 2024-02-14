@@ -73,6 +73,20 @@
             app:layout_wrapBefore="false"
             tools:text="10:35" />
 
+        <TextView
+            android:id="@+id/messageEditIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/messageText"
+            android:layout_marginStart="8dp"
+            android:alpha="0.6"
+            android:textColor="@color/no_emphasis_text"
+            android:textIsSelectable="false"
+            app:layout_alignSelf="center"
+            android:text = "@string/hint_edited_message"
+            android:textSize="12sp">
+
+        </TextView>
 
         <ImageView
             android:id="@+id/checkMark"
@@ -83,20 +97,6 @@
             android:contentDescription="@null"
             app:layout_alignSelf="center"
             app:tint="@color/high_emphasis_text" />
-
-
-
-        <TextView
-            android:id="@+id/messageType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/messageText"
-            android:layout_marginStart="8dp"
-            app:layout_alignSelf="center"
-            android:text = "@string/hint_edited_message"
-            android:textSize="12sp">
-
-        </TextView>
 
         <include
             android:id="@+id/reactions"

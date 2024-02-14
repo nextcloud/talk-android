@@ -95,11 +95,14 @@
 
 
         <TextView
-            android:id="@+id/messageType"
+            android:id="@+id/messageEditIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
+            android:alpha="0.6"
+            android:textColor="@color/no_emphasis_text"
+            android:textIsSelectable="false"
             app:layout_alignSelf="center"
             android:text = "@string/hint_edited_message"
             android:textSize="12sp">

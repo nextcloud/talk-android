@@ -141,26 +141,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="16dp"
                 android:paddingEnd="@dimen/standard_padding"
                 tools:text="@string/nc_edited_by_admin"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textSize="@dimen/bottom_sheet_text_size" />
+                android:textSize="15sp"
+                android:textColor = "@color/grey_600"/>
 
             <TextView
                 android:id="@+id/edited_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="16dp"
                 android:paddingEnd="@dimen/standard_padding"
                 tools:text="12:30 AM"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
+                android:textSize="15sp"
+                android:textColor ="@color/grey_600"/>
 
         </LinearLayout>
 

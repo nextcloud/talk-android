@@ -114,10 +114,10 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         binding.messageText.text = processedMessageText
 
         if (message.lastEditTimestamp != 0L && !message.isDeleted) {
-            binding.messageType.visibility = View.VISIBLE
+            binding.messageEditIndicator.visibility = View.VISIBLE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
         } else {
-            binding.messageType.visibility = View.GONE
+            binding.messageEditIndicator.visibility = View.GONE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         }
 

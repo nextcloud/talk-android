@@ -263,7 +263,9 @@
             android:id="@+id/editView"
             layout="@layout/edit_message_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></include>
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp" >
+        </include>
 
         <com.nextcloud.talk.ui.MessageInput
             android:id="@+id/messageInputView"

@@ -531,8 +531,6 @@ class ChatActivity :
         context.getSharedPreferences(localClassName, MODE_PRIVATE).apply {
             val text = getString(roomToken, "")
             val cursor = getInt(roomToken + CURSOR_KEY, 0)
-            //  val editFlag = getBoolean(EDIT_FLAG, false)
-            //  editableBehaviorSubject.onNext(editFlag)
             binding.messageInputView.messageInput.setText(text)
             binding.messageInputView.messageInput.setSelection(cursor)
         }
@@ -559,7 +557,6 @@ class ChatActivity :
             context.getSharedPreferences(localClassName, MODE_PRIVATE).edit().apply {
                 putString(roomToken, text)
                 putInt(roomToken + CURSOR_KEY, cursor)
-                //  putBoolean(EDIT_FLAG, editableBehaviorSubject.value!!)
                 apply()
             }
         }
@@ -763,13 +760,13 @@ class ChatActivity :
         val filters = arrayOfNulls<InputFilter>(1)
         val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
 
+        binding.editView.editMessageView.visibility = View.GONE
+
         if (editableBehaviorSubject.value!!) {
             val editableText = Editable.Factory.getInstance().newEditable(editMessage.message)
             binding.messageInputView.inputEditText.text = editableText
             binding.messageInputView.inputEditText.setSelection(editableText.length)
             binding.editView.editMessage.setText(editMessage.message)
-        } else {
-            binding.editView.editMessageView.visibility = View.GONE
         }
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
@@ -918,14 +915,12 @@ class ChatActivity :
                             ).show()
                         }
                     }
-                    message.message = messageEdited.ocs?.data?.parentMessage?.text
-                    message.lastEditTimestamp = messageEdited.ocs?.data?.lastEditTimestamp!!
-                    adapter?.update(message)
-                    adapter?.notifyDataSetChanged()
                     clearEditUI()
                 }
 
                 override fun onError(e: Throwable) {
+                    Log.e(TAG, "failed to edit message", e)
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
                 override fun onComplete() {
@@ -988,6 +983,9 @@ class ChatActivity :
             viewThemeUtils.talk.themeMicInputCloud(it)
         }
         binding.messageInputView.findViewById<ImageView>(R.id.editMessageButton)?.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
+        }
+        binding.editView.clearEdit.let {
             viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
         }
     }
@@ -4837,6 +4835,5 @@ class ChatActivity :
         private const val MILISEC_15: Long = 15
         private const val LINEBREAK = "\n"
         private const val CURSOR_KEY = "_cursor"
-        private const val EDIT_FLAG = "_editFlag"
     }
 }

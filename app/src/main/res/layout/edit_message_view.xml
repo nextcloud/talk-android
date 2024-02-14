@@ -7,7 +7,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id = "@+id/edit_message_view"
+    android:id = "@+id/editMessageView"
     android:orientation = "horizontal">
 
     <ImageView
@@ -52,8 +52,7 @@
         android:layout_height="48dp"
         android:padding = "12dp"
         android:src = "@drawable/ic_clear_24"
-        android:gravity = "top|end"
-        app:tint="@color/colorPrimaryDark">
+        android:gravity = "top|end">
 
     </ImageView>
 
