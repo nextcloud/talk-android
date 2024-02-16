@@ -1117,7 +1117,7 @@ class CallActivity : CallBaseActivity() {
                         micInputAudioRecorder.read(byteArr, 0, byteArr.size)
                         val isCurrentlySpeaking = abs(byteArr[0].toDouble()) > MICROPHONE_VALUE_THRESHOLD
 
-                        if (isCurrentlySpeaking && !isSpeakingLongTerm) {
+                        if (microphoneOn && isCurrentlySpeaking && !isSpeakingLongTerm) {
                             isSpeakingLongTerm = true
                             sendIsSpeakingMessage(true)
                         } else if (!isCurrentlySpeaking && isSpeakingLongTerm) {
