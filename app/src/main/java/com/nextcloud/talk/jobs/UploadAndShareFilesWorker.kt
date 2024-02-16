@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Parneet Singh
  * Copyright (C) 2021-2022 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2024-2025 Parneet Singh <gurayaparneet@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +24,6 @@ package com.nextcloud.talk.jobs
 
 import android.Manifest
 import android.app.Activity
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -86,7 +87,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     private var mNotifyManager: NotificationManager? = null
     private var mBuilder: NotificationCompat.Builder? = null
-    private lateinit var notification: Notification
     private var notificationId: Int = 0
 
     lateinit var roomToken: String
@@ -168,7 +168,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             }
 
             if (uploadSuccess) {
-                mNotifyManager?.cancel(notificationId)
+                cancelNotification()
                 return Result.success()
             } else if (isStopped) {
                 // since work is cancelled the result would be ignored anyways
@@ -196,12 +196,12 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     }
 
     override fun onTransferProgress(percentage: Int) {
-        notification = mBuilder!!
+        val progressUpdateNotification = mBuilder!!
             .setProgress(HUNDRED_PERCENT, percentage, false)
             .setContentText(getNotificationContentText(percentage))
             .build()
 
-        mNotifyManager!!.notify(notificationId, notification)
+        mNotifyManager!!.notify(notificationId, progressUpdateNotification)
     }
 
     override fun onStopped() {
@@ -223,22 +223,60 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     }
 
     private fun initNotificationWithPercentage() {
-        notification = mBuilder!!
-            .setContentTitle(getResourceString(context, R.string.nc_upload_in_progess))
+        val initNotification = mBuilder!!
+            .setContentTitle(context.resources.getString(R.string.nc_upload_in_progess))
             .setContentText(getNotificationContentText(ZERO_PERCENT))
             .setSmallIcon(R.drawable.upload_white)
             .setOngoing(true)
             .setProgress(HUNDRED_PERCENT, ZERO_PERCENT, false)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setGroup(NotificationUtils.KEY_UPLOAD_GROUP)
             .setContentIntent(getIntentToOpenConversation())
             .addAction(
-                R.drawable.ic_cancel_white_24dp, getResourceString(context, R.string.nc_cancel),
+                R.drawable.ic_cancel_white_24dp,
+                getResourceString(context, R.string.nc_cancel),
                 getCancelUploadIntent()
             )
             .build()
 
         notificationId = SystemClock.uptimeMillis().toInt()
-        mNotifyManager!!.notify(notificationId, notification)
+        mNotifyManager!!.notify(notificationId, initNotification)
+        // only need one summary notification but multiple upload worker can call it more than once but it is safe
+        // because of the same notification object config and id.
+        makeSummaryNotification()
+    }
+
+    private fun makeSummaryNotification() {
+        // summary notification encapsulating the group of notifications
+        val summaryNotification = NotificationCompat.Builder(
+            context,
+            NotificationUtils.NotificationChannels
+                .NOTIFICATION_CHANNEL_UPLOADS.name
+        ).setSmallIcon(R.drawable.upload_white)
+            .setGroup(NotificationUtils.KEY_UPLOAD_GROUP)
+            .setGroupSummary(true)
+            .build()
+
+        mNotifyManager?.notify(NotificationUtils.GROUP_SUMMARY_NOTIFICATION_ID, summaryNotification)
+    }
+
+    private fun getActiveUploadNotifications(): Int? {
+        // filter out active notifications that are upload notifications using group
+        return mNotifyManager?.activeNotifications?.filter {
+            it.notification.group == NotificationUtils
+                .KEY_UPLOAD_GROUP
+        }?.size
+    }
+
+    private fun cancelNotification() {
+        mNotifyManager?.cancel(notificationId)
+        // summary notification would not get dismissed automatically
+        // if child notifications are cancelled programmatically
+        // so check if only 1 notification left if yes
+        // then cancel it (which is summary notification)
+        if (getActiveUploadNotifications() == 1) {
+            mNotifyManager?.cancel(NotificationUtils.GROUP_SUMMARY_NOTIFICATION_ID)
+        }
     }
 
     private fun getNotificationContentText(percentage: Int): String {
@@ -289,17 +327,21 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             getResourceString(context, R.string.nc_upload_failed_notification_text),
             fileName
         )
-        notification = mBuilder!!
+        val failureNotification = NotificationCompat.Builder(
+            context,
+            NotificationUtils.NotificationChannels
+                .NOTIFICATION_CHANNEL_UPLOADS.name
+        )
             .setContentTitle(failureTitle)
             .setContentText(failureText)
             .setSmallIcon(R.drawable.baseline_error_24)
+            .setGroup(NotificationUtils.KEY_UPLOAD_GROUP)
             .setOngoing(false)
             .build()
 
-        // Cancel original notification
         mNotifyManager?.cancel(notificationId)
-        // Then show information about failure
-        mNotifyManager!!.notify(SystemClock.uptimeMillis().toInt(), notification)
+        // update current notification with failure info
+        mNotifyManager!!.notify(SystemClock.uptimeMillis().toInt(), failureNotification)
     }
 
     private fun getResourceString(context: Context, resourceId: Int): String {
