@@ -31,10 +31,12 @@ package com.nextcloud.talk.chat
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.content.res.Resources
@@ -42,7 +44,9 @@ import android.database.Cursor
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.media.AudioFocusRequest
 import android.media.AudioFormat
+import android.media.AudioManager
 import android.media.AudioRecord
 import android.media.MediaPlayer
 import android.media.MediaRecorder
@@ -388,6 +392,20 @@ class ChatActivity :
     // messy workaround for a mediaPlayer bug, don't delete
     private var lastRecordMediaPosition: Int = 0
     private var lastRecordedSeeked: Boolean = false
+
+    private val audioFocusChangeListener = getAudioFocusChangeListener()
+
+    private val noisyAudioStreamReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            chatViewModel.isPausedDueToBecomingNoisy = true
+            if (isVoicePreviewPlaying) {
+                pausePreviewVoicePlaying()
+            }
+            if (currentlyPlayedVoiceMessage != null) {
+                pausePlayback(currentlyPlayedVoiceMessage!!)
+            }
+        }
+    }
 
     private lateinit var participantPermissions: ParticipantPermissions
 
@@ -1217,7 +1235,9 @@ class ChatActivity :
 
         binding.messageInputView.micInputCloud.setOnClickListener {
             if (mediaRecorderState == MediaRecorderState.RECORDING) {
-                recorder?.stop()
+                audioFocusRequest(false) {
+                    recorder?.stop()
+                }
                 mediaRecorderState = MediaRecorderState.INITIAL
                 stopMicInputRecordingAnimation()
                 showPreviewVoiceRecording(true)
@@ -1446,8 +1466,11 @@ class ChatActivity :
                     duration = it.duration.toLong()
                     interpolator = LinearInterpolator()
                 }
-                voicePreviewMediaPlayer!!.start()
-                voicePreviewObjectAnimator!!.start()
+                audioFocusRequest(true) {
+                    voicePreviewMediaPlayer!!.start()
+                    voicePreviewObjectAnimator!!.start()
+                    handleBecomingNoisyBroadcast(register = true)
+                }
             }
 
             setOnCompletionListener {
@@ -1461,15 +1484,21 @@ class ChatActivity :
         if (voicePreviewMediaPlayer == null) {
             initPreviewVoiceRecording()
         } else {
-            voicePreviewMediaPlayer!!.start()
-            voicePreviewObjectAnimator!!.resume()
+            audioFocusRequest(true) {
+                voicePreviewMediaPlayer!!.start()
+                voicePreviewObjectAnimator!!.resume()
+                handleBecomingNoisyBroadcast(register = true)
+            }
         }
     }
 
     private fun pausePreviewVoicePlaying() {
         Log.d(TAG, "paused preview voice recording")
-        voicePreviewMediaPlayer!!.pause()
-        voicePreviewObjectAnimator!!.pause()
+        audioFocusRequest(false) {
+            voicePreviewMediaPlayer!!.pause()
+            voicePreviewObjectAnimator!!.pause()
+            handleBecomingNoisyBroadcast(register = false)
+        }
     }
 
     private fun stopPreviewVoicePlaying() {
@@ -1479,9 +1508,12 @@ class ChatActivity :
             voicePreviewObjectAnimator!!.end()
             voicePreviewObjectAnimator = null
             binding.messageInputView.seekBar.clearAnimation()
-            voicePreviewMediaPlayer!!.stop()
-            voicePreviewMediaPlayer!!.release()
-            voicePreviewMediaPlayer = null
+            audioFocusRequest(false) {
+                voicePreviewMediaPlayer!!.stop()
+                voicePreviewMediaPlayer!!.release()
+                voicePreviewMediaPlayer = null
+                handleBecomingNoisyBroadcast(register = false)
+            }
         }
     }
 
@@ -1935,6 +1967,73 @@ class ChatActivity :
         }
     }
 
+    private fun getAudioFocusChangeListener(): AudioManager.OnAudioFocusChangeListener {
+        return AudioManager.OnAudioFocusChangeListener { flag ->
+            when (flag) {
+                AudioManager.AUDIOFOCUS_LOSS -> {
+                    chatViewModel.isPausedDueToBecomingNoisy = false
+                    if (isVoicePreviewPlaying) {
+                        stopPreviewVoicePlaying()
+                    }
+                    if (currentlyPlayedVoiceMessage != null) {
+                        stopMediaPlayer(currentlyPlayedVoiceMessage!!)
+                    }
+                }
+
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                    chatViewModel.isPausedDueToBecomingNoisy = false
+                    if (isVoicePreviewPlaying) {
+                        pausePreviewVoicePlaying()
+                    }
+                    if (currentlyPlayedVoiceMessage != null) {
+                        pausePlayback(currentlyPlayedVoiceMessage!!)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun audioFocusRequest(shouldRequestFocus: Boolean, onGranted: () -> Unit) {
+        if (chatViewModel.isPausedDueToBecomingNoisy) {
+            onGranted()
+            return
+        }
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val duration = AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
+
+        val isGranted: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val focusRequest = AudioFocusRequest.Builder(duration)
+                .setOnAudioFocusChangeListener(audioFocusChangeListener)
+                .build()
+            if (shouldRequestFocus) {
+                audioManager.requestAudioFocus(focusRequest)
+            } else {
+                audioManager.abandonAudioFocusRequest(focusRequest)
+            }
+        } else {
+            @Deprecated("This method was deprecated in API level 26.")
+            if (shouldRequestFocus) {
+                audioManager.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_MUSIC, duration)
+            } else {
+                audioManager.abandonAudioFocus(audioFocusChangeListener)
+            }
+        }
+        if (isGranted == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            onGranted()
+        }
+    }
+
+    private fun handleBecomingNoisyBroadcast(register: Boolean) {
+        if (register && !chatViewModel.receiverRegistered) {
+            registerReceiver(noisyAudioStreamReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+            chatViewModel.receiverRegistered = true
+        } else if (!chatViewModel.receiverUnregistered) {
+            unregisterReceiver(noisyAudioStreamReceiver)
+            chatViewModel.receiverUnregistered = true
+            chatViewModel.receiverRegistered = false
+        }
+    }
+
     private fun startPlayback(message: ChatMessage) {
         if (!active) {
             // don't begin to play voice message if screen is not visible anymore.
@@ -1948,8 +2047,10 @@ class ChatActivity :
 
         mediaPlayer?.let {
             if (!it.isPlaying) {
-                it.start()
-                Log.d(TAG, "MediaPlayer has Started")
+                audioFocusRequest(true) {
+                    it.start()
+                    handleBecomingNoisyBroadcast(register = true)
+                }
             }
 
             mediaPlayerHandler = Handler()
@@ -1984,8 +2085,10 @@ class ChatActivity :
 
     private fun pausePlayback(message: ChatMessage) {
         if (mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.pause()
-            Log.d(TAG, "MediaPlayer is paused")
+            audioFocusRequest(false) {
+                mediaPlayer!!.pause()
+                handleBecomingNoisyBroadcast(register = false)
+            }
         }
 
         message.isPlayingVoiceMessage = false
@@ -2043,7 +2146,10 @@ class ChatActivity :
             mediaPlayer?.let {
                 if (it.isPlaying) {
                     Log.d(TAG, "media player is stopped")
-                    it.stop()
+                    audioFocusRequest(false) {
+                        it.stop()
+                        handleBecomingNoisyBroadcast(register = false)
+                    }
                 }
             }
         } catch (e: IllegalStateException) {
@@ -2259,8 +2365,10 @@ class ChatActivity :
     private fun stopMicInputRecordingAnimation() {
         if (micInputAudioRecordThread != null) {
             Log.d(TAG, "Mic Animation Ended")
-            micInputAudioRecorder.stop()
-            micInputAudioRecorder.release()
+            audioFocusRequest(false) {
+                micInputAudioRecorder.stop()
+                micInputAudioRecorder.release()
+            }
             isMicInputAudioThreadRunning = false
             micInputAudioRecordThread = null
         }
@@ -2311,7 +2419,9 @@ class ChatActivity :
             }
 
             try {
-                start()
+                audioFocusRequest(true) {
+                    start()
+                }
                 mediaRecorderState = MediaRecorderState.RECORDING
                 Log.d(TAG, "recording started")
             } catch (e: IllegalStateException) {
@@ -2352,8 +2462,10 @@ class ChatActivity :
         recorder?.apply {
             try {
                 if (mediaRecorderState == MediaRecorderState.RECORDING) {
-                    stop()
-                    reset()
+                    audioFocusRequest(false) {
+                        stop()
+                        reset()
+                    }
                     mediaRecorderState = MediaRecorderState.INITIAL
                     Log.d(TAG, "stopped recorder")
                 }
