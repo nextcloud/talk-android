@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Hesap simgesi</string>
+    <string name="add_to_notes">Notlar uygulamasına ekle</string>
     <string name="added_to_favorites">%1$s görüşmesi sık kullanılara eklendi</string>
     <string name="appbar_search_in">%s içinde arama</string>
     <string name="audio_call">Sesli çağrı</string>
@@ -23,6 +24,7 @@
     <string name="continuous_voice_message_recording">Sesli iletinin sürekli olarak kaydedilmesi için kaydı kilitleyin</string>
     <string name="conversations">Görüşmeler</string>
     <string name="create_conversation">Görüşme oluştur</string>
+    <string name="create_issue">Sorun ekle</string>
     <string name="custom">Özel</string>
     <string name="danger_zone">Tehlikeli bölge</string>
     <string name="delete_avatar">Avatarı sil</string>
@@ -118,7 +120,7 @@
     <string name="nc_client_cert_setup">İstemci sertifikası kurulumu</string>
     <string name="nc_close_app">Uygulamayı kapat</string>
     <string name="nc_common_and">ve</string>
-    <string name="nc_common_copy">Kopya</string>
+    <string name="nc_common_copy">Kopyala</string>
     <string name="nc_common_copy_success">Panoya kopyalandı</string>
     <string name="nc_common_create">Ekle</string>
     <string name="nc_common_disabled">Devre dışı</string>
@@ -154,13 +156,20 @@
     <string name="nc_description_send_message_button">İleti gönder</string>
     <string name="nc_diagnose_account_category_title">Geçerli hesap</string>
     <string name="nc_diagnose_account_server">Sunucu</string>
+    <string name="nc_diagnose_account_server_notification_app">Sunucu bildirimi uygulaması kurulmuş mu?</string>
     <string name="nc_diagnose_account_user_name">Kullanıcı adı</string>
+    <string name="nc_diagnose_account_user_status_enabled">Kullanıcı durumu etkinleştirilmiş mi?</string>
     <string name="nc_diagnose_android_version_title">Android sürümü</string>
     <string name="nc_diagnose_app_category_title">Uygulama</string>
     <string name="nc_diagnose_app_name_title">Uygulama adı</string>
     <string name="nc_diagnose_app_users_amount">Kayıtlı kullanıcılar</string>
+    <string name="nc_diagnose_app_version_title">Uygulama sürümü</string>
+    <string name="nc_diagnose_battery_optimization_ignored">Pil iyileştirmesi yok sayılmış. Her şey yolunda</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Pil iyileştirmesi yok sayılmamış. Bu durum değiştirilmeli!</string>
     <string name="nc_diagnose_battery_optimization_title">Pil ayarları</string>
     <string name="nc_diagnose_device_name_title">Aygıt</string>
+    <string name="nc_diagnose_dialog_open_checklist">Sorun çözme kontrol listesini aç</string>
+    <string name="nc_diagnose_dialog_open_diagnose">Tanılama ekranını aç</string>
     <string name="nc_diagnose_phone_category_title">Telefon</string>
     <string name="nc_diagnose_signaling_mode_extern">Dış</string>
     <string name="nc_diagnose_signaling_mode_intern">İç</string>
