@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/quotedChatMessageView"
             android:layout_centerHorizontal="true"
-            android:layout_toStartOf="@id/messageSendButton"
+            android:layout_marginEnd = "48dp"
             android:layout_toEndOf="@id/smileyButton"
             android:imeOptions="actionDone"
             android:inputType="textAutoCorrect|textMultiLine|textCapSentences"
@@ -229,6 +229,7 @@
             android:scaleType="centerInside"
             android:contentDescription="@string/nc_description_send_message_button" />
 
+
         <ImageButton
             android:id="@+id/recordAudioButton"
             android:layout_width="48dp"
@@ -238,6 +239,19 @@
             android:background="@color/transparent"
             android:src="@drawable/ic_baseline_mic_24"
             android:contentDescription="@string/nc_description_record_voice" />
+
+
+        <ImageButton
+            android:id="@+id/editMessageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_below="@id/quotedChatMessageView"
+            android:layout_alignParentEnd="true"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_check_24"
+            android:visibility = "gone"
+            tools:visibility = "visible"
+            android:contentDescription="@string/nc_send_edit_message" />
 
         <Space
             android:id="@id/attachmentButtonSpace"

@@ -51,6 +51,8 @@ import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.DateConstants
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
@@ -60,6 +62,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.Date
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -78,6 +81,9 @@ class MessageActionsDialog(
     @Inject
     lateinit var reactionsRepository: ReactionsRepository
 
+    @Inject
+    lateinit var dateUtils: DateUtils
+
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
 
     private lateinit var popup: EmojiPopup
@@ -87,6 +93,17 @@ class MessageActionsDialog(
 
     private val messageHasRegularText = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message
         .getCalculateMessageType() && !message.isDeleted
+
+    private val isOlderThanTwentyFourHours = message
+        .createdAt
+        .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
+
+    private val isUserAllowedToEdit = chatActivity.userAllowedByPrivilages(message)
+
+    private val isMessageEditable = CapabilitiesUtilNew.hasSpreedFeatureCapability(
+        user,
+        "edit-messages"
+    ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,6 +146,7 @@ class MessageActionsDialog(
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
                 CapabilitiesUtilNew.isTranslationsSupported(user)
         )
+        initMenuEditorDetails(message.lastEditTimestamp != 0L && !message.isDeleted)
         initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(
             message.replyable &&
@@ -136,6 +154,7 @@ class MessageActionsDialog(
                 hasUserActorId(message) &&
                 currentConversation?.type != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
+        initMenuEditMessage(isMessageEditable)
         initMenuDeleteMessage(showMessageDeletionButton)
         initMenuForwardMessage(
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
@@ -317,8 +336,17 @@ class MessageActionsDialog(
                 dismiss()
             }
         }
-
         dialogMessageActionsBinding.menuDeleteMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuEditMessage(visible: Boolean) {
+        dialogMessageActionsBinding.menuEditMessage.setOnClickListener {
+            chatActivity.editMessage(message)
+            Log.d("EDIT MESSAGE", "$message")
+            dismiss()
+        }
+
+        dialogMessageActionsBinding.menuEditMessage.visibility = getVisibility(visible)
     }
 
     private fun initMenuReplyPrivately(visible: Boolean) {
@@ -341,6 +369,20 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuReplyToMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuEditorDetails(showEditorDetails: Boolean) {
+        if (showEditorDetails) {
+            val editedTime = dateUtils.getLocalDateTimeStringFromTimestamp(
+                message.lastEditTimestamp *
+                    DateConstants.SECOND_DIVIDER
+            )
+
+            val editorName = context.getString(R.string.nc_edited_by) + message.lastEditActorDisplayName
+            dialogMessageActionsBinding.editorName.setText(editorName)
+            dialogMessageActionsBinding.editedTime.setText(editedTime)
+        }
+        dialogMessageActionsBinding.menuMessageEditedInfo.visibility = getVisibility(showEditorDetails)
     }
 
     private fun initMenuItemCopy(visible: Boolean) {
@@ -485,5 +527,6 @@ class MessageActionsDialog(
         private const val ACTOR_LENGTH = 6
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
         private const val DELAY: Long = 200
+        private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
     }
 }

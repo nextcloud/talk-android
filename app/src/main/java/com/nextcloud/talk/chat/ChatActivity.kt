@@ -244,6 +244,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -303,6 +304,8 @@ class ChatActivity :
 
     lateinit var chatViewModel: ChatViewModel
 
+    private lateinit var editMessage: ChatMessage
+
     override val view: View
         get() = binding.root
 
@@ -361,6 +364,8 @@ class ChatActivity :
         RELEASED,
         ERROR
     }
+    private val editableBehaviorSubject = BehaviorSubject.createDefault(false)
+    private val editedTextBehaviorSubject = BehaviorSubject.createDefault("")
 
     private var mediaRecorderState: MediaRecorderState = MediaRecorderState.INITIAL
 
@@ -763,7 +768,6 @@ class ChatActivity :
         })
 
         initMessageInputView()
-
         loadAvatarForStatusBar()
         setActionBarTitle()
 
@@ -774,10 +778,20 @@ class ChatActivity :
         val filters = arrayOfNulls<InputFilter>(1)
         val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
 
+        binding.editView.editMessageView.visibility = View.GONE
+
+        if (editableBehaviorSubject.value!!) {
+            val editableText = Editable.Factory.getInstance().newEditable(editMessage.message)
+            binding.messageInputView.inputEditText.text = editableText
+            binding.messageInputView.inputEditText.setSelection(editableText.length)
+            binding.editView.editMessage.setText(editMessage.message)
+        }
+
         filters[0] = InputFilter.LengthFilter(lengthFilter)
         binding.messageInputView.inputEditText?.filters = filters
 
         binding.messageInputView.inputEditText?.addTextChangedListener(object : TextWatcher {
+
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // unused atm
             }
@@ -796,6 +810,8 @@ class ChatActivity :
                 }
 
                 val editable = binding.messageInputView.inputEditText?.editableText
+                editedTextBehaviorSubject.onNext(editable.toString().trim())
+
                 if (editable != null && binding.messageInputView.inputEditText != null) {
                     val mentionSpans = editable.getSpans(
                         0,
@@ -827,20 +843,37 @@ class ChatActivity :
 
         // Image keyboard support
         // See: https://developer.android.com/guide/topics/text/image-keyboard
+
         (binding.messageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
             uploadFile(it.toString(), false)
         }
-
         initVoiceRecordButton()
+        if (editableBehaviorSubject.value!!) {
+            setEditUI()
+        }
 
         if (sharedText.isNotEmpty()) {
             binding.messageInputView.inputEditText?.setText(sharedText)
         }
+
         binding.messageInputView.setAttachmentsListener {
             AttachmentDialog(this, this).show()
         }
 
-        binding.messageInputView.button?.setOnClickListener { submitMessage(false) }
+        binding.messageInputView.button?.setOnClickListener {
+            submitMessage(false)
+        }
+
+        binding.messageInputView.editMessageButton.setOnClickListener {
+            if (editMessage.message == editedTextBehaviorSubject.value!!) {
+                clearEditUI()
+                return@setOnClickListener
+            }
+            editMessageAPI(editMessage, editedMessageText = editedTextBehaviorSubject.value!!)
+        }
+        binding.editView.clearEdit.setOnClickListener {
+            clearEditUI()
+        }
 
         if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
             binding.messageInputView.button?.setOnLongClickListener {
@@ -851,6 +884,82 @@ class ChatActivity :
 
         binding.messageInputView.button?.contentDescription =
             resources?.getString(R.string.nc_description_send_message_button)
+    }
+
+    private fun editMessageAPI(message: ChatMessage, editedMessageText: String) {
+        var apiVersion = 1
+        // FIXME Fix API checking with guests?
+        if (conversationUser != null) {
+            apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+        }
+
+        ncApi.editChatMessage(
+            credentials,
+            ApiUtils.getUrlForChatMessage(
+                apiVersion,
+                conversationUser?.baseUrl,
+                roomToken,
+                message?.id
+            ),
+            editedMessageText
+        )?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(messageEdited: ChatOverallSingleMessage) {
+                    when (messageEdited.ocs?.meta?.statusCode) {
+                        HTTP_BAD_REQUEST -> {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.edit_error_24_hours_old_message),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        HTTP_FORBIDDEN -> {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.conversation_is_read_only),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        HTTP_NOT_FOUND -> {
+                            Snackbar.make(
+                                binding.root,
+                                "Conversation not found",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                    clearEditUI()
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "failed to edit message", e)
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+
+                override fun onComplete() {
+                }
+            })
+    }
+
+    private fun setEditUI() {
+        binding.messageInputView.messageSendButton.visibility = View.GONE
+        binding.messageInputView.recordAudioButton.visibility = View.GONE
+        binding.messageInputView.editMessageButton.visibility = View.VISIBLE
+        binding.editView.editMessageView.visibility = View.VISIBLE
+        binding.messageInputView.attachmentButton.visibility = View.GONE
+    }
+
+    private fun clearEditUI() {
+        binding.messageInputView.editMessageButton.visibility = View.GONE
+        editableBehaviorSubject.onNext(false)
+        binding.messageInputView.inputEditText.setText("")
+        binding.editView.editMessageView.visibility = View.GONE
+        binding.messageInputView.attachmentButton.visibility = View.VISIBLE
     }
 
     private fun themeMessageInputView() {
@@ -890,6 +999,12 @@ class ChatActivity :
 
         binding.messageInputView.findViewById<MicInputCloud>(R.id.micInputCloud)?.let {
             viewThemeUtils.talk.themeMicInputCloud(it)
+        }
+        binding.messageInputView.findViewById<ImageView>(R.id.editMessageButton)?.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
+        }
+        binding.editView.clearEdit.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
         }
     }
 
@@ -1020,7 +1135,6 @@ class ChatActivity :
             R.layout.item_system_message,
             this
         )
-
         messageHolders.registerContentType(
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
             UnreadNoticeMessageViewHolder::class.java,
@@ -1079,10 +1193,12 @@ class ChatActivity :
     @SuppressLint("ClickableViewAccessibility")
     private fun initVoiceRecordButton() {
         if (!isVoiceRecordingLocked) {
-            if (binding.messageInputView.messageInput.text!!.isNotEmpty()) {
-                showMicrophoneButton(false)
-            } else {
-                showMicrophoneButton(true)
+            if (!editableBehaviorSubject.value!!) {
+                if (binding.messageInputView.messageInput.text!!.isNotEmpty()) {
+                    showMicrophoneButton(false)
+                } else {
+                    showMicrophoneButton(true)
+                }
             }
         } else if (mediaRecorderState == MediaRecorderState.RECORDING) {
             binding.messageInputView.playPauseBtn.visibility = View.GONE
@@ -1096,10 +1212,12 @@ class ChatActivity :
 
         isVoicePreviewPlaying = false
         binding.messageInputView.messageInput.doAfterTextChanged {
-            if (binding.messageInputView.messageInput.text?.isEmpty() == true) {
-                showMicrophoneButton(true)
-            } else {
-                showMicrophoneButton(false)
+            if (!editableBehaviorSubject.value!!) {
+                if (binding.messageInputView.messageInput.text?.isEmpty() == true) {
+                    showMicrophoneButton(true)
+                } else {
+                    showMicrophoneButton(false)
+                }
             }
         }
 
@@ -3852,6 +3970,12 @@ class ChatActivity :
             } else if (isPollVotedMessage(currentMessage)) {
                 // delete poll system messages
                 chatMessageIterator.remove()
+            } else if (isEditMessage(currentMessage)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
+                    setMessageAsEdited(currentMessage.value.parentMessage)
+                }
+
+                chatMessageIterator.remove()
             }
         }
         return chatMessageMap.values.toList()
@@ -3890,6 +4014,11 @@ class ChatActivity :
         return currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
+    }
+
+    private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
+        return currentMessage.value.parentMessage != null && currentMessage.value.systemMessageType == ChatMessage
+            .SystemMessageType.MESSAGE_EDITED
     }
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
@@ -4453,6 +4582,17 @@ class ChatActivity :
         adapter?.update(messageTemp)
     }
 
+    private fun setMessageAsEdited(message: IMessage?) {
+        val messageTemp = message as ChatMessage
+        messageTemp.lastEditTimestamp = message.lastEditTimestamp
+
+        messageTemp.isOneToOneConversation =
+            currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        messageTemp.activeUser = conversationUser
+
+        adapter?.update(messageTemp)
+    }
+
     private fun updateAdapterForReaction(message: IMessage?) {
         val messageTemp = message as ChatMessage
 
@@ -4500,6 +4640,19 @@ class ChatActivity :
     }
 
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
+        val isUserAllowedByPrivileges = userAllowedByPrivilages(message)
+
+        return when {
+            !isUserAllowedByPrivileges -> false
+            message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
+            message.isDeleted -> false
+            !CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
+            !participantPermissions.hasChatPermission() -> false
+            else -> true
+        }
+    }
+
+    fun userAllowedByPrivilages(message: ChatMessage): Boolean {
         if (conversationUser == null) return false
 
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser!!.userId) {
@@ -4507,20 +4660,7 @@ class ChatActivity :
         } else {
             ConversationUtils.canModerate(currentConversation!!, conversationUser!!)
         }
-
-        val isOlderThanSixHours = message
-            .createdAt
-            .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_DELETE_MESSAGE))
-
-        return when {
-            !isUserAllowedByPrivileges -> false
-            isOlderThanSixHours -> false
-            message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
-            message.isDeleted -> false
-            !CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
-            !participantPermissions.hasChatPermission() -> false
-            else -> true
-        }
+        return isUserAllowedByPrivileges
     }
 
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
@@ -4725,6 +4865,12 @@ class ChatActivity :
         startActivity(shareIntent)
     }
 
+    fun editMessage(message: ChatMessage) {
+        editableBehaviorSubject.onNext(true)
+        editMessage = message
+        initMessageInputView()
+    }
+
     companion object {
         private val TAG = ChatActivity::class.simpleName
         private const val CONTENT_TYPE_CALL_STARTED: Byte = 1
@@ -4738,7 +4884,6 @@ class ChatActivity :
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val HTTP_CODE_OK: Int = 200
-        private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
         private const val REQUEST_CODE_MESSAGE_SEARCH: Int = 777
@@ -4773,6 +4918,9 @@ class ChatActivity :
         private const val STATUS_SIZE_IN_DP = 9f
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
+        private const val HTTP_BAD_REQUEST = 400
+        private const val HTTP_FORBIDDEN = 403
+        private const val HTTP_NOT_FOUND = 404
         private const val QUOTED_MESSAGE_IMAGE_MAX_HEIGHT = 96f
         private const val MENTION_AUTO_COMPLETE_ELEVATION = 6f
         private const val MESSAGE_PULL_LIMIT = 100

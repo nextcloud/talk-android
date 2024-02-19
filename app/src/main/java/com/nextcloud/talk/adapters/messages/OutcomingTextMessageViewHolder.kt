@@ -104,7 +104,13 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
         binding.messageText.text = processedMessageText
 
-        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
+        if (message.lastEditTimestamp != 0L && !message.isDeleted) {
+            binding.messageEditIndicator.visibility = View.VISIBLE
+            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
+        } else {
+            binding.messageEditIndicator.visibility = View.GONE
+            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
+        }
 
         // parent message handling
         if (!message.isDeleted && message.parentMessage != null) {

@@ -79,7 +79,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         sharedApplication!!.componentApplication.inject(this)
 
         setAvatarAndAuthorOnMessageItem(message)
-
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
@@ -114,7 +113,13 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageText.text = processedMessageText
 
-        binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
+        if (message.lastEditTimestamp != 0L && !message.isDeleted) {
+            binding.messageEditIndicator.visibility = View.VISIBLE
+            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
+        } else {
+            binding.messageEditIndicator.visibility = View.GONE
+            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
+        }
 
         // parent message handling
         if (!message.isDeleted && message.parentMessage != null) {

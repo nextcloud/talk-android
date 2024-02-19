@@ -121,6 +121,18 @@ data class ChatMessage(
     @JsonField(name = ["markdown"])
     var renderMarkdown: Boolean? = null,
 
+    @JsonField(name = ["lastEditActorDisplayName"])
+    var lastEditActorDisplayName: String? = null,
+
+    @JsonField(name = ["lastEditActorId"])
+    var lastEditActorId: String? = null,
+
+    @JsonField(name = ["lastEditActorType"])
+    var lastEditActorType: String? = null,
+
+    @JsonField(name = ["lastEditTimestamp"])
+    var lastEditTimestamp: Long = 0,
+
     var isDownloadingVoiceMessage: Boolean = false,
 
     var resetVoiceMessage: Boolean = false,
@@ -507,6 +519,7 @@ data class ChatMessage(
         GUEST_MODERATOR_PROMOTED,
         GUEST_MODERATOR_DEMOTED,
         MESSAGE_DELETED,
+        MESSAGE_EDITED,
         FILE_SHARED,
         OBJECT_SHARED,
         MATTERBRIDGE_CONFIG_ADDED,

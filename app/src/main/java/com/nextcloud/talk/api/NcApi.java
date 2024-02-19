@@ -357,8 +357,8 @@ public interface NcApi {
     @FormUrlEncoded
     @PUT
     Observable<Response<GenericOverall>> setPassword2(@Header("Authorization") String authorization,
-                                                     @Url String url,
-                                                     @Field("password") String password);
+                                                      @Url String url,
+                                                      @Field("password") String password);
 
     @GET
     Observable<CapabilitiesOverall> getCapabilities(@Header("Authorization") String authorization, @Url String url);
@@ -392,6 +392,12 @@ public interface NcApi {
                                                @Field("actorDisplayName") String actorDisplayName,
                                                @Field("replyTo") Integer replyTo,
                                                @Field("silent") Boolean sendWithoutNotification);
+
+    @FormUrlEncoded
+    @PUT
+    Observable<ChatOverallSingleMessage> editChatMessage(@Header("Authorization") String authorization,
+                                                         @Url String url,
+                                                         @Field("message") String message);
 
     @GET
     Observable<Response<ChatShareOverall>> getSharedItems(
@@ -463,8 +469,8 @@ public interface NcApi {
 
     @POST
     Observable<GenericOverall> setTypingStatusPrivacy(@Header("Authorization") String authorization,
-                                                    @Url String url,
-                                                    @Body RequestBody body);
+                                                      @Url String url,
+                                                      @Body RequestBody body);
 
     @POST
     Observable<ContactsByNumberOverall> searchContactsByPhoneNumber(@Header("Authorization") String authorization,
@@ -504,8 +510,8 @@ public interface NcApi {
     @Multipart
     @POST
     Observable<RoomOverall> uploadConversationAvatar(@Header("Authorization") String authorization,
-                                            @Url String url,
-                                            @Part MultipartBody.Part attachment);
+                                                     @Url String url,
+                                                     @Part MultipartBody.Part attachment);
 
     @GET
     Observable<UserProfileFieldsOverall> getEditableUserProfileFields(@Header("Authorization") String authorization,
@@ -698,6 +704,6 @@ public interface NcApi {
     @FormUrlEncoded
     @PUT
     Observable<GenericOverall> setRecordingConsent(@Header("Authorization") String authorization,
-                                                    @Url String url,
-                                                    @Field("recordingConsent") int recordingConsent);
+                                                   @Url String url,
+                                                   @Field("recordingConsent") int recordingConsent);
 }

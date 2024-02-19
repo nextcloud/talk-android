@@ -133,14 +133,15 @@
             <include layout="@layout/item_custom_incoming_text_message_shimmer" />
 
             <include layout="@layout/item_custom_incoming_text_message_shimmer" />
+
         </LinearLayout>
 
         <com.stfalcon.chatkit.messages.MessagesList
             android:id="@+id/messagesListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="20dp"
             android:clipToPadding="false"
+            android:paddingBottom="20dp"
             android:visibility="gone"
             app:dateHeaderTextSize="13sp"
             app:incomingBubblePaddingBottom="@dimen/message_bubble_corners_vertical_padding"
@@ -169,11 +170,10 @@
             app:outcomingTextSize="@dimen/chat_text_size"
             app:outcomingTimeTextSize="12sp"
             app:textAutoLink="all"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <com.nextcloud.ui.popupbubble.PopupBubble
             android:id="@+id/popupBubbleView"
-            android:theme="@style/Button.Primary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/typing_indicator_wrapper"
@@ -182,11 +182,12 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="64dp"
             android:layout_marginBottom="26dp"
-            android:minHeight="@dimen/min_size_clickable_area"
             android:layout_toStartOf="@+id/scrollDownButton"
-            android:text="@string/nc_new_messages"
-            app:background="@color/colorPrimary"
             android:ellipsize="middle"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:text="@string/nc_new_messages"
+            android:theme="@style/Button.Primary"
+            app:background="@color/colorPrimary"
             app:cornerRadius="@dimen/button_corner_radius"
             app:icon="@drawable/ic_baseline_arrow_downward_24px" />
 
@@ -226,9 +227,9 @@
             android:id="@+id/typing_indicator_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="-19dp">
+            android:layout_marginBottom="-19dp"
+            android:orientation="vertical">
 
             <View
                 android:id="@+id/separator_1"
@@ -240,15 +241,14 @@
                 android:id="@+id/typing_indicator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:ellipsize="end"
                 android:layout_marginStart="@dimen/side_margin"
                 android:layout_marginEnd="@dimen/side_margin"
                 android:background="@color/bg_default"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:textColor="@color/low_emphasis_text"
-                tools:text="Marcel is typing"
-                tools:ignore="Overdraw">
-            </TextView>
+                tools:ignore="Overdraw"
+                tools:text="Marcel is typing"></TextView>
 
         </LinearLayout>
 
@@ -258,6 +258,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <include
+            android:id="@+id/editView"
+            layout="@layout/edit_message_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp" >
+        </include>
 
         <com.nextcloud.talk.ui.MessageInput
             android:id="@+id/messageInputView"
