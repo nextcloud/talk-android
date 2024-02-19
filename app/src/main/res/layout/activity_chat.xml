@@ -168,7 +168,6 @@
             app:outcomingTextLinkColor="@color/high_emphasis_text"
             app:outcomingTextSize="@dimen/chat_text_size"
             app:outcomingTimeTextSize="12sp"
-            app:textAutoLink="all"
             tools:visibility="visible"/>
 
         <com.nextcloud.ui.popupbubble.PopupBubble
