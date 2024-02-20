@@ -104,6 +104,7 @@
     <string name="nc_dialog_outdated_client_option_update">Atnaujinti</string>
     <string name="nc_dialog_save_to_storage_no">Ne</string>
     <string name="nc_dialog_save_to_storage_yes">Taip</string>
+    <string name="nc_edit_message">Taisyti</string>
     <string name="nc_email">El. paštas</string>
     <string name="nc_expire_message_eight_hours">8 valandos</string>
     <string name="nc_expire_message_off">Išjungta</string>

@@ -31,6 +31,7 @@
     <string name="file_list_loading">読み込み中…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4時間</string>
+    <string name="hint_edited_message">(編集済み)</string>
     <string name="invisible">オフライン</string>
     <string name="load_more_results">結果をさらに読み込む</string>
     <string name="lock_symbol">鍵の記号</string>
@@ -139,6 +140,7 @@
     <string name="nc_dialog_save_to_storage_yes">はい</string>
     <string name="nc_display_name_not_fetched">表示名を取得できませんでした。</string>
     <string name="nc_display_name_not_stored">表示名を保存できませんでした。</string>
+    <string name="nc_edit_message">編集</string>
     <string name="nc_email">メール</string>
     <string name="nc_expire_message_eight_hours">8時間</string>
     <string name="nc_expire_message_off">オフ</string>

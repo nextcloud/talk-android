@@ -34,6 +34,7 @@
     <string name="file_list_loading">불러오는 중 …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 시간</string>
+    <string name="hint_edited_message">(수정됨)</string>
     <string name="invisible">숨겨짐</string>
     <string name="later_today">오늘 중</string>
     <string name="load_more_results">더 많은 결과 불러오기</string>
@@ -145,6 +146,7 @@
     <string name="nc_dialog_save_to_storage_yes">예</string>
     <string name="nc_display_name_not_fetched">표시 이름을 가져올 수 없음, 중단함</string>
     <string name="nc_display_name_not_stored">표시 이름을 저장할 수 없음, 중단함</string>
+    <string name="nc_edit_message">편집</string>
     <string name="nc_email">이메일</string>
     <string name="nc_expire_message_eight_hours">8시간</string>
     <string name="nc_expire_message_four_weeks">4주</string>

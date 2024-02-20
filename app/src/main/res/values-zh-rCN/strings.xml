@@ -132,6 +132,7 @@
     <string name="nc_conversation_menu_conversation_info">对话信息</string>
     <string name="nc_conversation_menu_video_call">视频通话</string>
     <string name="nc_conversation_menu_voice_call">语音通话</string>
+    <string name="nc_conversation_not_found">没有找到对话</string>
     <string name="nc_conversation_settings">对话设置</string>
     <string name="nc_conversations_empty">加入一个对话或开始一个新的对话</string>
     <string name="nc_conversations_empty_details">跟你的朋友和同事打个招呼！</string>
@@ -172,6 +173,7 @@
     <string name="nc_dialog_save_to_storage_yes">是</string>
     <string name="nc_display_name_not_fetched">无法获取显示名，中止</string>
     <string name="nc_display_name_not_stored">无法储存显示名称，正在终止</string>
+    <string name="nc_edit_message">编辑</string>
     <string name="nc_email">电子邮件</string>
     <string name="nc_expire_message_eight_hours">8小时</string>
     <string name="nc_expire_message_four_weeks">4 星期</string>

@@ -166,6 +166,7 @@
     <string name="nc_dialog_save_to_storage_yes">Да</string>
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
     <string name="nc_display_name_not_stored">Не удалось сохранить отображаемое имя, продолжение невозможно</string>
+    <string name="nc_edit_message">Редактирование</string>
     <string name="nc_email">Эл. почта</string>
     <string name="nc_expire_message_eight_hours">8 часов</string>
     <string name="nc_expire_message_four_weeks">4 недели</string>

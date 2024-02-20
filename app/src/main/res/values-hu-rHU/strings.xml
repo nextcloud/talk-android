@@ -168,6 +168,7 @@
     <string name="nc_dialog_save_to_storage_yes">Igen</string>
     <string name="nc_display_name_not_fetched">A megjelenítendő név nem kérhető le, megszakítás</string>
     <string name="nc_display_name_not_stored">A megjelenítendő név nem tárolható, megszakítás</string>
+    <string name="nc_edit_message">Szerkesztés</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 óra</string>
     <string name="nc_expire_message_four_weeks">4 hét</string>

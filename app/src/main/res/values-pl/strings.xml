@@ -177,6 +177,7 @@
     <string name="nc_dialog_save_to_storage_yes">Tak</string>
     <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerwano żądanie</string>
     <string name="nc_display_name_not_stored">Nie można zapisać wyświetlanej nazwy, przerwano żądanie</string>
+    <string name="nc_edit_message">Edycja</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 godzin</string>
     <string name="nc_expire_message_four_weeks">4 tygodnie</string>

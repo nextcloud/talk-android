@@ -41,6 +41,7 @@
     <string name="file_list_loading">التحميل جارٍ …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ساعات</string>
+    <string name="hint_edited_message">(مُعدّلة)</string>
     <string name="invisible">غير مرئي</string>
     <string name="languages_error_message">تعذّرت استعادة اللغات</string>
     <string name="languages_error_title">فشلت الاستعادة</string>

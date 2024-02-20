@@ -178,6 +178,7 @@
     <string name="nc_dialog_save_to_storage_yes">Sim</string>
     <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
     <string name="nc_display_name_not_stored">Não foi possível armazenar o nome de exibição, cancelando</string>
+    <string name="nc_edit_message">Editar</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
     <string name="nc_expire_message_four_weeks">4 semanas</string>
