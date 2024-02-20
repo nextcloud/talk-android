@@ -116,6 +116,7 @@
     <string name="nc_conversation_menu_conversation_info">Informació de la conversa</string>
     <string name="nc_conversation_menu_video_call">Trucada de vídeo </string>
     <string name="nc_conversation_menu_voice_call">Trucada de veu</string>
+    <string name="nc_conversation_not_found">No s\'ha trobat la conversa</string>
     <string name="nc_conversation_settings">Paràmetres de la conversa</string>
     <string name="nc_conversations_empty">Uniu-vos a una conversa o inicieu-ne una de nova</string>
     <string name="nc_conversations_empty_details">Saludeu els vostres amics i col·legues!</string>
@@ -151,6 +152,7 @@
     <string name="nc_dialog_save_to_storage_yes">Sí</string>
     <string name="nc_display_name_not_fetched">No s’ha pogut obtenir el nom de visualització, s\'està avortant</string>
     <string name="nc_display_name_not_stored">No s\'ha pogut emmagatzemar el nom de visualització, s\'està avortant</string>
+    <string name="nc_edit_message">Edició</string>
     <string name="nc_email">Correu</string>
     <string name="nc_expire_message_eight_hours">8 hores</string>
     <string name="nc_expire_message_four_weeks">4 setmanes</string>

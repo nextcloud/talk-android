@@ -39,6 +39,7 @@
     <string name="file_list_loading">Chargement…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 heures</string>
+    <string name="hint_edited_message">(modifié)</string>
     <string name="invisible">Invisible</string>
     <string name="languages_error_message">Les langues n\'ont pas pu être récupérées</string>
     <string name="languages_error_title">Récupération échouée</string>
@@ -135,6 +136,7 @@
     <string name="nc_conversation_menu_conversation_info">Infos sur la conversation</string>
     <string name="nc_conversation_menu_video_call">Appel vidéo</string>
     <string name="nc_conversation_menu_voice_call">Appel vocal</string>
+    <string name="nc_conversation_not_found">Discussion non trouvée</string>
     <string name="nc_conversation_settings">Paramètres de la conversation</string>
     <string name="nc_conversations_empty">Rejoignez une conversation ou démarrez-en une nouvelle</string>
     <string name="nc_conversations_empty_details">Dites bonjour à vos amis et collègues !</string>
@@ -180,6 +182,7 @@
     <string name="nc_dialog_save_to_storage_yes">Oui</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
+    <string name="nc_edit_message">Modifier</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 heures</string>
     <string name="nc_expire_message_four_weeks">4 semaines</string>

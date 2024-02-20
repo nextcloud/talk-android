@@ -130,6 +130,7 @@
     <string name="nc_dialog_save_to_storage_yes">Da</string>
     <string name="nc_display_name_not_fetched">Neuspješno dohvaćanje imena za prikaz, prekid</string>
     <string name="nc_display_name_not_stored">Nije moguće pohraniti ime za prikaz, prekid</string>
+    <string name="nc_edit_message">Uredi</string>
     <string name="nc_email">E-pošta</string>
     <string name="nc_expire_message_off">Isključeno</string>
     <string name="nc_expire_message_one_day">1 dan</string>

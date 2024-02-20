@@ -177,6 +177,7 @@
     <string name="nc_dialog_save_to_storage_yes">Si</string>
     <string name="nc_display_name_not_fetched">Non foi posíbel recuperar o nome para amosar, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
+    <string name="nc_edit_message">Editar</string>
     <string name="nc_email">Correo-e</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
     <string name="nc_expire_message_four_weeks">4 semanas</string>
