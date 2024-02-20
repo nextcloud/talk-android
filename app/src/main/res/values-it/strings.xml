@@ -145,6 +145,7 @@
     <string name="nc_dialog_save_to_storage_yes">Sì</string>
     <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
     <string name="nc_display_name_not_stored">Nome visualizzato non memorizzato, interruzione in corso</string>
+    <string name="nc_edit_message">Modifica</string>
     <string name="nc_email">Email</string>
     <string name="nc_expire_message_eight_hours">8 ore</string>
     <string name="nc_expire_message_off">Spenta</string>

@@ -41,6 +41,7 @@
     <string name="file_list_loading">正在載入……</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小時</string>
+    <string name="hint_edited_message">（已編輯）</string>
     <string name="invisible">隱藏</string>
     <string name="languages_error_message">無法擷取語言</string>
     <string name="languages_error_title">擷取失敗</string>
@@ -137,6 +138,7 @@
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
     <string name="nc_conversation_menu_video_call">視訊通話</string>
     <string name="nc_conversation_menu_voice_call">語音通話</string>
+    <string name="nc_conversation_not_found">找不到對話</string>
     <string name="nc_conversation_settings">對話設定</string>
     <string name="nc_conversations_empty">加入一個對話或者開一個新的</string>
     <string name="nc_conversations_empty_details">跟大家打個招呼！</string>
@@ -207,6 +209,7 @@
     <string name="nc_dialog_save_to_storage_yes">是</string>
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止動作。</string>
     <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
+    <string name="nc_edit_message">編輯</string>
     <string name="nc_email">電子郵件</string>
     <string name="nc_expire_message_eight_hours">8小時</string>
     <string name="nc_expire_message_four_weeks">4 週</string>

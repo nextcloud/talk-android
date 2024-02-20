@@ -179,6 +179,7 @@
     <string name="nc_dialog_save_to_storage_yes">Bai</string>
     <string name="nc_display_name_not_fetched">Ezin izan da erakusteko izena lortu, bertan behera uzten</string>
     <string name="nc_display_name_not_stored">Ezin izan da erakusteko izena biltegiratu, bertan behera uzten</string>
+    <string name="nc_edit_message">Aldatu</string>
     <string name="nc_email">E-posta</string>
     <string name="nc_expire_message_eight_hours">8 ordu</string>
     <string name="nc_expire_message_four_weeks">4 aste</string>

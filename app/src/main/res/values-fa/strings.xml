@@ -126,6 +126,7 @@
     <string name="nc_conversation_menu_conversation_info">اطلاعات مکالمه</string>
     <string name="nc_conversation_menu_video_call">تماس تصویری</string>
     <string name="nc_conversation_menu_voice_call">تماس صوتی</string>
+    <string name="nc_conversation_not_found">Conversation not found</string>
     <string name="nc_conversation_settings">تنظیمات گفتگو</string>
     <string name="nc_conversations_empty">عضو یک گفتگو شوید یا یک گفتگو جدید شروع کنید</string>
     <string name="nc_conversations_empty_details">به رفقا و هم‌قطاران‌تان سلام کنید!</string>
@@ -163,6 +164,7 @@
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
     <string name="nc_display_name_not_fetched">امکان دریافت نام وجود ندارد. درحال لغو</string>
     <string name="nc_display_name_not_stored">"امکان ذخیره نام وجود ندارد، درحال لغو "</string>
+    <string name="nc_edit_message">ویرایش</string>
     <string name="nc_email">رایانامه</string>
     <string name="nc_expire_message_eight_hours">8 ساعت</string>
     <string name="nc_expire_message_four_weeks">4 weeks</string>

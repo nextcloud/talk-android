@@ -41,6 +41,7 @@
     <string name="file_list_loading">التحميل جارٍ …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ساعات</string>
+    <string name="hint_edited_message">(مُعدّلة)</string>
     <string name="invisible">غير مرئي</string>
     <string name="languages_error_message">تعذّرت استعادة اللغات</string>
     <string name="languages_error_title">فشلت الاستعادة</string>
@@ -207,6 +208,7 @@
     <string name="nc_dialog_save_to_storage_yes">نعم</string>
     <string name="nc_display_name_not_fetched">لايمكن عرض الاسم، جارِ إلالغاء</string>
     <string name="nc_display_name_not_stored">تعذر تخزين اسم العرض ، جارِ إلالغاء</string>
+    <string name="nc_edit_message">تحرير</string>
     <string name="nc_email">البريد الإلكتروني</string>
     <string name="nc_expire_message_eight_hours">8 ساعات</string>
     <string name="nc_expire_message_four_weeks">4 أسابيع</string>

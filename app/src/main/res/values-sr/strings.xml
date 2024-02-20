@@ -41,6 +41,7 @@
     <string name="file_list_loading">Учитавање…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 сата</string>
+    <string name="hint_edited_message">(уређено)</string>
     <string name="invisible">Невидљива</string>
     <string name="languages_error_message">Није успело преузимање језика</string>
     <string name="languages_error_title">Није успело преузимање</string>
@@ -137,6 +138,7 @@
     <string name="nc_conversation_menu_conversation_info">Информације о разговору</string>
     <string name="nc_conversation_menu_video_call">Видео позив</string>
     <string name="nc_conversation_menu_voice_call">Аудио позив</string>
+    <string name="nc_conversation_not_found">Разговор није нађен</string>
     <string name="nc_conversation_settings">Подешавања разговора</string>
     <string name="nc_conversations_empty">Придружи се разговору или започни нови</string>
     <string name="nc_conversations_empty_details">Поздравите Ваше пријатеље и колеге!</string>
@@ -207,6 +209,7 @@
     <string name="nc_dialog_save_to_storage_yes">Да</string>
     <string name="nc_display_name_not_fetched">Име за приказ се не може добавити. Прекидам</string>
     <string name="nc_display_name_not_stored">Не могу да сачувам име за приказ. Прекидам</string>
+    <string name="nc_edit_message">Измени</string>
     <string name="nc_email">Е-пошта</string>
     <string name="nc_expire_message_eight_hours">8 сати</string>
     <string name="nc_expire_message_four_weeks">4 недеље</string>

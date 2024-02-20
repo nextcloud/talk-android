@@ -119,6 +119,7 @@
     <string name="nc_conversation_menu_conversation_info">Інформація про розмову</string>
     <string name="nc_conversation_menu_video_call">Відеодзвінок</string>
     <string name="nc_conversation_menu_voice_call">Голосовий дзвінок</string>
+    <string name="nc_conversation_not_found">Розмову не знайдено</string>
     <string name="nc_conversation_settings">Налаштування розмови</string>
     <string name="nc_conversations_empty">Приєднайтеся до розмови або почніть нову</string>
     <string name="nc_conversations_empty_details">Привітайтеся з вашими друзями та колегами!</string>
@@ -151,6 +152,7 @@
     <string name="nc_dialog_save_to_storage_yes">Так</string>
     <string name="nc_display_name_not_fetched">Ім\'я для показу не вдалося розпізнати. Скасування</string>
     <string name="nc_display_name_not_stored">Неможливо отримати ім\'я для показу. Скасування</string>
+    <string name="nc_edit_message">Редагувати</string>
     <string name="nc_email">Електронна пошта</string>
     <string name="nc_expire_message_eight_hours">8 годин</string>
     <string name="nc_expire_message_four_weeks">4 тижні</string>

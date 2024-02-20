@@ -94,6 +94,7 @@
     <string name="nc_conversation_menu_conversation_info">Keskustelun tiedot</string>
     <string name="nc_conversation_menu_video_call">Videopuhelu</string>
     <string name="nc_conversation_menu_voice_call">Äänipuhelu</string>
+    <string name="nc_conversation_not_found">Keskustelua ei löydy</string>
     <string name="nc_conversation_settings">Keskustelun asetukset</string>
     <string name="nc_conversations_empty">Liity keskusteluun tai aloita uusi</string>
     <string name="nc_conversations_empty_details">Sano hei ystävillesi ja työkavereillesi!</string>
@@ -126,6 +127,7 @@
     <string name="nc_dialog_reauth_or_delete">Haluatko valtuuttaa tämän tilin uudelleen vai poistaa tilin?</string>
     <string name="nc_dialog_save_to_storage_no">Ei</string>
     <string name="nc_dialog_save_to_storage_yes">Kyllä</string>
+    <string name="nc_edit_message">Muokkaa</string>
     <string name="nc_email">Sähköposti</string>
     <string name="nc_expire_message_eight_hours">8 tuntia</string>
     <string name="nc_expire_message_four_weeks">4 viikkoa</string>
