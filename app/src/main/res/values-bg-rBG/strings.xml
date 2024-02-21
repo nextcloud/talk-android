@@ -116,6 +116,7 @@
     <string name="nc_conversation_menu_conversation_info">Информация за разговор</string>
     <string name="nc_conversation_menu_video_call">Видео разговор</string>
     <string name="nc_conversation_menu_voice_call">Гласово обаждане</string>
+    <string name="nc_conversation_not_found">Разговорът не е намерен</string>
     <string name="nc_conversation_settings">Настройки за разговор</string>
     <string name="nc_conversations_empty">Присъединяване към разговор или започване на нов</string>
     <string name="nc_conversations_empty_details">Поздравете приятелите и колегите си!</string>
@@ -151,6 +152,7 @@
     <string name="nc_dialog_save_to_storage_yes">Да</string>
     <string name="nc_display_name_not_fetched">Показваното име  не може да бъде извлечено, прекъсване</string>
     <string name="nc_display_name_not_stored">Името за визуализация не може да бъде записано, прекратяване</string>
+    <string name="nc_edit_message">Редактиране</string>
     <string name="nc_email">Имейл</string>
     <string name="nc_expire_message_eight_hours">8 часа</string>
     <string name="nc_expire_message_four_weeks">4 седмици</string>
