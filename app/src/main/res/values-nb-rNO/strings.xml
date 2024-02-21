@@ -22,6 +22,7 @@
     <string name="clear_status_message_after">Fjern statusmelding etter</string>
     <string name="close">Lukk</string>
     <string name="continuous_voice_message_recording">Lås opptak for kontinuerlig opptak av talemeldingen</string>
+    <string name="conversation_is_read_only">Denne samtalen er skrivebeskyttet</string>
     <string name="conversations">Samtaler</string>
     <string name="create_conversation">Opprett samtale</string>
     <string name="create_issue">Opprett problem</string>
@@ -32,6 +33,8 @@
     <string name="dnd">Ikke forstyrr</string>
     <string name="dontClear">Ikke fjern</string>
     <string name="edit">Rediger</string>
+    <string name="edit_error_24_hours_old_message">Kan ikke redigere meldinger som er eldre enn 24 timer</string>
+    <string name="edit_message_icon_description">Ikon for rediger melding</string>
     <string name="emoji_backspace">Tilbake</string>
     <string name="emoji_category_recent">Nylig</string>
     <string name="encrypted">Kryptert</string>
@@ -114,6 +117,8 @@
     <string name="nc_change_cert_auth">Endre sertifikat for autentisering</string>
     <string name="nc_circle">Sirkel</string>
     <string name="nc_circles">Sirkler</string>
+    <string name="nc_clear_edit_button">tøm redigeringsknapp</string>
+    <string name="nc_clear_edit_message">Fjern redigeringsmelding</string>
     <string name="nc_clear_history">Slett alle meldinger</string>
     <string name="nc_clear_history_success">Alle meldinger ble slettet</string>
     <string name="nc_clear_history_warning">Ønsker du virkelig å slette alle meldinger i denne samtalen?</string>
@@ -209,7 +214,11 @@
     <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_display_name_not_fetched">Kunne ikke hente visningsnavn, avbryter</string>
     <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
+    <string name="nc_edit_icon">Redigeringsikon</string>
     <string name="nc_edit_message">Rediger</string>
+    <string name="nc_edit_message_text">Rediger meldingstekst</string>
+    <string name="nc_edited_by">Redigert av</string>
+    <string name="nc_edited_by_admin">Redigert av administrator</string>
     <string name="nc_email">E-post</string>
     <string name="nc_expire_message_eight_hours">8 timer</string>
     <string name="nc_expire_message_four_weeks">4 uker</string>
@@ -357,6 +366,7 @@
     <string name="nc_search">Søk</string>
     <string name="nc_select_an_account">Velg en konto</string>
     <string name="nc_select_participants">Velg deltakere</string>
+    <string name="nc_send_edit_message">Send redigert melding</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sendte en GIF.</string>
     <string name="nc_sent_a_gif_you">Du sendte en GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sendte en video.</string>
