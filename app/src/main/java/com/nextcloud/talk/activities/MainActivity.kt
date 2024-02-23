@@ -181,7 +181,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     val user = userId.substringBeforeLast("@")
                     val baseUrl = userId.substringAfterLast("@")
 
-                    if (userManager.currentUser.blockingGet()?.baseUrl?.endsWith(baseUrl) == true) {
+                    if (userManager.currentUser.blockingGet()?.baseUrl!!.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
                         Snackbar.make(
@@ -200,11 +200,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         val currentUser = userManager.currentUser.blockingGet()
 
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, 1))
         val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion,
-            currentUser?.baseUrl,
+            currentUser?.baseUrl!!,
             roomType,
             null,
             userId,

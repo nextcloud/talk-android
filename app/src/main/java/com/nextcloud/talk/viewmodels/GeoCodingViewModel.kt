@@ -25,7 +25,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.activities.CallActivity.Companion.TAG
-import com.nextcloud.talk.location.GeocodingActivity
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import kotlinx.coroutines.CoroutineScope
@@ -70,9 +69,9 @@ class GeoCodingViewModel : ViewModel() {
                 try {
                     val results = nominatimClient.search(query) as ArrayList<Address>
                     for (address in results) {
-                        Log.d(GeocodingActivity.TAG, address.displayName)
-                        Log.d(GeocodingActivity.TAG, address.latitude.toString())
-                        Log.d(GeocodingActivity.TAG, address.longitude.toString())
+                        Log.d(TAG, address.displayName)
+                        Log.d(TAG, address.latitude.toString())
+                        Log.d(TAG, address.longitude.toString())
                     }
                     geocodingResults = results
                     geocodingResultsLiveData.postValue(results)

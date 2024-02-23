@@ -154,7 +154,7 @@ class ShowReactionsDialog(
         ncApi.getReactions(
             credentials,
             ApiUtils.getUrlForMessageReaction(
-                user?.baseUrl,
+                user?.baseUrl!!,
                 roomToken,
                 chatMessage.id
             ),
@@ -209,7 +209,7 @@ class ShowReactionsDialog(
         ncApi.deleteReaction(
             credentials,
             ApiUtils.getUrlForMessageReaction(
-                user?.baseUrl,
+                user?.baseUrl!!,
                 roomToken,
                 message.id
             ),

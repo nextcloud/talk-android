@@ -85,7 +85,7 @@ public class SignalingSettingsWorker extends Worker {
 
         for (User user : userEntityObjectList) {
 
-            int apiVersion = ApiUtils.getSignalingApiVersion(user, new int[] {ApiUtils.APIv3, 2, 1});
+            int apiVersion = ApiUtils.getSignalingApiVersion(user, new int[] {ApiUtils.API_V3, 2, 1});
 
             ncApi.getSignalingSettings(
                     ApiUtils.getCredentials(user.getUsername(), user.getToken()),

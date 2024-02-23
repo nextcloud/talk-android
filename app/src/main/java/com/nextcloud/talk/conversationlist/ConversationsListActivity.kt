@@ -115,6 +115,7 @@ import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
@@ -130,10 +131,10 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isServerEOL
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUnifiedSearchAvailable
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isUserStatusAvailable
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
+import com.nextcloud.talk.utils.CapabilitiesUtil.isUnifiedSearchAvailable
+import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
@@ -283,11 +284,11 @@ class ConversationsListActivity :
         }
         currentUser = userManager.currentUser.blockingGet()
         if (currentUser != null) {
-            if (isServerEOL(currentUser!!.capabilities)) {
+            if (isServerEOL(currentUser!!.serverVersion!!.major)) {
                 showServerEOLDialog()
                 return
             }
-            if (isUnifiedSearchAvailable(currentUser!!)) {
+            if (isUnifiedSearchAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
                 searchHelper = MessageSearchHelper(unifiedSearchRepository)
             }
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
@@ -423,7 +424,7 @@ class ConversationsListActivity :
     private fun loadUserAvatar(target: Target) {
         if (currentUser != null) {
             val url = ApiUtils.getUrlForAvatar(
-                currentUser!!.baseUrl,
+                currentUser!!.baseUrl!!,
                 currentUser!!.userId,
                 true
             )
@@ -433,7 +434,7 @@ class ConversationsListActivity :
             context.imageLoader.enqueue(
                 ImageRequest.Builder(context)
                     .data(url)
-                    .addHeader("Authorization", credentials)
+                    .addHeader("Authorization", credentials!!)
                     .placeholder(R.drawable.ic_user)
                     .transformations(CircleCropTransformation())
                     .crossfade(true)
@@ -698,7 +699,10 @@ class ConversationsListActivity :
         isRefreshing = true
         conversationItems = ArrayList()
         conversationItemsWithHeader = ArrayList()
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv3, 1))
+        val apiVersion = ApiUtils.getConversationApiVersion(
+            currentUser!!,
+            intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
+        )
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
         roomsQueryDisposable = ncApi.getRooms(
@@ -868,11 +872,15 @@ class ConversationsListActivity :
     private fun fetchOpenConversations(apiVersion: Int) {
         searchableConversationItems.clear()
         searchableConversationItems.addAll(conversationItemsWithHeader)
-        if (hasSpreedFeatureCapability(currentUser, "listable-rooms")) {
+        if (hasSpreedFeatureCapability(
+                currentUser!!.capabilities!!.spreedCapability!!,
+                SpreedFeatures.LISTABLE_ROOMS
+            )
+        ) {
             val openConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
             openConversationsQueryDisposable = ncApi.getOpenConversations(
                 credentials,
-                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl)
+                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl!!)
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1087,7 +1095,7 @@ class ConversationsListActivity :
             clearMessageSearchResults()
             adapter!!.setFilter(filter)
             adapter!!.filterItems()
-            if (isUnifiedSearchAvailable(currentUser!!)) {
+            if (isUnifiedSearchAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
                 startMessageSearch(filter)
             }
         } else {
@@ -1173,7 +1181,11 @@ class ConversationsListActivity :
     private fun handleConversation(conversation: Conversation?) {
         selectedConversation = conversation
         if (selectedConversation != null) {
-            val hasChatPermission = ParticipantPermissions(currentUser!!, selectedConversation!!).hasChatPermission()
+            val hasChatPermission = ParticipantPermissions(
+                currentUser!!.capabilities!!.spreedCapability!!,
+                selectedConversation!!
+            )
+                .hasChatPermission()
             if (showShareToScreen) {
                 if (hasChatPermission &&
                     !isReadOnlyConversation(selectedConversation!!) &&
@@ -1197,7 +1209,10 @@ class ConversationsListActivity :
     }
 
     private fun shouldShowLobby(conversation: Conversation): Boolean {
-        val participantPermissions = ParticipantPermissions(currentUser!!, conversation)
+        val participantPermissions = ParticipantPermissions(
+            currentUser!!.capabilities?.spreedCapability!!,
+            conversation
+        )
         return conversation.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
             !conversation.canModerate(currentUser!!) &&
             !participantPermissions.canIgnoreLobby()
@@ -1511,7 +1526,7 @@ class ConversationsListActivity :
                 .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
                     val intent = Intent(context, WebViewLoginActivity::class.java)
                     val bundle = Bundle()
-                    bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl)
+                    bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl!!)
                     bundle.putBoolean(BundleKeys.KEY_REAUTHORIZE_ACCOUNT, true)
                     intent.putExtras(bundle)
                     startActivity(intent)

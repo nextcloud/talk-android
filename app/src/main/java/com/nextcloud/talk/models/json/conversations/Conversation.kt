@@ -38,8 +38,9 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumReadOnlyConversationConverter
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.ConversationUtils
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -160,7 +161,13 @@ data class Conversation(
     var callStartTime: Long? = null,
 
     @JsonField(name = ["recordingConsent"])
-    var recordingConsentRequired: Int = 0
+    var recordingConsentRequired: Int = 0,
+
+    @JsonField(name = ["remoteServer"])
+    var remoteServer: String? = null,
+
+    @JsonField(name = ["remoteToken"])
+    var remoteToken: String? = null
 
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
@@ -185,13 +192,20 @@ data class Conversation(
     @Deprecated("Use ConversationUtil")
     private fun isLockedOneToOne(conversationUser: User): Boolean {
         return type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "locked-one-to-one-rooms")
+            CapabilitiesUtil.hasSpreedFeatureCapability(
+                conversationUser.capabilities?.spreedCapability!!,
+                SpreedFeatures.LOCKED_ONE_TO_ONE_ROOMS
+            )
     }
 
     @Deprecated("Use ConversationUtil")
     fun canModerate(conversationUser: User): Boolean {
         return isParticipantOwnerOrModerator &&
-            !isLockedOneToOne(conversationUser) &&
+            ConversationUtils.isLockedOneToOne(
+                ConversationModel.mapToConversationModel(this),
+                conversationUser
+                    .capabilities?.spreedCapability!!
+            ) &&
             type != ConversationType.FORMER_ONE_TO_ONE &&
             !ConversationUtils.isNoteToSelfConversation(ConversationModel.mapToConversationModel(this))
     }

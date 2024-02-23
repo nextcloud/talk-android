@@ -80,7 +80,7 @@ public class DeleteConversationWorker extends Worker {
         User operationUser = userManager.getUserWithId(operationUserId).blockingGet();
 
         if (operationUser != null) {
-            int apiVersion = ApiUtils.getConversationApiVersion(operationUser, new int[]{ApiUtils.APIv4, 1});
+            int apiVersion = ApiUtils.getConversationApiVersion(operationUser, new int[]{ApiUtils.API_V4, 1});
 
             String credentials = ApiUtils.getCredentials(operationUser.getUsername(), operationUser.getToken());
             ncApi = retrofit

@@ -34,13 +34,13 @@ class ReactionsRepositoryImpl(private val ncApi: NcApi, currentUserProvider: Cur
     ReactionsRepository {
 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
     override fun addReaction(roomToken: String, message: ChatMessage, emoji: String): Observable<ReactionAddedModel> {
         return ncApi.sendReaction(
             credentials,
             ApiUtils.getUrlForMessageReaction(
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 roomToken,
                 message.id
             ),
@@ -56,7 +56,7 @@ class ReactionsRepositoryImpl(private val ncApi: NcApi, currentUserProvider: Cur
         return ncApi.deleteReaction(
             credentials,
             ApiUtils.getUrlForMessageReaction(
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 roomToken,
                 message.id
             ),

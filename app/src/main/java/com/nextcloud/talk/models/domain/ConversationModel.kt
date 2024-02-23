@@ -3,7 +3,7 @@ package com.nextcloud.talk.models.domain
 import com.nextcloud.talk.models.json.conversations.Conversation
 
 class ConversationModel(
-    var roomId: String?,
+    var roomId: String? = null,
     var token: String? = null,
     var name: String? = null,
     var displayName: String? = null,
@@ -42,7 +42,11 @@ class ConversationModel(
     var statusClearAt: Long? = 0,
     var callRecording: Int = 0,
     var avatarVersion: String? = null,
-    var hasCustomAvatar: Boolean? = null
+    var hasCustomAvatar: Boolean? = null,
+    var callStartTime: Long? = null,
+    var recordingConsentRequired: Int = 0,
+    var remoteServer: String? = null,
+    var remoteToken: String? = null
 ) {
 
     companion object {
@@ -95,7 +99,11 @@ class ConversationModel(
                 statusClearAt = conversation.statusClearAt,
                 callRecording = conversation.callRecording,
                 avatarVersion = conversation.avatarVersion,
-                hasCustomAvatar = conversation.hasCustomAvatar
+                hasCustomAvatar = conversation.hasCustomAvatar,
+                callStartTime = conversation.callStartTime,
+                recordingConsentRequired = conversation.recordingConsentRequired,
+                remoteServer = conversation.remoteServer,
+                remoteToken = conversation.remoteToken
             )
         }
     }

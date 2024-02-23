@@ -65,7 +65,7 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: User, 
                 ApiUtils.getCredentials(
                     currentUser.username,
                     currentUser.token
-                ),
+                )!!,
                 "Authorization"
             )
         )

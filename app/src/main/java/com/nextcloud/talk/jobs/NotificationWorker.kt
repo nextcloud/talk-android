@@ -248,7 +248,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
         val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
-        val uri = Uri.parse(signatureVerification.user!!.baseUrl)
+        val uri = Uri.parse(signatureVerification.user!!.baseUrl!!)
         val baseUrl = uri.host
 
         val notification =
@@ -279,7 +279,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         credentials = ApiUtils.getCredentials(
             signatureVerification.user!!.username,
             signatureVerification.user!!.token
-        )
+        )!!
         ncApi = retrofit!!.newBuilder().client(
             okHttpClient!!.newBuilder().cookieJar(
                 JavaNetCookieJar(
@@ -338,7 +338,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         ncApi.getNcNotification(
             credentials,
             ApiUtils.getUrlForNcNotificationWithId(
-                user!!.baseUrl,
+                user!!.baseUrl!!,
                 (pushMessage.notificationId!!).toString()
             )
         )
@@ -451,7 +451,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             0
         }
         val pendingIntent = PendingIntent.getActivity(context, requestCode, intent, intentFlag)
-        val uri = Uri.parse(signatureVerification.user!!.baseUrl)
+        val uri = Uri.parse(signatureVerification.user!!.baseUrl!!)
         val baseUrl = uri.host
 
         var contentTitle: CharSequence? = ""
@@ -601,12 +601,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val baseUrl = signatureVerification.user!!.baseUrl
             val avatarUrl = if ("user" == userType) {
                 ApiUtils.getUrlForAvatar(
-                    baseUrl,
+                    baseUrl!!,
                     notificationUser.id,
                     false
                 )
             } else {
-                ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.name, false)
+                ApiUtils.getUrlForGuestAvatar(baseUrl!!, notificationUser.name, false)
             }
             person.setIcon(loadAvatarSync(avatarUrl, context!!))
         }
@@ -840,8 +840,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         var inCallOnDifferentDevice = false
 
         val apiVersion = ApiUtils.getConversationApiVersion(
-            signatureVerification.user,
-            intArrayOf(ApiUtils.APIv4, 1)
+            signatureVerification.user!!,
+            intArrayOf(ApiUtils.API_V4, 1)
         )
 
         var isCallNotificationVisible = true
@@ -850,8 +850,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             credentials,
             ApiUtils.getUrlForCall(
                 apiVersion,
-                signatureVerification.user!!.baseUrl,
-                pushMessage.id
+                signatureVerification.user!!.baseUrl!!,
+                pushMessage.id!!
             )
         )
             .repeatWhen { completed ->
@@ -920,10 +920,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (isOngoingCallNotificationVisible) {
             val apiVersion = ApiUtils.getConversationApiVersion(
-                signatureVerification.user,
+                signatureVerification.user!!,
                 intArrayOf(
-                    ApiUtils.APIv4,
-                    ApiUtils.APIv3,
+                    ApiUtils.API_V4,
+                    ApiUtils.API_V3,
                     1
                 )
             )
@@ -931,7 +931,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 credentials,
                 ApiUtils.getUrlForRoom(
                     apiVersion,
-                    signatureVerification.user?.baseUrl,
+                    signatureVerification.user?.baseUrl!!,
                     pushMessage.id
                 )
             )

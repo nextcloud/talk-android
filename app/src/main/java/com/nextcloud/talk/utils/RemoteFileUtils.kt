@@ -53,8 +53,8 @@ object RemoteFileUtils {
         return ncApi.checkIfFileExists(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
             ApiUtils.getUrlForFileUpload(
-                currentUser.baseUrl,
-                currentUser.userId,
+                currentUser.baseUrl!!,
+                currentUser.userId!!,
                 remotePath
             )
         )

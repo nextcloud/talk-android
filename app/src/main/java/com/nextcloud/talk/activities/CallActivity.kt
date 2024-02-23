@@ -110,6 +110,7 @@ import com.nextcloud.talk.ui.dialog.AudioOutputDialog
 import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationsForRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
@@ -131,9 +132,9 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.isCallRecordingAvailable
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
@@ -234,7 +235,7 @@ class CallActivity : CallBaseActivity() {
     private var iceServers: MutableList<PeerConnection.IceServer>? = null
     private var cameraEnumerator: CameraEnumerator? = null
     private var roomToken: String? = null
-    var conversationUser: User? = null
+    lateinit var conversationUser: User
     private var conversationName: String? = null
     private var callSession: String? = null
     private var localStream: MediaStream? = null
@@ -530,13 +531,13 @@ class CallActivity : CallBaseActivity() {
             )
         }
 
-        when (CapabilitiesUtilNew.getRecordingConsentType(conversationUser)) {
-            CapabilitiesUtilNew.RECORDING_CONSENT_NOT_REQUIRED -> initiateCall()
-            CapabilitiesUtilNew.RECORDING_CONSENT_REQUIRED -> askForRecordingConsent()
-            CapabilitiesUtilNew.RECORDING_CONSENT_DEPEND_ON_CONVERSATION -> {
+        when (CapabilitiesUtil.getRecordingConsentType(conversationUser!!.capabilities!!.spreedCapability!!)) {
+            CapabilitiesUtil.RECORDING_CONSENT_NOT_REQUIRED -> initiateCall()
+            CapabilitiesUtil.RECORDING_CONSENT_REQUIRED -> askForRecordingConsent()
+            CapabilitiesUtil.RECORDING_CONSENT_DEPEND_ON_CONVERSATION -> {
                 val getRoomApiVersion = ApiUtils.getConversationApiVersion(
-                    conversationUser,
-                    intArrayOf(ApiUtils.APIv4, 1)
+                    conversationUser!!,
+                    intArrayOf(ApiUtils.API_V4, 1)
                 )
                 ncApi!!.getRoom(credentials, ApiUtils.getUrlForRoom(getRoomApiVersion, baseUrl, roomToken))
                     .retry(API_RETRIES)
@@ -571,7 +572,10 @@ class CallActivity : CallBaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (hasSpreedFeatureCapability(conversationUser, "recording-v1") &&
+        if (hasSpreedFeatureCapability(
+                conversationUser.capabilities!!.spreedCapability!!,
+                SpreedFeatures.RECORDING_V1
+            ) &&
             othersInCall &&
             elapsedSeconds.toInt() >= CALL_TIME_ONE_HOUR
         ) {
@@ -1468,7 +1472,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun fetchSignalingSettings() {
         Log.d(TAG, "fetchSignalingSettings")
-        val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.APIv3, 2, 1))
+        val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.API_V3, 2, 1))
         ncApi!!.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl))
             .subscribeOn(Schedulers.io())
             .retry(API_RETRIES)
@@ -1531,7 +1535,7 @@ class CallActivity : CallBaseActivity() {
     private fun addIceServers(signalingSettingsOverall: SignalingSettingsOverall, apiVersion: Int) {
         if (signalingSettingsOverall.ocs!!.settings!!.stunServers != null) {
             val stunServers = signalingSettingsOverall.ocs!!.settings!!.stunServers
-            if (apiVersion == ApiUtils.APIv3) {
+            if (apiVersion == ApiUtils.API_V3) {
                 for ((_, urls) in stunServers!!) {
                     if (urls != null) {
                         for (url in urls) {
@@ -1564,7 +1568,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun checkCapabilities() {
-        ncApi!!.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
+        ncApi!!.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl!!))
             .retry(API_RETRIES)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -1600,7 +1604,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun joinRoomAndCall() {
         callSession = ApplicationWideCurrentRoomHolder.getInstance().session
-        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         Log.d(TAG, "joinRoomAndCall")
         Log.d(TAG, "   baseUrl= $baseUrl")
         Log.d(TAG, "   roomToken= $roomToken")
@@ -1656,7 +1660,7 @@ class CallActivity : CallBaseActivity() {
         fun getRoomAndContinue() {
             val getRoomApiVersion = ApiUtils.getConversationApiVersion(
                 conversationUser,
-                intArrayOf(ApiUtils.APIv4, 1)
+                intArrayOf(ApiUtils.API_V4, 1)
             )
             ncApi!!.getRoom(credentials, ApiUtils.getUrlForRoom(getRoomApiVersion, baseUrl, roomToken))
                 .retry(API_RETRIES)
@@ -1715,10 +1719,10 @@ class CallActivity : CallBaseActivity() {
         callParticipantList = CallParticipantList(signalingMessageReceiver)
         callParticipantList!!.addObserver(callParticipantListObserver)
 
-        val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+        val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         ncApi!!.joinCall(
             credentials,
-            ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken),
+            ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!),
             inCallFlag,
             isCallWithoutNotification,
             recordingConsentGiven
@@ -1756,7 +1760,10 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun startCallTimeCounter(callStartTime: Long?) {
-        if (callStartTime != null && hasSpreedFeatureCapability(conversationUser, "recording-v1")) {
+        if (callStartTime != null && hasSpreedFeatureCapability(
+                conversationUser!!.capabilities!!.spreedCapability!!, SpreedFeatures.RECORDING_V1
+            )
+        ) {
             binding!!.callDuration.visibility = View.VISIBLE
             val currentTimeInSec = System.currentTimeMillis() / SECOND_IN_MILLIES
             elapsedSeconds = currentTimeInSec - callStartTime
@@ -1793,7 +1800,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun pullSignalingMessages() {
-        val signalingApiVersion = ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.APIv3, 2, 1))
+        val signalingApiVersion = ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.API_V3, 2, 1))
         val delayOnError = AtomicInteger(0)
 
         ncApi!!.pullSignalingMessages(
@@ -1801,7 +1808,7 @@ class CallActivity : CallBaseActivity() {
             ApiUtils.getUrlForSignaling(
                 signalingApiVersion,
                 baseUrl,
-                roomToken
+                roomToken!!
             )
         )
             .subscribeOn(Schedulers.io())
@@ -2031,12 +2038,12 @@ class CallActivity : CallBaseActivity() {
 
     private fun hangupNetworkCalls(shutDownView: Boolean) {
         Log.d(TAG, "hangupNetworkCalls. shutDownView=$shutDownView")
-        val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+        val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         if (callParticipantList != null) {
             callParticipantList!!.removeObserver(callParticipantListObserver)
             callParticipantList!!.destroy()
         }
-        ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
+        ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
@@ -2919,10 +2926,10 @@ class CallActivity : CallBaseActivity() {
             val strings: MutableList<String> = ArrayList()
             val stringToSend = stringBuilder.toString()
             strings.add(stringToSend)
-            val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.APIv3, 2, 1))
+            val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.API_V3, 2, 1))
             ncApi!!.sendSignalingMessages(
                 credentials,
-                ApiUtils.getUrlForSignaling(apiVersion, baseUrl, roomToken),
+                ApiUtils.getUrlForSignaling(apiVersion, baseUrl, roomToken!!),
                 strings.toString()
             )
                 .retry(API_RETRIES)
@@ -3099,12 +3106,14 @@ class CallActivity : CallBaseActivity() {
 
     val isAllowedToStartOrStopRecording: Boolean
         get() = (
-            isCallRecordingAvailable(conversationUser!!) &&
+            isCallRecordingAvailable(conversationUser!!.capabilities!!.spreedCapability!!) &&
                 isModerator
             )
     val isAllowedToRaiseHand: Boolean
-        get() = hasSpreedFeatureCapability(conversationUser, "raise-hand") ||
-            isBreakoutRoom
+        get() = hasSpreedFeatureCapability(
+            conversationUser.capabilities!!.spreedCapability!!,
+            SpreedFeatures.RAISE_HAND
+        ) || isBreakoutRoom
 
     private inner class SelfVideoTouchListener : OnTouchListener {
         @SuppressLint("ClickableViewAccessibility")

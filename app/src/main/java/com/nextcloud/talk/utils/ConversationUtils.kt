@@ -1,10 +1,9 @@
 package com.nextcloud.talk.utils
 
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.domain.ParticipantType
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 
 /*
  * Nextcloud Talk application
@@ -45,28 +44,28 @@ object ConversationUtils {
             ParticipantType.MODERATOR == conversation.participantType
     }
 
-    private fun isLockedOneToOne(conversation: ConversationModel, conversationUser: User): Boolean {
+    fun isLockedOneToOne(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
         return conversation.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "locked-one-to-one-rooms")
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, "locked-one-to-one-rooms")
     }
 
-    fun canModerate(conversation: ConversationModel, conversationUser: User): Boolean {
+    fun canModerate(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
         return isParticipantOwnerOrModerator(conversation) &&
-            !isLockedOneToOne(conversation, conversationUser) &&
+            !isLockedOneToOne(conversation, spreedCapabilities) &&
             conversation.type != ConversationType.FORMER_ONE_TO_ONE &&
             !isNoteToSelfConversation(conversation)
     }
 
-    fun isLobbyViewApplicable(conversation: ConversationModel, conversationUser: User): Boolean {
-        return !canModerate(conversation, conversationUser) &&
+    fun isLobbyViewApplicable(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
+        return !canModerate(conversation, spreedCapabilities) &&
             (
                 conversation.type == ConversationType.ROOM_GROUP_CALL ||
                     conversation.type == ConversationType.ROOM_PUBLIC_CALL
                 )
     }
 
-    fun isNameEditable(conversation: ConversationModel, conversationUser: User): Boolean {
-        return canModerate(conversation, conversationUser) &&
+    fun isNameEditable(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
+        return canModerate(conversation, spreedCapabilities) &&
             ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != conversation.type
     }
 
@@ -79,12 +78,12 @@ object ConversationUtils {
         }
     }
 
-    fun canDelete(conversation: ConversationModel, conversationUser: User): Boolean {
+    fun canDelete(conversation: ConversationModel, spreedCapability: SpreedCapability): Boolean {
         return if (conversation.canDeleteConversation != null) {
             // Available since APIv2
             conversation.canDeleteConversation!!
         } else {
-            canModerate(conversation, conversationUser)
+            canModerate(conversation, spreedCapability)
             // Fallback for APIv1
         }
     }

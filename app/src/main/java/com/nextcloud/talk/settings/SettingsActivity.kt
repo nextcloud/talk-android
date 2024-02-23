@@ -90,6 +90,7 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.profile.ProfileActivity
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
@@ -97,7 +98,7 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
@@ -266,7 +267,11 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun setupPhoneBookIntegration() {
-        if (CapabilitiesUtilNew.isPhoneBookIntegrationAvailable(currentUser!!)) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(
+                currentUser?.capabilities?.spreedCapability!!,
+                SpreedFeatures.PHONEBOOK_SEARCH
+            )
+        ) {
             binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
         } else {
             binding.settingsPhoneBookIntegration.visibility = View.GONE
@@ -507,7 +512,7 @@ class SettingsActivity : BaseActivity() {
         var port = -1
         val uri: URI
         try {
-            uri = URI(currentUser!!.baseUrl)
+            uri = URI(currentUser!!.baseUrl!!)
             host = uri.host
             port = uri.port
             Log.d(TAG, "uri is $uri")
@@ -823,7 +828,7 @@ class SettingsActivity : BaseActivity() {
     private fun setupProfileQueryDisposable() {
         profileQueryDisposable = ncApi.getUserProfile(
             credentials,
-            ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl)
+            ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl!!)
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -854,7 +859,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun setupServerAgeWarning() {
         when {
-            CapabilitiesUtilNew.isServerEOL(currentUser!!.capabilities) -> {
+            CapabilitiesUtil.isServerEOL(currentUser!!.serverVersion!!.major) -> {
                 binding.serverAgeWarningText.setTextColor(ContextCompat.getColor((context), R.color.nc_darkRed))
                 binding.serverAgeWarningText.setText(R.string.nc_settings_server_eol)
                 binding.serverAgeWarningIcon.setColorFilter(
@@ -863,7 +868,7 @@ class SettingsActivity : BaseActivity() {
                 )
             }
 
-            CapabilitiesUtilNew.isServerAlmostEOL(currentUser!!) -> {
+            CapabilitiesUtil.isServerAlmostEOL(currentUser!!.serverVersion!!.major) -> {
                 binding.serverAgeWarningText.setTextColor(
                     ContextCompat.getColor((context), R.color.nc_darkYellow)
                 )
@@ -889,8 +894,8 @@ class SettingsActivity : BaseActivity() {
             binding.settingsIncognitoKeyboardSwitch.visibility = View.GONE
         }
 
-        if (CapabilitiesUtilNew.isReadStatusAvailable(currentUser!!)) {
-            binding.settingsReadPrivacySwitch.isChecked = !CapabilitiesUtilNew.isReadStatusPrivate(currentUser!!)
+        if (CapabilitiesUtil.isReadStatusAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
+            binding.settingsReadPrivacySwitch.isChecked = !CapabilitiesUtil.isReadStatusPrivate(currentUser!!)
         } else {
             binding.settingsReadPrivacy.visibility = View.GONE
         }
@@ -954,10 +959,10 @@ class SettingsActivity : BaseActivity() {
     private fun setupTypingStatusSetting() {
         if (currentUser!!.externalSignalingServer?.externalSignalingServer?.isNotEmpty() == true) {
             binding.settingsTypingStatusOnlyWithHpb.visibility = View.GONE
-            Log.i(TAG, "Typing Status Available: ${CapabilitiesUtilNew.isTypingStatusAvailable(currentUser!!)}")
+            Log.i(TAG, "Typing Status Available: ${CapabilitiesUtil.isTypingStatusAvailable(currentUser!!)}")
 
-            if (CapabilitiesUtilNew.isTypingStatusAvailable(currentUser!!)) {
-                binding.settingsTypingStatusSwitch.isChecked = !CapabilitiesUtilNew.isTypingStatusPrivate(currentUser!!)
+            if (CapabilitiesUtil.isTypingStatusAvailable(currentUser!!)) {
+                binding.settingsTypingStatusSwitch.isChecked = !CapabilitiesUtil.isTypingStatusPrivate(currentUser!!)
             } else {
                 binding.settingsTypingStatus.visibility = View.GONE
             }
@@ -1209,7 +1214,7 @@ class SettingsActivity : BaseActivity() {
     private fun checkForPhoneNumber() {
         ncApi.getUserData(
             ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-            ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl)
+            ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl!!)
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<UserProfileOverall> {
@@ -1294,7 +1299,7 @@ class SettingsActivity : BaseActivity() {
         val phoneNumber = textInputLayout.editText!!.text.toString()
         ncApi.setUserData(
             ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-            ApiUtils.getUrlForUserData(currentUser!!.baseUrl, currentUser!!.userId),
+            ApiUtils.getUrlForUserData(currentUser!!.baseUrl!!, currentUser!!.userId!!),
             "phone",
             phoneNumber
         ).subscribeOn(Schedulers.io())
@@ -1349,7 +1354,7 @@ class SettingsActivity : BaseActivity() {
                     val json = "{\"key\": \"read_status_privacy\", \"value\" : $booleanValue}"
                     ncApi.setReadStatusPrivacy(
                         ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                        ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl),
+                        ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
                         json.toRequestBody("application/json".toMediaTypeOrNull())
                     )
                         .subscribeOn(Schedulers.io())
@@ -1387,7 +1392,7 @@ class SettingsActivity : BaseActivity() {
                     val json = "{\"key\": \"typing_privacy\", \"value\" : $booleanValue}"
                     ncApi.setTypingStatusPrivacy(
                         ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                        ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl),
+                        ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
                         json.toRequestBody("application/json".toMediaTypeOrNull())
                     )
                         .subscribeOn(Schedulers.io())

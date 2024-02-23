@@ -36,7 +36,7 @@ object UserMapper {
                 entity.id,
                 entity.userId,
                 entity.username,
-                entity.baseUrl,
+                entity.baseUrl!!,
                 entity.token,
                 entity.displayName,
                 entity.pushConfigurationState,
@@ -52,8 +52,8 @@ object UserMapper {
 
     fun toEntity(model: User): UserEntity {
         val userEntity = when (val id = model.id) {
-            null -> UserEntity(userId = model.userId, username = model.username, baseUrl = model.baseUrl)
-            else -> UserEntity(id, model.userId, model.username, model.baseUrl)
+            null -> UserEntity(userId = model.userId, username = model.username, baseUrl = model.baseUrl!!)
+            else -> UserEntity(id, model.userId, model.username, model.baseUrl!!)
         }
         userEntity.apply {
             token = model.token

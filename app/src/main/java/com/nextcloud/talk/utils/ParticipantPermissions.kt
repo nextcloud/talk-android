@@ -22,22 +22,21 @@
 
 package com.nextcloud.talk.utils
 
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 
 /**
  * see https://nextcloud-talk.readthedocs.io/en/latest/constants/#attendee-permissions
  */
 class ParticipantPermissions(
-    private val user: User,
+    private val spreedCapabilities: SpreedCapability,
     private val conversation: ConversationModel
 ) {
 
     @Deprecated("Use ChatRepository.ConversationModel")
-    constructor(user: User, conversation: Conversation) : this(
-        user,
+    constructor(spreedCapabilities: SpreedCapability, conversation: Conversation) : this(
+        spreedCapabilities,
         ConversationModel.mapToConversationModel(conversation)
     )
 
@@ -52,8 +51,8 @@ class ParticipantPermissions(
     private val hasChatPermission = (conversation.permissions and CHAT) == CHAT
 
     private fun hasConversationPermissions(): Boolean {
-        return CapabilitiesUtilNew.hasSpreedFeatureCapability(
-            user,
+        return CapabilitiesUtil.hasSpreedFeatureCapability(
+            spreedCapabilities,
             "conversation-permissions"
         )
     }
@@ -91,7 +90,7 @@ class ParticipantPermissions(
     }
 
     fun hasChatPermission(): Boolean {
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "chat-permission")) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, "chat-permission")) {
             return hasChatPermission
         }
         // if capability is not available then the spreed version doesn't support to restrict this

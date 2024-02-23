@@ -35,7 +35,7 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.UserIdUtils;
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
+import com.nextcloud.talk.utils.CapabilitiesUtil;
 
 import javax.inject.Inject;
 
@@ -158,7 +158,8 @@ public class DatabaseStorageModule {
                 });
 
         } else if ("conversation_info_message_notifications_dropdown".equals(key)) {
-            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser.getCapabilities().getSpreedCapability(), "notification" +
+                "-levels")) {
                 if (TextUtils.isEmpty(messageNotificationLevel) || !messageNotificationLevel.equals(value)) {
                     int intValue;
                     switch (value) {
@@ -175,7 +176,7 @@ public class DatabaseStorageModule {
                             intValue = 0;
                     }
 
-                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
+                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{ApiUtils.API_V4, 1});
 
                     ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(),
                                                                        conversationUser.getToken()),

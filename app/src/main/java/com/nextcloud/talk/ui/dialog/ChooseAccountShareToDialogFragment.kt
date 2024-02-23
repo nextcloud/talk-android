@@ -89,7 +89,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
         if (user != null) {
             binding!!.currentAccount.userName.text = user.displayName
             binding!!.currentAccount.ticker.visibility = View.GONE
-            binding!!.currentAccount.account.text = Uri.parse(user.baseUrl).host
+            binding!!.currentAccount.account.text = Uri.parse(user.baseUrl!!).host
             viewThemeUtils!!.platform.colorImageView(binding!!.currentAccount.accountMenu, ColorRole.PRIMARY)
             if (user.baseUrl != null &&
                 (user.baseUrl!!.startsWith("http://") || user.baseUrl!!.startsWith("https://"))

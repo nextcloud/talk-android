@@ -58,6 +58,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CHAT_API_VERSION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_GEOCODING_RESULT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
@@ -103,6 +104,7 @@ class LocationPickerActivity :
     var nominatimClient: TalkJsonNominatimClient? = null
 
     lateinit var roomToken: String
+    private var chatApiVersion: Int = 1
     var geocodingResult: GeocodingResult? = null
 
     var myLocation: GeoPoint = GeoPoint(COORDINATE_ZERO, COORDINATE_ZERO)
@@ -130,6 +132,7 @@ class LocationPickerActivity :
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
+        chatApiVersion = intent.getIntExtra(KEY_CHAT_API_VERSION, 1)
         geocodingResult = intent.getParcelableExtra(KEY_GEOCODING_RESULT)
 
         if (savedInstanceState != null) {
@@ -244,6 +247,7 @@ class LocationPickerActivity :
             val intent = Intent(this, GeocodingActivity::class.java)
             intent.putExtra(BundleKeys.KEY_GEOCODING_QUERY, query)
             intent.putExtra(KEY_ROOM_TOKEN, roomToken)
+            intent.putExtra(KEY_CHAT_API_VERSION, chatApiVersion)
             startActivity(intent)
         }
         return true
@@ -465,11 +469,10 @@ class LocationPickerActivity :
                 "\"longitude\":\"$selectedLon\",\"name\":\"$locationNameToShare\"}"
 
         val currentUser = userManager.currentUser.blockingGet()
-        val apiVersion = ApiUtils.getChatApiVersion(currentUser, intArrayOf(1))
 
         ncApi.sendLocation(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
-            ApiUtils.getUrlToSendLocation(apiVersion, currentUser.baseUrl, roomToken),
+            ApiUtils.getUrlToSendLocation(chatApiVersion, currentUser.baseUrl!!, roomToken),
             "geo-location",
             objectId,
             metaData

@@ -49,11 +49,12 @@ import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ConversationType
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -87,6 +88,8 @@ class ConversationInfoEditActivity :
 
     private lateinit var pickImage: PickImage
 
+    private lateinit var spreedCapabilities: SpreedCapability
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -110,7 +113,7 @@ class ConversationInfoEditActivity :
         viewThemeUtils.material.colorTextInputLayout(binding.conversationNameInputLayout)
         viewThemeUtils.material.colorTextInputLayout(binding.conversationDescriptionInputLayout)
 
-        credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
+        credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)!!
 
         pickImage = PickImage(this, conversationUser)
 
@@ -127,13 +130,15 @@ class ConversationInfoEditActivity :
                 is ConversationInfoEditViewModel.GetRoomSuccessState -> {
                     conversation = state.conversationModel
 
+                    spreedCapabilities = conversationUser.capabilities!!.spreedCapability!!
+
                     binding.conversationName.setText(conversation!!.displayName)
 
                     if (conversation!!.description != null && conversation!!.description!!.isNotEmpty()) {
                         binding.conversationDescription.setText(conversation!!.description)
                     }
 
-                    if (!CapabilitiesUtilNew.isConversationDescriptionEndpointAvailable(conversationUser)) {
+                    if (!CapabilitiesUtil.isConversationDescriptionEndpointAvailable(spreedCapabilities)) {
                         binding.conversationDescription.isEnabled = false
                     }
 
@@ -221,13 +226,13 @@ class ConversationInfoEditActivity :
 
     private fun saveConversationNameAndDescription() {
         val apiVersion =
-            ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+            ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
         ncApi.renameRoom(
             credentials,
             ApiUtils.getUrlForRoom(
                 apiVersion,
-                conversationUser.baseUrl,
+                conversationUser.baseUrl!!,
                 conversation!!.token
             ),
             binding.conversationName.text.toString()
@@ -241,7 +246,7 @@ class ConversationInfoEditActivity :
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    if (CapabilitiesUtilNew.isConversationDescriptionEndpointAvailable(conversationUser)) {
+                    if (CapabilitiesUtil.isConversationDescriptionEndpointAvailable(spreedCapabilities)) {
                         saveConversationDescription()
                     } else {
                         finish()
@@ -265,13 +270,13 @@ class ConversationInfoEditActivity :
 
     fun saveConversationDescription() {
         val apiVersion =
-            ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+            ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
         ncApi.setConversationDescription(
             credentials,
             ApiUtils.getUrlForConversationDescription(
                 apiVersion,
-                conversationUser.baseUrl,
+                conversationUser.baseUrl!!,
                 conversation!!.token
             ),
             binding.conversationDescription.text.toString()

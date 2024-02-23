@@ -35,7 +35,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.DialogAttachmentBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -61,7 +62,7 @@ class AttachmentDialog(val activity: Activity, var chatActivity: ChatActivity) :
     }
 
     private fun initItemsStrings() {
-        var serverName = CapabilitiesUtilNew.getServerName(chatActivity.conversationUser)
+        var serverName = CapabilitiesUtil.getServerName(chatActivity.conversationUser)
         dialogAttachmentBinding.txtAttachFileFromCloud.text = chatActivity.resources?.let {
             if (serverName.isNullOrEmpty()) {
                 serverName = it.getString(R.string.nc_server_product_name)
@@ -71,15 +72,15 @@ class AttachmentDialog(val activity: Activity, var chatActivity: ChatActivity) :
     }
 
     private fun initItemsVisibility() {
-        if (!CapabilitiesUtilNew.hasSpreedFeatureCapability(
-                chatActivity.conversationUser,
-                "geo-location-sharing"
+        if (!CapabilitiesUtil.hasSpreedFeatureCapability(
+                chatActivity.spreedCapabilities,
+                SpreedFeatures.GEO_LOCATION_SHARING
             )
         ) {
             dialogAttachmentBinding.menuShareLocation.visibility = View.GONE
         }
 
-        if (!CapabilitiesUtilNew.hasSpreedFeatureCapability(chatActivity.conversationUser, "talk-polls") ||
+        if (!CapabilitiesUtil.hasSpreedFeatureCapability(chatActivity.spreedCapabilities, SpreedFeatures.TALK_POLLS) ||
             chatActivity.isOneToOneConversation()
         ) {
             dialogAttachmentBinding.menuAttachPoll.visibility = View.GONE

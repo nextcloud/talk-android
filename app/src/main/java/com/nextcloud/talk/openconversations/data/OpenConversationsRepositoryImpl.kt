@@ -31,14 +31,14 @@ class OpenConversationsRepositoryImpl(private val ncApi: NcApi, currentUserProvi
     OpenConversationsRepository {
 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
-    val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv3, 1))
+    val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
 
     override fun fetchConversations(): Observable<OpenConversationsModel> {
         return ncApi.getOpenConversations(
             credentials,
-            ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.baseUrl)
+            ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.baseUrl!!)
         ).map { mapToOpenConversationsModel(it.ocs?.data!!) }
     }
 

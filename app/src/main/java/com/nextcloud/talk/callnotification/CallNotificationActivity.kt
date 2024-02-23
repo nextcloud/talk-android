@@ -50,6 +50,7 @@ import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -57,7 +58,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import io.reactivex.disposables.Disposable
 import okhttp3.Cache
 import java.io.IOException
@@ -148,10 +149,10 @@ class CallNotificationActivity : CallBaseActivity() {
 
     private fun initObservers() {
         val apiVersion = ApiUtils.getConversationApiVersion(
-            userBeingCalled,
+            userBeingCalled!!,
             intArrayOf(
-                ApiUtils.APIv4,
-                ApiUtils.APIv3,
+                ApiUtils.API_V4,
+                ApiUtils.API_V3,
                 1
             )
         )
@@ -186,10 +187,10 @@ class CallNotificationActivity : CallBaseActivity() {
 
                     showAnswerControls()
 
-                    if (apiVersion >= ApiUtils.APIv3) {
+                    if (apiVersion >= ApiUtils.API_V3) {
                         val hasCallFlags = hasSpreedFeatureCapability(
-                            userBeingCalled,
-                            "conversation-call-flags"
+                            userBeingCalled?.capabilities?.spreedCapability!!,
+                            SpreedFeatures.CONVERSATION_CALL_FLAGS
                         )
                         if (hasCallFlags) {
                             if (isInCallWithVideo(currentConversation!!.callFlag)) {
@@ -243,7 +244,7 @@ class CallNotificationActivity : CallBaseActivity() {
             originalBundle!!.putString(KEY_CONVERSATION_NAME, currentConversation!!.displayName)
 
             val participantPermission = ParticipantPermissions(
-                userBeingCalled!!,
+                userBeingCalled!!.capabilities!!.spreedCapability!!,
                 currentConversation!!
             )
             originalBundle!!.putBoolean(

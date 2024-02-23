@@ -37,7 +37,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import kotlinx.parcelize.Parcelize
@@ -213,7 +213,7 @@ data class ChatMessage(
 
     @Suppress("ReturnCount")
     fun isLinkPreview(): Boolean {
-        if (CapabilitiesUtilNew.isLinkPreviewAvailable(activeUser!!)) {
+        if (CapabilitiesUtil.isLinkPreviewAvailable(activeUser!!)) {
             val regexStringFromServer = activeUser?.capabilities?.coreCapability?.referenceRegex
 
             val regexFromServer = regexStringFromServer?.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
@@ -249,8 +249,8 @@ data class ChatMessage(
                     if (!isVoiceMessage) {
                         if (activeUser != null && activeUser!!.baseUrl != null) {
                             return ApiUtils.getUrlForFilePreviewWithFileId(
-                                activeUser!!.baseUrl,
-                                individualHashMap["id"],
+                                activeUser!!.baseUrl!!,
+                                individualHashMap["id"]!!,
                                 sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
                             )
                         } else {
@@ -413,11 +413,11 @@ data class ChatMessage(
                         null
                     }
                     actorType == "users" -> {
-                        ApiUtils.getUrlForAvatar(activeUser!!.baseUrl, actorId, true)
+                        ApiUtils.getUrlForAvatar(activeUser!!.baseUrl!!, actorId, true)
                     }
                     actorType == "bridged" -> {
                         ApiUtils.getUrlForAvatar(
-                            activeUser!!.baseUrl,
+                            activeUser!!.baseUrl!!,
                             "bridge-bot",
                             true
                         )
@@ -427,7 +427,7 @@ data class ChatMessage(
                         if (!TextUtils.isEmpty(actorDisplayName)) {
                             apiId = actorDisplayName
                         }
-                        ApiUtils.getUrlForGuestAvatar(activeUser!!.baseUrl, apiId, true)
+                        ApiUtils.getUrlForGuestAvatar(activeUser!!.baseUrl!!, apiId, true)
                     }
                 }
             }

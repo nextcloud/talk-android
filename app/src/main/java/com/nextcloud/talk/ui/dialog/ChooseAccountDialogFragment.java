@@ -54,7 +54,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
+import com.nextcloud.talk.utils.CapabilitiesUtil;
 
 import java.net.CookieManager;
 import java.util.ArrayList;
@@ -262,7 +262,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     private void loadCurrentStatus(User user) {
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
-        if (CapabilitiesUtilNew.isUserStatusAvailable(userManager.getCurrentUser().blockingGet())) {
+        if (CapabilitiesUtil.isUserStatusAvailable(userManager.getCurrentUser().blockingGet())) {
             binding.statusView.setVisibility(View.VISIBLE);
 
             ncApi.status(credentials, ApiUtils.getUrlForStatus(user.getBaseUrl())).

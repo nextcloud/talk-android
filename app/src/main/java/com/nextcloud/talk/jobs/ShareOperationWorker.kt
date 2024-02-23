@@ -62,7 +62,7 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
         for (filePath in filesArray) {
             ncApi.createRemoteShare(
                 credentials,
-                ApiUtils.getSharingUrl(baseUrl),
+                ApiUtils.getSharingUrl(baseUrl!!),
                 filePath,
                 roomToken,
                 "10",
@@ -87,7 +87,7 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
 
         val operationsUser = userManager.getUserWithId(userId).blockingGet()
         baseUrl = operationsUser.baseUrl
-        credentials = ApiUtils.getCredentials(operationsUser.username, operationsUser.token)
+        credentials = ApiUtils.getCredentials(operationsUser.username, operationsUser.token)!!
     }
 
     companion object {

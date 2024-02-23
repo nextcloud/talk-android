@@ -81,7 +81,7 @@ class ChunkedFileUploader(
 
     init {
         initHttpClient(okHttpClient, currentUser)
-        remoteChunkUrl = ApiUtils.getUrlForChunkedUpload(currentUser.baseUrl, currentUser.userId)
+        remoteChunkUrl = ApiUtils.getUrlForChunkedUpload(currentUser.baseUrl!!, currentUser.userId!!)
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -295,7 +295,7 @@ class ChunkedFileUploader(
                 ApiUtils.getCredentials(
                     currentUser.username,
                     currentUser.token
-                ),
+                )!!,
                 "Authorization"
             )
         )
@@ -304,8 +304,8 @@ class ChunkedFileUploader(
 
     private fun assembleChunks(uploadFolderUri: String, targetPath: String) {
         val destinationUri: String = ApiUtils.getUrlForFileUpload(
-            currentUser.baseUrl,
-            currentUser.userId,
+            currentUser.baseUrl!!,
+            currentUser.userId!!,
             targetPath
         )
         val originUri = "$uploadFolderUri/.file"

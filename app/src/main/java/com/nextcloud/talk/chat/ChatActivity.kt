@@ -167,6 +167,7 @@ import com.nextcloud.talk.models.domain.ConversationReadOnlyState
 import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.domain.LobbyState
 import com.nextcloud.talk.models.domain.ObjectType
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ReadStatus
@@ -192,6 +193,7 @@ import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AudioUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -218,7 +220,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
@@ -301,6 +303,8 @@ class ChatActivity :
     var sessionIdAfterRoomJoined: String? = null
     lateinit var roomToken: String
     var conversationUser: User? = null
+    lateinit var spreedCapabilities: SpreedCapability
+    var chatApiVersion: Int = 1
     private var roomPassword: String = ""
     var credentials: String? = null
     var currentConversation: ConversationModel? = null
@@ -351,6 +355,7 @@ class ChatActivity :
         RELEASED,
         ERROR
     }
+
     private val editableBehaviorSubject = BehaviorSubject.createDefault(false)
     private val editedTextBehaviorSubject = BehaviorSubject.createDefault("")
 
@@ -541,14 +546,6 @@ class ChatActivity :
         }
         this.lifecycle.addObserver(AudioUtils)
         this.lifecycle.addObserver(ChatViewModel.LifeCycleObserver)
-
-        chatViewModel.refreshChatParams(
-            setupFieldsForPullChatMessages(
-                false,
-                0,
-                false
-            )
-        )
     }
 
     override fun onStop() {
@@ -587,6 +584,30 @@ class ChatActivity :
                 is ChatViewModel.GetRoomSuccessState -> {
                     currentConversation = state.conversationModel
                     logConversationInfos("GetRoomSuccessState")
+                    chatViewModel.getCapabilities(conversationUser!!, roomToken, currentConversation!!)
+                }
+
+                is ChatViewModel.GetRoomErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
+
+        chatViewModel.getCapabilitiesViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.GetCapabilitiesSuccessState -> {
+                    spreedCapabilities = state.spreedCapabilities
+                    chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
+
+                    initMessageInputView()
+
+                    if (conversationUser?.userId != "?" &&
+                        CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)
+                    ) {
+                        binding.chatToolbar.setOnClickListener { v -> showConversationInfoScreen() }
+                    }
 
                     if (adapter == null) {
                         initAdapter()
@@ -597,7 +618,7 @@ class ChatActivity :
 
                     loadAvatarForStatusBar()
                     setActionBarTitle()
-                    participantPermissions = ParticipantPermissions(conversationUser!!, currentConversation!!)
+                    participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
 
                     setupSwipeToReply()
                     setupMentionAutocomplete()
@@ -626,9 +647,17 @@ class ChatActivity :
                         },
                         delayForRecursiveCall
                     )
+
+                    chatViewModel.refreshChatParams(
+                        setupFieldsForPullChatMessages(
+                            false,
+                            0,
+                            false
+                        )
+                    )
                 }
 
-                is ChatViewModel.GetRoomErrorState -> {
+                is ChatViewModel.GetCapabilitiesErrorState -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
@@ -716,6 +745,7 @@ class ChatActivity :
                     }
                     binding.messagesListView.smoothScrollToPosition(0)
                 }
+
                 is ChatViewModel.SendChatMessageErrorState -> {
                     if (state.e is HttpException) {
                         val code = state.e.code()
@@ -730,6 +760,7 @@ class ChatActivity :
                         }
                     }
                 }
+
                 else -> {}
             }
         }
@@ -753,9 +784,11 @@ class ChatActivity :
                         )
                     )
                 }
+
                 is ChatViewModel.DeleteChatMessageErrorState -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
+
                 else -> {}
             }
         }
@@ -774,24 +807,22 @@ class ChatActivity :
                         startActivity(chatIntent)
                     }
                 }
+
                 is ChatViewModel.CreateRoomErrorState -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
+
                 else -> {}
             }
         }
 
-        var apiVersion = 1
-        // FIXME this is a best guess, guests would need to get the capabilities themselves
-        if (conversationUser != null) {
-            apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
-        }
-
-        chatViewModel.getFieldMapForChat.observe(this) { _ ->
-            chatViewModel.pullChatMessages(
-                credentials!!,
-                ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken)
-            )
+        chatViewModel.getFieldMapForChat.observe(this) { fieldMap ->
+            if (fieldMap.isNotEmpty()) {
+                chatViewModel.pullChatMessages(
+                    credentials!!,
+                    ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+                )
+            }
         }
 
         chatViewModel.pullChatMessageViewState.observe(this) { state ->
@@ -865,6 +896,7 @@ class ChatActivity :
                                 )
                             )
                         }
+
                         HTTP_CODE_NOT_MODIFIED -> {
                             processHeaderChatLastGiven(state.response, state.lookIntoFuture)
                             chatViewModel.refreshChatParams(
@@ -875,6 +907,7 @@ class ChatActivity :
                                 )
                             )
                         }
+
                         HTTP_CODE_PRECONDITION_FAILED -> {
                             processHeaderChatLastGiven(state.response, state.lookIntoFuture)
                             chatViewModel.refreshChatParams(
@@ -885,6 +918,7 @@ class ChatActivity :
                                 )
                             )
                         }
+
                         else -> {}
                     }
 
@@ -898,12 +932,15 @@ class ChatActivity :
                         collapseSystemMessages()
                     }
                 }
+
                 is ChatViewModel.PullChatMessageCompleteState -> {
                     Log.d(TAG, "PullChatMessageCompleted")
                 }
+
                 is ChatViewModel.PullChatMessageErrorState -> {
                     Log.d(TAG, "PullChatMessageError")
                 }
+
                 else -> {}
             }
         }
@@ -916,6 +953,7 @@ class ChatActivity :
                         state.reactionDeletedModel.emoji
                     )
                 }
+
                 else -> {}
             }
         }
@@ -928,6 +966,7 @@ class ChatActivity :
                         state.reactionAddedModel.emoji
                     )
                 }
+
                 else -> {}
             }
         }
@@ -943,6 +982,7 @@ class ChatActivity :
                                 Snackbar.LENGTH_LONG
                             ).show()
                         }
+
                         HTTP_FORBIDDEN -> {
                             Snackbar.make(
                                 binding.root,
@@ -950,6 +990,7 @@ class ChatActivity :
                                 Snackbar.LENGTH_LONG
                             ).show()
                         }
+
                         HTTP_NOT_FOUND -> {
                             Snackbar.make(
                                 binding.root,
@@ -960,9 +1001,11 @@ class ChatActivity :
                     }
                     clearEditUI()
                 }
+
                 is ChatViewModel.EditMessageErrorState -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
+
                 else -> {}
             }
         }
@@ -979,12 +1022,6 @@ class ChatActivity :
         setupWebsocket()
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
-
-        if (conversationUser?.userId != "?" &&
-            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag")
-        ) {
-            binding.chatToolbar.setOnClickListener { v -> showConversationInfoScreen() }
-        }
 
         initSmileyKeyboardToggler()
 
@@ -1053,7 +1090,6 @@ class ChatActivity :
             }
         })
 
-        initMessageInputView()
         loadAvatarForStatusBar()
         setActionBarTitle()
         viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
@@ -1061,7 +1097,7 @@ class ChatActivity :
 
     private fun initMessageInputView() {
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser)
+        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(spreedCapabilities)
 
         binding.editView.editMessageView.visibility = View.GONE
 
@@ -1160,7 +1196,7 @@ class ChatActivity :
             clearEditUI()
         }
 
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
             binding.messageInputView.button?.setOnLongClickListener {
                 showSendButtonMenu()
                 true
@@ -1175,14 +1211,14 @@ class ChatActivity :
         var apiVersion = 1
         // FIXME Fix API checking with guests?
         if (conversationUser != null) {
-            apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+            apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
         }
 
         chatViewModel.editChatMessage(
             credentials!!,
             ApiUtils.getUrlForChatMessage(
                 apiVersion,
-                conversationUser?.baseUrl,
+                conversationUser?.baseUrl!!,
                 roomToken,
                 message.id
             ),
@@ -2016,7 +2052,7 @@ class ChatActivity :
 
     private fun isTypingStatusEnabled(): Boolean {
         return webSocketInstance != null &&
-            !CapabilitiesUtilNew.isTypingStatusPrivate(conversationUser!!)
+            !CapabilitiesUtil.isTypingStatusPrivate(conversationUser!!)
     }
 
     private fun setupSwipeToReply() {
@@ -2048,7 +2084,7 @@ class ChatActivity :
 
         if (isOneToOneConversation()) {
             var url = ApiUtils.getUrlForAvatar(
-                conversationUser!!.baseUrl,
+                conversationUser!!.baseUrl!!,
                 currentConversation!!.name,
                 true
             )
@@ -2097,18 +2133,19 @@ class ChatActivity :
             }
 
             val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
-
-            context.imageLoader.enqueue(
-                ImageRequest.Builder(context)
-                    .data(url)
-                    .addHeader("Authorization", credentials)
-                    .transformations(CircleCropTransformation())
-                    .crossfade(true)
-                    .target(target)
-                    .memoryCachePolicy(CachePolicy.DISABLED)
-                    .diskCachePolicy(CachePolicy.DISABLED)
-                    .build()
-            )
+            if (credentials != null) {
+                context.imageLoader.enqueue(
+                    ImageRequest.Builder(context)
+                        .data(url)
+                        .addHeader("Authorization", credentials)
+                        .transformations(CircleCropTransformation())
+                        .crossfade(true)
+                        .target(target)
+                        .memoryCachePolicy(CachePolicy.DISABLED)
+                        .diskCachePolicy(CachePolicy.DISABLED)
+                        .build()
+                )
+            }
         } else {
             binding.chatToolbar.findViewById<FrameLayout>(R.id.chat_toolbar_avatar_container).visibility = View.GONE
         }
@@ -2463,7 +2500,10 @@ class ChatActivity :
 
         val baseUrl = message.activeUser!!.baseUrl
         val userId = message.activeUser!!.userId
-        val attachmentFolder = CapabilitiesUtilNew.getAttachmentFolder(message.activeUser!!)
+        val attachmentFolder = CapabilitiesUtil.getAttachmentFolder(
+            message.activeUser!!.capabilities!!
+                .spreedCapability!!
+        )
         val fileName = message.selectedIndividualHashMap!!["name"]
         var size = message.selectedIndividualHashMap!!["size"]
         if (size == null) {
@@ -2801,16 +2841,16 @@ class ChatActivity :
 
     private fun shouldShowLobby(): Boolean {
         if (currentConversation != null) {
-            return CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") &&
+            return CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
                 currentConversation?.lobbyState == LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
-                !ConversationUtils.canModerate(currentConversation!!, conversationUser!!) &&
+                !ConversationUtils.canModerate(currentConversation!!, spreedCapabilities) &&
                 !participantPermissions.canIgnoreLobby()
         }
         return false
     }
 
     private fun disableCallButtons() {
-        if (CapabilitiesUtilNew.isAbleToCall(conversationUser)) {
+        if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
             if (conversationVoiceCallMenuItem != null && conversationVideoMenuItem != null) {
                 conversationVoiceCallMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
                 conversationVideoMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
@@ -2823,7 +2863,7 @@ class ChatActivity :
     }
 
     private fun enableCallButtons() {
-        if (CapabilitiesUtilNew.isAbleToCall(conversationUser)) {
+        if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
             if (conversationVoiceCallMenuItem != null && conversationVideoMenuItem != null) {
                 conversationVoiceCallMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
                 conversationVideoMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
@@ -2843,7 +2883,7 @@ class ChatActivity :
 
     private fun checkLobbyState() {
         if (currentConversation != null &&
-            ConversationUtils.isLobbyViewApplicable(currentConversation!!, conversationUser!!)
+            ConversationUtils.isLobbyViewApplicable(currentConversation!!, spreedCapabilities)
         ) {
             if (shouldShowLobby()) {
                 binding.lobby.lobbyView.visibility = View.VISIBLE
@@ -3252,6 +3292,7 @@ class ChatActivity :
 
         val intent = Intent(this, LocationPickerActivity::class.java)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
+        intent.putExtra(BundleKeys.KEY_CHAT_API_VERSION, chatApiVersion)
         startActivity(intent)
     }
 
@@ -3270,7 +3311,7 @@ class ChatActivity :
         val elevation = MENTION_AUTO_COMPLETE_ELEVATION
         resources?.let {
             val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default, null))
-            val presenter = MentionAutocompletePresenter(this, roomToken)
+            val presenter = MentionAutocompletePresenter(this, roomToken, chatApiVersion)
             val callback = MentionAutocompleteCallback(
                 this,
                 conversationUser!!,
@@ -3430,12 +3471,6 @@ class ChatActivity :
 
         if (!validSessionId()) {
             Log.d(TAG, "sessionID was not valid -> joinRoom")
-            var apiVersion = 1
-            // FIXME Fix API checking with guests?
-            if (conversationUser != null) {
-                apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
-            }
-
             val startNanoTime = System.nanoTime()
             Log.d(TAG, "joinRoomWithPassword - joinRoom - calling: $startNanoTime")
 
@@ -3458,7 +3493,7 @@ class ChatActivity :
         var apiVersion = 1
         // FIXME Fix API checking with guests?
         if (conversationUser != null) {
-            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
         }
 
         val startNanoTime = System.nanoTime()
@@ -3467,7 +3502,7 @@ class ChatActivity :
             credentials!!,
             ApiUtils.getUrlForParticipantsActive(
                 apiVersion,
-                conversationUser?.baseUrl,
+                conversationUser?.baseUrl!!,
                 roomToken
             ),
             funToCallWhenLeaveSuccessful
@@ -3513,11 +3548,9 @@ class ChatActivity :
 
     private fun sendMessage(message: CharSequence, replyTo: Int?, sendWithoutNotification: Boolean) {
         if (conversationUser != null) {
-            val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
-
             chatViewModel.sendChatMessage(
                 credentials!!,
-                ApiUtils.getUrlForChat(apiVersion, conversationUser!!.baseUrl, roomToken),
+                ApiUtils.getUrlForChat(chatApiVersion, conversationUser!!.baseUrl!!, roomToken),
                 message,
                 conversationUser!!.displayName ?: "",
                 replyTo ?: 0,
@@ -3637,7 +3670,7 @@ class ChatActivity :
             }
         }
 
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)) {
             deleteExpiredMessages()
         }
     }
@@ -3871,53 +3904,58 @@ class ChatActivity :
         if (conversationUser?.userId == "?") {
             menu.removeItem(R.id.conversation_info)
         } else {
-            conversationInfoMenuItem = menu.findItem(R.id.conversation_info)
-
-            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
-                conversationSharedItemsItem = menu.findItem(R.id.shared_items)
-            } else {
-                menu.removeItem(R.id.shared_items)
-            }
-
             loadAvatarForStatusBar()
             setActionBarTitle()
-        }
-
-        if (CapabilitiesUtilNew.isAbleToCall(conversationUser)) {
-            conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
-            conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
-
-            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-call")) {
-                Handler().post {
-                    findViewById<View?>(R.id.conversation_voice_call)?.setOnLongClickListener {
-                        showCallButtonMenu(true)
-                        true
-                    }
-                }
-
-                Handler().post {
-                    findViewById<View?>(R.id.conversation_video_call)?.setOnLongClickListener {
-                        showCallButtonMenu(false)
-                        true
-                    }
-                }
-            }
-        } else {
-            menu.removeItem(R.id.conversation_video_call)
-            menu.removeItem(R.id.conversation_voice_call)
         }
         return true
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
-        conversationUser?.let {
-            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(it, "read-only-rooms")) {
+
+        if (this::spreedCapabilities.isInitialized) {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS)) {
                 checkShowCallButtons()
             }
+
             val searchItem = menu.findItem(R.id.conversation_search)
-            searchItem.isVisible = CapabilitiesUtilNew.isUnifiedSearchAvailable(it)
+            searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities)
+
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(
+                    spreedCapabilities,
+                    SpreedFeatures.RICH_OBJECT_LIST_MEDIA
+                )
+            ) {
+                conversationSharedItemsItem = menu.findItem(R.id.shared_items)
+            } else {
+                menu.removeItem(R.id.shared_items)
+            }
+
+            if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
+                conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
+                conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
+
+                if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_CALL)) {
+                    Handler().post {
+                        findViewById<View?>(R.id.conversation_voice_call)?.setOnLongClickListener {
+                            showCallButtonMenu(true)
+                            true
+                        }
+                    }
+
+                    Handler().post {
+                        findViewById<View?>(R.id.conversation_video_call)?.setOnLongClickListener {
+                            showCallButtonMenu(false)
+                            true
+                        }
+                    }
+                }
+            } else {
+                menu.removeItem(R.id.conversation_video_call)
+                menu.removeItem(R.id.conversation_voice_call)
+            }
         }
+
         return true
     }
 
@@ -4054,7 +4092,7 @@ class ChatActivity :
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
         currentConversation?.let {
             if (conversationUser != null) {
-                val pp = ParticipantPermissions(conversationUser!!, it)
+                val pp = ParticipantPermissions(spreedCapabilities, it)
                 if (!pp.canStartCall() && currentConversation?.hasCall == false) {
                     Snackbar.make(binding.root, R.string.startCallForbidden, Snackbar.LENGTH_LONG).show()
                 } else {
@@ -4074,7 +4112,7 @@ class ChatActivity :
             bundle.putString(KEY_ROOM_TOKEN, roomToken)
             bundle.putString(KEY_ROOM_ID, roomId)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
-            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl)
+            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl!!)
             bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
             bundle.putInt(KEY_RECORDING_STATE, it.callRecording)
             bundle.putBoolean(KEY_IS_MODERATOR, ConversationUtils.isParticipantOwnerOrModerator(it))
@@ -4147,7 +4185,8 @@ class ChatActivity :
                 conversationUser,
                 currentConversation,
                 isShowMessageDeletionButton(message),
-                participantPermissions.hasChatPermission()
+                participantPermissions.hasChatPermission(),
+                spreedCapabilities
             ).show()
         }
     }
@@ -4156,7 +4195,7 @@ class ChatActivity :
         return ChatMessage.MessageType.SYSTEM_MESSAGE == message.getCalculateMessageType()
     }
 
-    fun deleteMessage(message: IMessage?) {
+    fun deleteMessage(message: IMessage) {
         if (!participantPermissions.hasChatPermission()) {
             Log.w(
                 TAG,
@@ -4168,28 +4207,28 @@ class ChatActivity :
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
-                apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+                apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
             }
 
             chatViewModel.deleteChatMessages(
                 credentials!!,
                 ApiUtils.getUrlForChatMessage(
                     apiVersion,
-                    conversationUser?.baseUrl,
+                    conversationUser?.baseUrl!!,
                     roomToken,
-                    message?.id
+                    message.id!!
                 ),
-                message?.id!!
+                message.id!!
             )
         }
     }
 
     fun replyPrivately(message: IMessage?) {
         val apiVersion =
-            ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+            ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion,
-            conversationUser?.baseUrl,
+            conversationUser?.baseUrl!!,
             "1",
             null,
             message?.user?.id?.substring(INVITE_LENGTH),
@@ -4215,10 +4254,14 @@ class ChatActivity :
 
     fun remindMeLater(message: ChatMessage?) {
         Log.d(TAG, "remindMeLater called")
+
+        val chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1, 1))
+
         val newFragment: DialogFragment = DateTimePickerFragment.newInstance(
             roomToken,
             message!!.id,
-            chatViewModel
+            chatViewModel,
+            chatApiVersion
         )
         newFragment.show(supportFragmentManager, DateTimePickerFragment.TAG)
     }
@@ -4229,8 +4272,8 @@ class ChatActivity :
             chatViewModel.setChatReadMarker(
                 credentials!!,
                 ApiUtils.getUrlForChatReadMarker(
-                    ApiUtils.getChatApiVersion(conversationUser, intArrayOf(ApiUtils.APIv1)),
-                    conversationUser?.baseUrl,
+                    ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
+                    conversationUser?.baseUrl!!,
                     roomToken
                 ),
                 chatMessage.previousMessageId
@@ -4312,10 +4355,10 @@ class ChatActivity :
     }
 
     fun shareToNotes(message: ChatMessage, roomToken: String) {
-        val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+        val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
         val type = message.getCalculateMessageType()
         var shareUri: Uri? = null
-        var data: HashMap<String?, String?>?
+        val data: HashMap<String?, String?>?
         var metaData: String = ""
         var objectId: String = ""
         if (message.hasFileAttachment()) {
@@ -4335,9 +4378,9 @@ class ChatActivity :
         } else if (message.hasGeoLocation()) {
             data = message.messageParameters?.get("object")
             objectId = data?.get("id")!!
-            val name = data.get("name")!!
-            val lat = data.get("latitude")!!
-            val lon = data.get("longitude")!!
+            val name = data["name"]!!
+            val lat = data["latitude"]!!
+            val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
                 "\"longitude\":\"$lon\",\"name\":\"$name\"}"
@@ -4348,6 +4391,7 @@ class ChatActivity :
                 uploadFile(shareUri.toString(), true, token = roomToken)
                 Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
             }
+
             ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE -> {
                 val caption = if (message.message != "{file}") message.message else ""
                 if (null != shareUri) {
@@ -4364,25 +4408,28 @@ class ChatActivity :
                     }
                 }
             }
+
             ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE -> {
                 chatViewModel.shareLocationToNotes(
                     credentials!!,
-                    ApiUtils.getUrlToSendLocation(apiVersion, conversationUser!!.baseUrl, roomToken),
+                    ApiUtils.getUrlToSendLocation(apiVersion, conversationUser!!.baseUrl!!, roomToken),
                     "geo-location",
                     objectId,
                     metaData
                 )
                 Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
             }
+
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
                 chatViewModel.shareToNotes(
                     credentials!!,
-                    ApiUtils.getUrlForChat(apiVersion, conversationUser!!.baseUrl, roomToken),
+                    ApiUtils.getUrlForChat(apiVersion, conversationUser!!.baseUrl!!, roomToken),
                     message.message!!,
                     conversationUser!!.displayName!!
                 )
                 Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
             }
+
             else -> {}
         }
     }
@@ -4456,7 +4503,10 @@ class ChatActivity :
     }
 
     private fun showMicrophoneButton(show: Boolean) {
-        if (show && CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "voice-message-sharing")) {
+        if (show && CapabilitiesUtil.hasSpreedFeatureCapability(
+                spreedCapabilities, SpreedFeatures.VOICE_MESSAGE_SHARING
+            )
+        ) {
             Log.d(TAG, "Microphone shown")
             binding.messageInputView.messageSendButton.visibility = View.GONE
             binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
@@ -4542,7 +4592,7 @@ class ChatActivity :
             !isUserAllowedByPrivileges -> false
             message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
             message.isDeleted -> false
-            !CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
+            !CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.DELETE_MESSAGES) -> false
             !participantPermissions.hasChatPermission() -> false
             else -> true
         }
@@ -4554,7 +4604,7 @@ class ChatActivity :
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser!!.userId) {
             true
         } else {
-            ConversationUtils.canModerate(currentConversation!!, conversationUser!!)
+            ConversationUtils.canModerate(currentConversation!!, spreedCapabilities)
         }
         return isUserAllowedByPrivileges
     }
@@ -4628,12 +4678,12 @@ class ChatActivity :
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
-                apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+                apiVersion = ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
             }
 
             val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
                 apiVersion,
-                conversationUser?.baseUrl,
+                conversationUser?.baseUrl!!,
                 "1",
                 null,
                 userMentionClickEvent.userId,

@@ -27,6 +27,7 @@ import com.nextcloud.talk.callnotification.viewmodel.CallNotificationViewModel
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.conversation.viewmodel.ConversationViewModel
 import com.nextcloud.talk.conversation.viewmodel.RenameConversationViewModel
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
@@ -136,6 +137,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(CallNotificationViewModel::class)
     abstract fun callNotificationViewModel(viewModel: CallNotificationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ConversationInfoViewModel::class)
+    abstract fun conversationInfoViewModel(viewModel: ConversationInfoViewModel): ViewModel
 
     @Binds
     @IntoMap

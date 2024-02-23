@@ -238,7 +238,7 @@ class PushUtils {
         val credentials = ApiUtils.getCredentials(user.username, user.token)
         ncApi.registerDeviceForNotificationsWithNextcloud(
             credentials,
-            ApiUtils.getUrlNextcloudPush(user.baseUrl),
+            ApiUtils.getUrlNextcloudPush(user.baseUrl!!),
             nextcloudRegisterPushMap
         )
             .subscribe(object : Observer<PushRegistrationOverall> {
