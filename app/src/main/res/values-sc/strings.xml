@@ -94,7 +94,7 @@
     <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
     <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>
     <string name="nc_conversation_not_found">Resonada no agatada</string>
-    <string name="nc_conversation_settings">Impostatziones de sa resonada</string>
+    <string name="nc_conversation_settings">Cunfiguratzione de sa resonada</string>
     <string name="nc_conversations_empty">Intra in una resonada o cumintza•nde una noa</string>
     <string name="nc_conversations_empty_details">Saluda a sa gente!</string>
     <string name="nc_copy_message">Còpia</string>
@@ -115,7 +115,7 @@
     <string name="nc_diagnose_android_version_title">Versione Android</string>
     <string name="nc_diagnose_app_category_title">Aplicatzione</string>
     <string name="nc_diagnose_app_name_title">Nùmene de s\'aplicatzione</string>
-    <string name="nc_diagnose_battery_optimization_title">Impostatziones bateria</string>
+    <string name="nc_diagnose_battery_optimization_title">Cunfiguratzione de sa bateria</string>
     <string name="nc_diagnose_device_name_title">Dispositivu</string>
     <string name="nc_diagnose_phone_category_title">Telèfonu</string>
     <string name="nc_diagnose_signaling_mode_extern">De foras</string>
@@ -155,7 +155,7 @@
     <string name="nc_guest_access_resend_invitations">Torra a imbiare is invitos</string>
     <string name="nc_guest_access_share_link">Cumpartzi su ligòngiu de sa resonada</string>
     <string name="nc_important_conversation">Tzarrada importante</string>
-    <string name="nc_important_conversation_desc">Is notìficas in custa resonada ant a ignorare is impostatziones No istorbare</string>
+    <string name="nc_important_conversation_desc">Is notìficas in custa resonada ant a ignorare sa cunfiguratzione No istorbare</string>
     <string name="nc_join_via_link">Intra cun unu ligòngiu</string>
     <string name="nc_join_via_web">Intra dae sa rete</string>
     <string name="nc_last_moderator">Depes promòvere un\'àtera persona chi moderet antis de lassare %1$s</string>
@@ -190,7 +190,7 @@
     <string name="nc_notification_channel_calls">Mutidas</string>
     <string name="nc_notification_channel_messages">Messàgios</string>
     <string name="nc_notification_channel_uploads">Carrigamentos</string>
-    <string name="nc_notification_settings">Impostatziones de notìfica</string>
+    <string name="nc_notification_settings">Cunfiguratzione de notìficas</string>
     <string name="nc_notify_me_always">Notificare semper</string>
     <string name="nc_notify_me_mention">Notificare cando mentovadu</string>
     <string name="nc_notify_me_never">Non notificare mai</string>
@@ -200,7 +200,7 @@
     <string name="nc_participants">Partetzipantes</string>
     <string name="nc_participants_add">Aguinghe partetzipantes</string>
     <string name="nc_password">Crae</string>
-    <string name="nc_permissions_settings">Aberi impostatziones</string>
+    <string name="nc_permissions_settings">Aberi sa cunfiguratzione</string>
     <string name="nc_phone_book_integration_account_not_found">Contu no agatadu</string>
     <string name="nc_phone_book_integration_chat_via">Tzarrada via %s</string>
     <string name="nc_plain_old_messages">Messàgios</string>
@@ -263,7 +263,7 @@
     <string name="nc_server_unsupported">Su serbidore no at suportadu s\'aplicatzione Talk installada</string>
     <string name="nc_server_url">Indiritzu de su serbidore https://…</string>
     <string name="nc_server_version">%1$s funtzionat isceti cun %2$s 13 e prus</string>
-    <string name="nc_settings">Impostatziones</string>
+    <string name="nc_settings">Cunfiguratzione</string>
     <string name="nc_settings_account_updated">Su contu chi tenias giai est istadu agiornadu, imbetzes de nd\'agiùnghere unu nou</string>
     <string name="nc_settings_advanced_title">Avantzadu</string>
     <string name="nc_settings_appearance">Aspetu</string>
@@ -349,7 +349,7 @@
     <string name="polls_add_option">Agiunghe sèberu</string>
     <string name="polls_options">Optziones</string>
     <string name="polls_results_subtitle">Resurtados</string>
-    <string name="polls_settings">Impostatziones</string>
+    <string name="polls_settings">Cunfiguratzione</string>
     <string name="raise_hand">Àrtzia sa manu </string>
     <string name="reactions_tab_all">Totu</string>
     <string name="read_storage_no_permission">Non faghet a cumpartzire archìvios dae s\'archiviatzione chene permissos</string>
@@ -391,7 +391,7 @@
     <string name="today">Oe</string>
     <string name="tomorrow">Cras</string>
     <string name="translate">Borta</string>
-    <string name="translation_device_settings">Impostatziones de su dispositivu</string>
+    <string name="translation_device_settings">Cunfiguratzione de su dispositivu</string>
     <string name="translation_error_message">Impossìbile rilevare sa lìngua</string>
     <string name="translation_from">Dae</string>
     <string name="translation_to">A</string>
@@ -404,7 +404,7 @@
     <string name="user_info_website">Situ ìnternet</string>
     <string name="user_status">Status</string>
     <string name="userinfo_error_text">No at fatu a otènnere informatziones personales de s\'utente</string>
-    <string name="userinfo_no_info_headline">Peruna impostatzione de datos personales</string>
+    <string name="userinfo_no_info_headline">Nissuna cunfiguratzione de datos personales</string>
     <string name="userinfo_no_info_text">Agiunghe nùmene, fotografia e detàllios de cuntatu in su profilu tuo.</string>
     <string name="whats_your_status">Cale est s\'istadu tuo?</string>
     </resources>
