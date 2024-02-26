@@ -22,6 +22,8 @@ If your problem still occurs after checking all these hints, create an issue at 
 
 ### 🤖 Check android settings
 
+Please check the "Notifications" section in the app settings which should show warnings if anything needs to be 
+adjusted.
 Please take into account that the android settings might be different for each manufacturer.
 It might be worth it to check what other messaging apps recommend to get their apps running on a certain smartphone and adapt this to the talk app.
 Also [https://dontkillmyapp.com/](https://dontkillmyapp.com/) might be good starting point.
@@ -91,9 +93,8 @@ Data to encrypt is: {"nid":525210,"app":"admin_notification_talk","subject":"Tes
 Signed encrypted push subject
 Push notification sent successfully
 ```
-This means the notifications are set up correctly on server side. Note that there won't be any notification on the 
-phone as this is just a test-message which won't be handled (As a developer you could set a breakpoint in the 
-"onMessageReceived"-method of the Firebase cloud messaging handling to check if the notification is received).
+This means the notifications are set up correctly on server side. A notification should be displayed on the device. 
+If there is no notification shown on the device, please focus on the settings of the talk android app.
 
 If it prints something like
 ```

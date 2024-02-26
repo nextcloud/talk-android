@@ -172,19 +172,31 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             for (notificationId in pushMessage.notificationIds!!) {
                 cancelNotification(context, signatureVerification.user!!, notificationId)
             }
-        } else if (isSpreedNotification()) {
+        } else if (isTalkNotification()) {
             Log.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
                 TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER -> handleNonCallPushMessage()
                 TYPE_REMOTE_TALK_SHARE -> handleRemoteTalkSharePushMessage()
                 TYPE_CALL -> handleCallPushMessage()
-                else -> Log.e(TAG, "unknown pushMessage.type")
+                else -> Log.e(TAG, pushMessage.type + " is not handled")
+            }
+        } else if (isAdminTalkNotification()) {
+            Log.d(TAG, "pushMessage.type: " + pushMessage.type)
+            when (pushMessage.type) {
+                TYPE_ADMIN_NOTIFICATIONS -> handleTestPushMessage()
+                else -> Log.e(TAG, pushMessage.type + " is not handled")
             }
         } else {
             Log.d(TAG, "a pushMessage that is not for spreed was received.")
         }
 
         return Result.success()
+    }
+
+    private fun handleTestPushMessage() {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        showNotification(intent, null)
     }
 
     private fun handleNonCallPushMessage() {
@@ -315,7 +327,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
     }
 
-    private fun isSpreedNotification() = SPREED_APP == pushMessage.app
+    private fun isTalkNotification() = SPREED_APP == pushMessage.app
+
+    private fun isAdminTalkNotification() = ADMIN_NOTIFICATION_TALK == pushMessage.app
 
     private fun getNcDataAndShowNotification(intent: Intent) {
         val user = signatureVerification.user
@@ -419,11 +433,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     ) {
         var category = ""
         when (pushMessage.type) {
-            TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER, TYPE_REMOTE_TALK_SHARE -> {
+            TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER, TYPE_ADMIN_NOTIFICATIONS, TYPE_REMOTE_TALK_SHARE ->
                 category = Notification.CATEGORY_MESSAGE
-            }
 
-            TYPE_CALL -> category = Notification.CATEGORY_CALL
+            TYPE_CALL ->
+                category = Notification.CATEGORY_CALL
+
             else -> Log.e(TAG, "unknown pushMessage.type")
         }
 
@@ -479,7 +494,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             when (pushMessage.type) {
-                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER, TYPE_REMOTE_TALK_SHARE -> {
+                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER, TYPE_ADMIN_NOTIFICATIONS, TYPE_REMOTE_TALK_SHARE -> {
                     notificationBuilder.setChannelId(
                         NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
                     )
@@ -1012,7 +1027,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TYPE_RECORDING = "recording"
         private const val TYPE_REMOTE_TALK_SHARE = "remote_talk_share"
         private const val TYPE_REMINDER = "reminder"
+        private const val TYPE_ADMIN_NOTIFICATIONS = "admin_notifications"
         private const val SPREED_APP = "spreed"
+        private const val ADMIN_NOTIFICATION_TALK = "admin_notification_talk"
         private const val TIMER_START = 1
         private const val TIMER_COUNT = 12
         private const val TIMER_DELAY: Long = 5
