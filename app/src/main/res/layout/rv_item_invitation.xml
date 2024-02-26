@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Nextcloud Android client application
+
+  @author Tobias Kaminsky
+  @author TSI-mc
+  @author Marcel Hibbe
+  Copyright (C) 2023 Andy Scherzinger
+  Copyright (C) 2023 TSI-mc
+  Copyright (C) 2018 Tobias Kaminsky
+  Copyright (C) 2018 Nextcloud GmbH
+  Copyright (C) 2024 Marcel Hibbe <dev@mhibbe.de>
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <https://www.gnu.org/licenses/>.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/standard_padding"
+    android:paddingTop="@dimen/standard_padding"
+    android:paddingEnd="@dimen/standard_padding"
+    android:paddingBottom="@dimen/standard_padding"
+    tools:ignore="UseCompoundDrawables">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/notification_icon_width"
+        android:layout_height="@dimen/notification_icon_height"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="@dimen/notification_icon_layout_right_end_margin"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_email" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignTop="@id/icon"
+        android:layout_toEndOf="@id/icon">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:paddingBottom="@dimen/standard_half_padding"
+            tools:text="Ghostbusters" />
+
+        <TextView
+            android:id="@+id/subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:paddingBottom="@dimen/standard_half_padding"
+            tools:text="from Bill Murray at 127.0.0.123" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_half_margin"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/reject_invitation"
+                style="@style/Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/nc_federation_invitation_reject"
+                android:theme="@style/Button.Primary"
+                app:cornerRadius="@dimen/button_corner_radius" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/accept_invitation"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/standard_half_margin"
+                android:layout_weight="1"
+                android:text="@string/nc_federation_invitation_accept"
+                android:textColor="@color/high_emphasis_text"
+                android:theme="@style/Button.Primary"
+                app:cornerRadius="@dimen/button_corner_radius" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

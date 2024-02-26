@@ -84,7 +84,7 @@ class SwitchAccountActivity : BaseActivity() {
         if (userItems.size > position) {
             val user = (userItems[position] as AdvancedUserItem).user
 
-            if (userManager.setUserAsActive(user).blockingGet()) {
+            if (userManager.setUserAsActive(user!!).blockingGet()) {
                 cookieManager.cookieStore.removeAll()
                 finish()
             }
@@ -146,7 +146,7 @@ class SwitchAccountActivity : BaseActivity() {
                         participant.actorType = Participant.ActorType.USERS
                         participant.actorId = userId
                         participant.displayName = user.displayName
-                        userItems.add(AdvancedUserItem(participant, user, null, viewThemeUtils))
+                        userItems.add(AdvancedUserItem(participant, user, null, viewThemeUtils, 0))
                     }
                 }
                 adapter!!.addListener(onSwitchItemClickListener)
@@ -164,7 +164,7 @@ class SwitchAccountActivity : BaseActivity() {
                     participant.displayName = importAccount.getUsername()
                     user = User()
                     user.baseUrl = importAccount.getBaseUrl()
-                    userItems.add(AdvancedUserItem(participant, user, account, viewThemeUtils))
+                    userItems.add(AdvancedUserItem(participant, user, account, viewThemeUtils, 0))
                 }
                 adapter!!.addListener(onImportItemClickListener)
                 adapter!!.updateDataSet(userItems, false)

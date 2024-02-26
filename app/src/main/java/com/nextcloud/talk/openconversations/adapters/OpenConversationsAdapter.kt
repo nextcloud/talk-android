@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.openconversations
+package com.nextcloud.talk.openconversations.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

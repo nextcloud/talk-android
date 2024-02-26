@@ -49,6 +49,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
+import com.nextcloud.talk.invitation.InvitationsActivity
 import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.UserManager
@@ -258,7 +259,12 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
 
         if (user != null && userManager.setUserAsActive(user).blockingGet()) {
-            if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+            if (intent.hasExtra(BundleKeys.KEY_REMOTE_TALK_SHARE)) {
+                if (intent.getBooleanExtra(BundleKeys.KEY_REMOTE_TALK_SHARE, false)) {
+                    val intent = Intent(this, InvitationsActivity::class.java)
+                    startActivity(intent)
+                }
+            } else if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
                 if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
                     val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
                     intent.extras?.let { callNotificationIntent.putExtras(it) }

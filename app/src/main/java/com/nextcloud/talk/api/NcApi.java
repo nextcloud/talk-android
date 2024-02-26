@@ -33,6 +33,7 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall;
+import com.nextcloud.talk.models.json.invitation.InvitationOverall;
 import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.opengraph.OpenGraphOverall;
@@ -706,4 +707,16 @@ public interface NcApi {
     Observable<GenericOverall> setRecordingConsent(@Header("Authorization") String authorization,
                                                    @Url String url,
                                                    @Field("recordingConsent") int recordingConsent);
+
+    @GET
+    Observable<InvitationOverall> getInvitations(@Header("Authorization") String authorization,
+                                                 @Url String url);
+
+    @POST
+    Observable<GenericOverall> acceptInvitation(@Header("Authorization") String authorization,
+                                                 @Url String url);
+
+    @DELETE
+    Observable<GenericOverall> rejectInvitation(@Header("Authorization") String authorization,
+                                                   @Url String url);
 }

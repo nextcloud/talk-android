@@ -544,4 +544,16 @@ public class ApiUtils {
     public static String getUrlForRecordingConsent(int version, String baseUrl, String token) {
         return getUrlForRoom(version, baseUrl, token) + "/recording-consent";
     }
+
+    public static String getUrlForInvitation(String baseUrl) {
+        return baseUrl + ocsApiVersion + spreedApiVersion + "/federation/invitation";
+    }
+
+    public static String getUrlForInvitationAccept(String baseUrl, int id) {
+        return getUrlForInvitation(baseUrl) + "/" + id;
+    }
+
+    public static String getUrlForInvitationReject(String baseUrl, int id) {
+        return getUrlForInvitation(baseUrl) + "/" + id;
+    }
 }

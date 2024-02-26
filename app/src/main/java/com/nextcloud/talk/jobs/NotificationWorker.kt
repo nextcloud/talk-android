@@ -94,6 +94,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_REMOTE_TALK_SHARE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
@@ -175,6 +176,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             Log.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
                 TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER -> handleNonCallPushMessage()
+                TYPE_REMOTE_TALK_SHARE -> handleRemoteTalkSharePushMessage()
                 TYPE_CALL -> handleCallPushMessage()
                 else -> Log.e(TAG, "unknown pushMessage.type")
             }
@@ -187,6 +189,21 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun handleNonCallPushMessage() {
         val mainActivityIntent = createMainActivityIntent()
+        if (pushMessage.notificationId != Long.MIN_VALUE) {
+            getNcDataAndShowNotification(mainActivityIntent)
+        } else {
+            showNotification(mainActivityIntent, null)
+        }
+    }
+
+    private fun handleRemoteTalkSharePushMessage() {
+        val mainActivityIntent = Intent(context, MainActivity::class.java)
+        mainActivityIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        val bundle = Bundle()
+        bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
+        bundle.putBoolean(KEY_REMOTE_TALK_SHARE, true)
+        mainActivityIntent.putExtras(bundle)
+
         if (pushMessage.notificationId != Long.MIN_VALUE) {
             getNcDataAndShowNotification(mainActivityIntent)
         } else {
@@ -402,7 +419,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     ) {
         var category = ""
         when (pushMessage.type) {
-            TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER -> category = Notification.CATEGORY_MESSAGE
+            TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER, TYPE_REMOTE_TALK_SHARE -> {
+                category = Notification.CATEGORY_MESSAGE
+            }
+
             TYPE_CALL -> category = Notification.CATEGORY_CALL
             else -> Log.e(TAG, "unknown pushMessage.type")
         }
@@ -459,7 +479,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             when (pushMessage.type) {
-                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER -> {
+                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER, TYPE_REMOTE_TALK_SHARE -> {
                     notificationBuilder.setChannelId(
                         NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
                     )
@@ -510,12 +530,15 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     largeIcon =
                         ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
                 }
+
                 "group" ->
                     largeIcon =
                         ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
+
                 "public" ->
                     largeIcon =
                         ContextCompat.getDrawable(context!!, R.drawable.ic_link_black_24px)?.toBitmap()!!
+
                 else -> // assuming one2one
                     largeIcon = if (TYPE_CHAT == pushMessage.type || TYPE_ROOM == pushMessage.type) {
                         ContextCompat.getDrawable(context!!, R.drawable.ic_comment)?.toBitmap()!!
@@ -987,6 +1010,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TYPE_ROOM = "room"
         private const val TYPE_CALL = "call"
         private const val TYPE_RECORDING = "recording"
+        private const val TYPE_REMOTE_TALK_SHARE = "remote_talk_share"
         private const val TYPE_REMINDER = "reminder"
         private const val SPREED_APP = "spreed"
         private const val TIMER_START = 1

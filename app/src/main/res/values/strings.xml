@@ -498,10 +498,6 @@ How to translate with transifex:
     <string name="nc_lobby_start_soon">The meeting will start soon</string>
     <string name="nc_manual">Not set</string>
 
-    <string name="nc_allow_guests">Allow guests</string>
-    <string name="nc_last_moderator_title">Could not leave conversation</string>
-    <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>
-
     <!-- Chat -->
     <string name="nc_copy_message">Copy</string>
     <string name="nc_forward_message">Forward</string>
@@ -593,7 +589,6 @@ How to translate with transifex:
     <string name="encrypted">Encrypted</string>
 
     <string name="avatar">Avatar</string>
-    <string name="account_icon">Account icon</string>
     <string name="userinfo_no_info_headline">No personal info set</string>
     <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
     <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
@@ -643,7 +638,6 @@ How to translate with transifex:
     <string name="nc_switch_account">Switch account</string>
     <string name="nc_dialog_maintenance_mode">Maintenance mode</string>
     <string name="nc_dialog_maintenance_mode_description">Server is currently in maintenance mode.</string>
-    <string name="nc_close_app">Close app</string>
 
     <!-- Take photo -->
     <string name="take_photo">Take a photo</string>
@@ -727,8 +721,6 @@ How to translate with transifex:
     <string name="polls_private_poll">Private poll</string>
     <string name="polls_multiple_answers">Multiple answers</string>
 
-    <string name="title_attachments">Attachments</string>
-
     <string name="reactions_tab_all">All</string>
     <string name="send_without_notification">Send without notification</string>
     <string name="call_without_notification">Call without notification</string>
@@ -749,6 +741,14 @@ How to translate with transifex:
     <!-- Breakout rooms -->
     <string name="switch_to_main_room">Switch to main room</string>
     <string name="switch_to_breakout_room">Switch to breakout room</string>
+
+    <!-- Invitations -->
+    <string name="nc_invitations">Invitations</string>
+    <string name="nc_federation_invited_to_room">from %1$s at %2$s</string>
+    <string name="nc_federation_invitation_accept">Accept</string>
+    <string name="nc_federation_invitation_reject">Reject</string>
+    <string name="nc_federation_pending_invitation_hint">You have pending invitations</string>
+    <string name="nc_federation_no_invitations">No pending invitations</string>
 
     <string name="nc_not_allowed_to_activate_audio">You are not allowed to activate audio!</string>
     <string name="nc_not_allowed_to_activate_video">You are not allowed to activate video!</string>

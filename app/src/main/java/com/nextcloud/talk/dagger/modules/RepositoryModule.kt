@@ -32,11 +32,15 @@ import com.nextcloud.talk.conversation.repository.ConversationRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepositoryImpl
+import com.nextcloud.talk.conversationlist.data.ConversationsListRepository
+import com.nextcloud.talk.conversationlist.data.ConversationsListRepositoryImpl
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
+import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.invitation.data.InvitationsRepositoryImpl
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepositoryImpl
 import com.nextcloud.talk.polls.repositories.PollRepository
@@ -136,6 +140,11 @@ class RepositoryModule {
     }
 
     @Provides
+    fun provideConversationsListRepository(ncApi: NcApi): ConversationsListRepository {
+        return ConversationsListRepositoryImpl(ncApi)
+    }
+
+    @Provides
     fun provideChatRepository(ncApi: NcApi): ChatRepository {
         return ChatRepositoryImpl(ncApi)
     }
@@ -151,5 +160,10 @@ class RepositoryModule {
     @Provides
     fun provideConversationRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ConversationRepository {
         return ConversationRepositoryImpl(ncApi, userProvider)
+    }
+
+    @Provides
+    fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository {
+        return InvitationsRepositoryImpl(ncApi)
     }
 }

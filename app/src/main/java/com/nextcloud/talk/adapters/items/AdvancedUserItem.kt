@@ -1,0 +1,129 @@
+/*
+ * Nextcloud Talk application
+ *
+ * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.nextcloud.talk.adapters.items
+
+import android.accounts.Account
+import android.net.Uri
+import android.text.TextUtils
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import com.nextcloud.talk.R
+import com.nextcloud.talk.adapters.items.AdvancedUserItem.UserItemViewHolder
+import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.databinding.AccountItemBinding
+import com.nextcloud.talk.extensions.loadUserAvatar
+import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import eu.davidea.flexibleadapter.FlexibleAdapter
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
+import eu.davidea.flexibleadapter.items.IFilterable
+import eu.davidea.flexibleadapter.items.IFlexible
+import eu.davidea.viewholders.FlexibleViewHolder
+import java.util.regex.Pattern
+
+class AdvancedUserItem(
+    /**
+     * @return the model object
+     */
+    val model: Participant,
+    @JvmField val user: User?,
+    val account: Account?,
+    private val viewThemeUtils: ViewThemeUtils,
+    private val actionRequiredCount: Int
+) : AbstractFlexibleItem<UserItemViewHolder>(), IFilterable<String?> {
+    override fun equals(o: Any?): Boolean {
+        return if (o is AdvancedUserItem) {
+            model == o.model
+        } else {
+            false
+        }
+    }
+
+    override fun hashCode(): Int {
+        return model.hashCode()
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.account_item
+    }
+
+    override fun createViewHolder(
+        view: View?,
+        adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?
+    ): UserItemViewHolder {
+        return UserItemViewHolder(view, adapter)
+    }
+
+    override fun bindViewHolder(
+        adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>,
+        holder: UserItemViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (adapter.hasFilter()) {
+            viewThemeUtils.talk.themeAndHighlightText(
+                holder.binding.userName,
+                model.displayName,
+                adapter.getFilter(String::class.java).toString()
+            )
+        } else {
+            holder.binding.userName.text = model.displayName
+        }
+        if (user != null && !TextUtils.isEmpty(user.baseUrl)) {
+            val host = Uri.parse(user.baseUrl).host
+            if (!TextUtils.isEmpty(host)) {
+                holder.binding.account.text = Uri.parse(user.baseUrl).host
+            } else {
+                holder.binding.account.text = user.baseUrl
+            }
+        }
+        if (user?.baseUrl != null &&
+            (user.baseUrl!!.startsWith("http://") || user.baseUrl!!.startsWith("https://"))
+        ) {
+            holder.binding.userIcon.loadUserAvatar(user, model.calculatedActorId!!, true, false)
+        }
+        if (actionRequiredCount > 0) {
+            holder.binding.actionRequired.visibility = View.VISIBLE
+        } else {
+            holder.binding.actionRequired.visibility = View.GONE
+        }
+    }
+
+    override fun filter(constraint: String?): Boolean {
+        return model.displayName != null &&
+            Pattern
+                .compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
+                .matcher(model.displayName!!.trim { it <= ' ' })
+                .find()
+    }
+
+    class UserItemViewHolder(view: View?, adapter: FlexibleAdapter<*>?) : FlexibleViewHolder(view, adapter) {
+        var binding: AccountItemBinding
+
+        /**
+         * Default constructor.
+         */
+        init {
+            binding = AccountItemBinding.bind(view!!)
+        }
+    }
+}

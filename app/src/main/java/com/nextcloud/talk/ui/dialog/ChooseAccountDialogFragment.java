@@ -43,6 +43,8 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.DialogChooseAccountBinding;
 import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
+import com.nextcloud.talk.invitation.data.InvitationsModel;
+import com.nextcloud.talk.invitation.data.InvitationsRepository;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.models.json.status.StatusOverall;
@@ -79,6 +81,8 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
     private static final float STATUS_SIZE_IN_DP = 9f;
 
+    Disposable disposable;
+
     @Inject
     UserManager userManager;
 
@@ -90,6 +94,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
     @Inject
     ViewThemeUtils viewThemeUtils;
+
+    @Inject
+    InvitationsRepository invitationsRepository;
 
     private DialogChooseAccountBinding binding;
     private View dialogView;
@@ -150,7 +157,6 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             adapter = new FlexibleAdapter<>(userItems, getActivity(), false);
 
             User userEntity;
-            Participant participant;
 
             for (User userItem : userManager.getUsers().blockingGet()) {
                 userEntity = userItem;
@@ -167,17 +173,48 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                         userId = userEntity.getUsername();
                     }
 
-                    participant = new Participant();
-                    participant.setActorType(Participant.ActorType.USERS);
-                    participant.setActorId(userId);
-                    participant.setDisplayName(userEntity.getDisplayName());
-                    userItems.add(new AdvancedUserItem(participant, userEntity, null, viewThemeUtils));
+                    User finalUserEntity = userEntity;
+                    invitationsRepository.fetchInvitations(userItem)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                disposable = d;
+                            }
+
+                            @Override
+                            public void onNext(InvitationsModel invitationsModel) {
+                                Participant participant;
+                                participant = new Participant();
+                                participant.setActorType(Participant.ActorType.USERS);
+                                participant.setActorId(userId);
+                                participant.setDisplayName(finalUserEntity.getDisplayName());
+                                userItems.add(
+                                    new AdvancedUserItem(
+                                        participant,
+                                        finalUserEntity,
+                                        null,
+                                        viewThemeUtils,
+                                        invitationsModel.getInvitations().size()
+                                    ));
+                                adapter.addListener(onSwitchItemClickListener);
+                                adapter.addListener(onSwitchItemLongClickListener);
+                                adapter.updateDataSet(userItems, false);
+                            }
+
+                            @Override
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                Log.e(TAG, "Failed to fetch invitations", e);
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                // no actions atm
+                            }
+                        });
                 }
             }
-
-            adapter.addListener(onSwitchItemClickListener);
-            adapter.addListener(onSwitchItemLongClickListener);
-            adapter.updateDataSet(userItems, false);
         }
     }
 
@@ -291,6 +328,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
         binding = null;
     }
 
@@ -299,7 +339,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             @Override
             public boolean onItemClick(View view, int position) {
                 if (userItems.size() > position) {
-                    User user = (userItems.get(position)).getUser();
+                    User user = (userItems.get(position)).user;
 
                     if (userManager.setUserAsActive(user).blockingGet()) {
                         cookieManager.getCookieStore().removeAll();
