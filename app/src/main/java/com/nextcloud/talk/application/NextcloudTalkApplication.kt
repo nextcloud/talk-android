@@ -26,7 +26,6 @@
 package com.nextcloud.talk.application
 
 import android.content.Context
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.P
 import android.util.Log
@@ -69,7 +68,6 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
 import com.nextcloud.talk.utils.database.user.UserModule
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.webrtc.MagicWebRTCUtils
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.google.GoogleEmojiProvider
 import de.cotech.hw.SecurityKeyManager
@@ -79,8 +77,6 @@ import net.sqlcipher.database.SQLiteDatabaseHook
 import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
 import org.webrtc.PeerConnectionFactory
-import org.webrtc.voiceengine.WebRtcAudioManager
-import org.webrtc.voiceengine.WebRtcAudioUtils
 import java.security.Security
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -132,14 +128,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
     //region private methods
     private fun initializeWebRtc() {
         try {
-            if (MagicWebRTCUtils.HARDWARE_AEC_EXCLUDE_SET.contains(Build.MODEL)) {
-                WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true)
-            }
-
-            if (!MagicWebRTCUtils.OPEN_SL_ES_INCLUDE_SET.contains(Build.MODEL)) {
-                WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true)
-            }
-
             PeerConnectionFactory.initialize(
                 PeerConnectionFactory.InitializationOptions.builder(this)
                     .createInitializationOptions()
