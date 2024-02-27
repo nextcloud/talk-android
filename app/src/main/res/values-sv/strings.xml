@@ -125,6 +125,8 @@
     <string name="nc_external_server_failed">Misslyckades med att hämta signaleringsinställningar</string>
     <string name="nc_failed_signaling_settings">Målservern stöder inte att gå med i offentliga konversationer via mobil-telefoner. Du kan försöka gå med i konversationen via webbläsaren.</string>
     <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>
+    <string name="nc_federation_invitation_accept">Acceptera</string>
+    <string name="nc_federation_invitation_reject">Avvisa</string>
     <string name="nc_file_browser_back">Tillbaka</string>
     <string name="nc_following_link">Användare följer en offentlig länk</string>
     <string name="nc_formatted_message_you">Du: %1$s</string>

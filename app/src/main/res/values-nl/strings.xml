@@ -155,6 +155,8 @@
     <string name="nc_external_server_failed">Kon signaleringsinstellingen niet ophalen</string>
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons. Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
+    <string name="nc_federation_invitation_accept">Accepteren</string>
+    <string name="nc_federation_invitation_reject">Afkeuren</string>
     <string name="nc_file_browser_back">Terug</string>
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
     <string name="nc_formatted_message_you">Jij: %1$s</string>
@@ -177,6 +179,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_hint_enter_a_message">Voer een bericht in…</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
     <string name="nc_important_conversation_desc">Meldingen in dit gesprek negeren de Niet-Storen instellingen</string>
+    <string name="nc_invitations">Uitnodigingen</string>
     <string name="nc_join_via_link">Deelnemen via een link</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
     <string name="nc_last_moderator">Je moet eerst een nieuwe moderator kiezen voordat je het gesprek kan verlaten %1$s.</string>

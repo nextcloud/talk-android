@@ -181,6 +181,8 @@
     <string name="nc_external_server_failed">A jelzésbeállítások lekérése sikertelen</string>
     <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
+    <string name="nc_federation_invitation_accept">Elfogadás</string>
+    <string name="nc_federation_invitation_reject">Elutasítás</string>
     <string name="nc_file_browser_back">Vissza</string>
     <string name="nc_file_storage_permission">Fájlelérési jogosultság szükséges</string>
     <string name="nc_filter">Beszélgetések szűrése</string>
@@ -210,6 +212,7 @@
     <string name="nc_hint_enter_a_message">Írjon üzenetet…</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
     <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a Ne zavarjanak beállításokat</string>
+    <string name="nc_invitations">Meghívások</string>
     <string name="nc_join_via_link">Csatlakozás hivatkozással</string>
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
     <string name="nc_last_moderator">Új moderátort kell kineveznie, mielőtt elhagyhatja ezt: %1$s.</string>

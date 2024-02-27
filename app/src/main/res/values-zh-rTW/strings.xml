@@ -231,6 +231,8 @@
     <string name="nc_external_server_failed">汲取訊號設定失敗</string>
     <string name="nc_failed_signaling_settings">目的伺服器不支援經由行動電話加入公開交談</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>
+    <string name="nc_federation_invitation_accept">接受</string>
+    <string name="nc_federation_invitation_reject">回絕</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_storage_permission">需要檔案存取權限</string>
     <string name="nc_filter">過濾對話</string>
@@ -262,6 +264,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">忽略電池最佳化</string>
     <string name="nc_important_conversation">重要交談</string>
     <string name="nc_important_conversation_desc">在這個交談的通知將會覆蓋不要打擾的設定</string>
+    <string name="nc_invitations">邀請</string>
     <string name="nc_join_via_link">已一個連結加入</string>
     <string name="nc_join_via_web">經由網頁加入</string>
     <string name="nc_last_moderator">在您離開 %1$s 之前您需要推舉一位新的主持人。</string>

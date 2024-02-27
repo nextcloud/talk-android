@@ -231,6 +231,8 @@
     <string name="nc_external_server_failed">Feilet ved henting av settinger for signalering</string>
     <string name="nc_failed_signaling_settings">Målserveren støtter ikke å delta i offentlige samtaler via mobiltelefoner. Du kan prøve å bli med i samtalen via nettleseren.</string>
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
+    <string name="nc_federation_invitation_accept">Aksepter</string>
+    <string name="nc_federation_invitation_reject">Avvis</string>
     <string name="nc_file_browser_back">Tilbake</string>
     <string name="nc_file_storage_permission">Tillatelse til filtilgang kreves</string>
     <string name="nc_filter">Filtrer samtaler</string>
