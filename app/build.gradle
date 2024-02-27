@@ -314,7 +314,7 @@ dependencies {
 
     implementation 'com.github.nextcloud.android-common:ui:0.16.0'
 
-    implementation 'com.github.nextcloud-deps:android-talk-webrtc:110.5481.0'
+    implementation 'com.github.nextcloud-deps:android-talk-webrtc:121.6167.0'
 }
 
 tasks.register('installGitHooks', Copy) {
