@@ -24,6 +24,8 @@ package com.nextcloud.talk.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -88,6 +90,7 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         super.onCreate(savedInstanceState)
+        getIntent().addFlags(FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
 
         cleanTempCertPreference()
     }
@@ -105,13 +108,16 @@ open class BaseActivity : AppCompatActivity() {
             disableKeyboardPersonalisedLearning(viewGroup)
         }
 
-        if (appPreferences.isScreenSecured) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        } else {
+        // if (appPreferences.isScreenSecured) {
+        //     window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        // } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
+       // }
     }
-
+    public override fun onPause(){
+        super.onPause()
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
     public override fun onStop() {
         super.onStop()
         eventBus.unregister(this)
