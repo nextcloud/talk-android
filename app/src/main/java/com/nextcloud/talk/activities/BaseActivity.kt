@@ -24,7 +24,6 @@ package com.nextcloud.talk.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
 import android.os.Build
 import android.os.Bundle
