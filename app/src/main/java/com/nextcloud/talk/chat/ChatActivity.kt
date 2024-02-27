@@ -167,20 +167,14 @@ import com.nextcloud.talk.models.domain.ConversationReadOnlyState
 import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.domain.LobbyState
 import com.nextcloud.talk.models.domain.ObjectType
-import com.nextcloud.talk.models.domain.ReactionAddedModel
-import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
-import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
-import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
-import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
@@ -240,10 +234,6 @@ import com.stfalcon.chatkit.messages.MessageHolders.ContentChecker
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import com.vanniktech.emoji.EmojiPopup
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -289,9 +279,6 @@ class ChatActivity :
 
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderNew
-
-    @Inject
-    lateinit var reactionsRepository: ReactionsRepository
 
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
@@ -553,6 +540,15 @@ class ChatActivity :
             binding.messageInputView.messageInput.setSelection(cursor)
         }
         this.lifecycle.addObserver(AudioUtils)
+        this.lifecycle.addObserver(ChatViewModel.LifeCycleObserver)
+
+        chatViewModel.refreshChatParams(
+            setupFieldsForPullChatMessages(
+                false,
+                0,
+                false
+            )
+        )
     }
 
     override fun onStop() {
@@ -579,10 +575,13 @@ class ChatActivity :
             }
         }
         this.lifecycle.removeObserver(AudioUtils)
+        this.lifecycle.removeObserver(ChatViewModel.LifeCycleObserver)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Suppress("LongMethod")
     private fun initObservers() {
+        Log.d(TAG, "initObservers Called")
         chatViewModel.getRoomViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.GetRoomSuccessState -> {
@@ -650,12 +649,6 @@ class ChatActivity :
 
                     logConversationInfos("joinRoomWithPassword#onNext")
 
-                    if (isFirstMessagesProcessing) {
-                        pullChatMessages(false)
-                    } else {
-                        pullChatMessages(true, false)
-                    }
-
                     if (webSocketInstance != null) {
                         webSocketInstance?.joinRoomWithRoomTokenAndSession(
                             roomToken,
@@ -677,6 +670,299 @@ class ChatActivity :
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
+                else -> {}
+            }
+        }
+
+        chatViewModel.leaveRoomViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.LeaveRoomSuccessState -> {
+                    logConversationInfos("leaveRoom#onNext")
+
+                    sendStopTypingMessage()
+
+                    checkingLobbyStatus = false
+
+                    if (getRoomInfoTimerHandler != null) {
+                        getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
+                    }
+
+                    if (webSocketInstance != null && currentConversation != null) {
+                        webSocketInstance?.joinRoomWithRoomTokenAndSession(
+                            "",
+                            sessionIdAfterRoomJoined
+                        )
+                    }
+
+                    sessionIdAfterRoomJoined = "0"
+
+                    if (state.funToCallWhenLeaveSuccessful != null) {
+                        Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
+                        state.funToCallWhenLeaveSuccessful.invoke()
+                    }
+                }
+
+                else -> {}
+            }
+        }
+
+        chatViewModel.sendChatMessageViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.SendChatMessageSuccessState -> {
+                    myFirstMessage = state.message
+
+                    if (binding.popupBubbleView.isShown == true) {
+                        binding.popupBubbleView.hide()
+                    }
+                    binding.messagesListView.smoothScrollToPosition(0)
+                }
+                is ChatViewModel.SendChatMessageErrorState -> {
+                    if (state.e is HttpException) {
+                        val code = state.e.code()
+                        if (code.toString().startsWith("2")) {
+                            myFirstMessage = state.message
+
+                            if (binding.popupBubbleView.isShown == true) {
+                                binding.popupBubbleView.hide()
+                            }
+
+                            binding.messagesListView.smoothScrollToPosition(0)
+                        }
+                    }
+                }
+                else -> {}
+            }
+        }
+
+        chatViewModel.deleteChatMessageViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.DeleteChatMessageSuccessState -> {
+                    if (state.msg.ocs!!.meta!!.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
+                        Snackbar.make(
+                            binding.root,
+                            R.string.nc_delete_message_leaked_to_matterbridge,
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+
+                    chatViewModel.refreshChatParams(
+                        setupFieldsForPullChatMessages(
+                            true,
+                            globalLastKnownFutureMessageId,
+                            true
+                        )
+                    )
+                }
+                is ChatViewModel.DeleteChatMessageErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+                else -> {}
+            }
+        }
+
+        chatViewModel.createRoomViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.CreateRoomSuccessState -> {
+                    val bundle = Bundle()
+                    bundle.putString(KEY_ROOM_TOKEN, state.roomOverall.ocs!!.data!!.token)
+                    bundle.putString(KEY_ROOM_ID, state.roomOverall.ocs!!.data!!.roomId)
+
+                    leaveRoom {
+                        val chatIntent = Intent(context, ChatActivity::class.java)
+                        chatIntent.putExtras(bundle)
+                        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        startActivity(chatIntent)
+                    }
+                }
+                is ChatViewModel.CreateRoomErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+                else -> {}
+            }
+        }
+
+        var apiVersion = 1
+        // FIXME this is a best guess, guests would need to get the capabilities themselves
+        if (conversationUser != null) {
+            apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+        }
+
+        chatViewModel.getFieldMapForChat.observe(this) { _ ->
+            chatViewModel.pullChatMessages(
+                credentials!!,
+                ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken)
+            )
+        }
+
+        chatViewModel.pullChatMessageViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.PullChatMessageSuccessState -> {
+                    Log.d(TAG, "PullChatMessageSuccess: Code: ${state.response.code()}")
+                    when (state.response.code()) {
+                        HTTP_CODE_OK -> {
+                            Log.d(TAG, "lookIntoFuture: ${state.lookIntoFuture}")
+
+                            processHeaderChatLastGiven(state.response, state.lookIntoFuture)
+
+                            val chatOverall = state.response.body() as ChatOverall?
+                            var chatMessageList = chatOverall?.ocs!!.data!!
+                            chatMessageList = handleSystemMessages(chatMessageList)
+
+                            if (chatMessageList.size == 0) {
+                                chatViewModel.refreshChatParams(
+                                    setupFieldsForPullChatMessages(
+                                        true,
+                                        globalLastKnownFutureMessageId,
+                                        true
+                                    )
+                                )
+                                return@observe
+                            }
+
+                            determinePreviousMessageIds(chatMessageList)
+
+                            handleExpandableSystemMessages(chatMessageList)
+
+                            if (chatMessageList.isNotEmpty() &&
+                                ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
+                            ) {
+                                adapter?.clear()
+                                adapter?.notifyDataSetChanged()
+                            }
+
+                            var lastAdapterId = 0
+                            if (adapter?.items?.size != 0) {
+                                val item = adapter?.items?.get(0)?.item
+                                if (item != null) {
+                                    lastAdapterId = (item as ChatMessage).jsonMessageId
+                                } else {
+                                    lastAdapterId = 0
+                                }
+                            }
+
+                            if (
+                                state.lookIntoFuture &&
+                                lastAdapterId != 0 &&
+                                chatMessageList[0].jsonMessageId > lastAdapterId
+                            ) {
+                                processMessagesFromTheFuture(chatMessageList)
+                            } else if (!state.lookIntoFuture) {
+                                processMessagesNotFromTheFuture(chatMessageList)
+                                collapseSystemMessages()
+                            }
+
+                            updateReadStatusOfAllMessages(chatMessageList[0].jsonMessageId)
+
+                            processCallStartedMessages(chatMessageList)
+
+                            adapter?.notifyDataSetChanged()
+
+                            chatViewModel.refreshChatParams(
+                                setupFieldsForPullChatMessages(
+                                    true,
+                                    chatMessageList[0].jsonMessageId,
+                                    true
+                                )
+                            )
+                        }
+                        HTTP_CODE_NOT_MODIFIED -> {
+                            processHeaderChatLastGiven(state.response, state.lookIntoFuture)
+                            chatViewModel.refreshChatParams(
+                                setupFieldsForPullChatMessages(
+                                    state.lookIntoFuture,
+                                    globalLastKnownFutureMessageId,
+                                    true
+                                )
+                            )
+                        }
+                        HTTP_CODE_PRECONDITION_FAILED -> {
+                            processHeaderChatLastGiven(state.response, state.lookIntoFuture)
+                            chatViewModel.refreshChatParams(
+                                setupFieldsForPullChatMessages(
+                                    state.lookIntoFuture,
+                                    globalLastKnownFutureMessageId,
+                                    true
+                                )
+                            )
+                        }
+                        else -> {}
+                    }
+
+                    processExpiredMessages()
+                    if (isFirstMessagesProcessing) {
+                        cancelNotificationsForCurrentConversation()
+                        isFirstMessagesProcessing = false
+                        binding.progressBar.visibility = View.GONE
+                        binding.messagesListView.visibility = View.VISIBLE
+
+                        collapseSystemMessages()
+                    }
+                }
+                is ChatViewModel.PullChatMessageCompleteState -> {
+                    Log.d(TAG, "PullChatMessageCompleted")
+                }
+                is ChatViewModel.PullChatMessageErrorState -> {
+                    Log.d(TAG, "PullChatMessageError")
+                }
+                else -> {}
+            }
+        }
+
+        chatViewModel.reactionDeletedViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.ReactionDeletedSuccessState -> {
+                    updateUiToDeleteReaction(
+                        state.reactionDeletedModel.chatMessage,
+                        state.reactionDeletedModel.emoji
+                    )
+                }
+                else -> {}
+            }
+        }
+
+        chatViewModel.reactionAddedViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.ReactionAddedSuccessState -> {
+                    updateUiToAddReaction(
+                        state.reactionAddedModel.chatMessage,
+                        state.reactionAddedModel.emoji
+                    )
+                }
+                else -> {}
+            }
+        }
+
+        chatViewModel.editMessageViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.EditMessageSuccessState -> {
+                    when (state.messageEdited.ocs?.meta?.statusCode) {
+                        HTTP_BAD_REQUEST -> {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.edit_error_24_hours_old_message),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        HTTP_FORBIDDEN -> {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.conversation_is_read_only),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        HTTP_NOT_FOUND -> {
+                            Snackbar.make(
+                                binding.root,
+                                "Conversation not found",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                    clearEditUI()
+                }
+                is ChatViewModel.EditMessageErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
                 else -> {}
             }
         }
@@ -770,7 +1056,6 @@ class ChatActivity :
         initMessageInputView()
         loadAvatarForStatusBar()
         setActionBarTitle()
-
         viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
     }
 
@@ -893,57 +1178,16 @@ class ChatActivity :
             apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
         }
 
-        ncApi.editChatMessage(
-            credentials,
+        chatViewModel.editChatMessage(
+            credentials!!,
             ApiUtils.getUrlForChatMessage(
                 apiVersion,
                 conversationUser?.baseUrl,
                 roomToken,
-                message?.id
+                message.id
             ),
             editedMessageText
-        )?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(messageEdited: ChatOverallSingleMessage) {
-                    when (messageEdited.ocs?.meta?.statusCode) {
-                        HTTP_BAD_REQUEST -> {
-                            Snackbar.make(
-                                binding.root,
-                                getString(R.string.edit_error_24_hours_old_message),
-                                Snackbar.LENGTH_LONG
-                            ).show()
-                        }
-                        HTTP_FORBIDDEN -> {
-                            Snackbar.make(
-                                binding.root,
-                                getString(R.string.conversation_is_read_only),
-                                Snackbar.LENGTH_LONG
-                            ).show()
-                        }
-                        HTTP_NOT_FOUND -> {
-                            Snackbar.make(
-                                binding.root,
-                                "Conversation not found",
-                                Snackbar.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-                    clearEditUI()
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "failed to edit message", e)
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                }
-
-                override fun onComplete() {
-                }
-            })
+        )
     }
 
     private fun setEditUI() {
@@ -2631,13 +2875,6 @@ class ChatActivity :
                 binding.lobby.lobbyView.visibility = View.GONE
                 binding.messagesListView.visibility = View.VISIBLE
                 binding.messageInputView.inputEditText?.visibility = View.VISIBLE
-                if (isFirstMessagesProcessing && pastPreconditionFailed) {
-                    pastPreconditionFailed = false
-                    pullChatMessages(false)
-                } else if (futurePreconditionFailed) {
-                    futurePreconditionFailed = false
-                    pullChatMessages(true)
-                }
             }
         } else {
             binding.lobby.lobbyView.visibility = View.GONE
@@ -2818,7 +3055,7 @@ class ChatActivity :
             it.item is ChatMessage && (it.item as ChatMessage).id == messageId
         }
         if (position != null && position >= 0) {
-            binding.messagesListView.smoothScrollToPosition(position)
+            binding.messagesListView.scrollToPosition(position)
         } else {
             // TODO show error that we don't have that message?
         }
@@ -3212,12 +3449,6 @@ class ChatActivity :
                     sessionIdAfterRoomJoined
                 )
             }
-
-            if (isFirstMessagesProcessing) {
-                pullChatMessages(false)
-            } else {
-                pullChatMessages(true)
-            }
         }
     }
 
@@ -3232,57 +3463,15 @@ class ChatActivity :
 
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "leaveRoom - leaveRoom - calling: $startNanoTime")
-        ncApi.leaveRoom(
-            credentials,
+        chatViewModel.leaveRoom(
+            credentials!!,
             ApiUtils.getUrlForParticipantsActive(
                 apiVersion,
                 conversationUser?.baseUrl,
                 roomToken
-            )
+            ),
+            funToCallWhenLeaveSuccessful
         )
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposables.add(d)
-                }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    Log.d(TAG, "leaveRoom - leaveRoom - got response: $startNanoTime")
-                    logConversationInfos("leaveRoom#onNext")
-
-                    sendStopTypingMessage()
-
-                    checkingLobbyStatus = false
-
-                    if (getRoomInfoTimerHandler != null) {
-                        getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
-                    }
-
-                    if (webSocketInstance != null && currentConversation != null) {
-                        webSocketInstance?.joinRoomWithRoomTokenAndSession(
-                            "",
-                            sessionIdAfterRoomJoined
-                        )
-                    }
-
-                    sessionIdAfterRoomJoined = "0"
-
-                    if (funToCallWhenLeaveSuccessful != null) {
-                        Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
-                        funToCallWhenLeaveSuccessful()
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "leaveRoom - leaveRoom - ERROR", e)
-                }
-
-                override fun onComplete() {
-                    Log.d(TAG, "leaveRoom - leaveRoom - completed: $startNanoTime")
-                    disposables.dispose()
-                }
-            })
     }
 
     private fun submitMessage(sendWithoutNotification: Boolean) {
@@ -3326,50 +3515,14 @@ class ChatActivity :
         if (conversationUser != null) {
             val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
 
-            ncApi.sendChatMessage(
-                credentials,
+            chatViewModel.sendChatMessage(
+                credentials!!,
                 ApiUtils.getUrlForChat(apiVersion, conversationUser!!.baseUrl, roomToken),
                 message,
-                conversationUser!!.displayName,
-                replyTo,
+                conversationUser!!.displayName ?: "",
+                replyTo ?: 0,
                 sendWithoutNotification
             )
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    @Suppress("Detekt.TooGenericExceptionCaught")
-                    override fun onNext(genericOverall: GenericOverall) {
-                        myFirstMessage = message
-
-                        if (binding.popupBubbleView.isShown == true) {
-                            binding.popupBubbleView.hide()
-                        }
-                        binding.messagesListView.smoothScrollToPosition(0)
-                    }
-
-                    override fun onError(e: Throwable) {
-                        if (e is HttpException) {
-                            val code = e.code()
-                            if (code.toString().startsWith("2")) {
-                                myFirstMessage = message
-
-                                if (binding.popupBubbleView.isShown == true) {
-                                    binding.popupBubbleView.hide()
-                                }
-
-                                binding.messagesListView.smoothScrollToPosition(0)
-                            }
-                        }
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
         }
         showMicrophoneButton(true)
     }
@@ -3385,141 +3538,6 @@ class ChatActivity :
         }
 
         signalingMessageSender = webSocketInstance?.signalingMessageSender
-    }
-
-    fun pullChatMessages(lookIntoFuture: Boolean, setReadMarker: Boolean = true, xChatLastCommonRead: Int? = null) {
-        if (!validSessionId()) {
-            return
-        }
-
-        Log.d(TAG, "pullChatMessages. lookIntoFuture= $lookIntoFuture")
-
-        if (pullChatMessagesPending) {
-            // Sometimes pullChatMessages may be called before response to a previous call is received.
-            // In such cases just ignore the second call. Message processing will continue when response to the
-            // earlier call is received.
-            // More details: https://github.com/nextcloud/talk-android/pull/1766
-            Log.d(TAG, "pullChatMessages - pullChatMessagesPending is true, exiting")
-            return
-        }
-        pullChatMessagesPending = true
-
-        val pullChatMessagesFieldMap = setupFieldsForPullChatMessages(
-            lookIntoFuture,
-            xChatLastCommonRead,
-            setReadMarker
-        )
-
-        var apiVersion = 1
-        // FIXME this is a best guess, guests would need to get the capabilities themselves
-        if (conversationUser != null) {
-            apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
-        }
-
-        ncApi.pullChatMessages(
-            credentials,
-            ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken),
-            pullChatMessagesFieldMap
-        )
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<Response<*>> {
-                override fun onSubscribe(d: Disposable) {
-                    disposables.add(d)
-                }
-
-                @SuppressLint("NotifyDataSetChanged")
-                @Suppress("Detekt.TooGenericExceptionCaught")
-                override fun onNext(response: Response<*>) {
-                    pullChatMessagesPending = false
-
-                    when (response.code()) {
-                        HTTP_CODE_NOT_MODIFIED -> {
-                            Log.d(TAG, "pullChatMessages - HTTP_CODE_NOT_MODIFIED.")
-
-                            if (lookIntoFuture) {
-                                Log.d(TAG, "recursive call to pullChatMessages.")
-                                pullChatMessages(true, setReadMarker, xChatLastCommonRead)
-                            }
-                        }
-
-                        HTTP_CODE_PRECONDITION_FAILED -> {
-                            Log.d(TAG, "pullChatMessages - HTTP_CODE_PRECONDITION_FAILED.")
-
-                            if (lookIntoFuture) {
-                                futurePreconditionFailed = true
-                            } else {
-                                pastPreconditionFailed = true
-                            }
-                        }
-
-                        HTTP_CODE_OK -> {
-                            Log.d(TAG, "pullChatMessages - HTTP_CODE_OK.")
-
-                            val chatOverall = response.body() as ChatOverall?
-
-                            var chatMessageList = chatOverall?.ocs!!.data!!
-
-                            chatMessageList = handleSystemMessages(chatMessageList)
-
-                            determinePreviousMessageIds(chatMessageList)
-
-                            handleExpandableSystemMessages(chatMessageList)
-
-                            processHeaderChatLastGiven(response, lookIntoFuture)
-
-                            if (chatMessageList.isNotEmpty() &&
-                                ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
-                            ) {
-                                adapter?.clear()
-                                adapter?.notifyDataSetChanged()
-                            }
-
-                            if (lookIntoFuture) {
-                                processMessagesFromTheFuture(chatMessageList)
-                            } else {
-                                processMessagesNotFromTheFuture(chatMessageList)
-
-                                collapseSystemMessages()
-                            }
-
-                            val newXChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
-                                Integer.parseInt(it)
-                            }
-
-                            processCallStartedMessages(chatMessageList)
-
-                            updateReadStatusOfAllMessages(newXChatLastCommonRead)
-                            adapter?.notifyDataSetChanged()
-
-                            if (isFirstMessagesProcessing || lookIntoFuture) {
-                                Log.d(TAG, "recursive call to pullChatMessages")
-                                pullChatMessages(true, true, newXChatLastCommonRead)
-                            }
-                        }
-                    }
-
-                    processExpiredMessages()
-
-                    if (isFirstMessagesProcessing) {
-                        cancelNotificationsForCurrentConversation()
-                        isFirstMessagesProcessing = false
-                        binding.progressBar.visibility = View.GONE
-                        binding.messagesListView.visibility = View.VISIBLE
-
-                        collapseSystemMessages()
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "pullChatMessages - pullChatMessages ERROR", e)
-                    pullChatMessagesPending = false
-                }
-
-                override fun onComplete() {
-                    pullChatMessagesPending = false
-                }
-            })
     }
 
     private fun processCallStartedMessages(chatMessageList: List<ChatMessage>) {
@@ -3813,7 +3831,15 @@ class ChatActivity :
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        pullChatMessages(false)
+        if (page > 1) {
+            chatViewModel.refreshChatParams(
+                setupFieldsForPullChatMessages(
+                    false,
+                    null,
+                    true
+                )
+            )
+        }
     }
 
     override fun format(date: Date): String {
@@ -4083,15 +4109,9 @@ class ChatActivity :
     override fun onClickReaction(chatMessage: ChatMessage, emoji: String) {
         VibrationUtils.vibrateShort(context)
         if (chatMessage.reactionsSelf?.contains(emoji) == true) {
-            reactionsRepository.deleteReaction(roomToken, chatMessage, emoji)
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(ReactionDeletedObserver())
+            chatViewModel.deleteReaction(roomToken, chatMessage, emoji)
         } else {
-            reactionsRepository.addReaction(roomToken, chatMessage, emoji)
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(ReactionAddedObserver())
+            chatViewModel.addReaction(roomToken, chatMessage, emoji)
         }
     }
 
@@ -4104,54 +4124,6 @@ class ChatActivity :
             participantPermissions.hasChatPermission(),
             ncApi
         ).show()
-    }
-
-    inner class ReactionAddedObserver : Observer<ReactionAddedModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-
-        override fun onNext(reactionAddedModel: ReactionAddedModel) {
-            Log.d(TAG, "onNext")
-            if (reactionAddedModel.success) {
-                updateUiToAddReaction(
-                    reactionAddedModel.chatMessage,
-                    reactionAddedModel.emoji
-                )
-            }
-        }
-
-        override fun onError(e: Throwable) {
-            Log.d(TAG, "onError")
-        }
-
-        override fun onComplete() {
-            Log.d(TAG, "onComplete")
-        }
-    }
-
-    inner class ReactionDeletedObserver : Observer<ReactionDeletedModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-
-        override fun onNext(reactionDeletedModel: ReactionDeletedModel) {
-            Log.d(TAG, "onNext")
-            if (reactionDeletedModel.success) {
-                updateUiToDeleteReaction(
-                    reactionDeletedModel.chatMessage,
-                    reactionDeletedModel.emoji
-                )
-            }
-        }
-
-        override fun onError(e: Throwable) {
-            Log.d(TAG, "onError")
-        }
-
-        override fun onComplete() {
-            Log.d(TAG, "onComplete")
-        }
     }
 
     override fun onOpenMessageActionsDialog(chatMessage: ChatMessage) {
@@ -4199,45 +4171,16 @@ class ChatActivity :
                 apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
             }
 
-            ncApi.deleteChatMessage(
-                credentials,
+            chatViewModel.deleteChatMessages(
+                credentials!!,
                 ApiUtils.getUrlForChatMessage(
                     apiVersion,
                     conversationUser?.baseUrl,
                     roomToken,
                     message?.id
-                )
-            )?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<ChatOverallSingleMessage> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(t: ChatOverallSingleMessage) {
-                        if (t.ocs!!.meta!!.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
-                            Snackbar.make(
-                                binding.root,
-                                R.string.nc_delete_message_leaked_to_matterbridge,
-                                Snackbar.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(
-                            TAG,
-                            "Something went wrong when trying to delete message with id " +
-                                message?.id,
-                            e
-                        )
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
+                ),
+                message?.id!!
+            )
         }
     }
 
@@ -4252,39 +4195,11 @@ class ChatActivity :
             message?.user?.id?.substring(INVITE_LENGTH),
             null
         )
-        ncApi.createRoom(
-            credentials,
-            retrofitBucket.url,
-            retrofitBucket.queryMap
+        chatViewModel.createRoom(
+            credentials!!,
+            retrofitBucket.url!!,
+            retrofitBucket.queryMap!!
         )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<RoomOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(roomOverall: RoomOverall) {
-                    val bundle = Bundle()
-                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-                    bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
-
-                    leaveRoom {
-                        val chatIntent = Intent(context, ChatActivity::class.java)
-                        chatIntent.putExtras(bundle)
-                        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        startActivity(chatIntent)
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, e.message, e)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
     }
 
     fun forwardMessage(message: IMessage?) {
@@ -4311,8 +4226,8 @@ class ChatActivity :
     fun markAsUnread(message: IMessage?) {
         val chatMessage = message as ChatMessage?
         if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-            ncApi.setChatReadMarker(
-                credentials,
+            chatViewModel.setChatReadMarker(
+                credentials!!,
                 ApiUtils.getUrlForChatReadMarker(
                     ApiUtils.getChatApiVersion(conversationUser, intArrayOf(ApiUtils.APIv1)),
                     conversationUser?.baseUrl,
@@ -4320,25 +4235,6 @@ class ChatActivity :
                 ),
                 chatMessage.previousMessageId
             )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(t: GenericOverall) {
-                        // unused atm
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, e.message, e)
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
         }
     }
 
@@ -4744,40 +4640,11 @@ class ChatActivity :
                 null
             )
 
-            ncApi.createRoom(
-                credentials,
-                retrofitBucket.url,
-                retrofitBucket.queryMap
+            chatViewModel.createRoom(
+                credentials!!,
+                retrofitBucket.url!!,
+                retrofitBucket.queryMap!!
             )
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<RoomOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(roomOverall: RoomOverall) {
-                        val bundle = Bundle()
-                        bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-                        bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
-
-                        leaveRoom {
-                            val chatIntent = Intent(context, ChatActivity::class.java)
-                            chatIntent.putExtras(bundle)
-                            chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                            startActivity(chatIntent)
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "error after clicking on user mention chip", e)
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
         }
     }
 
@@ -4872,7 +4739,7 @@ class ChatActivity :
     }
 
     companion object {
-        private val TAG = ChatActivity::class.simpleName
+        val TAG = ChatActivity::class.simpleName
         private const val CONTENT_TYPE_CALL_STARTED: Byte = 1
         private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 2
         private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 3

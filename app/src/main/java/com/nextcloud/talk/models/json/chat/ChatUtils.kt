@@ -24,6 +24,7 @@
 
 package com.nextcloud.talk.models.json.chat
 
+@Suppress("UtilityClassWithPublicConstructor")
 class ChatUtils {
     companion object {
         fun getParsedMessage(
