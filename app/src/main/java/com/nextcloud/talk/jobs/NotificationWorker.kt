@@ -494,7 +494,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             when (pushMessage.type) {
-                TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER, TYPE_ADMIN_NOTIFICATIONS, TYPE_REMOTE_TALK_SHARE -> {
+                TYPE_CHAT,
+                TYPE_ROOM,
+                TYPE_RECORDING,
+                TYPE_REMINDER,
+                TYPE_ADMIN_NOTIFICATIONS,
+                TYPE_REMOTE_TALK_SHARE -> {
                     notificationBuilder.setChannelId(
                         NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
                     )

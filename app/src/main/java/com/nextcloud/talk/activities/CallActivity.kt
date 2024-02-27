@@ -144,7 +144,7 @@ import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingConfirmStop
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingErrorState
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingStartedState
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingStartingState
-import com.nextcloud.talk.webrtc.MagicWebRTCUtils
+import com.nextcloud.talk.webrtc.WebRTCUtils
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.PeerConnectionObserver
 import com.nextcloud.talk.webrtc.WebRtcAudioManager
@@ -727,7 +727,7 @@ class CallActivity : CallBaseActivity() {
         cameraEnumerator = if (camera2EnumeratorIsSupported) {
             Camera2Enumerator(this)
         } else {
-            Camera1Enumerator(MagicWebRTCUtils.shouldEnableVideoHardwareAcceleration())
+            Camera1Enumerator(WebRTCUtils.shouldEnableVideoHardwareAcceleration())
         }
     }
 

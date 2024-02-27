@@ -38,41 +38,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MagicWebRTCUtils {
+public class WebRTCUtils {
     private static final String TAG = "MagicWebRTCUtils";
-
-    /* AEC blacklist and SL_ES_WHITELIST are borrowed from Signal
-       https://github.com/WhisperSystems/Signal-Android/blob/551470123d006b76a68d705d131bb12513a5e683/src/org/thoughtcrime/securesms/ApplicationContext.java
-    */
-    public static Set<String> HARDWARE_AEC_EXCLUDE_SET = new HashSet<String>() {{
-        add("D6503"); // Sony Xperia Z2 D6503
-        add("ONE A2005"); // OnePlus 2
-        add("MotoG3"); // Moto G (3rd Generation)
-        add("Nexus 6P"); // Nexus 6p
-        add("Pixel"); // Pixel
-        add("Pixel XL"); // Pixel XL
-        add("MI 4LTE"); // Xiami Mi4
-        add("Redmi Note 3"); // Redmi Note 3
-        add("Redmi Note 4"); // Redmi Note 4
-        add("SM-G900F"); // Samsung Galaxy S5
-        add("g3_kt_kr"); // LG G3
-        add("GT-I9195"); // Samsung Galaxy S4 Mini 4G LTE
-        add("SM-G930F"); // Samsung Galaxy S7
-        add("Xperia SP"); // Sony Xperia SP
-        add("Nexus 6"); // Nexus 6
-        add("ONE E1003"); // OnePlus X
-        add("One"); // OnePlus One
-        add("Moto G5");
-        add("Moto G (5S) Plus");
-        add("Moto G4");
-        add("TA-1053");
-        add("E5823"); // Sony Z5 Compact
-    }};
-
-    public static Set<String> OPEN_SL_ES_INCLUDE_SET = new HashSet<String>() {{
-        add("Pixel");
-        add("Pixel XL");
-    }};
 
     private static final Set<String> HARDWARE_ACCELERATION_DEVICE_EXCLUDE_SET = new HashSet<String>() {{
         add("GT-I9100"); // Samsung Galaxy S2

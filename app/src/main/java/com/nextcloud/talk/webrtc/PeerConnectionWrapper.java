@@ -367,7 +367,7 @@ public class PeerConnectionWrapper {
             SessionDescription sessionDescriptionWithPreferredCodec;
 
             boolean isAudio = false;
-            String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec(sdp, "H264", isAudio);
+            String sessionDescriptionStringWithPreferredCodec = WebRTCUtils.preferCodec(sdp, "H264", isAudio);
 
             sessionDescriptionWithPreferredCodec = new SessionDescription(
                 SessionDescription.Type.fromCanonicalForm(type),
@@ -574,7 +574,7 @@ public class PeerConnectionWrapper {
             ncMessagePayload.setType(type);
 
             SessionDescription sessionDescriptionWithPreferredCodec;
-            String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
+            String sessionDescriptionStringWithPreferredCodec = WebRTCUtils.preferCodec
                     (sessionDescription.description,
                             "H264", false);
             sessionDescriptionWithPreferredCodec = new SessionDescription(
