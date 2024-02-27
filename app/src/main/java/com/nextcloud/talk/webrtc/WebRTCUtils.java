@@ -38,7 +38,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MagicWebRTCUtils {
+public class WebRTCUtils {
     private static final String TAG = "MagicWebRTCUtils";
 
     private static final Set<String> HARDWARE_ACCELERATION_DEVICE_EXCLUDE_SET = new HashSet<String>() {{
