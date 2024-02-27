@@ -95,6 +95,7 @@
     <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>
     <string name="nc_conversation_menu_video_call">Κλήση βίντεο</string>
     <string name="nc_conversation_menu_voice_call">Κλήση ήχου</string>
+    <string name="nc_conversation_not_found">Η συζήτηση δεν βρέθηκε</string>
     <string name="nc_conversation_settings">Ρυθμίσεις συνομιλίας</string>
     <string name="nc_conversations_empty">Συμμετέχετε σε συνομιλία ή ξεκινήστε μια νέα</string>
     <string name="nc_conversations_empty_details">Πείτε γειά σε φίλους και συνεργάτες!</string>
@@ -130,6 +131,7 @@
     <string name="nc_dialog_save_to_storage_yes">Ναι</string>
     <string name="nc_display_name_not_fetched">Το εμφανιζόμενο όνομα δεν ήταν δυνατό να ληφθεί, ματαίωση</string>
     <string name="nc_display_name_not_stored">Το εμφανιζόμενο όνομα δεν μπορεί να αποθηκευτεί, ματαίωση</string>
+    <string name="nc_edit_message">Επεξεργασία</string>
     <string name="nc_email">Ηλ. ταχυδρομείο</string>
     <string name="nc_expire_message_eight_hours">8 ώρες</string>
     <string name="nc_expire_message_off">Απενεργοποίηση </string>
@@ -159,6 +161,7 @@
     <string name="nc_hint_enter_a_message">Εισάγετε ένα μήνυμα ...</string>
     <string name="nc_important_conversation">Σημαντική συνομιλία</string>
     <string name="nc_important_conversation_desc">Οι Ειδοποιήσεις σε αυτή την συνομιλία θα παρακάμψουν τις ρυθμίσεις Μην ενοχλείτε</string>
+    <string name="nc_invitations">Προσκλήσεις</string>
     <string name="nc_join_via_link">Συμμετοχή με σύνδεσμο</string>
     <string name="nc_join_via_web">Συμμετοχή μέσω ιστού</string>
     <string name="nc_last_moderator">Πρέπει να προάγεται νέο συντονιστή πρίν αποχωρήσετε %1$s.</string>

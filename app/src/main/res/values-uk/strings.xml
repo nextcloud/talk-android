@@ -165,6 +165,8 @@
     <string name="nc_external_server_failed">Помилка отримання налаштувань сповіщення</string>
     <string name="nc_failed_signaling_settings">Цільовий сервер не підтримує приєднання до публічних чатів через номер мобільного телефону. Ви можете спробувати приєднатися до розмови з бравзера.</string>
     <string name="nc_failed_to_perform_operation">Вибачте, щось пішло не так!</string>
+    <string name="nc_federation_invitation_accept">Прийняти</string>
+    <string name="nc_federation_invitation_reject">Відхилити</string>
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_storage_permission">Потрібен дозвіл на доступ до файлів</string>
     <string name="nc_following_link">Користувач, який увійшов за посиланням</string>

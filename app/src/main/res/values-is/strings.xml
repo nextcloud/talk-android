@@ -111,6 +111,8 @@
     <string name="nc_expire_message_one_week">1 week</string>
     <string name="nc_external_server_failed">Mistókst að sækja stillingar merkjasendinga</string>
     <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
+    <string name="nc_federation_invitation_accept">Samþykkja</string>
+    <string name="nc_federation_invitation_reject">Hafna</string>
     <string name="nc_file_browser_back">Til baka</string>
     <string name="nc_following_link">Notandi sem fylgdi almenningstengli</string>
     <string name="nc_formatted_message_you">Þú: %1$s</string>
@@ -127,6 +129,7 @@
     <string name="nc_guest_access_password_weak_alert_title">Veikt lykilorð</string>
     <string name="nc_guest_access_resend_invitations">Resend invitations</string>
     <string name="nc_guest_access_share_link">Share conversation link</string>
+    <string name="nc_invitations">Boðskort</string>
     <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
     <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>
     <string name="nc_last_moderator_title">Gat ekki hætt í samtali</string>

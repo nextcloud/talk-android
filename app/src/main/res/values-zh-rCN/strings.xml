@@ -186,6 +186,8 @@
     <string name="nc_external_server_failed">获取网络设置失败</string>
     <string name="nc_failed_signaling_settings">目标服务器不支持通过移动电话加入公共对话。你可以尝试通过浏览器加入对话。</string>
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
+    <string name="nc_federation_invitation_accept">接受</string>
+    <string name="nc_federation_invitation_reject">拒绝</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_storage_permission">需要文件访问权限</string>
     <string name="nc_filter">筛选对话</string>
@@ -215,6 +217,7 @@
     <string name="nc_hint_enter_a_message">输入消息……</string>
     <string name="nc_important_conversation">重要对话</string>
     <string name="nc_important_conversation_desc">此对话中的通知将覆盖免打扰设置</string>
+    <string name="nc_invitations">邀请函</string>
     <string name="nc_join_via_link">使用链接加入</string>
     <string name="nc_join_via_web">通过网页加入</string>
     <string name="nc_last_moderator">在您离开%1$s之前您需要选出一位新的主持人。</string>

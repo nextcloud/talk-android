@@ -191,6 +191,8 @@
     <string name="nc_external_server_failed">Falha ao buscar configurações de sinalização</string>
     <string name="nc_failed_signaling_settings">O servidor de destino não oferece suporte para ingressar em conversas públicas por meio de telefones celulares. Você pode tentar entrar na conversa por meio do navegador da web.</string>
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
+    <string name="nc_federation_invitation_accept">Aceitar</string>
+    <string name="nc_federation_invitation_reject">Rejeitar</string>
     <string name="nc_file_browser_back">Voltar</string>
     <string name="nc_file_storage_permission">É necessária permissão para acessar o arquivo</string>
     <string name="nc_filter">Filter Conversations</string>
@@ -220,6 +222,7 @@
     <string name="nc_hint_enter_a_message">Digite uma mensagem …</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">As notificações nesta conversa substituirão as configurações de Não perturbe</string>
+    <string name="nc_invitations">Convites</string>
     <string name="nc_join_via_link">Juntar-se com um link</string>
     <string name="nc_join_via_web">Juntar-se via web</string>
     <string name="nc_last_moderator">Você precisa promover alguém a moderador antes de sair de %1$s.</string>
