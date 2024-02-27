@@ -231,6 +231,8 @@
     <string name="nc_external_server_failed">فشل جلب إعدادات الإشارات</string>
     <string name="nc_failed_signaling_settings">لا يدعم خادومك الانضمام إلى المحادثات العامة عبر الهواتف المحمولة. يمكنك محاولة الانضمام إلى المحادثة عبر متصفح الويب.</string>
     <string name="nc_failed_to_perform_operation">حدث خطأ ما!</string>
+    <string name="nc_federation_invitation_accept">قبول</string>
+    <string name="nc_federation_invitation_reject">رفض</string>
     <string name="nc_file_browser_back">العودة</string>
     <string name="nc_file_storage_permission">إذن الوصول إلى الملف لازمٌ</string>
     <string name="nc_filter">فرز المحادثات</string>

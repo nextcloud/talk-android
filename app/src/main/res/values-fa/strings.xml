@@ -177,6 +177,7 @@
     <string name="nc_external_server_failed">" دریافت  تنظیمات سیگنال نا‌موفق بود"</string>
     <string name="nc_failed_signaling_settings">Target server does not support joining public conversations via mobile phones. You may attempt to join the conversation via web browser.</string>
     <string name="nc_failed_to_perform_operation">با عرض پوزش، مشکلی پیش آمده</string>
+    <string name="nc_federation_invitation_reject">رد کردن</string>
     <string name="nc_file_browser_back">بازگشت</string>
     <string name="nc_file_storage_permission">Permission for file access is required</string>
     <string name="nc_filter">Filter Conversations</string>
@@ -206,6 +207,7 @@
     <string name="nc_hint_enter_a_message">Enter a message …</string>
     <string name="nc_important_conversation">گفتگوی مهم</string>
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
+    <string name="nc_invitations">دعوت ها</string>
     <string name="nc_join_via_link">با یک پیوند ملحق شوید</string>
     <string name="nc_join_via_web">از طریق وب ملحق شوید</string>
     <string name="nc_last_moderator">قبل از ترک ، باید یک مدیر جدید را تعیین کنید %1$s.</string>

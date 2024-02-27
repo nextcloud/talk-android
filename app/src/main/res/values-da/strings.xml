@@ -111,6 +111,8 @@
     <string name="nc_external_server_failed">Anskaffelse af signaleringsindstillinger fejlede</string>
     <string name="nc_failed_signaling_settings">Serveren understøtter ikke deltagelse i offentlige samtaler over mobil telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_failed_to_perform_operation">Noget gik galt, undskyld!</string>
+    <string name="nc_federation_invitation_accept">Accepter</string>
+    <string name="nc_federation_invitation_reject">Afvis</string>
     <string name="nc_file_browser_back">Tilbage</string>
     <string name="nc_following_link">Bruger følger et offentligt link</string>
     <string name="nc_formatted_message_you">Dig: %1$s</string>

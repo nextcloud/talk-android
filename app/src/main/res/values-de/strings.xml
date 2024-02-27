@@ -231,6 +231,8 @@
     <string name="nc_external_server_failed">Konnte die Benachrichtigungseinstellungen nicht abrufen</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht, öffentlichen Unterhaltungen via Mobiltelefon beizutreten. Sie können versuchen, der Unterhaltung mit einem Internetbrowser beizutreten.</string>
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
+    <string name="nc_federation_invitation_accept">Annehmen</string>
+    <string name="nc_federation_invitation_reject">Ablehnen</string>
     <string name="nc_file_browser_back">Zurück</string>
     <string name="nc_file_storage_permission">Erlaubnis für Dateizugriff ist erforderlich</string>
     <string name="nc_filter">Unterhaltungen filtern</string>
@@ -262,6 +264,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>
+    <string name="nc_invitations">Einladungen</string>
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
     <string name="nc_last_moderator">Sie müssen einen neuen Moderator bestimmen, bevor Sie %1$s verlassen können.</string>

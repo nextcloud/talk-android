@@ -201,6 +201,8 @@
     <string name="nc_external_server_failed">Nepodařilo se získat nastavení signalizace</string>
     <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování se k veřejným konverzacím prostřednictvím mobilních telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
+    <string name="nc_federation_invitation_accept">Přijmout</string>
+    <string name="nc_federation_invitation_reject">Zamítnout</string>
     <string name="nc_file_browser_back">Zpět</string>
     <string name="nc_file_storage_permission">Je zapotřebí oprávnění pro přístup k souborům</string>
     <string name="nc_filter">Filtrovat konverzace</string>
@@ -230,6 +232,7 @@
     <string name="nc_hint_enter_a_message">Zadejte zprávu…</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
     <string name="nc_important_conversation_desc">Upozornění v této konverzaci budou ignorovat režim Nerušit</string>
+    <string name="nc_invitations">Pozvání</string>
     <string name="nc_join_via_link">Připojit se přes odkaz</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
     <string name="nc_last_moderator">Než budete moci opustit %1$s, je třeba předat někomu roli moderátora.</string>

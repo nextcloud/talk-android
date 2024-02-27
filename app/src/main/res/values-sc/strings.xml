@@ -137,6 +137,8 @@
     <string name="nc_external_server_failed">Errore in su recùperu de sa cunfiguratzione</string>
     <string name="nc_failed_signaling_settings">Su serbidore de destinatzione non permitit de intrare in una resonada pùblica cun telèfonos mòbiles. Podes proare a intrare tràmite navigadore in sa rete.</string>
     <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>
+    <string name="nc_federation_invitation_accept">Atzeta</string>
+    <string name="nc_federation_invitation_reject">Refuda</string>
     <string name="nc_file_browser_back">In segus</string>
     <string name="nc_following_link">Utente chi sighit unu ligòngiu pùblicu</string>
     <string name="nc_formatted_message_you">Tue: %1$s</string>

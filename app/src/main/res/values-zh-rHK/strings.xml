@@ -231,6 +231,8 @@
     <string name="nc_external_server_failed">擷取網絡設定失敗</string>
     <string name="nc_failed_signaling_settings">目標伺服器不支持通過流動電話加入公共對話。您可以嘗試通過網絡瀏覽器加入對話。</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了：（</string>
+    <string name="nc_federation_invitation_accept">接受</string>
+    <string name="nc_federation_invitation_reject">不批准</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_storage_permission">需要檔案存取權限</string>
     <string name="nc_filter">過濾對話</string>

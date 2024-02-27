@@ -139,6 +139,8 @@
     <string name="nc_external_server_failed">Neuspješno dohvaćanje postavki signaliziranja</string>
     <string name="nc_failed_signaling_settings">Ciljni poslužitelj ne podržava pridruživanje javnim razgovorima putem mobilnih telefona. Možete se pokušati pridružiti razgovoru putem web-preglednika.</string>
     <string name="nc_failed_to_perform_operation">Oprostite, nešto je pošlo po krivu!</string>
+    <string name="nc_federation_invitation_accept">Prihvati</string>
+    <string name="nc_federation_invitation_reject">Odbij</string>
     <string name="nc_file_browser_back">Natrag</string>
     <string name="nc_following_link">Korisnik slijedi javnu poveznicu</string>
     <string name="nc_formatted_message_you">Vi: %1$s</string>
@@ -159,6 +161,7 @@
     <string name="nc_hint_enter_a_message">Unesi poruku …</string>
     <string name="nc_important_conversation">Važan razgovor</string>
     <string name="nc_important_conversation_desc">Obavijesti u okviru ovog razgovora prikazuju se neovisno o postavkama Ne uznemiravaj</string>
+    <string name="nc_invitations">Pozivnice</string>
     <string name="nc_join_via_link">Pridružite se putem poveznice</string>
     <string name="nc_join_via_web">Pridružite se putem weba</string>
     <string name="nc_last_moderator">Morate odabrati novog moderatora prije nego što napustite %1$s.</string>

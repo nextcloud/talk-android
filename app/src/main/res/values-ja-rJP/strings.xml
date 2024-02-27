@@ -151,6 +151,8 @@
     <string name="nc_external_server_failed">シグナリング設定を取得できませんでした</string>
     <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。Webブラウザー経由で会話への参加を試みてください。</string>
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
+    <string name="nc_federation_invitation_accept">承諾</string>
+    <string name="nc_federation_invitation_reject">拒否</string>
     <string name="nc_file_browser_back">戻る</string>
     <string name="nc_following_link">公開リンクをたどっているユーザー</string>
     <string name="nc_formatted_message_you">あなた：%1$s</string>
@@ -172,6 +174,7 @@
     <string name="nc_hint_enter_a_message">メッセージを入力…</string>
     <string name="nc_important_conversation">重要な会議</string>
     <string name="nc_important_conversation_desc">この会話の通知設定は、取り込み中設定を上書きします</string>
+    <string name="nc_invitations">招待</string>
     <string name="nc_join_via_link">トークに参加する</string>
     <string name="nc_join_via_web">ウェブ経由で参加</string>
     <string name="nc_last_moderator">%1$sを退出する前に、新しいモデレータを昇格させる必要があります。</string>

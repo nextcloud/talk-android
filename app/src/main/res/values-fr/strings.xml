@@ -195,6 +195,7 @@
     <string name="nc_external_server_failed">Échec de l\'extraction des paramètres de signalisation</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile. Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
+    <string name="nc_federation_invitation_reject">Rejeter</string>
     <string name="nc_file_browser_back">Retour</string>
     <string name="nc_file_storage_permission">La permission d\'accès aux fichiers est requise</string>
     <string name="nc_filter">Filtrer les conversations</string>
@@ -224,6 +225,7 @@
     <string name="nc_hint_enter_a_message">Saisir un message…</string>
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent sur les paramètres « Ne Pas Déranger ».</string>
+    <string name="nc_invitations">Invitations</string>
     <string name="nc_join_via_link">Joindre via un lien</string>
     <string name="nc_join_via_web">Joindre via le web</string>
     <string name="nc_last_moderator">Vous devez désigner un nouveau modérateur avant de quitter %1$s.</string>

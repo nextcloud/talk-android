@@ -221,6 +221,8 @@
     <string name="nc_external_server_failed">İşaretleşme ayarları alınamadı</string>
     <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı desteklemiyor. Görüşmeye tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_failed_to_perform_operation">Ne yazık ki bir şeyler ters gitti!</string>
+    <string name="nc_federation_invitation_accept">Kabul et</string>
+    <string name="nc_federation_invitation_reject">Reddet</string>
     <string name="nc_file_browser_back">Geri</string>
     <string name="nc_file_storage_permission">Dosyalara erişme izni gereklidir</string>
     <string name="nc_filter">Görüşmeleri süz</string>
@@ -252,6 +254,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Pil iyileştirmesi yok sayılsın</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler Rahatsız Etmeyin ayarlarını değiştirecek</string>
+    <string name="nc_invitations">Çağrılar</string>
     <string name="nc_join_via_link">Bir bağlantı ile katıl</string>
     <string name="nc_join_via_web">Site üzerinden katıl</string>
     <string name="nc_last_moderator">%1$s görüşmesinden ayrılabilmek için başka bir kullanıcıyı sorumluluğa yükseltmelisiniz.</string>
