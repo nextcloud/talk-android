@@ -800,4 +800,5 @@ How to translate with transifex:
     <string name="nc_edited_by">"Edited by "</string>
     <string name="nc_clear_edit_button">clear Edit Button</string>
     <string name="nc_edit_icon">Edit Icon</string>
+    <string name="get_invitations_error">Failed to fetch pending invitations</string>
 </resources>

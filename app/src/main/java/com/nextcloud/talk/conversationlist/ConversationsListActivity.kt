@@ -322,7 +322,7 @@ class ConversationsListActivity :
                 }
 
                 is ConversationsListViewModel.GetFederationInvitationsErrorState -> {
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.get_invitations_error, Snackbar.LENGTH_LONG).show()
                 }
 
                 else -> {}

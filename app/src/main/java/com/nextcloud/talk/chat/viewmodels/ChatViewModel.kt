@@ -178,8 +178,8 @@ class ChatViewModel @Inject constructor(
     val editMessageViewState: LiveData<ViewState>
         get() = _editMessageViewState
 
-    fun refreshChatParams(pullChatMessagesFieldMap: HashMap<String, Int>) {
-        if (pullChatMessagesFieldMap != _getFieldMapForChat.value) {
+    fun refreshChatParams(pullChatMessagesFieldMap: HashMap<String, Int>, overrideRefresh: Boolean = false) {
+        if (pullChatMessagesFieldMap != _getFieldMapForChat.value || overrideRefresh) {
             _getFieldMapForChat.postValue(pullChatMessagesFieldMap)
             Log.d(TAG, "FieldMap Refreshed with $pullChatMessagesFieldMap vs ${_getFieldMapForChat.value}")
         }
