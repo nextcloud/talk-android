@@ -233,6 +233,9 @@
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
     <string name="nc_federation_invitation_accept">Annehmen</string>
     <string name="nc_federation_invitation_reject">Ablehnen</string>
+    <string name="nc_federation_invited_to_room">von %1$s um %2$s</string>
+    <string name="nc_federation_no_invitations">Keine ausstehenden Einladungen</string>
+    <string name="nc_federation_pending_invitation_hint">Sie haben ausstehende Einladungen</string>
     <string name="nc_file_browser_back">Zurück</string>
     <string name="nc_file_storage_permission">Erlaubnis für Dateizugriff ist erforderlich</string>
     <string name="nc_filter">Unterhaltungen filtern</string>
