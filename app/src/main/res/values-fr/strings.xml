@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Icône du compte</string>
+    <string name="add_to_notes">Ajouter à Notes</string>
     <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favorites</string>
     <string name="appbar_search_in">Rechercher dans %s</string>
     <string name="audio_call">Appel audio</string>
@@ -21,6 +22,7 @@
     <string name="clear_status_message_after">Effacer le message d\'état après</string>
     <string name="close">Fermer</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
+    <string name="conversation_is_read_only">La conversation est en lecture seule</string>
     <string name="conversations">Discussions</string>
     <string name="create_conversation">Créer la conversation</string>
     <string name="custom">Personnalisé</string>
@@ -30,6 +32,7 @@
     <string name="dnd">Ne pas déranger</string>
     <string name="dontClear">Ne pas effacer</string>
     <string name="edit">Modifier</string>
+    <string name="edit_error_24_hours_old_message">Impossible de modifier des messages plus anciens que 24 heures</string>
     <string name="emoji_backspace">Retour arrière</string>
     <string name="emoji_category_recent">Récent</string>
     <string name="encrypted">Chiffré</string>
@@ -112,6 +115,7 @@
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
     <string name="nc_circle">Cercle</string>
     <string name="nc_circles">Cercles</string>
+    <string name="nc_clear_edit_button">effacer le bouton de modification</string>
     <string name="nc_clear_history">Supprimer tous les messages</string>
     <string name="nc_clear_history_success">Tous les messages ont été supprimés</string>
     <string name="nc_clear_history_warning">Voulez-vous vraiment supprimer tous les messages de cette conversation ?</string>
@@ -163,6 +167,10 @@
     <string name="nc_diagnose_app_users_amount">Utilisateurs enregistrés</string>
     <string name="nc_diagnose_battery_optimization_title">Paramètres pour la batterie</string>
     <string name="nc_diagnose_device_name_title">Appareil</string>
+    <string name="nc_diagnose_dialog_open_diagnose">Ouvrir l\'écran de diagnostic</string>
+    <string name="nc_diagnose_gplay_available_no">Les services Google Play ne sont pas disponibles. Les notifications ne sont pas prises en charge</string>
+    <string name="nc_diagnose_gplay_available_title">Services Google Play</string>
+    <string name="nc_diagnose_gplay_available_yes">Les services Google Play sont disponibles</string>
     <string name="nc_diagnose_phone_category_title">Téléphone</string>
     <string name="nc_diagnose_server_talk_version">Version du serveur Talk</string>
     <string name="nc_diagnose_server_version">Version du serveur</string>
@@ -183,6 +191,8 @@
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
     <string name="nc_edit_message">Modifier</string>
+    <string name="nc_edited_by">Modifié par</string>
+    <string name="nc_edited_by_admin">Modifié par un administrateur</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 heures</string>
     <string name="nc_expire_message_four_weeks">4 semaines</string>
@@ -195,7 +205,11 @@
     <string name="nc_external_server_failed">Échec de l\'extraction des paramètres de signalisation</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile. Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
+    <string name="nc_federation_invitation_accept">Accepter</string>
     <string name="nc_federation_invitation_reject">Rejeter</string>
+    <string name="nc_federation_invited_to_room">de %1$s à %2$s</string>
+    <string name="nc_federation_no_invitations">Aucune invitation en attente</string>
+    <string name="nc_federation_pending_invitation_hint">Vous avez des invitations en attente</string>
     <string name="nc_file_browser_back">Retour</string>
     <string name="nc_file_storage_permission">La permission d\'accès aux fichiers est requise</string>
     <string name="nc_filter">Filtrer les conversations</string>
@@ -363,6 +377,7 @@
     <string name="nc_settings_advanced_title">Avancé</string>
     <string name="nc_settings_appearance">Apparence</string>
     <string name="nc_settings_call_ringtone">Appels</string>
+    <string name="nc_settings_diagnose_subtitle">Ouvrir l\'écran de diagnostic pour vérifier les réglages ou créer un rapport de bug</string>
     <string name="nc_settings_incognito_keyboard_desc">Indique au clavier de désactiver l\'apprentissage personnalisé (sans garantie)</string>
     <string name="nc_settings_incognito_keyboard_title">Clavier incognito</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>

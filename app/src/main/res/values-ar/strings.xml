@@ -231,6 +231,11 @@
     <string name="nc_external_server_failed">فشل جلب إعدادات الإشارات</string>
     <string name="nc_failed_signaling_settings">لا يدعم خادومك الانضمام إلى المحادثات العامة عبر الهواتف المحمولة. يمكنك محاولة الانضمام إلى المحادثة عبر متصفح الويب.</string>
     <string name="nc_failed_to_perform_operation">حدث خطأ ما!</string>
+    <string name="nc_federation_invitation_accept">قبول</string>
+    <string name="nc_federation_invitation_reject">رفض</string>
+    <string name="nc_federation_invited_to_room">من %1$s في %2$s</string>
+    <string name="nc_federation_no_invitations">لا توجد دعوات معلقة</string>
+    <string name="nc_federation_pending_invitation_hint">لديك دعوات معلقة</string>
     <string name="nc_file_browser_back">العودة</string>
     <string name="nc_file_storage_permission">إذن الوصول إلى الملف لازمٌ</string>
     <string name="nc_filter">فرز المحادثات</string>
@@ -262,6 +267,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">تجاهل توفير البطارية</string>
     <string name="nc_important_conversation">محادثة مهمة</string>
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة ستتجاوز إعداد الحالة \"يُرجى عدم الإزعاج\"</string>
+    <string name="nc_invitations">دعوات</string>
     <string name="nc_join_via_link">انضم عن طريق الرابط</string>
     <string name="nc_join_via_web">الانضمام عبر الويب</string>
     <string name="nc_last_moderator">يجب عليك ترقية مشرف لاحد المشاركين قبل مغادرة %1$s.</string>

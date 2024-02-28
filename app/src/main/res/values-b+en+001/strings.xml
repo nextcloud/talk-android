@@ -231,6 +231,11 @@
     <string name="nc_external_server_failed">Failed to fetch signaling settings</string>
     <string name="nc_failed_signaling_settings">Target server does not support joining public conversations via mobile phones. You may attempt to join the conversation via web browser.</string>
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
+    <string name="nc_federation_invitation_accept">Accept</string>
+    <string name="nc_federation_invitation_reject">Reject</string>
+    <string name="nc_federation_invited_to_room">from %1$s at %2$s</string>
+    <string name="nc_federation_no_invitations">No pending invitations</string>
+    <string name="nc_federation_pending_invitation_hint">You have pending invitations</string>
     <string name="nc_file_browser_back">Back</string>
     <string name="nc_file_storage_permission">Permission for file access is required</string>
     <string name="nc_filter">Filter Conversations</string>
@@ -262,6 +267,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_important_conversation">Important conversation</string>
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
+    <string name="nc_invitations">Invitations</string>
     <string name="nc_join_via_link">Join with a link</string>
     <string name="nc_join_via_web">Join via web</string>
     <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>

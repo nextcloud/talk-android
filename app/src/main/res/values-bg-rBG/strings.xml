@@ -165,6 +165,8 @@
     <string name="nc_external_server_failed">Извличането на настройките за сигнализиране не беше успешно</string>
     <string name="nc_failed_signaling_settings">Целевият сървър не поддържа присъединяване към обществени разговори чрез мобилни телефони. Може да опитате присъединяване към разговора чрез уеб браузър.</string>
     <string name="nc_failed_to_perform_operation">Съжалявам нещо се обърка!</string>
+    <string name="nc_federation_invitation_accept">Приемам</string>
+    <string name="nc_federation_invitation_reject">Отхвърляне</string>
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_storage_permission">Нужно е право за достъп до файл</string>
     <string name="nc_following_link">Потребител, който следва публична връзка</string>

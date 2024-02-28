@@ -233,6 +233,9 @@
     <string name="nc_failed_to_perform_operation">發生錯誤了：（</string>
     <string name="nc_federation_invitation_accept">接受</string>
     <string name="nc_federation_invitation_reject">不批准</string>
+    <string name="nc_federation_invited_to_room">從 %1$s 到 %2$s</string>
+    <string name="nc_federation_no_invitations">沒有擱置的邀請</string>
+    <string name="nc_federation_pending_invitation_hint">您有擱置的邀請</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_storage_permission">需要檔案存取權限</string>
     <string name="nc_filter">過濾對話</string>
@@ -264,6 +267,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">不用理會電池優化</string>
     <string name="nc_important_conversation">重要對話</string>
     <string name="nc_important_conversation_desc">此對話中的通告將覆蓋\"請勿打擾\"設置</string>
+    <string name="nc_invitations">邀請</string>
     <string name="nc_join_via_link">透過連結加入</string>
     <string name="nc_join_via_web">透過網絡加入</string>
     <string name="nc_last_moderator">在您離開 %1$s 之前您需要推舉一位新的主持人。</string>

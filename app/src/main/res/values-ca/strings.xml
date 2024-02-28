@@ -165,6 +165,8 @@
     <string name="nc_external_server_failed">No s\'ha pogut obtenir la configuració de senyalització</string>
     <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través de telèfons mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</string>
     <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>
+    <string name="nc_federation_invitation_accept">Accepta</string>
+    <string name="nc_federation_invitation_reject">Rebutja</string>
     <string name="nc_file_browser_back">Enrere</string>
     <string name="nc_following_link">Usuari que segueix un enllaç públic</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
@@ -192,6 +194,7 @@
     <string name="nc_hint_enter_a_message">Introduïu un missatge …</string>
     <string name="nc_important_conversation">Conversa important</string>
     <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
+    <string name="nc_invitations">Invitacions</string>
     <string name="nc_join_via_link">Uniu-vos amb un enllaç</string>
     <string name="nc_join_via_web">Uniu-vos via web</string>
     <string name="nc_last_moderator">Heu de designar un nou moderador abans de deixar %1$s.</string>
