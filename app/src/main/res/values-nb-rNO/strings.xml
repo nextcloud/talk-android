@@ -233,6 +233,9 @@
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
     <string name="nc_federation_invitation_accept">Aksepter</string>
     <string name="nc_federation_invitation_reject">Avvis</string>
+    <string name="nc_federation_invited_to_room">fra %1$s på %2$s</string>
+    <string name="nc_federation_no_invitations">Ingen ventende invitasjoner</string>
+    <string name="nc_federation_pending_invitation_hint">Du har ventende invitasjoner</string>
     <string name="nc_file_browser_back">Tilbake</string>
     <string name="nc_file_storage_permission">Tillatelse til filtilgang kreves</string>
     <string name="nc_filter">Filtrer samtaler</string>
@@ -264,6 +267,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer batterioptimalisering</string>
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_important_conversation_desc">Varsler i denne samtalen overstyrer innstillingene for Ikke forstyrr</string>
+    <string name="nc_invitations">Invitasjoner</string>
     <string name="nc_join_via_link">Bli med via en lenke</string>
     <string name="nc_join_via_web">Bli med via nett</string>
     <string name="nc_last_moderator">Du må utnevne en ny moderator før du kan forlate %1$s.</string>
