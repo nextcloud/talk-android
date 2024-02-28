@@ -150,8 +150,7 @@
         <activity
             android:name=".conversationlist.ConversationsListActivity"
             android:theme="@style/AppTheme"
-            android:exported="true"
-            android:excludeFromRecents="true">
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -168,8 +167,7 @@
 
         <activity
             android:name=".chat.ChatActivity"
-            android:theme="@style/AppTheme"
-            android:excludeFromRecents="true"/>
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".activities.CallActivity"
