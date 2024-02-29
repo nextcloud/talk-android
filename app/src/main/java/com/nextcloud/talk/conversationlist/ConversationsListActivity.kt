@@ -978,10 +978,7 @@ class ConversationsListActivity :
         updateFilterConversationButtonColor()
 
         binding.filterConversationsButton.setOnClickListener {
-            val newFragment: DialogFragment = FilterConversationFragment.newInstance(
-                filterState,
-                this
-            )
+            val newFragment = FilterConversationFragment.newInstance(filterState)
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 

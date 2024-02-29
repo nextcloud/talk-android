@@ -20,6 +20,7 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,14 +39,10 @@ import com.nextcloud.talk.utils.UserIdUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class FilterConversationFragment(
-    savedFilterState: MutableMap<String, Boolean>,
-    conversationsListActivity: ConversationsListActivity
-) : DialogFragment() {
+class FilterConversationFragment : DialogFragment() {
     lateinit var binding: DialogFilterConversationBinding
     private var dialogView: View? = null
-    private var filterState = savedFilterState
-    private var conversationsList = conversationsListActivity
+    private lateinit var filterState: HashMap<String, Boolean>
 
     @Inject
     lateinit var userManager: UserManager
@@ -58,7 +55,11 @@ class FilterConversationFragment(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogFilterConversationBinding.inflate(LayoutInflater.from(context))
         dialogView = binding.root
-
+        filterState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getSerializable(FILTER_STATE_ARG, HashMap::class.java) as HashMap<String, Boolean>
+        } else {
+            arguments?.getSerializable(FILTER_STATE_ARG) as HashMap<String, Boolean>
+        }
         return MaterialAlertDialogBuilder(requireContext()).setView(dialogView).create()
     }
 
@@ -120,15 +121,23 @@ class FilterConversationFragment(
         arbitraryStorageManager.storeStorageSetting(accountId, MENTION, mentionValue.toString(), "")
         arbitraryStorageManager.storeStorageSetting(accountId, UNREAD, unreadValue.toString(), "")
 
-        conversationsList.filterConversation()
+        (requireActivity() as ConversationsListActivity).filterConversation()
     }
 
     companion object {
+        private const val FILTER_STATE_ARG = "FILTER_STATE_ARG"
+
         @JvmStatic
         fun newInstance(
-            savedFilterState: MutableMap<String, Boolean>,
-            conversationsListActivity: ConversationsListActivity
-        ) = FilterConversationFragment(savedFilterState, conversationsListActivity)
+            savedFilterState: MutableMap<String, Boolean>
+        ): FilterConversationFragment {
+            val filterConversationFragment = FilterConversationFragment()
+            val args = Bundle()
+            args.putSerializable(FILTER_STATE_ARG, HashMap(savedFilterState))
+            filterConversationFragment.arguments = args
+            return filterConversationFragment
+        }
+
         val TAG: String = FilterConversationFragment::class.java.simpleName
         const val MENTION: String = "mention"
         const val UNREAD: String = "unread"
