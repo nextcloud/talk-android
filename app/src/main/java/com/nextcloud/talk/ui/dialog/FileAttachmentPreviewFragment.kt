@@ -53,7 +53,6 @@ class FileAttachmentPreviewFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
         arguments?.let {
             files = it.getString(FILE_NAMES_ARG, "")
             filesList = it.getStringArrayList(FILES_TO_UPLOAD_ARG)!!
@@ -100,10 +99,7 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         private const val FILES_TO_UPLOAD_ARG = "FILES_TO_UPLOAD_ARG"
 
         @JvmStatic
-        fun newInstance(
-            filenames: String,
-            filesToUpload: MutableList<String>,
-        ): FileAttachmentPreviewFragment {
+        fun newInstance(filenames: String, filesToUpload: MutableList<String>): FileAttachmentPreviewFragment {
             val fileAttachmentFragment = FileAttachmentPreviewFragment()
             val args = Bundle()
             args.putString(FILE_NAMES_ARG, filenames)
