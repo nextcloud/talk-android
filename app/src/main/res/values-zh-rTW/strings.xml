@@ -233,6 +233,9 @@
     <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>
     <string name="nc_federation_invitation_accept">接受</string>
     <string name="nc_federation_invitation_reject">回絕</string>
+    <string name="nc_federation_invited_to_room">從 %1$s 於 %2$s</string>
+    <string name="nc_federation_no_invitations">沒有待處理的邀請</string>
+    <string name="nc_federation_pending_invitation_hint">您有待處理的邀請</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_storage_permission">需要檔案存取權限</string>
     <string name="nc_filter">過濾對話</string>
