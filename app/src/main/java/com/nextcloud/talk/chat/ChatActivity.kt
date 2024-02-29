@@ -4259,12 +4259,7 @@ class ChatActivity :
 
         val chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1, 1))
 
-        val newFragment: DialogFragment = DateTimePickerFragment.newInstance(
-            roomToken,
-            message!!.id,
-            chatViewModel,
-            chatApiVersion
-        )
+        val newFragment: DialogFragment = DateTimePickerFragment.newInstance(roomToken, message!!.id, chatApiVersion)
         newFragment.show(supportFragmentManager, DateTimePickerFragment.TAG)
     }
 

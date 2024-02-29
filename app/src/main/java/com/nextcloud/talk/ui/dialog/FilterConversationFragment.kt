@@ -128,9 +128,7 @@ class FilterConversationFragment : DialogFragment() {
         private const val FILTER_STATE_ARG = "FILTER_STATE_ARG"
 
         @JvmStatic
-        fun newInstance(
-            savedFilterState: MutableMap<String, Boolean>
-        ): FilterConversationFragment {
+        fun newInstance(savedFilterState: MutableMap<String, Boolean>): FilterConversationFragment {
             val filterConversationFragment = FilterConversationFragment()
             val args = Bundle()
             args.putSerializable(FILTER_STATE_ARG, HashMap(savedFilterState))

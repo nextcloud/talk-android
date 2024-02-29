@@ -37,6 +37,7 @@ import com.google.android.material.timepicker.TimeFormat
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.databinding.DialogDateTimePickerBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -47,18 +48,15 @@ import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
-class DateTimePickerFragment(
-    token: String,
-    id: String,
-    chatViewModel: ChatViewModel,
-    private val chatApiVersion: Int
-) : DialogFragment() {
+class DateTimePickerFragment : DialogFragment() {
+
     lateinit var binding: DialogDateTimePickerBinding
     private var dialogView: View? = null
-    private var viewModel = chatViewModel
+    private lateinit var viewModel: ChatViewModel
     private var currentTimeStamp: Long? = null
-    private var roomToken = token
-    private var messageId = id
+    private lateinit var roomToken: String
+    private lateinit var messageId: String
+    private var chatApiVersion: Int = -1
     private var laterTodayTimeStamp = 0L
     private var tomorrowTimeStamp = 0L
     private var weekendTimeStamp = 0L
@@ -73,6 +71,12 @@ class DateTimePickerFragment(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogDateTimePickerBinding.inflate(LayoutInflater.from(context))
         dialogView = binding.root
+        viewModel = (requireActivity() as ChatActivity).chatViewModel
+        arguments?.let {
+            roomToken = it.getString(TOKEN_ARG, "")
+            messageId = it.getString(ID_ARG, "")
+            chatApiVersion = it.getInt(CHAT_API_VERSION_ARG)
+        }
         return MaterialAlertDialogBuilder(requireContext()).setView(dialogView).create()
     }
 
@@ -304,14 +308,20 @@ class DateTimePickerFragment(
         private const val ONE_SEC = 1000
         private const val HOUR_EIGHT_AM = 8
         private const val HOUR_SIX_PM = 18
+        private const val TOKEN_ARG = "TOKEN_ARG"
+        private const val ID_ARG = "ID_ARG"
+        private const val CHAT_API_VERSION_ARG = "CHAT_API_VERSION_ARG"
 
         @JvmStatic
-        fun newInstance(token: String, id: String, chatViewModel: ChatViewModel, chatApiVersion: Int) =
-            DateTimePickerFragment(
-                token,
-                id,
-                chatViewModel,
-                chatApiVersion
-            )
+        fun newInstance(token: String, id: String, chatApiVersion: Int): DateTimePickerFragment {
+            val args = Bundle()
+            args.putString(TOKEN_ARG, token)
+            args.putString(ID_ARG, id)
+            args.putInt(CHAT_API_VERSION_ARG, chatApiVersion)
+
+            val dateTimePickerFragment = DateTimePickerFragment()
+            dateTimePickerFragment.arguments = args
+            return dateTimePickerFragment
+        }
     }
 }
