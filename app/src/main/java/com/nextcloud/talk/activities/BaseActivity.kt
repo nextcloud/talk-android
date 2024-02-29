@@ -106,6 +106,7 @@ open class BaseActivity : AppCompatActivity() {
         }
            if(appPreferences.isScreenSecured){
                window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+               finish()
            }
     }
     public override fun onPause(){
