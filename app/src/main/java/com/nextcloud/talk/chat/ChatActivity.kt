@@ -2976,11 +2976,13 @@ class ChatActivity :
                         filenamesWithLineBreaks.append(filename).append("\n")
                     }
 
-                    val newFragment: DialogFragment = FileAttachmentPreviewFragment.newInstance(
+                    val newFragment = FileAttachmentPreviewFragment.newInstance(
                         filenamesWithLineBreaks.toString(),
-                        filesToUpload,
-                        this::uploadFiles
+                        filesToUpload
                     )
+                    newFragment.setListener { files, caption ->
+                        uploadFiles(files, caption)
+                    }
                     newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
                 } catch (e: IllegalStateException) {
                     context.resources?.getString(R.string.nc_upload_failed)?.let {
@@ -3050,11 +3052,11 @@ class ChatActivity :
                                 filenamesWithLineBreaks.append(filename).append("\n")
                             }
 
-                            val newFragment: DialogFragment = FileAttachmentPreviewFragment.newInstance(
+                            val newFragment = FileAttachmentPreviewFragment.newInstance(
                                 filenamesWithLineBreaks.toString(),
-                                filesToUpload,
-                                this::uploadFiles
+                                filesToUpload
                             )
+                            newFragment.setListener { files, caption -> uploadFiles(files, caption) }
                             newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
                         } else {
                             UploadAndShareFilesWorker.requestStoragePermission(this)
@@ -4383,7 +4385,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         when (type) {

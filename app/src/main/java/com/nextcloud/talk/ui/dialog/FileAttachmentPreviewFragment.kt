@@ -36,14 +36,10 @@ import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class FileAttachmentPreviewFragment(
-    filenames: String,
-    filesToUpload: MutableList<String>,
-    functionToCall: (files: MutableList<String>, caption: String) -> Unit
-) : DialogFragment() {
-    private val files = filenames
-    private val filesList = filesToUpload
-    private val uploadFiles = functionToCall
+class FileAttachmentPreviewFragment : DialogFragment() {
+    private lateinit var files: String
+    private lateinit var filesList: ArrayList<String>
+    private var uploadFiles: (files: MutableList<String>, caption: String) -> Unit = { _, _ -> }
     lateinit var binding: DialogFileAttachmentPreviewBinding
 
     @Inject
@@ -51,7 +47,18 @@ class FileAttachmentPreviewFragment(
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    fun setListener(uploadFiles: (files: MutableList<String>, caption: String) -> Unit) {
+        this.uploadFiles = uploadFiles
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        arguments?.let {
+            files = it.getString(FILE_NAMES_ARG, "")
+            filesList = it.getStringArrayList(FILES_TO_UPLOAD_ARG)!!
+        }
+
         binding = DialogFileAttachmentPreviewBinding.inflate(LayoutInflater.from(context))
         return MaterialAlertDialogBuilder(requireContext()).setView(binding.root).create()
     }
@@ -88,12 +95,23 @@ class FileAttachmentPreviewFragment(
     }
 
     companion object {
+
+        private const val FILE_NAMES_ARG = "FILE_NAMES_ARG"
+        private const val FILES_TO_UPLOAD_ARG = "FILES_TO_UPLOAD_ARG"
+
         @JvmStatic
         fun newInstance(
             filenames: String,
             filesToUpload: MutableList<String>,
-            functionToCall: (files: MutableList<String>, caption: String) -> Unit
-        ) = FileAttachmentPreviewFragment(filenames, filesToUpload, functionToCall)
+        ): FileAttachmentPreviewFragment {
+            val fileAttachmentFragment = FileAttachmentPreviewFragment()
+            val args = Bundle()
+            args.putString(FILE_NAMES_ARG, filenames)
+            args.putStringArrayList(FILES_TO_UPLOAD_ARG, ArrayList(filesToUpload))
+            fileAttachmentFragment.arguments = args
+            return fileAttachmentFragment
+        }
+
         val TAG: String = FilterConversationFragment::class.java.simpleName
     }
 }
