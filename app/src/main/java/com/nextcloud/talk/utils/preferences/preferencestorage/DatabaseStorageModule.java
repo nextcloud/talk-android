@@ -34,6 +34,7 @@ import com.nextcloud.talk.data.storage.model.ArbitraryStorage;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.SpreedFeatures;
 import com.nextcloud.talk.utils.UserIdUtils;
 import com.nextcloud.talk.utils.CapabilitiesUtil;
 
@@ -158,8 +159,10 @@ public class DatabaseStorageModule {
                 });
 
         } else if ("conversation_info_message_notifications_dropdown".equals(key)) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser.getCapabilities().getSpreedCapability(), "notification" +
-                "-levels")) {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(
+                conversationUser.getCapabilities().getSpreedCapability(),
+                SpreedFeatures.NOTIFICATION_LEVELS)
+            ) {
                 if (TextUtils.isEmpty(messageNotificationLevel) || !messageNotificationLevel.equals(value)) {
                     int intValue;
                     switch (value) {

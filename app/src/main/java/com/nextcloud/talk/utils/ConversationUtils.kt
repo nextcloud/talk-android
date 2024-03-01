@@ -45,7 +45,7 @@ object ConversationUtils {
 
     fun isLockedOneToOne(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
         return conversation.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, "locked-one-to-one-rooms")
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.LOCKED_ONE_TO_ONE)
     }
 
     fun canModerate(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
