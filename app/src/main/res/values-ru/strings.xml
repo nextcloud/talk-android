@@ -37,6 +37,7 @@
     <string name="file_list_loading">Загрузка …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 часа</string>
+    <string name="hint_edited_message">(изменено)</string>
     <string name="invisible">Невидимый</string>
     <string name="later_today">Позже сегодня</string>
     <string name="left_conversation">Вы покинули чат %1$s </string>
@@ -460,6 +461,8 @@
     <string name="record_stop_confirm_title">Остановить запись звонка</string>
     <string name="record_stop_description">Остановить запись</string>
     <string name="record_stopping">Запись останавливается...</string>
+    <string name="recording_consent_for_conversation_title">Согласие на запись вызова</string>
+    <string name="recording_consent_title">Звонок может быть записан.</string>
     <string name="recording_settings_title">Запись</string>
     <string name="restrict_join_other_room_while_call">Невозможно присоединиться к другим комнатам находясь в звонке</string>
     <string name="save">Сохранить</string>
