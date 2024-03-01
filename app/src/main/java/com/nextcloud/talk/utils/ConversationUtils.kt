@@ -1,10 +1,3 @@
-package com.nextcloud.talk.utils
-
-import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationType
-import com.nextcloud.talk.models.domain.ParticipantType
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-
 /*
  * Nextcloud Talk application
  * @author Marcel Hibbe
@@ -23,6 +16,12 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapability
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.nextcloud.talk.utils
+
+import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationType
+import com.nextcloud.talk.models.domain.ParticipantType
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 
 object ConversationUtils {
     private val TAG = ConversationUtils::class.java.simpleName

@@ -338,7 +338,7 @@ tasks.withType(SpotBugsTask).configureEach { task ->
     dependsOn "compile${variantNameCap}Sources"
 
     excludeFilter = file("${project.rootDir}/spotbugs-filter.xml")
-    classes = fileTree("$project.buildDir/intermediates/javac/${variantName}/classes/")
+    classes = fileTree("$project.buildDir/intermediates/javac/${variantName}/compile${variantNameCap}JavaWithJavac/classes/")
     reports {
         xml {
             required = true
