@@ -118,7 +118,7 @@ fun ImageView.loadUserAvatar(
     ignoreCache: Boolean
 ): io.reactivex.disposables.Disposable {
     val imageRequestUri = ApiUtils.getUrlForAvatar(
-        user.baseUrl,
+        user.baseUrl!!,
         avatarId,
         requestBigSize
     )
@@ -155,7 +155,7 @@ private fun ImageView.loadAvatarInternal(
             user?.let {
                 addHeader(
                     "Authorization",
-                    ApiUtils.getCredentials(user.username, user.token)
+                    ApiUtils.getCredentials(user.username, user.token)!!
                 )
             }
             transformations(CircleCropTransformation())
@@ -196,7 +196,7 @@ fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.D
     ) {
         requestBuilder.addHeader(
             "Authorization",
-            ApiUtils.getCredentials(user.username, user.token)
+            ApiUtils.getCredentials(user.username, user.token)!!
         )
     }
 
@@ -222,7 +222,7 @@ fun ImageView.loadImage(url: String, user: User, placeholder: Drawable? = null):
     ) {
         requestBuilder.addHeader(
             "Authorization",
-            ApiUtils.getCredentials(user.username, user.token)
+            ApiUtils.getCredentials(user.username, user.token)!!
         )
     }
 

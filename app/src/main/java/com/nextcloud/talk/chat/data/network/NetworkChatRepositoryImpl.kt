@@ -24,6 +24,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
@@ -35,55 +36,78 @@ import retrofit2.Response
 
 class NetworkChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
     override fun getRoom(user: User, roomToken: String): Observable<ConversationModel> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
-        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv3, 1))
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
 
         return ncApi.getRoom(
             credentials,
-            ApiUtils.getUrlForRoom(apiVersion, user.baseUrl, roomToken)
+            ApiUtils.getUrlForRoom(apiVersion, user.baseUrl!!, roomToken)
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!) }
     }
 
+    override fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapability> {
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
+
+        return ncApi.getRoomCapabilities(
+            credentials,
+            ApiUtils.getUrlForRoomCapabilities(apiVersion, user.baseUrl!!, roomToken)
+        ).map { it.ocs?.data }
+    }
+
     override fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
-        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.APIv4, 1))
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
 
         return ncApi.joinRoom(
             credentials,
-            ApiUtils.getUrlForParticipantsActive(apiVersion, user.baseUrl, roomToken),
+            ApiUtils.getUrlForParticipantsActive(apiVersion, user.baseUrl!!, roomToken),
             roomPassword
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!) }
     }
 
-    override fun setReminder(user: User, roomToken: String, messageId: String, timeStamp: Int): Observable<Reminder> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
-        val apiVersion = ApiUtils.getChatApiVersion(user, intArrayOf(ApiUtils.APIv1, 1))
+    override fun setReminder(
+        user: User,
+        roomToken: String,
+        messageId: String,
+        timeStamp: Int,
+        chatApiVersion: Int
+    ): Observable<Reminder> {
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         return ncApi.setReminder(
             credentials,
-            ApiUtils.getUrlForReminder(user, roomToken, messageId, apiVersion),
+            ApiUtils.getUrlForReminder(user, roomToken, messageId, chatApiVersion),
             timeStamp
         ).map {
             it.ocs!!.data
         }
     }
 
-    override fun getReminder(user: User, roomToken: String, messageId: String): Observable<Reminder> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
-        val apiVersion = ApiUtils.getChatApiVersion(user, intArrayOf(ApiUtils.APIv1, 1))
+    override fun getReminder(
+        user: User,
+        roomToken: String,
+        messageId: String,
+        chatApiVersion: Int
+    ): Observable<Reminder> {
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         return ncApi.getReminder(
             credentials,
-            ApiUtils.getUrlForReminder(user, roomToken, messageId, apiVersion)
+            ApiUtils.getUrlForReminder(user, roomToken, messageId, chatApiVersion)
         ).map {
             it.ocs!!.data
         }
     }
 
-    override fun deleteReminder(user: User, roomToken: String, messageId: String): Observable<GenericOverall> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
-        val apiVersion = ApiUtils.getChatApiVersion(user, intArrayOf(ApiUtils.APIv1, 1))
+    override fun deleteReminder(
+        user: User,
+        roomToken: String,
+        messageId: String,
+        chatApiVersion: Int
+    ): Observable<GenericOverall> {
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         return ncApi.deleteReminder(
             credentials,
-            ApiUtils.getUrlForReminder(user, roomToken, messageId, apiVersion)
+            ApiUtils.getUrlForReminder(user, roomToken, messageId, chatApiVersion)
         ).map {
             it
         }

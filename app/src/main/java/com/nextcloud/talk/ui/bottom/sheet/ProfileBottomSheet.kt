@@ -57,7 +57,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUti
     fun showFor(user: String, context: Context) {
         ncApi.hoverCard(
             ApiUtils.getCredentials(userModel.username, userModel.token),
-            ApiUtils.getUrlForHoverCard(userModel.baseUrl, user)
+            ApiUtils.getUrlForHoverCard(userModel.baseUrl!!, user)
         ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<HoverCardOverall> {
                 override fun onSubscribe(d: Disposable) {
@@ -121,10 +121,10 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUti
 
     private fun talkTo(userId: String, context: Context) {
         val apiVersion =
-            ApiUtils.getConversationApiVersion(userModel, intArrayOf(ApiUtils.APIv4, 1))
+            ApiUtils.getConversationApiVersion(userModel, intArrayOf(ApiUtils.API_V4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion,
-            userModel.baseUrl,
+            userModel.baseUrl!!,
             "1",
             null,
             userId,

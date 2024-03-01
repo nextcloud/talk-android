@@ -29,29 +29,29 @@ class InvitationsRepositoryImpl(private val ncApi: NcApi) :
     InvitationsRepository {
 
     override fun fetchInvitations(user: User): Observable<InvitationsModel> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
 
         return ncApi.getInvitations(
             credentials,
-            ApiUtils.getUrlForInvitation(user.baseUrl)
+            ApiUtils.getUrlForInvitation(user.baseUrl!!)
         ).map { mapToInvitationsModel(user, it.ocs?.data!!) }
     }
 
     override fun acceptInvitation(user: User, invitation: Invitation): Observable<InvitationActionModel> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
 
         return ncApi.acceptInvitation(
             credentials,
-            ApiUtils.getUrlForInvitationAccept(user.baseUrl, invitation.id)
+            ApiUtils.getUrlForInvitationAccept(user.baseUrl!!, invitation.id)
         ).map { InvitationActionModel(ActionEnum.ACCEPT, it.ocs?.meta?.statusCode!!, invitation) }
     }
 
     override fun rejectInvitation(user: User, invitation: Invitation): Observable<InvitationActionModel> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
 
         return ncApi.rejectInvitation(
             credentials,
-            ApiUtils.getUrlForInvitationReject(user.baseUrl, invitation.id)
+            ApiUtils.getUrlForInvitationReject(user.baseUrl!!, invitation.id)
         ).map { InvitationActionModel(ActionEnum.REJECT, it.ocs?.meta?.statusCode!!, invitation) }
     }
 

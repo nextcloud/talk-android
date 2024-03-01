@@ -52,7 +52,7 @@ import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -336,7 +336,7 @@ class ServerSelectionActivity : BaseActivity() {
 
                     if (hasTalk) {
                         runOnUiThread {
-                            if (CapabilitiesUtilNew.isServerEOL(capabilities)) {
+                            if (CapabilitiesUtil.isServerEOL(capabilitiesOverall.ocs?.data?.serverVersion?.major!!)) {
                                 if (resources != null) {
                                     runOnUiThread {
                                         setErrorText(resources!!.getString(R.string.nc_settings_server_eol))

@@ -301,7 +301,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
                 binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
                         "Authorization",
-                        ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)
+                        ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)!!
                     )
                 }
             } ?: run {

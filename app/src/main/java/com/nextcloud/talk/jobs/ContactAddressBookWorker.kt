@@ -129,7 +129,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
 
             ncApi.searchContactsByPhoneNumber(
                 ApiUtils.getCredentials(currentUser.username, currentUser.token),
-                ApiUtils.getUrlForSearchByNumber(currentUser.baseUrl),
+                ApiUtils.getUrlForSearchByNumber(currentUser.baseUrl!!),
                 json.toRequestBody("application/json".toMediaTypeOrNull())
             )
                 .subscribeOn(Schedulers.io())

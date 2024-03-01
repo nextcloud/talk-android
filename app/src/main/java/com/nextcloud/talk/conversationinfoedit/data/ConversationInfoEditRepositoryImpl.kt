@@ -36,9 +36,9 @@ class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi, currentUserPr
     ConversationInfoEditRepository {
 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
-    val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv3, 1))
+    val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
 
     override fun uploadConversationAvatar(user: User, file: File, roomToken: String): Observable<ConversationModel> {
         val builder = MultipartBody.Builder()
@@ -56,7 +56,7 @@ class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi, currentUserPr
 
         return ncApi.uploadConversationAvatar(
             credentials,
-            ApiUtils.getUrlForConversationAvatar(1, user.baseUrl, roomToken),
+            ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken),
             filePart
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!) }
     }
@@ -64,7 +64,7 @@ class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi, currentUserPr
     override fun deleteConversationAvatar(user: User, roomToken: String): Observable<ConversationModel> {
         return ncApi.deleteConversationAvatar(
             credentials,
-            ApiUtils.getUrlForConversationAvatar(1, user.baseUrl, roomToken)
+            ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!) }
     }
 }

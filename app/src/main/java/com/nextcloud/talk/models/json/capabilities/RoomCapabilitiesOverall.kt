@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +19,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.utils
+package com.nextcloud.talk.models.json.capabilities
 
-import android.content.Context
-import com.nextcloud.talk.R
-import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.domain.ConversationModel
+import android.os.Parcelable
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.parcelize.Parcelize
 
-object ShareUtils {
-    fun getStringForIntent(context: Context, user: User, conversation: ConversationModel?): String {
-        return String.format(
-            context.resources.getString(R.string.nc_share_text),
-            user.baseUrl,
-            conversation?.token
-        )
-    }
+@Parcelize
+@JsonObject
+data class RoomCapabilitiesOverall(
+    @JsonField(name = ["ocs"])
+    var ocs: RoomCapabilitiesOCS? = null
+) : Parcelable {
+    // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
+    constructor() : this(null)
 }

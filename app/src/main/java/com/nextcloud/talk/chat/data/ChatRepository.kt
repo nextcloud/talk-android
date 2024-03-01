@@ -22,6 +22,7 @@ package com.nextcloud.talk.chat.data
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
@@ -33,10 +34,17 @@ import retrofit2.Response
 @Suppress("LongParameterList", "TooManyFunctions")
 interface ChatRepository {
     fun getRoom(user: User, roomToken: String): Observable<ConversationModel>
+    fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapability>
     fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel>
-    fun setReminder(user: User, roomToken: String, messageId: String, timeStamp: Int): Observable<Reminder>
-    fun getReminder(user: User, roomToken: String, messageId: String): Observable<Reminder>
-    fun deleteReminder(user: User, roomToken: String, messageId: String): Observable<GenericOverall>
+    fun setReminder(
+        user: User,
+        roomToken: String,
+        messageId: String,
+        timeStamp: Int,
+        chatApiVersion: Int
+    ): Observable<Reminder>
+    fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<Reminder>
+    fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<GenericOverall>
     fun shareToNotes(
         credentials: String,
         url: String,

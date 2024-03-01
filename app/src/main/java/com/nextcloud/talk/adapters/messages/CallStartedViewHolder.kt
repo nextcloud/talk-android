@@ -77,12 +77,12 @@ class CallStartedViewHolder(incomingView: View, payload: Any) :
         val user = userManager.currentUser.blockingGet()
         val url: String = if (message.actorType == "guests" || message.actorType == "guest") {
             ApiUtils.getUrlForGuestAvatar(
-                user!!.baseUrl,
+                user!!.baseUrl!!,
                 message.actorDisplayName,
                 true
             )
         } else {
-            ApiUtils.getUrlForAvatar(user!!.baseUrl, message.actorDisplayName, false)
+            ApiUtils.getUrlForAvatar(user!!.baseUrl!!, message.actorDisplayName, false)
         }
 
         val imageRequest: ImageRequest = ImageRequest.Builder(context)

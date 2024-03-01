@@ -31,6 +31,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -104,6 +105,14 @@ class ChatViewModel @Inject constructor(
     private val _getRoomViewState: MutableLiveData<ViewState> = MutableLiveData(GetRoomStartState)
     val getRoomViewState: LiveData<ViewState>
         get() = _getRoomViewState
+
+    object GetCapabilitiesStartState : ViewState
+    object GetCapabilitiesErrorState : ViewState
+    open class GetCapabilitiesSuccessState(val spreedCapabilities: SpreedCapability) : ViewState
+
+    private val _getCapabilitiesViewState: MutableLiveData<ViewState> = MutableLiveData(GetCapabilitiesStartState)
+    val getCapabilitiesViewState: LiveData<ViewState>
+        get() = _getCapabilitiesViewState
 
     object JoinRoomStartState : ViewState
     object JoinRoomErrorState : ViewState
@@ -184,6 +193,36 @@ class ChatViewModel @Inject constructor(
             ?.subscribe(GetRoomObserver())
     }
 
+    fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
+        _getCapabilitiesViewState.value = GetCapabilitiesStartState
+
+        if (conversationModel.remoteServer.isNullOrEmpty()) {
+            _getCapabilitiesViewState.value = GetCapabilitiesSuccessState(user.capabilities!!.spreedCapability!!)
+        } else {
+            chatRepository.getCapabilities(user, token)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<SpreedCapability> {
+                    override fun onSubscribe(d: Disposable) {
+                        LifeCycleObserver.disposableSet.add(d)
+                    }
+
+                    override fun onNext(spreedCapabilities: SpreedCapability) {
+                        _getCapabilitiesViewState.value = GetCapabilitiesSuccessState(spreedCapabilities)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Error when fetching spreed capabilities", e)
+                        _getCapabilitiesViewState.value = GetCapabilitiesErrorState
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        }
+    }
+
     fun joinRoom(user: User, token: String, roomPassword: String) {
         _joinRoomViewState.value = JoinRoomStartState
         chatRepository.joinRoom(user, token, roomPassword)
@@ -191,6 +230,43 @@ class ChatViewModel @Inject constructor(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.retry(JOIN_ROOM_RETRY_COUNT)
             ?.subscribe(JoinRoomObserver())
+    }
+
+    fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
+        chatRepository.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(SetReminderObserver())
+    }
+
+    fun getReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
+        chatRepository.getReminder(user, roomToken, messageId, chatApiVersion)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(GetReminderObserver())
+    }
+
+    fun deleteReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
+        chatRepository.deleteReminder(user, roomToken, messageId, chatApiVersion)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    LifeCycleObserver.disposableSet.add(d)
+                }
+
+                override fun onNext(genericOverall: GenericOverall) {
+                    _getReminderExistState.value = GetReminderStartState
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.d(TAG, "Error when deleting reminder", e)
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
     }
 
     fun leaveRoom(credentials: String, url: String, funToCallWhenLeaveSuccessful: (() -> Unit)?) {
@@ -357,43 +433,6 @@ class ChatViewModel @Inject constructor(
             })
     }
 
-    fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int) {
-        chatRepository.setReminder(user, roomToken, messageId, timestamp)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(SetReminderObserver())
-    }
-
-    fun getReminder(user: User, roomToken: String, messageId: String) {
-        chatRepository.getReminder(user, roomToken, messageId)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(GetReminderObserver())
-    }
-
-    fun deleteReminder(user: User, roomToken: String, messageId: String) {
-        chatRepository.deleteReminder(user, roomToken, messageId)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
-                }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    _getReminderExistState.value = GetReminderStartState
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.d(TAG, "Error when deleting reminder $e")
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
-    }
-
     fun shareToNotes(credentials: String, url: String, message: String, displayName: String) {
         chatRepository.shareToNotes(credentials, url, message, displayName)
             .subscribeOn(Schedulers.io())
@@ -522,7 +561,7 @@ class ChatViewModel @Inject constructor(
 
     inner class GetRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {
-            LifeCycleObserver.disposableSet.add(d)
+            // unused atm
         }
 
         override fun onNext(conversationModel: ConversationModel) {

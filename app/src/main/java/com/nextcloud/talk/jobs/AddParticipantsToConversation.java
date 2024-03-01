@@ -70,7 +70,7 @@ public class AddParticipantsToConversation extends Worker {
                 data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1))
                 .blockingGet();
 
-        int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.API_V4, 1});
 
         String conversationToken = data.getString(BundleKeys.KEY_TOKEN);
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());

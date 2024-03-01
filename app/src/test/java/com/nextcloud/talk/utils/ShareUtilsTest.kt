@@ -23,7 +23,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.users.UserManager
 import io.reactivex.Maybe
 import org.junit.Assert
@@ -49,19 +49,19 @@ class ShareUtilsTest {
     private val baseUrl = "https://my.nextcloud.com"
     private val token = "2aotbrjr"
 
-    private lateinit var conversation: Conversation
+    private lateinit var conversation: ConversationModel
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         Mockito.`when`(userManager!!.currentUser).thenReturn(Maybe.just(user))
-        Mockito.`when`(user!!.baseUrl).thenReturn(baseUrl)
+        Mockito.`when`(user!!.baseUrl!!).thenReturn(baseUrl)
         Mockito.`when`(context!!.resources).thenReturn(resources)
         Mockito.`when`(resources!!.getString(R.string.nc_share_text))
             .thenReturn("Join the conversation at %1\$s/index.php/call/%2\$s")
         Mockito.`when`(resources.getString(R.string.nc_share_text_pass)).thenReturn("\nPassword: %1\$s")
 
-        conversation = Conversation(token = token)
+        conversation = ConversationModel(token = token)
     }
 
     @Test

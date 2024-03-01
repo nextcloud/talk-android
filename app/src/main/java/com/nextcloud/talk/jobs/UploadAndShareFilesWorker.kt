@@ -56,7 +56,7 @@ import com.nextcloud.talk.utils.RemoteFileUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -186,7 +186,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     }
 
     private fun getRemotePath(currentUser: User): String {
-        var remotePath = CapabilitiesUtilNew.getAttachmentFolder(currentUser)!! + "/" + fileName
+        var remotePath = CapabilitiesUtil.getAttachmentFolder(
+            currentUser.capabilities!!.spreedCapability!!
+        ) + "/" + fileName
         remotePath = RemoteFileUtils.getNewPathIfFileExists(
             ncApi,
             currentUser,

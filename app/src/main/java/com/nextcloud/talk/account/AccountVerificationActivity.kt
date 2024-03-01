@@ -199,7 +199,7 @@ class AccountVerificationActivity : BaseActivity() {
         val credentials = ApiUtils.getCredentials(username, token)
         cookieManager.cookieStore.removeAll()
 
-        ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
+        ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl!!))
             .subscribeOn(Schedulers.io())
             .subscribe(object : Observer<CapabilitiesOverall> {
                 override fun onSubscribe(d: Disposable) {
@@ -213,7 +213,7 @@ class AccountVerificationActivity : BaseActivity() {
                             capabilitiesOverall.ocs!!.data!!.capabilities!!.spreedCapability!!.features != null &&
                             !capabilitiesOverall.ocs!!.data!!.capabilities!!.spreedCapability!!.features!!.isEmpty()
                     if (hasTalk) {
-                        fetchProfile(credentials, capabilitiesOverall)
+                        fetchProfile(credentials!!, capabilitiesOverall)
                     } else {
                         if (resources != null) {
                             runOnUiThread {
@@ -305,7 +305,7 @@ class AccountVerificationActivity : BaseActivity() {
     private fun fetchProfile(credentials: String, capabilitiesOverall: CapabilitiesOverall) {
         ncApi.getUserProfile(
             credentials,
-            ApiUtils.getUrlForUserProfile(baseUrl)
+            ApiUtils.getUrlForUserProfile(baseUrl!!)
         )
             .subscribeOn(Schedulers.io())
             .subscribe(object : Observer<UserProfileOverall> {

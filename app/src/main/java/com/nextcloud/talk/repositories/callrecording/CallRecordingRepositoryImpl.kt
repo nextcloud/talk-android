@@ -33,7 +33,7 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
     CallRecordingRepository {
 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
     var apiVersion = 1
 
@@ -42,7 +42,7 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
             credentials,
             ApiUtils.getUrlForRecording(
                 apiVersion,
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 roomToken
             ),
             1
@@ -54,7 +54,7 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
             credentials,
             ApiUtils.getUrlForRecording(
                 apiVersion,
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 roomToken
             )
         ).map { mapToStopCallRecordingModel(it.ocs?.meta!!) }

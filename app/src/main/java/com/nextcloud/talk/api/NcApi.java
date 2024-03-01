@@ -24,6 +24,7 @@
 package com.nextcloud.talk.api;
 
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
+import com.nextcloud.talk.models.json.capabilities.RoomCapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage;
 import com.nextcloud.talk.models.json.chat.ChatShareOverall;
@@ -366,6 +367,10 @@ public interface NcApi {
 
     @GET
     Observable<CapabilitiesOverall> getCapabilities(@Url String url);
+
+    @GET
+    Observable<RoomCapabilitiesOverall> getRoomCapabilities(@Header("Authorization") String authorization,
+                                                            @Url String url);
 
     /*
        QueryMap items are as follows:

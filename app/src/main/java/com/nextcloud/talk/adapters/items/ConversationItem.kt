@@ -50,9 +50,10 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFilterable
@@ -312,7 +313,7 @@ class ConversationItem(
         if (model.type === ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             viewThemeUtils.material.colorChipBackground(holder.binding.dialogUnreadBubble)
         } else if (model.unreadMention) {
-            if (hasSpreedFeatureCapability(user, "direct-mention-flag")) {
+            if (hasSpreedFeatureCapability(user.capabilities?.spreedCapability!!, SpreedFeatures.DIRECT_MENTION_FLAG)) {
                 if (model.unreadMentionDirect!!) {
                     viewThemeUtils.material.colorChipBackground(holder.binding.dialogUnreadBubble)
                 } else {

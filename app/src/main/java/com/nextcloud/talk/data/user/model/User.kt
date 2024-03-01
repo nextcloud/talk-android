@@ -45,7 +45,7 @@ data class User(
     var scheduledForDeletion: Boolean = FALSE
 ) : Parcelable {
 
-    fun getCredentials(): String = ApiUtils.getCredentials(username, token)
+    fun getCredentials(): String = ApiUtils.getCredentials(username, token)!!
 
     fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
         return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false

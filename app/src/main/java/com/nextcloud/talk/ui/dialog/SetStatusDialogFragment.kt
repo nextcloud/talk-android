@@ -128,8 +128,8 @@ class SetStatusDialogFragment :
             currentUser = currentUserProvider?.currentUser?.blockingGet()
             currentStatus = it.getParcelable(ARG_CURRENT_STATUS_PARAM)
 
-            credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
-            ncApi.getPredefinedStatuses(credentials, ApiUtils.getUrlForPredefinedStatuses(currentUser?.baseUrl))
+            credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)!!
+            ncApi.getPredefinedStatuses(credentials, ApiUtils.getUrlForPredefinedStatuses(currentUser?.baseUrl!!))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<ResponseBody> {
@@ -369,7 +369,7 @@ class SetStatusDialogFragment :
 
     private fun clearStatus() {
         val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
-        ncApi.statusDeleteMessage(credentials, ApiUtils.getUrlForStatusMessage(currentUser?.baseUrl))
+        ncApi.statusDeleteMessage(credentials, ApiUtils.getUrlForStatusMessage(currentUser?.baseUrl!!))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
@@ -393,7 +393,7 @@ class SetStatusDialogFragment :
     private fun setStatus(statusType: StatusType) {
         visualizeStatus(statusType)
 
-        ncApi.setStatusType(credentials, ApiUtils.getUrlForSetStatusType(currentUser?.baseUrl), statusType.string)
+        ncApi.setStatusType(credentials, ApiUtils.getUrlForSetStatusType(currentUser?.baseUrl!!), statusType.string)
             .subscribeOn(
                 Schedulers
                     .io()
@@ -468,7 +468,7 @@ class SetStatusDialogFragment :
         ) {
             ncApi.setCustomStatusMessage(
                 credentials,
-                ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
+                ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl!!),
                 statusIcon,
                 inputText,
                 clearAt
@@ -499,7 +499,7 @@ class SetStatusDialogFragment :
 
             ncApi.setPredefinedStatusMessage(
                 credentials,
-                ApiUtils.getUrlForSetPredefinedStatus(currentUser?.baseUrl),
+                ApiUtils.getUrlForSetPredefinedStatus(currentUser?.baseUrl!!),
                 selectedPredefinedStatus!!.id,
                 if (clearAt == -1L) null else clearAt
             )

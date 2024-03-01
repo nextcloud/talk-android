@@ -46,7 +46,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -86,7 +86,7 @@ class ConversationsListBottomDialog(
         initItemsVisibility()
         initClickListeners()
 
-        credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+        credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
     }
 
     override fun onStart() {
@@ -105,7 +105,10 @@ class ConversationsListBottomDialog(
     }
 
     private fun initItemsVisibility() {
-        val hasFavoritesCapability = CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "favorites")
+        val hasFavoritesCapability = CapabilitiesUtil.hasSpreedFeatureCapability(
+            currentUser.capabilities?.spreedCapability!!,
+            "favorites"
+        )
         val canModerate = conversation.canModerate(currentUser)
 
         binding.conversationRemoveFromFavorites.visibility = setVisibleIf(
@@ -116,11 +119,19 @@ class ConversationsListBottomDialog(
         )
 
         binding.conversationMarkAsRead.visibility = setVisibleIf(
-            conversation.unreadMessages > 0 && CapabilitiesUtilNew.canSetChatReadMarker(currentUser)
+            conversation.unreadMessages > 0 && CapabilitiesUtil.hasSpreedFeatureCapability(
+                currentUser
+                    .capabilities?.spreedCapability!!,
+                "chat-read-marker"
+            )
         )
 
         binding.conversationMarkAsUnread.visibility = setVisibleIf(
-            conversation.unreadMessages <= 0 && CapabilitiesUtilNew.canMarkRoomAsUnread(currentUser)
+            conversation.unreadMessages <= 0 && CapabilitiesUtil.hasSpreedFeatureCapability(
+                currentUser
+                    .capabilities?.spreedCapability!!,
+                "chat-unread"
+            )
         )
 
         binding.conversationOperationRename.visibility = setVisibleIf(
@@ -178,12 +189,12 @@ class ConversationsListBottomDialog(
     }
 
     private fun addConversationToFavorites() {
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         ncApi.addConversationToFavorites(
             credentials,
             ApiUtils.getUrlForRoomFavorite(
                 apiVersion,
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 conversation.token
             )
         )
@@ -218,12 +229,12 @@ class ConversationsListBottomDialog(
     }
 
     private fun removeConversationFromFavorites() {
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         ncApi.removeConversationFromFavorites(
             credentials,
             ApiUtils.getUrlForRoomFavorite(
                 apiVersion,
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 conversation.token
             )
         )
@@ -262,8 +273,8 @@ class ConversationsListBottomDialog(
             credentials,
             ApiUtils.getUrlForChatReadMarker(
                 chatApiVersion(),
-                currentUser.baseUrl,
-                conversation.token
+                currentUser.baseUrl!!,
+                conversation.token!!
             )
         )
             .subscribeOn(Schedulers.io())
@@ -301,8 +312,8 @@ class ConversationsListBottomDialog(
             credentials,
             ApiUtils.getUrlForChatReadMarker(
                 chatApiVersion(),
-                currentUser.baseUrl,
-                conversation.token
+                currentUser.baseUrl!!,
+                conversation.token!!
             ),
             conversation.lastMessage!!.jsonMessageId
         )
@@ -396,7 +407,7 @@ class ConversationsListBottomDialog(
     }
 
     private fun chatApiVersion(): Int {
-        return ApiUtils.getChatApiVersion(currentUser, intArrayOf(ApiUtils.APIv1))
+        return ApiUtils.getChatApiVersion(currentUser.capabilities!!.spreedCapability!!, intArrayOf(ApiUtils.API_V1))
     }
 
     companion object {

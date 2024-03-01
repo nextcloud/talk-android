@@ -40,6 +40,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -61,6 +62,7 @@ import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
@@ -71,9 +73,11 @@ import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
+import com.nextcloud.talk.models.domain.ConversationType
+import com.nextcloud.talk.models.domain.LobbyState
+import com.nextcloud.talk.models.domain.NotificationLevel
+import com.nextcloud.talk.models.domain.converters.DomainEnumNotificationLevelConverter
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
@@ -83,11 +87,12 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -110,6 +115,9 @@ class ConversationInfoActivity :
     private lateinit var binding: ActivityConversationInfoBinding
 
     @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
     lateinit var ncApi: NcApi
 
     @Inject
@@ -121,6 +129,10 @@ class ConversationInfoActivity :
     @Inject
     lateinit var dateUtils: DateUtils
 
+    lateinit var viewModel: ConversationInfoViewModel
+
+    private lateinit var spreedCapabilities: SpreedCapability
+
     private lateinit var conversationToken: String
     private lateinit var conversationUser: User
     private var hasAvatarSpacing: Boolean = false
@@ -129,7 +141,9 @@ class ConversationInfoActivity :
     private var participantsDisposable: Disposable? = null
 
     private var databaseStorageModule: DatabaseStorageModule? = null
-    private var conversation: Conversation? = null
+
+    // private var conversation: Conversation? = null
+    private var conversation: ConversationModel? = null
 
     private var adapter: FlexibleAdapter<ParticipantItem>? = null
     private var userItems: MutableList<ParticipantItem> = ArrayList()
@@ -157,11 +171,26 @@ class ConversationInfoActivity :
         setContentView(binding.root)
         setupSystemColors()
 
+        viewModel =
+            ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
+
         conversationUser = currentUserProvider.currentUser.blockingGet()
 
         conversationToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
-        credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
+        credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)!!
+
+        initObservers()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        this.lifecycle.addObserver(ConversationInfoViewModel.LifeCycleObserver)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        this.lifecycle.removeObserver(ConversationInfoViewModel.LifeCycleObserver)
     }
 
     override fun onResume() {
@@ -176,13 +205,7 @@ class ConversationInfoActivity :
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
 
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
-            binding.sharedItemsButton.setOnClickListener { showSharedItems() }
-        } else {
-            binding.sharedItems.visibility = GONE
-        }
-
-        fetchRoomInfo()
+        viewModel.getRoom(conversationUser, conversationToken)
 
         themeTextViews()
         themeSwitchPreferences()
@@ -190,6 +213,35 @@ class ConversationInfoActivity :
         binding.addParticipantsAction.visibility = GONE
 
         binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it, ColorRole.PRIMARY) }
+    }
+
+    private fun initObservers() {
+        viewModel.viewState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.GetRoomSuccessState -> {
+                    conversation = state.conversationModel
+                    viewModel.getCapabilities(conversationUser, conversationToken, conversation!!)
+                }
+
+                is ConversationInfoViewModel.GetRoomErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
+
+        viewModel.getCapabilitiesViewState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.GetCapabilitiesSuccessState -> {
+                    spreedCapabilities = state.spreedCapabilities
+
+                    handleConversation()
+                }
+
+                else -> {}
+            }
+        }
     }
 
     private fun setupActionBar() {
@@ -217,7 +269,7 @@ class ConversationInfoActivity :
     fun showOptionsMenu() {
         if (::optionsMenu.isInitialized) {
             optionsMenu.clear()
-            if (CapabilitiesUtilNew.isConversationAvatarEndpointAvailable(conversationUser)) {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.AVATAR)) {
                 menuInflater.inflate(R.menu.menu_conversation_info, optionsMenu)
             }
         }
@@ -273,19 +325,22 @@ class ConversationInfoActivity :
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(BundleKeys.KEY_CONVERSATION_NAME, conversation?.displayName)
         intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
-        intent.putExtra(SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR, conversation?.isParticipantOwnerOrModerator)
+        intent.putExtra(
+            SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
+            ConversationUtils.isParticipantOwnerOrModerator(conversation!!)
+        )
         startActivity(intent)
     }
 
     private fun setupWebinaryView() {
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") &&
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
             webinaryRoomType(conversation!!) &&
-            conversation!!.canModerate(conversationUser)
+            ConversationUtils.canModerate(conversation!!, spreedCapabilities)
         ) {
             binding.webinarInfoView.webinarSettings.visibility = VISIBLE
 
             val isLobbyOpenToModeratorsOnly =
-                conversation!!.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY
+                conversation!!.lobbyState == LobbyState.LOBBY_STATE_MODERATORS_ONLY
             binding.webinarInfoView.lobbySwitch.isChecked = isLobbyOpenToModeratorsOnly
 
             reconfigureLobbyTimerView()
@@ -320,9 +375,9 @@ class ConversationInfoActivity :
         }
     }
 
-    private fun webinaryRoomType(conversation: Conversation): Boolean {
-        return conversation.type == Conversation.ConversationType.ROOM_GROUP_CALL ||
-            conversation.type == Conversation.ConversationType.ROOM_PUBLIC_CALL
+    private fun webinaryRoomType(conversation: ConversationModel): Boolean {
+        return conversation.type == ConversationType.ROOM_GROUP_CALL ||
+            conversation.type == ConversationType.ROOM_PUBLIC_CALL
     }
 
     private fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
@@ -337,9 +392,9 @@ class ConversationInfoActivity :
         }
 
         conversation!!.lobbyState = if (isChecked) {
-            Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY
+            LobbyState.LOBBY_STATE_MODERATORS_ONLY
         } else {
-            Conversation.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
+            LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
         }
 
         if (
@@ -370,11 +425,11 @@ class ConversationInfoActivity :
             0
         }
 
-        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
 
         ncApi.setLobbyForConversation(
             ApiUtils.getCredentials(conversationUser.username, conversationUser.token),
-            ApiUtils.getUrlForRoomWebinaryLobby(apiVersion, conversationUser.baseUrl, conversation!!.token),
+            ApiUtils.getUrlForRoomWebinaryLobby(apiVersion, conversationUser.baseUrl!!, conversation!!.token),
             state,
             conversation!!.lobbyTimer
         )
@@ -487,7 +542,7 @@ class ConversationInfoActivity :
 
     private fun getListOfParticipants() {
         // FIXME Fix API checking with guests?
-        val apiVersion: Int = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+        val apiVersion: Int = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
 
         val fieldMap = HashMap<String, Boolean>()
         fieldMap["includeStatus"] = true
@@ -496,7 +551,7 @@ class ConversationInfoActivity :
             credentials,
             ApiUtils.getUrlForParticipants(
                 apiVersion,
-                conversationUser.baseUrl,
+                conversationUser.baseUrl!!,
                 conversationToken
             ),
             fieldMap
@@ -586,11 +641,11 @@ class ConversationInfoActivity :
     }
 
     private fun clearHistory() {
-        val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+        val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
 
         ncApi.clearChatHistory(
             credentials,
-            ApiUtils.getUrlForChat(apiVersion, conversationUser.baseUrl, conversationToken)
+            ApiUtils.getUrlForChat(apiVersion, conversationUser.baseUrl!!, conversationToken)
         )
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -631,123 +686,99 @@ class ConversationInfoActivity :
         }
     }
 
-    private fun fetchRoomInfo() {
-        val apiVersion: Int
-        // FIXME Fix API checking with guests?
-        apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+    @Suppress("LongMethod")
+    private fun handleConversation() {
+        val conversationCopy = conversation!!
 
-        ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser.baseUrl, conversationToken))
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<RoomOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    roomDisposable = d
-                }
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA)) {
+            binding.sharedItemsButton.setOnClickListener { showSharedItems() }
+        } else {
+            binding.sharedItems.visibility = GONE
+        }
 
-                @Suppress("Detekt.TooGenericExceptionCaught")
-                override fun onNext(roomOverall: RoomOverall) {
-                    conversation = roomOverall.ocs!!.data
+        if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities)) {
+            binding.addParticipantsAction.visibility = VISIBLE
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(
+                    spreedCapabilities,
+                    SpreedFeatures.CLEAR_HISTORY
+                )
+            ) {
+                binding.clearConversationHistory.visibility = VISIBLE
+            } else {
+                binding.clearConversationHistory.visibility = GONE
+            }
+            showOptionsMenu()
+        } else {
+            binding.addParticipantsAction.visibility = GONE
 
-                    val conversationCopy = conversation
+            if (ConversationUtils.isNoteToSelfConversation(conversation)) {
+                binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
+            } else {
+                binding.clearConversationHistory.visibility = GONE
+            }
+        }
 
-                    if (conversationCopy!!.canModerate(conversationUser)) {
-                        binding.addParticipantsAction.visibility = VISIBLE
-                        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(
-                                conversationUser,
-                                "clear-history"
-                            )
-                        ) {
-                            binding.clearConversationHistory.visibility = VISIBLE
-                        } else {
-                            binding.clearConversationHistory.visibility = GONE
-                        }
-                        showOptionsMenu()
-                    } else {
-                        binding.addParticipantsAction.visibility = GONE
+        if (!isDestroyed) {
+            binding.dangerZoneOptions.visibility = VISIBLE
 
-                        if (ConversationUtils.isNoteToSelfConversation(
-                                ConversationModel.mapToConversationModel(conversation!!)
-                            )
-                        ) {
-                            binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
-                        } else {
-                            binding.clearConversationHistory.visibility = GONE
-                        }
-                    }
+            setupWebinaryView()
 
-                    if (!isDestroyed) {
-                        binding.dangerZoneOptions.visibility = VISIBLE
+            if (ConversationUtils.canLeave(conversation!!)) {
+                binding.leaveConversationAction.visibility = GONE
+            } else {
+                binding.leaveConversationAction.visibility = VISIBLE
+            }
 
-                        setupWebinaryView()
+            if (ConversationUtils.canDelete(conversation!!, spreedCapabilities)) {
+                binding.deleteConversationAction.visibility = GONE
+            } else {
+                binding.deleteConversationAction.visibility = VISIBLE
+            }
 
-                        if (!conversation!!.canLeave()) {
-                            binding.leaveConversationAction.visibility = GONE
-                        } else {
-                            binding.leaveConversationAction.visibility = VISIBLE
-                        }
+            if (ConversationType.ROOM_SYSTEM == conversation!!.type) {
+                binding.notificationSettingsView.callNotificationsSwitch.visibility = GONE
+            }
 
-                        if (!conversation!!.canDelete(conversationUser)) {
-                            binding.deleteConversationAction.visibility = GONE
-                        } else {
-                            binding.deleteConversationAction.visibility = VISIBLE
-                        }
+            if (conversation!!.notificationCalls === null) {
+                binding.notificationSettingsView.callNotificationsSwitch.visibility = GONE
+            } else {
+                binding.notificationSettingsView.callNotificationsSwitch.isChecked =
+                    (conversationCopy.notificationCalls == 1)
+            }
 
-                        if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
-                            binding.notificationSettingsView.callNotificationsSwitch.visibility = GONE
-                        }
+            getListOfParticipants()
 
-                        if (conversation!!.notificationCalls === null) {
-                            binding.notificationSettingsView.callNotificationsSwitch.visibility = GONE
-                        } else {
-                            binding.notificationSettingsView.callNotificationsSwitch.isChecked =
-                                (conversationCopy.notificationCalls == 1)
-                        }
+            binding.progressBar.visibility = GONE
 
-                        getListOfParticipants()
+            binding.conversationInfoName.visibility = VISIBLE
 
-                        binding.progressBar.visibility = GONE
+            binding.displayNameText.text = conversation!!.displayName
 
-                        binding.conversationInfoName.visibility = VISIBLE
+            if (conversation!!.description != null && conversation!!.description!!.isNotEmpty()) {
+                binding.descriptionText.text = conversation!!.description
+                binding.conversationDescription.visibility = VISIBLE
+            }
 
-                        binding.displayNameText.text = conversation!!.displayName
+            loadConversationAvatar()
+            adjustNotificationLevelUI()
+            initRecordingConsentOption()
+            initExpiringMessageOption()
 
-                        if (conversation!!.description != null && conversation!!.description!!.isNotEmpty()) {
-                            binding.descriptionText.text = conversation!!.description
-                            binding.conversationDescription.visibility = VISIBLE
-                        }
-
-                        loadConversationAvatar()
-                        adjustNotificationLevelUI()
-                        initRecordingConsentOption()
-                        initExpiringMessageOption()
-
-                        binding.let {
-                            GuestAccessHelper(
-                                this@ConversationInfoActivity,
-                                it,
-                                conversation!!,
-                                conversationUser
-                            ).setupGuestAccess()
-                        }
-                        if (ConversationUtils.isNoteToSelfConversation(
-                                ConversationModel.mapToConversationModel(conversation!!)
-                            )
-                        ) {
-                            binding.notificationSettingsView.notificationSettings.visibility = GONE
-                        } else {
-                            binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
-                        }
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "failed to fetch room info", e)
-                }
-
-                override fun onComplete() {
-                    roomDisposable!!.dispose()
-                }
-            })
+            binding.let {
+                GuestAccessHelper(
+                    this@ConversationInfoActivity,
+                    it,
+                    conversation!!,
+                    spreedCapabilities,
+                    conversationUser
+                ).setupGuestAccess()
+            }
+            if (ConversationUtils.isNoteToSelfConversation(conversation!!)) {
+                binding.notificationSettingsView.notificationSettings.visibility = GONE
+            } else {
+                binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
+            }
+        }
     }
 
     private fun initRecordingConsentOption() {
@@ -781,13 +812,13 @@ class ConversationInfoActivity :
             }
         }
 
-        if (conversation!!.isParticipantOwnerOrModerator &&
-            !ConversationUtils.isNoteToSelfConversation(ConversationModel.mapToConversationModel(conversation!!))
+        if (ConversationUtils.isParticipantOwnerOrModerator(conversation!!) &&
+            !ConversationUtils.isNoteToSelfConversation(conversation!!)
         ) {
-            when (CapabilitiesUtilNew.getRecordingConsentType(conversationUser)) {
-                CapabilitiesUtilNew.RECORDING_CONSENT_NOT_REQUIRED -> hide()
-                CapabilitiesUtilNew.RECORDING_CONSENT_REQUIRED -> showAlwaysRequiredInfo()
-                CapabilitiesUtilNew.RECORDING_CONSENT_DEPEND_ON_CONVERSATION -> showSwitch()
+            when (CapabilitiesUtil.getRecordingConsentType(spreedCapabilities)) {
+                CapabilitiesUtil.RECORDING_CONSENT_NOT_REQUIRED -> hide()
+                CapabilitiesUtil.RECORDING_CONSENT_REQUIRED -> showAlwaysRequiredInfo()
+                CapabilitiesUtil.RECORDING_CONSENT_DEPEND_ON_CONVERSATION -> showSwitch()
             }
         } else {
             hide()
@@ -801,11 +832,11 @@ class ConversationInfoActivity :
             RECORDING_CONSENT_NOT_REQUIRED_FOR_CONVERSATION
         }
 
-        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
 
         ncApi.setRecordingConsent(
             ApiUtils.getCredentials(conversationUser.username, conversationUser.token),
-            ApiUtils.getUrlForRecordingConsent(apiVersion, conversationUser.baseUrl, conversation!!.token),
+            ApiUtils.getUrlForRecordingConsent(apiVersion, conversationUser.baseUrl!!, conversation!!.token),
             state
         )
             ?.subscribeOn(Schedulers.io())
@@ -831,8 +862,8 @@ class ConversationInfoActivity :
     }
 
     private fun initExpiringMessageOption() {
-        if (conversation!!.isParticipantOwnerOrModerator &&
-            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "message-expiration")
+        if (ConversationUtils.isParticipantOwnerOrModerator(conversation!!) &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)
         ) {
             databaseStorageModule?.setMessageExpiration(conversation!!.messageExpiration)
             val value = databaseStorageModule!!.getString("conversation_settings_dropdown", "")
@@ -855,13 +886,16 @@ class ConversationInfoActivity :
 
     private fun adjustNotificationLevelUI() {
         if (conversation != null) {
-            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.NOTIFICATION_LEVELS)) {
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.isEnabled = true
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.alpha = 1.0f
 
-                if (conversation!!.notificationLevel != Conversation.NotificationLevel.DEFAULT) {
+                if (conversation!!.notificationLevel != NotificationLevel.DEFAULT) {
                     val stringValue: String =
-                        when (EnumNotificationLevelConverter().convertToInt(conversation!!.notificationLevel)) {
+                        when (
+                            DomainEnumNotificationLevelConverter()
+                                .convertToInt(conversation!!.notificationLevel!!)
+                        ) {
                             NOTIFICATION_LEVEL_ALWAYS -> resources.getString(R.string.nc_notify_me_always)
                             NOTIFICATION_LEVEL_MENTION -> resources.getString(R.string.nc_notify_me_mention)
                             NOTIFICATION_LEVEL_NEVER -> resources.getString(R.string.nc_notify_me_never)
@@ -885,9 +919,9 @@ class ConversationInfoActivity :
         }
     }
 
-    private fun setProperNotificationValue(conversation: Conversation?) {
-        if (conversation!!.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag")) {
+    private fun setProperNotificationValue(conversation: ConversationModel?) {
+        if (conversation!!.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)) {
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.setText(
                     resources.getString(R.string.nc_notify_me_always)
                 )
@@ -905,7 +939,7 @@ class ConversationInfoActivity :
 
     private fun loadConversationAvatar() {
         when (conversation!!.type) {
-            Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
+            ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
                 conversation!!.name?.let {
                     binding.avatarImage.loadUserAvatar(
                         conversationUser,
@@ -916,7 +950,7 @@ class ConversationInfoActivity :
                 }
             }
 
-            Conversation.ConversationType.ROOM_GROUP_CALL, Conversation.ConversationType.ROOM_PUBLIC_CALL -> {
+            ConversationType.ROOM_GROUP_CALL, ConversationType.ROOM_PUBLIC_CALL -> {
                 binding.avatarImage.loadConversationAvatar(
                     conversationUser,
                     conversation!!,
@@ -925,15 +959,12 @@ class ConversationInfoActivity :
                 )
             }
 
-            Conversation.ConversationType.ROOM_SYSTEM -> {
+            ConversationType.ROOM_SYSTEM -> {
                 binding.avatarImage.loadSystemAvatar()
             }
 
-            Conversation.ConversationType.DUMMY -> {
-                if (ConversationUtils.isNoteToSelfConversation(
-                        ConversationModel.mapToConversationModel(conversation!!)
-                    )
-                ) {
+            ConversationType.DUMMY -> {
+                if (ConversationUtils.isNoteToSelfConversation(conversation!!)) {
                     binding.avatarImage.loadNoteToSelfAvatar()
                 }
             }
@@ -971,7 +1002,7 @@ class ConversationInfoActivity :
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
-                    conversationUser.baseUrl,
+                    conversationUser.baseUrl!!,
                     conversation!!.token
                 ),
                 participant.attendeeId
@@ -986,7 +1017,7 @@ class ConversationInfoActivity :
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
-                    conversationUser.baseUrl,
+                    conversationUser.baseUrl!!,
                     conversation!!.token
                 ),
                 participant.attendeeId
@@ -1022,7 +1053,7 @@ class ConversationInfoActivity :
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
-                    conversationUser.baseUrl,
+                    conversationUser.baseUrl!!,
                     conversation!!.token
                 ),
                 participant.userId
@@ -1035,7 +1066,7 @@ class ConversationInfoActivity :
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
-                    conversationUser.baseUrl,
+                    conversationUser.baseUrl!!,
                     conversation!!.token
                 ),
                 participant.userId
@@ -1047,12 +1078,12 @@ class ConversationInfoActivity :
     }
 
     private fun removeAttendeeFromConversation(apiVersion: Int, participant: Participant) {
-        if (apiVersion >= ApiUtils.APIv4) {
+        if (apiVersion >= ApiUtils.API_V4) {
             ncApi.removeAttendeeFromConversation(
                 credentials,
                 ApiUtils.getUrlForAttendees(
                     apiVersion,
-                    conversationUser.baseUrl,
+                    conversationUser.baseUrl!!,
                     conversation!!.token
                 ),
                 participant.attendeeId
@@ -1084,7 +1115,7 @@ class ConversationInfoActivity :
                 ncApi.removeParticipantFromConversation(
                     credentials,
                     ApiUtils.getUrlForRemovingParticipantFromConversation(
-                        conversationUser.baseUrl,
+                        conversationUser.baseUrl!!,
                         conversation!!.token,
                         true
                     ),
@@ -1114,7 +1145,7 @@ class ConversationInfoActivity :
                 ncApi.removeParticipantFromConversation(
                     credentials,
                     ApiUtils.getUrlForRemovingParticipantFromConversation(
-                        conversationUser.baseUrl,
+                        conversationUser.baseUrl!!,
                         conversation!!.token,
                         false
                     ),
@@ -1146,14 +1177,14 @@ class ConversationInfoActivity :
 
     @SuppressLint("CheckResult")
     override fun onItemClick(view: View?, position: Int): Boolean {
-        if (!conversation!!.canModerate(conversationUser)) {
+        if (ConversationUtils.canModerate(conversation!!, spreedCapabilities)) {
             return true
         }
 
         val userItem = adapter?.getItem(position) as ParticipantItem
         val participant = userItem.model
 
-        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
 
         if (participant.calculatedActorType == USERS && participant.calculatedActorId == conversationUser.userId) {
             if (participant.attendeePin?.isNotEmpty() == true) {
@@ -1277,7 +1308,7 @@ class ConversationInfoActivity :
                         // Pin, nothing to do
                     } else if (actionToTrigger == 1) {
                         // Promote/demote
-                        if (apiVersion >= ApiUtils.APIv4) {
+                        if (apiVersion >= ApiUtils.API_V4) {
                             toggleModeratorStatus(apiVersion, participant)
                         } else {
                             toggleModeratorStatusLegacy(apiVersion, participant)

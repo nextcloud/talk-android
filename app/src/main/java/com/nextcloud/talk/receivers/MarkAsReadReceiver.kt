@@ -80,11 +80,11 @@ class MarkAsReadReceiver : BroadcastReceiver() {
 
     private fun markAsRead() {
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-        val apiVersion = ApiUtils.getChatApiVersion(currentUser, intArrayOf(1))
+        val apiVersion = ApiUtils.getChatApiVersion(currentUser.capabilities!!.spreedCapability!!, intArrayOf(1))
         val url = ApiUtils.getUrlForChatReadMarker(
             apiVersion,
-            currentUser.baseUrl,
-            roomToken
+            currentUser.baseUrl!!,
+            roomToken!!
         )
 
         ncApi.setChatReadMarker(credentials, url, messageId)

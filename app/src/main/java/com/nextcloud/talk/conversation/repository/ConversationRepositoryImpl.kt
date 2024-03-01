@@ -36,16 +36,16 @@ class ConversationRepositoryImpl(private val ncApi: NcApi, currentUserProvider: 
     ConversationRepository {
 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
     override fun renameConversation(roomToken: String, roomNameNew: String): Observable<GenericOverall> {
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
         return ncApi.renameRoom(
             credentials,
             ApiUtils.getUrlForRoom(
                 apiVersion,
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 roomToken
             ),
             roomNameNew
@@ -59,12 +59,12 @@ class ConversationRepositoryImpl(private val ncApi: NcApi, currentUserProvider: 
         roomName: String,
         conversationType: Conversation.ConversationType?
     ): Observable<RoomOverall> {
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
         val retrofitBucket: RetrofitBucket = if (conversationType == Conversation.ConversationType.ROOM_PUBLIC_CALL) {
             ApiUtils.getRetrofitBucketForCreateRoom(
                 apiVersion,
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 ROOM_TYPE_PUBLIC,
                 null,
                 null,
@@ -73,7 +73,7 @@ class ConversationRepositoryImpl(private val ncApi: NcApi, currentUserProvider: 
         } else {
             ApiUtils.getRetrofitBucketForCreateRoom(
                 apiVersion,
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 ROOM_TYPE_GROUP,
                 null,
                 null,

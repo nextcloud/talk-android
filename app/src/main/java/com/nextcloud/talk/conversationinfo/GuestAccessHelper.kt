@@ -11,8 +11,11 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.databinding.DialogPasswordBinding
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationType
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ShareUtils
 import io.reactivex.Observer
@@ -23,7 +26,8 @@ import io.reactivex.schedulers.Schedulers
 class GuestAccessHelper(
     private val activity: ConversationInfoActivity,
     private val binding: ActivityConversationInfoBinding,
-    private val conversation: Conversation,
+    private val conversation: ConversationModel,
+    private val spreedCapabilities: SpreedCapability,
     private val conversationUser: User
 ) {
 
@@ -32,13 +36,13 @@ class GuestAccessHelper(
     private val context = activity.context
 
     fun setupGuestAccess() {
-        if (conversation.canModerate(conversationUser)) {
+        if (ConversationUtils.canModerate(conversation, spreedCapabilities)) {
             binding.guestAccessView.guestAccessSettings.visibility = View.VISIBLE
         } else {
             binding.guestAccessView.guestAccessSettings.visibility = View.GONE
         }
 
-        if (conversation.type == Conversation.ConversationType.ROOM_PUBLIC_CALL) {
+        if (conversation.type == ConversationType.ROOM_PUBLIC_CALL) {
             binding.guestAccessView.allowGuestsSwitch.isChecked = true
             showAllOptions()
             if (conversation.hasPassword) {

@@ -94,7 +94,7 @@ class RemoteFileBrowserItemsListViewHolder(
 
         if (item.hasPreview) {
             val path = ApiUtils.getUrlForFilePreviewWithRemotePath(
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 item.path,
                 fileIcon.context.resources.getDimensionPixelSize(R.dimen.small_item_height)
             )

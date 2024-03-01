@@ -37,8 +37,8 @@ class TranslateViewModel @Inject constructor(
 
     fun translateMessage(toLanguage: String, fromLanguage: String?, text: String) {
         val currentUser: User = userManager.currentUser.blockingGet()
-        val authorization: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-        val url: String = ApiUtils.getUrlForTranslation(currentUser.baseUrl)
+        val authorization: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
+        val url: String = ApiUtils.getUrlForTranslation(currentUser.baseUrl!!)
         val calculatedFromLanguage =
             if (fromLanguage == null || fromLanguage == "") {
                 null
@@ -60,8 +60,8 @@ class TranslateViewModel @Inject constructor(
 
     fun getLanguages() {
         val currentUser: User = userManager.currentUser.blockingGet()
-        val authorization: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-        val url: String = ApiUtils.getUrlForLanguages(currentUser.baseUrl)
+        val authorization: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
+        val url: String = ApiUtils.getUrlForLanguages(currentUser.baseUrl!!)
         Log.d(TAG, "URL is: $url")
         repository.getLanguages(authorization, url)
             .subscribeOn(Schedulers.io())

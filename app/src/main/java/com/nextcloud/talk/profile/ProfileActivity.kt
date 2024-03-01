@@ -66,12 +66,13 @@ import com.nextcloud.talk.ui.dialog.ScopeDialog
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPG
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.PickImage.Companion.REQUEST_PERMISSION_CAMERA
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -127,7 +128,7 @@ class ProfileActivity : BaseActivity() {
         binding.avatarDelete.setOnClickListener {
             ncApi.deleteAvatar(
                 credentials,
-                ApiUtils.getUrlForTempAvatar(currentUser!!.baseUrl)
+                ApiUtils.getUrlForTempAvatar(currentUser!!.baseUrl!!)
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -154,7 +155,7 @@ class ProfileActivity : BaseActivity() {
                 })
         }
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
-        ncApi.getUserProfile(credentials, ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl))
+        ncApi.getUserProfile(credentials, ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl!!))
             .retry(DEFAULT_RETRIES)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -226,13 +227,17 @@ class ProfileActivity : BaseActivity() {
                 item.icon = ContextCompat.getDrawable(this, R.drawable.ic_check)
                 binding.emptyList.root.visibility = View.GONE
                 binding.userinfoList.visibility = View.VISIBLE
-                if (CapabilitiesUtilNew.isAvatarEndpointAvailable(currentUser!!)) {
+                if (CapabilitiesUtil.hasSpreedFeatureCapability(
+                        currentUser!!.capabilities!!.spreedCapability!!,
+                        SpreedFeatures.TEMP_USER_AVATAR_API
+                    )
+                ) {
                     // TODO later avatar can also be checked via user fields, for now it is in Talk capability
                     binding.avatarButtons.visibility = View.VISIBLE
                 }
                 ncApi.getEditableUserProfileFields(
                     ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                    ApiUtils.getUrlForUserFields(currentUser!!.baseUrl)
+                    ApiUtils.getUrlForUserFields(currentUser!!.baseUrl!!)
                 )
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -292,7 +297,7 @@ class ProfileActivity : BaseActivity() {
 
     private fun showUserProfile() {
         if (currentUser!!.baseUrl != null) {
-            binding.userinfoBaseurl.text = Uri.parse(currentUser!!.baseUrl).host
+            binding.userinfoBaseurl.text = Uri.parse(currentUser!!.baseUrl!!).host
         }
         DisplayUtils.loadAvatarImage(currentUser, binding.avatarImage, false)
         if (!TextUtils.isEmpty(userInfo?.displayName)) {
@@ -327,10 +332,10 @@ class ProfileActivity : BaseActivity() {
         }
 
         // show edit button
-        if (CapabilitiesUtilNew.canEditScopes(currentUser!!)) {
+        if (CapabilitiesUtil.canEditScopes(currentUser!!)) {
             ncApi.getEditableUserProfileFields(
                 ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                ApiUtils.getUrlForUserFields(currentUser!!.baseUrl)
+                ApiUtils.getUrlForUserFields(currentUser!!.baseUrl!!)
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -438,7 +443,7 @@ class ProfileActivity : BaseActivity() {
                 val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
                 ncApi.setUserData(
                     credentials,
-                    ApiUtils.getUrlForUserData(currentUser!!.baseUrl, currentUser!!.userId),
+                    ApiUtils.getUrlForUserData(currentUser!!.baseUrl!!, currentUser!!.userId!!),
                     item.field.fieldName,
                     item.text
                 )
@@ -535,7 +540,7 @@ class ProfileActivity : BaseActivity() {
         // upload file
         ncApi.uploadAvatar(
             ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-            ApiUtils.getUrlForTempAvatar(currentUser!!.baseUrl),
+            ApiUtils.getUrlForTempAvatar(currentUser!!.baseUrl!!),
             filePart
         )
             .subscribeOn(Schedulers.io())
@@ -569,7 +574,7 @@ class ProfileActivity : BaseActivity() {
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
         ncApi.setUserData(
             credentials,
-            ApiUtils.getUrlForUserData(currentUser!!.baseUrl, currentUser!!.userId),
+            ApiUtils.getUrlForUserData(currentUser!!.baseUrl!!, currentUser!!.userId!!),
             item.field.scopeName,
             item.scope!!.name
         )

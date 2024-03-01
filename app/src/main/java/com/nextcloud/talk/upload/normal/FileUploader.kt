@@ -24,7 +24,7 @@ class FileUploader(
     fun upload(sourceFileUri: Uri, fileName: String, remotePath: String, metaData: String?): Observable<Boolean> {
         return ncApi.uploadFile(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
-            ApiUtils.getUrlForFileUpload(currentUser.baseUrl, currentUser.userId, remotePath),
+            ApiUtils.getUrlForFileUpload(currentUser.baseUrl!!, currentUser.userId!!, remotePath),
             createRequestBody(sourceFileUri)
         )
             .subscribeOn(Schedulers.io())

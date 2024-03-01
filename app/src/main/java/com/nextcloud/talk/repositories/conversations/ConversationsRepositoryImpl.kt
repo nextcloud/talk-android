@@ -38,12 +38,12 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val userProvid
         get() = userProvider.currentUser.blockingGet()
 
     private val credentials: String
-        get() = ApiUtils.getCredentials(user.username, user.token)
+        get() = ApiUtils.getCredentials(user.username, user.token)!!
 
     override fun allowGuests(token: String, allow: Boolean): Observable<AllowGuestsResult> {
         val url = ApiUtils.getUrlForRoomPublic(
             apiVersion(),
-            user.baseUrl,
+            user.baseUrl!!,
             token
         )
 
@@ -100,7 +100,7 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val userProvid
     }
 
     private fun apiVersion(): Int {
-        return ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.APIv4))
+        return ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4))
     }
 
     companion object {

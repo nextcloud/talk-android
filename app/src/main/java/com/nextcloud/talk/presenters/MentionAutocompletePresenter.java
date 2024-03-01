@@ -77,6 +77,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
     private Context context;
 
     private String roomToken;
+    private int chatApiVersion;
 
     private List<AbstractFlexibleItem> abstractFlexibleItemList = new ArrayList<>();
 
@@ -87,10 +88,11 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         currentUser = userManager.getCurrentUser().blockingGet();
     }
 
-    public MentionAutocompletePresenter(Context context, String roomToken) {
+    public MentionAutocompletePresenter(Context context, String roomToken, int chatApiVersion) {
         super(context);
         this.roomToken = roomToken;
         this.context = context;
+        this.chatApiVersion = chatApiVersion;
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         currentUser = userManager.getCurrentUser().blockingGet();
     }
@@ -120,8 +122,6 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
             queryString = "";
         }
 
-        int apiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {1});
-
         adapter.setFilter(queryString);
 
         Map<String, String> queryMap = new HashMap<>();
@@ -129,7 +129,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
 
         ncApi.getMentionAutocompleteSuggestions(
                 ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
-                ApiUtils.getUrlForMentionSuggestions(apiVersion, currentUser.getBaseUrl(), roomToken),
+                ApiUtils.getUrlForMentionSuggestions(chatApiVersion, currentUser.getBaseUrl(), roomToken),
                 queryString, 5, queryMap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

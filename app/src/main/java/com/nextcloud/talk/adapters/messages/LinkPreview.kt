@@ -45,8 +45,8 @@ class LinkPreview {
         binding.referenceThumbImage.setImageDrawable(null)
 
         if (!message.extractedUrlToPreview.isNullOrEmpty()) {
-            val credentials: String = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)
-            val openGraphLink = ApiUtils.getUrlForOpenGraph(message.activeUser?.baseUrl)
+            val credentials: String = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)!!
+            val openGraphLink = ApiUtils.getUrlForOpenGraph(message.activeUser?.baseUrl!!)
             ncApi.getOpenGraph(
                 credentials,
                 openGraphLink,

@@ -35,7 +35,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogMoreCallActionsBinding
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
 import com.vanniktech.emoji.EmojiTextView
 import javax.inject.Inject
@@ -72,7 +72,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
     }
 
     private fun initItemsVisibility() {
-        if (CapabilitiesUtilNew.isCallReactionsSupported(callActivity.conversationUser)) {
+        if (CapabilitiesUtil.isCallReactionsSupported(callActivity.conversationUser)) {
             binding.callEmojiBar.visibility = View.VISIBLE
         } else {
             binding.callEmojiBar.visibility = View.GONE
@@ -102,7 +102,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
     }
 
     private fun initEmojiBar() {
-        if (CapabilitiesUtilNew.isCallReactionsSupported(callActivity.conversationUser)) {
+        if (CapabilitiesUtil.isCallReactionsSupported(callActivity.conversationUser)) {
             binding.advancedCallOptionsTitle.visibility = View.GONE
 
             val capabilities = callActivity.conversationUser?.capabilities

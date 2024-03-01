@@ -105,7 +105,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                         fileParameters["link"]!!,
                         fileParameters["mimetype"]!!,
                         previewAvailable,
-                        previewLink(fileParameters["id"], parameters.baseUrl)
+                        previewLink(fileParameters["id"], parameters.baseUrl!!)
                     )
                 } else if (it.value.messageParameters?.containsKey("object") == true) {
                     val objectParameters = it.value.messageParameters!!["object"]!!
@@ -184,7 +184,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
 
         return ncApi.getSharedItemsOverview(
             credentials,
-            ApiUtils.getUrlForChatSharedItemsOverview(1, parameters.baseUrl, parameters.roomToken),
+            ApiUtils.getUrlForChatSharedItemsOverview(1, parameters.baseUrl!!, parameters.roomToken),
             1
         ).map {
             val types = mutableSetOf<SharedItemType>()
@@ -206,7 +206,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
     private fun previewLink(fileId: String?, baseUrl: String): String {
         return ApiUtils.getUrlForFilePreviewWithFileId(
             baseUrl,
-            fileId,
+            fileId!!,
             sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
         )
     }

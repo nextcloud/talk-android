@@ -37,7 +37,7 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvid
         get() = userProvider.currentUser.blockingGet()
 
     private val credentials: String
-        get() = ApiUtils.getCredentials(user.username, user.token)
+        get() = ApiUtils.getCredentials(user.username, user.token)!!
 
     override fun searchMessages(
         searchTerm: String,

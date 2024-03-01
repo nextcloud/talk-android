@@ -46,14 +46,17 @@ import com.nextcloud.talk.models.domain.ConversationReadOnlyState
 import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
 import com.vanniktech.emoji.installDisableKeyboardInput
@@ -72,7 +75,8 @@ class MessageActionsDialog(
     private val user: User?,
     private val currentConversation: ConversationModel?,
     private val showMessageDeletionButton: Boolean,
-    private val hasChatPermission: Boolean
+    private val hasChatPermission: Boolean,
+    private val spreedCapabilities: SpreedCapability
 ) : BottomSheetDialog(chatActivity) {
 
     @Inject
@@ -100,8 +104,8 @@ class MessageActionsDialog(
 
     private val isUserAllowedToEdit = chatActivity.userAllowedByPrivilages(message)
 
-    private val isMessageEditable = CapabilitiesUtilNew.hasSpreedFeatureCapability(
-        user,
+    private val isMessageEditable = CapabilitiesUtil.hasSpreedFeatureCapability(
+        spreedCapabilities,
         "edit-messages"
     ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit
 
@@ -116,9 +120,9 @@ class MessageActionsDialog(
         viewThemeUtils.platform.themeDialog(dialogMessageActionsBinding.root)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
-        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv3, 1))
+        val apiVersion = ApiUtils.getConversationApiVersion(user!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
         chatActivity.chatViewModel.checkForNoteToSelf(
-            ApiUtils.getCredentials(user!!.username, user.token),
+            ApiUtils.getCredentials(user!!.username, user.token)!!,
             ApiUtils.getUrlForRooms(
                 apiVersion,
                 user.baseUrl
@@ -144,7 +148,7 @@ class MessageActionsDialog(
         initMenuItemTranslate(
             !message.isDeleted &&
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
-                CapabilitiesUtilNew.isTranslationsSupported(user)
+                CapabilitiesUtil.isTranslationsSupported(spreedCapabilities)
         )
         initMenuEditorDetails(message.lastEditTimestamp != 0L && !message.isDeleted)
         initMenuReplyToMessage(message.replyable && hasChatPermission)
@@ -160,7 +164,10 @@ class MessageActionsDialog(
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
                 !(message.isDeletedCommentMessage || message.isDeleted)
         )
-        initMenuRemindMessage(!message.isDeleted && CapabilitiesUtilNew.isRemindSupported(user))
+        initMenuRemindMessage(
+            !message.isDeleted && CapabilitiesUtil.hasSpreedFeatureCapability
+                (spreedCapabilities, "remind-me-later")
+        )
         initMenuMarkAsUnread(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType()
@@ -242,7 +249,7 @@ class MessageActionsDialog(
     }
 
     private fun initEmojiBar(hasChatPermission: Boolean) {
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "reactions") &&
+        if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REACTIONS) &&
             isPermitted(hasChatPermission) &&
             isReactableMessageType(message)
         ) {

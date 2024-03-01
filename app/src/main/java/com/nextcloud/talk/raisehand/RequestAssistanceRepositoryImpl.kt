@@ -31,7 +31,7 @@ class RequestAssistanceRepositoryImpl(private val ncApi: NcApi, currentUserProvi
     RequestAssistanceRepository {
 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
     var apiVersion = 1
 

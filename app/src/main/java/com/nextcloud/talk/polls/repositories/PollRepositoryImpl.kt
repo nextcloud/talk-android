@@ -37,7 +37,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
     PollRepository {
 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
     override fun createPoll(
         roomToken: String,
@@ -49,7 +49,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         return ncApi.createPoll(
             credentials,
             ApiUtils.getUrlForPoll(
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 roomToken
             ),
             question,
@@ -63,7 +63,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         return ncApi.getPoll(
             credentials,
             ApiUtils.getUrlForPoll(
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 roomToken,
                 pollId
             )
@@ -74,7 +74,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         return ncApi.votePoll(
             credentials,
             ApiUtils.getUrlForPoll(
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 roomToken,
                 pollId
             ),
@@ -86,7 +86,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         return ncApi.closePoll(
             credentials,
             ApiUtils.getUrlForPoll(
-                currentUser.baseUrl,
+                currentUser.baseUrl!!,
                 roomToken,
                 pollId
             )

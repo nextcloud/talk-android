@@ -64,6 +64,7 @@ class GeocodingActivity :
     lateinit var okHttpClient: OkHttpClient
 
     lateinit var roomToken: String
+    private var chatApiVersion: Int = 1
     private var nominatimClient: TalkJsonNominatimClient? = null
 
     private var searchItem: MenuItem? = null
@@ -86,6 +87,7 @@ class GeocodingActivity :
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
         roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
+        chatApiVersion = intent.getIntExtra(BundleKeys.KEY_CHAT_API_VERSION, 1)
 
         recyclerView = findViewById(R.id.geocoding_results)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -130,6 +132,7 @@ class GeocodingActivity :
                 val intent = Intent(this@GeocodingActivity, LocationPickerActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+                intent.putExtra(BundleKeys.KEY_CHAT_API_VERSION, chatApiVersion)
                 intent.putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
                 startActivity(intent)
             }
@@ -158,6 +161,7 @@ class GeocodingActivity :
                 val intent = Intent(this@GeocodingActivity, LocationPickerActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+                intent.putExtra(BundleKeys.KEY_CHAT_API_VERSION, chatApiVersion)
                 intent.putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
                 startActivity(intent)
             }
@@ -217,6 +221,7 @@ class GeocodingActivity :
                     val intent = Intent(context, LocationPickerActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+                    intent.putExtra(BundleKeys.KEY_CHAT_API_VERSION, chatApiVersion)
                     startActivity(intent)
                     return true
                 }

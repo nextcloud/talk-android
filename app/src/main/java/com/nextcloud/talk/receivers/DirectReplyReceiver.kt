@@ -91,8 +91,8 @@ class DirectReplyReceiver : BroadcastReceiver() {
 
     private fun sendDirectReply() {
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-        val apiVersion = ApiUtils.getChatApiVersion(currentUser, intArrayOf(1))
-        val url = ApiUtils.getUrlForChat(apiVersion, currentUser.baseUrl, roomToken)
+        val apiVersion = ApiUtils.getChatApiVersion(currentUser.capabilities!!.spreedCapability!!, intArrayOf(1))
+        val url = ApiUtils.getUrlForChat(apiVersion, currentUser.baseUrl!!, roomToken!!)
 
         ncApi.sendChatMessage(credentials, url, replyMessage, currentUser.displayName, null, false)
             ?.subscribeOn(Schedulers.io())
@@ -153,7 +153,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
 
         // Add reply
         Single.fromCallable {
-            val avatarUrl = ApiUtils.getUrlForAvatar(currentUser.baseUrl, currentUser.userId, false)
+            val avatarUrl = ApiUtils.getUrlForAvatar(currentUser.baseUrl!!, currentUser.userId, false)
             val me = Person.Builder()
                 .setName(currentUser.displayName)
                 .setIcon(NotificationUtils.loadAvatarSync(avatarUrl, context))

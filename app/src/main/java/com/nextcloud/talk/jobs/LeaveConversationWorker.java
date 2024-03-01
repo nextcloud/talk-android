@@ -92,7 +92,7 @@ public class LeaveConversationWorker extends Worker {
                                                       EventStatus.EventType.CONVERSATION_UPDATE,
                                                       true);
 
-            int apiVersion = ApiUtils.getConversationApiVersion(operationUser, new int[] {ApiUtils.APIv4, 1});
+            int apiVersion = ApiUtils.getConversationApiVersion(operationUser, new int[] {ApiUtils.API_V4, 1});
 
             ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForParticipantsSelf(apiVersion,
                                                                                      operationUser.getBaseUrl(),

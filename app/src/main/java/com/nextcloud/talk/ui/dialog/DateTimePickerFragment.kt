@@ -50,7 +50,8 @@ import javax.inject.Inject
 class DateTimePickerFragment(
     token: String,
     id: String,
-    chatViewModel: ChatViewModel
+    chatViewModel: ChatViewModel,
+    private val chatApiVersion: Int
 ) : DialogFragment() {
     lateinit var binding: DialogDateTimePickerBinding
     private var dialogView: View? = null
@@ -144,7 +145,7 @@ class DateTimePickerFragment(
     }
 
     private fun getReminder() {
-        viewModel.getReminder(userManager.currentUser.blockingGet(), roomToken, messageId)
+        viewModel.getReminder(userManager.currentUser.blockingGet(), roomToken, messageId, chatApiVersion)
     }
 
     private fun showDelete(value: Boolean) {
@@ -221,12 +222,18 @@ class DateTimePickerFragment(
         binding.buttonClose.setOnClickListener { dismiss() }
         binding.buttonSet.setOnClickListener {
             currentTimeStamp?.let { time ->
-                viewModel.setReminder(userManager.currentUser.blockingGet(), roomToken, messageId, time.toInt())
+                viewModel.setReminder(
+                    userManager.currentUser.blockingGet(),
+                    roomToken,
+                    messageId,
+                    time.toInt(),
+                    chatApiVersion
+                )
             }
             dismiss()
         }
         binding.buttonDelete.setOnClickListener {
-            viewModel.deleteReminder(userManager.currentUser.blockingGet(), roomToken, messageId)
+            viewModel.deleteReminder(userManager.currentUser.blockingGet(), roomToken, messageId, chatApiVersion)
         }
     }
 
@@ -299,11 +306,12 @@ class DateTimePickerFragment(
         private const val HOUR_SIX_PM = 18
 
         @JvmStatic
-        fun newInstance(token: String, id: String, chatViewModel: ChatViewModel) =
+        fun newInstance(token: String, id: String, chatViewModel: ChatViewModel, chatApiVersion: Int) =
             DateTimePickerFragment(
                 token,
                 id,
-                chatViewModel
+                chatViewModel,
+                chatApiVersion
             )
     }
 }

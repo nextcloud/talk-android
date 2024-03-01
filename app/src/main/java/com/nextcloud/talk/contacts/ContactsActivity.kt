@@ -68,9 +68,10 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.openconversations.ListOpenConversationsActivity
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils.getIdForUser
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -318,10 +319,10 @@ class ContactsActivity :
     }
 
     private fun createRoom(roomType: String, sourceType: String?, userId: String) {
-        val apiVersion: Int = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
+        val apiVersion: Int = ApiUtils.getConversationApiVersion(currentUser!!, intArrayOf(ApiUtils.API_V4, 1))
         val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion,
-            currentUser!!.baseUrl,
+            currentUser!!.baseUrl!!,
             roomType,
             sourceType,
             userId,
@@ -438,7 +439,7 @@ class ContactsActivity :
         userHeaderItems = HashMap()
         val query = adapter!!.getFilter(String::class.java)
         val retrofitBucket: RetrofitBucket =
-            ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl, query)
+            ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl!!, query)
         val modifiedQueryMap: HashMap<String, Any?> = HashMap(retrofitBucket.queryMap)
         modifiedQueryMap["limit"] = CONTACTS_BATCH_SIZE
         if (isAddingParticipantsView) {
@@ -450,13 +451,21 @@ class ContactsActivity :
         if (!isAddingParticipantsView) {
             // groups
             shareTypesList.add("1")
-        } else if (CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails")) {
+        } else if (CapabilitiesUtil.hasSpreedFeatureCapability(
+                currentUser?.capabilities?.spreedCapability!!,
+                SpreedFeatures.INVITE_GROUPS_AND_MAILS
+            )
+        ) {
             // groups
             shareTypesList.add("1")
             // emails
             shareTypesList.add("4")
         }
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "circles-support")) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(
+                currentUser?.capabilities?.spreedCapability!!,
+                SpreedFeatures.CIRCLES_SUPPORT
+            )
+        ) {
             // circles
             shareTypesList.add("7")
         }
@@ -745,8 +754,12 @@ class ContactsActivity :
     private fun updateSelection(contactItem: ContactItem) {
         contactItem.model.selected = !contactItem.model.selected
         updateSelectionLists(contactItem.model)
-        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "last-room-activity") &&
-            !CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails") &&
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(
+                currentUser?.capabilities?.spreedCapability!!, SpreedFeatures.LAST_ROOM_ACTIVITY
+            ) &&
+            !CapabilitiesUtil.hasSpreedFeatureCapability(
+                currentUser?.capabilities?.spreedCapability!!, SpreedFeatures.INVITE_GROUPS_AND_MAILS
+            ) &&
             isValidGroupSelection(contactItem, contactItem.model, adapter)
         ) {
             val currentItems: List<ContactItem> = adapter?.currentItems as List<ContactItem>
@@ -771,10 +784,10 @@ class ContactsActivity :
         if ("groups" == contactItem.model.source) {
             roomType = "2"
         }
-        val apiVersion: Int = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
+        val apiVersion: Int = ApiUtils.getConversationApiVersion(currentUser!!, intArrayOf(ApiUtils.API_V4, 1))
         val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion,
-            currentUser!!.baseUrl,
+            currentUser!!.baseUrl!!,
             roomType,
             null,
             contactItem.model.calculatedActorId,
