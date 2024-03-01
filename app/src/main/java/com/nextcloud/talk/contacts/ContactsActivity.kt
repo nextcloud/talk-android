@@ -565,7 +565,7 @@ class ContactsActivity :
                 resources!!.getString(R.string.nc_groups)
             }
             participant.calculatedActorType == Participant.ActorType.CIRCLES -> {
-                resources!!.getString(R.string.nc_circles)
+                resources!!.getString(R.string.nc_teams)
             }
             else -> {
                 participant.displayName!!.substring(0, 1).uppercase(Locale.getDefault())
