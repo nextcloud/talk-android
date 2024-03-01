@@ -221,7 +221,7 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                     userType = NextcloudTalkApplication
                         .Companion
                         .getSharedApplication()
-                        .getString(R.string.nc_circle);
+                        .getString(R.string.nc_team);
                 }
                 break;
             case 4:
