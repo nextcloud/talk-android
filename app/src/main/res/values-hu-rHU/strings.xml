@@ -85,7 +85,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Váltás a saját videóra</string>
     <string name="nc_call_incoming">BEJÖVŐ</string>
     <string name="nc_call_name">Beszélgetésnév</string>
-    <string name="nc_call_name_is_same">A megadott név egyezik egy már meglévővel</string>
     <string name="nc_call_notifications">Hívásértesítések</string>
     <string name="nc_call_raised_hand">%1$s felemelte a kezét</string>
     <string name="nc_call_reconnecting">Újrakapcsolódás…</string>
@@ -126,11 +125,9 @@
     <string name="nc_connecting_call">Csatlakozás…</string>
     <string name="nc_contacts_done">Kész</string>
     <string name="nc_conversation_description">Beszélgetés leírása</string>
-    <string name="nc_conversation_link">Beszélgetési hivatkozás</string>
     <string name="nc_conversation_menu_conversation_info">Beszélgetés információk</string>
     <string name="nc_conversation_menu_video_call">Videohívás</string>
     <string name="nc_conversation_menu_voice_call">Hanghívás</string>
-    <string name="nc_conversation_settings">Beszélgetésbeállítások</string>
     <string name="nc_conversations_empty">Csatlakozzon egy beszélgetéshez, vagy indítson egy újat</string>
     <string name="nc_conversations_empty_details">Üdvözölje a barátait és munkatársait!</string>
     <string name="nc_copy_message">Másolás</string>
@@ -179,8 +176,6 @@
     <string name="nc_expire_messages">Csevegési üzenetek elévülése</string>
     <string name="nc_expire_messages_explanation">A csevegési üzenetek bizonyos idő után elévülhetnek. Megjegyzés: A csevegésben megosztott fájlok nem törlődnek a tulajdonosuk számára, csak többé nem lesznek megosztva a beszélgetéssel.</string>
     <string name="nc_external_server_failed">A jelzésbeállítások lekérése sikertelen</string>
-    <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
-    <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
     <string name="nc_federation_invitation_accept">Elfogadás</string>
     <string name="nc_federation_invitation_reject">Elutasítás</string>
     <string name="nc_file_browser_back">Vissza</string>
@@ -213,8 +208,6 @@
     <string name="nc_important_conversation">Fontos beszélgetés</string>
     <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a Ne zavarjanak beállításokat</string>
     <string name="nc_invitations">Meghívások</string>
-    <string name="nc_join_via_link">Csatlakozás hivatkozással</string>
-    <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
     <string name="nc_last_moderator">Új moderátort kell kineveznie, mielőtt elhagyhatja ezt: %1$s.</string>
     <string name="nc_last_moderator_title">Nem sikerült elhagyni a beszélgetést</string>
     <string name="nc_last_modified">%1$s | Utoljára módosítva: %2$s</string>
@@ -247,7 +240,6 @@
     <string name="nc_new_conversation">Új beszélgetés</string>
     <string name="nc_new_mention">Olvasatlan említések</string>
     <string name="nc_new_messages">Olvasatlan üzenetek</string>
-    <string name="nc_new_password">Új jelszó</string>
     <string name="nc_nextcloud_talk_app_not_installed">A(z) %1$s nem érhető el (nincs telepítve vagy egy rendszergazda korlátozta) </string>
     <string name="nc_nick_guest">Vendég</string>
     <string name="nc_no">Nem</string>
@@ -271,7 +263,6 @@
     <string name="nc_owner">Tulajdonos</string>
     <string name="nc_participants">Résztvevők</string>
     <string name="nc_participants_add">Résztvevők hozzáadása</string>
-    <string name="nc_password">Jelszó</string>
     <string name="nc_permissions_ask">Jogosultságok beállításaa</string>
     <string name="nc_permissions_denied">Néhány jogosultság meg lett tagadva.</string>
     <string name="nc_permissions_rationale_dialog_title">Engedélyezzen jogosultságokat</string>
@@ -283,7 +274,6 @@
     <string name="nc_pip_microphone_unmute">Mikrofon engedélyezése</string>
     <string name="nc_plain_old_messages">Üzenetek</string>
     <string name="nc_privacy">Adatvédelem</string>
-    <string name="nc_proceed">Folytatás</string>
     <string name="nc_profile_personal_info_title">Személyes információk</string>
     <string name="nc_promote">Kinevezés moderátorrá</string>
     <string name="nc_public_call">Új nyilvános beszélgetés</string>
@@ -432,8 +422,6 @@
     <string name="nc_voice_message_missing_audio_permission">Hangfelvételi engedély szükséges</string>
     <string name="nc_voice_message_slide_to_cancel">« Csúsztassa a megszakításhoz</string>
     <string name="nc_webinar">Webinár</string>
-    <string name="nc_wrong_link">A beszélgetési hivatkozás nem érvényes</string>
-    <string name="nc_wrong_password">Hibás jelszó</string>
     <string name="nc_yes">Igen</string>
     <string name="next_week">Következő hét</string>
     <string name="no_phone_book_integration_due_to_permissions">Nincs telefonszám integráció hiányzó engedélyek miatt</string>

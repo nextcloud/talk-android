@@ -95,7 +95,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">تبديل إلى الفيديو الذاتي</string>
     <string name="nc_call_incoming">واردة</string>
     <string name="nc_call_name">اسم المحادثة</string>
-    <string name="nc_call_name_is_same">الاسم الذي أدخلته مطابق لاسم آخر </string>
     <string name="nc_call_notifications">تنبيهات المكالمة</string>
     <string name="nc_call_raised_hand">%1$s رفع يده</string>
     <string name="nc_call_reconnecting">إعادة الاتصال …</string>
@@ -139,12 +138,10 @@
     <string name="nc_connecting_call">الاتصال جارٍ …</string>
     <string name="nc_contacts_done">تم</string>
     <string name="nc_conversation_description">وصف المحادثة</string>
-    <string name="nc_conversation_link">رابط المحادثة</string>
     <string name="nc_conversation_menu_conversation_info">بيانات المحادثة</string>
     <string name="nc_conversation_menu_video_call">اتصال فيديو</string>
     <string name="nc_conversation_menu_voice_call">اتصال فيديو</string>
     <string name="nc_conversation_not_found">المحادثة غير موجودة</string>
-    <string name="nc_conversation_settings">إعدادات المحادثة</string>
     <string name="nc_conversations_empty">إنضم لمحادثةٍ او ابدأ محادثةً جديدةً</string>
     <string name="nc_conversations_empty_details">رحّب بالأصدقاء و الزملاء!</string>
     <string name="nc_copy_message">أنسخ</string>
@@ -229,8 +226,6 @@
     <string name="nc_expire_messages">إنهاء صلاحية رسائل الدردشة</string>
     <string name="nc_expire_messages_explanation">يمكن أن تنتهي صلاحية رسائل الدردشة بعد وقت معين. ملاحظة: لن يتم حذف الملفات التي تمّت مشاركتها في الدردشة عند المالك، و لكن لن تستمر مشاركتها مع الآخرين في المحادثة.</string>
     <string name="nc_external_server_failed">فشل جلب إعدادات الإشارات</string>
-    <string name="nc_failed_signaling_settings">لا يدعم خادومك الانضمام إلى المحادثات العامة عبر الهواتف المحمولة. يمكنك محاولة الانضمام إلى المحادثة عبر متصفح الويب.</string>
-    <string name="nc_failed_to_perform_operation">حدث خطأ ما!</string>
     <string name="nc_federation_invitation_accept">قبول</string>
     <string name="nc_federation_invitation_reject">رفض</string>
     <string name="nc_federation_invited_to_room">من %1$s في %2$s</string>
@@ -268,8 +263,6 @@
     <string name="nc_important_conversation">محادثة مهمة</string>
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة ستتجاوز إعداد الحالة \"يُرجى عدم الإزعاج\"</string>
     <string name="nc_invitations">دعوات</string>
-    <string name="nc_join_via_link">انضم عن طريق الرابط</string>
-    <string name="nc_join_via_web">الانضمام عبر الويب</string>
     <string name="nc_last_moderator">يجب عليك ترقية مشرف لاحد المشاركين قبل مغادرة %1$s.</string>
     <string name="nc_last_moderator_title">تعذر مغادرة المحادثة </string>
     <string name="nc_last_modified">%1$s| آخر تعديل: %2$s</string>
@@ -302,7 +295,6 @@
     <string name="nc_new_conversation">محادثة جديدة</string>
     <string name="nc_new_mention">إشاراتٌ غير مقروءة</string>
     <string name="nc_new_messages">رسائل غير مقروءة</string>
-    <string name="nc_new_password">كلمة سرية جديدة</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$sغير متاحٍ (غير مُنصّب أو مُقيّد من قبل المُشرف)</string>
     <string name="nc_nick_guest">ضيف</string>
     <string name="nc_no">لا</string>
@@ -329,7 +321,6 @@
     <string name="nc_owner">المالك</string>
     <string name="nc_participants">المشارِكون</string>
     <string name="nc_participants_add">إضِف مشاركين</string>
-    <string name="nc_password">كلمة السر</string>
     <string name="nc_permissions_ask">تعيين الأذونات</string>
     <string name="nc_permissions_denied">بعض الأذونات تمّ رفضها</string>
     <string name="nc_permissions_rationale_dialog_title">إسمَح بالأذونات رجاءً</string>
@@ -341,7 +332,6 @@
     <string name="nc_pip_microphone_unmute">فعّل الميكروفون</string>
     <string name="nc_plain_old_messages">الرسائل</string>
     <string name="nc_privacy">الخصوصية</string>
-    <string name="nc_proceed">مواصلة</string>
     <string name="nc_profile_personal_info_title">المعلومات الشخصية</string>
     <string name="nc_promote">ترقية لمشرف</string>
     <string name="nc_public_call">محادثة عمومية جديدة</string>
@@ -496,8 +486,6 @@
     <string name="nc_voice_message_missing_audio_permission">الإذن لتسجيل الصوت لازمٌ</string>
     <string name="nc_voice_message_slide_to_cancel">« إسحب للإلغاء</string>
     <string name="nc_webinar">ويبنار</string>
-    <string name="nc_wrong_link">رابط المحادثة غير صالح</string>
-    <string name="nc_wrong_password">كلمة سرية خاطئة</string>
     <string name="nc_yes">نعم</string>
     <string name="next_week">الأسبوع القادم</string>
     <string name="no_phone_book_integration_due_to_permissions">لا ارتباط لرقم الهاتف بسبب أذونات ناقصة</string>

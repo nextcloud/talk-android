@@ -54,7 +54,6 @@
     <string name="nc_call_button_content_description_hangup">Serra</string>
     <string name="nc_call_incoming">IN INTRADA</string>
     <string name="nc_call_name">Nùmene resonada</string>
-    <string name="nc_call_name_is_same">Su nùmene chi as postu est su pròpiu de cussu chi ddoe est giai</string>
     <string name="nc_call_ringing">SONENDE</string>
     <string name="nc_call_state_in_call">%1$s in mutida</string>
     <string name="nc_call_state_with_phone">%1$s cun telèfonu</string>
@@ -89,12 +88,10 @@
     <string name="nc_configure_cert_auth">Seletziona tzertificadu autenticatzione</string>
     <string name="nc_connecting_call">Connetende …</string>
     <string name="nc_contacts_done">Fatu</string>
-    <string name="nc_conversation_link">Ligòngiu resonada</string>
     <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
     <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
     <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>
     <string name="nc_conversation_not_found">Resonada no agatada</string>
-    <string name="nc_conversation_settings">Cunfiguratzione de sa resonada</string>
     <string name="nc_conversations_empty">Intra in una resonada o cumintza•nde una noa</string>
     <string name="nc_conversations_empty_details">Saluda a sa gente!</string>
     <string name="nc_copy_message">Còpia</string>
@@ -135,8 +132,6 @@
     <string name="nc_expire_message_one_hour">1 ora</string>
     <string name="nc_expire_message_one_week">1 chida</string>
     <string name="nc_external_server_failed">Errore in su recùperu de sa cunfiguratzione</string>
-    <string name="nc_failed_signaling_settings">Su serbidore de destinatzione non permitit de intrare in una resonada pùblica cun telèfonos mòbiles. Podes proare a intrare tràmite navigadore in sa rete.</string>
-    <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>
     <string name="nc_federation_invitation_accept">Atzeta</string>
     <string name="nc_federation_invitation_reject">Refuda</string>
     <string name="nc_file_browser_back">In segus</string>
@@ -158,8 +153,6 @@
     <string name="nc_guest_access_share_link">Cumpartzi su ligòngiu de sa resonada</string>
     <string name="nc_important_conversation">Tzarrada importante</string>
     <string name="nc_important_conversation_desc">Is notìficas in custa resonada ant a ignorare sa cunfiguratzione No istorbare</string>
-    <string name="nc_join_via_link">Intra cun unu ligòngiu</string>
-    <string name="nc_join_via_web">Intra dae sa rete</string>
     <string name="nc_last_moderator">Depes promòvere un\'àtera persona chi moderet antis de lassare %1$s</string>
     <string name="nc_last_moderator_title">No at fatu a lassare sa resonada</string>
     <string name="nc_last_modified">%1$s | Ùrtima modìfica: %2$s</string>
@@ -184,7 +177,6 @@
     <string name="nc_never">Mai aderidu</string>
     <string name="nc_new_conversation">Resonada noa</string>
     <string name="nc_new_messages">Messàgios non lèghidos</string>
-    <string name="nc_new_password">Crae noa</string>
     <string name="nc_nick_guest">Persone invitada</string>
     <string name="nc_no">No</string>
     <string name="nc_no_proxy">Perunu proxy</string>
@@ -201,13 +193,11 @@
     <string name="nc_owner">Mere</string>
     <string name="nc_participants">Partetzipantes</string>
     <string name="nc_participants_add">Aguinghe partetzipantes</string>
-    <string name="nc_password">Crae</string>
     <string name="nc_permissions_settings">Aberi sa cunfiguratzione</string>
     <string name="nc_phone_book_integration_account_not_found">Contu no agatadu</string>
     <string name="nc_phone_book_integration_chat_via">Tzarrada via %s</string>
     <string name="nc_plain_old_messages">Messàgios</string>
     <string name="nc_privacy">Riservadesa</string>
-    <string name="nc_proceed">Sighi</string>
     <string name="nc_profile_personal_info_title">Informatziones personales</string>
     <string name="nc_promote">Approva a moderadore</string>
     <string name="nc_public_call">Tzarrada pùblica noa</string>
@@ -337,8 +327,6 @@
     <string name="nc_voice_message_missing_audio_permission">Permissu pro registratziones àudio rechertu</string>
     <string name="nc_voice_message_slide_to_cancel">« Iscurre pro annullare</string>
     <string name="nc_webinar">Seminàriu in lìnia</string>
-    <string name="nc_wrong_link">Ligòngiu de tzarrada non vàlidu</string>
-    <string name="nc_wrong_password">Crae isballiada</string>
     <string name="nc_yes">Eja</string>
     <string name="next_week">Sa chida chi benit</string>
     <string name="no_phone_book_integration_due_to_permissions">Peruna integratzione de nùmeru de telèfonu pro farta de permissos</string>

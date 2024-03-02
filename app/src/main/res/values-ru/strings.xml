@@ -84,7 +84,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Переключить видео на себя</string>
     <string name="nc_call_incoming">Входящий</string>
     <string name="nc_call_name">Наименование беседы</string>
-    <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
     <string name="nc_call_notifications">Уведомления о звонках</string>
     <string name="nc_call_raised_hand">%1$s поднял руку</string>
     <string name="nc_call_reconnecting">Переподключение …</string>
@@ -125,11 +124,9 @@
     <string name="nc_connecting_call">Соединение…</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_description">Описание беседы</string>
-    <string name="nc_conversation_link">Ссылка на беседу</string>
     <string name="nc_conversation_menu_conversation_info">Информация о беседе</string>
     <string name="nc_conversation_menu_video_call">Видеозвонок</string>
     <string name="nc_conversation_menu_voice_call">Голосовой вызов</string>
-    <string name="nc_conversation_settings">Параметры обсуждения</string>
     <string name="nc_conversations_empty">Присоединитесь к обсуждению или же начните новое</string>
     <string name="nc_conversations_empty_details">Поприветствуйте своих друзей и коллег.</string>
     <string name="nc_copy_message">Копировать</string>
@@ -178,8 +175,6 @@
     <string name="nc_expire_messages">Истечение срока действия сообщений в чате</string>
     <string name="nc_expire_messages_explanation">Сообщения чата могут быть удалены по истечении определенного времени. Примечание: Файлы, переданные в чате, не будут удалены для владельца, но больше не будут доступны в беседе.</string>
     <string name="nc_external_server_failed">Не удалось получить параметры сигнализации</string>
-    <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте присоединиться к беседе используя веб-браузер.</string>
-    <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
     <string name="nc_federation_invitation_accept">Принять</string>
     <string name="nc_federation_invitation_reject">Отклонить</string>
     <string name="nc_file_browser_back">Назад</string>
@@ -211,8 +206,6 @@
     <string name="nc_important_conversation">Важное обсуждение</string>
     <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над настройками режима \"Не беспокоить\" </string>
     <string name="nc_invitations">Приглашения</string>
-    <string name="nc_join_via_link">Присоединиться по ссылке</string>
-    <string name="nc_join_via_web">Присоединиться через веб</string>
     <string name="nc_last_moderator">Перед выходом из обсуждения %1$s необходимо назначить нового модератора.</string>
     <string name="nc_last_moderator_title">Не удалось выйти из обсуждения</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
@@ -244,7 +237,6 @@
     <string name="nc_new_conversation">Новая беседа</string>
     <string name="nc_new_mention">Непрочитанные упоминания</string>
     <string name="nc_new_messages">Непрочитанные сообщения</string>
-    <string name="nc_new_password">Новый пароль</string>
     <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s недоступно (не установлено, либо использование приложения ограничено администратором)</string>
     <string name="nc_nick_guest">Гость</string>
     <string name="nc_no">Нет</string>
@@ -267,7 +259,6 @@
     <string name="nc_owner">Владелец</string>
     <string name="nc_participants">Участники</string>
     <string name="nc_participants_add">Добавить участников</string>
-    <string name="nc_password">Пароль</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
     <string name="nc_phone_book_integration_account_not_found">Учётная запись не найдена</string>
     <string name="nc_phone_book_integration_chat_via">Чат через %s</string>
@@ -275,7 +266,6 @@
     <string name="nc_pip_microphone_unmute">Включить микрофон</string>
     <string name="nc_plain_old_messages">Сообщения</string>
     <string name="nc_privacy">Конфиденциальность</string>
-    <string name="nc_proceed">Продолжить</string>
     <string name="nc_profile_personal_info_title">Личная информация</string>
     <string name="nc_promote">Назначить модератором</string>
     <string name="nc_public_call">Начать открытую беседу</string>
@@ -423,8 +413,6 @@
     <string name="nc_voice_message_missing_audio_permission">Требуется разрешение на аудиозапись</string>
     <string name="nc_voice_message_slide_to_cancel">« Сдвинуть для отмены</string>
     <string name="nc_webinar">Вебинар</string>
-    <string name="nc_wrong_link">Ссылка на беседу более не действительна</string>
-    <string name="nc_wrong_password">Неправильный пароль</string>
     <string name="nc_yes">Да</string>
     <string name="next_week">Следующая неделя</string>
     <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию номера телефона</string>

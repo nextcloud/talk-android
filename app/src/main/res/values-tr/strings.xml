@@ -92,7 +92,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Benim görüntüme geç</string>
     <string name="nc_call_incoming">GELEN</string>
     <string name="nc_call_name">Görüşme adı</string>
-    <string name="nc_call_name_is_same">Yazdığınız ad var olan ad ile aynı</string>
     <string name="nc_call_notifications">Çağrı bildirimleri</string>
     <string name="nc_call_raised_hand">%1$s elini kaldırdı</string>
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor…</string>
@@ -134,11 +133,9 @@
     <string name="nc_connecting_call">Bağlantı kuruluyor …</string>
     <string name="nc_contacts_done">Tamam</string>
     <string name="nc_conversation_description">Görüşme açıklaması</string>
-    <string name="nc_conversation_link">Görüşme bağlantısı</string>
     <string name="nc_conversation_menu_conversation_info">Görüşme bilgileri</string>
     <string name="nc_conversation_menu_video_call">Görüntülü çağrı</string>
     <string name="nc_conversation_menu_voice_call">Sesli çağrı</string>
-    <string name="nc_conversation_settings">Görüşme ayarları</string>
     <string name="nc_conversations_empty">Bir görüşmeye katılın ya da yeni bir görüşme başlatın</string>
     <string name="nc_conversations_empty_details">Tanıdık ve çalışma arkadaşlarınıza selam verin!</string>
     <string name="nc_copy_message">Kopyala</string>
@@ -219,8 +216,6 @@
     <string name="nc_expire_messages">Süreli sohbet iletileri</string>
     <string name="nc_expire_messages_explanation">Sohbet iletileri süresi belirli bir süre sonra dolacak şekilde ayarlanabilir. Not: Süresi dolan iletlerdeki dosyalar sahibi için silinmez, ancak artık sohbette paylaşılmaz.</string>
     <string name="nc_external_server_failed">İşaretleşme ayarları alınamadı</string>
-    <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı desteklemiyor. Görüşmeye tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
-    <string name="nc_failed_to_perform_operation">Ne yazık ki bir şeyler ters gitti!</string>
     <string name="nc_federation_invitation_accept">Kabul et</string>
     <string name="nc_federation_invitation_reject">Reddet</string>
     <string name="nc_file_browser_back">Geri</string>
@@ -255,8 +250,6 @@
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler Rahatsız Etmeyin ayarlarını değiştirecek</string>
     <string name="nc_invitations">Çağrılar</string>
-    <string name="nc_join_via_link">Bir bağlantı ile katıl</string>
-    <string name="nc_join_via_web">Site üzerinden katıl</string>
     <string name="nc_last_moderator">%1$s görüşmesinden ayrılabilmek için başka bir kullanıcıyı sorumluluğa yükseltmelisiniz.</string>
     <string name="nc_last_moderator_title">Görüşmeden ayrılınamadı</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
@@ -289,7 +282,6 @@
     <string name="nc_new_conversation">Yeni görüşme</string>
     <string name="nc_new_mention">Okunmamış anmalar</string>
     <string name="nc_new_messages">Okunmamış iletiler</string>
-    <string name="nc_new_password">Yeni parola</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s kullanılamıyor (kurulmamış ya da yönetici tarafından engellenmiş)</string>
     <string name="nc_nick_guest">Konuk</string>
     <string name="nc_no">Hayır</string>
@@ -316,7 +308,6 @@
     <string name="nc_owner">Sahip</string>
     <string name="nc_participants">Katılımcılar</string>
     <string name="nc_participants_add">Katılımcı ekle</string>
-    <string name="nc_password">Parola</string>
     <string name="nc_permissions_ask">İzinleri ayarla</string>
     <string name="nc_permissions_denied">Bazı izinler verilmemiş.</string>
     <string name="nc_permissions_rationale_dialog_title">Lütfen izinleri verin</string>
@@ -328,7 +319,6 @@
     <string name="nc_pip_microphone_unmute">Mikrofonu aç</string>
     <string name="nc_plain_old_messages">İletiler</string>
     <string name="nc_privacy">Gizlilik</string>
-    <string name="nc_proceed">İlerle</string>
     <string name="nc_profile_personal_info_title">Kişisel bilgiler</string>
     <string name="nc_promote">Sorumluluğa yükselt</string>
     <string name="nc_public_call">Herkese açık görüşme ekle</string>
@@ -482,8 +472,6 @@
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
     <string name="nc_webinar">İnternet sunumu</string>
-    <string name="nc_wrong_link">Görüşme bağlantısı geçersiz</string>
-    <string name="nc_wrong_password">Parola yanlış</string>
     <string name="nc_yes">Evet</string>
     <string name="next_week">Sonraki hafta</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>

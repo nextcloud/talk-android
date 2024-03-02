@@ -91,7 +91,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Přepnout na video sama sebe</string>
     <string name="nc_call_incoming">PŘÍCHOZÍ</string>
     <string name="nc_call_name">Název konverzace</string>
-    <string name="nc_call_name_is_same">Zadaný název je stejný jako ten stávající</string>
     <string name="nc_call_notifications">Upozornění na hovor</string>
     <string name="nc_call_raised_hand">%1$s se hlásí</string>
     <string name="nc_call_reconnecting">Znovunavazování spojení…</string>
@@ -133,11 +132,9 @@
     <string name="nc_connecting_call">Připojování…</string>
     <string name="nc_contacts_done">Hotovo</string>
     <string name="nc_conversation_description">Popis konverzace</string>
-    <string name="nc_conversation_link">Odkaz na konverzaci</string>
     <string name="nc_conversation_menu_conversation_info">Informace o konverzaci</string>
     <string name="nc_conversation_menu_video_call">Videohovor</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
-    <string name="nc_conversation_settings">Nastavení konverzace</string>
     <string name="nc_conversations_empty">Připojte se ke konverzaci, nebo začněte novou</string>
     <string name="nc_conversations_empty_details">Pozdravte své přátele a kolegy!</string>
     <string name="nc_copy_message">Zkopírovat</string>
@@ -199,8 +196,6 @@
     <string name="nc_expire_messages">Ukončit platnost zpráv v chatu</string>
     <string name="nc_expire_messages_explanation">Platnost zpráv v chatu je možné ukončit po uplynutí zadané doby. Pozn.: Soubory nasdílené v chatu nebudou vlastníkovi smazány, ale už nadále nebudou sdíleny v konverzaci.</string>
     <string name="nc_external_server_failed">Nepodařilo se získat nastavení signalizace</string>
-    <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování se k veřejným konverzacím prostřednictvím mobilních telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
-    <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
     <string name="nc_federation_invitation_accept">Přijmout</string>
     <string name="nc_federation_invitation_reject">Zamítnout</string>
     <string name="nc_file_browser_back">Zpět</string>
@@ -233,8 +228,6 @@
     <string name="nc_important_conversation">Důležitá konverzace</string>
     <string name="nc_important_conversation_desc">Upozornění v této konverzaci budou ignorovat režim Nerušit</string>
     <string name="nc_invitations">Pozvání</string>
-    <string name="nc_join_via_link">Připojit se přes odkaz</string>
-    <string name="nc_join_via_web">Připojit se přes web</string>
     <string name="nc_last_moderator">Než budete moci opustit %1$s, je třeba předat někomu roli moderátora.</string>
     <string name="nc_last_moderator_title">Konverzaci zatím nemůžete opustit</string>
     <string name="nc_last_modified">%1$s | Naposledy upraveno: %2$s</string>
@@ -267,7 +260,6 @@
     <string name="nc_new_conversation">Nová konverzace</string>
     <string name="nc_new_mention">Nepřečtená zmínění</string>
     <string name="nc_new_messages">Nepřečtené zprávy</string>
-    <string name="nc_new_password">Nové heslo</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s není k dispozici (nenainstalováno nebo administrativně omezen přístup k)</string>
     <string name="nc_nick_guest">Host</string>
     <string name="nc_no">Ne</string>
@@ -292,7 +284,6 @@
     <string name="nc_owner">Vlastník</string>
     <string name="nc_participants">Účastníci</string>
     <string name="nc_participants_add">Přidat účastníky</string>
-    <string name="nc_password">Heslo</string>
     <string name="nc_permissions_ask">Nastavit oprávnění</string>
     <string name="nc_permissions_denied">Některá oprávnění byla odepřena.</string>
     <string name="nc_permissions_rationale_dialog_title">Udělte oprávnění</string>
@@ -304,7 +295,6 @@
     <string name="nc_pip_microphone_unmute">Zapnout mikrofon</string>
     <string name="nc_plain_old_messages">Zprávy</string>
     <string name="nc_privacy">Soukromí</string>
-    <string name="nc_proceed">Pokračovat</string>
     <string name="nc_profile_personal_info_title">Osobní údaje</string>
     <string name="nc_promote">Povýšit na moderátora</string>
     <string name="nc_public_call">Nová veřejná konverzace</string>
@@ -454,8 +444,6 @@
     <string name="nc_voice_message_missing_audio_permission">Je zapotřebí oprávnění pro zaznamenávání zvuku</string>
     <string name="nc_voice_message_slide_to_cancel">« Zrušíte přejetím prstem</string>
     <string name="nc_webinar">Webinář</string>
-    <string name="nc_wrong_link">Odkaz na konverzaci není platný</string>
-    <string name="nc_wrong_password">Nesprávné heslo</string>
     <string name="nc_yes">Ano</string>
     <string name="next_week">Příští týden</string>
     <string name="no_phone_book_integration_due_to_permissions">Není možné propojit telefonní čísla, protože chybí potřebná oprávnění</string>

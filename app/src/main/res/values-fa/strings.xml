@@ -81,7 +81,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_name">نام مکالمه</string>
-    <string name="nc_call_name_is_same">نامی که وارد کردید با نام موجود یکسان است</string>
     <string name="nc_call_notifications">Call notifications</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
@@ -122,12 +121,10 @@
     <string name="nc_connecting_call">Connecting …</string>
     <string name="nc_contacts_done">انجام شد</string>
     <string name="nc_conversation_description">Conversation description</string>
-    <string name="nc_conversation_link">پیوند مکالمه</string>
     <string name="nc_conversation_menu_conversation_info">اطلاعات مکالمه</string>
     <string name="nc_conversation_menu_video_call">تماس تصویری</string>
     <string name="nc_conversation_menu_voice_call">تماس صوتی</string>
     <string name="nc_conversation_not_found">Conversation not found</string>
-    <string name="nc_conversation_settings">تنظیمات گفتگو</string>
     <string name="nc_conversations_empty">عضو یک گفتگو شوید یا یک گفتگو جدید شروع کنید</string>
     <string name="nc_conversations_empty_details">به رفقا و هم‌قطاران‌تان سلام کنید!</string>
     <string name="nc_copy_message">کپی کردن</string>
@@ -175,8 +172,7 @@
     <string name="nc_expire_messages">Expire chat messages</string>
     <string name="nc_expire_messages_explanation">Chat messages can be expired after a certain time. Note: Files shared in chat will not be deleted for the owner, but will no longer be shared in the conversation.</string>
     <string name="nc_external_server_failed">" دریافت  تنظیمات سیگنال نا‌موفق بود"</string>
-    <string name="nc_failed_signaling_settings">Target server does not support joining public conversations via mobile phones. You may attempt to join the conversation via web browser.</string>
-    <string name="nc_failed_to_perform_operation">با عرض پوزش، مشکلی پیش آمده</string>
+    <string name="nc_federation_invitation_accept">تایید</string>
     <string name="nc_federation_invitation_reject">رد کردن</string>
     <string name="nc_file_browser_back">بازگشت</string>
     <string name="nc_file_storage_permission">Permission for file access is required</string>
@@ -208,8 +204,6 @@
     <string name="nc_important_conversation">گفتگوی مهم</string>
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
     <string name="nc_invitations">دعوت ها</string>
-    <string name="nc_join_via_link">با یک پیوند ملحق شوید</string>
-    <string name="nc_join_via_web">از طریق وب ملحق شوید</string>
     <string name="nc_last_moderator">قبل از ترک ، باید یک مدیر جدید را تعیین کنید %1$s.</string>
     <string name="nc_last_moderator_title">نمی توان مکالمه را ترک کرد</string>
     <string name="nc_last_modified">تغییرات %1$s |  آخرین تغییرات: %2$s</string>
@@ -242,7 +236,6 @@
     <string name="nc_new_conversation">مکالمه جدید</string>
     <string name="nc_new_mention">Unread mentions</string>
     <string name="nc_new_messages">پیام‌های خوانده نشده</string>
-    <string name="nc_new_password">گذرواژه جدید</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s not available (not installed or restricted by admin)</string>
     <string name="nc_nick_guest">مهمان</string>
     <string name="nc_no">نه</string>
@@ -267,7 +260,6 @@
     <string name="nc_owner">مالک</string>
     <string name="nc_participants">شركت كنندگان</string>
     <string name="nc_participants_add">افزودن عضو</string>
-    <string name="nc_password">گذرواژه</string>
     <string name="nc_permissions_ask">Set permissions</string>
     <string name="nc_permissions_denied">Some permissions were denied.</string>
     <string name="nc_permissions_rationale_dialog_title">Please allow permissions</string>
@@ -279,7 +271,6 @@
     <string name="nc_pip_microphone_unmute">Enable microphone</string>
     <string name="nc_plain_old_messages">پیام ها</string>
     <string name="nc_privacy">حریم خصوصی</string>
-    <string name="nc_proceed">ادامه</string>
     <string name="nc_profile_personal_info_title">مشخصات شخصی</string>
     <string name="nc_promote">ترفیع به مدیر</string>
     <string name="nc_public_call">مکالمه عمومی جدید</string>
@@ -426,8 +417,6 @@
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="nc_webinar">وبینار</string>
-    <string name="nc_wrong_link">پیوند مکالمه معتبر نیست</string>
-    <string name="nc_wrong_password">کلمه عبور اشتباه</string>
     <string name="nc_yes">بله</string>
     <string name="next_week">هفتهٔ بعد</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>

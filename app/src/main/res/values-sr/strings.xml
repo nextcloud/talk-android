@@ -95,7 +95,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Пређи на сопствени видео</string>
     <string name="nc_call_incoming">ДОЛАЗНО</string>
     <string name="nc_call_name">Назив разговора</string>
-    <string name="nc_call_name_is_same">Име које сте унели је исто као и тренутно</string>
     <string name="nc_call_notifications">Обавештења позива</string>
     <string name="nc_call_raised_hand">%1$s је подигао руку</string>
     <string name="nc_call_reconnecting">Поновно повезивање ...</string>
@@ -139,12 +138,10 @@
     <string name="nc_connecting_call">Повезивање ..</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_description">Опис разговора</string>
-    <string name="nc_conversation_link">Веза ка разговору</string>
     <string name="nc_conversation_menu_conversation_info">Информације о разговору</string>
     <string name="nc_conversation_menu_video_call">Видео позив</string>
     <string name="nc_conversation_menu_voice_call">Аудио позив</string>
     <string name="nc_conversation_not_found">Разговор није нађен</string>
-    <string name="nc_conversation_settings">Подешавања разговора</string>
     <string name="nc_conversations_empty">Придружи се разговору или започни нови</string>
     <string name="nc_conversations_empty_details">Поздравите Ваше пријатеље и колеге!</string>
     <string name="nc_copy_message">Копија</string>
@@ -229,8 +226,6 @@
     <string name="nc_expire_messages">Истек чек порука</string>
     <string name="nc_expire_messages_explanation">Чет поруке могу да истекну након одређеног времена. Напомена: фајлови који су подељени у чету се неће обрисати за власника, али више неће бити дељени у разговору.</string>
     <string name="nc_external_server_failed">Грешка приликом дохватања подешавања сигнализирања</string>
-    <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним разговорима путем мобилног телефона. Можете пробати да се придружите разговору преко веб прегледача.</string>
-    <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
     <string name="nc_federation_invitation_accept">Прихвати</string>
     <string name="nc_federation_invitation_reject">Одбаци</string>
     <string name="nc_federation_invited_to_room">од %1$s са %2$s</string>
@@ -268,8 +263,6 @@
     <string name="nc_important_conversation">Битан разговор</string>
     <string name="nc_important_conversation_desc">Обавештења у овом разговору ће преиначити Не узнемиравај поставке.</string>
     <string name="nc_invitations">Позивнице</string>
-    <string name="nc_join_via_link">Придружи се преко везе</string>
-    <string name="nc_join_via_web">Придружи се преко веба</string>
     <string name="nc_last_moderator">Морате одредити новог модератора пре него што напустите %1$s.</string>
     <string name="nc_last_moderator_title">Не можете напустити разговор</string>
     <string name="nc_last_modified">%1$s | Последње измењено: %2$s</string>
@@ -302,7 +295,6 @@
     <string name="nc_new_conversation">Нови разговор</string>
     <string name="nc_new_mention">Непрочитана помињања</string>
     <string name="nc_new_messages">Непрочитане поруке</string>
-    <string name="nc_new_password">Нова лозинка</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s није доступно (није инсталирано или је ограничио админ)</string>
     <string name="nc_nick_guest">Гост</string>
     <string name="nc_no">Не</string>
@@ -329,7 +321,6 @@
     <string name="nc_owner">Власник</string>
     <string name="nc_participants">Учесници</string>
     <string name="nc_participants_add">Додај учеснике</string>
-    <string name="nc_password">Лозинка</string>
     <string name="nc_permissions_ask">Постави дозволе</string>
     <string name="nc_permissions_denied">Неке дозволе нису одобрене.</string>
     <string name="nc_permissions_rationale_dialog_title">Молимо вас да дате дозволе</string>
@@ -341,7 +332,6 @@
     <string name="nc_pip_microphone_unmute">Укључи микрофон</string>
     <string name="nc_plain_old_messages">Поруке</string>
     <string name="nc_privacy">Приватност</string>
-    <string name="nc_proceed">Настави</string>
     <string name="nc_profile_personal_info_title">Лични подаци</string>
     <string name="nc_promote">Унапреди у модератора</string>
     <string name="nc_public_call">Нови јавни разговор</string>
@@ -496,8 +486,6 @@
     <string name="nc_voice_message_missing_audio_permission">Потребна је дозвола за аудио снимање</string>
     <string name="nc_voice_message_slide_to_cancel">« Превуците да откажете</string>
     <string name="nc_webinar">Вебинар</string>
-    <string name="nc_wrong_link">Веза разговора није исправна</string>
-    <string name="nc_wrong_password">Погрешна лозинка</string>
     <string name="nc_yes">Да</string>
     <string name="next_week">Наредне недеље</string>
     <string name="no_phone_book_integration_due_to_permissions">Нема интеграције броја телефона јер недостају дозволе</string>
