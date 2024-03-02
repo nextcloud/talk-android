@@ -95,7 +95,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Wechseln Sie zum Eigenen Video</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
-    <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>
     <string name="nc_call_notifications">Anruf-Benachrichtigungen</string>
     <string name="nc_call_raised_hand">%1$s hat die Hand gehoben</string>
     <string name="nc_call_reconnecting">Verbinde erneut …</string>
@@ -139,12 +138,10 @@
     <string name="nc_connecting_call">Verbinde …</string>
     <string name="nc_contacts_done">Fertig</string>
     <string name="nc_conversation_description">Beschreibung der Unterhaltung</string>
-    <string name="nc_conversation_link">Unterhaltungs-Link</string>
     <string name="nc_conversation_menu_conversation_info">Unterhaltungs-Information</string>
     <string name="nc_conversation_menu_video_call">Videoanruf</string>
     <string name="nc_conversation_menu_voice_call">Sprachanruf</string>
     <string name="nc_conversation_not_found">Unterhaltung nicht gefunden</string>
-    <string name="nc_conversation_settings">Unterhaltungseinstellungen</string>
     <string name="nc_conversations_empty">Treten Sie einer Unterhaltung bei oder starten Sie eine neue</string>
     <string name="nc_conversations_empty_details">Begrüßen Sie Ihre Freunde und Kollegen!</string>
     <string name="nc_copy_message">Kopieren</string>
@@ -229,8 +226,6 @@
     <string name="nc_expire_messages">Chatnachrichten ablaufen lassen</string>
     <string name="nc_expire_messages_explanation">Chatnachrichten können nach einer bestimmten Zeit gelöscht werden. Hinweis: Im Chat freigegebene Dateien werden für den Besitzer nicht gelöscht, aber sie werden nicht mehr in der Unterhaltung freigegeben.</string>
     <string name="nc_external_server_failed">Konnte die Benachrichtigungseinstellungen nicht abrufen</string>
-    <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht, öffentlichen Unterhaltungen via Mobiltelefon beizutreten. Sie können versuchen, der Unterhaltung mit einem Internetbrowser beizutreten.</string>
-    <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
     <string name="nc_federation_invitation_accept">Annehmen</string>
     <string name="nc_federation_invitation_reject">Ablehnen</string>
     <string name="nc_federation_invited_to_room">von %1$s um %2$s</string>
@@ -268,8 +263,6 @@
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>
     <string name="nc_invitations">Einladungen</string>
-    <string name="nc_join_via_link">Über einen Link beitreten</string>
-    <string name="nc_join_via_web">Über das Internet beitreten</string>
     <string name="nc_last_moderator">Sie müssen einen neuen Moderator bestimmen, bevor Sie %1$s verlassen können.</string>
     <string name="nc_last_moderator_title">Unterhaltung konnte nicht verlassen werden</string>
     <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
@@ -302,7 +295,6 @@
     <string name="nc_new_conversation">Neue Unterhaltung</string>
     <string name="nc_new_mention">Ungelesene Erwähnungen</string>
     <string name="nc_new_messages">Ungelesene Nachrichten</string>
-    <string name="nc_new_password">Neues Passwort</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s nicht verfügbar (nicht installiert oder von der Administration eingeschränkt)</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nein</string>
@@ -329,7 +321,6 @@
     <string name="nc_owner">Besitzer</string>
     <string name="nc_participants">Teilnehmer</string>
     <string name="nc_participants_add">Teilnehmer hinzufügen</string>
-    <string name="nc_password">Passwort</string>
     <string name="nc_permissions_ask">Berechtigungen festlegen</string>
     <string name="nc_permissions_denied">Einige Berechtigungen wurden abgelehnt.</string>
     <string name="nc_permissions_rationale_dialog_title">Bitte alle Berechtigungen erteilen.</string>
@@ -341,7 +332,6 @@
     <string name="nc_pip_microphone_unmute">Mikrofon aktivieren</string>
     <string name="nc_plain_old_messages">Nachrichten</string>
     <string name="nc_privacy">Datenschutz</string>
-    <string name="nc_proceed">Fortsetzen</string>
     <string name="nc_profile_personal_info_title">Persönliche Informationen</string>
     <string name="nc_promote">Zum Moderator ernennen</string>
     <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
@@ -496,8 +486,6 @@
     <string name="nc_voice_message_missing_audio_permission">Erlaubnis für Audioaufnahmen ist erforderlich</string>
     <string name="nc_voice_message_slide_to_cancel">« Schieben zum Abbrechen</string>
     <string name="nc_webinar">Online-Seminar</string>
-    <string name="nc_wrong_link">Unterhaltungs-Link ist ungültig</string>
-    <string name="nc_wrong_password">Falsches Passwort</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Nächste Woche</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>

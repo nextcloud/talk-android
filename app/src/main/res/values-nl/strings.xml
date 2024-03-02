@@ -69,7 +69,6 @@
     <string name="nc_call_button_content_description_microphone">Microfoon omschakelen</string>
     <string name="nc_call_incoming">INKOMEND</string>
     <string name="nc_call_name">Gespreksnaam</string>
-    <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
     <string name="nc_call_notifications">Oproepmeldingen</string>
     <string name="nc_call_reconnecting">Opnieuw verbinden …</string>
     <string name="nc_call_ringing">BELLEN</string>
@@ -106,11 +105,9 @@
     <string name="nc_configure_cert_auth">Selecteer authenticatiecertificaat</string>
     <string name="nc_connecting_call">Verbinden …</string>
     <string name="nc_contacts_done">Gereed</string>
-    <string name="nc_conversation_link">Gesprekslink</string>
     <string name="nc_conversation_menu_conversation_info">Gespreksinformatie</string>
     <string name="nc_conversation_menu_video_call">Videogesprek</string>
     <string name="nc_conversation_menu_voice_call">Gesprek</string>
-    <string name="nc_conversation_settings">Gespreksinstellingen</string>
     <string name="nc_conversations_empty">Doe mee met een gesprek, of start een nieuw</string>
     <string name="nc_conversations_empty_details">Zeg hallo tegen je vrienden en collega\'s!</string>
     <string name="nc_copy_message">Kopie</string>
@@ -153,8 +150,6 @@
     <string name="nc_expire_message_one_hour">1 uur</string>
     <string name="nc_expire_message_one_week">1 week</string>
     <string name="nc_external_server_failed">Kon signaleringsinstellingen niet ophalen</string>
-    <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons. Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
-    <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
     <string name="nc_federation_invitation_accept">Accepteren</string>
     <string name="nc_federation_invitation_reject">Afkeuren</string>
     <string name="nc_file_browser_back">Terug</string>
@@ -180,8 +175,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
     <string name="nc_important_conversation_desc">Meldingen in dit gesprek negeren de Niet-Storen instellingen</string>
     <string name="nc_invitations">Uitnodigingen</string>
-    <string name="nc_join_via_link">Deelnemen via een link</string>
-    <string name="nc_join_via_web">Deelnemen via web</string>
     <string name="nc_last_moderator">Je moet eerst een nieuwe moderator kiezen voordat je het gesprek kan verlaten %1$s.</string>
     <string name="nc_last_moderator_title">Kon het gesprek niet verlaten</string>
     <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
@@ -212,7 +205,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_new_conversation">Nieuw gesprek</string>
     <string name="nc_new_mention">Ongelezen vermeldingen</string>
     <string name="nc_new_messages">Ongelezen berichten</string>
-    <string name="nc_new_password">Nieuw wachtwoord</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s niet beschikbaar (niet geïnstalleerd of beperkt door beheerder)</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nee</string>
@@ -232,7 +224,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_owner">Eigenaar</string>
     <string name="nc_participants">Deelnemers</string>
     <string name="nc_participants_add">Deelnemers toevoegen</string>
-    <string name="nc_password">Wachtwoord</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
     <string name="nc_phone_book_integration_account_not_found">Account niet gevonden</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
@@ -240,7 +231,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_pip_microphone_unmute">Microfoon inschakelen</string>
     <string name="nc_plain_old_messages">Berichten</string>
     <string name="nc_privacy">Privacy</string>
-    <string name="nc_proceed">Verder</string>
     <string name="nc_profile_personal_info_title">Persoonlijke info</string>
     <string name="nc_promote">Promoveer tot moderator</string>
     <string name="nc_public_call">Nieuw openbaar gesprek</string>
@@ -379,8 +369,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_voice_message_missing_audio_permission">Toestemming voor audio-opname is vereist</string>
     <string name="nc_voice_message_slide_to_cancel">« Schuiven om te annuleren</string>
     <string name="nc_webinar">Webinar</string>
-    <string name="nc_wrong_link">Gesprekslink is niet geldig</string>
-    <string name="nc_wrong_password">Onjuist wachtwoord</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Volgende week</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonnummer-integratie wegens ontbrekende machtigingen</string>

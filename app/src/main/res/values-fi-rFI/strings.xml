@@ -61,7 +61,6 @@
     <string name="nc_call_button_content_description_hangup">Lopeta</string>
     <string name="nc_call_incoming">SAAPUVA</string>
     <string name="nc_call_name">Keskustelun nimi</string>
-    <string name="nc_call_name_is_same">Kirjoittamasi nimi on sama kuin olemassa oleva</string>
     <string name="nc_call_notifications">Puheluilmoitukset</string>
     <string name="nc_call_reconnecting">Yhdistetään uudelleen …</string>
     <string name="nc_call_ringing">SOITETAAN</string>
@@ -90,12 +89,10 @@
     <string name="nc_configure_cert_auth">Valitse tunnistautumisvarmenne</string>
     <string name="nc_connecting_call">Yhdistetään…</string>
     <string name="nc_contacts_done">Valmis</string>
-    <string name="nc_conversation_link">Keskustelulinkki</string>
     <string name="nc_conversation_menu_conversation_info">Keskustelun tiedot</string>
     <string name="nc_conversation_menu_video_call">Videopuhelu</string>
     <string name="nc_conversation_menu_voice_call">Äänipuhelu</string>
     <string name="nc_conversation_not_found">Keskustelua ei löydy</string>
-    <string name="nc_conversation_settings">Keskustelun asetukset</string>
     <string name="nc_conversations_empty">Liity keskusteluun tai aloita uusi</string>
     <string name="nc_conversations_empty_details">Sano hei ystävillesi ja työkavereillesi!</string>
     <string name="nc_copy_message">Kopioi</string>
@@ -136,7 +133,7 @@
     <string name="nc_expire_message_one_hour">1 tunti</string>
     <string name="nc_expire_message_one_week">1 viikko</string>
     <string name="nc_expire_messages_explanation">Keskusteluviestit on mahdollista vanhentaa tietyn ajan jälkeen. Huomio: Keskustelussa jaetut tiedostot eivät poistu omistajalta, mutta ne eivät ole enää jaettu keskustelussa.</string>
-    <string name="nc_failed_to_perform_operation">Pahoittelut, jokin meni vikaan!</string>
+    <string name="nc_federation_invitation_accept">Hyväksy</string>
     <string name="nc_federation_invitation_reject">Hylkää</string>
     <string name="nc_file_browser_back">Takaisin</string>
     <string name="nc_formatted_message_you">Sinä: %1$s</string>
@@ -160,8 +157,6 @@
     <string name="nc_important_conversation">Tärkeä keskustelu</string>
     <string name="nc_important_conversation_desc">Tämän keskustelun ilmoitukset eivät noudata Älä häiritse -asetuksia</string>
     <string name="nc_invitations">Kutsut</string>
-    <string name="nc_join_via_link">Liity linkillä</string>
-    <string name="nc_join_via_web">Liity verkon kautta</string>
     <string name="nc_last_moderator_title">Ei voitu poistua keskustelusta</string>
     <string name="nc_last_modified">%1$s | Viimeksi muokattu: %2$s</string>
     <string name="nc_leave">Poistu keskustelusta</string>
@@ -190,7 +185,6 @@
     <string name="nc_new_conversation">Uusi keskustelu</string>
     <string name="nc_new_mention">Lukemattomat maininnat</string>
     <string name="nc_new_messages">Lukemattomat viestit</string>
-    <string name="nc_new_password">Uusi salasana</string>
     <string name="nc_nick_guest">Vieras</string>
     <string name="nc_no">Ei</string>
     <string name="nc_no_proxy">Ei välityspalvelinta</string>
@@ -208,14 +202,12 @@
     <string name="nc_owner">Omistaja</string>
     <string name="nc_participants">Osallistujat</string>
     <string name="nc_participants_add">Lisää osallistujat</string>
-    <string name="nc_password">Salasana</string>
     <string name="nc_permissions_settings">Avaa asetukset</string>
     <string name="nc_phone_book_integration_account_not_found">Tiliä ei löydy</string>
     <string name="nc_pip_microphone_mute">Mykistä mikrofoni</string>
     <string name="nc_pip_microphone_unmute">Käytä mikrofonia</string>
     <string name="nc_plain_old_messages">Viestit</string>
     <string name="nc_privacy">Yksityisyys</string>
-    <string name="nc_proceed">Jatka</string>
     <string name="nc_profile_personal_info_title">Henkilökohtaiset tiedot</string>
     <string name="nc_promote">Ylennä moderaattoriksi</string>
     <string name="nc_public_call">Uusi julkinen keskustelu</string>
@@ -337,8 +329,6 @@
     <string name="nc_voice_message_missing_audio_permission">Oikeus äänen tallentamiseen vaaditaan</string>
     <string name="nc_voice_message_slide_to_cancel">« Liu\'uta peruuttaaksesi</string>
     <string name="nc_webinar">Webinaari</string>
-    <string name="nc_wrong_link">Keskustelulinkki ei ole kelvollinen</string>
-    <string name="nc_wrong_password">Väärä salasana</string>
     <string name="nc_yes">Kyllä</string>
     <string name="next_week">Seuraava viikko</string>
     <string name="oneHour">1 tunti</string>

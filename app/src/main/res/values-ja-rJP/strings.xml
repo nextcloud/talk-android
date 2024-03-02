@@ -65,7 +65,6 @@
     <string name="nc_call_button_content_description_hangup">通話終了</string>
     <string name="nc_call_incoming">呼び出し中</string>
     <string name="nc_call_name">会話名</string>
-    <string name="nc_call_name_is_same">入力した名前は既存の名前と同じです</string>
     <string name="nc_call_notifications">通話通知</string>
     <string name="nc_call_reconnecting">再接続中 …</string>
     <string name="nc_call_ringing">呼び出し中</string>
@@ -102,11 +101,9 @@
     <string name="nc_configure_cert_auth">認証証明書を選択</string>
     <string name="nc_connecting_call">接続中 …</string>
     <string name="nc_contacts_done">完了</string>
-    <string name="nc_conversation_link">会話リンク</string>
     <string name="nc_conversation_menu_conversation_info">会話情報</string>
     <string name="nc_conversation_menu_video_call">ビデオ通話</string>
     <string name="nc_conversation_menu_voice_call">音声通話</string>
-    <string name="nc_conversation_settings">会話設定</string>
     <string name="nc_conversations_empty">会話に参加するか、新しいのを開始</string>
     <string name="nc_conversations_empty_details">友達や同僚に挨拶しましょう！</string>
     <string name="nc_copy_message">コピー</string>
@@ -149,8 +146,6 @@
     <string name="nc_expire_message_one_week">1週間</string>
     <string name="nc_expire_messages_explanation">チャットメッセージは、一定時間経過後に期限切れにすることができます。注意: チャットで共有されたファイルは、ファイル所有者は削除されませんが、会話では共有されなくなります。</string>
     <string name="nc_external_server_failed">シグナリング設定を取得できませんでした</string>
-    <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。Webブラウザー経由で会話への参加を試みてください。</string>
-    <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
     <string name="nc_federation_invitation_accept">承諾</string>
     <string name="nc_federation_invitation_reject">拒否</string>
     <string name="nc_file_browser_back">戻る</string>
@@ -175,8 +170,6 @@
     <string name="nc_important_conversation">重要な会議</string>
     <string name="nc_important_conversation_desc">この会話の通知設定は、取り込み中設定を上書きします</string>
     <string name="nc_invitations">招待</string>
-    <string name="nc_join_via_link">トークに参加する</string>
-    <string name="nc_join_via_web">ウェブ経由で参加</string>
     <string name="nc_last_moderator">%1$sを退出する前に、新しいモデレータを昇格させる必要があります。</string>
     <string name="nc_last_moderator_title">会話を退出できませんでした</string>
     <string name="nc_last_modified">%1$s最終更新:%2$s</string>
@@ -206,7 +199,6 @@
     <string name="nc_new_conversation">新しい会話</string>
     <string name="nc_new_mention">未読の返信</string>
     <string name="nc_new_messages">未読のメッセージ</string>
-    <string name="nc_new_password">新しいパスワード</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s利用できません（インストールされていないか、管理者によって制限されています）</string>
     <string name="nc_nick_guest">ゲスト</string>
     <string name="nc_no">いいえ</string>
@@ -226,7 +218,6 @@
     <string name="nc_owner">オーナー</string>
     <string name="nc_participants">参加者</string>
     <string name="nc_participants_add">参加を追加</string>
-    <string name="nc_password">パスワード</string>
     <string name="nc_permissions_settings">設定を開く</string>
     <string name="nc_phone_book_integration_account_not_found">アカウントが見つかりません</string>
     <string name="nc_phone_book_integration_chat_via">%sとチャット</string>
@@ -234,7 +225,6 @@
     <string name="nc_pip_microphone_unmute">マイクを有効にする</string>
     <string name="nc_plain_old_messages">メッセージ</string>
     <string name="nc_privacy">プライバシー</string>
-    <string name="nc_proceed">続行する</string>
     <string name="nc_profile_personal_info_title">パーソナル情報</string>
     <string name="nc_promote">モデレータに昇格</string>
     <string name="nc_public_call">新規公開会話</string>
@@ -373,8 +363,6 @@
     <string name="nc_voice_message_missing_audio_permission">音声の録音を許可する権限が必要です</string>
     <string name="nc_voice_message_slide_to_cancel">« スライドしてキャンセル</string>
     <string name="nc_webinar">ウェビナー</string>
-    <string name="nc_wrong_link">会話リンクが無効です</string>
-    <string name="nc_wrong_password">パスワードが間違っています</string>
     <string name="nc_yes">はい</string>
     <string name="next_week">来週</string>
     <string name="no_phone_book_integration_due_to_permissions">利用権限がないため、電話番号統合ができません。</string>

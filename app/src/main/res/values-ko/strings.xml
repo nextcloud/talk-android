@@ -75,7 +75,6 @@
     <string name="nc_call_button_content_description_microphone">마이크 전환</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">셀프 영상으로 전환</string>
     <string name="nc_call_name">대화명</string>
-    <string name="nc_call_name_is_same">입력한 이름이 이미 사용 중입니다</string>
     <string name="nc_call_notifications">전화 알림</string>
     <string name="nc_call_reconnecting">재연결 ...</string>
     <string name="nc_call_timeout">45초 동안 응답이 없다면 다시 시도하기를 눌러주십시오.</string>
@@ -108,11 +107,9 @@
     <string name="nc_configure_cert_auth">인증서 선택</string>
     <string name="nc_connecting_call">연결 중 …</string>
     <string name="nc_contacts_done">완료</string>
-    <string name="nc_conversation_link">대화 링크</string>
     <string name="nc_conversation_menu_conversation_info">대화 정보</string>
     <string name="nc_conversation_menu_video_call">영상 통화</string>
     <string name="nc_conversation_menu_voice_call">음성 통화</string>
-    <string name="nc_conversation_settings">대화 환경설정</string>
     <string name="nc_conversations_empty">대화에 참가하거나 새 대화 시작</string>
     <string name="nc_conversations_empty_details">여러분의 친구들과 동료들에게 인사하세요!</string>
     <string name="nc_copy_message">복사</string>
@@ -157,8 +154,6 @@
     <string name="nc_expire_messages">채팅 메시지 만료</string>
     <string name="nc_expire_messages_explanation">채팅 메시지가 특정 시간 이후에 만료될 수 있습니다. 참고: 채팅에서 공유된 파일들은 소유자에게서 삭제 되지 않지만, 대화에서 더이상 공유되지 않습니다.</string>
     <string name="nc_external_server_failed">신호 설정을 가져오지 못함</string>
-    <string name="nc_failed_signaling_settings">대상 서버는 휴대폰을 통한 공개 대화 참가를 지원하지 않습니다. 하지만 웹 브라우저를 통해 대화에 참가하려고 할 수 있습니다.</string>
-    <string name="nc_failed_to_perform_operation">죄송합니다, 무언가 잘못되었습니다!</string>
     <string name="nc_federation_invitation_accept">수락</string>
     <string name="nc_federation_invitation_reject">거부</string>
     <string name="nc_file_browser_back">뒤로</string>
@@ -187,8 +182,6 @@
     <string name="nc_guest_access_share_link">대화 링크 공유</string>
     <string name="nc_hint_enter_a_message">메시지 입력…</string>
     <string name="nc_important_conversation">중요한 대화</string>
-    <string name="nc_join_via_link">링크로 참가</string>
-    <string name="nc_join_via_web">웹에서 참가</string>
     <string name="nc_last_moderator">%1$s(을)를 떠나기 전에 새로운 중재자를 임명해야 합니다.</string>
     <string name="nc_last_moderator_title">대화를 떠날 수 없습니다.</string>
     <string name="nc_last_modified">%1$s | 최종 수정: %2$s</string>
@@ -219,7 +212,6 @@
     <string name="nc_new_conversation">새 대화</string>
     <string name="nc_new_mention">읽지 않은 언급</string>
     <string name="nc_new_messages">읽지 않은 메시지</string>
-    <string name="nc_new_password">새 암호</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s을(를) 사용할 수 없음 (설치되지 않았거나 관리자에 의해 제한됨)</string>
     <string name="nc_nick_guest">손님</string>
     <string name="nc_no">아니요</string>
@@ -242,7 +234,6 @@
     <string name="nc_owner">Owner</string>
     <string name="nc_participants">참가자</string>
     <string name="nc_participants_add">참가자 추가</string>
-    <string name="nc_password">암호</string>
     <string name="nc_permissions_settings">설정 열기</string>
     <string name="nc_phone_book_integration_account_not_found">계정을 찾을 수 없습니다.</string>
     <string name="nc_phone_book_integration_chat_via">%s을 통한 채팅</string>
@@ -250,7 +241,6 @@
     <string name="nc_pip_microphone_unmute">마이크 활성화</string>
     <string name="nc_plain_old_messages">메시지</string>
     <string name="nc_privacy">개인 정보 취급 방침</string>
-    <string name="nc_proceed">진행</string>
     <string name="nc_profile_personal_info_title">개인 정보</string>
     <string name="nc_promote">중재자 권한 부여</string>
     <string name="nc_public_call">새로운 공적 대화</string>
@@ -392,8 +382,6 @@
     <string name="nc_voice_message_missing_audio_permission">오디오 녹음을 위하여 권한이 필요합니다.</string>
     <string name="nc_voice_message_slide_to_cancel">« 취소하려면 슬라이드하세요.</string>
     <string name="nc_webinar">Webinar</string>
-    <string name="nc_wrong_link">무효한 대화 링크</string>
-    <string name="nc_wrong_password">잘못된 암호</string>
     <string name="nc_yes">예</string>
     <string name="next_week">다음주</string>
     <string name="no_phone_book_integration_due_to_permissions">권한 없음으로 인하여 전화 번호를 통합하지 않습니다.</string>

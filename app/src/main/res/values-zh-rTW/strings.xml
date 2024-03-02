@@ -95,7 +95,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">切換到自己的視訊</string>
     <string name="nc_call_incoming">來電</string>
     <string name="nc_call_name">對話名稱</string>
-    <string name="nc_call_name_is_same">名稱已存在</string>
     <string name="nc_call_notifications">通話通告</string>
     <string name="nc_call_raised_hand">%1$s 舉手</string>
     <string name="nc_call_reconnecting">正在重新連線 …</string>
@@ -139,12 +138,10 @@
     <string name="nc_connecting_call">連線中 …</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_description">對話描述</string>
-    <string name="nc_conversation_link">對話的連結</string>
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
     <string name="nc_conversation_menu_video_call">視訊通話</string>
     <string name="nc_conversation_menu_voice_call">語音通話</string>
     <string name="nc_conversation_not_found">找不到對話</string>
-    <string name="nc_conversation_settings">對話設定</string>
     <string name="nc_conversations_empty">加入一個對話或者開一個新的</string>
     <string name="nc_conversations_empty_details">跟大家打個招呼！</string>
     <string name="nc_copy_message">複製</string>
@@ -229,8 +226,6 @@
     <string name="nc_expire_messages">過期聊天訊息</string>
     <string name="nc_expire_messages_explanation">聊天訊息可能會在一定時間後逾期。注意: 在聊天中分享的檔案不會為所有者刪除，但將不再於對話中被分享。</string>
     <string name="nc_external_server_failed">汲取訊號設定失敗</string>
-    <string name="nc_failed_signaling_settings">目的伺服器不支援經由行動電話加入公開交談</string>
-    <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>
     <string name="nc_federation_invitation_accept">接受</string>
     <string name="nc_federation_invitation_reject">回絕</string>
     <string name="nc_federation_invited_to_room">從 %1$s 於 %2$s</string>
@@ -268,8 +263,6 @@
     <string name="nc_important_conversation">重要交談</string>
     <string name="nc_important_conversation_desc">在這個交談的通知將會覆蓋不要打擾的設定</string>
     <string name="nc_invitations">邀請</string>
-    <string name="nc_join_via_link">已一個連結加入</string>
-    <string name="nc_join_via_web">經由網頁加入</string>
     <string name="nc_last_moderator">在您離開 %1$s 之前您需要推舉一位新的主持人。</string>
     <string name="nc_last_moderator_title">無法離開對話</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
@@ -302,7 +295,6 @@
     <string name="nc_new_conversation">新對話</string>
     <string name="nc_new_mention">未讀的提及</string>
     <string name="nc_new_messages">未讀訊息</string>
-    <string name="nc_new_password">新密碼</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s 不可用（尚未安裝或被管理員限制使用）</string>
     <string name="nc_nick_guest">訪客</string>
     <string name="nc_no">否</string>
@@ -329,7 +321,6 @@
     <string name="nc_owner">擁有者</string>
     <string name="nc_participants">參與者</string>
     <string name="nc_participants_add">新增成員</string>
-    <string name="nc_password">密碼</string>
     <string name="nc_permissions_ask">設定權限</string>
     <string name="nc_permissions_denied">部份權限被拒絕。</string>
     <string name="nc_permissions_rationale_dialog_title">請允許權限</string>
@@ -341,7 +332,6 @@
     <string name="nc_pip_microphone_unmute">啟用麥克風</string>
     <string name="nc_plain_old_messages">訊息</string>
     <string name="nc_privacy">隱私全條款</string>
-    <string name="nc_proceed">進行</string>
     <string name="nc_profile_personal_info_title">個人資訊</string>
     <string name="nc_promote">授予主持人資格</string>
     <string name="nc_public_call">新的公開對話</string>
@@ -496,8 +486,6 @@
     <string name="nc_voice_message_missing_audio_permission">需要錄音權限</string>
     <string name="nc_voice_message_slide_to_cancel">« 滑動取消</string>
     <string name="nc_webinar">網路研討會</string>
-    <string name="nc_wrong_link">對話連結無效</string>
-    <string name="nc_wrong_password">密碼錯誤</string>
     <string name="nc_yes">是</string>
     <string name="next_week">下週</string>
     <string name="no_phone_book_integration_due_to_permissions">因為缺少權限而無法整合電話號碼</string>

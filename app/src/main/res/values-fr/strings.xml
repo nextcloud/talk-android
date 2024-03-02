@@ -93,7 +93,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_name">Nom de la conversation</string>
-    <string name="nc_call_name_is_same">Le nom que vous avez entré est le même que celui existant</string>
     <string name="nc_call_notifications">Notifications d\'appel</string>
     <string name="nc_call_raised_hand">%1$s a levé la main</string>
     <string name="nc_call_reconnecting">Reconnexion…</string>
@@ -136,12 +135,10 @@
     <string name="nc_connecting_call">Connexion…</string>
     <string name="nc_contacts_done">Terminé</string>
     <string name="nc_conversation_description">Description de conversation</string>
-    <string name="nc_conversation_link">Lien de la conversation</string>
     <string name="nc_conversation_menu_conversation_info">Infos sur la conversation</string>
     <string name="nc_conversation_menu_video_call">Appel vidéo</string>
     <string name="nc_conversation_menu_voice_call">Appel vocal</string>
     <string name="nc_conversation_not_found">Discussion non trouvée</string>
-    <string name="nc_conversation_settings">Paramètres de la conversation</string>
     <string name="nc_conversations_empty">Rejoignez une conversation ou démarrez-en une nouvelle</string>
     <string name="nc_conversations_empty_details">Dites bonjour à vos amis et collègues !</string>
     <string name="nc_copy_message">Copier</string>
@@ -203,8 +200,6 @@
     <string name="nc_expire_messages">Expiration pour les messages</string>
     <string name="nc_expire_messages_explanation">Les messages instantanés peuvent expirer après un certain temps. Note : les fichiers partagés dans la discussion ne seront pas effacé pour leur propriétaire, mais ils ne seront plus partagés dans la conversation.</string>
     <string name="nc_external_server_failed">Échec de l\'extraction des paramètres de signalisation</string>
-    <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile. Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
-    <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
     <string name="nc_federation_invitation_accept">Accepter</string>
     <string name="nc_federation_invitation_reject">Rejeter</string>
     <string name="nc_federation_invited_to_room">de %1$s à %2$s</string>
@@ -240,8 +235,6 @@
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent sur les paramètres « Ne Pas Déranger ».</string>
     <string name="nc_invitations">Invitations</string>
-    <string name="nc_join_via_link">Joindre via un lien</string>
-    <string name="nc_join_via_web">Joindre via le web</string>
     <string name="nc_last_moderator">Vous devez désigner un nouveau modérateur avant de quitter %1$s.</string>
     <string name="nc_last_moderator_title">Impossible de quitter la conversation</string>
     <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
@@ -274,7 +267,6 @@
     <string name="nc_new_conversation">Nouvelle conversation</string>
     <string name="nc_new_mention">Mentions non lues</string>
     <string name="nc_new_messages">Messages non lus</string>
-    <string name="nc_new_password">Nouveau mot de passe</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s non disponible (non installé ou restreint par l\'administrateur) </string>
     <string name="nc_nick_guest">Invité</string>
     <string name="nc_no">Non</string>
@@ -299,7 +291,6 @@
     <string name="nc_owner">Propriétaire</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Ajouter des participants</string>
-    <string name="nc_password">Mot de passe</string>
     <string name="nc_permissions_ask">Définir les autorisations</string>
     <string name="nc_permissions_denied">Certaines autorisations n\'ont pas été accordées.</string>
     <string name="nc_permissions_rationale_dialog_title">Merci de donner les autorisations</string>
@@ -311,7 +302,6 @@
     <string name="nc_pip_microphone_unmute">Activer le micro</string>
     <string name="nc_plain_old_messages">Messages</string>
     <string name="nc_privacy">Vie privée</string>
-    <string name="nc_proceed">Continuer</string>
     <string name="nc_profile_personal_info_title">Informations personnelles</string>
     <string name="nc_promote">Promouvoir comme modérateur</string>
     <string name="nc_public_call">Nouvelle conversation publique</string>
@@ -461,8 +451,6 @@
     <string name="nc_voice_message_missing_audio_permission">La permission d\'enregistrer l\'audio est requise</string>
     <string name="nc_voice_message_slide_to_cancel">« Balayer pour annuler</string>
     <string name="nc_webinar">Webinaire</string>
-    <string name="nc_wrong_link">Le lien de conversation n\'est pas valide.</string>
-    <string name="nc_wrong_password">Mot de passe incorrect</string>
     <string name="nc_yes">Oui</string>
     <string name="next_week">Semaine suivante</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>

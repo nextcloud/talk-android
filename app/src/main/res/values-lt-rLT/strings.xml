@@ -49,7 +49,6 @@
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
     <string name="nc_call_button_content_description_hangup">Padėti ragelį</string>
     <string name="nc_call_name">Pokalbio pavadinimas</string>
-    <string name="nc_call_name_is_same">Jūsų įvestas vardas yra toks pats kaip ir esamas</string>
     <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
     <string name="nc_call_timeout">Per 45 sekundes jokio atsakymo, bakstelėkite norėdami bandyti dar kartą</string>
     <string name="nc_cancel">Atsisakyti</string>
@@ -73,11 +72,9 @@
     <string name="nc_configure_cert_auth">Pasirinkti tapatybės nustatymo liudijimą</string>
     <string name="nc_connecting_call">Jungiamasi…</string>
     <string name="nc_contacts_done">Atlikta</string>
-    <string name="nc_conversation_link">Pokalbio nuoroda</string>
     <string name="nc_conversation_menu_conversation_info">Pokalbio informacija</string>
     <string name="nc_conversation_menu_video_call">Vaizdo skambutis</string>
     <string name="nc_conversation_menu_voice_call">Balso skambutis</string>
-    <string name="nc_conversation_settings">Pokalbio nustatymai</string>
     <string name="nc_conversations_empty">Prisijunkite prie pokalbio arba pradėkite naują</string>
     <string name="nc_conversations_empty_details">Pasisveikinkite su savo draugais ir kolegomis!</string>
     <string name="nc_copy_message">Kopijuoti</string>
@@ -112,8 +109,6 @@
     <string name="nc_expire_message_one_hour">1 valanda</string>
     <string name="nc_expire_message_one_week">1 savaitė</string>
     <string name="nc_external_server_failed">Nepavyko gauti signalizavimo nustatymų</string>
-    <string name="nc_failed_signaling_settings">Paskirties serveris nepalaiko prisijungimą prie viešų pokalbių per mobiliuosius telefonus. Galite bandyti prisijungti prie pokalbio per saityno naršyklę.</string>
-    <string name="nc_failed_to_perform_operation">Atleiskite, kažkas nutiko!</string>
     <string name="nc_federation_invitation_accept">Priimti</string>
     <string name="nc_federation_invitation_reject">Atmesti</string>
     <string name="nc_file_browser_back">Atgal</string>
@@ -131,7 +126,6 @@
     <string name="nc_guest_access_password_weak_alert_title">Silpnas slaptažodis</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
     <string name="nc_invitations">Pakvietimai</string>
-    <string name="nc_join_via_link">Prisijungti per nuorodą</string>
     <string name="nc_last_moderator">Prieš išeidami iš %1$s, turite paaukštinti naują moderatorių.</string>
     <string name="nc_last_moderator_title">Nepavyko išeiti iš pokalbio</string>
     <string name="nc_last_modified">%1$s | Paskutinį kartą modifikuota: %2$s</string>
@@ -149,7 +143,6 @@
     <string name="nc_moderator">Moderatorius</string>
     <string name="nc_new_conversation">Naujas pokalbis</string>
     <string name="nc_new_messages">Neskaitytos žinutės</string>
-    <string name="nc_new_password">Naujas slaptažodis</string>
     <string name="nc_nick_guest">Svečias</string>
     <string name="nc_no">Ne</string>
     <string name="nc_no_proxy">Be įgaliotojo serverio</string>
@@ -165,14 +158,12 @@
     <string name="nc_owner">Savininkas</string>
     <string name="nc_participants">Dalyviai</string>
     <string name="nc_participants_add">Pridėti dalyvius</string>
-    <string name="nc_password">Slaptažodis</string>
     <string name="nc_permissions_settings">Atverti nustatymus</string>
     <string name="nc_phone_book_integration_account_not_found">Paskyra nerasta</string>
     <string name="nc_pip_microphone_mute">Išjungti mikrofoną</string>
     <string name="nc_pip_microphone_unmute">Įjungti mikrofoną</string>
     <string name="nc_plain_old_messages">Žinutės</string>
     <string name="nc_privacy">Privatumas</string>
-    <string name="nc_proceed">Tęsti</string>
     <string name="nc_profile_personal_info_title">Asmeninė informacija</string>
     <string name="nc_promote">Paaukštinti į moderatorius</string>
     <string name="nc_public_call">Naujas viešas pokalbis</string>
@@ -270,8 +261,6 @@
     <string name="nc_voice_message_hold_to_record_info">Laikykite, kad įrašinėtumėte, atleiskite, kad išsiųstumėte.</string>
     <string name="nc_voice_message_slide_to_cancel">« Perbraukite norėdami atsisakyti</string>
     <string name="nc_webinar">Internetinis seminaras</string>
-    <string name="nc_wrong_link">Pokalbio nuoroda negalioja</string>
-    <string name="nc_wrong_password">Neteisingas slaptažodis</string>
     <string name="nc_yes">Taip</string>
     <string name="next_week">Kita savaitė</string>
     <string name="oneHour">1 valanda</string>

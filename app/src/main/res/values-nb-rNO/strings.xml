@@ -95,7 +95,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Bytt til selvvideo</string>
     <string name="nc_call_incoming">INNKOMMENDE</string>
     <string name="nc_call_name">Samtalenavn</string>
-    <string name="nc_call_name_is_same">Navnet du valgte eksisterer allerede</string>
     <string name="nc_call_notifications">Varsler om anrop</string>
     <string name="nc_call_raised_hand">%1$s rekte opp hånden</string>
     <string name="nc_call_reconnecting">Kobler til igjen...</string>
@@ -139,12 +138,10 @@
     <string name="nc_connecting_call">Kobler til...</string>
     <string name="nc_contacts_done">Ferdig</string>
     <string name="nc_conversation_description">Samtalebeskrivelse</string>
-    <string name="nc_conversation_link">Samtale lenke</string>
     <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
     <string name="nc_conversation_menu_video_call">Videosamtale</string>
     <string name="nc_conversation_menu_voice_call">Samtale</string>
     <string name="nc_conversation_not_found">Samtalen ble ikke funnet</string>
-    <string name="nc_conversation_settings">Samtale innstillinger</string>
     <string name="nc_conversations_empty">Ta del i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Si hei til venner og kolleger!</string>
     <string name="nc_copy_message">Kopier</string>
@@ -229,8 +226,6 @@
     <string name="nc_expire_messages">Utløpe chatmeldinger</string>
     <string name="nc_expire_messages_explanation">Chatmeldinger kan utløpe etter en viss tid. Merk: filer som deles i chat, slettes ikke for eieren, men deles ikke lenger i samtalen.</string>
     <string name="nc_external_server_failed">Feilet ved henting av settinger for signalering</string>
-    <string name="nc_failed_signaling_settings">Målserveren støtter ikke å delta i offentlige samtaler via mobiltelefoner. Du kan prøve å bli med i samtalen via nettleseren.</string>
-    <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
     <string name="nc_federation_invitation_accept">Aksepter</string>
     <string name="nc_federation_invitation_reject">Avvis</string>
     <string name="nc_federation_invited_to_room">fra %1$s på %2$s</string>
@@ -268,8 +263,6 @@
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_important_conversation_desc">Varsler i denne samtalen overstyrer innstillingene for Ikke forstyrr</string>
     <string name="nc_invitations">Invitasjoner</string>
-    <string name="nc_join_via_link">Bli med via en lenke</string>
-    <string name="nc_join_via_web">Bli med via nett</string>
     <string name="nc_last_moderator">Du må utnevne en ny moderator før du kan forlate %1$s.</string>
     <string name="nc_last_moderator_title">Kunne ikke forlate samtalen</string>
     <string name="nc_last_modified">%1$s | Sist endret: %2$s</string>
@@ -302,7 +295,6 @@
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_new_mention">Uleste nevner</string>
     <string name="nc_new_messages">Uleste meldinger</string>
-    <string name="nc_new_password">Nytt passord</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ikke tilgjengelig (ikke installert eller begrenset av admin)</string>
     <string name="nc_nick_guest">Gjest</string>
     <string name="nc_no">Nei</string>
@@ -329,7 +321,6 @@
     <string name="nc_owner">Eier</string>
     <string name="nc_participants">Deltakere</string>
     <string name="nc_participants_add">Legg til deltager</string>
-    <string name="nc_password">Passord</string>
     <string name="nc_permissions_ask">Angi rettigheter</string>
     <string name="nc_permissions_denied">Noen rettigheter ble nektet.</string>
     <string name="nc_permissions_rationale_dialog_title">Vennligst tillat rettigheter</string>
@@ -341,7 +332,6 @@
     <string name="nc_pip_microphone_unmute">Aktiver mikrofon</string>
     <string name="nc_plain_old_messages">Meldinger</string>
     <string name="nc_privacy">Personvern</string>
-    <string name="nc_proceed">Fortsett</string>
     <string name="nc_profile_personal_info_title">Personlig informasjon</string>
     <string name="nc_promote">Gi moderatorstatus</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
@@ -496,8 +486,6 @@
     <string name="nc_voice_message_missing_audio_permission">Tillatelse til lydopptak kreves</string>
     <string name="nc_voice_message_slide_to_cancel">« Skyv for å avbryte</string>
     <string name="nc_webinar">Webinar</string>
-    <string name="nc_wrong_link">Samtale lenke er ikke gyldig</string>
-    <string name="nc_wrong_password">Feil passord</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Neste uke</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegrasjon på grunn av manglende rettigheter</string>

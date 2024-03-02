@@ -95,7 +95,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_name">Conversation name</string>
-    <string name="nc_call_name_is_same">The name you entered is the same as the existing one</string>
     <string name="nc_call_notifications">Call notifications</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
@@ -139,12 +138,10 @@
     <string name="nc_connecting_call">Connecting …</string>
     <string name="nc_contacts_done">Done</string>
     <string name="nc_conversation_description">Conversation description</string>
-    <string name="nc_conversation_link">Conversation link</string>
     <string name="nc_conversation_menu_conversation_info">Conversation info</string>
     <string name="nc_conversation_menu_video_call">Video call</string>
     <string name="nc_conversation_menu_voice_call">Voice call</string>
     <string name="nc_conversation_not_found">Conversation not found</string>
-    <string name="nc_conversation_settings">Conversation settings</string>
     <string name="nc_conversations_empty">Join a conversation or start a new one</string>
     <string name="nc_conversations_empty_details">Say hi to your friends and colleagues!</string>
     <string name="nc_copy_message">Copy</string>
@@ -229,8 +226,6 @@
     <string name="nc_expire_messages">Expire chat messages</string>
     <string name="nc_expire_messages_explanation">Chat messages can be expired after a certain time. Note: Files shared in chat will not be deleted for the owner, but will no longer be shared in the conversation.</string>
     <string name="nc_external_server_failed">Failed to fetch signaling settings</string>
-    <string name="nc_failed_signaling_settings">Target server does not support joining public conversations via mobile phones. You may attempt to join the conversation via web browser.</string>
-    <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
     <string name="nc_federation_invitation_accept">Accept</string>
     <string name="nc_federation_invitation_reject">Reject</string>
     <string name="nc_federation_invited_to_room">from %1$s at %2$s</string>
@@ -268,8 +263,6 @@
     <string name="nc_important_conversation">Important conversation</string>
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
     <string name="nc_invitations">Invitations</string>
-    <string name="nc_join_via_link">Join with a link</string>
-    <string name="nc_join_via_web">Join via web</string>
     <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>
     <string name="nc_last_moderator_title">Could not leave conversation</string>
     <string name="nc_last_modified">%1$s | Last modified: %2$s</string>
@@ -302,7 +295,6 @@
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_new_mention">Unread mentions</string>
     <string name="nc_new_messages">Unread messages</string>
-    <string name="nc_new_password">New password</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s not available (not installed or restricted by admin)</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_no">No</string>
@@ -329,7 +321,6 @@
     <string name="nc_owner">Owner</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Add participants</string>
-    <string name="nc_password">Password</string>
     <string name="nc_permissions_ask">Set permissions</string>
     <string name="nc_permissions_denied">Some permissions were denied.</string>
     <string name="nc_permissions_rationale_dialog_title">Please allow permissions</string>
@@ -341,7 +332,6 @@
     <string name="nc_pip_microphone_unmute">Enable microphone</string>
     <string name="nc_plain_old_messages">Messages</string>
     <string name="nc_privacy">Privacy</string>
-    <string name="nc_proceed">Proceed</string>
     <string name="nc_profile_personal_info_title">Personal Info</string>
     <string name="nc_promote">Promote to moderator</string>
     <string name="nc_public_call">New public conversation</string>
@@ -496,8 +486,6 @@
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="nc_webinar">Webinar</string>
-    <string name="nc_wrong_link">Conversation link is not valid</string>
-    <string name="nc_wrong_password">Wrong password</string>
     <string name="nc_yes">Yes</string>
     <string name="next_week">Next week</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
