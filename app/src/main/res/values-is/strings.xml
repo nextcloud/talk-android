@@ -45,7 +45,6 @@
     <string name="nc_biometric_unlock">Aflæsa  %1$s</string>
     <string name="nc_call_button_content_description_hangup">Hang up</string>
     <string name="nc_call_name">Heiti samtals</string>
-    <string name="nc_call_name_is_same">Nafnið sem þú settir inn er það sama og það sem fyrir er</string>
     <string name="nc_call_unknown">%s símtal</string>
     <string name="nc_cancel">Hætta við</string>
     <string name="nc_capabilities_failed">Mistókst að sækja getuupplýsingar, hætti</string>
@@ -69,12 +68,10 @@
     <string name="nc_configure_cert_auth">Veldu skilríki fyrir auðkenningu</string>
     <string name="nc_connecting_call">Tengist ...</string>
     <string name="nc_contacts_done">Lokið</string>
-    <string name="nc_conversation_link">Samskiptatengill</string>
     <string name="nc_conversation_menu_conversation_info">Upplýsingar um samtal</string>
     <string name="nc_conversation_menu_video_call">Myndsímtal</string>
     <string name="nc_conversation_menu_voice_call">Raddsímtal</string>
     <string name="nc_conversation_not_found">Samtal fannst ekki</string>
-    <string name="nc_conversation_settings">Conversation settings</string>
     <string name="nc_conversations_empty">Taktu þátt í samtali eða byrjaðu nýtt samtal</string>
     <string name="nc_conversations_empty_details">Segðu hæ við vini þína og samstarfsmenn!</string>
     <string name="nc_copy_message">Afrita</string>
@@ -110,7 +107,6 @@
     <string name="nc_expire_message_one_hour">1 klukkustund</string>
     <string name="nc_expire_message_one_week">1 week</string>
     <string name="nc_external_server_failed">Mistókst að sækja stillingar merkjasendinga</string>
-    <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
     <string name="nc_federation_invitation_accept">Samþykkja</string>
     <string name="nc_federation_invitation_reject">Hafna</string>
     <string name="nc_file_browser_back">Til baka</string>
@@ -130,7 +126,6 @@
     <string name="nc_guest_access_resend_invitations">Resend invitations</string>
     <string name="nc_guest_access_share_link">Share conversation link</string>
     <string name="nc_invitations">Boðskort</string>
-    <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
     <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>
     <string name="nc_last_moderator_title">Gat ekki hætt í samtali</string>
     <string name="nc_last_modified">%1$s | Síðast breytt: %2$s</string>
@@ -149,7 +144,6 @@
     <string name="nc_never">Skráði sig aldrei</string>
     <string name="nc_new_conversation">Nýtt samtal</string>
     <string name="nc_new_messages">Ólesin skilaboð</string>
-    <string name="nc_new_password">Nýtt lykilorð</string>
     <string name="nc_nick_guest">Gestur</string>
     <string name="nc_no">Nei</string>
     <string name="nc_no_proxy">Enginn milliþjónn</string>
@@ -165,13 +159,11 @@
     <string name="nc_owner">Eigandi</string>
     <string name="nc_participants">Þátttakendur</string>
     <string name="nc_participants_add">Bæta við þátttakanda</string>
-    <string name="nc_password">Lykilorð</string>
     <string name="nc_permissions_settings">Opna stillingar</string>
     <string name="nc_phone_book_integration_account_not_found">Notandaaðgangur fannst ekki</string>
     <string name="nc_phone_book_integration_chat_via">Spjalla gegnum %s</string>
     <string name="nc_plain_old_messages">Skilaboð</string>
     <string name="nc_privacy">Gagnaleynd</string>
-    <string name="nc_proceed">Halda áfram</string>
     <string name="nc_promote">Gera að umsjónarmanni</string>
     <string name="nc_public_call">Nýtt opinbert samtal</string>
     <string name="nc_public_call_explanation">Opinber samtöl gera þér kleift að bjóða fólki utan kerfisins með sérstaklega útbúnum tenglum.</string>
@@ -260,8 +252,6 @@
     <string name="nc_upload_in_progess">Sendi inn</string>
     <string name="nc_user">Notandi</string>
     <string name="nc_webinar">Webinar</string>
-    <string name="nc_wrong_link">Samskiptatengill er ekki gildur</string>
-    <string name="nc_wrong_password">Rangt lykilorð</string>
     <string name="nc_yes">Já</string>
     <string name="next_week">Næsta viku</string>
     <string name="oneHour">1 klukkustund</string>

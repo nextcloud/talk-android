@@ -44,7 +44,6 @@
     <string name="nc_allow_guests">Tillad gæster</string>
     <string name="nc_biometric_unlock">Lås op %1$s</string>
     <string name="nc_call_name">Samtalenavn</string>
-    <string name="nc_call_name_is_same">Navnet du har indtastet er ens med det eksisterende navn</string>
     <string name="nc_call_timeout">Intet respons i 45 sekunder, rør skærmen for at forsøge igen</string>
     <string name="nc_cancel">Annuller</string>
     <string name="nc_capabilities_failed">Anskaffelse af evner fejlede, annullerer</string>
@@ -70,12 +69,10 @@
     <string name="nc_configure_cert_auth">Vælg godkendelsescertifikat</string>
     <string name="nc_connecting_call">Forbinder ...</string>
     <string name="nc_contacts_done">Færdig</string>
-    <string name="nc_conversation_link">Samtalelink</string>
     <string name="nc_conversation_menu_conversation_info">Samtaleinfo</string>
     <string name="nc_conversation_menu_video_call">Videoopkald</string>
     <string name="nc_conversation_menu_voice_call">Stemmeopkald</string>
     <string name="nc_conversation_not_found">Samtalen blev ikke fundet</string>
-    <string name="nc_conversation_settings">Samtale indstillinger</string>
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
     <string name="nc_copy_message">Kopiér</string>
@@ -109,8 +106,6 @@
     <string name="nc_expire_message_one_hour">1 time</string>
     <string name="nc_expire_message_one_week">1 uge</string>
     <string name="nc_external_server_failed">Anskaffelse af signaleringsindstillinger fejlede</string>
-    <string name="nc_failed_signaling_settings">Serveren understøtter ikke deltagelse i offentlige samtaler over mobil telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
-    <string name="nc_failed_to_perform_operation">Noget gik galt, undskyld!</string>
     <string name="nc_federation_invitation_accept">Accepter</string>
     <string name="nc_federation_invitation_reject">Afvis</string>
     <string name="nc_file_browser_back">Tilbage</string>
@@ -128,8 +123,6 @@
     <string name="nc_guest_access_password_weak_alert_title">Svagt password</string>
     <string name="nc_important_conversation">Vigtig samtale</string>
     <string name="nc_important_conversation_desc">notifikationer under denne samtale vil ignorere Forstyr ikke indstillinger</string>
-    <string name="nc_join_via_link">Deltag via link</string>
-    <string name="nc_join_via_web">Deltag via web</string>
     <string name="nc_last_moderator">Du skal udnævne en ny moderator før du kan forlade %1$s.</string>
     <string name="nc_last_moderator_title">Kunne ikke forlade samtalen</string>
     <string name="nc_last_modified">%1$s| Sidst ændret: %2$s</string>
@@ -148,7 +141,6 @@
     <string name="nc_never">Aldrig ansluttet</string>
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_new_messages">Ulæste beskedder</string>
-    <string name="nc_new_password">Ny adgangskode</string>
     <string name="nc_nick_guest">Gæst</string>
     <string name="nc_no">Nej</string>
     <string name="nc_no_proxy">Ikke proxy</string>
@@ -165,12 +157,10 @@
     <string name="nc_owner">Ejer</string>
     <string name="nc_participants">Deltagere</string>
     <string name="nc_participants_add">Tilføj deltagere</string>
-    <string name="nc_password">Adgangskode</string>
     <string name="nc_permissions_settings">Indstillinger</string>
     <string name="nc_phone_book_integration_account_not_found">Konto blev ikke fundet</string>
     <string name="nc_plain_old_messages">Beskeder</string>
     <string name="nc_privacy">Privatliv</string>
-    <string name="nc_proceed">Fortsæt</string>
     <string name="nc_profile_personal_info_title">Personlige oplysninger</string>
     <string name="nc_promote">Forfrem til moderator</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
@@ -268,8 +258,6 @@
     <string name="nc_upload_picture_from_cam">Tag et billede</string>
     <string name="nc_user">ruger</string>
     <string name="nc_webinar">Webinar</string>
-    <string name="nc_wrong_link">Samtale link er ikke gyldigt</string>
-    <string name="nc_wrong_password">Forkert adgangskode</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Næste uge</string>
     <string name="oneHour">1 time</string>

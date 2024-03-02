@@ -74,7 +74,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Превключване към самозснемане на видео</string>
     <string name="nc_call_incoming">ВХОДЯЩИ</string>
     <string name="nc_call_name">Име на разговор</string>
-    <string name="nc_call_name_is_same">Името, което сте въвели, е същото като съществуващото</string>
     <string name="nc_call_notifications">Известия за обаждане</string>
     <string name="nc_call_raised_hand">%1$s вдигна ръка</string>
     <string name="nc_call_reconnecting">Повторно свързване …</string>
@@ -112,12 +111,10 @@
     <string name="nc_configure_cert_auth">Изберете сертификат за удостоверяване</string>
     <string name="nc_connecting_call">Свързване …</string>
     <string name="nc_contacts_done">Готово</string>
-    <string name="nc_conversation_link">Връзка за разговор</string>
     <string name="nc_conversation_menu_conversation_info">Информация за разговор</string>
     <string name="nc_conversation_menu_video_call">Видео разговор</string>
     <string name="nc_conversation_menu_voice_call">Гласово обаждане</string>
     <string name="nc_conversation_not_found">Разговорът не е намерен</string>
-    <string name="nc_conversation_settings">Настройки за разговор</string>
     <string name="nc_conversations_empty">Присъединяване към разговор или започване на нов</string>
     <string name="nc_conversations_empty_details">Поздравете приятелите и колегите си!</string>
     <string name="nc_copy_message">Копиране</string>
@@ -163,8 +160,6 @@
     <string name="nc_expire_messages">Изтичащи съобщения в чата</string>
     <string name="nc_expire_messages_explanation">Съобщенията в чата могат да изтекат след определено време. Забележка: Файловете, споделени в чата, няма да бъдат изтрити за собственика, но повече няма да бъдат споделяни в разговора.</string>
     <string name="nc_external_server_failed">Извличането на настройките за сигнализиране не беше успешно</string>
-    <string name="nc_failed_signaling_settings">Целевият сървър не поддържа присъединяване към обществени разговори чрез мобилни телефони. Може да опитате присъединяване към разговора чрез уеб браузър.</string>
-    <string name="nc_failed_to_perform_operation">Съжалявам нещо се обърка!</string>
     <string name="nc_federation_invitation_accept">Приемам</string>
     <string name="nc_federation_invitation_reject">Отхвърляне</string>
     <string name="nc_file_browser_back">Назад</string>
@@ -195,8 +190,6 @@
     <string name="nc_hint_enter_a_message">Въвеждане на съобщение …</string>
     <string name="nc_important_conversation">Важен разговор</string>
     <string name="nc_important_conversation_desc">Известията в този разговор ще отменят настройките „Не безпокойте“</string>
-    <string name="nc_join_via_link">Присъединяване с линк</string>
-    <string name="nc_join_via_web">Присъединяване чрез мрежата</string>
     <string name="nc_last_moderator">Трябва да предложите нов модератор, преди да можете да напуснете%1$s.</string>
     <string name="nc_last_moderator_title">Не можете да напуснете разговора</string>
     <string name="nc_last_modified">%1$s Последна промяна: %2$s</string>
@@ -227,7 +220,6 @@
     <string name="nc_new_conversation">Нов разговор</string>
     <string name="nc_new_mention">Непрочетени споменавания</string>
     <string name="nc_new_messages">Непрочетени съобщения.</string>
-    <string name="nc_new_password">Нова парола</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s не е наличен (не е инсталиран или е ограничен от администратора)</string>
     <string name="nc_nick_guest">Гост</string>
     <string name="nc_no">Не</string>
@@ -250,7 +242,6 @@
     <string name="nc_owner">Създател</string>
     <string name="nc_participants">Участници</string>
     <string name="nc_participants_add">Добавяне на участници</string>
-    <string name="nc_password">Парола</string>
     <string name="nc_permissions_settings">Отваряне на настройките</string>
     <string name="nc_phone_book_integration_account_not_found">Няма намерен профил</string>
     <string name="nc_phone_book_integration_chat_via">Чат чрез %s</string>
@@ -258,7 +249,6 @@
     <string name="nc_pip_microphone_unmute">Активиране на микрофона</string>
     <string name="nc_plain_old_messages">Съобщения</string>
     <string name="nc_privacy">Защита на лични данни</string>
-    <string name="nc_proceed">Proceed</string>
     <string name="nc_profile_personal_info_title">Лични данни</string>
     <string name="nc_promote">Повишаване до модератор</string>
     <string name="nc_public_call">Нов публичен разговор</string>
@@ -403,8 +393,6 @@
     <string name="nc_voice_message_missing_audio_permission">Нужно е право за аудио запис </string>
     <string name="nc_voice_message_slide_to_cancel">«Плъзнете, за да отмените</string>
     <string name="nc_webinar">Уебинар</string>
-    <string name="nc_wrong_link">Невалидна връзка за разговор </string>
-    <string name="nc_wrong_password">Грешна парола</string>
     <string name="nc_yes">Да</string>
     <string name="next_week">Следваща седмица</string>
     <string name="no_phone_book_integration_due_to_permissions">Няма интеграция на телефонен номер поради липсващи права</string>

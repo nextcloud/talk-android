@@ -55,7 +55,6 @@
     <string name="nc_call_button_content_description_hangup">Κλείσιμο τηλεφώνου</string>
     <string name="nc_call_incoming">ΕΙΣΕΡΧΟΜΕΝΗ</string>
     <string name="nc_call_name">Όνομα συνομιλίας</string>
-    <string name="nc_call_name_is_same">Το όνομα που εισάγατε είναι το ίδιο με ένα υπάρχον</string>
     <string name="nc_call_reconnecting">Επανασύνδεση ...</string>
     <string name="nc_call_ringing">ΚΛΗΣΗ</string>
     <string name="nc_call_state_in_call">%1$s σε κλήση</string>
@@ -91,12 +90,10 @@
     <string name="nc_configure_cert_auth">Επιλογή πιστοποιητικού πιστοποίησης</string>
     <string name="nc_connecting_call">Σύνδεση …</string>
     <string name="nc_contacts_done">Ολοκληρώθηκε</string>
-    <string name="nc_conversation_link">Σύνδεσμος συνομιλίας</string>
     <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>
     <string name="nc_conversation_menu_video_call">Κλήση βίντεο</string>
     <string name="nc_conversation_menu_voice_call">Κλήση ήχου</string>
     <string name="nc_conversation_not_found">Η συζήτηση δεν βρέθηκε</string>
-    <string name="nc_conversation_settings">Ρυθμίσεις συνομιλίας</string>
     <string name="nc_conversations_empty">Συμμετέχετε σε συνομιλία ή ξεκινήστε μια νέα</string>
     <string name="nc_conversations_empty_details">Πείτε γειά σε φίλους και συνεργάτες!</string>
     <string name="nc_copy_message">Αντιγραφή</string>
@@ -139,8 +136,8 @@
     <string name="nc_expire_message_one_hour">1 ώρα</string>
     <string name="nc_expire_message_one_week">1 εβδομάδα</string>
     <string name="nc_external_server_failed">Αποτυχία λήψης ρυθμίσεων σήματος</string>
-    <string name="nc_failed_signaling_settings">Ο υπόψη διακομιστής δεν υποστηρίζει την σύνδεση στις δημόσιες συζητήσεις από κινητά τηλέφωνα. Προσπαθήστε να συνδεθείτε μέσω φυλλομετρητή.</string>
-    <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>
+    <string name="nc_federation_invitation_accept">Αποδοχή</string>
+    <string name="nc_federation_invitation_reject">Απόρριψη</string>
     <string name="nc_file_browser_back">Πίσω</string>
     <string name="nc_following_link">Χρήστης από δημόσιο σύνδεσμο</string>
     <string name="nc_formatted_message_you">Εσείς: %1$s</string>
@@ -162,8 +159,6 @@
     <string name="nc_important_conversation">Σημαντική συνομιλία</string>
     <string name="nc_important_conversation_desc">Οι Ειδοποιήσεις σε αυτή την συνομιλία θα παρακάμψουν τις ρυθμίσεις Μην ενοχλείτε</string>
     <string name="nc_invitations">Προσκλήσεις</string>
-    <string name="nc_join_via_link">Συμμετοχή με σύνδεσμο</string>
-    <string name="nc_join_via_web">Συμμετοχή μέσω ιστού</string>
     <string name="nc_last_moderator">Πρέπει να προάγεται νέο συντονιστή πρίν αποχωρήσετε %1$s.</string>
     <string name="nc_last_moderator_title">Δεν μπόρεσε να αποχωρήση από την συνομιλία</string>
     <string name="nc_last_modified">%1$s Τελευταία τροποποίηση %2$s</string>
@@ -189,7 +184,6 @@
     <string name="nc_never">Δεν ξανασυνδέθηκε</string>
     <string name="nc_new_conversation">Νέα συνομιλία</string>
     <string name="nc_new_messages">Μη αναγνωσμένα μηνύματα</string>
-    <string name="nc_new_password">Νέο συνθηματικό</string>
     <string name="nc_nextcloud_talk_app_not_installed">Το %1$s δεν είναι διαθέσιμο (δεν έχει εγκατασταθεί ή έχει απαγορευθεί από τον διαχειριστή)</string>
     <string name="nc_nick_guest">Επισκέπτης</string>
     <string name="nc_no">Όχι</string>
@@ -208,13 +202,11 @@
     <string name="nc_owner">Ιδιοκτήτης</string>
     <string name="nc_participants">Συμμετέχοντες</string>
     <string name="nc_participants_add">Προσθήκη συμμετεχόντων</string>
-    <string name="nc_password">Συνθηματικό</string>
     <string name="nc_permissions_settings">Άνοιγμα ρυθμίσεων</string>
     <string name="nc_phone_book_integration_account_not_found">Δεν βρέθηκε λογαριασμός</string>
     <string name="nc_phone_book_integration_chat_via">Συνομιλία μέσω %s</string>
     <string name="nc_plain_old_messages">Μηνύματα</string>
     <string name="nc_privacy">Ιδιωτικότητα</string>
-    <string name="nc_proceed">Συνέχεια</string>
     <string name="nc_profile_personal_info_title">Προσωπικές πληροφορίες</string>
     <string name="nc_promote">Προαγωγή από συντονιστή</string>
     <string name="nc_public_call">Νέα δημόσια συνομιλία</string>
@@ -346,8 +338,6 @@
     <string name="nc_voice_message_missing_audio_permission">Απαιτούνται δικαιώματα για ηχογράφηση</string>
     <string name="nc_voice_message_slide_to_cancel">« Σύρετε για ακύρωση</string>
     <string name="nc_webinar">Webinar</string>
-    <string name="nc_wrong_link">Μη έγκυρος σύνδεσμος συνομιλίας</string>
-    <string name="nc_wrong_password">Λανθασμένο συνθηματικό</string>
     <string name="nc_yes">Ναι</string>
     <string name="next_week">Επόμενη εβδομάδα</string>
     <string name="no_phone_book_integration_due_to_permissions">Δεν υπάρχει ενσωμάτωση αριθμού τηλεφώνου λόγω έλλειψης δικαιωμάτων</string>

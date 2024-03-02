@@ -57,7 +57,6 @@
     <string name="nc_call_button_content_description_hangup">Poklopi</string>
     <string name="nc_call_incoming">DOLAZNI</string>
     <string name="nc_call_name">Naziv razgovora</string>
-    <string name="nc_call_name_is_same">Uneseno ime jednako je postojećem</string>
     <string name="nc_call_reconnecting">Ponovno povezivanje …</string>
     <string name="nc_call_ringing">ZVONI</string>
     <string name="nc_call_state_in_call">%1$s u pozivu</string>
@@ -93,11 +92,9 @@
     <string name="nc_configure_cert_auth">Odaberi vjerodajnicu za autentifikaciju</string>
     <string name="nc_connecting_call">Povezivanje…</string>
     <string name="nc_contacts_done">Gotovo</string>
-    <string name="nc_conversation_link">Poveznica za razgovor</string>
     <string name="nc_conversation_menu_conversation_info">Informacije o razgovoru</string>
     <string name="nc_conversation_menu_video_call">Videopoziv</string>
     <string name="nc_conversation_menu_voice_call">Glasovni poziv</string>
-    <string name="nc_conversation_settings">Postavke razgovora</string>
     <string name="nc_conversations_empty">Pridružite se razgovoru ili započnite novi</string>
     <string name="nc_conversations_empty_details">Pozdravi svoje prijatelje i kolege!</string>
     <string name="nc_copy_message">Kopiraj</string>
@@ -137,8 +134,6 @@
     <string name="nc_expire_message_one_hour">1 sat</string>
     <string name="nc_expire_message_one_week">1 tjedan</string>
     <string name="nc_external_server_failed">Neuspješno dohvaćanje postavki signaliziranja</string>
-    <string name="nc_failed_signaling_settings">Ciljni poslužitelj ne podržava pridruživanje javnim razgovorima putem mobilnih telefona. Možete se pokušati pridružiti razgovoru putem web-preglednika.</string>
-    <string name="nc_failed_to_perform_operation">Oprostite, nešto je pošlo po krivu!</string>
     <string name="nc_federation_invitation_accept">Prihvati</string>
     <string name="nc_federation_invitation_reject">Odbij</string>
     <string name="nc_file_browser_back">Natrag</string>
@@ -162,8 +157,6 @@
     <string name="nc_important_conversation">Važan razgovor</string>
     <string name="nc_important_conversation_desc">Obavijesti u okviru ovog razgovora prikazuju se neovisno o postavkama Ne uznemiravaj</string>
     <string name="nc_invitations">Pozivnice</string>
-    <string name="nc_join_via_link">Pridružite se putem poveznice</string>
-    <string name="nc_join_via_web">Pridružite se putem weba</string>
     <string name="nc_last_moderator">Morate odabrati novog moderatora prije nego što napustite %1$s.</string>
     <string name="nc_last_moderator_title">Nije moguće napustiti razgovor</string>
     <string name="nc_last_modified">%1$s | Posljednja izmjena: %2$s</string>
@@ -193,7 +186,6 @@
     <string name="nc_new_conversation">Novi razgovor</string>
     <string name="nc_new_mention">Nepročitana spominjanja</string>
     <string name="nc_new_messages">Nove poruke</string>
-    <string name="nc_new_password">Nova zaporka</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_no">Ne</string>
     <string name="nc_no_proxy">Nema proxyja</string>
@@ -210,14 +202,12 @@
     <string name="nc_owner">Vlasnik</string>
     <string name="nc_participants">Sudionici</string>
     <string name="nc_participants_add">Dodaj sudionike</string>
-    <string name="nc_password">Zaporka</string>
     <string name="nc_permissions_settings">Otvori postavke</string>
     <string name="nc_phone_book_integration_account_not_found">Račun nije pronađen</string>
     <string name="nc_phone_book_integration_chat_via">Razmjenjujte poruke putem %s</string>
     <string name="nc_pip_microphone_unmute">Omogućite mikrofon</string>
     <string name="nc_plain_old_messages">Poruke</string>
     <string name="nc_privacy">Privatnost</string>
-    <string name="nc_proceed">Nastavi</string>
     <string name="nc_profile_personal_info_title">Osobne informacije</string>
     <string name="nc_promote">Unaprijedi u moderatora</string>
     <string name="nc_public_call">Novi javni razgovor</string>
@@ -350,8 +340,6 @@
     <string name="nc_voice_message_missing_audio_permission">Potrebno je dopuštenje za snimanje zvuka</string>
     <string name="nc_voice_message_slide_to_cancel">« Pomakni za otkazivanje</string>
     <string name="nc_webinar">Webinar</string>
-    <string name="nc_wrong_link">Poveznica za razgovor nije valjana</string>
-    <string name="nc_wrong_password">Pogrešna zaporka</string>
     <string name="nc_yes">Da</string>
     <string name="next_week">Sljedeći tjedan</string>
     <string name="no_phone_book_integration_due_to_permissions">Integracija broja telefona nije moguća jer nedostaje dopuštenje</string>

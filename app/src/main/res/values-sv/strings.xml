@@ -54,7 +54,6 @@
     <string name="nc_allow_guests">Tillåt gäster</string>
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
     <string name="nc_call_name">Samtalsnamn</string>
-    <string name="nc_call_name_is_same">Namnet du angav är detsamma som det befintliga</string>
     <string name="nc_call_reconnecting">Återansluter …</string>
     <string name="nc_call_timeout">Inget svar på 45 sekunder, tryck för att försöka igen</string>
     <string name="nc_cancel">Avbryt</string>
@@ -81,12 +80,10 @@
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
     <string name="nc_connecting_call">Ansluter…</string>
     <string name="nc_contacts_done">Färdig</string>
-    <string name="nc_conversation_link">Konversationslänk</string>
     <string name="nc_conversation_menu_conversation_info">Konversationsinfo</string>
     <string name="nc_conversation_menu_video_call">Videosamtal</string>
     <string name="nc_conversation_menu_voice_call">Röstsamtal</string>
     <string name="nc_conversation_not_found">Konversationen hittades inte</string>
-    <string name="nc_conversation_settings">Konversationsinställningar</string>
     <string name="nc_conversations_empty">Anslut till en konversation eller starta en ny</string>
     <string name="nc_conversations_empty_details">Säg hej till dina vänner och kollegor!</string>
     <string name="nc_copy_message">Kopia</string>
@@ -123,8 +120,6 @@
     <string name="nc_expire_message_one_hour">1 timme</string>
     <string name="nc_expire_message_one_week">1 vecka</string>
     <string name="nc_external_server_failed">Misslyckades med att hämta signaleringsinställningar</string>
-    <string name="nc_failed_signaling_settings">Målservern stöder inte att gå med i offentliga konversationer via mobil-telefoner. Du kan försöka gå med i konversationen via webbläsaren.</string>
-    <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>
     <string name="nc_federation_invitation_accept">Acceptera</string>
     <string name="nc_federation_invitation_reject">Avvisa</string>
     <string name="nc_file_browser_back">Tillbaka</string>
@@ -144,8 +139,6 @@
     <string name="nc_hint_enter_a_message">Skriv meddelande ...</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
     <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta Stör inte-inställningar</string>
-    <string name="nc_join_via_link">Gå med via länk</string>
-    <string name="nc_join_via_web">Gå med via webb</string>
     <string name="nc_last_moderator">Du måste tilldela en ny moderator innan du kan lämna %1$s.</string>
     <string name="nc_last_moderator_title">Kunde inte lämna konversationen</string>
     <string name="nc_last_modified">%1$s | Senast ändrad: %2$s</string>
@@ -167,7 +160,6 @@
     <string name="nc_never">Gick aldrig med</string>
     <string name="nc_new_conversation">Ny konversation</string>
     <string name="nc_new_messages">Olästa meddelanden</string>
-    <string name="nc_new_password">Nytt lösenord</string>
     <string name="nc_nick_guest">Gäst</string>
     <string name="nc_no">Nej</string>
     <string name="nc_no_proxy">Ingen proxy</string>
@@ -185,12 +177,10 @@
     <string name="nc_owner">Ägare</string>
     <string name="nc_participants">Deltagare</string>
     <string name="nc_participants_add">Lägg till deltagare</string>
-    <string name="nc_password">Lösenord</string>
     <string name="nc_permissions_settings">Öppna inställningar</string>
     <string name="nc_phone_book_integration_account_not_found">Kontot hittades inte</string>
     <string name="nc_plain_old_messages">Meddelanden</string>
     <string name="nc_privacy">Integritet</string>
-    <string name="nc_proceed">Fortsätt</string>
     <string name="nc_profile_personal_info_title">Personlig information</string>
     <string name="nc_promote">Befordra till moderator</string>
     <string name="nc_public_call">Ny publik konversation</string>
@@ -302,8 +292,6 @@
     <string name="nc_upload_picture_from_cam">Ta en bild</string>
     <string name="nc_user">Användare</string>
     <string name="nc_webinar">Webinar</string>
-    <string name="nc_wrong_link">Konversationslänk är inte giltig</string>
-    <string name="nc_wrong_password">Fel lösenord</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Nästa vecka</string>
     <string name="oneHour">1 timme</string>

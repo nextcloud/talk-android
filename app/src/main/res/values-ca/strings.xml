@@ -74,7 +74,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Canviar al vídeo propi</string>
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_name">Nom de la conversa</string>
-    <string name="nc_call_name_is_same">El nom que heu introduït és el mateix que l’actual</string>
     <string name="nc_call_notifications">Notificacions de trucada</string>
     <string name="nc_call_raised_hand">%1$sha aixecat la mà</string>
     <string name="nc_call_reconnecting">S\'està reconnectant…</string>
@@ -112,12 +111,10 @@
     <string name="nc_configure_cert_auth">Selecciona el certificat d’autenticació</string>
     <string name="nc_connecting_call">S\'està connectant …</string>
     <string name="nc_contacts_done">Fet</string>
-    <string name="nc_conversation_link">Enllaç de conversa</string>
     <string name="nc_conversation_menu_conversation_info">Informació de la conversa</string>
     <string name="nc_conversation_menu_video_call">Trucada de vídeo </string>
     <string name="nc_conversation_menu_voice_call">Trucada de veu</string>
     <string name="nc_conversation_not_found">No s\'ha trobat la conversa</string>
-    <string name="nc_conversation_settings">Paràmetres de la conversa</string>
     <string name="nc_conversations_empty">Uniu-vos a una conversa o inicieu-ne una de nova</string>
     <string name="nc_conversations_empty_details">Saludeu els vostres amics i col·legues!</string>
     <string name="nc_copy_message">Copia</string>
@@ -163,8 +160,6 @@
     <string name="nc_expire_messages">Fes caducar els missatges del xat</string>
     <string name="nc_expire_messages_explanation">Els missatges de xat poden caducar al cap d\'un període de temps determinat. Nota: els fitxers compartits al xat no se suprimiran per al propietari, però ja no es compartiran a la conversa.</string>
     <string name="nc_external_server_failed">No s\'ha pogut obtenir la configuració de senyalització</string>
-    <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través de telèfons mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</string>
-    <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>
     <string name="nc_federation_invitation_accept">Accepta</string>
     <string name="nc_federation_invitation_reject">Rebutja</string>
     <string name="nc_file_browser_back">Enrere</string>
@@ -195,8 +190,6 @@
     <string name="nc_important_conversation">Conversa important</string>
     <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
     <string name="nc_invitations">Invitacions</string>
-    <string name="nc_join_via_link">Uniu-vos amb un enllaç</string>
-    <string name="nc_join_via_web">Uniu-vos via web</string>
     <string name="nc_last_moderator">Heu de designar un nou moderador abans de deixar %1$s.</string>
     <string name="nc_last_moderator_title">No s\'ha pogut abandonar la conversa</string>
     <string name="nc_last_modified">%1$s | Darrera modificació: %2$s</string>
@@ -227,7 +220,6 @@
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_new_mention">Mencions no llegides</string>
     <string name="nc_new_messages">Missatges sense llegir</string>
-    <string name="nc_new_password">Nova contrasenya</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s no està disponible (no instal·lat o restringit per l\'administrador)</string>
     <string name="nc_nick_guest">Convidat</string>
     <string name="nc_no">No</string>
@@ -250,7 +242,6 @@
     <string name="nc_owner">Propietari</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Afegeix participants</string>
-    <string name="nc_password">Contrasenya</string>
     <string name="nc_permissions_settings">Obre la configuració</string>
     <string name="nc_phone_book_integration_account_not_found">No s\'ha trobat el compte</string>
     <string name="nc_phone_book_integration_chat_via">Xateja mitjançant %s</string>
@@ -258,7 +249,6 @@
     <string name="nc_pip_microphone_unmute">Activa el micròfon</string>
     <string name="nc_plain_old_messages">Missatges</string>
     <string name="nc_privacy">Privadesa</string>
-    <string name="nc_proceed">Continua</string>
     <string name="nc_profile_personal_info_title">Informació personal</string>
     <string name="nc_promote">Promou a moderador</string>
     <string name="nc_public_call">Nova conversa pública</string>
@@ -404,8 +394,6 @@
     <string name="nc_voice_message_missing_audio_permission">Es necessita permís per gravar àudio</string>
     <string name="nc_voice_message_slide_to_cancel">« Llisqueu per cancel·lar</string>
     <string name="nc_webinar">Webinar</string>
-    <string name="nc_wrong_link">L\'enllaç de la conversa no és vàlid</string>
-    <string name="nc_wrong_password">Contrasenya incorrecta</string>
     <string name="nc_yes">Sí</string>
     <string name="next_week">Setmana següent</string>
     <string name="no_phone_book_integration_due_to_permissions">No hi ha integració amb el número de telèfon perquè falten permisos</string>

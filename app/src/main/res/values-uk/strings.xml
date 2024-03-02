@@ -76,7 +76,6 @@
     <string name="nc_call_button_content_description_pip">Відкрийте режим \"картинка в картинці</string>
     <string name="nc_call_incoming">ВХІДНИЙ</string>
     <string name="nc_call_name">Назва розмови</string>
-    <string name="nc_call_name_is_same">Ім\'я, яке Ви вказали уже існує</string>
     <string name="nc_call_notifications">Сповіщення про дзвінки</string>
     <string name="nc_call_raised_hand">%1$s підняв руку</string>
     <string name="nc_call_reconnecting">Відновлення зєднання...</string>
@@ -115,12 +114,10 @@
     <string name="nc_connecting_call">Підключення ...</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_description">Опис розмови</string>
-    <string name="nc_conversation_link">Посилання на розмову</string>
     <string name="nc_conversation_menu_conversation_info">Інформація про розмову</string>
     <string name="nc_conversation_menu_video_call">Відеодзвінок</string>
     <string name="nc_conversation_menu_voice_call">Голосовий дзвінок</string>
     <string name="nc_conversation_not_found">Розмову не знайдено</string>
-    <string name="nc_conversation_settings">Налаштування розмови</string>
     <string name="nc_conversations_empty">Приєднайтеся до розмови або почніть нову</string>
     <string name="nc_conversations_empty_details">Привітайтеся з вашими друзями та колегами!</string>
     <string name="nc_copy_message">Копіювати</string>
@@ -163,8 +160,6 @@
     <string name="nc_expire_messages">Термін дії повідомлень чату закінчився</string>
     <string name="nc_expire_messages_explanation">Повідомлення чату можуть бути видалені після закінчення певного часу. Примітка: Файли, передані в чаті, не будуть видалені для власника, але більше не будуть доступні в обговоренні.</string>
     <string name="nc_external_server_failed">Помилка отримання налаштувань сповіщення</string>
-    <string name="nc_failed_signaling_settings">Цільовий сервер не підтримує приєднання до публічних чатів через номер мобільного телефону. Ви можете спробувати приєднатися до розмови з бравзера.</string>
-    <string name="nc_failed_to_perform_operation">Вибачте, щось пішло не так!</string>
     <string name="nc_federation_invitation_accept">Прийняти</string>
     <string name="nc_federation_invitation_reject">Відхилити</string>
     <string name="nc_file_browser_back">Назад</string>
@@ -195,8 +190,6 @@
     <string name="nc_hint_enter_a_message">Введіть повідомлення ...</string>
     <string name="nc_important_conversation">Важлива розмова</string>
     <string name="nc_important_conversation_desc">Сповіщення в цій розмові ігнорують опцію \"Не турбувати\"</string>
-    <string name="nc_join_via_link">Приєднатися за посиланням</string>
-    <string name="nc_join_via_web">Приєднатися за допомогою веб</string>
     <string name="nc_last_moderator">Ви повинні призначити нового модератора перш ніж покинути %1$s.</string>
     <string name="nc_last_moderator_title">Неможливо покинути розмову</string>
     <string name="nc_last_modified">%1$s | Остання зміна: %2$s</string>
@@ -227,7 +220,6 @@
     <string name="nc_new_conversation">Нова розмова</string>
     <string name="nc_new_mention">Непрочитані згадки</string>
     <string name="nc_new_messages">Непрочитані повідомлення</string>
-    <string name="nc_new_password">Новий пароль</string>
     <string name="nc_nextcloud_talk_app_not_installed">Додаток %1$s недоступний (не встановлений, або використання додатка обмежене адміністратором)</string>
     <string name="nc_nick_guest">Гість</string>
     <string name="nc_no">Ні</string>
@@ -250,7 +242,6 @@
     <string name="nc_owner">Власник</string>
     <string name="nc_participants">Учасники</string>
     <string name="nc_participants_add">Додати учасників</string>
-    <string name="nc_password">Пароль</string>
     <string name="nc_permissions_settings">Відкрити налаштування</string>
     <string name="nc_phone_book_integration_account_not_found">Акаунт не знайдено</string>
     <string name="nc_phone_book_integration_chat_via">Чат з %s</string>
@@ -258,7 +249,6 @@
     <string name="nc_pip_microphone_unmute">Увімкнути мікрофон</string>
     <string name="nc_plain_old_messages">Повідомлення</string>
     <string name="nc_privacy">Конфіденційність</string>
-    <string name="nc_proceed">Proceed</string>
     <string name="nc_profile_personal_info_title">Персональна інформація</string>
     <string name="nc_promote">Призначити модератором</string>
     <string name="nc_public_call">Нова публічна розмова</string>
@@ -399,8 +389,6 @@
     <string name="nc_voice_message_missing_audio_permission">Потрібен дозвіл на аудіозапис</string>
     <string name="nc_voice_message_slide_to_cancel">« Зсунути для скасування</string>
     <string name="nc_webinar">Вебінар</string>
-    <string name="nc_wrong_link">Посилання на бесіду більше не дійсне</string>
-    <string name="nc_wrong_password">Неправильний пароль</string>
     <string name="nc_yes">Так</string>
     <string name="next_week">Наступний тиждень</string>
     <string name="no_phone_book_integration_due_to_permissions">Відсутні дозволи на інтеграцію номера телефону</string>

@@ -89,7 +89,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Przełącz na własne wideo</string>
     <string name="nc_call_incoming">PRZYCHODZĄCA</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
-    <string name="nc_call_name_is_same">Wpisana nazwa jest taka sama jak dotychczasowa</string>
     <string name="nc_call_notifications">Powiadomienia połączenia</string>
     <string name="nc_call_raised_hand">%1$s podniósł rękę</string>
     <string name="nc_call_reconnecting">Ponowne łączenie…</string>
@@ -131,11 +130,9 @@
     <string name="nc_connecting_call">Łączę…</string>
     <string name="nc_contacts_done">Gotowe</string>
     <string name="nc_conversation_description">Opis rozmowy</string>
-    <string name="nc_conversation_link">Link do rozmowy</string>
     <string name="nc_conversation_menu_conversation_info">Informacje o rozmowie</string>
     <string name="nc_conversation_menu_video_call">Rozmowa wideo</string>
     <string name="nc_conversation_menu_voice_call">Rozmowa głosowa</string>
-    <string name="nc_conversation_settings">Ustawienia rozmowy</string>
     <string name="nc_conversations_empty">Dołącz do rozmowy lub rozpocznij nową</string>
     <string name="nc_conversations_empty_details">Przywitaj się z przyjaciółmi i współpracownikami!</string>
     <string name="nc_copy_message">Kopiuj</string>
@@ -188,8 +185,6 @@
     <string name="nc_expire_messages">Wygasa wiadomości na czacie</string>
     <string name="nc_expire_messages_explanation">Wiadomości na czacie mogą wygasnąć po pewnym czasie. Uwaga: pliki udostępnione na czacie nie zostaną usunięte dla właściciela, ale nie będą już udostępniane w rozmowie.</string>
     <string name="nc_external_server_failed">Nie udało się pobrać ustawień sygnałowych</string>
-    <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe. Możesz spróbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
-    <string name="nc_failed_to_perform_operation">Przepraszamy, coś poszło nie tak!</string>
     <string name="nc_federation_invitation_accept">Akceptuj</string>
     <string name="nc_federation_invitation_reject">Odrzuć</string>
     <string name="nc_file_browser_back">Wstecz</string>
@@ -222,8 +217,6 @@
     <string name="nc_important_conversation">Ważna rozmowa</string>
     <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują ustawienia \"Nie przeszkadzać\"</string>
     <string name="nc_invitations">Zaproszenia</string>
-    <string name="nc_join_via_link">Dołącz przez link</string>
-    <string name="nc_join_via_web">Dołącz przez sieć</string>
     <string name="nc_last_moderator">Musisz promować nowego moderatora, zanim opuścisz %1$s.</string>
     <string name="nc_last_moderator_title">Nie udało się opuścić rozmowy</string>
     <string name="nc_last_modified">%1$s | Ostatnio zmodyfikowany: %2$s</string>
@@ -256,7 +249,6 @@
     <string name="nc_new_conversation">Nowa rozmowa</string>
     <string name="nc_new_mention">Nieprzeczytane wzmianki</string>
     <string name="nc_new_messages">Nieprzeczytane wiadomości</string>
-    <string name="nc_new_password">Nowe hasło</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s niedostępne (niezainstalowane lub ograniczone przez administratora)</string>
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_no">Nie</string>
@@ -281,7 +273,6 @@
     <string name="nc_owner">Właściciel</string>
     <string name="nc_participants">Uczestnicy</string>
     <string name="nc_participants_add">Dodaj uczestników</string>
-    <string name="nc_password">Hasło</string>
     <string name="nc_permissions_ask">Ustaw uprawnienia</string>
     <string name="nc_permissions_denied">Odmówiono niektórych uprawnień.</string>
     <string name="nc_permissions_rationale_dialog_title">Zezwól na uprawnienia</string>
@@ -293,7 +284,6 @@
     <string name="nc_pip_microphone_unmute">Włącz mikrofon</string>
     <string name="nc_plain_old_messages">Wiadomości</string>
     <string name="nc_privacy">Prywatność</string>
-    <string name="nc_proceed">Kontynuuj</string>
     <string name="nc_profile_personal_info_title">Informacje osobiste</string>
     <string name="nc_promote">Promuj na moderatora</string>
     <string name="nc_public_call">Nowa rozmowa publiczna</string>
@@ -442,8 +432,6 @@
     <string name="nc_voice_message_missing_audio_permission">Wymagane jest uprawnienie na nagrywanie dźwięku</string>
     <string name="nc_voice_message_slide_to_cancel">« Przesuń, aby anulować</string>
     <string name="nc_webinar">Webinarium</string>
-    <string name="nc_wrong_link">Link rozmowy jest nieprawidłowy</string>
-    <string name="nc_wrong_password">Złe hasło</string>
     <string name="nc_yes">Tak</string>
     <string name="next_week">Następny tydzień</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>

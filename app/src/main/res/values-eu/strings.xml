@@ -89,7 +89,6 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Aldatu norberaren bideora</string>
     <string name="nc_call_incoming">SARRERAKOA</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
-    <string name="nc_call_name_is_same">Sartu duzun izena dagoenaren berdina da</string>
     <string name="nc_call_notifications">Dei jakinarazpenak</string>
     <string name="nc_call_raised_hand">%1$s-k eskua altxatu du</string>
     <string name="nc_call_reconnecting">Berriro konektatzen …</string>
@@ -131,11 +130,9 @@
     <string name="nc_connecting_call">Konektatzen …</string>
     <string name="nc_contacts_done">Egina</string>
     <string name="nc_conversation_description">Elkarrizketaren deskribapena</string>
-    <string name="nc_conversation_link">Elkarrizketa esteka</string>
     <string name="nc_conversation_menu_conversation_info">Elkarrizketen informazioa</string>
     <string name="nc_conversation_menu_video_call">Bideo-deia</string>
     <string name="nc_conversation_menu_voice_call">Ahots-deia</string>
-    <string name="nc_conversation_settings">Elkarrizketaren ezarpenak</string>
     <string name="nc_conversations_empty">Batu elkarrizketa batera edo hasi berri bat</string>
     <string name="nc_conversations_empty_details">Esan kaixo zure lagun eta lankideei!</string>
     <string name="nc_copy_message">Kopiatu</string>
@@ -190,8 +187,7 @@
     <string name="nc_expire_messages">Iraungi txat-mezuak</string>
     <string name="nc_expire_messages_explanation">Txat-mezuak denbora jakin baten ondoren iraungi daitezke. Oharra: txatean partekatutako fitxategiak ez dira jabearentzat ezabatuko, baina ez dira gehiago elkarrizketan partekatuko.</string>
     <string name="nc_external_server_failed">Akatsa seinaleen konfigurazioa berreskuratzean</string>
-    <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du telefono mugikorraren bidez elkarrizketa publikoetara sartzerik onartzen. Elkarrizketara web nabigatzaile baten bidez sartzen saiatu.</string>
-    <string name="nc_failed_to_perform_operation">Barkatu, zerbait gaizki joan da!</string>
+    <string name="nc_federation_invitation_accept">Onartu</string>
     <string name="nc_federation_invitation_reject">Ukatu</string>
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_file_storage_permission">Fitxategietan sartzeko baimena behar da</string>
@@ -223,8 +219,6 @@
     <string name="nc_important_conversation">Elkarrizketa garrantzitsua</string>
     <string name="nc_important_conversation_desc">Ez Molestatu ezarpenek sahiestuko dituzte elkarrizketa honen jakinarazpenak </string>
     <string name="nc_invitations">Gonbidapenak</string>
-    <string name="nc_join_via_link">Sartu esteka baten bidez</string>
-    <string name="nc_join_via_web">Sartu web bidez</string>
     <string name="nc_last_moderator">Moderatzaile berri bat hautatu behar duzu %1$s utzi baino lehen.</string>
     <string name="nc_last_moderator_title">Ezin izan da elkarrizketatik irten</string>
     <string name="nc_last_modified">%1$s | Azkenengoz aldatuta: %2$s</string>
@@ -257,7 +251,6 @@
     <string name="nc_new_conversation">Elkarrizketa berria</string>
     <string name="nc_new_mention">Irakurri gabeko aipamenak</string>
     <string name="nc_new_messages">Irakurri gabeko mezuak</string>
-    <string name="nc_new_password">Pasahitz berria</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ez dago erabilgarri (administratzaileak instalatu edo mugatu gabe)</string>
     <string name="nc_nick_guest">Gonbidatua</string>
     <string name="nc_no">Ez</string>
@@ -282,7 +275,6 @@
     <string name="nc_owner">Jabea</string>
     <string name="nc_participants">Parte-hartzaileak</string>
     <string name="nc_participants_add">Gehitu parte-hartzaileak</string>
-    <string name="nc_password">Pasahitza</string>
     <string name="nc_permissions_ask">Ezarri baimenak</string>
     <string name="nc_permissions_denied">Baimen batzuk ukatu egin dira.</string>
     <string name="nc_permissions_rationale_dialog_title">Eman baimenak, mesedez</string>
@@ -294,7 +286,6 @@
     <string name="nc_pip_microphone_unmute">Gaitu mikrofonoa</string>
     <string name="nc_plain_old_messages">Mezuak</string>
     <string name="nc_privacy">Pribatutasuna</string>
-    <string name="nc_proceed">Jarraitu</string>
     <string name="nc_profile_personal_info_title">Informazio pertsonala</string>
     <string name="nc_promote">Moderatzaile bihurtu zara</string>
     <string name="nc_public_call">Elkarrizketa publiko berria</string>
@@ -443,8 +434,6 @@
     <string name="nc_voice_message_missing_audio_permission">Audioa grabatzeko baimena behar da</string>
     <string name="nc_voice_message_slide_to_cancel">« Irristatu bertan behera uzteko</string>
     <string name="nc_webinar">Web-mintegia</string>
-    <string name="nc_wrong_link">Elkarrizketa esteka ez da baliozkoa</string>
-    <string name="nc_wrong_password">Pasahitz okerra</string>
     <string name="nc_yes">Bai</string>
     <string name="next_week">Hurrengo astea</string>
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zenbakia integratu, baimen falta dela eta</string>
