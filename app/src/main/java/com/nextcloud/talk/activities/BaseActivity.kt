@@ -115,6 +115,9 @@ open class BaseActivity : AppCompatActivity() {
     public override fun onStop() {
         super.onStop()
         eventBus.unregister(this)
+        if(appPreferences.isScreenLocked){
+            finish()
+        }
     }
 
     fun setupSystemColors() {
