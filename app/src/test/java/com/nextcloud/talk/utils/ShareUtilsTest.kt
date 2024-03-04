@@ -55,7 +55,7 @@ class ShareUtilsTest {
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         Mockito.`when`(userManager!!.currentUser).thenReturn(Maybe.just(user))
-        Mockito.`when`(user!!.baseUrl!!).thenReturn(baseUrl)
+        Mockito.`when`(user!!.baseUrl).thenReturn(baseUrl)
         Mockito.`when`(context!!.resources).thenReturn(resources)
         Mockito.`when`(resources!!.getString(R.string.nc_share_text))
             .thenReturn("Join the conversation at %1\$s/index.php/call/%2\$s")
