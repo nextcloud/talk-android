@@ -52,7 +52,20 @@ enum class SpreedFeatures(val value: String) {
     TEMP_USER_AVATAR_API("temp-user-avatar-api"),
     PHONEBOOK_SEARCH("phonebook-search"),
     GEO_LOCATION_SHARING("geo-location-sharing"),
-    TALK_POLLS("talk-polls")
+    TALK_POLLS("talk-polls"),
+    FAVORITES("favorites"),
+    CHAT_READ_MARKER("chat-read-marker"),
+    CHAT_UNREAD("chat-unread"),
+    EDIT_MESSAGES("edit-messages"),
+    REMIND_ME_LATER("remind-me-later"),
+    CHAT_V2("chat-v2"),
+    SIP_SUPPORT("sip-support"),
+    SIGNALING_V3("signaling-v3"),
+    ROOM_DESCRIPTION("room-description"),
+    UNIFIED_SEARCH("unified-search"),
+    LOCKED_ONE_TO_ONE("locked-one-to-one-rooms"),
+    CHAT_PERMISSION("chat-permission"),
+    CONVERSATION_PERMISSION("conversation-permissions")
 }
 
 @Suppress("TooManyFunctions")
@@ -85,15 +98,6 @@ object CapabilitiesUtil {
     fun hasSpreedFeatureCapability(spreedCapabilities: SpreedCapability, spreedFeatures: SpreedFeatures): Boolean {
         if (spreedCapabilities.features != null) {
             return spreedCapabilities.features!!.contains(spreedFeatures.value)
-        }
-        return false
-    }
-
-    @JvmStatic
-    @Deprecated("Add your capability to Capability enums and use hasSpreedFeatureCapability with enum.")
-    fun hasSpreedFeatureCapability(spreedCapabilities: SpreedCapability, capabilityName: String): Boolean {
-        if (spreedCapabilities.features != null) {
-            return spreedCapabilities.features!!.contains(capabilityName)
         }
         return false
     }
@@ -147,11 +151,11 @@ object CapabilitiesUtil {
     }
 
     fun isConversationDescriptionEndpointAvailable(spreedCapabilities: SpreedCapability): Boolean {
-        return hasSpreedFeatureCapability(spreedCapabilities, "room-description")
+        return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ROOM_DESCRIPTION)
     }
 
     fun isUnifiedSearchAvailable(spreedCapabilities: SpreedCapability): Boolean {
-        return hasSpreedFeatureCapability(spreedCapabilities, "unified-search")
+        return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)
     }
 
     fun isAbleToCall(spreedCapabilities: SpreedCapability): Boolean {

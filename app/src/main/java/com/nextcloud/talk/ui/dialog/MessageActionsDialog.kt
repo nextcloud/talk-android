@@ -106,7 +106,7 @@ class MessageActionsDialog(
 
     private val isMessageEditable = CapabilitiesUtil.hasSpreedFeatureCapability(
         spreedCapabilities,
-        "edit-messages"
+        SpreedFeatures.EDIT_MESSAGES
     ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,7 +166,7 @@ class MessageActionsDialog(
         )
         initMenuRemindMessage(
             !message.isDeleted && CapabilitiesUtil.hasSpreedFeatureCapability
-                (spreedCapabilities, "remind-me-later")
+                (spreedCapabilities, SpreedFeatures.REMIND_ME_LATER)
         )
         initMenuMarkAsUnread(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&

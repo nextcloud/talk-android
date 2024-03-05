@@ -156,17 +156,17 @@ object ApiUtils {
         val spreedCapabilities = user.capabilities!!.spreedCapability
         for (version in versions) {
             if (spreedCapabilities != null) {
-                if (hasSpreedFeatureCapability(spreedCapabilities, "signaling-v$version")) {
+                if (spreedCapabilities.features!!.contains("signaling-v$version")) {
                     return version
                 }
                 if (version == API_V2 &&
-                    hasSpreedFeatureCapability(spreedCapabilities, "sip-support") &&
-                    !hasSpreedFeatureCapability(spreedCapabilities, "signaling-v3")
+                    hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SIP_SUPPORT) &&
+                    !hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SIGNALING_V3)
                 ) {
                     return version
                 }
                 if (version == API_V1 &&
-                    !hasSpreedFeatureCapability(spreedCapabilities, "signaling-v3")
+                    !hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SIGNALING_V3)
                 ) {
                     // Has no capability, we just assume it is always there when there is no v3 or later
                     return version
@@ -180,7 +180,7 @@ object ApiUtils {
     @Throws(NoSupportedApiException::class)
     fun getChatApiVersion(spreedCapabilities: SpreedCapability, versions: IntArray): Int {
         for (version in versions) {
-            if (version == API_V1 && hasSpreedFeatureCapability(spreedCapabilities, "chat-v2")) {
+            if (version == API_V1 && hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_V2)) {
                 // Do not question that chat-v2 capability shows the availability of api/v1/ endpoint *see no evil*
                 return version
             }
