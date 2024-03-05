@@ -1206,7 +1206,7 @@ class ConversationInfoActivity :
             val items = mutableListOf(
                 BasicListItemWithImage(
                     R.drawable.ic_delete_grey600_24dp,
-                    context.getString(R.string.nc_remove_circle_and_members)
+                    context.getString(R.string.nc_remove_team_and_members)
                 )
             )
             MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
