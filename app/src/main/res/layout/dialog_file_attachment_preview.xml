@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Julius Linus
@@ -18,85 +17,92 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:background="@color/white"
-    tools:visibility="visible">
-
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_margin"
-        android:text="@string/nc_add_file"
-        android:textSize="@dimen/md_title_textsize" />
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="100dp">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/dialog_file_attachment_preview_filenames"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/standard_margin"
-            android:textSize="@dimen/headline_text_size"
-            tools:text="a.png\nb.png\nc.png"/>
-
-    </ScrollView>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/dialog_file_attachment_preview_layout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_margin">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/dialog_file_attachment_preview_caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/nc_caption"
-            android:maxLines="3"
-            tools:text="a.png\nb.png\nc.png"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    tools:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/standard_half_margin"
-        android:gravity="end"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/dialog_padding"
-        android:paddingEnd="@dimen/dialog_padding"
-        android:paddingBottom="@dimen/dialog_padding_top_bottom">
+        android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_close"
-            style="@style/Button.Borderless"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/min_size_clickable_area"
-            android:text="@string/nc_no" />
+            android:layout_margin="@dimen/standard_margin"
+            android:text="@string/nc_add_file"
+            android:textSize="@dimen/md_title_textsize" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_send"
-            style="@style/Button.Borderless"
-            android:layout_width="wrap_content"
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/dialog_file_attachment_preview_filenames"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/standard_margin"
+                android:textSize="@dimen/headline_text_size"
+                tools:text="a.png\nb.png\nc.png" />
+
+        </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dialog_file_attachment_preview_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/min_size_clickable_area"
-            android:text="@string/nc_yes" />
+            android:layout_margin="@dimen/standard_margin">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dialog_file_attachment_preview_caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/nc_caption"
+                android:maxLines="3"
+                tools:text="a.png\nb.png\nc.png" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_half_margin"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/dialog_padding"
+            android:paddingEnd="@dimen/dialog_padding"
+            android:paddingBottom="@dimen/dialog_padding_top_bottom">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_close"
+                style="@style/Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/min_size_clickable_area"
+                android:text="@string/nc_no" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_send"
+                style="@style/Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/min_size_clickable_area"
+                android:text="@string/nc_yes" />
+
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+</ScrollView>
