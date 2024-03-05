@@ -39,6 +39,7 @@
     <string name="file_list_loading">Carregando …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
+    <string name="hint_edited_message">(editado)</string>
     <string name="invisible">Invisível</string>
     <string name="languages_error_message">Não foi possível recuperar os idiomas</string>
     <string name="languages_error_title">Falha na recuperação</string>
