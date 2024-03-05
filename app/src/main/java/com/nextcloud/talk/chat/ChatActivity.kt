@@ -193,7 +193,7 @@ import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AudioUtils
-import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -206,6 +206,7 @@ import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.VibrationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -220,7 +221,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
@@ -832,11 +832,11 @@ class ChatActivity :
                     when (state.response.code()) {
                         HTTP_CODE_OK -> {
                             Log.d(TAG, "lookIntoFuture: ${state.lookIntoFuture}")
+                            val chatOverall = state.response.body() as ChatOverall?
+                            var chatMessageList = chatOverall?.ocs!!.data!!
 
                             processHeaderChatLastGiven(state.response, state.lookIntoFuture)
 
-                            val chatOverall = state.response.body() as ChatOverall?
-                            var chatMessageList = chatOverall?.ocs!!.data!!
                             chatMessageList = handleSystemMessages(chatMessageList)
 
                             if (chatMessageList.size == 0) {
@@ -861,15 +861,7 @@ class ChatActivity :
                                 adapter?.notifyDataSetChanged()
                             }
 
-                            var lastAdapterId = 0
-                            if (adapter?.items?.size != 0) {
-                                val item = adapter?.items?.get(0)?.item
-                                if (item != null) {
-                                    lastAdapterId = (item as ChatMessage).jsonMessageId
-                                } else {
-                                    lastAdapterId = 0
-                                }
-                            }
+                            var lastAdapterId = getLastAdapterId()
 
                             if (
                                 state.lookIntoFuture &&
@@ -898,24 +890,24 @@ class ChatActivity :
                         }
 
                         HTTP_CODE_NOT_MODIFIED -> {
-                            processHeaderChatLastGiven(state.response, state.lookIntoFuture)
                             chatViewModel.refreshChatParams(
                                 setupFieldsForPullChatMessages(
-                                    state.lookIntoFuture,
+                                    true,
                                     globalLastKnownFutureMessageId,
                                     true
-                                )
+                                ),
+                                true
                             )
                         }
 
                         HTTP_CODE_PRECONDITION_FAILED -> {
-                            processHeaderChatLastGiven(state.response, state.lookIntoFuture)
                             chatViewModel.refreshChatParams(
                                 setupFieldsForPullChatMessages(
-                                    state.lookIntoFuture,
+                                    true,
                                     globalLastKnownFutureMessageId,
                                     true
-                                )
+                                ),
+                                true
                             )
                         }
 
@@ -1224,6 +1216,19 @@ class ChatActivity :
             ),
             editedMessageText
         )
+    }
+
+    private fun getLastAdapterId(): Int {
+        var lastId = 0
+        if (adapter?.items?.size != 0) {
+            val item = adapter?.items?.get(0)?.item
+            if (item != null) {
+                lastId = (item as ChatMessage).jsonMessageId
+            } else {
+                lastId = 0
+            }
+        }
+        return lastId
     }
 
     private fun setEditUI() {
@@ -3703,8 +3708,7 @@ class ChatActivity :
     }
 
     private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>) {
-        val shouldAddNewMessagesNotice = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
-
+        val shouldAddNewMessagesNotice = layoutManager?.findFirstVisibleItemPosition()!! > 0
         if (shouldAddNewMessagesNotice) {
             val unreadChatMessage = ChatMessage()
             unreadChatMessage.jsonMessageId = -1
@@ -3715,10 +3719,6 @@ class ChatActivity :
         }
 
         addMessagesToAdapter(shouldAddNewMessagesNotice, chatMessageList)
-
-        if (shouldAddNewMessagesNotice && adapter != null) {
-            scrollToFirstUnreadMessage()
-        }
     }
 
     private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
@@ -3791,7 +3791,7 @@ class ChatActivity :
     }
 
     private fun modifyMessageCount(shouldAddNewMessagesNotice: Boolean, shouldScroll: Boolean) {
-        if (!shouldAddNewMessagesNotice && !shouldScroll) {
+        if (shouldAddNewMessagesNotice) {
             binding.popupBubbleView.isShown.let {
                 if (it) {
                     newMessagesCount++
