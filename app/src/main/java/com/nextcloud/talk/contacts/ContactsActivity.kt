@@ -68,10 +68,10 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.openconversations.ListOpenConversationsActivity
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils.getIdForUser
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -198,9 +198,11 @@ class ContactsActivity :
             isAddingParticipantsView -> {
                 resources!!.getString(R.string.nc_add_participants)
             }
+
             isNewConversationView -> {
                 resources!!.getString(R.string.nc_select_participants)
             }
+
             else -> {
                 resources!!.getString(R.string.nc_app_product_name)
             }
@@ -247,10 +249,12 @@ class ContactsActivity :
                 finish()
                 true
             }
+
             R.id.contacts_selection_done -> {
                 selectionDone()
                 true
             }
+
             else -> {
                 super.onOptionsItemSelected(item)
             }
@@ -280,11 +284,13 @@ class ContactsActivity :
                         roomType = "2"
                         userId = selectedGroupIds.iterator().next()
                     }
+
                     selectedCircleIds.size == 1 -> {
                         roomType = "2"
                         sourceType = "circles"
                         userId = selectedCircleIds.iterator().next()
                     }
+
                     else -> {
                         userId = selectedUserIds.iterator().next()
                     }
@@ -564,9 +570,11 @@ class ContactsActivity :
             participant.calculatedActorType == Participant.ActorType.GROUPS -> {
                 resources!!.getString(R.string.nc_groups)
             }
+
             participant.calculatedActorType == Participant.ActorType.CIRCLES -> {
                 resources!!.getString(R.string.nc_teams)
             }
+
             else -> {
                 participant.displayName!!.substring(0, 1).uppercase(Locale.getDefault())
             }
@@ -678,6 +686,7 @@ class ContactsActivity :
 
     private fun disengageProgressBar() {
         if (!alreadyFetching) {
+            binding.contactsRv.visibility = View.VISIBLE
             binding.loadingContent.visibility = View.GONE
             binding.root.visibility = View.VISIBLE
             if (isNewConversationView) {
