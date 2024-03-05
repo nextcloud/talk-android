@@ -3214,7 +3214,6 @@ class ChatActivity :
         try {
             require(fileUri.isNotEmpty())
             upload(
-                context,
                 fileUri,
                 room,
                 currentConversation?.displayName!!,
