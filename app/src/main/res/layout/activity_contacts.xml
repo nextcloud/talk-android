@@ -3,8 +3,10 @@
   ~
   ~ @author Andy Scherzinger
   ~ @author Marcel Hibbe
+  ~ @author Parneet Singh
   ~ Copyright (C) 2018 Andy Scherzinger
   ~ Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
+  ~ Copyright (C) 2024 Parneet Singh <gurayaparneet@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -19,18 +21,21 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:animateLayoutChanges="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/contacts_appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/contacts_toolbar"
             android:layout_width="match_parent"
@@ -44,44 +49,6 @@
             tools:title="@string/nc_app_product_name" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-        android:id="@+id/loading_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:visibility="gone">
-
-        <include layout="@layout/rv_item_contact_shimmer" />
-        <include layout="@layout/rv_item_contact_shimmer" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:id="@+id/title_text_view"
-                android:layout_width="16dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="72dp"
-                android:layout_marginTop="@dimen/standard_half_margin"
-                android:layout_marginEnd="@dimen/standard_margin"
-                android:layout_marginBottom="@dimen/standard_half_margin"
-                app:custom_color="@color/nc_shimmer_default_color" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="?android:attr/listDivider" />
-
-        </LinearLayout>
-
-        <include layout="@layout/rv_item_contact_shimmer" />
-        <include layout="@layout/rv_item_contact_shimmer" />
-        <include layout="@layout/rv_item_contact_shimmer" />
-
-    </LinearLayout>
-
     <RelativeLayout
         android:id="@+id/call_header_layout"
         android:layout_width="match_parent"
@@ -89,8 +56,9 @@
         android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginTop="@dimen/standard_half_margin"
         android:layout_marginEnd="@dimen/standard_margin"
-        android:layout_marginBottom="@dimen/standard_half_margin"
-        android:orientation="vertical">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contacts_appbar">
 
         <RelativeLayout
             android:id="@+id/public_conversation_create"
@@ -149,10 +117,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginTop="@dimen/standard_margin"
         android:layout_marginEnd="@dimen/standard_margin"
         android:layout_marginBottom="@dimen/standard_half_margin"
-        android:orientation="vertical">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/call_header_layout">
 
         <ImageView
             android:id="@+id/list_open_conversations_image"
@@ -178,15 +148,61 @@
             android:textAppearance="@style/ListItem" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/loading_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_open_conversations"
+        tools:visibility="gone">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/contacts_rv"
+        <include layout="@layout/rv_item_contact_shimmer" />
+
+        <include layout="@layout/rv_item_contact_shimmer" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_anchorGravity="center" />
-    </RelativeLayout>
-</LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/title_text_view"
+                android:layout_width="16dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="72dp"
+                android:layout_marginTop="@dimen/standard_half_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/standard_half_margin"
+                app:custom_color="@color/nc_shimmer_default_color" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?android:attr/listDivider" />
+
+        </LinearLayout>
+
+        <include layout="@layout/rv_item_contact_shimmer" />
+
+        <include layout="@layout/rv_item_contact_shimmer" />
+
+        <include layout="@layout/rv_item_contact_shimmer" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/contacts_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_open_conversations" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
