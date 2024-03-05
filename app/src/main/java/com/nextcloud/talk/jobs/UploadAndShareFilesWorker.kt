@@ -19,12 +19,10 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -38,13 +36,13 @@ import com.nextcloud.talk.upload.chunked.ChunkedFileUploader
 import com.nextcloud.talk.upload.chunked.OnDataTransferProgressListener
 import com.nextcloud.talk.upload.normal.FileUploader
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.MediaType.Companion.toMediaTypeOrNull

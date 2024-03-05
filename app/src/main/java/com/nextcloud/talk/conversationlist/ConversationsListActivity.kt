@@ -1343,7 +1343,6 @@ class ConversationsListActivity :
         try {
             filesToShare?.forEach {
                 UploadAndShareFilesWorker.upload(
-                    context,
                     it,
                     selectedConversation!!.token!!,
                     selectedConversation!!.displayName!!,
