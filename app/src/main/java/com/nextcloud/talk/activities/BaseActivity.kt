@@ -103,11 +103,11 @@ open class BaseActivity : AppCompatActivity() {
             val viewGroup = (findViewById<View>(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
             disableKeyboardPersonalisedLearning(viewGroup)
         }
-         if(appPreferences.isScreenSecured || appPreferences.isScreenLocked){
+        if (appPreferences.isScreenSecured || appPreferences.isScreenLocked) {
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-         }else{
-             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-         }
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
     }
 
     public override fun onStop() {
