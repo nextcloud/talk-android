@@ -72,8 +72,6 @@
     <string name="nc_certificate_dialog_title">Pogledaj vjerodajnicu</string>
     <string name="nc_certificate_error">Vezu je onemogućila vaša postavka SSL-a</string>
     <string name="nc_change_cert_auth">Promijeni vjerodajnicu za autentifikaciju</string>
-    <string name="nc_circle">Krug</string>
-    <string name="nc_circles">Krugovi</string>
     <string name="nc_clear_history">Izbriši sve poruke</string>
     <string name="nc_clear_history_success">Izbrisane su sve poruke</string>
     <string name="nc_clear_history_warning">Želite li zaista izbrisati sve poruke u ovom razgovoru?</string>
@@ -217,7 +215,6 @@
     <string name="nc_push_to_talk_desc">Kada je mikrofon onemogućen, kliknite i držite za uporabu značajke Pritisni za govor</string>
     <string name="nc_remind">Podsjeti me kasnije</string>
     <string name="nc_remote_audio_off">Udaljeno isključivanje zvuka</string>
-    <string name="nc_remove_circle_and_members">Ukloni krug i članove</string>
     <string name="nc_remove_from_favorites">Ukloni iz favorita</string>
     <string name="nc_remove_group_and_members">Ukloni grupu i članove</string>
     <string name="nc_remove_participant">Ukloni sudionika</string>

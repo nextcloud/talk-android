@@ -114,8 +114,6 @@
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">更改驗證證書</string>
-    <string name="nc_circle">社交圈子</string>
-    <string name="nc_circles">圈子</string>
     <string name="nc_clear_edit_button">清除編輯按鈕</string>
     <string name="nc_clear_edit_message">清除編輯訊息</string>
     <string name="nc_clear_history">刪除所有訊息</string>
@@ -341,10 +339,10 @@
     <string name="nc_push_to_talk_desc">在停用米高風的情況下，單擊並按住即可使用一鍵通</string>
     <string name="nc_remind">稍後提醒我</string>
     <string name="nc_remote_audio_off">遠端語音關閉</string>
-    <string name="nc_remove_circle_and_members">移除社交圈子及組員</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
     <string name="nc_remove_group_and_members">移除群組及組員</string>
     <string name="nc_remove_participant">移除參與者</string>
+    <string name="nc_remove_team_and_members">移除團隊和成員</string>
     <string name="nc_rename">重新命名對話</string>
     <string name="nc_rename_confirm">重新命名</string>
     <string name="nc_reply">回覆</string>
@@ -467,6 +465,7 @@
     <string name="nc_sort_by">排序方式</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_switch_account">切換賬戶</string>
+    <string name="nc_teams">團隊</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">將這些檔案發送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">將此檔案發送到 %1$s？</string>

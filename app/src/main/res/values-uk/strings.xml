@@ -93,8 +93,6 @@
     <string name="nc_certificate_dialog_title">Перевірка сертифікату</string>
     <string name="nc_certificate_error">Ваші налаштування SSL завадили з’єднанню</string>
     <string name="nc_change_cert_auth">Змінити сертифікат авторизації</string>
-    <string name="nc_circle">Коло</string>
-    <string name="nc_circles">Кола</string>
     <string name="nc_clear_history">Вилучити усі повідомлення</string>
     <string name="nc_clear_history_success">Всі повідомлення видалено</string>
     <string name="nc_clear_history_warning">Ви дійсно бажаєте вилучити усі повідомлення у цій розмові?</string>
@@ -258,7 +256,6 @@
     <string name="nc_push_to_talk_desc">Натисніть і утримуйте &amp; для використання PTT при вимкненому мікрофоні</string>
     <string name="nc_remind">Нагадати пізніше</string>
     <string name="nc_remote_audio_off">Віддалене аудіо відключено</string>
-    <string name="nc_remove_circle_and_members">Вилучити кола та учасників</string>
     <string name="nc_remove_from_favorites">Вилучено з улюбленого</string>
     <string name="nc_remove_group_and_members">Вилучити групи та учасників</string>
     <string name="nc_remove_participant">Вилучити учасника</string>

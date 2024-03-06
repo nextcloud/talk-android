@@ -110,8 +110,6 @@
     <string name="nc_certificate_dialog_title">Zkontrolovat certifikát</string>
     <string name="nc_certificate_error">Vaše nastavení SSL zabránilo připojení</string>
     <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování se</string>
-    <string name="nc_circle">Okruh</string>
-    <string name="nc_circles">Okruhy</string>
     <string name="nc_clear_history">Smazat všechny zprávy</string>
     <string name="nc_clear_history_success">Všechny zprávy byly vymazány</string>
     <string name="nc_clear_history_warning">Opravdu chcete všechny zprávy v této konverzaci smazat?</string>
@@ -304,7 +302,6 @@
     <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte a dokud držíte, můžete mluvit – jako u vysílačky</string>
     <string name="nc_remind">Připomenout později</string>
     <string name="nc_remote_audio_off">Ztlumení mikrofonu na dálku</string>
-    <string name="nc_remove_circle_and_members">Odebrat kruh a členy</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
     <string name="nc_remove_group_and_members">Odebrat skupinu a její členy</string>
     <string name="nc_remove_participant">Odebrat účastníka</string>

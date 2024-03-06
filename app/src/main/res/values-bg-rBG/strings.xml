@@ -91,8 +91,6 @@
     <string name="nc_certificate_dialog_title">Провери сертификата</string>
     <string name="nc_certificate_error">Вашата настройка на SSL, предотврати връзката </string>
     <string name="nc_change_cert_auth">Променете сертификата за удостоверяване</string>
-    <string name="nc_circle">Кръг</string>
-    <string name="nc_circles">Кръгове</string>
     <string name="nc_clear_history">Изтриване на всички съобщения</string>
     <string name="nc_clear_history_success">Всички съобщения бяха изтрити </string>
     <string name="nc_clear_history_warning">Сигурни ли сте, че искате да изтриете всички съобщения в този разговор?</string>
@@ -258,7 +256,6 @@
     <string name="nc_push_to_talk_desc">Когато микрофонът е деактивиран, кликнете &amp; и задръжте, за да използвате „Натисни и говори“</string>
     <string name="nc_remind">Напомни ми по-късно</string>
     <string name="nc_remote_audio_off">Отдалеченото аудио е изключено</string>
-    <string name="nc_remove_circle_and_members">Премахване на кръга и на членовете</string>
     <string name="nc_remove_from_favorites">Премахни от любимите</string>
     <string name="nc_remove_group_and_members">Премахване на групата и на членовете</string>
     <string name="nc_remove_participant">Премахване на участник</string>

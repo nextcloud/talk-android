@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Ikona účtu</string>
+    <string name="add_to_notes">Pridať do poznámok</string>
     <string name="added_to_favorites">Pridať konverzáciu %1$s k obľúbeným</string>
     <string name="appbar_search_in">Hľadať v %s</string>
     <string name="audio_call">Audio hovor</string>
@@ -20,8 +21,11 @@
     <string name="clear_status_message">Vyčistiť správu o stave</string>
     <string name="clear_status_message_after">Vyčistiť správu o stave po</string>
     <string name="close">Zatvoriť</string>
+    <string name="continuous_voice_message_recording">Zamknúť nahrávanie pre nepretržité nahrávanie hlasovej správy</string>
+    <string name="conversation_is_read_only">Konverzácia je iba na čítanie</string>
     <string name="conversations">Konverzácie</string>
     <string name="create_conversation">Vytvoriť konverzáciu</string>
+    <string name="create_issue">Vytvoriť problém</string>
     <string name="custom">Vlastný</string>
     <string name="danger_zone">Nebezpečná oblasť</string>
     <string name="delete_avatar">Zmazať avatara</string>
@@ -29,6 +33,8 @@
     <string name="dnd">Nerušiť</string>
     <string name="dontClear">Nemazať</string>
     <string name="edit">Upraviť</string>
+    <string name="edit_error_24_hours_old_message">Nemôžete upravovať správy staršie ako 24 hodín.</string>
+    <string name="edit_message_icon_description">Upraviť ikonu správy</string>
     <string name="emoji_backspace">Spätná lomka</string>
     <string name="emoji_category_recent">Nedávne</string>
     <string name="encrypted">Šifrované</string>
@@ -38,7 +44,10 @@
     <string name="file_list_loading">Načítavam …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
+    <string name="hint_edited_message">(editované)</string>
     <string name="invisible">Neviditeľný</string>
+    <string name="languages_error_message">Jazyky sa nedali získať</string>
+    <string name="languages_error_title">Získanie zlyhalo</string>
     <string name="later_today">Neskôr dnes</string>
     <string name="left_conversation">Opustili ste konverzáciu %1$s</string>
     <string name="load_more_results">Načítať viac výsledkov</string>
@@ -53,6 +62,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Najväčšie prvé</string>
     <string name="menu_item_sort_by_size_smallest_first">Najmenšie prvé</string>
+    <string name="message_expiration_title">Vypršanie platnosti správy</string>
     <string name="message_poll_tap_to_open">Klepnutím otvoríte anketu</string>
     <string name="message_search_begin_empty">Žiadne výsledky vyhľadávania</string>
     <string name="message_search_begin_typing">Začnite písať pre vyhľadanie …</string>
@@ -101,8 +111,6 @@
     <string name="nc_certificate_dialog_title">Skontrolujte certifikát</string>
     <string name="nc_certificate_error">Vaša konfigurácia SSL zabránila pripojeniu</string>
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
-    <string name="nc_circle">Kruh</string>
-    <string name="nc_circles">Kruhy</string>
     <string name="nc_clear_history">Vymazať všetky správy</string>
     <string name="nc_clear_history_success">Všetky správy boli vymazané</string>
     <string name="nc_clear_history_warning">Naozaj chcete vymazať všetky správy v tejto konverzácii?</string>
@@ -280,7 +288,6 @@
     <string name="nc_push_to_talk_desc">S vypnutým mikrofónom, kliknite &amp;podržte pre použitie funkcie Stlač a hovor PTT</string>
     <string name="nc_remind">Pripomenúť neskôr</string>
     <string name="nc_remote_audio_off">Vypnúť vzdialené audio</string>
-    <string name="nc_remove_circle_and_members">Vymazať kruh a členov</string>
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
     <string name="nc_remove_group_and_members">Odobrať skupinu a členov</string>
     <string name="nc_remove_participant">Odobrať účastníka</string>

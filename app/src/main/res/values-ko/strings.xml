@@ -87,8 +87,6 @@
     <string name="nc_certificate_dialog_title">인증서 확인</string>
     <string name="nc_certificate_error">SSL 설정에서 연결을 거부함</string>
     <string name="nc_change_cert_auth">인증서 변경</string>
-    <string name="nc_circle">서클</string>
-    <string name="nc_circles">서클</string>
     <string name="nc_clear_history">모든 메시지 삭제</string>
     <string name="nc_clear_history_success">모든 메시지가 삭제되었습니다.</string>
     <string name="nc_clear_history_warning">이 대화에서 모든 메시지를 삭제하시겠습니까?</string>
@@ -250,7 +248,6 @@
     <string name="nc_push_to_talk_desc">마이크가 비활성화된 상태에서 &amp;를 누르고 있으면 눌러 말하기 사용</string>
     <string name="nc_remind">나중에 다시 알림</string>
     <string name="nc_remote_audio_off">원격 오디오 끄기</string>
-    <string name="nc_remove_circle_and_members">서클과 구성원 제거</string>
     <string name="nc_remove_from_favorites">즐겨찾기에서 제거</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_remove_participant">참가자 삭제</string>

@@ -69,8 +69,6 @@
     <string name="nc_certificate_dialog_title">Tarkista varmenne</string>
     <string name="nc_certificate_error">SSL-asetukset esti yhteyden</string>
     <string name="nc_change_cert_auth">Vaihda tunnistautumisvarmenne</string>
-    <string name="nc_circle">Piiri</string>
-    <string name="nc_circles">Piirit</string>
     <string name="nc_clear_history">Poista kaikki viestit</string>
     <string name="nc_clear_history_success">Kaikki viestit poistettiin</string>
     <string name="nc_clear_history_warning">Haluatko varmasti poistaa kaikki viestit tästä keskustelusta?</string>
@@ -214,7 +212,6 @@
     <string name="nc_push_disabled">Push-ilmoitukset pois käytöstä</string>
     <string name="nc_push_to_talk">Paina puhuaksesi</string>
     <string name="nc_remind">Muistuta myöhemmin</string>
-    <string name="nc_remove_circle_and_members">Poista piiri ja jäsenet</string>
     <string name="nc_remove_from_favorites">Poista suosikeista</string>
     <string name="nc_remove_group_and_members">Poista ryhmä ja jäsenet</string>
     <string name="nc_remove_participant">Poista osallistuja</string>
