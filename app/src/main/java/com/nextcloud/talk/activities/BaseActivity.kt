@@ -109,15 +109,10 @@ open class BaseActivity : AppCompatActivity() {
              window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
          }
     }
-    public override fun onPause(){
-        super.onPause()
-    }
+
     public override fun onStop() {
         super.onStop()
         eventBus.unregister(this)
-        if(appPreferences.isScreenLocked){
-            finish()
-        }
     }
 
     fun setupSystemColors() {
