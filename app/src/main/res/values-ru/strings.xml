@@ -102,8 +102,6 @@
     <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
     <string name="nc_certificate_error">Заданные параметры SSL не позволяют подключиться</string>
     <string name="nc_change_cert_auth">Изменить сертификат для подтверждения подлинности</string>
-    <string name="nc_circle">Круг</string>
-    <string name="nc_circles">Круги</string>
     <string name="nc_clear_history">Удалить все сообщения</string>
     <string name="nc_clear_history_success">Все сообщения были удалены</string>
     <string name="nc_clear_history_warning">Вы действительно хотите удалить все сообщения в этой беседе?</string>
@@ -275,10 +273,10 @@
     <string name="nc_push_to_talk_desc">Нажмите и удерживайте для использования PTT при отключённом микрофоне</string>
     <string name="nc_remind">Напомнить позже</string>
     <string name="nc_remote_audio_off">Отключить звук удалённо</string>
-    <string name="nc_remove_circle_and_members">Удалить Круг и его учатников</string>
     <string name="nc_remove_from_favorites">Удалить из избранного</string>
     <string name="nc_remove_group_and_members">Удалить группу и её участников</string>
     <string name="nc_remove_participant">Удалить участника</string>
+    <string name="nc_remove_team_and_members">Исключить команду и её участников</string>
     <string name="nc_rename">Переименовать разговор</string>
     <string name="nc_rename_confirm">Переименовать</string>
     <string name="nc_reply">Ответить</string>
@@ -394,6 +392,7 @@
     <string name="nc_sort_by">Сортировать по</string>
     <string name="nc_start_time">Время начала</string>
     <string name="nc_switch_account">Сменить аккаунт</string>
+    <string name="nc_teams">Команды</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
     <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>
     <string name="nc_upload_confirm_send_single">Отправить этот файл %1$s?</string>

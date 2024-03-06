@@ -109,8 +109,6 @@
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
-    <string name="nc_circle">Círculo</string>
-    <string name="nc_circles">Círculos</string>
     <string name="nc_clear_history">Excluir todas as mensagens </string>
     <string name="nc_clear_history_success">Todas as mensagens foram apagadas </string>
     <string name="nc_clear_history_warning">Tem certeza de que deseja excluir todas as mensagens desta conversa? </string>
@@ -295,10 +293,10 @@
     <string name="nc_push_to_talk_desc">Com o microfone desativado, clique&amp; para usar Pressione-para-falar</string>
     <string name="nc_remind">Lembre-me mais tarde</string>
     <string name="nc_remote_audio_off">Áudio remoto desligado</string>
-    <string name="nc_remove_circle_and_members">Remover círculo e membros</string>
     <string name="nc_remove_from_favorites">Remover dos favoritos</string>
     <string name="nc_remove_group_and_members">Remover grupo e membros </string>
     <string name="nc_remove_participant">Excluir participante</string>
+    <string name="nc_remove_team_and_members">Remover equipe e membros</string>
     <string name="nc_rename">Renomear conversa</string>
     <string name="nc_rename_confirm">Renomear</string>
     <string name="nc_reply">Responder</string>
@@ -415,6 +413,7 @@
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de início</string>
     <string name="nc_switch_account">Mudar de conta</string>
+    <string name="nc_teams">Equipes</string>
     <string name="nc_upload_choose_local_files">Escolher arquivos</string>
     <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>

@@ -108,8 +108,6 @@
     <string name="nc_certificate_dialog_title">Sprawdź certyfikat</string>
     <string name="nc_certificate_error">Twoje ustawienia SSL uniemożliwiają połaczenie</string>
     <string name="nc_change_cert_auth">Zmień certyfikat uwierzytelnienia</string>
-    <string name="nc_circle">Krąg</string>
-    <string name="nc_circles">Kręgi</string>
     <string name="nc_clear_history">Usuń wszystkie wiadomości</string>
     <string name="nc_clear_history_success">Wszystkie wiadomości zostały usunięte</string>
     <string name="nc_clear_history_warning">Czy na pewno chcesz usunąć wszystkie wiadomości z tej rozmowy?</string>
@@ -293,7 +291,6 @@
     <string name="nc_push_to_talk_desc">Gdy mikrofon jest wyłączony, kliknij i przytrzymaj, aby użyć funkcji \"Naciśnij i mów\"</string>
     <string name="nc_remind">Przypomnij mi później</string>
     <string name="nc_remote_audio_off">Zdalne wyłączenie dźwięku</string>
-    <string name="nc_remove_circle_and_members">Usuń krąg i członków</string>
     <string name="nc_remove_from_favorites">Usuń z ulubionych</string>
     <string name="nc_remove_group_and_members">Usuń grupę i członków</string>
     <string name="nc_remove_participant">Usuń uczestnika</string>

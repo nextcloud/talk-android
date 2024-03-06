@@ -99,8 +99,6 @@
     <string name="nc_certificate_dialog_title">گواهی را بررسی کنید</string>
     <string name="nc_certificate_error">راه اندازی SSL شما مانع از اتصال شد</string>
     <string name="nc_change_cert_auth">گواهی تأیید اعتبار را تغییر دهید</string>
-    <string name="nc_circle">حلقه</string>
-    <string name="nc_circles">حلقه ها</string>
     <string name="nc_clear_history">حذف تمام پیام‌ها</string>
     <string name="nc_clear_history_success">تمام پیام‌ها حذف شدند</string>
     <string name="nc_clear_history_warning">آیا واقعا می‌خواهید تمام پیام‌ها را در این مکالمه حذف کنید؟</string>
@@ -280,7 +278,6 @@
     <string name="nc_push_to_talk_desc">با غیر فعال کردن میکروفن، برای استفاده از Push-to-talk کلیک &amp; نگه‌داشتن را انجام دهید</string>
     <string name="nc_remind">بعدا به من یادآوری کن</string>
     <string name="nc_remote_audio_off">Remote audio off</string>
-    <string name="nc_remove_circle_and_members">Remove circle and members</string>
     <string name="nc_remove_from_favorites">حذف کردن از مورد علاقه‌ها</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_remove_participant">شرکت کننده را حذف کنید</string>

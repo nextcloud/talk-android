@@ -103,8 +103,6 @@
     <string name="nc_certificate_dialog_title">Ellenőrizze a tanúsítványt</string>
     <string name="nc_certificate_error">Az SSL beállítás megakadályozta a kapcsolódást</string>
     <string name="nc_change_cert_auth">Hitelesítési tanúsítvány módosítása</string>
-    <string name="nc_circle">Kör</string>
-    <string name="nc_circles">Körök</string>
     <string name="nc_clear_history">Összes üzenet törlése</string>
     <string name="nc_clear_history_success">Az összes üzenet törölve lett</string>
     <string name="nc_clear_history_warning">Biztos, hogy törli a beszélgetés összes üzenetét?</string>
@@ -283,7 +281,6 @@
     <string name="nc_push_to_talk_desc">A mikrofon le lesz tiltva, a beszédhez tartsa lenyomva</string>
     <string name="nc_remind">Emlékeztessen később</string>
     <string name="nc_remote_audio_off">Távoli hang kikapcsolása</string>
-    <string name="nc_remove_circle_and_members">Kör és tagok eltávolítása</string>
     <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>
     <string name="nc_remove_group_and_members">Csoport és tagok eltávolítása</string>
     <string name="nc_remove_participant">Résztvevő eltávolítása</string>

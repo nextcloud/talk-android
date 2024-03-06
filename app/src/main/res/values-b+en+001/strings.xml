@@ -114,8 +114,6 @@
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
-    <string name="nc_circle">Circle</string>
-    <string name="nc_circles">Circles</string>
     <string name="nc_clear_edit_button">clear Edit Button</string>
     <string name="nc_clear_edit_message">Clear Edit Message</string>
     <string name="nc_clear_history">Delete all messages</string>
@@ -341,10 +339,10 @@
     <string name="nc_push_to_talk_desc">With the microphone disabled, click&amp;hold to use Press-to-transmit</string>
     <string name="nc_remind">Remind me later</string>
     <string name="nc_remote_audio_off">Remote audio off</string>
-    <string name="nc_remove_circle_and_members">Remove circle and members</string>
     <string name="nc_remove_from_favorites">Remove from favourites</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_remove_participant">Remove participant</string>
+    <string name="nc_remove_team_and_members">Remove team and members</string>
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_rename_confirm">Rename</string>
     <string name="nc_reply">Reply</string>
@@ -467,6 +465,7 @@
     <string name="nc_sort_by">Sort by</string>
     <string name="nc_start_time">Start time</string>
     <string name="nc_switch_account">Switch account</string>
+    <string name="nc_teams">Teams</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
     <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>
     <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>

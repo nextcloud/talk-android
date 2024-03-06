@@ -110,8 +110,6 @@
     <string name="nc_certificate_dialog_title">Comprobar el certificado</string>
     <string name="nc_certificate_error">Tu configuración SSL impidió la conexión</string>
     <string name="nc_change_cert_auth">Cambiar certificado de autenticación</string>
-    <string name="nc_circle">Círculo</string>
-    <string name="nc_circles">Círculos</string>
     <string name="nc_clear_history">Borrar todos los mensajes</string>
     <string name="nc_clear_history_success">Se han eliminado todos los mensajes</string>
     <string name="nc_clear_history_warning">¿Seguro que quieres borrar todos los mensajes en esta conversación?</string>
@@ -327,7 +325,6 @@
     <string name="nc_push_to_talk_desc">Con el micrófono deshabilitado, mantén pulsado &amp; para usar Push-to-talk</string>
     <string name="nc_remind">Recuérdamelo más tarde</string>
     <string name="nc_remote_audio_off">Audio remoto apagado</string>
-    <string name="nc_remove_circle_and_members">Eliminar círculo y miembros</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
     <string name="nc_remove_group_and_members">Eliminar grupo y miembros</string>
     <string name="nc_remove_participant">Eliminar participante</string>

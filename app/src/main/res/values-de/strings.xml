@@ -114,8 +114,6 @@
     <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
     <string name="nc_certificate_error">Ihre SSL-Konfiguration hat die Verbindung verhindert</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
-    <string name="nc_circle">Kreis</string>
-    <string name="nc_circles">Kreise</string>
     <string name="nc_clear_edit_button">Schaltfläche „Bearbeiten“ löschen</string>
     <string name="nc_clear_edit_message">Bearbeitungsnachricht löschen</string>
     <string name="nc_clear_history">Alle Nachrichten löschen</string>
@@ -341,10 +339,10 @@
     <string name="nc_push_to_talk_desc">Bei deaktiviertem Mikrofon &amp;drücken. Halten Sie zum Senden die Sprechtaste gedrückt (Funkgerät-Modus)</string>
     <string name="nc_remind">Erinnere mich später</string>
     <string name="nc_remote_audio_off">Entferntes Audio aus</string>
-    <string name="nc_remove_circle_and_members">Kreis und Mitglieder entfernen</string>
     <string name="nc_remove_from_favorites">Von Favoriten entfernen</string>
     <string name="nc_remove_group_and_members">Gruppe und Mitglieder entfernen</string>
     <string name="nc_remove_participant">Teilnehmer entfernen</string>
+    <string name="nc_remove_team_and_members">Team und Mitglieder entfernen</string>
     <string name="nc_rename">Unterhaltung umbenennen</string>
     <string name="nc_rename_confirm">Umbenennen</string>
     <string name="nc_reply">Antworten</string>
@@ -467,6 +465,7 @@
     <string name="nc_sort_by">Sortiere nach</string>
     <string name="nc_start_time">Startzeit</string>
     <string name="nc_switch_account">Konto wechseln</string>
+    <string name="nc_teams">Teams</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
     <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>

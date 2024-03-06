@@ -108,8 +108,6 @@
     <string name="nc_certificate_dialog_title">Egiaztatu ziurtagiria</string>
     <string name="nc_certificate_error">Zure SSL konfigurazioak konexioa eragotzi du</string>
     <string name="nc_change_cert_auth">Aldatu autentifikazio ziurtagiria</string>
-    <string name="nc_circle">Zirkulua</string>
-    <string name="nc_circles">Zirkuluak</string>
     <string name="nc_clear_history">Ezabatu mezu guztiak</string>
     <string name="nc_clear_history_success">Mezu guztiak ezabatu dira</string>
     <string name="nc_clear_history_warning">Ziur zaude elkarrizketa honen mezu guztiak ezabatu nahi dituzula?</string>
@@ -295,7 +293,6 @@
     <string name="nc_push_to_talk_desc">Mikrofonoa desgaituta daukazunean, egin klik &amp;mantendu sakatzerakoan hitz egiteko</string>
     <string name="nc_remind">Gogoratu geroago</string>
     <string name="nc_remote_audio_off">Urruneko audioa itzalita</string>
-    <string name="nc_remove_circle_and_members">Kendu taldea eta kideak</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
     <string name="nc_remove_group_and_members">Kendu taldea eta kideak</string>
     <string name="nc_remove_participant">Kendu parte-hartzailea</string>

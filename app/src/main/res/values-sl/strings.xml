@@ -93,8 +93,6 @@
     <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
     <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
-    <string name="nc_circle">Krog</string>
-    <string name="nc_circles">Krogi</string>
     <string name="nc_clear_history">Izbriši vsa sporočila</string>
     <string name="nc_clear_history_success">Vsa sporočilo so izbrisana</string>
     <string name="nc_clear_history_warning">Ali res želite izbrisati vsa sporočila tega pogovora?</string>
@@ -262,7 +260,6 @@
     <string name="nc_push_to_talk_desc">Pri onemogočenem mikrofonu lahko za začetek govora kliknete in zadržite gumb</string>
     <string name="nc_remind">Opomni me kasneje</string>
     <string name="nc_remote_audio_off">Oddaljen zvok je onemogočen</string>
-    <string name="nc_remove_circle_and_members">Odstrani krog in člane</string>
     <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
     <string name="nc_remove_group_and_members">Odstrani skupino in člane</string>
     <string name="nc_remove_participant">Odstrani udeležence</string>
