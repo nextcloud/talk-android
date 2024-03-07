@@ -42,6 +42,7 @@
     <string name="file_list_loading">Chargement…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 heures</string>
+    <string name="get_invitations_error">Échec de la récupération des invitations en attente</string>
     <string name="hint_edited_message">(modifié)</string>
     <string name="invisible">Invisible</string>
     <string name="languages_error_message">Les langues n\'ont pas pu être récupérées</string>
@@ -430,6 +431,7 @@
     <string name="nc_sort_by">Trier par</string>
     <string name="nc_start_time">Heure de début</string>
     <string name="nc_switch_account">Changer de compte</string>
+    <string name="nc_team">Équipe</string>
     <string name="nc_teams">Équipes</string>
     <string name="nc_upload_choose_local_files">Choisir des fichiers</string>
     <string name="nc_upload_confirm_send_multiple">Envoyer ces fichiers à %1$s ?</string>
