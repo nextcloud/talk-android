@@ -44,6 +44,7 @@
     <string name="file_list_loading">Lade …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 Stunden</string>
+    <string name="get_invitations_error">Ausstehende Einladungen konnten nicht abgerufen werden</string>
     <string name="hint_edited_message">(Bearbeitet)</string>
     <string name="invisible">Unsichtbar</string>
     <string name="languages_error_message">Sprachen konnten nicht abgerufen werden</string>
@@ -465,6 +466,7 @@
     <string name="nc_sort_by">Sortiere nach</string>
     <string name="nc_start_time">Startzeit</string>
     <string name="nc_switch_account">Konto wechseln</string>
+    <string name="nc_team">Team</string>
     <string name="nc_teams">Teams</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
     <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>

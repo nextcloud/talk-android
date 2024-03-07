@@ -44,6 +44,7 @@
     <string name="file_list_loading">Loading …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hours</string>
+    <string name="get_invitations_error">Failed to fetch pending invitations</string>
     <string name="hint_edited_message">(edited)</string>
     <string name="invisible">Invisible</string>
     <string name="languages_error_message">Languages could not be retrieved</string>
@@ -465,6 +466,7 @@
     <string name="nc_sort_by">Sort by</string>
     <string name="nc_start_time">Start time</string>
     <string name="nc_switch_account">Switch account</string>
+    <string name="nc_team">Team</string>
     <string name="nc_teams">Teams</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
     <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>

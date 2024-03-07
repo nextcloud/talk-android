@@ -44,6 +44,7 @@
     <string name="file_list_loading">正在載入……</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小時</string>
+    <string name="get_invitations_error">擷取擱置中的邀請失敗</string>
     <string name="hint_edited_message">（已編輯）</string>
     <string name="invisible">隱藏</string>
     <string name="languages_error_message">無法擷取語言</string>
@@ -465,6 +466,7 @@
     <string name="nc_sort_by">排序</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_switch_account">切換帳號</string>
+    <string name="nc_team">團隊</string>
     <string name="nc_teams">團隊</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">傳送這些檔案給 %1$s？</string>
