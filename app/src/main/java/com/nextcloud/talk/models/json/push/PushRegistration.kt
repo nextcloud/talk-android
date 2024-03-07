@@ -22,20 +22,20 @@
 package com.nextcloud.talk.models.json.push
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
 
 @Parcelize
-@JsonObject
+@Serializable
 data class PushRegistration(
-    @JsonField(name = ["publicKey"])
+    @SerialName("publicKey")
     var publicKey: String?,
 
-    @JsonField(name = ["deviceIdentifier"])
+    @SerialName("deviceIdentifier")
     var deviceIdentifier: String?,
 
-    @JsonField(name = ["signature"])
+    @SerialName("signature")
     var signature: String?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

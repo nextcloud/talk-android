@@ -22,25 +22,25 @@
 package com.nextcloud.talk.models.json.mention
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class Mention(
-    @JsonField(name = ["id"])
+    @SerialName("id")
     var id: String?,
-    @JsonField(name = ["label"])
+    @SerialName("label")
     var label: String?,
     // type of user (guests or users or calls)
-    @JsonField(name = ["source"])
+    @SerialName("source")
     var source: String?,
-    @JsonField(name = ["status"])
+    @SerialName("status")
     var status: String?,
-    @JsonField(name = ["statusIcon"])
+    @SerialName("statusIcon")
     var statusIcon: String?,
-    @JsonField(name = ["statusMessage"])
+    @SerialName("statusMessage")
     var statusMessage: String?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

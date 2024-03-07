@@ -23,19 +23,19 @@ package com.nextcloud.talk.models
 
 import android.net.Uri
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.converters.UriTypeConverter
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class RingtoneSettings(
-    @JsonField(name = ["ringtoneUri"], typeConverter = UriTypeConverter::class)
-    var ringtoneUri: Uri? = null,
-    @JsonField(name = ["ringtoneName"])
+    @SerialName("ringtoneUri", typeConverter = UriTypeConverter::class)
+    // var ringtoneUri: Uri? = null,
+    @SerialName("ringtoneName")
     var ringtoneName: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null)
+    constructor() : this(null)
 }

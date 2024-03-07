@@ -26,9 +26,11 @@ import com.nextcloud.talk.models.json.capabilities.ServerVersion
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 import java.lang.Boolean.FALSE
 
 @Parcelize
+@Serializable
 data class User(
     var id: Long? = null,
     var userId: String? = null,

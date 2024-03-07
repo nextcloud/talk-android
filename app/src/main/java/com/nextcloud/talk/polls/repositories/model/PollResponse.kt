@@ -20,50 +20,50 @@
 package com.nextcloud.talk.polls.repositories.model
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class PollResponse(
-    @JsonField(name = ["id"])
+    @SerialName("id")
     var id: String,
 
-    @JsonField(name = ["question"])
+    @SerialName("question")
     var question: String? = null,
 
-    @JsonField(name = ["options"])
+    @SerialName("options")
     var options: ArrayList<String>? = null,
 
-    @JsonField(name = ["votes"])
+    @SerialName("votes")
     var votes: Map<String, Int>? = null,
 
-    @JsonField(name = ["actorType"])
+    @SerialName("actorType")
     var actorType: String? = null,
 
-    @JsonField(name = ["actorId"])
+    @SerialName("actorId")
     var actorId: String? = null,
 
-    @JsonField(name = ["actorDisplayName"])
+    @SerialName("actorDisplayName")
     var actorDisplayName: String? = null,
 
-    @JsonField(name = ["status"])
+    @SerialName("status")
     var status: Int = 0,
 
-    @JsonField(name = ["resultMode"])
+    @SerialName("resultMode")
     var resultMode: Int = 0,
 
-    @JsonField(name = ["maxVotes"])
+    @SerialName("maxVotes")
     var maxVotes: Int = 0,
 
-    @JsonField(name = ["votedSelf"])
+    @SerialName("votedSelf")
     var votedSelf: ArrayList<Int>? = null,
 
-    @JsonField(name = ["numVoters"])
+    @SerialName("numVoters")
     var numVoters: Int = 0,
 
-    @JsonField(name = ["details"])
+    @SerialName("details")
     var details: ArrayList<PollDetailsResponse>? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

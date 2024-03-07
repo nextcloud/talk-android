@@ -22,21 +22,21 @@
 package com.nextcloud.talk.models.json.websocket
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.AnyParceler
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.TypeParceler
 import java.util.HashMap
 
 @Parcelize
-@JsonObject
+@Serializable
 @TypeParceler<Any, AnyParceler>
 class EventOverallWebSocketMessage(
-    @JsonField(name = ["type"])
     var type: String? = null,
-    @JsonField(name = ["event"])
-    var eventMap: HashMap<String, Any>? = null
+    @SerialName("event")
+    // TODO: replaced    HashMap<String, Any>   with    HashMap<String, String>     this might be a problem?!
+    var eventMap: HashMap<String, String>? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

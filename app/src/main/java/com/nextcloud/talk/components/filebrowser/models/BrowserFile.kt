@@ -29,7 +29,7 @@ import at.bitfire.dav4jvm.property.GetContentType
 import at.bitfire.dav4jvm.property.GetLastModified
 import at.bitfire.dav4jvm.property.ResourceType
 import at.bitfire.dav4jvm.property.ResourceType.Companion.COLLECTION
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted
 import com.nextcloud.talk.components.filebrowser.models.properties.NCPermission
 import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview
@@ -41,7 +41,7 @@ import kotlinx.parcelize.Parcelize
 import java.io.File
 
 @Parcelize
-@JsonObject
+@Serializable
 data class BrowserFile(
     var path: String? = null,
     var displayName: String? = null,

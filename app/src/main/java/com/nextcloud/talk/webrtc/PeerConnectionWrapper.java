@@ -429,10 +429,12 @@ public class PeerConnectionWrapper {
                 String nick = null;
                 if (dataChannelMessage.getPayload() instanceof String) {
                     nick = (String) dataChannelMessage.getPayload();
-                } else if (dataChannelMessage.getPayload() instanceof Map) {
-                    Map<String, String> payloadMap = (Map<String, String>) dataChannelMessage.getPayload();
-                    nick = payloadMap.get("name");
                 }
+                // TODO: adapt payload type!!!!!!!!!!!!!!
+//                else if (dataChannelMessage.getPayload() instanceof Map) {
+//                    Map<String, String> payloadMap = (Map<String, String>) dataChannelMessage.getPayload();
+//                    nick = payloadMap.get("name");
+//                }
 
                 if (nick != null) {
                     dataChannelMessageNotifier.notifyNickChanged(nick);

@@ -22,19 +22,19 @@
 package com.nextcloud.talk.models.json.websocket
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class CallWebSocketMessage(
-    @JsonField(name = ["recipient"])
+    @SerialName("recipient")
     var recipientWebSocketMessage: ActorWebSocketMessage? = null,
-    @JsonField(name = ["sender"])
+    @SerialName("sender")
     var senderWebSocketMessage: ActorWebSocketMessage? = null,
-    @JsonField(name = ["data"])
+    @SerialName("data")
     var ncSignalingMessage: NCSignalingMessage? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

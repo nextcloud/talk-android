@@ -22,44 +22,34 @@
 package com.nextcloud.talk.models.json.notifications
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import com.nextcloud.talk.models.json.converters.KotlinxJodaTimeConverter
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.converters.LoganSquareJodaTimeConverter
 import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
 @Parcelize
-@JsonObject
+@Serializable
 data class Notification(
-    @JsonField(name = ["icon"])
     var icon: String?,
-    @JsonField(name = ["notification_id"])
+    @SerialName("notification_id")
     var notificationId: Int?,
-    @JsonField(name = ["app"])
     var app: String?,
-    @JsonField(name = ["user"])
     var user: String?,
-    @JsonField(name = ["datetime"], typeConverter = LoganSquareJodaTimeConverter::class)
+    @Serializable(with = KotlinxJodaTimeConverter::class)
     var datetime: DateTime?,
-    @JsonField(name = ["object_type"])
+    @SerialName("object_type")
     var objectType: String?,
-    @JsonField(name = ["object_id"])
+    @SerialName("object_id")
     var objectId: String?,
-    @JsonField(name = ["subject"])
     var subject: String?,
-    @JsonField(name = ["subjectRich"])
     var subjectRich: String?,
-    @JsonField(name = ["subjectRichParameters"])
     var subjectRichParameters: HashMap<String, HashMap<String, String>>?,
-    @JsonField(name = ["message"])
     var message: String?,
-    @JsonField(name = ["messageRich"])
     var messageRich: String?,
-    @JsonField(name = ["messageRichParameters"])
     var messageRichParameters: HashMap<String?, HashMap<String?, String?>>?,
-    @JsonField(name = ["link"])
     var link: String?,
-    @JsonField(name = ["actions"])
     var actions: List<NotificationAction>?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

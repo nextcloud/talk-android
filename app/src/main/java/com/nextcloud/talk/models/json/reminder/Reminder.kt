@@ -20,20 +20,16 @@
 package com.nextcloud.talk.models.json.reminder
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class Reminder(
-    @JsonField(name = ["userid"])
     var userid: String? = null,
-    @JsonField(name = ["token"])
     var token: String? = null,
-    @JsonField(name = ["messageId"])
     var messageId: Int? = null,
-    @JsonField(name = ["timestamp"])
     var timestamp: Int? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

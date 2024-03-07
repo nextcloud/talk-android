@@ -22,28 +22,21 @@
 package com.nextcloud.talk.models.json.signaling
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class NCMessagePayload(
-    @JsonField(name = ["type"])
     var type: String? = null,
-    @JsonField(name = ["sdp"])
     var sdp: String? = null,
-    @JsonField(name = ["nick"])
     var nick: String? = null,
-    @JsonField(name = ["candidate"])
+    @SerialName("candidate")
     var iceCandidate: NCIceCandidate? = null,
-    @JsonField(name = ["name"])
     var name: String? = null,
-    @JsonField(name = ["state"])
     var state: Boolean? = null,
-    @JsonField(name = ["timestamp"])
     var timestamp: Long? = null,
-    @JsonField(name = ["reaction"])
     var reaction: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

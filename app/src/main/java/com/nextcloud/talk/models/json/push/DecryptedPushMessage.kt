@@ -20,39 +20,39 @@
 package com.nextcloud.talk.models.json.push
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
+import kotlinx.serialization.SerialName
 import com.bluelinelabs.logansquare.annotation.JsonIgnore
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class DecryptedPushMessage(
-    @JsonField(name = ["app"])
+    @SerialName("app")
     var app: String?,
 
-    @JsonField(name = ["type"])
+    @SerialName("type")
     var type: String?,
 
-    @JsonField(name = ["subject"])
+    @SerialName("subject")
     var subject: String,
 
-    @JsonField(name = ["id"])
+    @SerialName("id")
     var id: String?,
 
-    @JsonField(name = ["nid"])
+    @SerialName("nid")
     var notificationId: Long?,
 
-    @JsonField(name = ["nids"])
+    @SerialName("nids")
     var notificationIds: LongArray?,
 
-    @JsonField(name = ["delete"])
+    @SerialName("delete")
     var delete: Boolean,
 
-    @JsonField(name = ["delete-all"])
+    @SerialName("delete-all")
     var deleteAll: Boolean,
 
-    @JsonField(name = ["delete-multiple"])
+    @SerialName("delete-multiple")
     var deleteMultiple: Boolean,
 
     @JsonIgnore

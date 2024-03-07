@@ -22,18 +22,17 @@
 package com.nextcloud.talk.models.json.websocket
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class RoomPropertiesWebSocketMessage(
-    @JsonField(name = ["name"])
     var name: String? = null,
-    @JsonField(name = ["type"], typeConverter = EnumRoomTypeConverter::class)
+    @SerialName("type", typeConverter = EnumRoomTypeConverter::class)
     var roomType: ConversationType? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

@@ -23,6 +23,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import com.github.aurae.retrofit2.LoganSquareConverterFactory
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
@@ -37,6 +38,7 @@ import com.nextcloud.talk.utils.ssl.TrustManager
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
+import kotlinx.serialization.json.Json
 import okhttp3.Authenticator
 import okhttp3.Cache
 import okhttp3.Credentials.basic
@@ -44,6 +46,7 @@ import okhttp3.Dispatcher
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.JavaNetCookieJar
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -100,11 +103,14 @@ class RestModule(private val context: Context) {
     @Singleton
     @Provides
     fun provideRetrofit(httpClient: OkHttpClient?): Retrofit {
+        val contentType = "application/json".toMediaType()
+
         val retrofitBuilder = Retrofit.Builder()
             .client(httpClient!!)
             .baseUrl("https://nextcloud.com")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-            .addConverterFactory(LoganSquareConverterFactory.create())
+            // .addConverterFactory(LoganSquareConverterFactory.create())
+            .addConverterFactory(Json.asConverterFactory(contentType));
         return retrofitBuilder.build()
     }
 

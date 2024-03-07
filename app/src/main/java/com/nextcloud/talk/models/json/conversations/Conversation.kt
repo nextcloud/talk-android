@@ -26,8 +26,8 @@
 package com.nextcloud.talk.models.json.conversations
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
@@ -44,129 +44,126 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class Conversation(
-    @JsonField(name = ["id"])
+    @SerialName("id")
     var roomId: String? = null,
-    @JsonField(name = ["token"])
+    @SerialName("token")
     var token: String? = null,
-    @JsonField(name = ["name"])
+    @SerialName("name")
     var name: String? = null,
-    @JsonField(name = ["displayName"])
+    @SerialName("displayName")
     var displayName: String? = null,
-    @JsonField(name = ["description"])
+    @SerialName("description")
     var description: String? = null,
-    @JsonField(name = ["type"], typeConverter = EnumRoomTypeConverter::class)
+    @SerialName("type", typeConverter = EnumRoomTypeConverter::class)
     var type: ConversationType? = null,
-    @JsonField(name = ["lastPing"])
+    @SerialName("lastPing")
     var lastPing: Long = 0,
-    @JsonField(name = ["participantType"], typeConverter = EnumParticipantTypeConverter::class)
+    @SerialName("participantType", typeConverter = EnumParticipantTypeConverter::class)
     var participantType: ParticipantType? = null,
-    @JsonField(name = ["hasPassword"])
+    @SerialName("hasPassword")
     var hasPassword: Boolean = false,
-    @JsonField(name = ["sessionId"])
+    @SerialName("sessionId")
     var sessionId: String? = null,
-    @JsonField(name = ["actorId"])
+    @SerialName("actorId")
     var actorId: String? = null,
-    @JsonField(name = ["actorType"])
+    @SerialName("actorType")
     var actorType: String? = null,
 
     var password: String? = null,
 
-    @JsonField(name = ["isFavorite"])
+    @SerialName("isFavorite")
     var favorite: Boolean = false,
 
-    @JsonField(name = ["lastActivity"])
+    @SerialName("lastActivity")
     var lastActivity: Long = 0,
 
-    @JsonField(name = ["unreadMessages"])
+    @SerialName("unreadMessages")
     var unreadMessages: Int = 0,
 
-    @JsonField(name = ["unreadMention"])
+    @SerialName("unreadMention")
     var unreadMention: Boolean = false,
 
-    @JsonField(name = ["lastMessage"])
+    @SerialName("lastMessage")
     var lastMessage: ChatMessage? = null,
 
-    @JsonField(name = ["objectType"], typeConverter = ConversationObjectTypeConverter::class)
+    @SerialName("objectType", typeConverter = ConversationObjectTypeConverter::class)
     var objectType: ObjectType? = null,
 
-    @JsonField(name = ["notificationLevel"], typeConverter = EnumNotificationLevelConverter::class)
+    @SerialName("notificationLevel", typeConverter = EnumNotificationLevelConverter::class)
     var notificationLevel: NotificationLevel? = null,
 
-    @JsonField(name = ["readOnly"], typeConverter = EnumReadOnlyConversationConverter::class)
+    @SerialName("readOnly", typeConverter = EnumReadOnlyConversationConverter::class)
     var conversationReadOnlyState: ConversationReadOnlyState? = null,
 
-    @JsonField(name = ["lobbyState"], typeConverter = EnumLobbyStateConverter::class)
+    @SerialName("lobbyState", typeConverter = EnumLobbyStateConverter::class)
     var lobbyState: LobbyState? = null,
 
-    @JsonField(name = ["lobbyTimer"])
+    @SerialName("lobbyTimer")
     var lobbyTimer: Long? = null,
 
-    @JsonField(name = ["lastReadMessage"])
+    @SerialName("lastReadMessage")
     var lastReadMessage: Int = 0,
 
-    @JsonField(name = ["hasCall"])
+    @SerialName("hasCall")
     var hasCall: Boolean = false,
 
-    @JsonField(name = ["callFlag"])
+    @SerialName("callFlag")
     var callFlag: Int = 0,
 
-    @JsonField(name = ["canStartCall"])
+    @SerialName("canStartCall")
     var canStartCall: Boolean = false,
 
-    @JsonField(name = ["canLeaveConversation"])
+    @SerialName("canLeaveConversation")
     var canLeaveConversation: Boolean? = null,
 
-    @JsonField(name = ["canDeleteConversation"])
+    @SerialName("canDeleteConversation")
     var canDeleteConversation: Boolean? = null,
 
-    @JsonField(name = ["unreadMentionDirect"])
+    @SerialName("unreadMentionDirect")
     var unreadMentionDirect: Boolean? = null,
 
-    @JsonField(name = ["notificationCalls"])
+    @SerialName("notificationCalls")
     var notificationCalls: Int? = null,
 
-    @JsonField(name = ["permissions"])
+    @SerialName("permissions")
     var permissions: Int = 0,
 
-    @JsonField(name = ["messageExpiration"])
+    @SerialName("messageExpiration")
     var messageExpiration: Int = 0,
 
-    @JsonField(name = ["status"])
+    @SerialName("status")
     var status: String? = null,
 
-    @JsonField(name = ["statusIcon"])
+    @SerialName("statusIcon")
     var statusIcon: String? = null,
 
-    @JsonField(name = ["statusMessage"])
+    @SerialName("statusMessage")
     var statusMessage: String? = null,
 
-    @JsonField(name = ["statusClearAt"])
+    @SerialName("statusClearAt")
     var statusClearAt: Long? = 0,
 
-    @JsonField(name = ["callRecording"])
+    @SerialName("callRecording")
     var callRecording: Int = 0,
 
-    @JsonField(name = ["avatarVersion"])
+    @SerialName("avatarVersion")
     var avatarVersion: String? = null,
 
     // Be aware that variables with "is" at the beginning will lead to the error:
-    // "@JsonField annotation can only be used on private fields if both getter and setter are present."
+    // "//@JsonField annotation can only be used on private fields if both getter and setter are present."
     // Instead, name it with "has" at the beginning: isCustomAvatar -> hasCustomAvatar
-    @JsonField(name = ["isCustomAvatar"])
+    @SerialName("isCustomAvatar")
     var hasCustomAvatar: Boolean? = null,
 
-    @JsonField(name = ["callStartTime"])
     var callStartTime: Long? = null,
 
-    @JsonField(name = ["recordingConsent"])
+    @SerialName("recordingConsent")
     var recordingConsentRequired: Int = 0,
 
-    @JsonField(name = ["remoteServer"])
     var remoteServer: String? = null,
 
-    @JsonField(name = ["remoteToken"])
     var remoteToken: String? = null
 
 ) : Parcelable {

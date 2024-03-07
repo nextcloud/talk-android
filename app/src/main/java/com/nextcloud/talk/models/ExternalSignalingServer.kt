@@ -22,16 +22,16 @@
 package com.nextcloud.talk.models
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class ExternalSignalingServer(
-    @JsonField(name = ["externalSignalingServer"])
+    @SerialName("externalSignalingServer")
     var externalSignalingServer: String? = null,
-    @JsonField(name = ["externalSignalingTicket"])
+    @SerialName("externalSignalingTicket")
     var externalSignalingTicket: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

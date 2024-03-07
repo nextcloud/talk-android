@@ -22,72 +22,51 @@
 package com.nextcloud.talk.models.json.participants
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class Participant(
-    @JsonField(name = ["attendeeId"])
     var attendeeId: Long? = null,
 
-    @JsonField(name = ["actorType"], typeConverter = EnumActorTypeConverter::class)
+    @SerialName("actorType"], typeConverter = EnumActorTypeConverter::class)
     var actorType: ActorType? = null,
 
-    @JsonField(name = ["actorId"])
     var actorId: String? = null,
 
-    @JsonField(name = ["attendeePin"])
     var attendeePin: String? = null,
 
     @Deprecated("")
-    @JsonField(name = ["userId"])
     var userId: String? = null,
 
-    @JsonField(name = ["internal"])
     var internal: Boolean? = null,
 
-    @JsonField(name = ["type", "participantType"], typeConverter = EnumParticipantTypeConverter::class)
+    @SerialName("type", "participantType"], typeConverter = EnumParticipantTypeConverter::class)
     var type: ParticipantType? = null,
 
     @Deprecated("")
-    @JsonField(name = ["name"])
     var name: String? = null,
 
-    @JsonField(name = ["displayName"])
     var displayName: String? = null,
 
-    @JsonField(name = ["lastPing"])
     var lastPing: Long = 0,
 
     @Deprecated("")
-    @JsonField(name = ["sessionId"])
     var sessionId: String? = null,
 
-    @JsonField(name = ["sessionIds"])
     var sessionIds: ArrayList<String> = ArrayList(0),
 
     @Deprecated("")
-    @JsonField(name = ["roomId"])
     var roomId: Long = 0,
-
-    @JsonField(name = ["inCall"])
     var inCall: Long = 0,
-
-    @JsonField(name = ["status"])
     var status: String? = null,
-
-    @JsonField(name = ["statusIcon"])
     var statusIcon: String? = null,
-
-    @JsonField(name = ["statusMessage"])
     var statusMessage: String? = null,
-
     var source: String? = null,
-
     var selected: Boolean = false
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

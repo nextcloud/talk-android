@@ -22,23 +22,17 @@
 package com.nextcloud.talk.models.json.signaling.settings
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
 @Serializable
 data class IceServer(
     @Deprecated("")
-    @JsonField(name = ["url"])
     var url: String? = null,
-    @JsonField(name = ["urls"])
     var urls: List<String>? = null,
-    @JsonField(name = ["username"])
     var username: String? = null,
-    @JsonField(name = ["credential"])
     var credential: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

@@ -22,18 +22,20 @@
 package com.nextcloud.talk.models.json.generic
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
 
 @Parcelize
-@JsonObject(serializeNullObjects = true)
+// @Serializable(serializeNullObjects = true)
+@Serializable
 data class GenericMeta(
-    @JsonField(name = ["status"])
+    @SerialName("status")
     var status: String? = null,
-    @JsonField(name = ["statuscode"])
+    @SerialName("statuscode")
     var statusCode: Int = 0,
-    @JsonField(name = ["message"])
+    @SerialName("message")
     var message: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

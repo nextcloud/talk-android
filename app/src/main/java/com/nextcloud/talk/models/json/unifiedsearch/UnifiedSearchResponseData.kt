@@ -22,20 +22,16 @@
 package com.nextcloud.talk.models.json.unifiedsearch
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class UnifiedSearchResponseData(
-    @JsonField(name = ["name"])
     var name: String?,
-    @JsonField(name = ["isPaginated"])
     var paginated: Boolean?,
-    @JsonField(name = ["entries"])
     var entries: List<UnifiedSearchEntry>?,
-    @JsonField(name = ["cursor"])
     var cursor: Int?
 ) : Parcelable {
     // empty constructor needed for JsonObject

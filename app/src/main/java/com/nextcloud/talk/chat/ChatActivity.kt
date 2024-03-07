@@ -4629,7 +4629,7 @@ class ChatActivity :
         when (recent.systemMessageType) {
             ChatMessage.SystemMessageType.CALL_STARTED -> { // add CallStartedMessage with id -2
                 if (!callStarted) {
-                    val callStartedChatMessage = ChatMessage()
+                    val callStartedChatMessage = ChatMessage(token = "0")
                     callStartedChatMessage.jsonMessageId = CALL_STARTED_ID
                     callStartedChatMessage.actorId = "-2"
                     val name = if (recent.actorDisplayName.isNullOrEmpty()) "Guest" else recent.actorDisplayName
