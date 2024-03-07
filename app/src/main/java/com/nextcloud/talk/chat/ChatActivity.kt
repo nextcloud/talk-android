@@ -601,6 +601,7 @@ class ChatActivity :
                     spreedCapabilities = state.spreedCapabilities
                     chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
 
+                    invalidateOptionsMenu()
                     initMessageInputView()
 
                     if (conversationUser?.userId != "?" &&
@@ -3923,17 +3924,16 @@ class ChatActivity :
             val searchItem = menu.findItem(R.id.conversation_search)
             searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities)
 
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(
-                    spreedCapabilities,
-                    SpreedFeatures.RICH_OBJECT_LIST_MEDIA
-                )
+            if (currentConversation!!.remoteServer != null ||
+                !CapabilitiesUtil.isSharedItemsAvailable(spreedCapabilities)
             ) {
-                conversationSharedItemsItem = menu.findItem(R.id.shared_items)
-            } else {
                 menu.removeItem(R.id.shared_items)
             }
 
-            if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
+            if (currentConversation!!.remoteServer != null) {
+                menu.removeItem(R.id.conversation_video_call)
+                menu.removeItem(R.id.conversation_voice_call)
+            } else if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
                 conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
 
