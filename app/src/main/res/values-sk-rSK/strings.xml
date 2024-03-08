@@ -159,6 +159,7 @@
     <string name="nc_diagnose_battery_optimization_title">Nastavenia batérie.</string>
     <string name="nc_diagnose_device_name_title">Zariadenie</string>
     <string name="nc_diagnose_phone_category_title">Telefón</string>
+    <string name="nc_diagnose_server_talk_version">Verzia servera Talk /Rozhovor/</string>
     <string name="nc_diagnose_signaling_mode_extern">Externý</string>
     <string name="nc_diagnose_signaling_mode_intern">Interné</string>
     <string name="nc_dialog_invalid_password">Neplatné heslo</string>
@@ -405,6 +406,7 @@
     <string name="nc_sort_by">Zoradiť podľa</string>
     <string name="nc_start_time">Čas začiatku</string>
     <string name="nc_switch_account">Prepnúť účet</string>
+    <string name="nc_team">Tím</string>
     <string name="nc_upload_choose_local_files">Vyberte súbory</string>
     <string name="nc_upload_confirm_send_multiple">Poslať tieto súbory do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Poslať tento súbor do %1$s?</string>

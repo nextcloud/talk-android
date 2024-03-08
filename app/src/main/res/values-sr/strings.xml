@@ -44,6 +44,7 @@
     <string name="file_list_loading">Учитавање…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 сата</string>
+    <string name="get_invitations_error">Није успело добављање позивница на чекању</string>
     <string name="hint_edited_message">(уређено)</string>
     <string name="invisible">Невидљива</string>
     <string name="languages_error_message">Није успело преузимање језика</string>
@@ -465,6 +466,7 @@
     <string name="nc_sort_by">Разврстај</string>
     <string name="nc_start_time">Време почетка</string>
     <string name="nc_switch_account">Пребаци налог</string>
+    <string name="nc_team">Тим</string>
     <string name="nc_teams">Тимови</string>
     <string name="nc_upload_choose_local_files">Изаберите фајлове</string>
     <string name="nc_upload_confirm_send_multiple">Да ли да пошаљем ове фајлове %1$s?</string>
