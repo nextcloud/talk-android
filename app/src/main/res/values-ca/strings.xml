@@ -372,6 +372,7 @@
     <string name="nc_sort_by">Ordena per</string>
     <string name="nc_start_time">Hora d\'inici</string>
     <string name="nc_switch_account">Canvia el compte</string>
+    <string name="nc_team">Equip</string>
     <string name="nc_upload_choose_local_files">Trieu els fitxers</string>
     <string name="nc_upload_confirm_send_multiple">Voleu enviar aquests fitxers a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Voleu enviar aquest fitxer a %1$s?</string>
