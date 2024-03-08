@@ -127,16 +127,24 @@ class MessageUtils(val context: Context) {
                         } else {
                             R.xml.chip_others
                         }
+                        val id = if (individualHashMap["server"] != null) {
+                            individualHashMap["id"] + "@" + individualHashMap["server"]
+                        } else {
+                            individualHashMap["id"]
+                        }
+
                         messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
                             key,
                             themingContext,
                             messageStringInternal,
-                            individualHashMap["id"]!!,
+                            id,
+                            message.roomToken,
                             individualHashMap["name"]!!,
                             individualHashMap["type"]!!,
                             message.activeUser!!,
                             chip,
-                            viewThemeUtils
+                            viewThemeUtils,
+                            individualHashMap["server"] != null
                         )
                     }
 
@@ -174,5 +182,6 @@ class MessageUtils(val context: Context) {
     companion object {
         private const val TAG = "MessageUtils"
         const val MAX_REPLY_LENGTH = 250
+        const val HTTPS_PROTOCOL = "https://"
     }
 }

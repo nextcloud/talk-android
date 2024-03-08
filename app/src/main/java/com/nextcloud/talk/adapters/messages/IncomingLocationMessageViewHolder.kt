@@ -47,6 +47,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.databinding.ItemCustomIncomingLocationMessageBinding
 import com.nextcloud.talk.extensions.loadBotsAvatar
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
+import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
@@ -148,6 +149,8 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
                 binding.messageUserAvatar.loadChangelogBotAvatar()
             } else if (message.actorType == "bots") {
                 binding.messageUserAvatar.loadBotsAvatar()
+            } else if (message.actorType == "federated_users" && message.messageParameters?.get("actor") != null) {
+                binding.messageUserAvatar.loadFederatedUserAvatar(message)
             }
         } else {
             if (message.isOneToOneConversation || message.isFormerOneToOneConversation) {

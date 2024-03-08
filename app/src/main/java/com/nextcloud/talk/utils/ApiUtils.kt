@@ -384,6 +384,19 @@ object ApiUtils {
     }
 
     @JvmStatic
+    fun getUrlForFederatedAvatar(
+        baseUrl: String,
+        token: String,
+        cloudId: String,
+        darkTheme: Int,
+        requestBigSize: Boolean
+    ): String {
+        val avatarSize = if (requestBigSize) AVATAR_SIZE_BIG else AVATAR_SIZE_SMALL
+        val url = "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/proxy/$token/user-avatar/$avatarSize"
+        return "$url?cloudId=$cloudId&darkTheme=$darkTheme"
+    }
+
+    @JvmStatic
     fun getUrlForGuestAvatar(baseUrl: String?, name: String?, requestBigSize: Boolean): String {
         val avatarSize = if (requestBigSize) AVATAR_SIZE_BIG else AVATAR_SIZE_SMALL
         return baseUrl + "/index.php/avatar/guest/" + Uri.encode(name) + "/" + avatarSize

@@ -49,6 +49,7 @@ import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
+import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
@@ -194,6 +195,8 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                 }
                 if (ACTOR_TYPE_BOTS == message.actorType && ACTOR_ID_CHANGELOG == message.actorId) {
                     userAvatar.loadChangelogBotAvatar()
+                } else if (message.actorType == "federated_users" && message.messageParameters?.get("actor") != null) {
+                    userAvatar.loadFederatedUserAvatar(message)
                 }
             }
         }

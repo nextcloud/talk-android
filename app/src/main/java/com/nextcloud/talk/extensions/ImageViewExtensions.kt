@@ -46,6 +46,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ConversationType
+import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
@@ -122,6 +123,47 @@ fun ImageView.loadUserAvatar(
         avatarId,
         requestBigSize
     )
+
+    return loadAvatarInternal(user, imageRequestUri, ignoreCache, null)
+}
+
+fun ImageView.loadFederatedUserAvatar(message: ChatMessage): io.reactivex.disposables.Disposable {
+    val map = message.messageParameters?.get("actor")
+    val url = map?.get("server")!!
+    val id = map["id"]
+    val cloudId = "$id@$url"
+    val darkTheme = if (DisplayUtils.isDarkModeOn(context)) 1 else 0
+    val ignoreCache = false
+    val requestBigSize = true
+    return loadFederatedUserAvatar(
+        message.activeUser!!,
+        message.activeUser!!.baseUrl!!,
+        message.roomToken,
+        cloudId,
+        darkTheme,
+        requestBigSize,
+        ignoreCache
+    )
+}
+
+@Suppress("LongParameterList")
+fun ImageView.loadFederatedUserAvatar(
+    user: User,
+    baseUrl: String,
+    token: String,
+    cloudId: String,
+    darkTheme: Int,
+    requestBigSize: Boolean = true,
+    ignoreCache: Boolean
+): io.reactivex.disposables.Disposable {
+    val imageRequestUri = ApiUtils.getUrlForFederatedAvatar(
+        baseUrl,
+        token,
+        cloudId,
+        darkTheme,
+        requestBigSize
+    )
+    Log.d("Julius", "URL::$imageRequestUri")
 
     return loadAvatarInternal(user, imageRequestUri, ignoreCache, null)
 }

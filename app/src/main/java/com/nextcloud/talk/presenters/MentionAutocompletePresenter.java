@@ -155,6 +155,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                                                 mention,
                                                 currentUser,
                                                 context,
+                                                roomToken,
                                                 viewThemeUtils));
                             }
 
@@ -185,9 +186,14 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         Mention mention = new Mention();
         MentionAutocompleteItem mentionAutocompleteItem = (MentionAutocompleteItem) adapter.getItem(position);
         if (mentionAutocompleteItem != null) {
+            String mentionId = mentionAutocompleteItem.getMentionId();
+            if(mentionId != null) {
+                mention.setMentionId(mentionId);
+            }
             mention.setId(mentionAutocompleteItem.getObjectId());
             mention.setLabel(mentionAutocompleteItem.getDisplayName());
             mention.setSource(mentionAutocompleteItem.getSource());
+            mention.setRoomToken(mentionAutocompleteItem.getRoomToken());
             dispatchClick(mention);
         }
         return true;

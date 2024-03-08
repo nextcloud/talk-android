@@ -36,6 +36,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.ItemCustomIncomingPollMessageBinding
 import com.nextcloud.talk.extensions.loadBotsAvatar
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
+import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -179,6 +180,8 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) :
             binding.messageUserAvatar.loadChangelogBotAvatar()
         } else if (message.actorType == "bots") {
             binding.messageUserAvatar.loadBotsAvatar()
+        } else if (message.actorType == "federated_users" && message.messageParameters?.get("actor") != null) {
+            binding.messageUserAvatar.loadFederatedUserAvatar(message)
         }
     }
 

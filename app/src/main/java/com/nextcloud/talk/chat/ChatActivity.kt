@@ -3584,6 +3584,7 @@ class ChatActivity :
                 mentionSpan = mentionSpans[i]
                 var mentionId = mentionSpan.id
                 if (mentionId.contains(" ") ||
+                    mentionId.contains("@") ||
                     mentionId.startsWith("guest/") ||
                     mentionId.startsWith("group/")
                 ) {
@@ -3798,6 +3799,7 @@ class ChatActivity :
             chatMessage.isFormerOneToOneConversation =
                 (currentConversation?.type == ConversationType.FORMER_ONE_TO_ONE)
             chatMessage.activeUser = conversationUser
+            chatMessage.roomToken = roomToken
         }
 
         if (adapter != null) {

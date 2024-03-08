@@ -45,6 +45,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingVoiceMessageBinding
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
+import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
@@ -285,6 +286,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
                 )
             binding.messageUserAvatar.visibility = View.VISIBLE
             binding.messageUserAvatar.setImageDrawable(drawable)
+        } else if (message.actorType == "federated_users" && message.messageParameters?.get("actor") != null) {
+            binding.messageUserAvatar.loadFederatedUserAvatar(message)
         }
     }
 

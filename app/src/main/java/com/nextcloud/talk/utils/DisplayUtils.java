@@ -68,6 +68,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -168,12 +169,14 @@ public class DisplayUtils {
 
     public static Drawable getDrawableForMentionChipSpan(Context context,
                                                          String id,
+                                                         String roomToken,
                                                          CharSequence label,
                                                          User conversationUser,
                                                          String type,
                                                          @XmlRes int chipResource,
                                                          @Nullable EditText emojiEditText,
-                                                         ViewThemeUtils viewThemeUtils) {
+                                                         ViewThemeUtils viewThemeUtils,
+                                                         Boolean isFederated) {
         ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
         chip.setText(EmojiCompat.get().process(label));
         chip.setEllipsize(TextUtils.TruncateAt.MIDDLE);
@@ -205,12 +208,20 @@ public class DisplayUtils {
         chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
 
         if (!isCallOrGroup) {
-            String url = ApiUtils.getUrlForAvatar(conversationUser.getBaseUrl(), id, true);
+            String url = ApiUtils.getUrlForAvatar(conversationUser.getBaseUrl(), id, false);
             if ("guests".equals(type) || "guest".equals(type)) {
                 url = ApiUtils.getUrlForGuestAvatar(
                     conversationUser.getBaseUrl(),
                     String.valueOf(label), true);
             }
+
+            if (isFederated) {
+                int darkTheme = (DisplayUtils.isDarkModeOn(context))? 1 : 0;
+                url = ApiUtils.getUrlForFederatedAvatar(Objects.requireNonNull(conversationUser.getBaseUrl()),
+                                                        roomToken, id,
+                                                        darkTheme, false);
+            }
+
 
             ImageRequest imageRequest = new ImageRequest.Builder(context)
                 .data(url)
@@ -224,13 +235,12 @@ public class DisplayUtils {
 
                     @Override
                     public void onError(@Nullable Drawable drawable) {
-
+                        chip.setChipIcon(drawable);
                     }
 
                     @Override
                     public void onSuccess(@NonNull Drawable drawable) {
                         chip.setChipIcon(drawable);
-
                         // A hack to refresh the chip icon
                         if (emojiEditText != null) {
                             emojiEditText.post(() -> emojiEditText.setTextKeepState(
@@ -248,10 +258,12 @@ public class DisplayUtils {
     }
 
     public static Spannable searchAndReplaceWithMentionSpan(String key, Context context, Spanned text,
-                                                            String id, String label, String type,
+                                                            String id, String roomToken,
+                                                            String label, String type,
                                                             User conversationUser,
                                                             @XmlRes int chipXmlRes,
-                                                            ViewThemeUtils viewThemeUtils) {
+                                                            ViewThemeUtils viewThemeUtils,
+                                                            Boolean isFederated) {
 
         Spannable spannableString = new SpannableString(text);
         String stringText = text.toString();
@@ -267,7 +279,7 @@ public class DisplayUtils {
             }
         };
 
-        int lastStartIndex = -1;
+        int lastStartIndex = 0;
         Spans.MentionChipSpan mentionChipSpan;
         while (m.find()) {
             int start = stringText.indexOf(m.group(), lastStartIndex);
@@ -276,13 +288,14 @@ public class DisplayUtils {
 
             Drawable drawableForChip = DisplayUtils.getDrawableForMentionChipSpan(context,
                                                                                   id,
+                                                                                  roomToken,
                                                                                   label,
                                                                                   conversationUser,
                                                                                   type,
                                                                                   chipXmlRes,
                                                                                   null,
-                                                                                  viewThemeUtils);
-
+                                                                                  viewThemeUtils,
+                                                                                  isFederated);
             mentionChipSpan = new Spans.MentionChipSpan(drawableForChip,
                                                         BetterImageSpan.ALIGN_CENTER,
                                                         id,

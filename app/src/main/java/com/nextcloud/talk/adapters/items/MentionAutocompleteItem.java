@@ -58,8 +58,10 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
     public static final String SOURCE_GUESTS = "guests";
 
     public static final String SOURCE_GROUPS = "groups";
+    public static final String SOURCE_FEDERATION = "federated_users";
 
     private String source;
+    private final String mentionId;
     private final String objectId;
     private final String displayName;
     private final String status;
@@ -67,12 +69,14 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
     private final String statusMessage;
     private final User currentUser;
     private final Context context;
+    private final String roomToken;
     private final ViewThemeUtils viewThemeUtils;
 
     public MentionAutocompleteItem(
         Mention mention,
         User currentUser,
-        Context activityContext, ViewThemeUtils viewThemeUtils) {
+        Context activityContext, String roomToken, ViewThemeUtils viewThemeUtils) {
+        this.mentionId = mention.getMentionId();
         this.objectId = mention.getId();
         this.displayName = mention.getLabel();
         this.source = mention.getSource();
@@ -82,6 +86,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
         this.currentUser = currentUser;
         this.context = activityContext;
         this.viewThemeUtils = viewThemeUtils;
+        this.roomToken = roomToken;
     }
 
     public String getSource() {
@@ -92,12 +97,20 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
         this.source = source;
     }
 
+    public String getMentionId() {
+        return mentionId;
+    }
+
     public String getObjectId() {
         return objectId;
     }
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getRoomToken() {
+        return roomToken;
     }
 
     @Override
@@ -147,24 +160,39 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
             holder.binding.secondaryText.setText("@" + objectId);
         }
 
-        if (SOURCE_CALLS.equals(source) || SOURCE_GROUPS.equals(source)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                ImageViewExtensionsKt.loadUserAvatar(
-                    holder.binding.avatarView,
-                    viewThemeUtils.talk.themePlaceholderAvatar(
+        String avatarId = objectId;
+        switch (source) {
+            case SOURCE_CALLS: {}
+            case SOURCE_GROUPS: {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    ImageViewExtensionsKt.loadUserAvatar(
                         holder.binding.avatarView,
-                        R.drawable.ic_avatar_group
-                                                              )
-                                                    );
-            } else {
-                ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, R.drawable.ic_circular_group);
+                        viewThemeUtils.talk.themePlaceholderAvatar(
+                            holder.binding.avatarView,
+                            R.drawable.ic_avatar_group));
+                } else {
+                    ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, R.drawable.ic_circular_group);
+                }
+                break;
             }
-        } else {
-            String avatarId = objectId;
-            if (SOURCE_GUESTS.equals(source)) {
+            case SOURCE_FEDERATION: {
+                int darkTheme = (DisplayUtils.isDarkModeOn(this.context))? 1 : 0;
+                ImageViewExtensionsKt.loadFederatedUserAvatar(holder.binding.avatarView,
+                                                              currentUser,
+                                                              Objects.requireNonNull(currentUser.getBaseUrl()),
+                                                              roomToken,
+                                                              avatarId,
+                                                              darkTheme,
+                                                              true,
+                                                              false);
+                break;
+            }
+            case SOURCE_GUESTS: {
                 avatarId = displayName;
             }
-            ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, currentUser, avatarId, true, false);
+            default: {
+                ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, currentUser, avatarId, true, false);
+            }
         }
 
         drawStatus(holder);
