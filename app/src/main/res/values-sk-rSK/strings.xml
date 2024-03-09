@@ -407,6 +407,7 @@
     <string name="nc_start_time">Čas začiatku</string>
     <string name="nc_switch_account">Prepnúť účet</string>
     <string name="nc_team">Tím</string>
+    <string name="nc_teams">Tímy</string>
     <string name="nc_upload_choose_local_files">Vyberte súbory</string>
     <string name="nc_upload_confirm_send_multiple">Poslať tieto súbory do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Poslať tento súbor do %1$s?</string>
@@ -462,6 +463,10 @@
     <string name="record_stop_confirm_title">Zastaviť nahrávanie hovoru</string>
     <string name="record_stop_description">Zastaviť nahrávanie</string>
     <string name="record_stopping">Zastavujem nahrávanie...</string>
+    <string name="recording_consent_all">Súhlas so záznamom je potrebný pre všetky hovory.</string>
+    <string name="recording_consent_for_conversation_description">Vyžadovať súhlas so záznamom pred pripojením hovoru v tejto konverzácii</string>
+    <string name="recording_consent_for_conversation_title">Súhlas so záznamom</string>
+    <string name="recording_consent_title">Hovor môže byť zaznamenaný.</string>
     <string name="recording_settings_title">Záznam</string>
     <string name="removed_from_favorites">Konverzácia %1$s bola odstránená z obľúbených</string>
     <string name="renamed_conversation">Konverzácia %1$s bola premenovaná</string>
