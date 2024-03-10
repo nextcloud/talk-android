@@ -405,6 +405,9 @@ class ChatActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            if (currentlyPlayedVoiceMessage != null) {
+                stopMediaPlayer(currentlyPlayedVoiceMessage!!)
+            }
             val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
             intent.putExtras(Bundle())
             startActivity(intent)
@@ -558,9 +561,10 @@ class ChatActivity :
         if (mediaRecorderState == MediaRecorderState.RECORDING) {
             stopAudioRecording()
         }
-        if (currentlyPlayedVoiceMessage != null) {
-            stopMediaPlayer(currentlyPlayedVoiceMessage!!)
-        }
+        //if (currentlyPlayedVoiceMessage != null) {
+        //    stopMediaPlayer(currentlyPlayedVoiceMessage!!)
+        //} this is done also in onDestroy,
+        // it is better to continue audio playback when the activity is not visible but still open
         val text = binding.messageInputView.messageInput.text.toString()
         val cursor = binding.messageInputView.messageInput.selectionStart
         val previous = context.getSharedPreferences(localClassName, MODE_PRIVATE).getString(roomToken, "null")
