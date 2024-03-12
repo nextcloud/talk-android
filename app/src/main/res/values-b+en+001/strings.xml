@@ -22,7 +22,6 @@
     <string name="clear_status_message_after">Clear status message after</string>
     <string name="close">Close</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
-    <string name="conversation_is_read_only">Conversation is read Only</string>
     <string name="conversations">Conversations</string>
     <string name="create_conversation">Create conversation</string>
     <string name="create_issue">Create issue</string>

@@ -22,7 +22,6 @@
     <string name="clear_status_message_after">Effacer le message d\'état après</string>
     <string name="close">Fermer</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
-    <string name="conversation_is_read_only">La conversation est en lecture seule</string>
     <string name="conversations">Discussions</string>
     <string name="create_conversation">Créer la conversation</string>
     <string name="custom">Personnalisé</string>
