@@ -117,7 +117,8 @@ class MessageActionsDialog(
         setContentView(dialogMessageActionsBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.platform.themeDialog(dialogMessageActionsBinding.root)
+        viewThemeUtils.material.colorBottomSheetBackground(dialogMessageActionsBinding.root)
+        viewThemeUtils.material.colorBottomSheetDragHandle(dialogMessageActionsBinding.bottomSheetDragHandle)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
         val apiVersion = ApiUtils.getConversationApiVersion(user!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))

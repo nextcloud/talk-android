@@ -82,7 +82,8 @@ class ConversationsListBottomDialog(
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.platform.themeDialog(binding.root)
+        viewThemeUtils.material.colorBottomSheetBackground(binding.root)
+        viewThemeUtils.material.colorBottomSheetDragHandle(binding.bottomSheetDragHandle)
         initHeaderDescription()
         initItemsVisibility()
         initClickListeners()
