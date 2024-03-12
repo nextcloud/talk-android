@@ -22,18 +22,16 @@
 package com.nextcloud.talk.models.json.notifications
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 class NotificationRichObject(
-    @JsonField(name = ["id"])
+    @SerialName("id")
     var label: String?,
-    @JsonField(name = ["type"])
     var type: String?,
-    @JsonField(name = ["name"])
     var name: String?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

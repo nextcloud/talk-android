@@ -24,26 +24,26 @@
 package com.nextcloud.talk.models.json.capabilities
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class Capabilities(
-    @JsonField(name = ["core"])
+    @SerialName("core")
     var coreCapability: CoreCapability?,
-    @JsonField(name = ["spreed"])
+    @SerialName("spreed")
     var spreedCapability: SpreedCapability?,
-    @JsonField(name = ["notifications"])
+    @SerialName("notifications")
     var notificationsCapability: NotificationsCapability?,
-    @JsonField(name = ["theming"])
+    @SerialName("theming")
     var themingCapability: ThemingCapability?,
-    @JsonField(name = ["external"])
+    @SerialName("external")
     var externalCapability: HashMap<String, List<String>>?,
-    @JsonField(name = ["provisioning_api"])
+    @SerialName("provisioning_api")
     var provisioningCapability: ProvisioningCapability?,
-    @JsonField(name = ["user_status"])
+    @SerialName("user_status")
     var userStatusCapability: UserStatusCapability?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

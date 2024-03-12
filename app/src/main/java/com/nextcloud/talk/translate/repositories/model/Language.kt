@@ -20,20 +20,16 @@
 package com.nextcloud.talk.translate.repositories.model
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class Language(
-    @JsonField(name = ["from"])
     var from: String?,
-    @JsonField(name = ["fromLabel"])
     var fromLabel: String?,
-    @JsonField(name = ["to"])
     var to: String?,
-    @JsonField(name = ["toLabel"])
     var toLabel: String?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

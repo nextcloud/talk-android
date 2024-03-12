@@ -318,17 +318,18 @@ object NotificationUtils {
             // Notification channel will not be available when starting the application for the first time.
             // Ringtone uris are required to register the notification channels -> get uri from preferences.
         }
-        return if (TextUtils.isEmpty(ringtonePreferencesString)) {
-            Uri.parse(defaultRingtoneUri)
-        } else {
-            try {
-                val ringtoneSettings =
-                    LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
-                ringtoneSettings.ringtoneUri
-            } catch (exception: IOException) {
-                Uri.parse(defaultRingtoneUri)
-            }
-        }
+        // return if (TextUtils.isEmpty(ringtonePreferencesString)) {
+        //     Uri.parse(defaultRingtoneUri)
+        // } else {
+        //     try {
+        //         val ringtoneSettings =
+        //             LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
+        //         ringtoneSettings.ringtoneUri
+        //     } catch (exception: IOException) {
+        //         Uri.parse(defaultRingtoneUri)
+        //     }
+        // }
+        return Uri.parse(defaultRingtoneUri)
     }
 
     fun getCallRingtoneUri(context: Context, appPreferences: AppPreferences): Uri? {

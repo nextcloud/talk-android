@@ -22,32 +22,32 @@
 package com.nextcloud.talk.models.json.generic
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class Status(
-    @JsonField(name = ["installed"])
+    @SerialName("installed")
     var installed: Boolean = false,
 
-    @JsonField(name = ["maintenance"])
+    @SerialName("maintenance")
     var maintenance: Boolean = false,
 
-    @JsonField(name = ["upgrade"])
+    @SerialName("upgrade")
     var needsUpgrade: Boolean = false,
 
-    @JsonField(name = ["version"])
+    @SerialName("version")
     var version: String? = null,
 
-    @JsonField(name = ["versionstring"])
+    @SerialName("versionstring")
     var versionString: String? = null,
 
-    @JsonField(name = ["edition"])
+    @SerialName("edition")
     var edition: String? = null,
 
-    @JsonField(name = ["productname"])
+    @SerialName("productname")
     var productName: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

@@ -22,55 +22,50 @@
 package com.nextcloud.talk.models.json.userprofile
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.converters.ScopeConverter
 import com.nextcloud.talk.profile.ProfileActivity
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class UserProfileData(
-    @JsonField(name = ["display-name"])
+    @SerialName("display-name")
     var displayName: String?,
 
-    @JsonField(name = ["displaynameScope"], typeConverter = ScopeConverter::class)
+    @SerialName("displaynameScope", typeConverter = ScopeConverter::class)
     var displayNameScope: Scope?,
 
-    @JsonField(name = ["displayname"])
+    @SerialName("displayname")
     var displayNameAlt: String?,
 
-    @JsonField(name = ["id"])
+    @SerialName("id")
     var userId: String?,
 
-    @JsonField(name = ["phone"])
     var phone: String?,
 
-    @JsonField(name = ["phoneScope"], typeConverter = ScopeConverter::class)
+    @SerialName("phoneScope", typeConverter = ScopeConverter::class)
     var phoneScope: Scope?,
 
-    @JsonField(name = ["email"])
     var email: String?,
 
-    @JsonField(name = ["emailScope"], typeConverter = ScopeConverter::class)
+    @SerialName("emailScope", typeConverter = ScopeConverter::class)
     var emailScope: Scope?,
 
-    @JsonField(name = ["address"])
     var address: String?,
 
-    @JsonField(name = ["addressScope"], typeConverter = ScopeConverter::class)
+    @SerialName("addressScope", typeConverter = ScopeConverter::class)
     var addressScope: Scope?,
 
-    @JsonField(name = ["twitter"])
     var twitter: String?,
 
-    @JsonField(name = ["twitterScope"], typeConverter = ScopeConverter::class)
+    @SerialName("twitterScope", typeConverter = ScopeConverter::class)
     var twitterScope: Scope?,
 
-    @JsonField(name = ["website"])
     var website: String?,
 
-    @JsonField(name = ["websiteScope"], typeConverter = ScopeConverter::class)
+    @SerialName("websiteScope", typeConverter = ScopeConverter::class)
     var websiteScope: Scope?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

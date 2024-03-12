@@ -22,26 +22,19 @@
 package com.nextcloud.talk.models.json.unifiedsearch
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class UnifiedSearchEntry(
-    @JsonField(name = ["thumbnailUrl"])
     var thumbnailUrl: String?,
-    @JsonField(name = ["title"])
     var title: String?,
-    @JsonField(name = ["subline"])
     var subline: String?,
-    @JsonField(name = ["resourceUrl"])
     var resourceUrl: String?,
-    @JsonField(name = ["icon"])
     var icon: String?,
-    @JsonField(name = ["rounded"])
     var rounded: Boolean?,
-    @JsonField(name = ["attributes"])
     var attributes: Map<String, String>?
 ) : Parcelable {
     constructor() : this(null, null, null, null, null, null, null)

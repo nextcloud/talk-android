@@ -20,20 +20,20 @@
 package com.nextcloud.talk.models.json.hovercard
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class HoverCardAction(
-    @JsonField(name = ["title"])
+    @SerialName("title")
     var title: String?,
-    @JsonField(name = ["icon"])
+    @SerialName("icon")
     var icon: String?,
-    @JsonField(name = ["hyperlink"])
+    @SerialName("hyperlink")
     var hyperlink: String?,
-    @JsonField(name = ["appId"])
+    @SerialName("appId")
     var appId: String?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

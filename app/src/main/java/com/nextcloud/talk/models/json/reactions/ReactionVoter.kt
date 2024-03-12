@@ -20,21 +20,18 @@
 package com.nextcloud.talk.models.json.reactions
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.converters.EnumReactionActorTypeConverter
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class ReactionVoter(
-    @JsonField(name = ["actorType"], typeConverter = EnumReactionActorTypeConverter::class)
+    @SerialName("actorType", typeConverter = EnumReactionActorTypeConverter::class)
     var actorType: ReactionActorType?,
-    @JsonField(name = ["actorId"])
     var actorId: String?,
-    @JsonField(name = ["actorDisplayName"])
     var actorDisplayName: String?,
-    @JsonField(name = ["timestamp"])
     var timestamp: Long = 0
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

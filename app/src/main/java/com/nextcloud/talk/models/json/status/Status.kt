@@ -20,30 +20,30 @@
 package com.nextcloud.talk.models.json.status
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class Status(
-    @JsonField(name = ["userId"])
+    @SerialName("userId")
     var userId: String?,
-    @JsonField(name = ["message"])
+    @SerialName("message")
     var message: String?,
     /* TODO Change to enum */
-    @JsonField(name = ["messageId"])
+    @SerialName("messageId")
     var messageId: String?,
-    @JsonField(name = ["messageIsPredefined"])
+    @SerialName("messageIsPredefined")
     var messageIsPredefined: Boolean,
-    @JsonField(name = ["icon"])
+    @SerialName("icon")
     var icon: String?,
-    @JsonField(name = ["clearAt"])
+    @SerialName("clearAt")
     var clearAt: Long = 0,
     /* TODO Change to enum */
-    @JsonField(name = ["status"])
+    @SerialName("status")
     var status: String = "offline",
-    @JsonField(name = ["statusIsUserDefined"])
+    @SerialName("statusIsUserDefined")
     var statusIsUserDefined: Boolean
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

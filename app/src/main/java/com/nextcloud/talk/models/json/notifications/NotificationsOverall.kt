@@ -21,12 +21,11 @@
  */
 package com.nextcloud.talk.models.json.notifications
 
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonObject
+@Serializable
 class NotificationsOverall(
-    @JsonField(name = ["ocs"])
     var ocs: NotificationsOCS?
 ) {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

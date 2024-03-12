@@ -20,34 +20,23 @@
 package com.nextcloud.talk.models.json.invitation
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class Invitation(
-    @JsonField(name = ["id"])
     var id: Int = 0,
-    @JsonField(name = ["userId"])
     var userId: String? = null,
-    @JsonField(name = ["state"])
     var state: Int = 0,
-    @JsonField(name = ["localRoomId"])
     var localRoomId: Int = 0,
-    @JsonField(name = ["accessToken"])
     var accessToken: String? = null,
-    @JsonField(name = ["remoteServerUrl"])
     var remoteServerUrl: String? = null,
-    @JsonField(name = ["remoteToken"])
     var remoteToken: String? = null,
-    @JsonField(name = ["remoteAttendeeId"])
     var remoteAttendeeId: Int = 0,
-    @JsonField(name = ["inviterCloudId"])
     var inviterCloudId: String? = null,
-    @JsonField(name = ["inviterDisplayName"])
     var inviterDisplayName: String? = null,
-    @JsonField(name = ["roomName"])
     var roomName: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

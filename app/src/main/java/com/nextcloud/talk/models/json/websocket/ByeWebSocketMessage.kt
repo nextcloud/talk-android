@@ -22,21 +22,20 @@
 package com.nextcloud.talk.models.json.websocket
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.AnyParceler
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.TypeParceler
 import java.util.HashMap
 
 @Parcelize
-@JsonObject
+@Serializable
 @TypeParceler<Any, AnyParceler>
 data class ByeWebSocketMessage(
-    @JsonField(name = ["type"])
     var type: String? = null,
-    @JsonField(name = ["bye"])
-    var bye: HashMap<String, Any>? = null
+    // TODO: replaced   HashMap<String, Any>?   with HashMap<String, String>?     This might not work?!
+    var bye: HashMap<String, String>? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

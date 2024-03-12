@@ -22,38 +22,31 @@
 package com.nextcloud.talk.models.json.capabilities
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
 @Serializable
 data class ThemingCapability(
-    @JsonField(name = ["name"])
     var name: String?,
-    @JsonField(name = ["url"])
     var url: String?,
-    @JsonField(name = ["slogan"])
     var slogan: String?,
-    @JsonField(name = ["color"])
     var color: String?,
-    @JsonField(name = ["color-text"])
+    @SerialName("color-text")
     var colorText: String?,
-    @JsonField(name = ["color-element"])
+    @SerialName("color-element")
     var colorElement: String?,
-    @JsonField(name = ["color-element-bright"])
+    @SerialName("color-element-bright")
     var colorElementBright: String?,
-    @JsonField(name = ["color-element-dark"])
+    @SerialName("color-element-dark")
     var colorElementDark: String?,
-    @JsonField(name = ["logo"])
     var logo: String?,
-    @JsonField(name = ["background"])
+    @SerialName("background")
     var background: String?,
-    @JsonField(name = ["background-plain"])
+    @SerialName("background-plain")
     var backgroundPlain: Boolean?,
-    @JsonField(name = ["background-default"])
+    @SerialName("background-default")
     var backgroundDefault: Boolean?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

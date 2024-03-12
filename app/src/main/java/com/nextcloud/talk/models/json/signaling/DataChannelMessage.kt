@@ -22,24 +22,24 @@
 package com.nextcloud.talk.models.json.signaling
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.AnyParceler
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.TypeParceler
 
 @Parcelize
-@JsonObject
+@Serializable
 @TypeParceler<Any?, AnyParceler>
 data class DataChannelMessage(
-    @JsonField(name = ["type"])
     var type: String? = null,
     /** Can be String or Map<String, String>
      *  Use only for received messages */
-    @JsonField(name = ["payload"])
-    var payload: Any? = null,
+    @SerialName("payload")
+    // TODO: Can be String or Map<String, String>
+    var payload: String? = null,
     /** Use only to send messages */
-    @JsonField(name = ["payload"])
+    // @SerialName("payload")     // TODO: duplicated payload was intentional, see commit 68cf4ee0
     var payloadMap: Map<String, String>? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

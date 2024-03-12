@@ -20,22 +20,17 @@
 package com.nextcloud.talk.models.json.opengraph
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@JsonObject
+@Serializable
 data class OpenGraphObject(
-    @JsonField(name = ["id"])
     var id: String,
-    @JsonField(name = ["name"])
     var name: String,
-    @JsonField(name = ["description"])
     var description: String? = null,
-    @JsonField(name = ["thumb"])
     var thumb: String? = null,
-    @JsonField(name = ["link"])
     var link: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

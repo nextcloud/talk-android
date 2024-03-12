@@ -22,19 +22,19 @@
 package com.nextcloud.talk.models.json.chat
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.models.json.AnyParceler
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.TypeParceler
 import java.util.HashMap
 
 @Parcelize
-@JsonObject
+@Serializable
 @TypeParceler<Any, AnyParceler>
 data class ChatShareOverviewOCS(
-    @JsonField(name = ["data"])
-    var data: HashMap<String, List<Any>>? = null
+    @SerialName("data")
+    var data: HashMap<String, List<ChatMessage>>? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null)

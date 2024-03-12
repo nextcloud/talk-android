@@ -28,24 +28,26 @@ package com.nextcloud.talk.models.json.chat
 import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
-import com.bluelinelabs.logansquare.annotation.JsonField
+import kotlinx.serialization.SerialName
 import com.bluelinelabs.logansquare.annotation.JsonIgnore
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.Serializable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
+import com.nextcloud.talk.models.json.converters.KotlinxJodaTimeConverter
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Transient
 import java.security.MessageDigest
 import java.util.Date
 
 @Parcelize
-@JsonObject
+@Serializable
 data class ChatMessage(
     @JsonIgnore
     var isGrouped: Boolean = false,
@@ -65,72 +67,74 @@ data class ChatMessage(
     @JsonIgnore
     var isDeleted: Boolean = false,
 
-    @JsonField(name = ["id"])
+    @SerialName("id")
     var jsonMessageId: Int = 0,
 
     @JsonIgnore
     var previousMessageId: Int = -1,
 
-    @JsonField(name = ["token"])
-    var token: String? = null,
+    @SerialName("token")
+    var token: String = "",
 
     // guests or users
-    @JsonField(name = ["actorType"])
+    @SerialName("actorType")
     var actorType: String? = null,
 
-    @JsonField(name = ["actorId"])
+    @SerialName("actorId")
     var actorId: String? = null,
 
     // send when crafting a message
-    @JsonField(name = ["actorDisplayName"])
+    @SerialName("actorDisplayName")
     var actorDisplayName: String? = null,
 
-    @JsonField(name = ["timestamp"])
+    @SerialName("timestamp")
     var timestamp: Long = 0,
 
     // send when crafting a message, max 1000 lines
-    @JsonField(name = ["message"])
+    @SerialName("message")
     var message: String? = null,
 
-    @JsonField(name = ["messageParameters"])
+    @SerialName("messageParameters")
     var messageParameters: HashMap<String?, HashMap<String?, String?>>? = null,
 
-    @JsonField(name = ["systemMessage"], typeConverter = EnumSystemMessageTypeConverter::class)
+    @SerialName("systemMessage")
+    // @Serializable(with = EnumSystemMessageTypeConverter::class)
     var systemMessageType: SystemMessageType? = null,
 
-    @JsonField(name = ["isReplyable"])
+    @SerialName("isReplyable")
     var replyable: Boolean = false,
 
-    @JsonField(name = ["parent"])
+    @SerialName("parent")
     var parentMessage: ChatMessage? = null,
 
+    @Transient
     var readStatus: Enum<ReadStatus> = ReadStatus.NONE,
 
-    @JsonField(name = ["messageType"])
+    @SerialName("messageType")
     var messageType: String? = null,
 
-    @JsonField(name = ["reactions"])
+    @SerialName("reactions")
     var reactions: LinkedHashMap<String, Int>? = null,
 
-    @JsonField(name = ["reactionsSelf"])
+    @SerialName("reactionsSelf")
     var reactionsSelf: ArrayList<String>? = null,
 
-    @JsonField(name = ["expirationTimestamp"])
+    @SerialName("expirationTimestamp")
     var expirationTimestamp: Int = 0,
 
-    @JsonField(name = ["markdown"])
+    @SerialName("markdown")
     var renderMarkdown: Boolean? = null,
 
-    @JsonField(name = ["lastEditActorDisplayName"])
+    @SerialName("lastEditActorDisplayName")
     var lastEditActorDisplayName: String? = null,
 
-    @JsonField(name = ["lastEditActorId"])
+    @SerialName("lastEditActorId")
     var lastEditActorId: String? = null,
 
-    @JsonField(name = ["lastEditActorType"])
+    @SerialName("lastEditActorType")
     var lastEditActorType: String? = null,
 
-    @JsonField(name = ["lastEditTimestamp"])
+    @SerialName("lastEditTimestamp")
     var lastEditTimestamp: Long = 0,
 
     var isDownloadingVoiceMessage: Boolean = false,
