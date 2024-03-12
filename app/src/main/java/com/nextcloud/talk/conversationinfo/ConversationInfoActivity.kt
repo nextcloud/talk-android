@@ -1198,6 +1198,7 @@ class ConversationInfoActivity :
                     cornerRadius(res = R.dimen.corner_radius)
 
                     title(text = participant.displayName)
+                    viewThemeUtils.material.colorBottomSheetBackground(this.view)
                     listItemsWithImage(items = items) { _, index, _ ->
                         if (index == 0) {
                             removeAttendeeFromConversation(apiVersion, participant)

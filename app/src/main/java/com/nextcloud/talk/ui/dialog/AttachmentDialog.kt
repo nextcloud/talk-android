@@ -55,7 +55,8 @@ class AttachmentDialog(val activity: Activity, var chatActivity: ChatActivity) :
         setContentView(dialogAttachmentBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.platform.themeDialog(dialogAttachmentBinding.root)
+        viewThemeUtils.material.colorBottomSheetBackground(dialogAttachmentBinding.root)
+        viewThemeUtils.material.colorBottomSheetDragHandle(dialogAttachmentBinding.bottomSheetDragHandle)
         initItemsStrings()
         initItemsVisibility()
         initItemsClickListeners()
