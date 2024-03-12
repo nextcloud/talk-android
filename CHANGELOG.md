@@ -5,6 +5,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [18.1.0] - 2024-03-12
+
+### Added
+- Diagnosis screen (in advanced settings. incl. share option to create new issue)
+- Show warnings if notification settings are not set correctly
+- Grouping for upload notifications (@parneet-guraya)
+- Stop media playback when switching output device (@parneet-guraya)
+- Avoid multiple media playbacks (@parneet-guraya)
+- Add "Add to notes" in message options
+- Cursor position is saved in message drafts
+- Share message text to other apps
+- Support Android 14
+- Janus 1.x support
+
+### Fixed
+- App permanently sends speaking data channel message
+- Back button closes app when forwarding a message
+
+Minimum: Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/79?closed=1
+
+## [18.0.1] - 2023-12-22
+
+### Fixed
+- Voice messages sometimes fail to playback
+
+Minimum: Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/75?closed=1
+
 ## [18.0.0] - 2023-12-11
 
 ### Added
