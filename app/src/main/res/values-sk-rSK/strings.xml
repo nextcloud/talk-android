@@ -22,7 +22,6 @@
     <string name="clear_status_message_after">Vyčistiť správu o stave po</string>
     <string name="close">Zatvoriť</string>
     <string name="continuous_voice_message_recording">Zamknúť nahrávanie pre nepretržité nahrávanie hlasovej správy</string>
-    <string name="conversation_is_read_only">Konverzácia je iba na čítanie</string>
     <string name="conversations">Konverzácie</string>
     <string name="create_conversation">Vytvoriť konverzáciu</string>
     <string name="create_issue">Vytvoriť problém</string>
@@ -292,6 +291,7 @@
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
     <string name="nc_remove_group_and_members">Odobrať skupinu a členov</string>
     <string name="nc_remove_participant">Odobrať účastníka</string>
+    <string name="nc_remove_team_and_members">Odstrániť tím a členov.</string>
     <string name="nc_rename">Premenovať konverzáciu</string>
     <string name="nc_rename_confirm">Premenovať</string>
     <string name="nc_reply">Odpoveď</string>
