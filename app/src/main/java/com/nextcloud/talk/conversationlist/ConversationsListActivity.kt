@@ -754,15 +754,13 @@ class ConversationsListActivity :
     }
 
     private fun fetchPendingInvitations() {
-        binding.conversationListHintInclude.conversationListHintLayout.setOnClickListener {
-            val intent = Intent(this, InvitationsActivity::class.java)
-            startActivity(intent)
+        if (hasSpreedFeatureCapability(currentUser!!.capabilities!!.spreedCapability!!, SpreedFeatures.FEDERATION_V1)) {
+            binding.conversationListHintInclude.conversationListHintLayout.setOnClickListener {
+                val intent = Intent(this, InvitationsActivity::class.java)
+                startActivity(intent)
+            }
+            conversationsListViewModel.getFederationInvitations()
         }
-
-        // TODO create mvvm, fetch pending invitations for all users and store in database for users, if current user
-        //  has invitation -> show hint, if one or more other users have invitations -> show badge
-
-        conversationsListViewModel.getFederationInvitations()
     }
 
     private fun initOverallLayout(isConversationListNotEmpty: Boolean) {

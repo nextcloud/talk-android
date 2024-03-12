@@ -165,8 +165,9 @@ class MessageActionsDialog(
                 !(message.isDeletedCommentMessage || message.isDeleted)
         )
         initMenuRemindMessage(
-            !message.isDeleted && CapabilitiesUtil.hasSpreedFeatureCapability
-                (spreedCapabilities, SpreedFeatures.REMIND_ME_LATER)
+            !message.isDeleted &&
+                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REMIND_ME_LATER) &&
+                currentConversation!!.remoteServer.isNullOrEmpty()
         )
         initMenuMarkAsUnread(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
@@ -251,7 +252,8 @@ class MessageActionsDialog(
     private fun initEmojiBar(hasChatPermission: Boolean) {
         if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REACTIONS) &&
             isPermitted(hasChatPermission) &&
-            isReactableMessageType(message)
+            isReactableMessageType(message) &&
+            currentConversation!!.remoteServer.isNullOrEmpty()
         ) {
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
             dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {

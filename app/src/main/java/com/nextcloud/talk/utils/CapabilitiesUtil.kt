@@ -65,7 +65,8 @@ enum class SpreedFeatures(val value: String) {
     UNIFIED_SEARCH("unified-search"),
     LOCKED_ONE_TO_ONE("locked-one-to-one-rooms"),
     CHAT_PERMISSION("chat-permission"),
-    CONVERSATION_PERMISSION("conversation-permissions")
+    CONVERSATION_PERMISSION("conversation-permissions"),
+    FEDERATION_V1("federation-v1")
 }
 
 @Suppress("TooManyFunctions")
@@ -100,6 +101,10 @@ object CapabilitiesUtil {
             return spreedCapabilities.features!!.contains(spreedFeatures.value)
         }
         return false
+    }
+
+    fun isSharedItemsAvailable(spreedCapabilities: SpreedCapability): Boolean {
+        return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA)
     }
 
     fun getMessageMaxLength(spreedCapabilities: SpreedCapability): Int {
@@ -155,6 +160,9 @@ object CapabilitiesUtil {
     }
 
     fun isUnifiedSearchAvailable(spreedCapabilities: SpreedCapability): Boolean {
+        if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.FEDERATION_V1)) {
+            return false
+        }
         return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)
     }
 
@@ -236,6 +244,13 @@ object CapabilitiesUtil {
             }
         }
         return false
+    }
+
+    fun isFederationAvailable(user: User): Boolean {
+        return hasSpreedFeatureCapability(user.capabilities!!.spreedCapability!!, SpreedFeatures.FEDERATION_V1) &&
+            user.capabilities!!.spreedCapability!!.config?.containsKey("federation") == true &&
+            user.capabilities!!.spreedCapability!!.config!!["federation"] != null &&
+            user.capabilities!!.spreedCapability!!.config!!["federation"]!!.containsKey("enabled")
     }
 
     // endregion
