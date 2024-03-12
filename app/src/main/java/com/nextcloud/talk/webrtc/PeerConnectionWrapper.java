@@ -398,8 +398,7 @@ public class PeerConnectionWrapper {
         @Override
         public void onStateChange() {
             if (dataChannel != null &&
-                dataChannel.state() == DataChannel.State.OPEN &&
-                "status".equals(dataChannel.label())) {
+                dataChannel.state() == DataChannel.State.OPEN) {
                 sendInitialMediaStatus();
             }
         }
@@ -535,10 +534,12 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onDataChannel(DataChannel dataChannel) {
-            if ("status".equals(dataChannel.label()) || "JanusDataChannel".equals(dataChannel.label())) {
-                PeerConnectionWrapper.this.dataChannel = dataChannel;
-                PeerConnectionWrapper.this.dataChannel.registerObserver(new MagicDataChannelObserver());
+            if (PeerConnectionWrapper.this.dataChannel != null) {
+                Log.w(TAG, "Data channel with label " + PeerConnectionWrapper.this.dataChannel.label()
+                    + " exists, but received onDataChannel event for DataChannel with label " + dataChannel.label());
             }
+            PeerConnectionWrapper.this.dataChannel = dataChannel;
+            PeerConnectionWrapper.this.dataChannel.registerObserver(new MagicDataChannelObserver());
         }
 
         @Override
