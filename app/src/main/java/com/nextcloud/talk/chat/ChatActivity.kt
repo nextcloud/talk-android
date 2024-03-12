@@ -4692,8 +4692,10 @@ class ChatActivity :
         val isOlderThanSixHours = message
             .createdAt
             .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_DELETE_MESSAGE))
-       val hasDeleteMessagesUnlimitedCapability = CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities,
-           SpreedFeatures.DELETE_MESSAGES_UNLIMITED)
+        val hasDeleteMessagesUnlimitedCapability = CapabilitiesUtil.hasSpreedFeatureCapability(
+            spreedCapabilities,
+            SpreedFeatures.DELETE_MESSAGES_UNLIMITED
+        )
 
         return when {
             !isUserAllowedByPrivileges -> false
