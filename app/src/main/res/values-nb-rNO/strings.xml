@@ -22,6 +22,7 @@
     <string name="clear_status_message_after">Fjern statusmelding etter</string>
     <string name="close">Lukk</string>
     <string name="continuous_voice_message_recording">Lås opptak for kontinuerlig opptak av talemeldingen</string>
+    <string name="conversation_is_read_only">Samtalen kan kun leses</string>
     <string name="conversations">Samtaler</string>
     <string name="create_conversation">Opprett samtale</string>
     <string name="create_issue">Opprett problem</string>

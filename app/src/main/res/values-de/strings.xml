@@ -22,6 +22,7 @@
     <string name="clear_status_message_after">Statusmeldung löschen nach</string>
     <string name="close">Schließen</string>
     <string name="continuous_voice_message_recording">Aufnahme sperren für kontinuierliche Aufzeichnung der Sprachnachricht</string>
+    <string name="conversation_is_read_only">UNterhaltung ist schreibgeschützt</string>
     <string name="conversations">Unterhaltungen</string>
     <string name="create_conversation">Unterhaltung erstellen</string>
     <string name="create_issue">Fehler melden</string>

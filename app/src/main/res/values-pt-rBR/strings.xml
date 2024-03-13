@@ -22,6 +22,7 @@
     <string name="clear_status_message_after">Limpar mensagem de status após</string>
     <string name="close">Fechar</string>
     <string name="continuous_voice_message_recording">Gravação de bloqueio para gravação contínua da mensagem de voz</string>
+    <string name="conversation_is_read_only">A conversa é somente leitura</string>
     <string name="conversations">Conversas</string>
     <string name="create_conversation">Criando conversa</string>
     <string name="create_issue">Criar problema</string>
