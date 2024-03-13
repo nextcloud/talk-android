@@ -105,8 +105,6 @@
     <string name="nc_certificate_dialog_title">检查证书</string>
     <string name="nc_certificate_error">您的 SSL 设置阻止了连接</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
-    <string name="nc_circle">圈子 </string>
-    <string name="nc_circles">圈子</string>
     <string name="nc_clear_history">删除所有消息</string>
     <string name="nc_clear_history_success">已删除所有消息</string>
     <string name="nc_clear_history_warning">你真想删除对话中的所有信息吗?</string>
@@ -289,7 +287,6 @@
     <string name="nc_push_to_talk_desc">禁用麦克风的情况下，点击&amp;并按住使用“按键讲话”功能</string>
     <string name="nc_remind">以后提醒我 </string>
     <string name="nc_remote_audio_off">远程音频关闭</string>
-    <string name="nc_remove_circle_and_members">删除圈子和成员</string>
     <string name="nc_remove_from_favorites">取消收藏</string>
     <string name="nc_remove_group_and_members">移除群组和成员</string>
     <string name="nc_remove_participant">移除参与者</string>

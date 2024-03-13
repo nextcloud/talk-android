@@ -22,7 +22,6 @@
     <string name="clear_status_message_after">إمسح رسالة الحالة فيما بعدٌ</string>
     <string name="close">إغلاق</string>
     <string name="continuous_voice_message_recording">قَفْل التسجيل للتسجيل المستمر للرسالة الصوتية</string>
-    <string name="conversation_is_read_only">المحادثة للقراءة فقط</string>
     <string name="conversations">محادثات</string>
     <string name="create_conversation">انشاء محادثة</string>
     <string name="create_issue">تكوين إشكالية </string>
@@ -44,6 +43,7 @@
     <string name="file_list_loading">التحميل جارٍ …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ساعات</string>
+    <string name="get_invitations_error">تعذّر جلب الدعوات المعلقة</string>
     <string name="hint_edited_message">(مُعدّلة)</string>
     <string name="invisible">غير مرئي</string>
     <string name="languages_error_message">تعذّرت استعادة اللغات</string>
@@ -114,8 +114,6 @@
     <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
     <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
     <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
-    <string name="nc_circle">الدائرة Circle</string>
-    <string name="nc_circles">الدوائر Circles</string>
     <string name="nc_clear_edit_button">محو زر التحرير</string>
     <string name="nc_clear_edit_message">محو تحرير الرسالة</string>
     <string name="nc_clear_history">مسح جميع الرسائل</string>
@@ -341,10 +339,10 @@
     <string name="nc_push_to_talk_desc">في وضعية تعطل المايكرفون، علق على الزر &amp; لاستخدام اضغط للتحدث</string>
     <string name="nc_remind">ذكرني لاحقا</string>
     <string name="nc_remote_audio_off">الصَّوت القصِي remote موقوف</string>
-    <string name="nc_remove_circle_and_members">حذف الدائرة circle و الأعضاء</string>
     <string name="nc_remove_from_favorites">إزالتها مِن المفضلة</string>
     <string name="nc_remove_group_and_members">حذف المجموعة group و الأعضاء</string>
     <string name="nc_remove_participant">حذف مشارك</string>
+    <string name="nc_remove_team_and_members">إزالة الفريق و الأعضاء</string>
     <string name="nc_rename">إعادة تسمية المحادثة</string>
     <string name="nc_rename_confirm">تغيير تسمية</string>
     <string name="nc_reply">رد</string>
@@ -467,6 +465,8 @@
     <string name="nc_sort_by">رتِّب حسب</string>
     <string name="nc_start_time">وقت البدء</string>
     <string name="nc_switch_account">تبديل الحساب</string>
+    <string name="nc_team">الفريق</string>
+    <string name="nc_teams">الفِرَق</string>
     <string name="nc_upload_choose_local_files">اختر الملفات</string>
     <string name="nc_upload_confirm_send_multiple">إرسال هذه الملفات إلى %1$s؟</string>
     <string name="nc_upload_confirm_send_single">إرسال هذا الملف إلى %1$s؟</string>

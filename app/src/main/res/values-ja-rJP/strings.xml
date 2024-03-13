@@ -81,8 +81,6 @@
     <string name="nc_certificate_dialog_title">証明書をチェックアウトする</string>
     <string name="nc_certificate_error">SSL設定で接続が妨げられました</string>
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
-    <string name="nc_circle">サークル</string>
-    <string name="nc_circles">サークル</string>
     <string name="nc_clear_history">すべてのメッセージを削除</string>
     <string name="nc_clear_history_success">すべてのメッセージが削除されたました。</string>
     <string name="nc_clear_history_warning">本当にこの会話の全てのメッセージを削除してもよろしいですか？</string>
@@ -234,7 +232,6 @@
     <string name="nc_push_to_talk_desc">マイクを無効にして、プッシュツートークを使用する場合は &amp; ホールド</string>
     <string name="nc_remind">後で通知する</string>
     <string name="nc_remote_audio_off">リモート音声オフ</string>
-    <string name="nc_remove_circle_and_members">サークルとメンバーを削除</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
     <string name="nc_remove_group_and_members">メンバーとグループを削除</string>
     <string name="nc_remove_participant">参加者を削除</string>

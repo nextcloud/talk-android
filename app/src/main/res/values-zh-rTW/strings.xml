@@ -22,7 +22,7 @@
     <string name="clear_status_message_after">在……之後清空狀態訊息</string>
     <string name="close">關閉</string>
     <string name="continuous_voice_message_recording">鎖定錄音以連續錄製語音訊息</string>
-    <string name="conversation_is_read_only">對話是唯讀</string>
+    <string name="conversation_is_read_only">對話為唯讀</string>
     <string name="conversations">對話</string>
     <string name="create_conversation">建立對話</string>
     <string name="create_issue">建立問題</string>
@@ -44,6 +44,7 @@
     <string name="file_list_loading">正在載入……</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小時</string>
+    <string name="get_invitations_error">擷取擱置中的邀請失敗</string>
     <string name="hint_edited_message">（已編輯）</string>
     <string name="invisible">隱藏</string>
     <string name="languages_error_message">無法擷取語言</string>
@@ -114,8 +115,6 @@
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">變更驗證憑證</string>
-    <string name="nc_circle">圈子</string>
-    <string name="nc_circles">圈子</string>
     <string name="nc_clear_edit_button">清除編輯按鈕</string>
     <string name="nc_clear_edit_message">清除編輯訊息</string>
     <string name="nc_clear_history">刪除所有訊息</string>
@@ -341,10 +340,10 @@
     <string name="nc_push_to_talk_desc">在停用麥克風的情況下，點擊並按住即可使用按住以說話</string>
     <string name="nc_remind">稍後提醒我</string>
     <string name="nc_remote_audio_off">遠端音訊關閉</string>
-    <string name="nc_remove_circle_and_members">移除小圈圈與成員</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
     <string name="nc_remove_group_and_members">移除群組與成員</string>
     <string name="nc_remove_participant">移除參與者</string>
+    <string name="nc_remove_team_and_members">移除團隊與成員</string>
     <string name="nc_rename">重新命名對話</string>
     <string name="nc_rename_confirm">重新命名</string>
     <string name="nc_reply">回覆</string>
@@ -467,6 +466,8 @@
     <string name="nc_sort_by">排序</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_switch_account">切換帳號</string>
+    <string name="nc_team">團隊</string>
+    <string name="nc_teams">團隊</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">傳送這些檔案給 %1$s？</string>
     <string name="nc_upload_confirm_send_single">傳送檔案給 %1$s？</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_icon">Ikona účtu</string>
+    <string name="add_to_notes">Pridať do poznámok</string>
     <string name="added_to_favorites">Pridať konverzáciu %1$s k obľúbeným</string>
     <string name="appbar_search_in">Hľadať v %s</string>
     <string name="audio_call">Audio hovor</string>
@@ -20,8 +21,10 @@
     <string name="clear_status_message">Vyčistiť správu o stave</string>
     <string name="clear_status_message_after">Vyčistiť správu o stave po</string>
     <string name="close">Zatvoriť</string>
+    <string name="continuous_voice_message_recording">Zamknúť nahrávanie pre nepretržité nahrávanie hlasovej správy</string>
     <string name="conversations">Konverzácie</string>
     <string name="create_conversation">Vytvoriť konverzáciu</string>
+    <string name="create_issue">Vytvoriť problém</string>
     <string name="custom">Vlastný</string>
     <string name="danger_zone">Nebezpečná oblasť</string>
     <string name="delete_avatar">Zmazať avatara</string>
@@ -29,6 +32,8 @@
     <string name="dnd">Nerušiť</string>
     <string name="dontClear">Nemazať</string>
     <string name="edit">Upraviť</string>
+    <string name="edit_error_24_hours_old_message">Nemôžete upravovať správy staršie ako 24 hodín.</string>
+    <string name="edit_message_icon_description">Upraviť ikonu správy</string>
     <string name="emoji_backspace">Spätná lomka</string>
     <string name="emoji_category_recent">Nedávne</string>
     <string name="encrypted">Šifrované</string>
@@ -38,7 +43,10 @@
     <string name="file_list_loading">Načítavam …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
+    <string name="hint_edited_message">(editované)</string>
     <string name="invisible">Neviditeľný</string>
+    <string name="languages_error_message">Jazyky sa nedali získať</string>
+    <string name="languages_error_title">Získanie zlyhalo</string>
     <string name="later_today">Neskôr dnes</string>
     <string name="left_conversation">Opustili ste konverzáciu %1$s</string>
     <string name="load_more_results">Načítať viac výsledkov</string>
@@ -53,6 +61,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Najväčšie prvé</string>
     <string name="menu_item_sort_by_size_smallest_first">Najmenšie prvé</string>
+    <string name="message_expiration_title">Vypršanie platnosti správy</string>
     <string name="message_poll_tap_to_open">Klepnutím otvoríte anketu</string>
     <string name="message_search_begin_empty">Žiadne výsledky vyhľadávania</string>
     <string name="message_search_begin_typing">Začnite písať pre vyhľadanie …</string>
@@ -101,8 +110,6 @@
     <string name="nc_certificate_dialog_title">Skontrolujte certifikát</string>
     <string name="nc_certificate_error">Vaša konfigurácia SSL zabránila pripojeniu</string>
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
-    <string name="nc_circle">Kruh</string>
-    <string name="nc_circles">Kruhy</string>
     <string name="nc_clear_history">Vymazať všetky správy</string>
     <string name="nc_clear_history_success">Všetky správy boli vymazané</string>
     <string name="nc_clear_history_warning">Naozaj chcete vymazať všetky správy v tejto konverzácii?</string>
@@ -151,6 +158,7 @@
     <string name="nc_diagnose_battery_optimization_title">Nastavenia batérie.</string>
     <string name="nc_diagnose_device_name_title">Zariadenie</string>
     <string name="nc_diagnose_phone_category_title">Telefón</string>
+    <string name="nc_diagnose_server_talk_version">Verzia servera Talk /Rozhovor/</string>
     <string name="nc_diagnose_signaling_mode_extern">Externý</string>
     <string name="nc_diagnose_signaling_mode_intern">Interné</string>
     <string name="nc_dialog_invalid_password">Neplatné heslo</string>
@@ -280,10 +288,10 @@
     <string name="nc_push_to_talk_desc">S vypnutým mikrofónom, kliknite &amp;podržte pre použitie funkcie Stlač a hovor PTT</string>
     <string name="nc_remind">Pripomenúť neskôr</string>
     <string name="nc_remote_audio_off">Vypnúť vzdialené audio</string>
-    <string name="nc_remove_circle_and_members">Vymazať kruh a členov</string>
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
     <string name="nc_remove_group_and_members">Odobrať skupinu a členov</string>
     <string name="nc_remove_participant">Odobrať účastníka</string>
+    <string name="nc_remove_team_and_members">Odstrániť tím a členov.</string>
     <string name="nc_rename">Premenovať konverzáciu</string>
     <string name="nc_rename_confirm">Premenovať</string>
     <string name="nc_reply">Odpoveď</string>
@@ -398,6 +406,8 @@
     <string name="nc_sort_by">Zoradiť podľa</string>
     <string name="nc_start_time">Čas začiatku</string>
     <string name="nc_switch_account">Prepnúť účet</string>
+    <string name="nc_team">Tím</string>
+    <string name="nc_teams">Tímy</string>
     <string name="nc_upload_choose_local_files">Vyberte súbory</string>
     <string name="nc_upload_confirm_send_multiple">Poslať tieto súbory do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Poslať tento súbor do %1$s?</string>
@@ -453,6 +463,10 @@
     <string name="record_stop_confirm_title">Zastaviť nahrávanie hovoru</string>
     <string name="record_stop_description">Zastaviť nahrávanie</string>
     <string name="record_stopping">Zastavujem nahrávanie...</string>
+    <string name="recording_consent_all">Súhlas so záznamom je potrebný pre všetky hovory.</string>
+    <string name="recording_consent_for_conversation_description">Vyžadovať súhlas so záznamom pred pripojením hovoru v tejto konverzácii</string>
+    <string name="recording_consent_for_conversation_title">Súhlas so záznamom</string>
+    <string name="recording_consent_title">Hovor môže byť zaznamenaný.</string>
     <string name="recording_settings_title">Záznam</string>
     <string name="removed_from_favorites">Konverzácia %1$s bola odstránená z obľúbených</string>
     <string name="renamed_conversation">Konverzácia %1$s bola premenovaná</string>

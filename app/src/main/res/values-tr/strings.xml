@@ -32,6 +32,8 @@
     <string name="dnd">Rahatsız etmeyin</string>
     <string name="dontClear">Kaldırılmasın</string>
     <string name="edit">Düzenle</string>
+    <string name="edit_error_24_hours_old_message">24 saat öncesine ait mesajları düzenleyemezsiniz.</string>
+    <string name="edit_message_icon_description">Düzenleme İleti Simgesi</string>
     <string name="emoji_backspace">Geriye silme</string>
     <string name="emoji_category_recent">Son kullanılan</string>
     <string name="encrypted">Şifrelenmiş</string>
@@ -41,6 +43,7 @@
     <string name="file_list_loading">Yükleniyor…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 saat</string>
+    <string name="get_invitations_error">Tamamlanamayan davetiyeleri al ve beklet</string>
     <string name="hint_edited_message">(düzenlendi)</string>
     <string name="invisible">Görünmez</string>
     <string name="languages_error_message">Diller alınamadı</string>
@@ -111,8 +114,8 @@
     <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
     <string name="nc_certificate_error">SSL kurulumunuz bağlantı kurulmasını engelliyor</string>
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
-    <string name="nc_circle">Çevre</string>
-    <string name="nc_circles">Çevreler</string>
+    <string name="nc_clear_edit_button">Düzenleme Butonunu temizle</string>
+    <string name="nc_clear_edit_message">İletiyi düzenle</string>
     <string name="nc_clear_history">Tüm iletileri sil</string>
     <string name="nc_clear_history_success">Tüm iletiler silindi</string>
     <string name="nc_clear_history_warning">Bu görüşmedeki tüm iletileri silmek istediğinize emin misiniz?</string>
@@ -136,6 +139,7 @@
     <string name="nc_conversation_menu_conversation_info">Görüşme bilgileri</string>
     <string name="nc_conversation_menu_video_call">Görüntülü çağrı</string>
     <string name="nc_conversation_menu_voice_call">Sesli çağrı</string>
+    <string name="nc_conversation_not_found">Görüşme bulunamadı</string>
     <string name="nc_conversations_empty">Bir görüşmeye katılın ya da yeni bir görüşme başlatın</string>
     <string name="nc_conversations_empty_details">Tanıdık ve çalışma arkadaşlarınıza selam verin!</string>
     <string name="nc_copy_message">Kopyala</string>
@@ -205,6 +209,7 @@
     <string name="nc_dialog_save_to_storage_yes">Evet</string>
     <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>
     <string name="nc_display_name_not_stored">Görüntülenecek ad kaydedilemedi, vazgeçiliyor</string>
+    <string name="nc_edit_icon">Düzenle simgesi</string>
     <string name="nc_edit_message">Düzenle</string>
     <string name="nc_email">E-posta</string>
     <string name="nc_expire_message_eight_hours">8 saat</string>
@@ -328,7 +333,6 @@
     <string name="nc_push_to_talk_desc">Mikrofon devre dışı iken, Bas-konuş üzerine tıklayıp basılı tutun</string>
     <string name="nc_remind">Sonra hatırlat</string>
     <string name="nc_remote_audio_off">Uzak ses kapalı</string>
-    <string name="nc_remove_circle_and_members">Çevreyi ve üyelerini sil</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
     <string name="nc_remove_group_and_members">Grup ve üyelerini sil</string>
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>

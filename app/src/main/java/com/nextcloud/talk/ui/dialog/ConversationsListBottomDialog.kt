@@ -47,6 +47,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.SpreedFeatures
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -81,7 +82,8 @@ class ConversationsListBottomDialog(
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.platform.themeDialog(binding.root)
+        viewThemeUtils.material.colorBottomSheetBackground(binding.root)
+        viewThemeUtils.material.colorBottomSheetDragHandle(binding.bottomSheetDragHandle)
         initHeaderDescription()
         initItemsVisibility()
         initClickListeners()
@@ -107,7 +109,7 @@ class ConversationsListBottomDialog(
     private fun initItemsVisibility() {
         val hasFavoritesCapability = CapabilitiesUtil.hasSpreedFeatureCapability(
             currentUser.capabilities?.spreedCapability!!,
-            "favorites"
+            SpreedFeatures.FAVORITES
         )
         val canModerate = conversation.canModerate(currentUser)
 
@@ -120,17 +122,15 @@ class ConversationsListBottomDialog(
 
         binding.conversationMarkAsRead.visibility = setVisibleIf(
             conversation.unreadMessages > 0 && CapabilitiesUtil.hasSpreedFeatureCapability(
-                currentUser
-                    .capabilities?.spreedCapability!!,
-                "chat-read-marker"
+                currentUser.capabilities?.spreedCapability!!,
+                SpreedFeatures.CHAT_READ_MARKER
             )
         )
 
         binding.conversationMarkAsUnread.visibility = setVisibleIf(
             conversation.unreadMessages <= 0 && CapabilitiesUtil.hasSpreedFeatureCapability(
-                currentUser
-                    .capabilities?.spreedCapability!!,
-                "chat-unread"
+                currentUser.capabilities?.spreedCapability!!,
+                SpreedFeatures.CHAT_UNREAD
             )
         )
 

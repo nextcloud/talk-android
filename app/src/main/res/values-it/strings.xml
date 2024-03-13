@@ -85,8 +85,6 @@
     <string name="nc_certificate_dialog_title">Controlla il certificato</string>
     <string name="nc_certificate_error">La tua configurazione SSL ha impedito la connessione</string>
     <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
-    <string name="nc_circle">Cerchia</string>
-    <string name="nc_circles">Cerchie</string>
     <string name="nc_clear_history">Elimina tutti i messaggi</string>
     <string name="nc_clear_history_success">Tutti i messaggi sono stati eliminati</string>
     <string name="nc_clear_history_warning">Vuoi davvero eliminare tutti i messaggi in questa conversazione?</string>
@@ -239,7 +237,6 @@
     <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utilizzare Premi per parlare</string>
     <string name="nc_remind">Ricordamelo più tardi</string>
     <string name="nc_remote_audio_off">Audio remoto spento</string>
-    <string name="nc_remove_circle_and_members">Rimuovi cerchia e membri</string>
     <string name="nc_remove_from_favorites">Rimuovi dai preferiti</string>
     <string name="nc_remove_group_and_members">Rimuovi gruppo e membri</string>
     <string name="nc_remove_participant">Rimuovi partecipante</string>

@@ -791,7 +791,7 @@ How to translate with transifex:
     <string name="nc_send_edit_message">Send Edit Message</string>
     <string name="nc_clear_edit_message">Clear Edit Message</string>
     <string name="edit_error_24_hours_old_message">Cannot Edit Messages older than 24 hours</string>
-    <string name="conversation_is_read_only">Conversation is read Only</string>
+    <string name="conversation_is_read_only">Conversation is read only</string>
     <string name="nc_edit_message_text">Edit Message Text</string>
     <string name="hint_edited_message">(edited)</string>
     <string name="nc_conversation_not_found">Conversation not found</string>
@@ -800,4 +800,5 @@ How to translate with transifex:
     <string name="nc_edited_by">"Edited by "</string>
     <string name="nc_clear_edit_button">clear Edit Button</string>
     <string name="nc_edit_icon">Edit Icon</string>
+    <string name="get_invitations_error">Failed to fetch pending invitations</string>
 </resources>

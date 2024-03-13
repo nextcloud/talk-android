@@ -91,8 +91,6 @@
     <string name="nc_certificate_dialog_title">Verifica el certificat</string>
     <string name="nc_certificate_error">La vostra configuració SSL ha impedit la connexió</string>
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
-    <string name="nc_circle">Cercle</string>
-    <string name="nc_circles">Cercles</string>
     <string name="nc_clear_history">Suprimeix tots els missatges</string>
     <string name="nc_clear_history_success">S\'han suprimit tots els missatges</string>
     <string name="nc_clear_history_warning">Segur que voleu suprimir tots els missatges d\'aquesta conversa?</string>
@@ -258,7 +256,6 @@
     <string name="nc_push_to_talk_desc">Amb el micròfon desactivat, feu clic a &amp; i mantingueu-lo pressionat per fer servir el Prem-i-parla</string>
     <string name="nc_remind">Recorda-m\'ho més tard</string>
     <string name="nc_remote_audio_off">Àudio remot desactivat</string>
-    <string name="nc_remove_circle_and_members">Suprimeix el cercle i els membres</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>
     <string name="nc_remove_group_and_members">Suprimeix el grup i els membres</string>
     <string name="nc_remove_participant">Suprimeix el participant</string>
@@ -375,6 +372,8 @@
     <string name="nc_sort_by">Ordena per</string>
     <string name="nc_start_time">Hora d\'inici</string>
     <string name="nc_switch_account">Canvia el compte</string>
+    <string name="nc_team">Equip</string>
+    <string name="nc_teams">Equips</string>
     <string name="nc_upload_choose_local_files">Trieu els fitxers</string>
     <string name="nc_upload_confirm_send_multiple">Voleu enviar aquests fitxers a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Voleu enviar aquest fitxer a %1$s?</string>

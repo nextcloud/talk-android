@@ -51,8 +51,6 @@
     <string name="nc_certificate_dialog_title">Tjek certifikatet</string>
     <string name="nc_certificate_error">Din SSL indstilling forhindrede forbindelse</string>
     <string name="nc_change_cert_auth">Skift godkendelsescertifikat</string>
-    <string name="nc_circle">Cirkel</string>
-    <string name="nc_circles">Cirkler</string>
     <string name="nc_clear_history_success">Alle beskeder blev slettet</string>
     <string name="nc_client_cert_change">Skift kliencertifikat</string>
     <string name="nc_client_cert_setup">Indstil klientcertifikat</string>

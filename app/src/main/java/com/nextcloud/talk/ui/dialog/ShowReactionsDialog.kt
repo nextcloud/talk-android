@@ -81,7 +81,8 @@ class ShowReactionsDialog(
         binding = DialogMessageReactionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        viewThemeUtils.platform.themeDialog(binding.root)
+        viewThemeUtils.material.colorBottomSheetBackground(binding.root)
+        viewThemeUtils.material.colorBottomSheetDragHandle(binding.bottomSheetDragHandle)
         adapter = ReactionsAdapter(this, user)
         binding.reactionsList.adapter = adapter
         binding.reactionsList.layoutManager = LinearLayoutManager(context)

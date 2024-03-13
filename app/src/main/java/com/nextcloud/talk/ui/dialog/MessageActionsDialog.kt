@@ -106,7 +106,7 @@ class MessageActionsDialog(
 
     private val isMessageEditable = CapabilitiesUtil.hasSpreedFeatureCapability(
         spreedCapabilities,
-        "edit-messages"
+        SpreedFeatures.EDIT_MESSAGES
     ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,7 +117,8 @@ class MessageActionsDialog(
         setContentView(dialogMessageActionsBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        viewThemeUtils.platform.themeDialog(dialogMessageActionsBinding.root)
+        viewThemeUtils.material.colorBottomSheetBackground(dialogMessageActionsBinding.root)
+        viewThemeUtils.material.colorBottomSheetDragHandle(dialogMessageActionsBinding.bottomSheetDragHandle)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
         val apiVersion = ApiUtils.getConversationApiVersion(user!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
@@ -165,8 +166,9 @@ class MessageActionsDialog(
                 !(message.isDeletedCommentMessage || message.isDeleted)
         )
         initMenuRemindMessage(
-            !message.isDeleted && CapabilitiesUtil.hasSpreedFeatureCapability
-                (spreedCapabilities, "remind-me-later")
+            !message.isDeleted &&
+                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REMIND_ME_LATER) &&
+                currentConversation!!.remoteServer.isNullOrEmpty()
         )
         initMenuMarkAsUnread(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&

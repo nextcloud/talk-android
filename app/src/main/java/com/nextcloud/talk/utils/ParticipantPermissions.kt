@@ -53,7 +53,7 @@ class ParticipantPermissions(
     private fun hasConversationPermissions(): Boolean {
         return CapabilitiesUtil.hasSpreedFeatureCapability(
             spreedCapabilities,
-            "conversation-permissions"
+            SpreedFeatures.CONVERSATION_PERMISSION
         )
     }
 
@@ -90,7 +90,7 @@ class ParticipantPermissions(
     }
 
     fun hasChatPermission(): Boolean {
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, "chat-permission")) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_PERMISSION)) {
             return hasChatPermission
         }
         // if capability is not available then the spreed version doesn't support to restrict this

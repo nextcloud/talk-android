@@ -22,7 +22,7 @@
     <string name="clear_status_message_after">Fjern statusmelding etter</string>
     <string name="close">Lukk</string>
     <string name="continuous_voice_message_recording">Lås opptak for kontinuerlig opptak av talemeldingen</string>
-    <string name="conversation_is_read_only">Denne samtalen er skrivebeskyttet</string>
+    <string name="conversation_is_read_only">Samtalen kan kun leses</string>
     <string name="conversations">Samtaler</string>
     <string name="create_conversation">Opprett samtale</string>
     <string name="create_issue">Opprett problem</string>
@@ -44,6 +44,7 @@
     <string name="file_list_loading">Laster ...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timer</string>
+    <string name="get_invitations_error">Henting av ventende invitasjoner feilet</string>
     <string name="hint_edited_message">(redigert)</string>
     <string name="invisible">Usynlig</string>
     <string name="languages_error_message">Språk kunne ikke hentes</string>
@@ -114,8 +115,6 @@
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
     <string name="nc_certificate_error">Ditt SSL-oppsett forhindret tilkobling</string>
     <string name="nc_change_cert_auth">Endre sertifikat for autentisering</string>
-    <string name="nc_circle">Sirkel</string>
-    <string name="nc_circles">Sirkler</string>
     <string name="nc_clear_edit_button">tøm redigeringsknapp</string>
     <string name="nc_clear_edit_message">Fjern redigeringsmelding</string>
     <string name="nc_clear_history">Slett alle meldinger</string>
@@ -341,10 +340,10 @@
     <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk &amp; hold for å bruke klikk-for-å-snakke</string>
     <string name="nc_remind">Påminnn meg senere</string>
     <string name="nc_remote_audio_off">Ekstern lyd av</string>
-    <string name="nc_remove_circle_and_members">Fjern sirkel og medlemmer</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_group_and_members">Fjern gruppe og medlemmer</string>
     <string name="nc_remove_participant">Fjern deltaker</string>
+    <string name="nc_remove_team_and_members">Fjern lag og medlemmer</string>
     <string name="nc_rename">Endre navn på samtale</string>
     <string name="nc_rename_confirm">Endre navn</string>
     <string name="nc_reply">Svar</string>
@@ -467,6 +466,8 @@
     <string name="nc_sort_by">Sorter etter</string>
     <string name="nc_start_time">Start tidspunkt</string>
     <string name="nc_switch_account">Bytt konto</string>
+    <string name="nc_team">Lag</string>
+    <string name="nc_teams">Lag</string>
     <string name="nc_upload_choose_local_files">Velg filer</string>
     <string name="nc_upload_confirm_send_multiple">Sende disse filene til %1$s?</string>
     <string name="nc_upload_confirm_send_single">Sende denne filen til %1$s?</string>

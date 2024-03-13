@@ -90,7 +90,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUti
 
         MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
             cornerRadius(res = R.dimen.corner_radius)
-            viewThemeUtils.platform.themeDialog(this.view)
+            viewThemeUtils.material.colorBottomSheetBackground(this.view)
 
             title(text = displayName)
             listItemsWithImage(items = items) { _, index, _ ->

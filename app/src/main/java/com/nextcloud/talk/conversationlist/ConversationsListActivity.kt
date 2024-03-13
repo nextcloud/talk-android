@@ -322,7 +322,7 @@ class ConversationsListActivity :
                 }
 
                 is ConversationsListViewModel.GetFederationInvitationsErrorState -> {
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.get_invitations_error, Snackbar.LENGTH_LONG).show()
                 }
 
                 else -> {}
@@ -754,15 +754,13 @@ class ConversationsListActivity :
     }
 
     private fun fetchPendingInvitations() {
-        binding.conversationListHintInclude.conversationListHintLayout.setOnClickListener {
-            val intent = Intent(this, InvitationsActivity::class.java)
-            startActivity(intent)
+        if (hasSpreedFeatureCapability(currentUser!!.capabilities!!.spreedCapability!!, SpreedFeatures.FEDERATION_V1)) {
+            binding.conversationListHintInclude.conversationListHintLayout.setOnClickListener {
+                val intent = Intent(this, InvitationsActivity::class.java)
+                startActivity(intent)
+            }
+            conversationsListViewModel.getFederationInvitations()
         }
-
-        // TODO create mvvm, fetch pending invitations for all users and store in database for users, if current user
-        //  has invitation -> show hint, if one or more other users have invitations -> show badge
-
-        conversationsListViewModel.getFederationInvitations()
     }
 
     private fun initOverallLayout(isConversationListNotEmpty: Boolean) {
@@ -978,10 +976,7 @@ class ConversationsListActivity :
         updateFilterConversationButtonColor()
 
         binding.filterConversationsButton.setOnClickListener {
-            val newFragment: DialogFragment = FilterConversationFragment.newInstance(
-                filterState,
-                this
-            )
+            val newFragment = FilterConversationFragment.newInstance(filterState)
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 

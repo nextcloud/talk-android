@@ -85,8 +85,6 @@
     <string name="nc_certificate_dialog_title">Controleer het certificaat</string>
     <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
-    <string name="nc_circle">Kring</string>
-    <string name="nc_circles">Kringen</string>
     <string name="nc_clear_history">Alle berichten verwijderen</string>
     <string name="nc_clear_history_success">Alle berichten zijn verwijderd</string>
     <string name="nc_clear_history_warning">Wil je echt dit alle andere berichten in dit gesprek echt verwijderen?</string>
@@ -240,7 +238,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_push_to_talk_desc">Met uitgeschakelde microfoon, klik&amp;indrukken om Druk-om-te-praten te gebruiken</string>
     <string name="nc_remind">Herinner me later</string>
     <string name="nc_remote_audio_off">Externe audio uit</string>
-    <string name="nc_remove_circle_and_members">Verwijderen kring en leden</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
     <string name="nc_remove_group_and_members">Verwijderen groep en leden</string>
     <string name="nc_remove_participant">Verwijder deelnemer</string>
