@@ -105,7 +105,7 @@ open class BaseActivity : AppCompatActivity() {
             disableKeyboardPersonalisedLearning(viewGroup)
         }
 
-        if (appPreferences.isScreenSecured) {
+        if (appPreferences.isScreenSecured || appPreferences.isScreenLocked) {
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
