@@ -253,8 +253,7 @@ class MessageActionsDialog(
     private fun initEmojiBar(hasChatPermission: Boolean) {
         if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REACTIONS) &&
             isPermitted(hasChatPermission) &&
-            isReactableMessageType(message) &&
-            currentConversation!!.remoteServer.isNullOrEmpty()
+            isReactableMessageType(message)
         ) {
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
             dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
