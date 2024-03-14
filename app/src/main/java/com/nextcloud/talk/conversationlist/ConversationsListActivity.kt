@@ -592,7 +592,7 @@ class ConversationsListActivity :
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                     adapter!!.setHeadersShown(false)
-                    if (!filterState.containsValue(true)) filterableConversationItems = searchableConversationItems
+                    if (!filterState.containsValue(true)) filterableConversationItems = conversationItemsWithHeader
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.hideAllHeaders()
                     if (searchHelper != null) {
