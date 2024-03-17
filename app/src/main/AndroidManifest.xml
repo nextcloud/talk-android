@@ -1,25 +1,11 @@
 <!--
   ~ Nextcloud Talk application
   ~
-  ~ @author Mario Danic
-  ~ @author Marcel Hibbe
-  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
-  ~ Copyright (C) 2021-2023 Marcel Hibbe <dev@mhibbe.de>
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
+  ~ SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-FileCopyrightText: 2021-2023 Marcel Hibbe <dev@mhibbe.de>
+  ~ SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -87,7 +73,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <permission
         android:name="${applicationId}.${broadcastPermission}"
@@ -149,8 +135,8 @@
 
         <activity
             android:name=".conversationlist.ConversationsListActivity"
-            android:theme="@style/AppTheme"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/AppTheme">
 
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -192,17 +178,17 @@
         <activity
             android:name=".fullscreenfile.FullScreenImageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/FullScreenImageTheme"/>
+            android:theme="@style/FullScreenImageTheme" />
 
         <activity
             android:name=".fullscreenfile.FullScreenMediaActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/FullScreenMediaTheme"/>
+            android:theme="@style/FullScreenMediaTheme" />
 
         <activity
             android:name=".fullscreenfile.FullScreenTextViewerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/FullScreenTextTheme"/>
+            android:theme="@style/FullScreenTextTheme" />
 
         <activity
             android:name=".activities.TakePhotoActivity"

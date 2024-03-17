@@ -1,3 +1,7 @@
+<!--
+ ~ SPDX-FileCopyrightText: 2021-2024 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
 # Changelog
 All notable changes to this project will be documented in this file.
 

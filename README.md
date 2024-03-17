@@ -1,3 +1,7 @@
+<!--
+ ~ SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
 # [Nextcloud](https://nextcloud.com) Talk for Android :speech_balloon:
 
 [![Build Status](https://drone.nextcloud.com/api/badges/nextcloud/talk-android/status.svg)](https://drone.nextcloud.com/nextcloud/talk-android) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b89a720efbd24754984a776804913bca)](https://www.codacy.com/gh/nextcloud/talk-android/dashboard) [![Releases](https://img.shields.io/github/release/nextcloud/talk-android.svg)](https://github.com/nextcloud/talk-android/releases/latest)
