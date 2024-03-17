@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021-2024 Nextcloud GmbH and Nextcloud contributors
+# SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
+# SPDX-FileCopyrightText: 2021 Joas Schilling <coding@schilljs.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
 blank_issues_enabled: false
 contact_links:
     -   name: Community Support and Help
