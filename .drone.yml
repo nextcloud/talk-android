@@ -3,6 +3,9 @@ kind: pipeline
 type: docker
 name: generic
 
+# SPDX-FileCopyrightText: 2018-2024 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 steps:
   - name: generic
     image: ghcr.io/nextcloud/continuous-integration-android8:3
@@ -78,4 +81,4 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: ec6ade108f26cc1bcea307175de8389beb3e0d04be737e27b25e7de3effc2c32
+hmac: cdce3f7eea46ef85c0223f62f66d1fe53d7dad007ef095c9f70fa063450d8c75

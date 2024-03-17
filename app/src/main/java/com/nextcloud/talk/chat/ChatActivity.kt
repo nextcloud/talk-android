@@ -586,7 +586,8 @@ class ChatActivity :
             outState.putBoolean(CURRENT_AUDIO_WAS_PLAYING_KEY, currentlyPlayedVoiceMessage!!.isPlayingVoiceMessage)
             Log.d(RESUME_AUDIO_TAG, "Stored current audio message ID: " + currentlyPlayedVoiceMessage!!.getId())
             Log.d(
-                RESUME_AUDIO_TAG, "Audio Position: " + currentlyPlayedVoiceMessage!!.voiceMessagePlayedSeconds
+                RESUME_AUDIO_TAG,
+                "Audio Position: " + currentlyPlayedVoiceMessage!!.voiceMessagePlayedSeconds
                     .toString() + " | isPLaying: " + currentlyPlayedVoiceMessage!!.isPlayingVoiceMessage
             )
         }
@@ -2408,8 +2409,8 @@ class ChatActivity :
 
             message.isDownloadingVoiceMessage = false
             message.isPlayingVoiceMessage = doPlay
-            //message.voiceMessagePlayedSeconds = lastRecordMediaPosition / VOICE_MESSAGE_SEEKBAR_BASE
-            //message.voiceMessageSeekbarProgress = lastRecordMediaPosition
+            // message.voiceMessagePlayedSeconds = lastRecordMediaPosition / VOICE_MESSAGE_SEEKBAR_BASE
+            // message.voiceMessageSeekbarProgress = lastRecordMediaPosition
             // the commented instructions objective was to update audio seekbarprogress
             // in the case in which audio status is paused when the position is resumed
             adapter?.update(message)
@@ -2474,7 +2475,7 @@ class ChatActivity :
         adapter?.update(message)
 
         currentlyPlayedVoiceMessage = null
-        lastRecordMediaPosition = 0 //this ensures that if audio track is changed, then it is played from the beginning
+        lastRecordMediaPosition = 0 // this ensures that if audio track is changed, then it is played from the beginning
 
         mediaPlayerHandler.removeCallbacksAndMessages(null)
 
@@ -3799,7 +3800,7 @@ class ChatActivity :
             adapter?.addToEnd(chatMessageList, false)
         }
         scrollToRequestedMessageIfNeeded()
-        //FENOM: add here audio resume policy
+        // FENOM: add here audio resume policy
         resumeAudioPlaybackIfNeeded()
     }
 
@@ -4479,7 +4480,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         when (type) {
