@@ -66,7 +66,8 @@ enum class SpreedFeatures(val value: String) {
     LOCKED_ONE_TO_ONE("locked-one-to-one-rooms"),
     CHAT_PERMISSION("chat-permission"),
     CONVERSATION_PERMISSION("conversation-permissions"),
-    FEDERATION_V1("federation-v1")
+    FEDERATION_V1("federation-v1"),
+    DELETE_MESSAGES_UNLIMITED("delete-messages-unlimited")
 }
 
 @Suppress("TooManyFunctions")

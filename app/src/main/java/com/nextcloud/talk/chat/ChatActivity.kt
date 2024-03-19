@@ -4689,12 +4689,22 @@ class ChatActivity :
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
         val isUserAllowedByPrivileges = userAllowedByPrivilages(message)
 
+        val isOlderThanSixHours = message
+            .createdAt
+            .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_DELETE_MESSAGE))
+        val hasDeleteMessagesUnlimitedCapability = CapabilitiesUtil.hasSpreedFeatureCapability(
+            spreedCapabilities,
+            SpreedFeatures.DELETE_MESSAGES_UNLIMITED
+        )
+
         return when {
             !isUserAllowedByPrivileges -> false
+            !hasDeleteMessagesUnlimitedCapability && isOlderThanSixHours -> false
             message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
             message.isDeleted -> false
             !CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.DELETE_MESSAGES) -> false
             !participantPermissions.hasChatPermission() -> false
+            hasDeleteMessagesUnlimitedCapability -> true
             else -> true
         }
     }
@@ -4902,6 +4912,7 @@ class ChatActivity :
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val HTTP_CODE_OK: Int = 200
+        private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
         private const val REQUEST_CODE_MESSAGE_SEARCH: Int = 777
