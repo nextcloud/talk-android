@@ -918,7 +918,11 @@ class ChatActivity :
                                 collapseSystemMessages()
                             }
 
-                            updateReadStatusOfAllMessages(chatMessageList[0].jsonMessageId)
+                            val newXChatLastCommonRead = state.response.headers()["X-Chat-Last-Common-Read"]?.let {
+                                Integer.parseInt(it)
+                            }
+
+                            updateReadStatusOfAllMessages(newXChatLastCommonRead)
 
                             processCallStartedMessages(chatMessageList)
 
@@ -927,7 +931,7 @@ class ChatActivity :
                             chatViewModel.refreshChatParams(
                                 setupFieldsForPullChatMessages(
                                     true,
-                                    chatMessageList[0].jsonMessageId,
+                                    newXChatLastCommonRead,
                                     true
                                 )
                             )
