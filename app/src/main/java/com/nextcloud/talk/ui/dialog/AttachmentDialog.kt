@@ -73,6 +73,15 @@ class AttachmentDialog(val activity: Activity, var chatActivity: ChatActivity) :
     }
 
     private fun initItemsVisibility() {
+        if (!chatActivity.currentConversation!!.remoteServer.isNullOrEmpty()) {
+            dialogAttachmentBinding.menuAttachContact.visibility = View.GONE
+            dialogAttachmentBinding.menuShareLocation.visibility = View.GONE
+            dialogAttachmentBinding.menuAttachPictureFromCam.visibility = View.GONE
+            dialogAttachmentBinding.menuAttachVideoFromCam.visibility = View.GONE
+            dialogAttachmentBinding.menuAttachFileFromLocal.visibility = View.GONE
+            dialogAttachmentBinding.menuAttachFileFromCloud.visibility = View.GONE
+        }
+
         if (!CapabilitiesUtil.hasSpreedFeatureCapability(
                 chatActivity.spreedCapabilities,
                 SpreedFeatures.GEO_LOCATION_SHARING
