@@ -552,7 +552,7 @@ public interface NcApi {
     @POST
     Observable<GenericOverall> setChatReadMarker(@Header("Authorization") String authorization,
                                                  @Url String url,
-                                                 @Field("lastReadMessage") int lastReadMessage);
+                                                 @Nullable @Field("lastReadMessage") Integer lastReadMessage);
 
     // Url is: /api/{apiVersion}/chat/{token}/read
     @DELETE

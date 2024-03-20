@@ -308,6 +308,12 @@ class ConversationsListBottomDialog(
     }
 
     private fun markConversationAsRead() {
+        val messageId = if (conversation.remoteServer.isNullOrEmpty()) {
+            conversation.lastMessage!!.jsonMessageId
+        } else {
+            null
+        }
+
         ncApi.setChatReadMarker(
             credentials,
             ApiUtils.getUrlForChatReadMarker(
@@ -315,7 +321,7 @@ class ConversationsListBottomDialog(
                 currentUser.baseUrl!!,
                 conversation.token!!
             ),
-            conversation.lastMessage!!.jsonMessageId
+            messageId
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -360,6 +366,7 @@ class ConversationsListBottomDialog(
             )
         }
     }
+
     private fun leaveConversation() {
         val dataBuilder = Data.Builder()
         dataBuilder.putString(KEY_ROOM_TOKEN, conversation.token)
