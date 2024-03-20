@@ -1,0 +1,41 @@
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Parneet Singh
+  ~ Copyright (C) 2024 Parneet Singh <gurayaparneet@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/phone_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:prefixText="+"
+        android:hint="@string/nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/phone_edit_text_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+</FrameLayout>

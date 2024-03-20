@@ -571,6 +571,7 @@ How to translate with transifex:
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">You can set your phone number so other users will be able to find you</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Invalid phone number</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Phone number set successfully</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Enter Phone Number</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account not found</string>

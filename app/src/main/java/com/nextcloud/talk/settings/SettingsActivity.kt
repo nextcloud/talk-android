@@ -34,10 +34,8 @@ import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.DialogInterface
-import android.content.DialogInterface.OnShowListener
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.media.RingtoneManager
@@ -46,18 +44,12 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.security.KeyChain
-import android.text.Editable
-import android.text.InputType
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
@@ -88,9 +80,10 @@ import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.profile.ProfileActivity
+import com.nextcloud.talk.ui.dialog.SetPhoneNumberDialogFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
@@ -98,7 +91,7 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
-import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
@@ -122,7 +115,7 @@ import javax.inject.Inject
 
 @Suppress("LargeClass", "TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
-class SettingsActivity : BaseActivity() {
+class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNumberDialogClickListener {
     private lateinit var binding: ActivitySettingsBinding
 
     @Inject
@@ -1241,61 +1234,15 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun askForPhoneNumber() {
-        val phoneNumberLayoutWrapper = LinearLayout(context)
-        phoneNumberLayoutWrapper.orientation = LinearLayout.VERTICAL
-        phoneNumberLayoutWrapper.setPadding(PHONE_NUMBER_SIDE_PADDING, 0, PHONE_NUMBER_SIDE_PADDING, 0)
-        val phoneNumberInputLayout = TextInputLayout(ContextThemeWrapper(this, R.style.TextInputLayoutTheme))
-        val phoneNumberField = EditText(context)
-        phoneNumberInputLayout.setHelperTextColor(
-            ColorStateList.valueOf(resources!!.getColor(R.color.nc_darkRed, null))
-        )
-        phoneNumberField.inputType = InputType.TYPE_CLASS_PHONE
-        phoneNumberField.setText("+")
-        phoneNumberField.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                // unused atm
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // unused atm
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                phoneNumberInputLayout.helperText = ""
-            }
-        })
-        phoneNumberInputLayout.addView(phoneNumberField)
-        phoneNumberLayoutWrapper.addView(phoneNumberInputLayout)
-        val dialogBuilder = MaterialAlertDialogBuilder(phoneNumberInputLayout.context)
-            .setTitle(R.string.nc_settings_phone_book_integration_phone_number_dialog_title)
-            .setMessage(R.string.nc_settings_phone_book_integration_phone_number_dialog_description)
-            .setView(phoneNumberLayoutWrapper)
-            .setPositiveButton(context.resources.getString(R.string.nc_common_set), null)
-            .setNegativeButton(context.resources.getString(R.string.nc_common_skip), null)
-
-        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(phoneNumberInputLayout.context, dialogBuilder)
-
-        val dialog = dialogBuilder.create()
-        dialog.setOnShowListener(object : OnShowListener {
-            override fun onShow(dialogInterface: DialogInterface) {
-                val button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                button.setOnClickListener(object : View.OnClickListener {
-                    override fun onClick(view: View) {
-                        setPhoneNumber(phoneNumberInputLayout, dialog)
-                    }
-                })
-            }
-        })
-
-        dialog.show()
-
-        viewThemeUtils.platform.colorTextButtons(
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-        )
+        val dialog = SetPhoneNumberDialogFragment.newInstance()
+        dialog.show(supportFragmentManager, SetPhoneNumberDialogFragment.TAG)
     }
 
-    private fun setPhoneNumber(textInputLayout: TextInputLayout, dialog: AlertDialog) {
+    override fun onSubmitClick(textInputLayout: TextInputLayout, dialog: DialogInterface) {
+        setPhoneNumber(textInputLayout, dialog)
+    }
+
+    private fun setPhoneNumber(textInputLayout: TextInputLayout, dialog: DialogInterface) {
         val phoneNumber = textInputLayout.editText!!.text.toString()
         ncApi.setUserData(
             ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
@@ -1315,7 +1262,7 @@ class SettingsActivity : BaseActivity() {
                             dialog.dismiss()
                             Snackbar.make(
                                 binding.root,
-                                context.resources.getString(
+                                getString(
                                     R.string.nc_settings_phone_book_integration_phone_number_dialog_success
                                 ),
                                 Snackbar.LENGTH_LONG
@@ -1323,7 +1270,7 @@ class SettingsActivity : BaseActivity() {
                         }
 
                         else -> {
-                            textInputLayout.helperText = context.resources.getString(
+                            textInputLayout.helperText = getString(
                                 R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid
                             )
                             Log.d(TAG, "failed to set phoneNumber. statusCode=$statusCode")
@@ -1332,10 +1279,10 @@ class SettingsActivity : BaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    textInputLayout.helperText = context.resources.getString(
+                    textInputLayout.helperText = getString(
                         R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid
                     )
-                    Log.e(TAG, "setPhoneNumber error", e)
+                    Log.e(SetPhoneNumberDialogFragment.TAG, "setPhoneNumber error", e)
                 }
 
                 override fun onComplete() {
@@ -1427,7 +1374,6 @@ class SettingsActivity : BaseActivity() {
         private const val START_DELAY: Long = 5000
         private const val DISABLED_ALPHA: Float = 0.38f
         private const val ENABLED_ALPHA: Float = 1.0f
-        private const val HTTP_CODE_OK: Int = 200
-        private const val PHONE_NUMBER_SIDE_PADDING: Int = 50
+        const val HTTP_CODE_OK: Int = 200
     }
 }
