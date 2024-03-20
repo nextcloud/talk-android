@@ -36,7 +36,9 @@
         android:clipChildren="true"
         android:clipToPadding="false"
         android:windowContentOverlay="@null"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:liftOnScrollTargetViewId="@id/recycler_view"
+        app:liftOnScrollColor="@color/bg_default">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_toolbar"
