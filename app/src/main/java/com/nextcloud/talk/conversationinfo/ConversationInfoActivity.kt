@@ -690,7 +690,9 @@ class ConversationInfoActivity :
     private fun handleConversation() {
         val conversationCopy = conversation!!
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA)) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA) &&
+            conversationCopy.remoteServer.isNullOrEmpty()
+        ) {
             binding.sharedItemsButton.setOnClickListener { showSharedItems() }
         } else {
             binding.sharedItems.visibility = GONE
