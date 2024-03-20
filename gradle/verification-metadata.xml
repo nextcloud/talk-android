@@ -7,9 +7,6 @@
          <trust group="com.android.tools.build" name="aapt2" version="8.3.1-10880808" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
          <trust group="com.github.nextcloud-deps" name="android-talk-webrtc" version="110.5481.0" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
       </trusted-artifacts>
-      <ignored-keys>
-         <ignored-key id="D1031D14464180E0" reason="Key couldn't be downloaded from any key server"/>
-      </ignored-keys>
       <trusted-keys>
          <trusted-key id="02A36B6DB7056EB5E6FFEF893DA731F041734930" group="org.parceler"/>
          <trusted-key id="03D5EBC6C81161316CF21CEE1592D9DA6586CF26" group="^com[.]afollestad($|([.].*))" regex="true"/>
@@ -81,6 +78,7 @@
             <trusting group="javax.annotation"/>
          </trusted-key>
          <trusted-key id="4F8FEC6785F611D9A712EA2734918B7D3969D2F5" group="com.google.dagger" name="dagger" version="2.28.3"/>
+         <trusted-key id="50A628FFAF58480736B1079FD1031D14464180E0" group="org.reactivestreams" name="reactive-streams" version="1.0.4"/>
          <trusted-key id="517B94F8D0A46317A28D8AB30DA8A5EC02D11EAD" group="net.sf.jopt-simple" name="jopt-simple" version="4.9"/>
          <trusted-key id="51B52DC5DD452F92BE342CC2858FC4C4F43856A3" group="xerces" name="xercesImpl" version="2.12.0"/>
          <trusted-key id="51BF0A126F41293F40F50A0B8CD7D660AE857DAD" group="com.getkeepsafe.relinker" name="relinker" version="1.4.5"/>
