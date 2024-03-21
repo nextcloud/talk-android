@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: Nextcloud GmbH
+-->
 <vector android:autoMirrored="true"
     android:height="24dp"
     android:viewportHeight="16"

@@ -1,43 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Nextcloud Talk application
+  ~ Nextcloud Talk - Android Client
   ~
-  ~ @author Mario Danic
-  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
+  ~ SPDX-FileCopyrightText: 2018-2024 Google LLC
+  ~ SPDX-License-Identifier: Apache-2.0
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="16dp"
-    android:height="16dp"
-    android:viewportWidth="16"
-    android:viewportHeight="16">
-
+    android:width="24dp"
+    android:height="24dp"
+    android:tint="#969696"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
     <path
-        android:fillColor="#969696"
-        android:pathData="M10,1 C8.25,1,7,2.43,7,3.8 C7,5.2,7.1,6.2,7.8,7.3 C8,7.59,8.3,7.65,8.5,7.9
-C8.635,8.4,8.74,8.9,8.6,9.4 C8.32,9.5,8.075,9.62,7.8,9.73
-C7.715,9.58,7.57,9.53,7.33,9.33 C6.6,8.89,5.77,8.58,5,8.29
-C4.9,7.92,4.9,7.64,5,7.29 C5.156,7.124,5.37,7.02,5.5,6.86
-C5.96,6.26,6,5.206,6,4.49 C6,3.43,5.046,2.59,4,2.59 C2.83,2.59,2,3.59,2,4.49
-C2,5.42,2.034,6.13,2.5,6.86 C2.63,7.06,2.867,7.12,3,7.29
-C3.1,7.62,3.1,7.944,3,8.29 C2.15,8.59,1.4,8.93,0.66,9.33
-C0.09,9.73,0.14,9.535,0,10.86 C-0.11,11.92,2.335,11.99,4,11.99
-C4.06,11.99,4.11,11.99,4.17,11.99 C4.116,12.264,4.07,12.62,4,13.29
-C3.84,14.88,7.5,14.99,10,14.99 S16.16,14.89,16,13.29
-C15.785,11.29,15.77,11.58,15,10.99 C13.9,10.336,12.55,9.82,11.4,9.39
-C11.25,8.83,11.36,8.42,11.5,7.89 C11.735,7.64,12,7.53,12.2,7.29
-C12.9,6.405,13,4.865,13,3.79 C13,2.19,11.57,0.99,10,0.99 Z" />
+        android:fillColor="@android:color/white"
+        android:pathData="M-19,861L-19,718Q-19,677 0.69,644.15Q20.38,611.29 53,594Q119,560 189.27,543Q259.54,526 332,526Q404.12,526 474.06,543Q544,560 610,594Q642.63,611.29 662.31,644.15Q682,677 682,718L682,861L-19,861ZM767,861L767,706Q767,664 744,614Q721,564 672,529Q735,535 790.5,551.5Q846,568 893,594Q934.84,617.77 956.92,646.88Q979,676 979,706L979,861L767,861ZM331,473Q253.45,473 198.23,417.78Q143,362.55 143,285Q143,207.45 198.23,152.22Q253.45,97 331,97Q408.55,97 463.77,152.22Q519,207.45 519,285Q519,362.55 463.77,417.78Q408.55,473 331,473ZM816,285Q816,362.55 760.78,417.78Q705.55,473 628,473Q613,473 587,469.5Q561,466 546,461Q575,423 589.5,378.15Q604,333.3 604,285Q604,236.7 589.5,191.85Q575,147 546,109Q566,102 587,99.5Q608,97 628,97Q705.55,97 760.78,152.22Q816,207.45 816,285Z" />
 </vector>
