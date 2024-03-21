@@ -134,10 +134,10 @@ class MessageUtils(val context: Context) {
                         }
 
                         messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
-                            key,
+                            key!!,
                             themingContext,
                             messageStringInternal,
-                            id,
+                            id!!,
                             message.roomToken,
                             individualHashMap["name"]!!,
                             individualHashMap["type"]!!,

@@ -2142,7 +2142,7 @@ class ChatActivity :
                 true
             )
 
-            if (DisplayUtils.isDarkModeOn(supportActionBar?.themedContext)) {
+            if (DisplayUtils.isDarkModeOn(supportActionBar?.themedContext!!)) {
                 url = "$url/dark"
             }
 

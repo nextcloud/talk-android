@@ -110,7 +110,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     @Suppress("NestedBlockDepth", "ComplexMethod", "LongMethod")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
-        image.minimumHeight = DisplayUtils.convertDpToPixel(MIN_IMAGE_HEIGHT, context).toInt()
+        image.minimumHeight = DisplayUtils.convertDpToPixel(MIN_IMAGE_HEIGHT, context!!).toInt()
 
         time.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 

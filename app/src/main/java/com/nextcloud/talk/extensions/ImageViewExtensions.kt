@@ -70,6 +70,7 @@ fun ImageView.loadConversationAvatar(
     )
 }
 
+@Suppress("ReturnCount")
 fun ImageView.loadConversationAvatar(
     user: User,
     conversation: ConversationModel,
