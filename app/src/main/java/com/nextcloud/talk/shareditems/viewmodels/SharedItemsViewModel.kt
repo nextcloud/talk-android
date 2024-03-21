@@ -81,7 +81,7 @@ class SharedItemsViewModel @Inject constructor(
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.d(TAG, "An error occurred: $e")
+                    Log.e(TAG, "An error occurred when loading available types", e)
                 }
 
                 override fun onComplete() {

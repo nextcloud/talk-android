@@ -199,7 +199,7 @@ class ConversationInfoActivity :
         if (databaseStorageModule == null) {
             databaseStorageModule = DatabaseStorageModule(conversationUser, conversationToken)
         }
-        setUpNotificationSettings(databaseStorageModule!!)
+
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
@@ -690,7 +690,11 @@ class ConversationInfoActivity :
     private fun handleConversation() {
         val conversationCopy = conversation!!
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA)) {
+        setUpNotificationSettings(databaseStorageModule!!)
+
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA) &&
+            conversationCopy.remoteServer.isNullOrEmpty()
+        ) {
             binding.sharedItemsButton.setOnClickListener { showSharedItems() }
         } else {
             binding.sharedItems.visibility = GONE
@@ -1345,8 +1349,13 @@ class ConversationInfoActivity :
         binding.notificationSettingsView.importantConversationSwitch.isChecked = module
             .getBoolean("important_conversation_switch", false)
 
-        binding.notificationSettingsView.callNotificationsSwitch.isChecked = module
-            .getBoolean("call_notifications_switch", true)
+        if (conversation!!.remoteServer.isNullOrEmpty()) {
+            binding.notificationSettingsView.notificationSettingsCallNotifications.visibility = VISIBLE
+            binding.notificationSettingsView.callNotificationsSwitch.isChecked = module
+                .getBoolean("call_notifications_switch", true)
+        } else {
+            binding.notificationSettingsView.notificationSettingsCallNotifications.visibility = GONE
+        }
     }
 
     companion object {

@@ -188,15 +188,20 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
             1
         ).map {
             val types = mutableSetOf<SharedItemType>()
-            val typeMap = it.body()!!.ocs!!.data!!
-            for (t in typeMap) {
-                if (t.value.isNotEmpty()) {
-                    try {
-                        types += SharedItemType.typeFor(t.key)
-                    } catch (e: IllegalArgumentException) {
-                        Log.w(TAG, "Server responds an unknown shared item type: ${t.key}")
+
+            if (it.code() == HTTP_OK) {
+                val typeMap = it.body()!!.ocs!!.data!!
+                for (t in typeMap) {
+                    if (t.value.isNotEmpty()) {
+                        try {
+                            types += SharedItemType.typeFor(t.key)
+                        } catch (e: IllegalArgumentException) {
+                            Log.w(TAG, "Server responds an unknown shared item type: ${t.key}")
+                        }
                     }
                 }
+            } else {
+                Log.e(TAG, "Failed to getSharedItemsOverview")
             }
 
             types.toSet()
@@ -213,6 +218,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
 
     companion object {
         const val BATCH_SIZE: Int = 28
+        private const val HTTP_OK: Int = 200
         private val TAG = SharedItemsRepositoryImpl::class.simpleName
     }
 }
