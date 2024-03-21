@@ -131,54 +131,54 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                 ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
                 ApiUtils.getUrlForMentionSuggestions(chatApiVersion, currentUser.getBaseUrl(), roomToken),
                 queryString, 5, queryMap)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(3)
-                .subscribe(new Observer<MentionOverall>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                        // no actions atm
-                    }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(3)
+            .subscribe(new Observer<MentionOverall>() {
+                @Override
+                public void onSubscribe(@NonNull Disposable d) {
+                    // no actions atm
+                }
 
-                    @Override
-                    public void onNext(@NonNull MentionOverall mentionOverall) {
-                        List<Mention> mentionsList = mentionOverall.getOcs().getData();
+                @Override
+                public void onNext(@NonNull MentionOverall mentionOverall) {
+                    List<Mention> mentionsList = mentionOverall.getOcs().getData();
 
-                        if (mentionsList.size() == 0) {
-                            adapter.clear();
-                        } else {
-                            List<AbstractFlexibleItem> internalAbstractFlexibleItemList =
-                                new ArrayList<>(mentionsList.size());
-                            for (Mention mention : mentionsList) {
-                                internalAbstractFlexibleItemList.add(
-                                        new MentionAutocompleteItem(
-                                                mention,
-                                                currentUser,
-                                                context,
-                                                roomToken,
-                                                viewThemeUtils));
-                            }
-
-                            if (adapter.getItemCount() != 0) {
-                                adapter.clear();
-                            }
-
-                            adapter.updateDataSet(internalAbstractFlexibleItemList);
-                        }
-                    }
-
-                    @SuppressLint("LongLogTag")
-                    @Override
-                    public void onError(@NonNull Throwable e) {
+                    if (mentionsList.size() == 0) {
                         adapter.clear();
-                        Log.e(TAG, "failed to get MentionAutocompleteSuggestions", e);
-                    }
+                    } else {
+                        List<AbstractFlexibleItem> internalAbstractFlexibleItemList =
+                            new ArrayList<>(mentionsList.size());
+                        for (Mention mention : mentionsList) {
+                            internalAbstractFlexibleItemList.add(
+                                new MentionAutocompleteItem(
+                                    mention,
+                                    currentUser,
+                                    context,
+                                    roomToken,
+                                    viewThemeUtils));
+                        }
 
-                    @Override
-                    public void onComplete() {
-                        // no actions atm
+                        if (adapter.getItemCount() != 0) {
+                            adapter.clear();
+                        }
+
+                        adapter.updateDataSet(internalAbstractFlexibleItemList);
                     }
-                });
+                }
+
+                @SuppressLint("LongLogTag")
+                @Override
+                public void onError(@NonNull Throwable e) {
+                    adapter.clear();
+                    Log.e(TAG, "failed to get MentionAutocompleteSuggestions", e);
+                }
+
+                @Override
+                public void onComplete() {
+                    // no actions atm
+                }
+            });
     }
 
     @Override
@@ -187,7 +187,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         MentionAutocompleteItem mentionAutocompleteItem = (MentionAutocompleteItem) adapter.getItem(position);
         if (mentionAutocompleteItem != null) {
             String mentionId = mentionAutocompleteItem.getMentionId();
-            if(mentionId != null) {
+            if (mentionId != null) {
                 mention.setMentionId(mentionId);
             }
             mention.setId(mentionAutocompleteItem.getObjectId());
