@@ -1,8 +1,11 @@
-<svg width="21px" height="24px" viewBox="0 0 21 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="file-icon" fill-rule="nonzero" fill="#000000">
-            <path d="M0.857142862,0 C0.377142852,0 0,0.377142852 0,0.857142862 L0,23.1428572 C0,23.6228571 0.377142852,24 0.857142862,24 L19.7142858,24 C20.1942858,24 20.5714286,23.6228571 20.5714286,23.1428572 L20.5714286,5.14285716 L15.4285714,0 L0.857142862,0 Z M3.42857143,3.42857143 L13.7142857,3.42857143 L13.7142857,5.14285716 L3.42857143,5.14285716 L3.42857143,3.42857143 Z M3.42857143,8.57142859 L12,8.57142859 L12,10.2857143 L3.42857143,10.2857143 L3.42857143,8.57142859 Z M3.42857143,13.7142857 L17.1428572,13.7142857 L17.1428572,15.4285714 L3.42857143,15.4285714 L3.42857143,13.7142857 Z M3.42857143,18.8571429 L10.2857143,18.8571429 L10.2857143,20.5714286 L3.42857143,20.5714286 L3.42857143,18.8571429 Z" id="Shape"></path>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 21 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1.16427,0,0,1.16427,-3.47122,-1.96762)">
+        <g id="Page-1">
+            <g id="file-icon">
+                <path d="M19,3L5,3C3.9,3 3,3.9 3,5L3,19C3,20.1 3.9,21 5,21L19,21C20.1,21 21,20.1 21,19L21,5C21,3.9 20.1,3 19,3ZM14,17L7,17L7,15L14,15L14,17ZM17,13L7,13L7,11L17,11L17,13ZM17,9L7,9L7,7L17,7L17,9Z" style="fill-rule:nonzero;"/>
+            </g>
         </g>
     </g>
 </svg>

@@ -1,9 +1,12 @@
-<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
-    <defs></defs>
-    <g id="icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="vector" fill-rule="nonzero">
-            <polygon id="path" stroke-opacity="0" stroke="#000000" fill="#D5D5D5" points="0 0 24 0 24 24 0 24"></polygon>
-            <path d="M6.48250001,5 C6.2123,5 6,5.2123 6,5.48250001 L6,18.0275002 C6,18.2977002 6.2123,18.5100002 6.48250001,18.5100002 L17.0975002,18.5100002 C17.3677002,18.5100002 17.5800002,18.2977002 17.5800002,18.0275002 L17.5800002,7.89500005 L14.6850001,5 L6.48250001,5 Z M7.93000003,6.93000003 L13.7200001,6.93000003 L13.7200001,7.89500005 L7.93000003,7.89500005 L7.93000003,6.93000003 Z M7.93000003,9.82500008 L12.7550001,9.82500008 L12.7550001,10.7900001 L7.93000003,10.7900001 L7.93000003,9.82500008 Z M7.93000003,12.7200001 L15.6500002,12.7200001 L15.6500002,13.6850001 L7.93000003,13.6850001 L7.93000003,12.7200001 Z M7.93000003,15.6150002 L11.7900001,15.6150002 L11.7900001,16.5800002 L7.93000003,16.5800002 L7.93000003,15.6150002 Z" id="Shape" fill="#FFFFFF"></path>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;">
+    <g id="icon">
+        <g id="vector">
+            <path id="path" d="M0,0L24,0L24,24L0,24L0,0Z" style="fill:rgb(213,213,213);fill-rule:nonzero;stroke:black;stroke-opacity:0;stroke-width:1px;"/>
+            <g transform="matrix(0.776179,0,0,0.776179,2.68585,2.68585)">
+                <path d="M19,3L5,3C3.9,3 3,3.9 3,5L3,19C3,20.1 3.9,21 5,21L19,21C20.1,21 21,20.1 21,19L21,5C21,3.9 20.1,3 19,3ZM14,17L7,17L7,15L14,15L14,17ZM17,13L7,13L7,11L17,11L17,13ZM17,9L7,9L7,7L17,7L17,9Z" style="fill:white;fill-rule:nonzero;"/>
+            </g>
         </g>
     </g>
 </svg>
