@@ -160,7 +160,7 @@ fun ImageView.loadFederatedUserAvatar(
         darkTheme,
         requestBigSize
     )
-    Log.d("Julius", "URL::$imageRequestUri")
+    Log.d(TAG, "federated avatar URL: $imageRequestUri")
 
     return loadAvatarInternal(user, imageRequestUri, ignoreCache, null)
 }
