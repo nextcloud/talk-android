@@ -819,14 +819,6 @@ class ChatActivity :
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
-
-                    chatViewModel.refreshChatParams(
-                        setupFieldsForPullChatMessages(
-                            true,
-                            globalLastKnownFutureMessageId,
-                            true
-                        )
-                    )
                 }
 
                 is ChatViewModel.DeleteChatMessageErrorState -> {
@@ -906,10 +898,11 @@ class ChatActivity :
                             }
 
                             var lastAdapterId = getLastAdapterId()
+                            val oneNewMessage = (lastAdapterId != 0 || chatMessageList.size == 1)
 
                             if (
                                 state.lookIntoFuture &&
-                                lastAdapterId != 0 &&
+                                oneNewMessage &&
                                 chatMessageList[0].jsonMessageId > lastAdapterId
                             ) {
                                 processMessagesFromTheFuture(chatMessageList)
@@ -943,8 +936,7 @@ class ChatActivity :
                                     true,
                                     globalLastKnownFutureMessageId,
                                     true
-                                ),
-                                true
+                                )
                             )
                         }
 
@@ -954,8 +946,7 @@ class ChatActivity :
                                     true,
                                     globalLastKnownFutureMessageId,
                                     true
-                                ),
-                                true
+                                )
                             )
                         }
 
@@ -1077,7 +1068,7 @@ class ChatActivity :
 
         binding.popupBubbleView.setRecyclerView(binding.messagesListView)
 
-        binding.popupBubbleView.setPopupBubbleListener { context ->
+        binding.popupBubbleView.setPopupBubbleListener { _ ->
             if (newMessagesCount != 0) {
                 val scrollPosition = if (newMessagesCount - 1 < 0) {
                     0
@@ -1557,8 +1548,8 @@ class ChatActivity :
         var sliderInitX = 0F
         var downX = 0f
         var originY = 0f
-        var deltaX = 0f
-        var deltaY = 0f
+        var deltaX: Float
+        var deltaY: Float
 
         var voiceRecordStartTime = 0L
         var voiceRecordEndTime = 0L
@@ -3583,11 +3574,12 @@ class ChatActivity :
             for (i in mentionSpans.indices) {
                 mentionSpan = mentionSpans[i]
                 var mentionId = mentionSpan.id
-                if (mentionId.contains(" ") ||
+                val needsQuotes = mentionId.contains(" ") ||
                     mentionId.contains("@") ||
                     mentionId.startsWith("guest/") ||
                     mentionId.startsWith("group/")
-                ) {
+
+                if (needsQuotes) {
                     mentionId = "\"" + mentionId + "\""
                 }
                 editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@$mentionId")
@@ -3973,7 +3965,8 @@ class ChatActivity :
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        if (page > 1) {
+        val calculatedPage = page / MESSAGE_PULL_LIMIT
+        if (calculatedPage > 0) {
             chatViewModel.refreshChatParams(
                 setupFieldsForPullChatMessages(
                     false,
