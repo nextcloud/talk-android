@@ -195,7 +195,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                 }
                 if (ACTOR_TYPE_BOTS == message.actorType && ACTOR_ID_CHANGELOG == message.actorId) {
                     userAvatar.loadChangelogBotAvatar()
-                } else if (message.actorType == "federated_users" && message.messageParameters?.get("actor") != null) {
+                } else if (message.actorType == "federated_users") {
                     userAvatar.loadFederatedUserAvatar(message)
                 }
             }

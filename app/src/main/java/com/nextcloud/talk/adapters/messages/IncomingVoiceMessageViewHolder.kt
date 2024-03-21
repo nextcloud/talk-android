@@ -286,7 +286,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
                 )
             binding.messageUserAvatar.visibility = View.VISIBLE
             binding.messageUserAvatar.setImageDrawable(drawable)
-        } else if (message.actorType == "federated_users" && message.messageParameters?.get("actor") != null) {
+        } else if (message.actorType == "federated_users") {
             binding.messageUserAvatar.loadFederatedUserAvatar(message)
         }
     }

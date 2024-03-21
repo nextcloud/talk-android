@@ -173,7 +173,7 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
             binding.messageUserAvatar.loadChangelogBotAvatar()
         } else if (message.actorType == "bots") {
             binding.messageUserAvatar.loadBotsAvatar()
-        } else if (message.actorType == "federated_users" && message.messageParameters?.get("actor") != null) {
+        } else if (message.actorType == "federated_users") {
             binding.messageUserAvatar.loadFederatedUserAvatar(message)
         }
     }

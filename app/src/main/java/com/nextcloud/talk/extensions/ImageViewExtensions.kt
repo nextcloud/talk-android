@@ -128,10 +128,7 @@ fun ImageView.loadUserAvatar(
 }
 
 fun ImageView.loadFederatedUserAvatar(message: ChatMessage): io.reactivex.disposables.Disposable {
-    val map = message.messageParameters?.get("actor")
-    val url = map?.get("server")!!
-    val id = map["id"]
-    val cloudId = "$id@$url"
+    val cloudId = message.actorId!!
     val darkTheme = if (DisplayUtils.isDarkModeOn(context)) 1 else 0
     val ignoreCache = false
     val requestBigSize = true
