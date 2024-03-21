@@ -78,8 +78,12 @@ class SetPhoneNumberDialogFragment : DialogFragment() {
                 binding.phoneInputLayout.helperText = ""
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // unused atm
+            }
+            override fun afterTextChanged(s: Editable?) {
+                // unused atm
+            }
         })
 
         return dialogBuilder.create()
@@ -104,7 +108,7 @@ class SetPhoneNumberDialogFragment : DialogFragment() {
     }
 
     companion object {
-        const val TAG = "SetPhoneNumberDialogFragment"
+        val TAG: String = SetPhoneNumberDialogFragment::class.java.simpleName
 
         fun newInstance(): DialogFragment {
             return SetPhoneNumberDialogFragment()

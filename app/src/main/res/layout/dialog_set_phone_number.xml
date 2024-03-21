@@ -21,8 +21,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp">
+    android:paddingStart="@dimen/standard_half_padding"
+    android:paddingEnd="@dimen/standard_half_padding">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/phone_input_layout"
@@ -35,6 +35,7 @@
             android:id="@+id/phone_edit_text_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:inputType="phone" />
 
     </com.google.android.material.textfield.TextInputLayout>
