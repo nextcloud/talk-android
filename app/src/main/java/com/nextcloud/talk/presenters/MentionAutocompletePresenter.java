@@ -186,14 +186,14 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         Mention mention = new Mention();
         MentionAutocompleteItem mentionAutocompleteItem = (MentionAutocompleteItem) adapter.getItem(position);
         if (mentionAutocompleteItem != null) {
-            String mentionId = mentionAutocompleteItem.getMentionId();
+            String mentionId = mentionAutocompleteItem.mentionId;
             if (mentionId != null) {
                 mention.setMentionId(mentionId);
             }
-            mention.setId(mentionAutocompleteItem.getObjectId());
-            mention.setLabel(mentionAutocompleteItem.getDisplayName());
-            mention.setSource(mentionAutocompleteItem.getSource());
-            mention.setRoomToken(mentionAutocompleteItem.getRoomToken());
+            mention.setId(mentionAutocompleteItem.objectId);
+            mention.setLabel(mentionAutocompleteItem.displayName);
+            mention.setSource(mentionAutocompleteItem.source);
+            mention.setRoomToken(mentionAutocompleteItem.roomToken);
             dispatchClick(mention);
         }
         return true;

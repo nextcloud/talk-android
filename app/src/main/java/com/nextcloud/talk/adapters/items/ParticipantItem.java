@@ -301,7 +301,7 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                     .matcher(participant.getCalculatedActorId().trim()).find());
     }
 
-    static class ParticipantItemViewHolder extends FlexibleViewHolder {
+    public static class ParticipantItemViewHolder extends FlexibleViewHolder {
 
         RvItemConversationInfoParticipantBinding binding;
 
