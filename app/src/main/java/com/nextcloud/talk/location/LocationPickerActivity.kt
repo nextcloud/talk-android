@@ -281,7 +281,7 @@ class LocationPickerActivity :
         locationOverlay.setPersonHotspot(PERSON_HOT_SPOT_X, PERSON_HOT_SPOT_Y)
         locationOverlay.setPersonIcon(
             DisplayUtils.getBitmap(
-                ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)
+                ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)!!
             )
         )
         binding.map.overlays.add(locationOverlay)

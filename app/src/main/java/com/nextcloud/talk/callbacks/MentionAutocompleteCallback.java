@@ -27,7 +27,6 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.widget.EditText;
 
-import third.parties.fresco.BetterImageSpan;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.mention.Mention;
@@ -39,7 +38,10 @@ import com.otaliastudios.autocomplete.AutocompleteCallback;
 import com.vanniktech.emoji.EmojiRange;
 import com.vanniktech.emoji.Emojis;
 
+import java.util.Objects;
+
 import kotlin.OptIn;
+import third.parties.fresco.BetterImageSpan;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
     private final ViewThemeUtils viewThemeUtils;
@@ -66,26 +68,31 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         }
         String replacement = item.getLabel();
 
-        StringBuilder replacementStringBuilder = new StringBuilder(item.getLabel());
+        StringBuilder replacementStringBuilder = new StringBuilder(Objects.requireNonNull(item.getLabel()));
         for (EmojiRange emojiRange : Emojis.emojis(replacement)) {
             replacementStringBuilder.delete(emojiRange.range.getStart(), emojiRange.range.getEndInclusive());
         }
 
-        editable.replace(range.getStart(), range.getEnd(), replacementStringBuilder + " ");
+        String charSequence = " ";
+        editable.replace(range.getStart(), range.getEnd(), charSequence + replacementStringBuilder + " ");
+        String id;
+        if (item.getMentionId() != null) id = item.getMentionId(); else id = item.getId();
         Spans.MentionChipSpan mentionChipSpan =
             new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
                                                                                  item.getId(),
+                                                                                 item.getRoomToken(),
                                                                                  item.getLabel(),
                                                                                  conversationUser,
                                                                                  item.getSource(),
                                                                                  R.xml.chip_you,
                                                                                  editText,
-                                                                                 viewThemeUtils),
+                                                                                 viewThemeUtils,
+                                                                                 "federated_users".equals(item.getSource())),
                                       BetterImageSpan.ALIGN_CENTER,
-                                      item.getId(), item.getLabel());
+                                      id, item.getLabel());
         editable.setSpan(mentionChipSpan,
-                         range.getStart(),
-                         range.getStart() + replacementStringBuilder.length(),
+                         range.getStart() + charSequence.length(),
+                         range.getStart() + replacementStringBuilder.length() + charSequence.length(),
                          Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
 

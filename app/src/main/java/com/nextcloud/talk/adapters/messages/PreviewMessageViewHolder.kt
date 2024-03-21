@@ -49,6 +49,7 @@ import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
+import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
@@ -109,7 +110,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     @Suppress("NestedBlockDepth", "ComplexMethod", "LongMethod")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
-        image.minimumHeight = DisplayUtils.convertDpToPixel(MIN_IMAGE_HEIGHT, context).toInt()
+        image.minimumHeight = DisplayUtils.convertDpToPixel(MIN_IMAGE_HEIGHT, context!!).toInt()
 
         time.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
@@ -194,6 +195,8 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                 }
                 if (ACTOR_TYPE_BOTS == message.actorType && ACTOR_ID_CHANGELOG == message.actorId) {
                     userAvatar.loadChangelogBotAvatar()
+                } else if (message.actorType == "federated_users") {
+                    userAvatar.loadFederatedUserAvatar(message)
                 }
             }
         }

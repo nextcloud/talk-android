@@ -90,7 +90,7 @@ class SystemMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessa
                     } else {
                         individualMap["name"]
                     }
-                    messageString = DisplayUtils.searchAndColor(messageString, searchText, mentionColor)
+                    messageString = DisplayUtils.searchAndColor(messageString, searchText!!, mentionColor)
                 }
             }
         }
