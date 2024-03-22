@@ -8,7 +8,6 @@
 package com.nextcloud.talk.conversationinfoedit
 
 import android.app.Activity
-import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextUtils
@@ -16,6 +15,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
@@ -49,8 +50,7 @@ import java.io.File
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ConversationInfoEditActivity :
-    BaseActivity() {
+class ConversationInfoEditActivity : BaseActivity() {
 
     private lateinit var binding: ActivityConversationInfoEditBinding
 
@@ -74,6 +74,31 @@ class ConversationInfoEditActivity :
     private lateinit var pickImage: PickImage
 
     private lateinit var spreedCapabilities: SpreedCapability
+
+    private val startImagePickerForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            handleResult(it) { result ->
+                pickImage.onImagePickerResult(result.data) { uri ->
+                    uploadAvatar(uri.toFile())
+                }
+            }
+        }
+
+    private val startSelectRemoteFilesIntentForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        handleResult(it) { result ->
+            pickImage.onSelectRemoteFilesResult(startImagePickerForResult, result.data)
+        }
+    }
+
+    private val startTakePictureIntentForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        handleResult(it) { result ->
+            pickImage.onTakePictureResult(startImagePickerForResult, result.data)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,9 +183,18 @@ class ConversationInfoEditActivity :
     }
 
     private fun setupAvatarOptions() {
-        binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
-        binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
-        binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
+        binding.avatarUpload.setOnClickListener {
+            pickImage.selectLocal(startImagePickerForResult = startImagePickerForResult)
+        }
+
+        binding.avatarChoose.setOnClickListener {
+            pickImage.selectRemote(startSelectRemoteFilesIntentForResult = startSelectRemoteFilesIntentForResult)
+        }
+
+        binding.avatarCamera.setOnClickListener {
+            pickImage.takePicture(startTakePictureIntentForResult = startTakePictureIntentForResult)
+        }
+
         if (conversation?.hasCustomAvatar == true) {
             binding.avatarDelete.visibility = View.VISIBLE
             binding.avatarDelete.setOnClickListener { deleteAvatar() }
@@ -293,19 +327,12 @@ class ConversationInfoEditActivity :
             })
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                pickImage.handleActivityResult(
-                    requestCode,
-                    resultCode,
-                    data
-                ) { uploadAvatar(it.toFile()) }
-            }
+    private fun handleResult(result: ActivityResult, onResult: (result: ActivityResult) -> Unit) {
+        when (result.resultCode) {
+            Activity.RESULT_OK -> onResult(result)
 
             ImagePicker.RESULT_ERROR -> {
-                Snackbar.make(binding.root, ImagePicker.getError(data), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, ImagePicker.getError(result.data), Snackbar.LENGTH_SHORT).show()
             }
 
             else -> {

@@ -10,7 +10,6 @@
 package com.nextcloud.talk.profile
 
 import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -24,6 +23,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
@@ -50,13 +51,13 @@ import com.nextcloud.talk.ui.dialog.ScopeDialog
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPG
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.PickImage.Companion.REQUEST_PERMISSION_CAMERA
-import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.SpreedFeatures
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -87,6 +88,31 @@ class ProfileActivity : BaseActivity() {
 
     private lateinit var pickImage: PickImage
 
+    private val startImagePickerForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            handleResult(it) { result ->
+                pickImage.onImagePickerResult(result.data) { uri ->
+                    uploadAvatar(uri.toFile())
+                }
+            }
+        }
+
+    private val startSelectRemoteFilesIntentForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        handleResult(it) { result ->
+            pickImage.onSelectRemoteFilesResult(startImagePickerForResult, result.data)
+        }
+    }
+
+    private val startTakePictureIntentForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        handleResult(it) { result ->
+            pickImage.onTakePictureResult(startImagePickerForResult, result.data)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -106,9 +132,15 @@ class ProfileActivity : BaseActivity() {
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
         pickImage = PickImage(this, currentUser)
-        binding.avatarUpload.setOnClickListener { pickImage.selectLocal() }
-        binding.avatarChoose.setOnClickListener { pickImage.selectRemote() }
-        binding.avatarCamera.setOnClickListener { pickImage.takePicture() }
+        binding.avatarUpload.setOnClickListener {
+            pickImage.selectLocal(startImagePickerForResult = startImagePickerForResult)
+        }
+        binding.avatarChoose.setOnClickListener {
+            pickImage.selectRemote(startSelectRemoteFilesIntentForResult = startSelectRemoteFilesIntentForResult)
+        }
+        binding.avatarCamera.setOnClickListener {
+            pickImage.takePicture(startTakePictureIntentForResult = startTakePictureIntentForResult)
+        }
         binding.avatarDelete.setOnClickListener {
             ncApi.deleteAvatar(
                 credentials,
@@ -479,7 +511,7 @@ class ProfileActivity : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_PERMISSION_CAMERA) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                pickImage.takePicture()
+                pickImage.takePicture(startTakePictureIntentForResult = startTakePictureIntentForResult)
             } else {
                 Snackbar
                     .make(binding.root, context.getString(R.string.take_photo_permission), Snackbar.LENGTH_LONG)
@@ -488,19 +520,14 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                pickImage.handleActivityResult(
-                    requestCode,
-                    resultCode,
-                    data
-                ) { uploadAvatar(it.toFile()) }
-            }
+    private fun handleResult(result: ActivityResult, onResult: (result: ActivityResult) -> Unit) {
+        when (result.resultCode) {
+            Activity.RESULT_OK -> onResult(result)
+
             ImagePicker.RESULT_ERROR -> {
-                Snackbar.make(binding.root, getError(data), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, getError(result.data), Snackbar.LENGTH_SHORT).show()
             }
+
             else -> {
                 Log.i(TAG, "Task Cancelled")
             }
