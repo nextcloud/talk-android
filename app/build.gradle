@@ -130,7 +130,7 @@ ext {
     coilKtVersion = "2.6.0"
     daggerVersion = "2.51"
     emojiVersion = "1.4.0"
-    fidoVersion = "4.1.0-patch2"
+    fidoVersion = "4.4.0"
     lifecycleVersion = '2.7.0'
     okhttpVersion = "4.12.0"
     markwonVersion = "4.6.2"
