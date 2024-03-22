@@ -346,6 +346,7 @@
     <string name="nc_settings_phone_book_integration_desc">Párosítsa a névjegyeket telefonszám alapján, hogy integrálja a Beszélgetéseket a rendszer Névjegyek alkalmazásba</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">429-es hiba Túl Sok Kérés</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Beállíthatja telefonszámát, hogy a többi felhasználó megtalálja Önt</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Írja be a telefonszámot</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Érvénytelen telefonszám-formátum</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonszám beállítása sikeresen megtörtént</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonszám</string>

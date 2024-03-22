@@ -356,6 +356,7 @@
     <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Talk na lista de teléfonos</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erro 429, demasiadas solicitudes</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Pode estabelecer o seu número de teléfono para que outros usuarios poidan atopalo</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Introduza o número de teléfono</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono non válido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">O número de teléfono foi estabelecido correctamente</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número de teléfono</string>

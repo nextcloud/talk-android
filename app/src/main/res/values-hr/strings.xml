@@ -277,6 +277,7 @@
     <string name="nc_settings_other_notifications_ringtone">Poruke</string>
     <string name="nc_settings_phone_book_integration_desc">Izvršite podudaranje kontakata na temelju telefonskog broja radi integracije prečaca aplikacije Talk u aplikaciju sustava za kontakte</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Možete postaviti svoj telefonski broj kako bi vas drugi korisnici mogli pronaći</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Unesite broj telefona</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nevažeći broj telefona</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Broj telefona je uspješno postavljen</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Broj telefona</string>

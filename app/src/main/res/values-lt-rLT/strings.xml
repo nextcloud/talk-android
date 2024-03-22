@@ -221,6 +221,7 @@
     <string name="nc_settings_notification_sounds">Pranešimų garsai</string>
     <string name="nc_settings_notification_sounds_post_oreo">Pranešimai</string>
     <string name="nc_settings_other_notifications_ringtone">Žinutės</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Įveskite telefono numerį</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefono numeris sėkmingai nustatytas</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefono numeris</string>
     <string name="nc_settings_privacy">Privatumas</string>

@@ -330,6 +330,7 @@
     <string name="nc_settings_other_notifications_ringtone">Mensajes</string>
     <string name="nc_settings_phone_book_integration_desc">Compara los contactos según el número de teléfono para integrar el acceso directo de Talk en la aplicación de contactos del sistema</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Puedes establecer tu número de teléfono para que otros usuarios puedan encontrarte</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Ingresar número de teléfono</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono no válido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">El número de teléfono se estableció correctamente</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número telefónico</string>

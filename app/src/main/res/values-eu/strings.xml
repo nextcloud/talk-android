@@ -358,6 +358,7 @@
     <string name="nc_settings_phone_book_integration_desc">Lotu telefono zenbakiaren araberako kontaktuak Talk lasterbidea sistemako kontaktuen aplikazioan integratzeko</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">429 errorea. Eskaera gehiegi</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Zure telefono zenbakia ezarri dezakezu beste erabiltzaile batzuek aurkitu ahal izateko</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Sartu telefono zenbakia</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefono-zenbaki baliogabea</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefono zenbakia ondo ezarri da</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefono zenbakia</string>

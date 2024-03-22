@@ -379,6 +379,7 @@
     <string name="nc_settings_phone_book_integration_desc">Mettre en correspondance les contacts à l\'aide du numéro de téléphone pour intégrer des raccourcis Talk dans le carnet d\'adresses</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erreur 429 Trop de requêtes</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Vous pouvez ajouter votre numéro de téléphone pour que les autres utilisateurs puissent vous trouver</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Saisissez un numéro de téléphone</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Numéro de téléphone invalide</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numéro de téléphone configuré avec succès</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numéro de téléphone</string>

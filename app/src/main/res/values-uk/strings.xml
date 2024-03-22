@@ -320,6 +320,7 @@
     <string name="nc_settings_other_notifications_ringtone">Повідомлення</string>
     <string name="nc_settings_phone_book_integration_desc">Зіставлення контактів за номером телефону для створення ярликів на додатки \"Конференції\" в додатку системних контактів</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Ви можете встановити свій номер телефону, щоб інші користувачі могли вас знайти</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Зазначте номер телефону</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Неправильний номер телефону</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Номер телефону успішно встановлено</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Номер телефону</string>
