@@ -352,6 +352,7 @@
     <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，以集成通话应用快捷方式到系统联系人应用</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">错误 429 请求太多</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">你可以设置你的电话号码，这样其他用户能够找到你 </string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">输入电话号码</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">无效电话号码</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">成功设置电话号码</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">电话号码 </string>

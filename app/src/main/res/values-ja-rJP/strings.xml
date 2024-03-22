@@ -294,6 +294,7 @@
     <string name="nc_settings_other_notifications_ringtone">メッセージ</string>
     <string name="nc_settings_phone_book_integration_desc">電話番号に基づいて連絡先を照合し、Talkのショートカットをシステムの連絡先アプリに統合します</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">電話番号を設定すると他のユーザーがあなたを見つけられるようになります</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">電話番号を入力</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">電話番号が正しくありません</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">電話番号を設定しました</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">電話番号</string>

@@ -324,6 +324,7 @@
     <string name="nc_settings_other_notifications_ringtone">Sporočila</string>
     <string name="nc_settings_phone_book_integration_desc">Uskladi stike po telefonski številki za povezavo imenika stikov s programom Talk.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Nastavite telefonsko številko, da vas bodo drugi uporabniki lahko našli.</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Vpis telefonske številke</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neveljavna telefonska številka</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonska številka je uspešno nastavljena</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonska številka</string>

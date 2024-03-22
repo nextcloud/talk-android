@@ -299,6 +299,7 @@
     <string name="nc_settings_other_notifications_ringtone">Messaggi</string>
     <string name="nc_settings_phone_book_integration_desc">Verifica i contatti in base al numero di telefono per integrare il collegamento di Talk nell\'applicazione dei contatti di sistema</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Puoi impostare il tuo numero di telefono in modo che gli altri utenti ti trovino</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Digita numero di telefono</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Numero di telefono non valido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numero di telefono impostato correttamente</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numero di telefono</string>

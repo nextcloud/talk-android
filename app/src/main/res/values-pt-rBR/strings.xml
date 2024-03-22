@@ -412,6 +412,7 @@
     <string name="nc_settings_phone_book_integration_desc">Combine os contatos com base no número de telefone para integrar o atalho do Bate Papo no aplicativo de contatos do sistema</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erro 429 Muitas Solicitações</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Você pode definir seu número de telefone para que outros usuários possam encontrar você</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Digite o número de telefone</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de telefone inválido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Número de telefone definido com sucesso</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número do telefone</string>

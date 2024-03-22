@@ -270,6 +270,7 @@
     <string name="nc_settings_notification_sounds">Ilmoitusäänet</string>
     <string name="nc_settings_notification_sounds_post_oreo">Ilmoitukset</string>
     <string name="nc_settings_other_notifications_ringtone">Viestit</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Kirjoita puhelinnumero</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Virheellinen puhelinnumero</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Puhelinnumero asetettu onnistuneesti</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Puhelinnumero</string>

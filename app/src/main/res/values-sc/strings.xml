@@ -266,6 +266,7 @@
     <string name="nc_settings_other_notifications_ringtone">Messàgios</string>
     <string name="nc_settings_phone_book_integration_desc">Verìfica is cuntatos subra sa base de su nùmeru de telèfonu pro integrare su curtziadòrgiu de Talk in sìaplicatzione de is cuntatos de sistema</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Podes impostare su nùmeru de telèfonu tuo aici is àteras utèntzias t\'ant a pòdere agatare</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Inserta nùmeru de telèfonu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nùmeru de telèfonu non bàlidu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Nùmeru de telèfonu impostadu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Nùmeru de telèfonu</string>

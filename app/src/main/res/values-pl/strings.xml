@@ -412,6 +412,7 @@
     <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talka z aplikacją systemową kontaktów</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Błąd 429 zbyt wiele żądań</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Możesz ustawić swój numer telefonu, aby inni użytkownicy mogli Ciebie znaleźć</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Wpisz numer telefonu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nieprawidłowy numer telefonu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numer telefonu ustawiony pomyślnie</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numer telefonu</string>
