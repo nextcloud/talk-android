@@ -338,6 +338,7 @@
     <string name="nc_settings_other_notifications_ringtone">Сообщения</string>
     <string name="nc_settings_phone_book_integration_desc">Сопоставление контактов по номеру телефона для создания ярлыков на приложения «Конференции» в приложение системных контактов</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Вы можете указать свой номер телефона, чтобы другие пользователи могли вас найти</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Введите номер телефона</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Неправильный номер телефона</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Номер телефона успешно установлен</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Номер телефона</string>

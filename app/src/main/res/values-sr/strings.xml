@@ -412,6 +412,7 @@
     <string name="nc_settings_phone_book_integration_desc">Подудара контакте према броју телефона тако да се Talk пречица интегрише у системску апликацију контаката</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Грешка 429 Превише захтева</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Можете да поставите свој број телефона тако да остали корисници могу да вас пронађу</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Унесите број телефона</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Неисправан број телефона</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Број телефона је успешно постављен</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Број телефона</string>

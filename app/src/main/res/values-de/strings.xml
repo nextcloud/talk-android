@@ -412,6 +412,7 @@
     <string name="nc_settings_phone_book_integration_desc">Abgleich von Kontakten basierend auf der Telefonnummer zur Integration der Talk-Verknüpfung im Telefonbuch</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Fehler 429: Zu viele Anfragen</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Sie können Ihre Telefonnummer so einstellen, dass andere Benutzer Sie finden können.</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Telefonnummer eingeben</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ungültige Telefonnummer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonnummerneingabe erfolgreich</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonnummer</string>

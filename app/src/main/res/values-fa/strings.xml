@@ -341,6 +341,7 @@
     <string name="nc_settings_other_notifications_ringtone">پیام ها</string>
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">You can set your phone number so other users will be able to find you</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">شماره تلفن را وارد کنید</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Invalid phone number</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Phone number set successfully</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">شماره تلفن</string>

@@ -412,6 +412,7 @@
     <string name="nc_settings_phone_book_integration_desc">根據電話號碼尋找相符的聯絡人以將 Talk 捷徑整合至系統聯絡人應用程式中</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">錯誤 429 太多請求</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">您可以設定電話號碼以讓其他使用者可以找到您</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">輸入電話號碼</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">無效的電話號碼</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">電話號碼設定成功</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">電話號碼</string>

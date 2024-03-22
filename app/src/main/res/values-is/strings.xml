@@ -218,6 +218,7 @@
     <string name="nc_settings_notification_sounds">Hljóð með tilkynningum</string>
     <string name="nc_settings_notification_sounds_post_oreo">Tilkynningar</string>
     <string name="nc_settings_other_notifications_ringtone">Skilaboð</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Settu inn símanúmer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Símanúmer</string>
     <string name="nc_settings_privacy">Gagnaleynd</string>
     <string name="nc_settings_proxy_host_title">Milliþjónn</string>

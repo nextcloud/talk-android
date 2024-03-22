@@ -412,6 +412,7 @@
     <string name="nc_settings_phone_book_integration_desc">Samsvar kontakter basert på telefonnummer for å integrere Talk-snarveien i systemkontaktappen</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Feil 429 for mange forespørsler</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Du kan angi telefonnummeret ditt slik at andre brukere kan finne deg</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Skriv inn telefonnummer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ugyldig telefonnummer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonnummeret er angitt</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonnummer</string>

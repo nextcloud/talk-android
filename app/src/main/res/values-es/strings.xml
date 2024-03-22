@@ -396,6 +396,7 @@
 </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Error 429 Demasiadas Solicitudes</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Puede establecer su número de teléfono para que otros usuarios puedan encontrarlo</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Introduce número de teléfono</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono no válido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Número de teléfono guardado correctamente</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número de teléfono</string>
