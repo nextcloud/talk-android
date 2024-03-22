@@ -1,3 +1,10 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2023 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2023 Álvaro Brey <alvaro@alvarobrey.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 package com.nextcloud.talk.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule

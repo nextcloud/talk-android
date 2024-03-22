@@ -6,3 +6,7 @@ Source: https://github.com/nextcloud/talk-android
 Files: app/src/main/res/values-*/strings.xml */.gitignore .idea/* scripts/analysis/findbugs-results.txt scripts/analysis/lint-results.txt app/src/test/resources/robolectric.properties app/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker fastlane/metadata/* app/src/main/res/mipmap-*dpi/ic_launcher.png app/schemas/com.nextcloud.talk.data.source.local.TalkDatabase/*.json
 Copyright: 2017-2024 Nextcloud GmbH and Nextcloud contributors
 License: GPL-3.0-or-later
+
+Files: app/src/main/res/raw/tr110_1_kap8_3_freiton1.ogg
+Copyright: 2007 arvedkrynil
+License: CC-BY-SA-3.0
