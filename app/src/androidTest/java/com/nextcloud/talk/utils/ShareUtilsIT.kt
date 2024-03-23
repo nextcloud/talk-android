@@ -1,3 +1,10 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2023 Andy Scherzinger <info@andy-scherzinger.de>
+ * SPDX-FileCopyrightText: 2021 Tobias Kaminsky <tobias@kaminsky.me>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 package com.nextcloud.talk.utils
 
 import at.bitfire.dav4jvm.HttpUtils

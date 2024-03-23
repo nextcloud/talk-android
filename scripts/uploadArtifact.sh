@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+#
+# SPDX-FileCopyrightText: 2021-2024 Nextcloud GmbH and Nextcloud contributors
+# SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
 #1: LOG_USERNAME
 #2: LOG_PASSWORD
 #3: DRONE_BUILD_NUMBER
