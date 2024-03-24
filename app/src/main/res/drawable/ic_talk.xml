@@ -2,7 +2,8 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
-  ~ SPDX-FileCopyrightText: Nextcloud GmbH
+  ~ SPDX-FileCopyrightText: Nextcloud GmbH. All rights reserved.
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 <vector android:autoMirrored="true"
     android:height="24dp"
