@@ -6,6 +6,8 @@
       <trusted-artifacts>
          <trust group="com.android.tools.build" name="aapt2" version="8.3.1-10880808" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
          <trust group="com.github.nextcloud-deps" name="android-talk-webrtc" version="110.5481.0" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
+		 <!-- work-around Gradle 8.7 and Android Studio downloading sources jars -->
+         <trust file=".*-sources[.]jar" regex="true"/>
       </trusted-artifacts>
       <trusted-keys>
          <trusted-key id="02A36B6DB7056EB5E6FFEF893DA731F041734930" group="org.parceler"/>
@@ -180,6 +182,7 @@
          <trusted-key id="D6F1BC78607808EC8E9F69437A8860944FAD5F62" group="org.apache.commons" name="commons-parent"/>
          <trusted-key id="D75E25B78EBB19E47C0A99BCA7764F502A938C99" group="com.google.protobuf"/>
          <trusted-key id="DA7A1BB85B19E4FB05073431205C8673DC742C7C" group="org.apache" name="apache" version="9"/>
+         <trusted-key id="DB0597E3144342256BC81E3EC727D053C4481CF5" group="org.tensorflow" name="tensorflow-lite-metadata"/>
          <trusted-key id="DBD744ACE7ADE6AA50DD591F66B50994442D2D40" group="^com[.]squareup($|([.].*))" regex="true"/>
          <trusted-key id="DF25D3C4868FEC177182FAD64D176DC503FB4267" group="io.coil-kt"/>
          <trusted-key id="E376140124BED4E3C06D227581C27DE945332233" group="^com[.]google[.]auto($|([.].*))" regex="true"/>
