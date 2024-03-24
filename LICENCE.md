@@ -1,3 +1,8 @@
+<!--
+ ~ SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
                       GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 

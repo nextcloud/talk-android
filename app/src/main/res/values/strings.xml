@@ -1,30 +1,4 @@
 <!--
-  ~ Nextcloud Talk application
-  ~
-  ~ @author Mario Danic
-  ~ @author Andy Scherzinger
-  ~ @author Marcel Hibbe
-  ~ @author Tim Krüger
-  ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
-  ~ Copyright (C) 2022-2024 Marcel Hibbe <dev@mhibbe.de>
-  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
-  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<!--
 How to work with translations as a developer:
 - Only add new translations to values/stings.xml, don't do this for other languages (it will be done via transifex).
 - Never change the key of a translation. If it really has to be changed, delete it and create a new entry instead.
@@ -41,6 +15,13 @@ How to translate with transifex:
 -->
 
 <resources>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
     <!-- Common -->
     <string name="nc_yes">Yes</string>
     <string name="nc_no">No</string>
