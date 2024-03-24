@@ -1,3 +1,7 @@
+<!--
+ ~ SPDX-FileCopyrightText: 2021-2024 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
 # Debugging push notifications
 
 This list is intended to help users that have problems to receive talk notifications on their android phone. It may 
