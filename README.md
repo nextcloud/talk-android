@@ -102,7 +102,7 @@ If you have problems to receive talk notifications on your android phone, please
 
 ### Ringtones :bell:
 
-- [Ringtones by Librem](https://soundcloud.com/feandesign/sets/librem-5-sounds) 
+- [Ringtones by Librem](https://developer.puri.sm/licenses/Librem5/Birch/sound-theme-librem5.html) 
   author: [feandesign](https://soundcloud.com/feandesign)
 - [Telefon-Freiton in Deutschland nach DTAG 1 TR 110-1, Kap. 8.3](https://commons.wikimedia.org/wiki/File:1TR110-1_Kap8.3_Freiton1.ogg)
   author: arvedkrynil
