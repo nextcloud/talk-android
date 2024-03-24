@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2023 Julius Linus <juliuslinus1@gmail.com>
+  ~ SPDX-FileCopyrightText: 2023 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/webinar_settings"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/webinar_settings_category"
@@ -51,7 +57,6 @@
                             android:gravity="center_vertical"
                             android:text="@string/nc_lobby"
                             android:textSize="@dimen/headline_text_size" />
-
 
                     </LinearLayout>
 
@@ -107,7 +112,6 @@
                             android:layout_gravity="start"
                             android:hint="@string/nc_manual"
                             android:textSize="@dimen/supporting_text_text_size" />
-
 
                     </LinearLayout>
 

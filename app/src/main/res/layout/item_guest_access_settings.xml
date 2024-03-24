@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2023 Julius Linus <juliuslinus1@gmail.com>
+  ~ SPDX-FileCopyrightText: 2023 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/guest_access_settings"
@@ -112,7 +119,6 @@
                     android:orientation="horizontal"
                     android:background="?android:attr/selectableItemBackground">
 
-
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="40dp"
@@ -128,7 +134,6 @@
                         android:text="@string/nc_guest_access_share_link"
                         android:textSize="@dimen/headline_text_size" />
 
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -141,7 +146,6 @@
                     android:paddingBottom="@dimen/standard_half_margin"
                     android:orientation="horizontal"
                     android:background="?android:attr/selectableItemBackground">
-
 
                     <ImageView
                         android:layout_width="24dp"
@@ -157,7 +161,6 @@
                         android:gravity="center_vertical"
                         android:text="@string/nc_guest_access_resend_invitations"
                         android:textSize="@dimen/headline_text_size" />
-
 
                 </LinearLayout>
 </LinearLayout>

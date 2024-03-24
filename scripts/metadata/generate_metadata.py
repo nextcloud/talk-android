@@ -5,6 +5,11 @@
 # copied on 2017/11/06 from https://github.com/grote/Transportr/blob/master/fastlane/generate_metadata.py
 # adapted by Tobias Kaminsky and then again by Mario Danic
 
+# SPDX-FileCopyrightText: 2017 Torsten Grote
+# SPDX-FileCopyrightText: 2017-2018 Tobias Kaminsky <tobias@kaminsky.me>
+# SPDX-FileCopyrightText: 2017-2018 Mario Danic  <mario@lovelyhq.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import codecs
 import os
 import shutil

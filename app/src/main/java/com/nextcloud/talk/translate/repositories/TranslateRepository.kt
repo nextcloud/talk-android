@@ -1,3 +1,9 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2023-2024 Julius Linus <juliuslinus1@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 package com.nextcloud.talk.translate.repositories
 
 import com.nextcloud.talk.translate.repositories.model.Language
