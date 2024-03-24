@@ -3,8 +3,12 @@ Upstream-Name: Nextcloud Talk - Android Client
 Upstream-Contact: Nextcloud Android team <android@nextcloud.com>
 Source: https://github.com/nextcloud/talk-android
 
-Files: app/src/main/res/values-*/strings.xml */.gitignore .idea/* scripts/analysis/findbugs-results.txt scripts/analysis/lint-results.txt app/src/test/resources/robolectric.properties app/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker fastlane/metadata/* app/src/*/res/mipmap-*dpi/ic_launcher.png app/src/*/ic_launcher-web.png app/schemas/com.nextcloud.talk.data.source.local.TalkDatabase/*.json app/src/generic/fastlane/metadata/android/*/full_description.txt
+Files: app/src/main/res/values-*/strings.xml */.gitignore .idea/* scripts/analysis/findbugs-results.txt scripts/analysis/lint-results.txt app/src/test/resources/robolectric.properties app/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker fastlane/metadata/*  app/schemas/com.nextcloud.talk.data.source.local.TalkDatabase/*.json app/src/generic/fastlane/metadata/android/*/full_description.txt
 Copyright: 2017-2024 Nextcloud GmbH and Nextcloud contributors
+License: GPL-3.0-or-later
+
+Files: app/src/*/res/mipmap-*dpi/ic_launcher.png app/src/*/ic_launcher-web.png 
+Copyright: 2017-2024 Nextcloud GmbH. All rights reserved. Trademarks apply, see https://nextcloud.com/trademarks/
 License: GPL-3.0-or-later
 
 Files: app/src/main/res/raw/tr110_1_kap8_3_freiton1.ogg
