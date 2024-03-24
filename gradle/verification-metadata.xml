@@ -6,6 +6,8 @@
       <trusted-artifacts>
          <trust group="com.android.tools.build" name="aapt2" version="8.3.1-10880808" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
          <trust group="com.github.nextcloud-deps" name="android-talk-webrtc" version="110.5481.0" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
+		 <!-- work-around Gradle 8.7 and Android Studio downloading sources jars -->
+         <trust file=".*-sources[.]jar" regex="true"/>
       </trusted-artifacts>
       <trusted-keys>
          <trusted-key id="02A36B6DB7056EB5E6FFEF893DA731F041734930" group="org.parceler"/>
