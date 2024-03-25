@@ -495,7 +495,7 @@ class ConversationInfoActivity :
 
         val layoutManager = SmoothScrollLinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.setHasFixedSize(false)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.isNestedScrollingEnabled = false
         adapter!!.addListener(this)
