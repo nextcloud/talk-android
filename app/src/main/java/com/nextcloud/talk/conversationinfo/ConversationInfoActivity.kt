@@ -1044,7 +1044,7 @@ class ConversationInfoActivity :
 
             @SuppressLint("LongLogTag")
             override fun onError(e: Throwable) {
-                Log.e(TAG, "Error toggling moderator status", e)
+                Log.e(TAG, "Error toggling moderator status (legacy)", e)
             }
 
             override fun onComplete() {
