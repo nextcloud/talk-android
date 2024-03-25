@@ -798,8 +798,8 @@ How to translate with transifex:
     <string name="nc_conversation_not_found">Conversation not found</string>
     <string name="add_to_notes">Add to Notes</string>
     <string name="nc_edited_by_admin">Edited by admin</string>
-    <string name="nc_edited_by">"Edited by"</string>
     <string name="nc_clear_edit_button">Clear Edit Button</string>
     <string name="nc_edit_icon">Edit Icon</string>
     <string name="get_invitations_error">Failed to fetch pending invitations</string>
+    <string name="message_last_edited_by">Edited by %1$s</string>
 </resources>
