@@ -51,12 +51,12 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.CapabilitiesUtil
-import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
 import com.vanniktech.emoji.installDisableKeyboardInput
@@ -386,10 +386,13 @@ class MessageActionsDialog(
                 message.lastEditTimestamp *
                     DateConstants.SECOND_DIVIDER
             )
-
-            val editorName = context.getString(R.string.nc_edited_by) + message.lastEditActorDisplayName
-            dialogMessageActionsBinding.editorName.setText(editorName)
-            dialogMessageActionsBinding.editedTime.setText(editedTime)
+            val lastEditorName = message.lastEditActorDisplayName ?: ""
+            val editorName = String.format(
+                context.getString(R.string.message_last_edited_by),
+                lastEditorName
+            )
+            dialogMessageActionsBinding.editorName.text = editorName
+            dialogMessageActionsBinding.editedTime.text = editedTime
         }
         dialogMessageActionsBinding.menuMessageEditedInfo.visibility = getVisibility(showEditorDetails)
     }
