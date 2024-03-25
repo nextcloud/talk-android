@@ -1163,7 +1163,7 @@ class ConversationInfoActivity :
 
     @SuppressLint("CheckResult")
     override fun onItemClick(view: View?, position: Int): Boolean {
-        if (ConversationUtils.canModerate(conversation!!, spreedCapabilities)) {
+        if (!ConversationUtils.canModerate(conversation!!, spreedCapabilities)) {
             return true
         }
 
