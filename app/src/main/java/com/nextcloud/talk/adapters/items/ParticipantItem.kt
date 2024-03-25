@@ -26,7 +26,6 @@ import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.extensions.loadMailAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.InCallFlags
 import com.nextcloud.talk.models.json.status.StatusType
@@ -81,6 +80,70 @@ class ParticipantItem(
         payloads: List<*>?
     ) {
         drawStatus(holder!!)
+        setOnlineStateColor(holder)
+        holder.binding.nameText.text = model.displayName
+
+        if (adapter!!.hasFilter()) {
+            viewThemeUtils.talk.themeAndHighlightText(
+                holder.binding.nameText,
+                model.displayName,
+                adapter.getFilter(
+                    String::class.java
+                ).toString()
+            )
+        }
+        loadAvatars(holder)
+        showCallIcons(holder)
+        setParticipantInfo(holder)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setParticipantInfo(holder: ParticipantItemViewHolder) {
+        if (TextUtils.isEmpty(model.displayName) && (
+                model.type == Participant.ParticipantType.GUEST ||
+                    model.type == Participant.ParticipantType.USER_FOLLOWING_LINK
+                )
+        ) {
+            holder.binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
+        }
+
+        var userType = ""
+        when (model.type) {
+            Participant.ParticipantType.OWNER,
+            Participant.ParticipantType.MODERATOR,
+            Participant.ParticipantType.GUEST_MODERATOR -> {
+                userType = sharedApplication!!.getString(R.string.nc_moderator)
+            }
+
+            Participant.ParticipantType.USER -> {
+                userType = sharedApplication!!.getString(R.string.nc_user)
+                if (model.calculatedActorType == Participant.ActorType.GROUPS) {
+                    userType = sharedApplication!!.getString(R.string.nc_group)
+                }
+                if (model.calculatedActorType == Participant.ActorType.CIRCLES) {
+                    userType = sharedApplication!!.getString(R.string.nc_team)
+                }
+            }
+
+            Participant.ParticipantType.GUEST -> {
+                userType = sharedApplication!!.getString(R.string.nc_guest)
+                if (model.calculatedActorType == Participant.ActorType.EMAILS) {
+                    userType = sharedApplication!!.getString(R.string.nc_email)
+                }
+            }
+
+            Participant.ParticipantType.USER_FOLLOWING_LINK -> {
+                userType = sharedApplication!!.getString(R.string.nc_following_link)
+            }
+
+            else -> {}
+        }
+        if (userType != sharedApplication!!.getString(R.string.nc_user)) {
+            holder.binding.secondaryText.text = "($userType)"
+        }
+    }
+
+    private fun setOnlineStateColor(holder: ParticipantItemViewHolder) {
         if (!isOnline) {
             holder.binding.nameText.setTextColor(
                 ResourcesCompat.getColor(
@@ -89,7 +152,7 @@ class ParticipantItem(
                     null
                 )
             )
-            holder.binding.avatarView.setAlpha(0.38f)
+            holder.binding.avatarView.setAlpha(NOT_ONLINE_ALPHA)
         } else {
             holder.binding.nameText.setTextColor(
                 ResourcesCompat.getColor(
@@ -100,25 +163,35 @@ class ParticipantItem(
             )
             holder.binding.avatarView.setAlpha(1.0f)
         }
-        holder.binding.nameText.text = model.displayName
-        if (adapter!!.hasFilter()) {
-            viewThemeUtils.talk.themeAndHighlightText(
-                holder.binding.nameText,
-                model.displayName,
-                adapter.getFilter(
-                    String::class.java
-                ).toString()
-            )
-        }
-        if (TextUtils.isEmpty(model.displayName) &&
-            (
-                model.type == Participant.ParticipantType.GUEST ||
-                    model.type == Participant.ParticipantType.USER_FOLLOWING_LINK
-                )
-        ) {
-            holder.binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
-        }
+    }
 
+    private fun showCallIcons(holder: ParticipantItemViewHolder) {
+        val resources = sharedApplication!!.resources
+        val inCallFlag = model.inCall
+        if (inCallFlag and InCallFlags.WITH_PHONE.toLong() > 0) {
+            holder.binding.videoCallIcon.setImageResource(R.drawable.ic_call_grey_600_24dp)
+            holder.binding.videoCallIcon.setVisibility(View.VISIBLE)
+            holder.binding.videoCallIcon.setContentDescription(
+                resources.getString(R.string.nc_call_state_with_phone, model.displayName)
+            )
+        } else if (inCallFlag and InCallFlags.WITH_VIDEO.toLong() > 0) {
+            holder.binding.videoCallIcon.setImageResource(R.drawable.ic_videocam_grey_600_24dp)
+            holder.binding.videoCallIcon.setVisibility(View.VISIBLE)
+            holder.binding.videoCallIcon.setContentDescription(
+                resources.getString(R.string.nc_call_state_with_video, model.displayName)
+            )
+        } else if (inCallFlag > InCallFlags.DISCONNECTED) {
+            holder.binding.videoCallIcon.setImageResource(R.drawable.ic_mic_grey_600_24dp)
+            holder.binding.videoCallIcon.setVisibility(View.VISIBLE)
+            holder.binding.videoCallIcon.setContentDescription(
+                resources.getString(R.string.nc_call_state_in_call, model.displayName)
+            )
+        } else {
+            holder.binding.videoCallIcon.setVisibility(View.GONE)
+        }
+    }
+
+    private fun loadAvatars(holder: ParticipantItemViewHolder) {
         when (model.calculatedActorType) {
             Participant.ActorType.GROUPS, Participant.ActorType.CIRCLES -> {
                 holder.binding.avatarView.loadDefaultGroupCallAvatar(viewThemeUtils)
@@ -157,60 +230,9 @@ class ParticipantItem(
                 Log.w(TAG, "Avatar not shown because of unknown ActorType " + model.calculatedActorType)
             }
         }
-
-        val resources = sharedApplication!!.resources
-        val inCallFlag = model.inCall
-        if (inCallFlag and InCallFlags.WITH_PHONE.toLong() > 0) {
-            holder.binding.videoCallIcon.setImageResource(R.drawable.ic_call_grey_600_24dp)
-            holder.binding.videoCallIcon.setVisibility(View.VISIBLE)
-            holder.binding.videoCallIcon.setContentDescription(
-                resources.getString(R.string.nc_call_state_with_phone, model.displayName)
-            )
-        } else if (inCallFlag and InCallFlags.WITH_VIDEO.toLong() > 0) {
-            holder.binding.videoCallIcon.setImageResource(R.drawable.ic_videocam_grey_600_24dp)
-            holder.binding.videoCallIcon.setVisibility(View.VISIBLE)
-            holder.binding.videoCallIcon.setContentDescription(
-                resources.getString(R.string.nc_call_state_with_video, model.displayName)
-            )
-        } else if (inCallFlag > InCallFlags.DISCONNECTED) {
-            holder.binding.videoCallIcon.setImageResource(R.drawable.ic_mic_grey_600_24dp)
-            holder.binding.videoCallIcon.setVisibility(View.VISIBLE)
-            holder.binding.videoCallIcon.setContentDescription(
-                resources.getString(R.string.nc_call_state_in_call, model.displayName)
-            )
-        } else {
-            holder.binding.videoCallIcon.setVisibility(View.GONE)
-        }
-        var userType = ""
-        when (EnumParticipantTypeConverter().convertToInt(model.type)) {
-            1, 2, 6 -> userType = sharedApplication!!.getString(R.string.nc_moderator)
-
-            3 -> {
-                userType = sharedApplication!!.getString(R.string.nc_user)
-                if (model.calculatedActorType == Participant.ActorType.GROUPS) {
-                    userType = sharedApplication!!.getString(R.string.nc_group)
-                }
-                if (model.calculatedActorType == Participant.ActorType.CIRCLES) {
-                    userType = sharedApplication!!.getString(R.string.nc_team)
-                }
-            }
-
-            4 -> {
-                userType = sharedApplication!!.getString(R.string.nc_guest)
-                if (model.calculatedActorType == Participant.ActorType.EMAILS) {
-                    userType = sharedApplication!!.getString(R.string.nc_email)
-                }
-            }
-
-            5 -> userType = sharedApplication!!.getString(R.string.nc_following_link)
-
-            else -> {}
-        }
-        if (userType != sharedApplication!!.getString(R.string.nc_user)) {
-            holder.binding.secondaryText.text = "($userType)"
-        }
     }
 
+    @Suppress("MagicNumber")
     private fun drawStatus(holder: ParticipantItemViewHolder) {
         val size = convertDpToPixel(STATUS_SIZE_IN_DP, context)
         holder.binding.userStatusImage.setImageDrawable(
@@ -273,5 +295,6 @@ class ParticipantItem(
         private val TAG = ParticipantItem::class.simpleName
         private const val STATUS_SIZE_IN_DP = 9f
         private const val NO_ICON = ""
+        private const val NOT_ONLINE_ALPHA = 0.38f
     }
 }
