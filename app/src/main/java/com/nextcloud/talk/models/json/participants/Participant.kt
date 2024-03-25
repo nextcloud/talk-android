@@ -129,7 +129,8 @@ data class Participant(
         GROUPS,
         GUESTS,
         USERS,
-        CIRCLES
+        CIRCLES,
+        FEDERATED
     }
 
     enum class ParticipantType {
