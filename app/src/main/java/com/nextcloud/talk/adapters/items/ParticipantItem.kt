@@ -114,8 +114,13 @@ class ParticipantItem(
         ) {
             holder.binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
         }
-        if (model.calculatedActorType == Participant.ActorType.GROUPS || "groups" == model.source ||
-            model.calculatedActorType == Participant.ActorType.CIRCLES || "circles" == model.source
+
+        // when(){        // check if    model.source    can be removed!
+        //
+        // }
+
+        if (model.calculatedActorType == Participant.ActorType.GROUPS ||
+            model.calculatedActorType == Participant.ActorType.CIRCLES
         ) {
             holder.binding.avatarView.loadDefaultGroupCallAvatar(viewThemeUtils)
         } else if (model.calculatedActorType == Participant.ActorType.EMAILS) {
@@ -129,10 +134,11 @@ class ParticipantItem(
                 displayName = model.displayName
             }
             holder.binding.avatarView.loadGuestAvatar(user, displayName!!, false)
-        } else if (model.calculatedActorType == Participant.ActorType.USERS || "users" == model.source) {
+        } else if (model.calculatedActorType == Participant.ActorType.USERS) {
             holder.binding.avatarView
                 .loadUserAvatar(user, model.calculatedActorId!!, true, false)
         }
+
         val resources = sharedApplication!!.resources
         val inCallFlag = model.inCall
         if (inCallFlag and InCallFlags.WITH_PHONE.toLong() > 0) {
