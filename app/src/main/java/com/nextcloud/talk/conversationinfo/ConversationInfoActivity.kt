@@ -492,7 +492,7 @@ class ConversationInfoActivity :
 
         for (i in participants.indices) {
             participant = participants[i]
-            userItem = ParticipantItem(this, participant, conversationUser, viewThemeUtils)
+            userItem = ParticipantItem(this, participant, conversationUser, viewThemeUtils, conversationToken)
             if (participant.sessionId != null) {
                 userItem.isOnline = !participant.sessionId.equals("0")
             } else {

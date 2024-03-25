@@ -11,6 +11,7 @@ package com.nextcloud.talk.adapters.items
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
@@ -21,6 +22,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationInfoParticipantBinding
 import com.nextcloud.talk.extensions.loadDefaultGroupCallAvatar
+import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.extensions.loadMailAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
@@ -30,6 +32,7 @@ import com.nextcloud.talk.models.json.participants.Participant.InCallFlags
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DisplayUtils.convertDpToPixel
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -42,7 +45,8 @@ class ParticipantItem(
     private val context: Context,
     val model: Participant,
     private val user: User,
-    private val viewThemeUtils: ViewThemeUtils
+    private val viewThemeUtils: ViewThemeUtils,
+    private val roomToken: String
 ) : AbstractFlexibleItem<ParticipantItemViewHolder>(), IFilterable<String?> {
     var isOnline = true
     override fun equals(o: Any?): Boolean {
@@ -115,28 +119,43 @@ class ParticipantItem(
             holder.binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
         }
 
-        // when(){        // check if    model.source    can be removed!
-        //
-        // }
-
-        if (model.calculatedActorType == Participant.ActorType.GROUPS ||
-            model.calculatedActorType == Participant.ActorType.CIRCLES
-        ) {
-            holder.binding.avatarView.loadDefaultGroupCallAvatar(viewThemeUtils)
-        } else if (model.calculatedActorType == Participant.ActorType.EMAILS) {
-            holder.binding.avatarView.loadMailAvatar(viewThemeUtils)
-        } else if (model.calculatedActorType == Participant.ActorType.GUESTS ||
-            model.type == Participant.ParticipantType.GUEST ||
-            model.type == Participant.ParticipantType.GUEST_MODERATOR
-        ) {
-            var displayName: String? = sharedApplication!!.resources.getString(R.string.nc_guest)
-            if (!TextUtils.isEmpty(model.displayName)) {
-                displayName = model.displayName
+        when (model.calculatedActorType) {
+            Participant.ActorType.GROUPS, Participant.ActorType.CIRCLES -> {
+                holder.binding.avatarView.loadDefaultGroupCallAvatar(viewThemeUtils)
             }
-            holder.binding.avatarView.loadGuestAvatar(user, displayName!!, false)
-        } else if (model.calculatedActorType == Participant.ActorType.USERS) {
-            holder.binding.avatarView
-                .loadUserAvatar(user, model.calculatedActorId!!, true, false)
+
+            Participant.ActorType.EMAILS -> {
+                holder.binding.avatarView.loadMailAvatar(viewThemeUtils)
+            }
+
+            Participant.ActorType.USERS -> {
+                holder.binding.avatarView.loadUserAvatar(user, model.calculatedActorId!!, true, false)
+            }
+
+            Participant.ActorType.GUESTS -> {
+                var displayName: String? = sharedApplication!!.resources.getString(R.string.nc_guest)
+                if (!TextUtils.isEmpty(model.displayName)) {
+                    displayName = model.displayName
+                }
+                holder.binding.avatarView.loadGuestAvatar(user, displayName!!, false)
+            }
+
+            Participant.ActorType.FEDERATED -> {
+                val darkTheme = if (DisplayUtils.isDarkModeOn(context)) 1 else 0
+                holder.binding.avatarView.loadFederatedUserAvatar(
+                    user,
+                    user.baseUrl!!,
+                    roomToken,
+                    model.actorId!!,
+                    darkTheme,
+                    true,
+                    false
+                )
+            }
+
+            else -> {
+                Log.w(TAG, "Avatar not shown because of unknown ActorType " + model.calculatedActorType)
+            }
         }
 
         val resources = sharedApplication!!.resources
@@ -187,8 +206,7 @@ class ParticipantItem(
 
             else -> {}
         }
-        if (userType != sharedApplication!!.getString(R.string.nc_user)
-        ) {
+        if (userType != sharedApplication!!.getString(R.string.nc_user)) {
             holder.binding.secondaryText.text = "($userType)"
         }
     }
@@ -234,28 +252,25 @@ class ParticipantItem(
     }
 
     override fun filter(constraint: String?): Boolean {
-        return model.displayName != null &&
-            (
+        return model.displayName != null && (
+            Pattern.compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
+                .matcher(model.displayName!!.trim { it <= ' ' }).find() ||
                 Pattern.compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                    .matcher(model.displayName!!.trim { it <= ' ' }).find() ||
-                    Pattern.compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                        .matcher(model.calculatedActorId!!.trim { it <= ' ' }).find()
-                )
+                    .matcher(model.calculatedActorId!!.trim { it <= ' ' }).find()
+            )
     }
 
     class ParticipantItemViewHolder internal constructor(view: View?, adapter: FlexibleAdapter<*>?) :
         FlexibleViewHolder(view, adapter) {
         var binding: RvItemConversationInfoParticipantBinding
 
-        /**
-         * Default constructor.
-         */
         init {
             binding = RvItemConversationInfoParticipantBinding.bind(view!!)
         }
     }
 
     companion object {
+        private val TAG = ParticipantItem::class.simpleName
         private const val STATUS_SIZE_IN_DP = 9f
         private const val NO_ICON = ""
     }
