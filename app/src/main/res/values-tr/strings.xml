@@ -33,8 +33,8 @@
     <string name="dnd">Rahatsız etmeyin</string>
     <string name="dontClear">Kaldırılmasın</string>
     <string name="edit">Düzenle</string>
-    <string name="edit_error_24_hours_old_message">24 saat öncesine ait mesajları düzenleyemezsiniz.</string>
-    <string name="edit_message_icon_description">Düzenleme İleti Simgesi</string>
+    <string name="edit_error_24_hours_old_message">24 saatten eski iletiler düzenlenemez</string>
+    <string name="edit_message_icon_description">İleti düzenleme simgesi</string>
     <string name="emoji_backspace">Geriye silme</string>
     <string name="emoji_category_recent">Son kullanılan</string>
     <string name="encrypted">Şifrelenmiş</string>
@@ -44,7 +44,7 @@
     <string name="file_list_loading">Yükleniyor…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 saat</string>
-    <string name="get_invitations_error">Tamamlanamayan davetiyeleri al ve beklet</string>
+    <string name="get_invitations_error">Bekleyen davetler alınamadı</string>
     <string name="hint_edited_message">(düzenlendi)</string>
     <string name="invisible">Görünmez</string>
     <string name="languages_error_message">Diller alınamadı</string>
@@ -115,8 +115,8 @@
     <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
     <string name="nc_certificate_error">SSL kurulumunuz bağlantı kurulmasını engelliyor</string>
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
-    <string name="nc_clear_edit_button">Düzenleme Butonunu temizle</string>
-    <string name="nc_clear_edit_message">İletiyi düzenle</string>
+    <string name="nc_clear_edit_button">Düzenlemeyi temizle düğmesi</string>
+    <string name="nc_clear_edit_message">Düzenlemeyi temizle iletisi</string>
     <string name="nc_clear_history">Tüm iletileri sil</string>
     <string name="nc_clear_history_success">Tüm iletiler silindi</string>
     <string name="nc_clear_history_warning">Bu görüşmedeki tüm iletileri silmek istediğinize emin misiniz?</string>
@@ -212,8 +212,8 @@
     <string name="nc_display_name_not_stored">Görüntülenecek ad kaydedilemedi, vazgeçiliyor</string>
     <string name="nc_edit_icon">Düzenle simgesi</string>
     <string name="nc_edit_message">Düzenle</string>
-    <string name="nc_edit_message_text">Mesaj Metnini Düzenle</string>
-    <string name="nc_edited_by">Tarafından düzenlendi</string>
+    <string name="nc_edit_message_text">İletiyi düzenle metni</string>
+    <string name="nc_edited_by">Düzenleyen</string>
     <string name="nc_edited_by_admin">Yönetici tarafından düzenlendi</string>
     <string name="nc_email">E-posta</string>
     <string name="nc_expire_message_eight_hours">8 saat</string>
@@ -227,9 +227,9 @@
     <string name="nc_external_server_failed">İşaretleşme ayarları alınamadı</string>
     <string name="nc_federation_invitation_accept">Kabul et</string>
     <string name="nc_federation_invitation_reject">Reddet</string>
-    <string name="nc_federation_invited_to_room">%1$s\'den %2$s\'a kadar</string>
-    <string name="nc_federation_no_invitations">Bekleyen davetiye yok</string>
-    <string name="nc_federation_pending_invitation_hint">Bekleyen davetiyeleriniz var</string>
+    <string name="nc_federation_invited_to_room">%1$s ile %2$s arasında</string>
+    <string name="nc_federation_no_invitations">Bekleyen bir davet yok</string>
+    <string name="nc_federation_pending_invitation_hint">Bekleyen davetleriniz var</string>
     <string name="nc_file_browser_back">Geri</string>
     <string name="nc_file_storage_permission">Dosyalara erişme izni gereklidir</string>
     <string name="nc_filter">Görüşmeleri süz</string>
@@ -244,7 +244,7 @@
     <string name="nc_guest">Konuk</string>
     <string name="nc_guest_access">Konuk erişimi</string>
     <string name="nc_guest_access_allow_failed">Konuk erişimi etkinleştirilemez ya da devre dışı bırakılamaz.</string>
-    <string name="nc_guest_access_allow_summary">Bu seçenek etkinleştirildiğinde, konuklar bu görüşmeyi herkese açık bir bağlantı ile paylaşabilir.</string>
+    <string name="nc_guest_access_allow_summary">Bu seçenek etkinleştirildiğinde, konuklar bu görüşmeyi herkese açık bir katılma bağlantısı ile paylaşabilir.</string>
     <string name="nc_guest_access_allow_title">Konuklar katılabilsin</string>
     <string name="nc_guest_access_password_dialog_hint">Bir parola yazın</string>
     <string name="nc_guest_access_password_dialog_title">Konuk erişimi parolası</string>
@@ -252,16 +252,16 @@
     <string name="nc_guest_access_password_summary">Herkese açık bağlantıya erişimi sınırlamak için bir parola belirleyin.</string>
     <string name="nc_guest_access_password_title">Parola koruması</string>
     <string name="nc_guest_access_password_weak_alert_title">Parola zayıf</string>
-    <string name="nc_guest_access_resend_invitations">Çağrıları yeniden gönder</string>
-    <string name="nc_guest_access_resend_invitations_failed">Bir sorun nedeniyle çağrılar gönderilemedi.</string>
-    <string name="nc_guest_access_resend_invitations_successful">Çağrılar gönderildi.</string>
+    <string name="nc_guest_access_resend_invitations">Davetleri yeniden gönder</string>
+    <string name="nc_guest_access_resend_invitations_failed">Bir sorun nedeniyle davetler gönderilemedi.</string>
+    <string name="nc_guest_access_resend_invitations_successful">Davetler gönderildi.</string>
     <string name="nc_guest_access_share_link">Görüşme bağlantısını kopyala</string>
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Pil iyileştirmesi yok sayılmıyor. Bildirimlerin arka planda çalıştığından emin olmak için bu durum değiştirilmelidir! Lütfen Tamam üzerine tıklayın ve \"Tüm uygulamalar\" -> %1$s -> İyileştirilmesin seçeneğini seçin</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Pil iyileştirmesi yok sayılsın</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler Rahatsız Etmeyin ayarlarını değiştirecek</string>
-    <string name="nc_invitations">Çağrılar</string>
+    <string name="nc_invitations">Davetler</string>
     <string name="nc_last_moderator">%1$s görüşmesinden ayrılabilmek için başka bir kullanıcıyı sorumluluğa yükseltmelisiniz.</string>
     <string name="nc_last_moderator_title">Görüşmeden ayrılınamadı</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
@@ -334,7 +334,7 @@
     <string name="nc_profile_personal_info_title">Kişisel bilgiler</string>
     <string name="nc_promote">Sorumluluğa yükselt</string>
     <string name="nc_public_call">Herkese açık görüşme ekle</string>
-    <string name="nc_public_call_explanation">Herkese açık görüşmelere dışarıdan kişiler özel oluşturulmuş bir bağlantı ile katılabilir.</string>
+    <string name="nc_public_call_explanation">Herkese açık görüşmelere dışarıdan kişiler özel oluşturulmuş bir bağlantı ile davet edilebilir.</string>
     <string name="nc_push_disabled">Anında bildirimler devre dışı</string>
     <string name="nc_push_to_talk">Bas-konuş</string>
     <string name="nc_push_to_talk_desc">Mikrofon devre dışı iken, Bas-konuş üzerine tıklayıp basılı tutun</string>
@@ -343,7 +343,7 @@
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
     <string name="nc_remove_group_and_members">Grup ve üyelerini sil</string>
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>
-    <string name="nc_remove_team_and_members">Ekibi ve üyeleri kaldır</string>
+    <string name="nc_remove_team_and_members">Takımı ve üyelerini kaldır</string>
     <string name="nc_rename">Görüşmeyi yeniden adlandır</string>
     <string name="nc_rename_confirm">Yeniden adlandır</string>
     <string name="nc_reply">Yanıtla</string>
@@ -361,7 +361,7 @@
     <string name="nc_search">Arama</string>
     <string name="nc_select_an_account">Bir hesap seçin</string>
     <string name="nc_select_participants">Katılımcıları seçin</string>
-    <string name="nc_send_edit_message">Düzenleme Mesajı Gönder</string>
+    <string name="nc_send_edit_message">Düzenleme iletisi gönder</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s bir GIF gönderdi.</string>
     <string name="nc_sent_a_gif_you">Bir GIF gönderdiniz.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s bir görüntü gönderdi.</string>
@@ -453,7 +453,7 @@
     <string name="nc_share_contact_permission">Kişileri okuma izni gerekiyor</string>
     <string name="nc_share_current_location">Geçerli konumu paylaş</string>
     <string name="nc_share_location">Konumu paylaş</string>
-    <string name="nc_share_subject">%1$s çağrısı</string>
+    <string name="nc_share_subject">%1$s davet</string>
     <string name="nc_share_text">Çağrıya şuradan katılın %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nParola: %1$s</string>
     <string name="nc_share_this_location">Bu konumu paylaş</string>
@@ -467,8 +467,8 @@
     <string name="nc_sort_by">Sıralama</string>
     <string name="nc_start_time">Başlangıç zamanı</string>
     <string name="nc_switch_account">Hesabı değiştir</string>
-    <string name="nc_team">Ekip</string>
-    <string name="nc_teams">Ekipler</string>
+    <string name="nc_team">Takım</string>
+    <string name="nc_teams">Takımlar</string>
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
     <string name="nc_upload_confirm_send_multiple">Bu dosyalar %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>
@@ -524,10 +524,10 @@
     <string name="record_stop_confirm_title">Çağrı kaydını durdur</string>
     <string name="record_stop_description">Kaydı durdur</string>
     <string name="record_stopping">Kayıt durduruluyor…</string>
-    <string name="recording_consent_all">Tüm çağrılar için kayıt alma onayı istensin</string>
-    <string name="recording_consent_description">Kayıtta sesiniz, kamera görüntünüz ve ekran paylaşımlarınız bulunabilir. Çağrıya katılmadan önce kayıt alma onayı vermeniz gerekir. Onay veriyor musunuz?</string>
-    <string name="recording_consent_for_conversation_description">Bu görüşmedeki çağrılara katılmadan önce kayıt alma onayı istensin</string>
-    <string name="recording_consent_for_conversation_title">Kayıt alma onayı</string>
+    <string name="recording_consent_all">Tüm çağrılar için kayıt alma rızası istensin</string>
+    <string name="recording_consent_description">Kayıtta sesiniz, kamera görüntünüz ve ekran paylaşımlarınız bulunabilir. Çağrıya katılmadan önce kayıt alma rızası vermeniz gerekir. Rıza veriyor musunuz?</string>
+    <string name="recording_consent_for_conversation_description">Bu görüşmedeki çağrılara katılmadan önce kayıt alma rızası istensin</string>
+    <string name="recording_consent_for_conversation_title">Kayıt alma rızası</string>
     <string name="recording_consent_title">Çağrının kaydı alınabilir.</string>
     <string name="recording_settings_title">Kaydediliyor</string>
     <string name="removed_from_favorites">%1$s görüşmesi sık kullanılanlardan kaldırıldı</string>
