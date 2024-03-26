@@ -249,7 +249,8 @@
             layout="@layout/edit_message_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp" >
+            android:layout_marginEnd="6dp"
+            android:visibility="gone">
         </include>
 
         <com.nextcloud.talk.ui.MessageInput
