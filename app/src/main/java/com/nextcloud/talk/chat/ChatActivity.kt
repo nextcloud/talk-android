@@ -2094,7 +2094,8 @@ class ChatActivity :
             typingTimer = null
             typedWhileTypingTimerIsRunning = false
 
-            for ((sessionId, _) in webSocketInstance?.getUserMap()!!) {
+            val concurrentSafeHashMap = webSocketInstance?.getUserMap()!!
+            for ((sessionId, _) in concurrentSafeHashMap) {
                 val ncSignalingMessage = NCSignalingMessage()
                 ncSignalingMessage.to = sessionId
                 ncSignalingMessage.type = TYPING_STOPPED_SIGNALING_MESSAGE_TYPE
