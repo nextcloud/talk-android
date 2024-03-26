@@ -174,7 +174,7 @@
     <string name="nc_diagnose_dialog_open_checklist">Otwórz listę kontrolną rozwiązywania problemów</string>
     <string name="nc_diagnose_dialog_open_diagnose">Otwórz ekran diagnostyczny</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Otwórz stronę dontkillmyapp.com</string>
-    <string name="nc_diagnose_firebase_push_token_latest_fetch">Najnowszy pobierany token push firebase</string>
+    <string name="nc_diagnose_firebase_push_token_latest_fetch">Najnowszy pobrany token push firebase</string>
     <string name="nc_diagnose_firebase_push_token_latest_generated">Najnowszy wygenerowany token push firebase</string>
     <string name="nc_diagnose_firebase_push_token_missing">Brak ustawionego tokenu push firebase. Utwórz raport o błędzie.</string>
     <string name="nc_diagnose_firebase_push_token_title">Token push firebase</string>
@@ -187,7 +187,7 @@
     <string name="nc_diagnose_latest_push_registration_at_server_fail">Jeszcze nie zarejestrowany na serwerze</string>
     <string name="nc_diagnose_meta_category_title">Informacje meta</string>
     <string name="nc_diagnose_meta_system_report_date">Generowanie raportu systemowego</string>
-    <string name="nc_diagnose_notification_calls_channel_permission">Włączono kanał powiadomień o połączeniach?</string>
+    <string name="nc_diagnose_notification_calls_channel_permission">Kanał powiadomień o połączeniach włączony?</string>
     <string name="nc_diagnose_notification_messages_channel_permission">Kanał powiadomień wiadomości włączony?</string>
     <string name="nc_diagnose_notification_permission">Uprawnienia do powiadomień</string>
     <string name="nc_diagnose_phone_category_title">Telefon</string>
