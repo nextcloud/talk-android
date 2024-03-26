@@ -33,6 +33,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -50,13 +51,13 @@ import com.nextcloud.talk.upload.chunked.ChunkedFileUploader
 import com.nextcloud.talk.upload.chunked.OnDataTransferProgressListener
 import com.nextcloud.talk.upload.normal.FileUploader
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -397,7 +398,15 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             }
         }
 
-        fun upload(fileUri: String, roomToken: String, conversationName: String, metaData: String?) {
+        fun upload(
+            fileUri: String,
+            roomToken: String,
+            conversationName: String,
+            metaData: String?,
+            progressBarCallback: (Boolean) -> Unit
+        ) {
+            progressBarCallback(true)
+
             val data: Data = Data.Builder()
                 .putString(DEVICE_SOURCE_FILE, fileUri)
                 .putString(ROOM_TOKEN, roomToken)
@@ -409,5 +418,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 .build()
             WorkManager.getInstance().enqueueUniqueWork(fileUri, ExistingWorkPolicy.KEEP, uploadWorker)
         }
+    }
+
+    private fun showToast(context: Context, message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }

@@ -1363,7 +1363,21 @@ class ConversationsListActivity :
                     selectedConversation!!.token!!,
                     selectedConversation!!.displayName!!,
                     null
-                )
+                ) { success ->
+                    if (success) {
+                        Snackbar.make(
+                            binding.root,
+                            context.resources.getString(R.string.nc_upload_success),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    } else {
+                        Snackbar.make(
+                            binding.root,
+                            context.resources.getString(R.string.nc_upload_failed),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }
         } catch (e: IllegalArgumentException) {
             Snackbar.make(binding.root, context.resources.getString(R.string.nc_upload_failed), Snackbar.LENGTH_LONG)

@@ -506,6 +506,7 @@ How to translate with transifex:
     <string name="nc_upload_video_from_cam">Take video</string>
     <string name="nc_create_poll">Create poll</string>
     <string name="nc_upload_from_cloud">Share from %1$s</string>
+    <string name="nc_upload_success">Upload Succeeded</string>
     <string name="nc_upload_failed">Sorry, upload failed</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
     <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>
