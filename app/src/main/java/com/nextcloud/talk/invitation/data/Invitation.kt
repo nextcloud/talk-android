@@ -21,15 +21,15 @@
 package com.nextcloud.talk.invitation.data
 
 data class Invitation(
-    var id: Int,
-    var userId: String,
-    var state: Int,
-    var localRoomId: Int,
-    var accessToken: String?,
-    var remoteServerUrl: String,
-    var remoteToken: String,
-    var remoteAttendeeId: Int,
-    var inviterCloudId: String,
-    var inviterDisplayName: String,
-    var roomName: String
+    var id: Int = 0,
+    var state: Int = 0,
+    var localCloudId: String? = null,
+    var localToken: String? = null,
+    var remoteAttendeeId: Int = 0,
+    var remoteServerUrl: String? = null,
+    var remoteToken: String? = null,
+    var roomName: String? = null,
+    var userId: String? = null,
+    var inviterCloudId: String? = null,
+    var inviterDisplayName: String? = null
 )
