@@ -108,7 +108,11 @@
             android:paddingEnd="@dimen/standard_padding" />
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
         android:id="@+id/message_actions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -583,5 +587,6 @@
         </LinearLayout>
 
     </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>
