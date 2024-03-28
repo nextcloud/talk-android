@@ -6,12 +6,14 @@
  * @author Andy Scherzinger
  * @author Tim Krüger
  * @author Ezhil Shanmugham
+ * @author Parneet Singh
  * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021-2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
  * Copyright (C) 2024 Giacomo Pacini <giacomo@paciosoft.com>
+ * Copyright (C) 2024 Parneet Singh <gurayaparneet@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +34,7 @@ package com.nextcloud.talk.chat
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -89,6 +92,8 @@ import android.widget.RelativeLayout.LayoutParams
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -295,6 +300,46 @@ class ChatActivity :
     lateinit var chatViewModel: ChatViewModel
 
     private lateinit var editMessage: ChatMessage
+
+    private val startSelectContactForResult = registerForActivityResult(
+        ActivityResultContracts
+            .StartActivityForResult()
+    ) {
+        executeIfResultOk(it) { intent ->
+            onSelectContactResult(intent)
+        }
+    }
+
+    private val startChooseFileIntentForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        executeIfResultOk(it) { intent ->
+            onChooseFileResult(intent)
+        }
+    }
+
+    private val startRemoteFileBrowsingForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        executeIfResultOk(it) { intent ->
+            onRemoteFileBrowsingResult(intent)
+        }
+    }
+
+    private val startMessageSearchForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            executeIfResultOk(it) { intent ->
+                onMessageSearchResult(intent)
+            }
+        }
+
+    private val startPickCameraIntentForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        executeIfResultOk(it) { intent ->
+            onPickCameraResult(intent)
+        }
+    }
 
     override val view: View
         get() = binding.root
@@ -2985,170 +3030,167 @@ class ChatActivity :
         }
     }
 
-    @Throws(IllegalStateException::class)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        super.onActivityResult(requestCode, resultCode, intent)
-        if (resultCode != RESULT_OK && (requestCode != REQUEST_CODE_MESSAGE_SEARCH)) {
-            Log.e(TAG, "resultCode for received intent was != ok")
-            return
+    private fun onRemoteFileBrowsingResult(intent: Intent?) {
+        val pathList = intent?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
+        if (pathList?.size!! >= 1) {
+            pathList
+                .chunked(CHUNK_SIZE)
+                .forEach { paths ->
+                    val data = Data.Builder()
+                        .putLong(KEY_INTERNAL_USER_ID, conversationUser!!.id!!)
+                        .putString(KEY_ROOM_TOKEN, roomToken)
+                        .putStringArray(KEY_FILE_PATHS, paths.toTypedArray())
+                        .build()
+                    val worker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)
+                        .setInputData(data)
+                        .build()
+                    WorkManager.getInstance().enqueue(worker)
+                }
         }
+    }
 
-        when (requestCode) {
-            REQUEST_CODE_SELECT_REMOTE_FILES -> {
-                val pathList = intent?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
-                if (pathList?.size!! >= 1) {
-                    pathList
-                        .chunked(CHUNK_SIZE)
-                        .forEach { paths ->
-                            val data = Data.Builder()
-                                .putLong(KEY_INTERNAL_USER_ID, conversationUser!!.id!!)
-                                .putString(KEY_ROOM_TOKEN, roomToken)
-                                .putStringArray(KEY_FILE_PATHS, paths.toTypedArray())
-                                .build()
-                            val worker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)
-                                .setInputData(data)
-                                .build()
-                            WorkManager.getInstance().enqueue(worker)
-                        }
+    @Throws(IllegalStateException::class)
+    private fun onChooseFileResult(intent: Intent?) {
+        try {
+            checkNotNull(intent)
+            filesToUpload.clear()
+            intent.clipData?.let {
+                for (index in 0 until it.itemCount) {
+                    filesToUpload.add(it.getItemAt(index).uri.toString())
+                }
+            } ?: run {
+                checkNotNull(intent.data)
+                intent.data.let {
+                    filesToUpload.add(intent.data.toString())
                 }
             }
+            require(filesToUpload.isNotEmpty())
 
-            REQUEST_CODE_CHOOSE_FILE -> {
-                try {
-                    checkNotNull(intent)
-                    filesToUpload.clear()
-                    intent.clipData?.let {
-                        for (index in 0 until it.itemCount) {
-                            filesToUpload.add(it.getItemAt(index).uri.toString())
-                        }
-                    } ?: run {
-                        checkNotNull(intent.data)
-                        intent.data.let {
-                            filesToUpload.add(intent.data.toString())
-                        }
-                    }
-                    require(filesToUpload.isNotEmpty())
+            val filenamesWithLineBreaks = StringBuilder("\n")
 
-                    val filenamesWithLineBreaks = StringBuilder("\n")
-
-                    for (file in filesToUpload) {
-                        val filename = FileUtils.getFileName(Uri.parse(file), context)
-                        filenamesWithLineBreaks.append(filename).append("\n")
-                    }
-
-                    val newFragment = FileAttachmentPreviewFragment.newInstance(
-                        filenamesWithLineBreaks.toString(),
-                        filesToUpload
-                    )
-                    newFragment.setListener { files, caption ->
-                        uploadFiles(files, caption)
-                    }
-                    newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
-                } catch (e: IllegalStateException) {
-                    context.resources?.getString(R.string.nc_upload_failed)?.let {
-                        Snackbar.make(
-                            binding.root,
-                            it,
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
-                } catch (e: IllegalArgumentException) {
-                    context.resources?.getString(R.string.nc_upload_failed)?.let {
-                        Snackbar.make(
-                            binding.root,
-                            it,
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
-                }
+            for (file in filesToUpload) {
+                val filename = FileUtils.getFileName(Uri.parse(file), context)
+                filenamesWithLineBreaks.append(filename).append("\n")
             }
 
-            REQUEST_CODE_SELECT_CONTACT -> {
-                val contactUri = intent?.data ?: return
-                val cursor: Cursor? = contentResolver!!.query(contactUri, null, null, null, null)
-
-                if (cursor != null && cursor.moveToFirst()) {
-                    val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                    val fileName = ContactUtils.getDisplayNameFromDeviceContact(context, id) + ".vcf"
-                    val file = File(context.cacheDir, fileName)
-                    writeContactToVcfFile(cursor, file)
-
-                    val shareUri = FileProvider.getUriForFile(
-                        this,
-                        BuildConfig.APPLICATION_ID,
-                        File(file.absolutePath)
-                    )
-                    uploadFile(shareUri.toString(), false)
-                }
-                cursor?.close()
+            val newFragment = FileAttachmentPreviewFragment.newInstance(
+                filenamesWithLineBreaks.toString(),
+                filesToUpload
+            )
+            newFragment.setListener { files, caption ->
+                uploadFiles(files, caption)
             }
+            newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
+        } catch (e: IllegalStateException) {
+            context.resources?.getString(R.string.nc_upload_failed)?.let {
+                Snackbar.make(
+                    binding.root,
+                    it,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+            Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+        } catch (e: IllegalArgumentException) {
+            context.resources?.getString(R.string.nc_upload_failed)?.let {
+                Snackbar.make(
+                    binding.root,
+                    it,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+            Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+        }
+    }
 
-            REQUEST_CODE_PICK_CAMERA -> {
-                if (resultCode == RESULT_OK) {
-                    try {
-                        filesToUpload.clear()
+    private fun onSelectContactResult(intent: Intent?) {
+        val contactUri = intent?.data ?: return
+        val cursor: Cursor? = contentResolver!!.query(contactUri, null, null, null, null)
 
-                        if (intent != null && intent.data != null) {
-                            run {
-                                intent.data.let {
-                                    filesToUpload.add(intent.data.toString())
-                                }
-                            }
-                            require(filesToUpload.isNotEmpty())
-                        } else if (videoURI != null) {
-                            filesToUpload.add(videoURI.toString())
-                            videoURI = null
-                        } else {
-                            error("Failed to get data from intent and uri")
-                        }
+        if (cursor != null && cursor.moveToFirst()) {
+            val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
+            val fileName = ContactUtils.getDisplayNameFromDeviceContact(context, id) + ".vcf"
+            val file = File(context.cacheDir, fileName)
+            writeContactToVcfFile(cursor, file)
 
-                        if (permissionUtil.isFilesPermissionGranted()) {
-                            val filenamesWithLineBreaks = StringBuilder("\n")
+            val shareUri = FileProvider.getUriForFile(
+                this,
+                BuildConfig.APPLICATION_ID,
+                File(file.absolutePath)
+            )
+            uploadFile(shareUri.toString(), false)
+        }
+        cursor?.close()
+    }
 
-                            for (file in filesToUpload) {
-                                val filename = FileUtils.getFileName(Uri.parse(file), context)
-                                filenamesWithLineBreaks.append(filename).append("\n")
-                            }
+    @Throws(IllegalStateException::class)
+    private fun onPickCameraResult(intent: Intent?) {
+        try {
+            filesToUpload.clear()
 
-                            val newFragment = FileAttachmentPreviewFragment.newInstance(
-                                filenamesWithLineBreaks.toString(),
-                                filesToUpload
-                            )
-                            newFragment.setListener { files, caption -> uploadFiles(files, caption) }
-                            newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
-                        } else {
-                            UploadAndShareFilesWorker.requestStoragePermission(this)
-                        }
-                    } catch (e: IllegalStateException) {
-                        Snackbar.make(
-                            binding.root,
-                            R.string.nc_upload_failed,
-                            Snackbar.LENGTH_LONG
-                        )
-                            .show()
-                        Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
-                    } catch (e: IllegalArgumentException) {
-                        context.resources?.getString(R.string.nc_upload_failed)?.let {
-                            Snackbar.make(
-                                binding.root,
-                                it,
-                                Snackbar.LENGTH_LONG
-                            )
-                                .show()
-                        }
-                        Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+            if (intent != null && intent.data != null) {
+                run {
+                    intent.data.let {
+                        filesToUpload.add(intent.data.toString())
                     }
                 }
+                require(filesToUpload.isNotEmpty())
+            } else if (videoURI != null) {
+                filesToUpload.add(videoURI.toString())
+                videoURI = null
+            } else {
+                error("Failed to get data from intent and uri")
             }
 
-            REQUEST_CODE_MESSAGE_SEARCH -> {
-                val messageId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
-                messageId?.let { id ->
-                    scrollToMessageWithId(id)
+            if (permissionUtil.isFilesPermissionGranted()) {
+                val filenamesWithLineBreaks = StringBuilder("\n")
+
+                for (file in filesToUpload) {
+                    val filename = FileUtils.getFileName(Uri.parse(file), context)
+                    filenamesWithLineBreaks.append(filename).append("\n")
                 }
+
+                val newFragment = FileAttachmentPreviewFragment.newInstance(
+                    filenamesWithLineBreaks.toString(),
+                    filesToUpload
+                )
+                newFragment.setListener { files, caption -> uploadFiles(files, caption) }
+                newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
+            } else {
+                UploadAndShareFilesWorker.requestStoragePermission(this)
             }
+        } catch (e: IllegalStateException) {
+            Snackbar.make(
+                binding.root,
+                R.string.nc_upload_failed,
+                Snackbar.LENGTH_LONG
+            )
+                .show()
+            Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+        } catch (e: IllegalArgumentException) {
+            context.resources?.getString(R.string.nc_upload_failed)?.let {
+                Snackbar.make(
+                    binding.root,
+                    it,
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
+            }
+            Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+        }
+    }
+
+    private fun onMessageSearchResult(intent: Intent?) {
+        val messageId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
+        messageId?.let { id ->
+            scrollToMessageWithId(id)
+        }
+    }
+
+    private fun executeIfResultOk(result: ActivityResult, onResult: (intent: Intent?) -> Unit) {
+        if (result.resultCode == Activity.RESULT_OK) {
+            onResult(result.data)
+        } else {
+            Log.e(TAG, "resultCode for received intent was != ok")
         }
     }
 
@@ -3220,7 +3262,7 @@ class ChatActivity :
         } else if (requestCode == REQUEST_READ_CONTACT_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
-                startActivityForResult(intent, REQUEST_CODE_SELECT_CONTACT)
+                startSelectContactForResult.launch(intent)
             } else {
                 Snackbar.make(
                     binding.root,
@@ -3293,14 +3335,13 @@ class ChatActivity :
             addCategory(Intent.CATEGORY_OPENABLE)
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         }
-        startActivityForResult(
+        startChooseFileIntentForResult.launch(
             Intent.createChooser(
                 action,
                 context.resources?.getString(
                     R.string.nc_upload_choose_local_files
                 )
-            ),
-            REQUEST_CODE_CHOOSE_FILE
+            )
         )
     }
 
@@ -3346,7 +3387,7 @@ class ChatActivity :
 
     fun showBrowserScreen() {
         val sharingFileBrowserIntent = Intent(this, RemoteFileBrowserActivity::class.java)
-        startActivityForResult(sharingFileBrowserIntent, REQUEST_CODE_SELECT_REMOTE_FILES)
+        startRemoteFileBrowsingForResult.launch(sharingFileBrowserIntent)
     }
 
     fun showShareLocationScreen() {
@@ -4113,7 +4154,7 @@ class ChatActivity :
         val intent = Intent(this, MessageSearchActivity::class.java)
         intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-        startActivityForResult(intent, REQUEST_CODE_MESSAGE_SEARCH)
+        startMessageSearchForResult.launch(intent)
     }
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
@@ -4815,7 +4856,7 @@ class ChatActivity :
         if (!permissionUtil.isCameraPermissionGranted()) {
             requestCameraPermissions()
         } else {
-            startActivityForResult(TakePhotoActivity.createIntent(context), REQUEST_CODE_PICK_CAMERA)
+            startPickCameraIntentForResult.launch(TakePhotoActivity.createIntent(context))
         }
     }
 
@@ -4843,7 +4884,7 @@ class ChatActivity :
                     videoFile?.also {
                         videoURI = FileProvider.getUriForFile(context, context.packageName, it)
                         takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI)
-                        startActivityForResult(takeVideoIntent, REQUEST_CODE_PICK_CAMERA)
+                        startPickCameraIntentForResult.launch(takeVideoIntent)
                     }
                 }
             }
@@ -4915,15 +4956,10 @@ class ChatActivity :
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val HTTP_CODE_OK: Int = 200
         private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
-        private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
-        private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
-        private const val REQUEST_CODE_MESSAGE_SEARCH: Int = 777
         private const val REQUEST_SHARE_FILE_PERMISSION: Int = 221
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
-        private const val REQUEST_CODE_PICK_CAMERA: Int = 333
-        private const val REQUEST_CODE_SELECT_REMOTE_FILES = 888
         private const val OBJECT_MESSAGE: String = "{object}"
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000
         private const val MINIMUM_VOICE_RECORD_TO_STOP: Int = 200
