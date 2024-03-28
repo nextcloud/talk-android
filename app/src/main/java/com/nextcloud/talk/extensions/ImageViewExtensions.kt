@@ -136,7 +136,7 @@ fun ImageView.loadFederatedUserAvatar(message: ChatMessage): io.reactivex.dispos
     return loadFederatedUserAvatar(
         message.activeUser!!,
         message.activeUser!!.baseUrl!!,
-        message.roomToken,
+        message.token!!,
         cloudId,
         darkTheme,
         requestBigSize,

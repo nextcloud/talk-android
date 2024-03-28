@@ -138,7 +138,7 @@ class MessageUtils(val context: Context) {
                             themingContext,
                             messageStringInternal,
                             id!!,
-                            message.roomToken,
+                            message.token,
                             individualHashMap["name"]!!,
                             individualHashMap["type"]!!,
                             message.activeUser!!,

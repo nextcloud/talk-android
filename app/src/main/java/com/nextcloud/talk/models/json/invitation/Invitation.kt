@@ -29,27 +29,28 @@ import kotlinx.parcelize.Parcelize
 data class Invitation(
     @JsonField(name = ["id"])
     var id: Int = 0,
-    @JsonField(name = ["userId"])
-    var userId: String? = null,
     @JsonField(name = ["state"])
     var state: Int = 0,
-    @JsonField(name = ["localRoomId"])
-    var localRoomId: Int = 0,
-    @JsonField(name = ["accessToken"])
-    var accessToken: String? = null,
+    @JsonField(name = ["localCloudId"])
+    var localCloudId: String? = null,
+    @JsonField(name = ["localToken"])
+    var localToken: String? = null,
+    @JsonField(name = ["remoteAttendeeId"])
+    var remoteAttendeeId: Int = 0,
     @JsonField(name = ["remoteServerUrl"])
     var remoteServerUrl: String? = null,
     @JsonField(name = ["remoteToken"])
     var remoteToken: String? = null,
-    @JsonField(name = ["remoteAttendeeId"])
-    var remoteAttendeeId: Int = 0,
+    @JsonField(name = ["roomName"])
+    var roomName: String? = null,
+    @JsonField(name = ["userId"])
+    var userId: String? = null,
     @JsonField(name = ["inviterCloudId"])
     var inviterCloudId: String? = null,
     @JsonField(name = ["inviterDisplayName"])
-    var inviterDisplayName: String? = null,
-    @JsonField(name = ["roomName"])
-    var roomName: String? = null
+    var inviterDisplayName: String? = null
+
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(0, null, 0, 0, null, null, null, 0, null, null, null)
+    constructor() : this(0, 0, null, null, 0, null, null, null, null, null, null)
 }

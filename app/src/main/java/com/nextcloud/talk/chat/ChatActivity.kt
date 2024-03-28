@@ -3799,7 +3799,7 @@ class ChatActivity :
             chatMessage.isFormerOneToOneConversation =
                 (currentConversation?.type == ConversationType.FORMER_ONE_TO_ONE)
             chatMessage.activeUser = conversationUser
-            chatMessage.roomToken = roomToken
+            chatMessage.token = roomToken
         }
 
         if (adapter != null) {

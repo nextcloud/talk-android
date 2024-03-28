@@ -32,6 +32,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityInvitationsBinding
@@ -39,6 +40,7 @@ import com.nextcloud.talk.invitation.adapters.InvitationsAdapter
 import com.nextcloud.talk.invitation.data.ActionEnum
 import com.nextcloud.talk.invitation.data.Invitation
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
@@ -151,17 +153,12 @@ class InvitationsActivity : BaseActivity() {
 
                 is InvitationsViewModel.InvitationActionSuccessState -> {
                     if (state.action == ActionEnum.ACCEPT) {
-                        // val bundle = Bundle()
-                        // bundle.putString(BundleKeys.KEY_ROOM_TOKEN, ????) // ???
-                        //
-                        // val chatIntent = Intent(context, ChatActivity::class.java)
-                        // chatIntent.putExtras(bundle)
-                        // chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        // startActivity(chatIntent)
-
-                        val intent = Intent(this, ConversationsListActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        startActivity(intent)
+                        val bundle = Bundle()
+                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, state.invitation.localToken)
+                        val chatIntent = Intent(context, ChatActivity::class.java)
+                        chatIntent.putExtras(bundle)
+                        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        startActivity(chatIntent)
                     } else {
                         // adapter.currentList.remove(state.invitation)
                         // adapter.notifyDataSetChanged()  // leads to UnsupportedOperationException ?!

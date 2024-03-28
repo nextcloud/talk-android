@@ -83,7 +83,11 @@ class ConversationsListViewModel @Inject constructor(
         }
 
         override fun onNext(invitationsModel: InvitationsModel) {
-            if (invitationsModel.user.userId?.equals(userManager.currentUser.blockingGet().userId) == true) {
+            val currentUser = userManager.currentUser.blockingGet()
+
+            if (invitationsModel.user.userId?.equals(currentUser.userId) == true &&
+                invitationsModel.user.baseUrl?.equals(currentUser.baseUrl) == true
+            ) {
                 if (invitationsModel.invitations.isNotEmpty()) {
                     _getFederationInvitationsViewState.value = GetFederationInvitationsSuccessState(true)
                 } else {

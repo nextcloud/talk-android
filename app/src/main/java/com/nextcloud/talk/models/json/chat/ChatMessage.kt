@@ -159,9 +159,7 @@ data class ChatMessage(
 
     var hiddenByCollapse: Boolean = false,
 
-    var openWhenDownloaded: Boolean = true,
-
-    var roomToken: String = ""
+    var openWhenDownloaded: Boolean = true
 
 ) : Parcelable, MessageContentType, MessageContentType.Image {
 

@@ -66,16 +66,16 @@ class InvitationsRepositoryImpl(private val ncApi: NcApi) :
             filteredInvitations.map { invitation ->
                 Invitation(
                     invitation.id,
-                    invitation.userId!!,
                     invitation.state,
-                    invitation.localRoomId,
-                    invitation.accessToken!!,
+                    invitation.localCloudId!!,
+                    invitation.localToken!!,
+                    invitation.remoteAttendeeId,
                     invitation.remoteServerUrl!!,
                     invitation.remoteToken!!,
-                    invitation.remoteAttendeeId,
+                    invitation.roomName!!,
+                    invitation.userId!!,
                     invitation.inviterCloudId!!,
-                    invitation.inviterDisplayName!!,
-                    invitation.roomName!!
+                    invitation.inviterDisplayName!!
                 )
             }
         )
