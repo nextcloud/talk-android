@@ -115,11 +115,15 @@ import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
+import com.nextcloud.talk.utils.CapabilitiesUtil.isUnifiedSearchAvailable
+import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
@@ -131,10 +135,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
-import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
-import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
-import com.nextcloud.talk.utils.CapabilitiesUtil.isUnifiedSearchAvailable
-import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
@@ -295,6 +295,7 @@ class ConversationsListActivity :
 
             loadUserAvatar(binding.switchAccountButton)
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
+            viewThemeUtils.material.themeCardView(binding.conversationListHintInclude.hintLayoutCardview)
             searchBehaviorSubject.onNext(false)
             fetchRooms()
             fetchPendingInvitations()
@@ -322,7 +323,7 @@ class ConversationsListActivity :
                 }
 
                 is ConversationsListViewModel.GetFederationInvitationsErrorState -> {
-                    Snackbar.make(binding.root, R.string.get_invitations_error, Snackbar.LENGTH_LONG).show()
+                    // unused atm
                 }
 
                 else -> {}
