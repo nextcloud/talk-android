@@ -380,6 +380,8 @@ How to translate with transifex:
     <string name="openConversations">Open conversations</string>
     <string name="error_loading_chats">There was a problem loading your chats</string>
     <string name="close">Close</string>
+    <string name="nc_refresh">Refresh</string>
+    <string name="nc_check_your_internet">Please check your Internet Connection</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message …</string>
