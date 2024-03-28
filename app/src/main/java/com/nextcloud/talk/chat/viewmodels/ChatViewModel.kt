@@ -180,7 +180,7 @@ class ChatViewModel @Inject constructor(
 
     fun refreshChatParams(pullChatMessagesFieldMap: HashMap<String, Int>, overrideRefresh: Boolean = false) {
         if (pullChatMessagesFieldMap != _getFieldMapForChat.value || overrideRefresh) {
-            _getFieldMapForChat.postValue(_getFieldMapForChat.value)
+            _getFieldMapForChat.postValue(pullChatMessagesFieldMap)
             Log.d(TAG, "FieldMap Refreshed with $pullChatMessagesFieldMap vs ${_getFieldMapForChat.value}")
         }
     }

@@ -821,7 +821,6 @@ class ChatActivity :
                         ).show()
                     }
 
-                    // TODO This needs to be refreshed manually
                 }
 
                 is ChatViewModel.DeleteChatMessageErrorState -> {
