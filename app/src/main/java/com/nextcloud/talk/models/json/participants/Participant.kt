@@ -86,8 +86,6 @@ data class Participant(
     @JsonField(name = ["statusMessage"])
     var statusMessage: String? = null,
 
-    var source: String? = null,
-
     var selected: Boolean = false
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
@@ -98,7 +96,7 @@ data class Participant(
     )
 
     /**
-     * actorType is only guaranteed in APIv3+ so use calculatedActorId
+     * actorType is only guaranteed in APIv3+ so use calculatedActorType
      *
      * https://github.com/nextcloud/spreed/blob/stable21/lib/Controller/RoomController.php#L1145-L1148
      */
@@ -129,7 +127,8 @@ data class Participant(
         GROUPS,
         GUESTS,
         USERS,
-        CIRCLES
+        CIRCLES,
+        FEDERATED
     }
 
     enum class ParticipantType {
