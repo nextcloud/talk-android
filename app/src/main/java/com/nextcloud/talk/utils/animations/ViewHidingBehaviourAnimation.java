@@ -5,7 +5,7 @@
  * SPDX-FileCopyrightText: 2016 Srijith Narayanan
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
- * The original code is Copyright (c) 2016 Srijith Narayanan under MIT licence
+ * The original code is Copyright 2016 Srijith Narayanan under MIT licence
  * https://github.com/sjthn/BottomNavigationViewBehavior/blob/9558104a16a1276bd8a73fba6736d88cd25b5488/app/src/main/java/com/example/srijith/bottomnavigationviewbehavior/BottomNavigationViewBehavior.java
  */
 package com.nextcloud.talk.utils.animations;

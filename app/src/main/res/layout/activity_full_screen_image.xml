@@ -4,7 +4,7 @@
   ~
   ~ SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
-  ~ SPDX-FileCopyrightText: 2021 Dariusz Olszewski
+  ~ SPDX-FileCopyrightText: 2021 Dariusz Olszewski <starypatyk@gmail.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
