@@ -115,7 +115,6 @@
     <string name="nc_certificate_dialog_title">Провери сертификат</string>
     <string name="nc_certificate_error">Ваша ССЛ постава је онемогућила повезивање</string>
     <string name="nc_change_cert_auth">Измени сертификат за пријаву</string>
-    <string name="nc_clear_edit_button">Обриши дугме за уређивање</string>
     <string name="nc_clear_edit_message">Обриши Уреди поруку</string>
     <string name="nc_clear_history">Обриши све поруке</string>
     <string name="nc_clear_history_success">Обрисане су све поруке</string>
@@ -213,7 +212,6 @@
     <string name="nc_edit_icon">Уреди икону</string>
     <string name="nc_edit_message">Измени</string>
     <string name="nc_edit_message_text">Уреди текст поруке</string>
-    <string name="nc_edited_by">Уредио је</string>
     <string name="nc_edited_by_admin">Уредио је админ</string>
     <string name="nc_email">Е-пошта</string>
     <string name="nc_expire_message_eight_hours">8 сати</string>
@@ -257,7 +255,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Позивнице су поново послате.</string>
     <string name="nc_guest_access_share_link">Дели линк разговора</string>
     <string name="nc_hint_enter_a_message">Unesite poruku …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Оптимизација батерије се не игнорише. Ово би требало да се промени тако да би обавештења могла да функционишу у позадини! Молимо вас да кликнете OK и изаберете „Све апликације” -> %1$s -> Не оптимизуј</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Игнориши оптимизацију батерије</string>
     <string name="nc_important_conversation">Битан разговор</string>
     <string name="nc_important_conversation_desc">Обавештења у овом разговору ће преиначити Не узнемиравај поставке.</string>

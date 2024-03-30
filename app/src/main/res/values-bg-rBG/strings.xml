@@ -320,6 +320,7 @@
     <string name="nc_settings_other_notifications_ringtone">Съобщения</string>
     <string name="nc_settings_phone_book_integration_desc">Съпоставяне на контакти въз основа на телефонен номер, за интегриране на пряк път Talk в приложението за системни контакти</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Можете да зададете телефонния си номер, така че други потребители да могат да ви намерят</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Въвеждане на телефонен номер</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Невалиден телефонен номер</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Телефонният номер е зададен успешно</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Телефонен номер</string>

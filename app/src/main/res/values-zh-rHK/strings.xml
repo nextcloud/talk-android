@@ -115,7 +115,6 @@
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">更改驗證證書</string>
-    <string name="nc_clear_edit_button">清除編輯按鈕</string>
     <string name="nc_clear_edit_message">清除編輯訊息</string>
     <string name="nc_clear_history">刪除所有訊息</string>
     <string name="nc_clear_history_success">已刪除所有訊息</string>
@@ -213,7 +212,6 @@
     <string name="nc_edit_icon">編輯圖示</string>
     <string name="nc_edit_message">編輯</string>
     <string name="nc_edit_message_text">編輯訊息文字</string>
-    <string name="nc_edited_by">編輯者</string>
     <string name="nc_edited_by_admin">編輯由管理員完成</string>
     <string name="nc_email">電郵地址</string>
     <string name="nc_expire_message_eight_hours">8 小时</string>
@@ -257,7 +255,6 @@
     <string name="nc_guest_access_resend_invitations_successful">邀請函再次發出。</string>
     <string name="nc_guest_access_share_link">分享對話連結</string>
     <string name="nc_hint_enter_a_message">輸入訊息 …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">電池優化未被忽略。為確保通知在背景中正常運作，請更改設定。請點擊「確定」並選擇「所有應用程式」-> %1$s -> 不優化。</string>
     <string name="nc_ignore_battery_optimization_dialog_title">不用理會電池優化</string>
     <string name="nc_important_conversation">重要對話</string>
     <string name="nc_important_conversation_desc">此對話中的通告將覆蓋\"請勿打擾\"設置</string>

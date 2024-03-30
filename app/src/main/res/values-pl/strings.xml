@@ -115,7 +115,6 @@
     <string name="nc_certificate_dialog_title">Sprawdź certyfikat</string>
     <string name="nc_certificate_error">Twoje ustawienia SSL uniemożliwiają połaczenie</string>
     <string name="nc_change_cert_auth">Zmień certyfikat uwierzytelnienia</string>
-    <string name="nc_clear_edit_button">Wyczyść przycisk Edytuj</string>
     <string name="nc_clear_edit_message">Wyczyść Edytuj wiadomość</string>
     <string name="nc_clear_history">Usuń wszystkie wiadomości</string>
     <string name="nc_clear_history_success">Wszystkie wiadomości zostały usunięte</string>
@@ -213,7 +212,6 @@
     <string name="nc_edit_icon">Edytuj ikonę</string>
     <string name="nc_edit_message">Edycja</string>
     <string name="nc_edit_message_text">Edytuj tekst wiadomości</string>
-    <string name="nc_edited_by">Edytowany przez</string>
     <string name="nc_edited_by_admin">Edytowane przez administratora</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 godzin</string>
@@ -257,7 +255,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Zaproszenia zostały ponownie wysłane.</string>
     <string name="nc_guest_access_share_link">Udostępnij link do rozmowy</string>
     <string name="nc_hint_enter_a_message">Wpisz wiadomość…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Optymalizacja baterii nie jest ignorowana. Należy to zmienić, aby mieć pewność, że powiadomienia działają w tle! Kliknij OK i wybierz \"Wszystkie aplikacje\" -> %1$s -> Nie optymalizuj</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Zignoruj optymalizację baterii</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
     <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują ustawienia \"Nie przeszkadzać\"</string>

@@ -22,7 +22,7 @@
     <string name="clear_status_message_after">Statusmeldung löschen nach</string>
     <string name="close">Schließen</string>
     <string name="continuous_voice_message_recording">Aufnahme sperren für kontinuierliche Aufzeichnung der Sprachnachricht</string>
-    <string name="conversation_is_read_only">UNterhaltung ist schreibgeschützt</string>
+    <string name="conversation_is_read_only">Unterhaltung ist schreibgeschützt</string>
     <string name="conversations">Unterhaltungen</string>
     <string name="create_conversation">Unterhaltung erstellen</string>
     <string name="create_issue">Fehler melden</string>
@@ -115,7 +115,6 @@
     <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
     <string name="nc_certificate_error">Ihre SSL-Konfiguration hat die Verbindung verhindert</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
-    <string name="nc_clear_edit_button">Schaltfläche „Bearbeiten“ löschen</string>
     <string name="nc_clear_edit_message">Bearbeitungsnachricht löschen</string>
     <string name="nc_clear_history">Alle Nachrichten löschen</string>
     <string name="nc_clear_history_success">Alle Nachrichten wurden gelöscht</string>
@@ -213,7 +212,6 @@
     <string name="nc_edit_icon">Symbol bearbeiten</string>
     <string name="nc_edit_message">Bearbeiten</string>
     <string name="nc_edit_message_text">Nachrichtentext bearbeiten</string>
-    <string name="nc_edited_by">Bearbeitet von</string>
     <string name="nc_edited_by_admin">Bearbeitet von der Administration</string>
     <string name="nc_email">E-Mail</string>
     <string name="nc_expire_message_eight_hours">8 Stunden</string>
@@ -257,7 +255,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Es wurden erneut Einladungen verschickt.</string>
     <string name="nc_guest_access_share_link">Unterhaltungs-Link teilen</string>
     <string name="nc_hint_enter_a_message">Eine Nachricht eingeben …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Die Batterieoptimierung wird nicht ignoriert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Klicken Sie bitte auf OK und wählen Sie „Alle Apps“ -> %1$s -> Nicht optimieren</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>

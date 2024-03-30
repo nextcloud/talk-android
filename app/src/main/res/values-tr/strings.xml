@@ -115,7 +115,6 @@
     <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
     <string name="nc_certificate_error">SSL kurulumunuz bağlantı kurulmasını engelliyor</string>
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
-    <string name="nc_clear_edit_button">Düzenlemeyi temizle düğmesi</string>
     <string name="nc_clear_edit_message">Düzenlemeyi temizle iletisi</string>
     <string name="nc_clear_history">Tüm iletileri sil</string>
     <string name="nc_clear_history_success">Tüm iletiler silindi</string>
@@ -213,7 +212,6 @@
     <string name="nc_edit_icon">Düzenle simgesi</string>
     <string name="nc_edit_message">Düzenle</string>
     <string name="nc_edit_message_text">İletiyi düzenle metni</string>
-    <string name="nc_edited_by">Düzenleyen</string>
     <string name="nc_edited_by_admin">Yönetici tarafından düzenlendi</string>
     <string name="nc_email">E-posta</string>
     <string name="nc_expire_message_eight_hours">8 saat</string>
@@ -257,7 +255,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Davetler gönderildi.</string>
     <string name="nc_guest_access_share_link">Görüşme bağlantısını kopyala</string>
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Pil iyileştirmesi yok sayılmıyor. Bildirimlerin arka planda çalıştığından emin olmak için bu durum değiştirilmelidir! Lütfen Tamam üzerine tıklayın ve \"Tüm uygulamalar\" -> %1$s -> İyileştirilmesin seçeneğini seçin</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Pil iyileştirmesi yok sayılsın</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler Rahatsız Etmeyin ayarlarını değiştirecek</string>
