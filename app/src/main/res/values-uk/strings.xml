@@ -218,7 +218,7 @@
     <string name="nc_new_conversation">Нова розмова</string>
     <string name="nc_new_mention">Непрочитані згадки</string>
     <string name="nc_new_messages">Непрочитані повідомлення</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Додаток %1$s недоступний (не встановлений, або використання додатка обмежене адміністратором)</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Застосунок %1$s недоступний (не встановлений, або використання додатка обмежене адміністратором)</string>
     <string name="nc_nick_guest">Гість</string>
     <string name="nc_no">Ні</string>
     <string name="nc_no_proxy">Без проксі</string>
@@ -378,7 +378,7 @@
     <string name="nc_upload_from_cloud">Поділіться з %1$s</string>
     <string name="nc_upload_from_device">Завантажити з пристрою</string>
     <string name="nc_upload_in_progess">Uploading</string>
-    <string name="nc_upload_picture_from_cam">Зробити фото</string>
+    <string name="nc_upload_picture_from_cam">Сфотографувати</string>
     <string name="nc_upload_video_from_cam">Зняти відео</string>
     <string name="nc_user">Користувач</string>
     <string name="nc_video_filename">Запис відео з %1$s</string>

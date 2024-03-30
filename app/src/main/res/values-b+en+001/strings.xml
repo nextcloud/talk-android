@@ -115,7 +115,6 @@
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
-    <string name="nc_clear_edit_button">clear Edit Button</string>
     <string name="nc_clear_edit_message">Clear Edit Message</string>
     <string name="nc_clear_history">Delete all messages</string>
     <string name="nc_clear_history_success">All messages were deleted</string>
@@ -213,7 +212,6 @@
     <string name="nc_edit_icon">Edit Icon</string>
     <string name="nc_edit_message">Edit</string>
     <string name="nc_edit_message_text">Edit Message Text</string>
-    <string name="nc_edited_by">"Edited by "</string>
     <string name="nc_edited_by_admin">Edited by admin</string>
     <string name="nc_email">Email</string>
     <string name="nc_expire_message_eight_hours">8 hours</string>
@@ -257,7 +255,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Invitations were sent out again.</string>
     <string name="nc_guest_access_share_link">Share conversation link</string>
     <string name="nc_hint_enter_a_message">Enter a message …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Battery optimization is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s -> Don\'t optimize</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_important_conversation">Important conversation</string>
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>

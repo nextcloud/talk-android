@@ -115,7 +115,6 @@
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
-    <string name="nc_clear_edit_button">limpar botão Editar</string>
     <string name="nc_clear_edit_message">Limpar Editar Mensagem</string>
     <string name="nc_clear_history">Excluir todas as mensagens </string>
     <string name="nc_clear_history_success">Todas as mensagens foram apagadas </string>
@@ -213,7 +212,6 @@
     <string name="nc_edit_icon">Editar ícone</string>
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar texto da mensagem</string>
-    <string name="nc_edited_by">Editado por</string>
     <string name="nc_edited_by_admin">Editado pelo administrador</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
@@ -257,7 +255,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Os convites foram enviados novamente.</string>
     <string name="nc_guest_access_share_link">Compartilhar o link da conversa</string>
     <string name="nc_hint_enter_a_message">Digite uma mensagem …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">A otimização da bateria não é ignorada. Isso deve ser alterado para garantir que as notificações funcionem em segundo plano! Clique em OK e selecione \"Todos os aplicativos\" -> %1$s -> Não otimizar</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar a otimização da bateria</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">As notificações nesta conversa substituirão as configurações de Não perturbe</string>

@@ -115,7 +115,6 @@
     <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
     <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
     <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
-    <string name="nc_clear_edit_button">محو زر التحرير</string>
     <string name="nc_clear_edit_message">محو تحرير الرسالة</string>
     <string name="nc_clear_history">مسح جميع الرسائل</string>
     <string name="nc_clear_history_success">تمّ مسح جميع الرسائل</string>
@@ -213,7 +212,6 @@
     <string name="nc_edit_icon">أيقونة التحرير</string>
     <string name="nc_edit_message">تحرير</string>
     <string name="nc_edit_message_text">نص تحرير الرسالة</string>
-    <string name="nc_edited_by">تمّ التحرير من قِبَل</string>
     <string name="nc_edited_by_admin">تمّ التحرير من قِبَل المُشرف</string>
     <string name="nc_email">البريد الإلكتروني</string>
     <string name="nc_expire_message_eight_hours">8 ساعات</string>
@@ -257,7 +255,6 @@
     <string name="nc_guest_access_resend_invitations_successful">تمّ إرسال الدّعوَات مُجدّداً.</string>
     <string name="nc_guest_access_share_link">مشاركة رابط المحادثة</string>
     <string name="nc_hint_enter_a_message">أدخِل رسالةً …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">لم يتم تجاهل توفير البطارية. يجب تغيير هذا للتأكد من أن الإشعارات تعمل في الخلفية! الرجاء النقر فوق \"موافق\" و قم بتحديد الخيارات كما يلي:  \"All apps كل التطبيقات\" -> %1$s -> Don\'t optimize لا تقم بالتوفير</string>
     <string name="nc_ignore_battery_optimization_dialog_title">تجاهل توفير البطارية</string>
     <string name="nc_important_conversation">محادثة مهمة</string>
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة ستتجاوز إعداد الحالة \"يُرجى عدم الإزعاج\"</string>
@@ -412,6 +409,7 @@
     <string name="nc_settings_phone_book_integration_desc">مُطابقة جهات الاتصال بناءً على رقم الهاتف لدمج اختصارات تطبيق \"المحادثة\" Talk في تطبيق \"جهات الاتصال\" على الهاتف</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">الخطأ رقم 429؛ طلبات كثيرة جداً</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">بإمكانك تعيين رقم هاتفك حتى يتمكن المستخدمون الآخرون من العثور عليك</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">ادخل الجوال</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">رقم الهاتف غير صحيح </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">تم تعيين رقم الهاتف بنجاح </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">رقم الهاتف</string>

@@ -114,7 +114,6 @@
     <string name="nc_certificate_dialog_title">Vérifier le certificat</string>
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
-    <string name="nc_clear_edit_button">effacer le bouton de modification</string>
     <string name="nc_clear_history">Supprimer tous les messages</string>
     <string name="nc_clear_history_success">Tous les messages ont été supprimés</string>
     <string name="nc_clear_history_warning">Voulez-vous vraiment supprimer tous les messages de cette conversation ?</string>
@@ -160,15 +159,20 @@
     <string name="nc_diagnose_account_user_name">Utilisateur</string>
     <string name="nc_diagnose_android_version_title">Version Android</string>
     <string name="nc_diagnose_app_category_title">App</string>
-    <string name="nc_diagnose_app_name_title">Nom de l\'application</string>
+    <string name="nc_diagnose_app_name_title">Nom de l’application</string>
     <string name="nc_diagnose_app_users_amount">Utilisateurs enregistrés</string>
     <string name="nc_diagnose_app_version_title">Version de l\'app</string>
+    <string name="nc_diagnose_battery_optimization_ignored">Optimisation de la batterie ignorée, tout va bien</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">L\'optimisation de la batterie n\'est pas ignorée. Cela devrait être changé !</string>
     <string name="nc_diagnose_battery_optimization_title">Paramètres pour la batterie</string>
     <string name="nc_diagnose_device_name_title">Appareil</string>
     <string name="nc_diagnose_dialog_open_diagnose">Ouvrir l\'écran de diagnostic</string>
+    <string name="nc_diagnose_firebase_push_token_missing">Aucun jeton de poussée Firebase définit. Veuillez créer un rapport de bogue.</string>
+    <string name="nc_diagnose_firebase_push_token_title">Jeton de poussé Firebase</string>
     <string name="nc_diagnose_gplay_available_no">Les services Google Play ne sont pas disponibles. Les notifications ne sont pas prises en charge</string>
     <string name="nc_diagnose_gplay_available_title">Services Google Play</string>
     <string name="nc_diagnose_gplay_available_yes">Les services Google Play sont disponibles</string>
+    <string name="nc_diagnose_meta_category_title">Méta-informations</string>
     <string name="nc_diagnose_phone_category_title">Téléphone</string>
     <string name="nc_diagnose_server_talk_version">Version du serveur Talk</string>
     <string name="nc_diagnose_server_version">Version du serveur</string>
@@ -189,7 +193,6 @@
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
     <string name="nc_edit_message">Modifier</string>
-    <string name="nc_edited_by">Modifié par</string>
     <string name="nc_edited_by_admin">Modifié par un administrateur</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 heures</string>

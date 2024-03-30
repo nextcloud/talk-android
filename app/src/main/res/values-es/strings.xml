@@ -242,7 +242,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Las invitaciones fueron enviadas nuevamente.</string>
     <string name="nc_guest_access_share_link">Compartir enlace de la conversación</string>
     <string name="nc_hint_enter_a_message">Escriba un mensaje …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">La optimización de batería no se está ignorando. ¡Esto debería ser cambiado para garantizar que las notificaciones funcionen en segundo plano!. Por favor, haga clic en OK y seleccione \"Todas las apps\" -> %1$s -> No optimizar</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar la optimización de batería</string>
     <string name="nc_important_conversation">Conversación importante</string>
     <string name="nc_important_conversation_desc">Las notificaciones de esta conversación anularán el ajuste de No Molestar</string>

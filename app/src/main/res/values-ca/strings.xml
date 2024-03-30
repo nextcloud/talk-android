@@ -320,6 +320,7 @@
     <string name="nc_settings_other_notifications_ringtone">Missatges</string>
     <string name="nc_settings_phone_book_integration_desc">Fes coincidir els contactes basats en el número de telèfon per a integrar la drecera de Talk a l\'aplicació de contactes del sistema</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Podeu establir el vostre número de telèfon perquè altres usuaris puguin trobar-vos</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Introduïu el número de telèfon</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de telèfon no vàlid</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">El número de telèfon s\'ha definit correctament</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número de telèfon</string>
