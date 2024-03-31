@@ -64,6 +64,7 @@
     <string name="menu_item_sort_by_size_biggest_first">الأعلى حجماً أولاً</string>
     <string name="menu_item_sort_by_size_smallest_first">الأقل حجماً أولاً</string>
     <string name="message_expiration_title">نهاية صلاحية الرسالة</string>
+    <string name="message_last_edited_by">تمّ التعديل من قِبَل %1$s</string>
     <string name="message_poll_tap_to_open">أنقُر لفتح الاستبيان</string>
     <string name="message_search_begin_empty">لا توجد نتائج</string>
     <string name="message_search_begin_typing">أكتب هنا للبحث …</string>
@@ -115,6 +116,7 @@
     <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
     <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
     <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
+    <string name="nc_clear_edit_button">محو زر التحرير</string>
     <string name="nc_clear_edit_message">محو تحرير الرسالة</string>
     <string name="nc_clear_history">مسح جميع الرسائل</string>
     <string name="nc_clear_history_success">تمّ مسح جميع الرسائل</string>
@@ -255,6 +257,7 @@
     <string name="nc_guest_access_resend_invitations_successful">تمّ إرسال الدّعوَات مُجدّداً.</string>
     <string name="nc_guest_access_share_link">مشاركة رابط المحادثة</string>
     <string name="nc_hint_enter_a_message">أدخِل رسالةً …</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">تحسين البطارية لا يتم تجاهله. يجب تغيير هذا للتأكد من أن الإشعارات تعمل في الخلفية! الرجاء النقر فوق \"موافق OK\" ثم تحديد \"جميع التطبيقات All apps\" -> %1$s -> \"لا تقم بالتحسين Do not optimize\"</string>
     <string name="nc_ignore_battery_optimization_dialog_title">تجاهل توفير البطارية</string>
     <string name="nc_important_conversation">محادثة مهمة</string>
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة ستتجاوز إعداد الحالة \"يُرجى عدم الإزعاج\"</string>
