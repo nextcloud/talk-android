@@ -450,6 +450,7 @@
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de inicio</string>
     <string name="nc_switch_account">Cambiar cuenta</string>
+    <string name="nc_team">Equipo</string>
     <string name="nc_upload_choose_local_files">Seleccionar archivos</string>
     <string name="nc_upload_confirm_send_multiple">¿Enviar estos archivos a %1$s?</string>
     <string name="nc_upload_confirm_send_single">¿Enviar este archivo a %1$s?</string>
