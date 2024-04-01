@@ -233,49 +233,16 @@
                 android:maxLines="2"
                 android:textColor="@color/low_emphasis_text"
                 tools:ignore="Overdraw"
-                tools:text="Marcel is typing"></TextView>
+                tools:text="Marcel is typing"/>
 
         </LinearLayout>
 
     </RelativeLayout>
 
-    <LinearLayout
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_activity_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <include
-            android:id="@+id/editView"
-            layout="@layout/edit_message_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            android:visibility="gone">
-        </include>
-
-        <com.nextcloud.talk.ui.MessageInput
-            android:id="@+id/messageInputView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:inputType="textLongMessage|textAutoComplete"
-            android:maxLength="1000"
-            app:attachmentButtonBackground="@color/transparent"
-            app:attachmentButtonHeight="48dp"
-            app:attachmentButtonIcon="@drawable/ic_baseline_attach_file_24"
-            app:attachmentButtonMargin="0dp"
-            app:attachmentButtonWidth="48dp"
-            app:delayTypingStatus="200"
-            app:inputButtonDefaultBgColor="@color/transparent"
-            app:inputButtonDefaultBgDisabledColor="@color/transparent"
-            app:inputButtonDefaultBgPressedColor="@color/transparent"
-            app:inputButtonDefaultIconColor="@color/colorPrimary"
-            app:inputButtonHeight="48dp"
-            app:inputButtonMargin="0dp"
-            app:inputButtonWidth="48dp"
-            app:inputHint="@string/nc_hint_enter_a_message"
-            app:inputTextColor="@color/nc_incoming_text_default"
-            app:inputTextSize="16sp"
-            app:showAttachmentButton="true" />
-    </LinearLayout>
+        android:padding="0dp"
+        />
 </LinearLayout>

@@ -6,6 +6,8 @@
  */
 package com.nextcloud.talk.chat.viewmodels
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -13,7 +15,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.chat.data.ChatRepository
+import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
+import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
@@ -31,34 +36,58 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
+import java.io.File
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @Inject constructor(
     private val chatRepository: ChatRepository,
-    private val reactionsRepository: ReactionsRepository
-) : ViewModel() {
+    private val reactionsRepository: ReactionsRepository,
+    private val mediaRecorderManager: MediaRecorderManager,
+    private val audioFocusRequestManager: AudioFocusRequestManager
+) : ViewModel(), DefaultLifecycleObserver {
 
-    object LifeCycleObserver : DefaultLifecycleObserver {
-        enum class LifeCycleFlag {
-            PAUSED,
-            RESUMED
-        }
-        lateinit var currentLifeCycleFlag: LifeCycleFlag
-        public val disposableSet = mutableSetOf<Disposable>()
-
-        override fun onResume(owner: LifecycleOwner) {
-            super.onResume(owner)
-            currentLifeCycleFlag = LifeCycleFlag.RESUMED
-        }
-
-        override fun onPause(owner: LifecycleOwner) {
-            super.onPause(owner)
-            currentLifeCycleFlag = LifeCycleFlag.PAUSED
-            disposableSet.forEach { disposable -> disposable.dispose() }
-            disposableSet.clear()
-        }
+    enum class LifeCycleFlag {
+        PAUSED,
+        RESUMED,
+        STOPPED
     }
+    lateinit var currentLifeCycleFlag: LifeCycleFlag
+    val disposableSet = mutableSetOf<Disposable>()
+
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        currentLifeCycleFlag = LifeCycleFlag.RESUMED
+        mediaRecorderManager.handleOnResume()
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        currentLifeCycleFlag = LifeCycleFlag.PAUSED
+        disposableSet.forEach { disposable -> disposable.dispose() }
+        disposableSet.clear()
+        mediaRecorderManager.handleOnPause()
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        super.onStop(owner)
+        currentLifeCycleFlag = LifeCycleFlag.STOPPED
+        mediaRecorderManager.handleOnStop()
+    }
+    val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
+        get() = audioFocusRequestManager.getManagerState
+
+    private val _recordTouchObserver: MutableLiveData<Float> = MutableLiveData()
+    val recordTouchObserver: LiveData<Float>
+        get() = _recordTouchObserver
+
+    private val _getVoiceRecordingInProgress: MutableLiveData<Boolean> = MutableLiveData()
+    val getVoiceRecordingInProgress: LiveData<Boolean>
+        get() = _getVoiceRecordingInProgress
+
+    private val _getVoiceRecordingLocked: MutableLiveData<Boolean> = MutableLiveData()
+    val getVoiceRecordingLocked: LiveData<Boolean>
+        get() = _getVoiceRecordingLocked
 
     private val _getFieldMapForChat: MutableLiveData<HashMap<String, Int>> = MutableLiveData()
     val getFieldMapForChat: LiveData<HashMap<String, Int>>
@@ -69,10 +98,6 @@ class ChatViewModel @Inject constructor(
     open class GetReminderExistState(val reminder: Reminder) : ViewState
 
     private val _getReminderExistState: MutableLiveData<ViewState> = MutableLiveData(GetReminderStartState)
-
-    var isPausedDueToBecomingNoisy = false
-    var receiverRegistered = false
-    var receiverUnregistered = false
 
     val getReminderExistState: LiveData<ViewState>
         get() = _getReminderExistState
@@ -94,7 +119,8 @@ class ChatViewModel @Inject constructor(
 
     object GetCapabilitiesStartState : ViewState
     object GetCapabilitiesErrorState : ViewState
-    open class GetCapabilitiesSuccessState(val spreedCapabilities: SpreedCapability) : ViewState
+    open class GetCapabilitiesInitialLoadState(val spreedCapabilities: SpreedCapability) : ViewState
+    open class GetCapabilitiesUpdateState(val spreedCapabilities: SpreedCapability) : ViewState
 
     private val _getCapabilitiesViewState: MutableLiveData<ViewState> = MutableLiveData(GetCapabilitiesStartState)
     val getCapabilitiesViewState: LiveData<ViewState>
@@ -156,14 +182,6 @@ class ChatViewModel @Inject constructor(
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
-    object EditMessageStartState : ViewState
-    object EditMessageErrorState : ViewState
-    class EditMessageSuccessState(val messageEdited: ChatOverallSingleMessage) : ViewState
-
-    private val _editMessageViewState: MutableLiveData<ViewState> = MutableLiveData(EditMessageStartState)
-    val editMessageViewState: LiveData<ViewState>
-        get() = _editMessageViewState
-
     fun refreshChatParams(pullChatMessagesFieldMap: HashMap<String, Int>, overrideRefresh: Boolean = false) {
         if (pullChatMessagesFieldMap != _getFieldMapForChat.value || overrideRefresh) {
             _getFieldMapForChat.postValue(pullChatMessagesFieldMap)
@@ -180,21 +198,30 @@ class ChatViewModel @Inject constructor(
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
-        _getCapabilitiesViewState.value = GetCapabilitiesStartState
-
+        Log.d(TAG, "Remote server ${conversationModel.remoteServer}")
         if (conversationModel.remoteServer.isNullOrEmpty()) {
-            _getCapabilitiesViewState.value = GetCapabilitiesSuccessState(user.capabilities!!.spreedCapability!!)
+            if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
+                _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
+                    user.capabilities!!.spreedCapability!!
+                )
+            } else {
+                _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(user.capabilities!!.spreedCapability!!)
+            }
         } else {
             chatRepository.getCapabilities(user, token)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<SpreedCapability> {
                     override fun onSubscribe(d: Disposable) {
-                        LifeCycleObserver.disposableSet.add(d)
+                        disposableSet.add(d)
                     }
 
                     override fun onNext(spreedCapabilities: SpreedCapability) {
-                        _getCapabilitiesViewState.value = GetCapabilitiesSuccessState(spreedCapabilities)
+                        if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
+                            _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(spreedCapabilities)
+                        } else {
+                            _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(spreedCapabilities)
+                        }
                     }
 
                     override fun onError(e: Throwable) {
@@ -238,7 +265,7 @@ class ChatViewModel @Inject constructor(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
@@ -262,7 +289,7 @@ class ChatViewModel @Inject constructor(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onError(e: Throwable) {
@@ -275,6 +302,8 @@ class ChatViewModel @Inject constructor(
 
                 override fun onNext(t: GenericOverall) {
                     _leaveRoomViewState.value = LeaveRoomSuccessState(funToCallWhenLeaveSuccessful)
+                    _getCapabilitiesViewState.value = GetCapabilitiesStartState
+                    _getRoomViewState.value = GetRoomStartState
                 }
             })
     }
@@ -285,7 +314,7 @@ class ChatViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<RoomOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onError(e: Throwable) {
@@ -322,7 +351,7 @@ class ChatViewModel @Inject constructor(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onError(e: Throwable) {
@@ -342,12 +371,12 @@ class ChatViewModel @Inject constructor(
     fun pullChatMessages(credentials: String, url: String) {
         chatRepository.pullChatMessages(credentials, url, _getFieldMapForChat.value!!)
             .subscribeOn(Schedulers.io())
-            .takeUntil { (LifeCycleObserver.currentLifeCycleFlag == LifeCycleObserver.LifeCycleFlag.PAUSED) }
+            .takeUntil { (currentLifeCycleFlag == LifeCycleFlag.PAUSED) }
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<Response<*>> {
                 override fun onSubscribe(d: Disposable) {
                     Log.d(TAG, "pullChatMessages - pullChatMessages SUBSCRIBE")
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onError(e: Throwable) {
@@ -373,7 +402,7 @@ class ChatViewModel @Inject constructor(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ChatOverallSingleMessage> {
                 override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onError(e: Throwable) {
@@ -402,7 +431,7 @@ class ChatViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onError(e: Throwable) {
@@ -425,7 +454,7 @@ class ChatViewModel @Inject constructor(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
@@ -454,7 +483,7 @@ class ChatViewModel @Inject constructor(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
@@ -477,7 +506,7 @@ class ChatViewModel @Inject constructor(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ReactionDeletedModel> {
                 override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onError(e: Throwable) {
@@ -502,7 +531,7 @@ class ChatViewModel @Inject constructor(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ReactionAddedModel> {
                 override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
+                    disposableSet.add(d)
                 }
 
                 override fun onError(e: Throwable) {
@@ -521,28 +550,69 @@ class ChatViewModel @Inject constructor(
             })
     }
 
-    fun editChatMessage(credentials: String, url: String, text: String) {
-        chatRepository.editChatMessage(credentials, url, text)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
-                override fun onSubscribe(d: Disposable) {
-                    LifeCycleObserver.disposableSet.add(d)
-                }
+    fun startAudioRecording(context: Context, currentConversation: ConversationModel) {
+        audioFocusRequestManager.audioFocusRequest(true) {
+            Log.d(TAG, "Recording Started")
+            mediaRecorderManager.start(context, currentConversation)
+            _getVoiceRecordingInProgress.postValue(true)
+        }
+    }
 
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "failed to edit message", e)
-                    _editMessageViewState.value = EditMessageErrorState
-                }
+    fun stopAudioRecording() {
+        audioFocusRequestManager.audioFocusRequest(false) {
+            mediaRecorderManager.stop()
+            _getVoiceRecordingInProgress.postValue(false)
+            Log.d(TAG, "Recording stopped")
+        }
+    }
 
-                override fun onComplete() {
-                    // unused atm
-                }
+    fun stopAndSendAudioRecording(room: String, displayName: String, metaData: String) {
+        stopAudioRecording()
 
-                override fun onNext(messageEdited: ChatOverallSingleMessage) {
-                    _editMessageViewState.value = EditMessageSuccessState(messageEdited)
-                }
-            })
+        if (mediaRecorderManager.mediaRecorderState != MediaRecorderManager.MediaRecorderState.ERROR) {
+            val uri = Uri.fromFile(File(mediaRecorderManager.currentVoiceRecordFile))
+            Log.d(TAG, "File uploaded")
+            uploadFile(uri.toString(), room, displayName, metaData)
+        }
+    }
+    fun stopAndDiscardAudioRecording() {
+        stopAudioRecording()
+        Log.d(TAG, "File discarded")
+        val cachedFile = File(mediaRecorderManager.currentVoiceRecordFile)
+        cachedFile.delete()
+    }
+
+    fun getCurrentVoiceRecordFile(): String {
+        return mediaRecorderManager.currentVoiceRecordFile
+    }
+
+    fun uploadFile(fileUri: String, room: String, displayName: String, metaData: String) {
+        try {
+            require(fileUri.isNotEmpty())
+            UploadAndShareFilesWorker.upload(
+                fileUri,
+                room,
+                displayName,
+                metaData
+            )
+        } catch (e: IllegalArgumentException) {
+            Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+        }
+    }
+
+    fun postToRecordTouchObserver(float: Float) {
+        _recordTouchObserver.postValue(float)
+    }
+
+    fun setVoiceRecordingLocked(boolean: Boolean) {
+        _getVoiceRecordingLocked.postValue(boolean)
+    }
+
+    // Made this so that the MediaPlayer in ChatActivity can be focused. Eventually the player logic should be moved
+    // to the MediaPlayerManager class, so the audio focus logic can be handled in ChatViewModel, as it's done in
+    // the MessageInputViewModel
+    fun audioRequest(request: Boolean, callback: () -> Unit) {
+        audioFocusRequestManager.audioFocusRequest(request, callback)
     }
 
     inner class GetRoomObserver : Observer<ConversationModel> {
@@ -566,7 +636,7 @@ class ChatViewModel @Inject constructor(
 
     inner class JoinRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {
-            LifeCycleObserver.disposableSet.add(d)
+            disposableSet.add(d)
         }
 
         override fun onNext(conversationModel: ConversationModel) {
@@ -585,7 +655,7 @@ class ChatViewModel @Inject constructor(
 
     inner class SetReminderObserver : Observer<Reminder> {
         override fun onSubscribe(d: Disposable) {
-            LifeCycleObserver.disposableSet.add(d)
+            disposableSet.add(d)
         }
 
         override fun onNext(reminder: Reminder) {
@@ -603,7 +673,7 @@ class ChatViewModel @Inject constructor(
 
     inner class GetReminderObserver : Observer<Reminder> {
         override fun onSubscribe(d: Disposable) {
-            LifeCycleObserver.disposableSet.add(d)
+            disposableSet.add(d)
         }
 
         override fun onNext(reminder: Reminder) {
@@ -622,7 +692,7 @@ class ChatViewModel @Inject constructor(
 
     inner class CheckForNoteToSelfObserver : Observer<RoomsOverall> {
         override fun onSubscribe(d: Disposable) {
-            LifeCycleObserver.disposableSet.add(d)
+            disposableSet.add(d)
         }
 
         override fun onNext(roomsOverall: RoomsOverall) {
