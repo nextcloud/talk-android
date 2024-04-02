@@ -483,6 +483,8 @@ class ChatActivity :
         setContentView(binding.root)
         setupSystemColors()
 
+        binding.messageInputView.messageSendButton.visibility = View.GONE
+
         conversationUser = currentUserProvider.currentUser.blockingGet()
 
         handleIntent(intent)
