@@ -64,6 +64,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Største først</string>
     <string name="menu_item_sort_by_size_smallest_first">Minste først</string>
     <string name="message_expiration_title">Utløp av melding</string>
+    <string name="message_last_edited_by">Redigert av %1$s</string>
     <string name="message_poll_tap_to_open">Trykk for å åpne avstemningen</string>
     <string name="message_search_begin_empty">Ingen søkeresultater</string>
     <string name="message_search_begin_typing">Begynn å skrive for å søke...</string>
@@ -115,6 +116,7 @@
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
     <string name="nc_certificate_error">Ditt SSL-oppsett forhindret tilkobling</string>
     <string name="nc_change_cert_auth">Endre sertifikat for autentisering</string>
+    <string name="nc_clear_edit_button">Tøm redigeringsknapp</string>
     <string name="nc_clear_edit_message">Fjern redigeringsmelding</string>
     <string name="nc_clear_history">Slett alle meldinger</string>
     <string name="nc_clear_history_success">Alle meldinger ble slettet</string>
@@ -255,6 +257,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Invitasjoner ble sendt ut igjen.</string>
     <string name="nc_guest_access_share_link">Del samtalekobling</string>
     <string name="nc_hint_enter_a_message">Enter a message …</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Batterioptimalisering ignoreres ikke. Dette bør endres for å sikre at varsler fungerer i bakgrunnen! Klikk OK og velg \"Alle apper\" -> %1$s -> Ikke optimaliser</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer batterioptimalisering</string>
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_important_conversation_desc">Varsler i denne samtalen overstyrer innstillingene for Ikke forstyrr</string>

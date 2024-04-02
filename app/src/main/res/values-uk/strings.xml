@@ -372,6 +372,8 @@
     <string name="nc_sort_by">Впорядкувати за</string>
     <string name="nc_start_time">Час початку</string>
     <string name="nc_switch_account">Перемкнути обліковий запис</string>
+    <string name="nc_team">Команда</string>
+    <string name="nc_teams">Команди</string>
     <string name="nc_upload_choose_local_files">Виберіть файли</string>
     <string name="nc_upload_failed">Вибачте, помилка завантаження</string>
     <string name="nc_upload_failed_notification_title">Невдача</string>
