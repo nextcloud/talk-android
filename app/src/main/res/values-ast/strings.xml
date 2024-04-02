@@ -84,6 +84,7 @@
     <string name="nc_common_copy">Copiar</string>
     <string name="nc_common_copy_success">Copióse nel cartafueyu</string>
     <string name="nc_common_create">Crear</string>
+    <string name="nc_common_disabled">Desactivóse</string>
     <string name="nc_common_dismiss">Escartar</string>
     <string name="nc_common_error_sorry">¡Prodúxose daqué malo!</string>
     <string name="nc_common_set">Afitar</string>
@@ -315,6 +316,7 @@
     <string name="translation_copy_translated_text">Copiar el testu traducíu</string>
     <string name="translation_detect_language">Detectar la llingua</string>
     <string name="translation_error_message">Nun se pudo detectar la llingua</string>
+    <string name="translation_from">De</string>
     <string name="user_info_address">Direición</string>
     <string name="user_info_displayname">Nome completu</string>
     <string name="user_info_email">Corréu electrónicu</string>
