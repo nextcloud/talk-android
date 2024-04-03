@@ -64,6 +64,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Büyükten küçüğe</string>
     <string name="menu_item_sort_by_size_smallest_first">Küçükten büyüğe</string>
     <string name="message_expiration_title">İleti süresi</string>
+    <string name="message_last_edited_by">%1$s tarafından düzenlendi</string>
     <string name="message_poll_tap_to_open">Anketi açmak için dokunun</string>
     <string name="message_search_begin_empty">Aramadan bir sonuç alınamadı</string>
     <string name="message_search_begin_typing">Aramak için yazmaya başlayın…</string>
@@ -115,6 +116,7 @@
     <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
     <string name="nc_certificate_error">SSL kurulumunuz bağlantı kurulmasını engelliyor</string>
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
+    <string name="nc_clear_edit_button">Düzenlemeyi temizle düğmesi</string>
     <string name="nc_clear_edit_message">Düzenlemeyi temizle iletisi</string>
     <string name="nc_clear_history">Tüm iletileri sil</string>
     <string name="nc_clear_history_success">Tüm iletiler silindi</string>
@@ -255,6 +257,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Davetler gönderildi.</string>
     <string name="nc_guest_access_share_link">Görüşme bağlantısını kopyala</string>
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Pil iyileştirmesi yok sayılmıyor. Bildirimlerin arka planda çalıştığından emin olmak için bu durum değiştirilmelidir! Lütfen Tamam üzerine tıklayın ve \"Tüm uygulamalar\" -> %1$s -> İyileştirilmesin seçeneğini seçin</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Pil iyileştirmesi yok sayılsın</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler Rahatsız Etmeyin ayarlarını değiştirecek</string>
