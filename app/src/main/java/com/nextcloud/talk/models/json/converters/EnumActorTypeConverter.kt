@@ -12,6 +12,7 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.DUMMY
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.EMAILS
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.FEDERATED
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GUESTS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
@@ -24,6 +25,7 @@ class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>()
             "guests" -> GUESTS
             "users" -> USERS
             "circles" -> CIRCLES
+            "federated_users" -> FEDERATED
             else -> DUMMY
         }
     }
@@ -39,6 +41,7 @@ class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>()
             GUESTS -> "guests"
             USERS -> "users"
             CIRCLES -> "circles"
+            FEDERATED -> "federated_users"
             else -> ""
         }
     }

@@ -35,10 +35,6 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemViewHolder> implements
     ISectionable<ContactItem.ContactItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
 
-    public static final String PARTICIPANT_SOURCE_CIRCLES = "circles";
-    public static final String PARTICIPANT_SOURCE_GROUPS = "groups";
-    public static final String PARTICIPANT_SOURCE_USERS = "users";
-
     private final Participant participant;
     private final User user;
     private GenericTextHeaderItem header;
@@ -133,9 +129,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
 
         if (
             participant.getCalculatedActorType() == Participant.ActorType.GROUPS ||
-                PARTICIPANT_SOURCE_GROUPS.equals(participant.getSource()) ||
-                participant.getCalculatedActorType() == Participant.ActorType.CIRCLES ||
-                PARTICIPANT_SOURCE_CIRCLES.equals(participant.getSource())) {
+                participant.getCalculatedActorType() == Participant.ActorType.CIRCLES) {
 
             setGenericAvatar(holder, R.drawable.ic_avatar_group, R.drawable.ic_circular_group);
 
@@ -163,10 +157,12 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
             }
 
             ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, user, displayName, true, false);
-        } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
-            PARTICIPANT_SOURCE_USERS.equals(participant.getSource())) {
-            ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, user, participant.getCalculatedActorId(),
-                                                 true, false);
+        } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS) {
+            ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView,
+                                                 user,
+                                                 participant.getCalculatedActorId(),
+                                                 true,
+                                                 false);
         }
     }
 

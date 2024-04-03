@@ -492,7 +492,7 @@ class ConversationInfoActivity :
 
         for (i in participants.indices) {
             participant = participants[i]
-            userItem = ParticipantItem(this, participant, conversationUser, viewThemeUtils)
+            userItem = ParticipantItem(this, participant, conversationUser, viewThemeUtils, conversationToken)
             if (participant.sessionId != null) {
                 userItem.isOnline = !participant.sessionId.equals("0")
             } else {
@@ -1026,7 +1026,7 @@ class ConversationInfoActivity :
 
             @SuppressLint("LongLogTag")
             override fun onError(e: Throwable) {
-                Log.e(TAG, "Error toggling moderator status", e)
+                Log.e(TAG, "Error toggling moderator status (legacy)", e)
             }
 
             override fun onComplete() {
@@ -1163,7 +1163,7 @@ class ConversationInfoActivity :
 
     @SuppressLint("CheckResult")
     override fun onItemClick(view: View?, position: Int): Boolean {
-        if (ConversationUtils.canModerate(conversation!!, spreedCapabilities)) {
+        if (!ConversationUtils.canModerate(conversation!!, spreedCapabilities)) {
             return true
         }
 
