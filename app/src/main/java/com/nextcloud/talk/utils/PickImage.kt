@@ -1,9 +1,11 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Parneet Singh <gurayaparneet@gmail.com>
  * SPDX-FileCopyrightText: 2022 Tim Krüger <t@timkrueger.me>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package com.nextcloud.talk.utils
 
 import android.app.Activity
@@ -13,6 +15,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
@@ -48,17 +51,19 @@ class PickImage(
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
     }
 
-    fun selectLocal() {
+    fun selectLocal(startImagePickerForResult: ActivityResultLauncher<Intent>) {
         ImagePicker.Companion.with(activity)
             .provider(ImageProvider.GALLERY)
             .crop()
             .cropSquare()
             .compress(MAX_SIZE)
             .maxResultSize(MAX_SIZE, MAX_SIZE)
-            .createIntent { intent -> this.activity.startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER) }
+            .createIntent { intent ->
+                startImagePickerForResult.launch(intent)
+            }
     }
 
-    private fun selectLocal(file: File) {
+    private fun selectLocal(startImagePickerForResult: ActivityResultLauncher<Intent>, file: File) {
         ImagePicker.Companion.with(activity)
             .provider(ImageProvider.URI)
             .crop()
@@ -66,25 +71,23 @@ class PickImage(
             .compress(MAX_SIZE)
             .maxResultSize(MAX_SIZE, MAX_SIZE)
             .setUri(Uri.fromFile(file))
-            .createIntent { intent -> this.activity.startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER) }
+            .createIntent { intent ->
+                startImagePickerForResult.launch(intent)
+            }
     }
 
-    fun selectRemote() {
+    fun selectRemote(startSelectRemoteFilesIntentForResult: ActivityResultLauncher<Intent>) {
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_MIME_TYPE_FILTER, Mimetype.IMAGE_PREFIX)
 
         val avatarIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
         avatarIntent.putExtras(bundle)
-
-        this.activity.startActivityForResult(avatarIntent, REQUEST_CODE_SELECT_REMOTE_FILES)
+        startSelectRemoteFilesIntentForResult.launch(avatarIntent)
     }
 
-    fun takePicture() {
+    fun takePicture(startTakePictureIntentForResult: ActivityResultLauncher<Intent>) {
         if (permissionUtil.isCameraPermissionGranted()) {
-            activity.startActivityForResult(
-                TakePhotoActivity.createIntent(activity),
-                REQUEST_CODE_TAKE_PICTURE
-            )
+            startTakePictureIntentForResult.launch(TakePhotoActivity.createIntent(activity))
         } else {
             activity.requestPermissions(
                 arrayOf(android.Manifest.permission.CAMERA),
@@ -93,7 +96,7 @@ class PickImage(
         }
     }
 
-    private fun handleAvatar(remotePath: String?) {
+    private fun handleAvatar(startImagePickerForResult: ActivityResultLauncher<Intent>, remotePath: String?) {
         val uri = currentUser!!.baseUrl + "/index.php/apps/files/api/v1/thumbnail/512/512/" +
             Uri.encode(remotePath, "/")
         val downloadCall = ncApi.downloadResizedImage(
@@ -102,7 +105,10 @@ class PickImage(
         )
         downloadCall.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                saveBitmapAndPassToImagePicker(BitmapFactory.decodeStream(response.body()!!.byteStream()))
+                saveBitmapAndPassToImagePicker(
+                    startImagePickerForResult,
+                    BitmapFactory.decodeStream(response.body()!!.byteStream())
+                )
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -112,9 +118,12 @@ class PickImage(
     }
 
     // only possible with API26
-    private fun saveBitmapAndPassToImagePicker(bitmap: Bitmap) {
+    private fun saveBitmapAndPassToImagePicker(
+        startImagePickerForResult: ActivityResultLauncher<Intent>,
+        bitmap: Bitmap
+    ) {
         val file: File = saveBitmapToTempFile(bitmap) ?: return
-        selectLocal(file)
+        selectLocal(startImagePickerForResult, file)
     }
 
     private fun saveBitmapToTempFile(bitmap: Bitmap): File? {
@@ -145,35 +154,21 @@ class PickImage(
         )
     }
 
-    fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?, handleImage: (uri: Uri) -> Unit) {
-        if (resultCode != Activity.RESULT_OK) {
-            Log.w(
-                TAG,
-                "Check result code before calling " +
-                    "'PickImage#handleActivtyResult'. It should be ${Activity.RESULT_OK}, but it is $resultCode!"
-            )
-            return
-        }
+    fun onImagePickerResult(data: Intent?, handleImage: (uri: Uri) -> Unit) {
+        val uri: Uri = data?.data!!
+        handleImage(uri)
+    }
 
-        when (requestCode) {
-            REQUEST_CODE_IMAGE_PICKER -> {
-                val uri: Uri = data?.data!!
-                handleImage(uri)
-            }
-            REQUEST_CODE_SELECT_REMOTE_FILES -> {
-                val pathList = data?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
-                if (pathList?.size!! >= 1) {
-                    handleAvatar(pathList[0])
-                }
-            }
-            REQUEST_CODE_TAKE_PICTURE -> {
-                data?.data?.path?.let {
-                    selectLocal(File(it))
-                }
-            }
-            else -> {
-                Log.w(TAG, "Unknown intent request code")
-            }
+    fun onSelectRemoteFilesResult(startImagePickerForResult: ActivityResultLauncher<Intent>, data: Intent?) {
+        val pathList = data?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
+        if (pathList?.size!! >= 1) {
+            handleAvatar(startImagePickerForResult, pathList[0])
+        }
+    }
+
+    fun onTakePictureResult(startImagePickerForResult: ActivityResultLauncher<Intent>, data: Intent?) {
+        data?.data?.path?.let {
+            selectLocal(startImagePickerForResult, File(it))
         }
     }
 
@@ -182,9 +177,6 @@ class PickImage(
         private const val MAX_SIZE: Int = 1024
         private const val AVATAR_PATH = "photos/avatar.png"
         private const val FULL_QUALITY: Int = 100
-        const val REQUEST_CODE_IMAGE_PICKER: Int = 1
-        const val REQUEST_CODE_TAKE_PICTURE: Int = 2
         const val REQUEST_PERMISSION_CAMERA: Int = 1
-        const val REQUEST_CODE_SELECT_REMOTE_FILES = 22
     }
 }
