@@ -317,6 +317,7 @@
     <string name="translation_detect_language">Detectar la llingua</string>
     <string name="translation_error_message">Nun se pudo detectar la llingua</string>
     <string name="translation_from">De</string>
+    <string name="translation_to">Pa</string>
     <string name="user_info_address">Direición</string>
     <string name="user_info_displayname">Nome completu</string>
     <string name="user_info_email">Corréu electrónicu</string>
