@@ -261,10 +261,18 @@ class DiagnoseActivity : BaseActivity() {
             }
 
             addKey(context.resources.getString(R.string.nc_diagnose_notification_calls_channel_permission))
-            addValue(NotificationUtils.isCallsNotificationChannelEnabled(this).toString())
+            addValue(
+                translateBoolean(
+                    NotificationUtils.isCallsNotificationChannelEnabled(this)
+                )
+            )
 
             addKey(context.resources.getString(R.string.nc_diagnose_notification_messages_channel_permission))
-            addValue(NotificationUtils.isMessagesNotificationChannelEnabled(this).toString())
+            addValue(
+                translateBoolean(
+                    NotificationUtils.isMessagesNotificationChannelEnabled(this)
+                )
+            )
 
             addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_title))
             if (appPreferences.pushToken.isNullOrEmpty()) {
