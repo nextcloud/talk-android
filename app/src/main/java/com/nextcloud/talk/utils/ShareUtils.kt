@@ -14,7 +14,8 @@ import com.nextcloud.talk.models.domain.ConversationModel
 object ShareUtils {
     fun getStringForIntent(context: Context, user: User, conversation: ConversationModel?): String {
         return String.format(
-            context.resources.getString(R.string.nc_share_text),
+            context.resources.getString(R.string.nc_share_link_text),
+            conversation?.name,
             user.baseUrl,
             conversation?.token
         )
