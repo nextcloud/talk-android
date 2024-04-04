@@ -270,7 +270,7 @@ class ConversationsListActivity :
         }
         currentUser = userManager.currentUser.blockingGet()
         if (currentUser != null) {
-            if (isServerEOL(currentUser!!.serverVersion!!.major)) {
+            if (isServerEOL(currentUser!!.serverVersion?.major)) {
                 showServerEOLDialog()
                 return
             }
