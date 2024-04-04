@@ -6,6 +6,8 @@
  */
 package com.nextcloud.talk.ui.dialog
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -30,10 +32,10 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -123,6 +125,9 @@ class ConversationsListBottomDialog(
         binding.conversationOperationRename.visibility = setVisibleIf(
             conversation.isNameEditable(currentUser)
         )
+        binding.conversationLinkShare.visibility = setVisibleIf(
+            conversation.name != context.getString(R.string.note_to_self)
+        )
 
         binding.conversationOperationDelete.visibility = setVisibleIf(
             canModerate
@@ -161,6 +166,11 @@ class ConversationsListBottomDialog(
             markConversationAsUnread()
         }
 
+        binding.conversationLinkShare.setOnClickListener {
+            shareConversationLink()
+            dismiss()
+        }
+
         binding.conversationOperationRename.setOnClickListener {
             renameConversation()
         }
@@ -172,6 +182,35 @@ class ConversationsListBottomDialog(
         binding.conversationOperationDelete.setOnClickListener {
             deleteConversation()
         }
+    }
+
+    private fun shareConversationLink() {
+        val activeAccountUrl = currentUser.baseUrl
+        val roomToken = conversation.token
+
+        val uriToShareConversation = Uri.parse(activeAccountUrl)
+            .buildUpon()
+            .appendPath("index.php")
+            .appendPath("call")
+            .appendPath(roomToken)
+            .build()
+
+        val shareConversationLink = String.format(
+            context.getString(
+                R.string.share_link_to_conversation,
+                conversation.name,
+                uriToShareConversation.toString()
+            )
+        )
+
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, shareConversationLink)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        context.startActivity(shareIntent)
     }
 
     private fun addConversationToFavorites() {
