@@ -23,6 +23,7 @@
  */
 package com.nextcloud.talk.utils
 
+import android.util.Log
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 
@@ -74,11 +75,19 @@ enum class SpreedFeatures(val value: String) {
 object CapabilitiesUtil {
 
     //region Version checks
-    fun isServerEOL(serverVersion: Int): Boolean {
+    fun isServerEOL(serverVersion: Int?): Boolean {
+        if (serverVersion == null) {
+            Log.w(TAG, "serverVersion is unknown. It is assumed that it is up to date")
+            return false
+        }
         return (serverVersion < SERVER_VERSION_MIN_SUPPORTED)
     }
 
-    fun isServerAlmostEOL(serverVersion: Int): Boolean {
+    fun isServerAlmostEOL(serverVersion: Int?): Boolean {
+        if (serverVersion == null) {
+            Log.w(TAG, "serverVersion is unknown. It is assumed that it is up to date")
+            return false
+        }
         return (serverVersion < SERVER_VERSION_SUPPORT_WARNING)
     }
 
@@ -286,6 +295,7 @@ object CapabilitiesUtil {
 
     // endregion
 
+    private val TAG = CapabilitiesUtil::class.java.simpleName
     const val DEFAULT_CHAT_SIZE = 1000
     const val RECORDING_CONSENT_NOT_REQUIRED = 0
     const val RECORDING_CONSENT_REQUIRED = 1

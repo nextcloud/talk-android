@@ -852,7 +852,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
 
     private fun setupServerAgeWarning() {
         when {
-            CapabilitiesUtil.isServerEOL(currentUser!!.serverVersion!!.major) -> {
+            CapabilitiesUtil.isServerEOL(currentUser!!.serverVersion?.major) -> {
                 binding.serverAgeWarningText.setTextColor(ContextCompat.getColor((context), R.color.nc_darkRed))
                 binding.serverAgeWarningText.setText(R.string.nc_settings_server_eol)
                 binding.serverAgeWarningIcon.setColorFilter(
@@ -861,7 +861,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                 )
             }
 
-            CapabilitiesUtil.isServerAlmostEOL(currentUser!!.serverVersion!!.major) -> {
+            CapabilitiesUtil.isServerAlmostEOL(currentUser!!.serverVersion?.major) -> {
                 binding.serverAgeWarningText.setTextColor(
                     ContextCompat.getColor((context), R.color.nc_darkYellow)
                 )

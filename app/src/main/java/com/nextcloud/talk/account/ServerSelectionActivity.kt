@@ -336,7 +336,7 @@ class ServerSelectionActivity : BaseActivity() {
 
                     if (hasTalk) {
                         runOnUiThread {
-                            if (CapabilitiesUtil.isServerEOL(capabilitiesOverall.ocs?.data?.serverVersion?.major!!)) {
+                            if (CapabilitiesUtil.isServerEOL(capabilitiesOverall.ocs?.data?.serverVersion?.major)) {
                                 if (resources != null) {
                                     runOnUiThread {
                                         setErrorText(resources!!.getString(R.string.nc_settings_server_eol))
