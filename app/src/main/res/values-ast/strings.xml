@@ -193,6 +193,7 @@
     <string name="nc_profile_personal_info_title">Información personal</string>
     <string name="nc_public_call">Conversación pública nueva</string>
     <string name="nc_push_to_talk">Primir pa falar</string>
+    <string name="nc_refresh">Anovar</string>
     <string name="nc_remove_from_favorites">Quitar de Favoritos</string>
     <string name="nc_rename">Renomar la conversación</string>
     <string name="nc_rename_confirm">Renomar</string>

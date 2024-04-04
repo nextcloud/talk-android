@@ -63,6 +63,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Les plus gros d\'abord</string>
     <string name="menu_item_sort_by_size_smallest_first">Le plus petit en premier</string>
     <string name="message_expiration_title">Expiration du message</string>
+    <string name="message_last_edited_by">Modifié par %1$s</string>
     <string name="message_poll_tap_to_open">Toucher pour ouvrir le sondage</string>
     <string name="message_search_begin_empty">Aucun résultat de recherche</string>
     <string name="message_search_begin_typing">Commencer à taper pour lancer la recherche…</string>
@@ -313,6 +314,7 @@
     <string name="nc_push_disabled">Notifications push désactivées</string>
     <string name="nc_push_to_talk">Talkie-walkie</string>
     <string name="nc_push_to_talk_desc">Avec le micro désactivé, cliquez &amp; maintenez pour utiliser la fonction Talkie-walkie.</string>
+    <string name="nc_refresh">Actualiser</string>
     <string name="nc_remind">Rappelez-moi plus tard</string>
     <string name="nc_remote_audio_off">Audio distant en sourdine</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>

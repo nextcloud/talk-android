@@ -279,6 +279,7 @@
     <string name="nc_push_disabled">Leküldéses értesítések kikapcsolva</string>
     <string name="nc_push_to_talk">Lenyomás a beszédhez</string>
     <string name="nc_push_to_talk_desc">A mikrofon le lesz tiltva, a beszédhez tartsa lenyomva</string>
+    <string name="nc_refresh">Frissítés</string>
     <string name="nc_remind">Emlékeztessen később</string>
     <string name="nc_remote_audio_off">Távoli hang kikapcsolása</string>
     <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>

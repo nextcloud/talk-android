@@ -289,6 +289,7 @@
     <string name="nc_push_disabled">Desactivadas as notificacións automáticas</string>
     <string name="nc_push_to_talk">Prema para falar</string>
     <string name="nc_push_to_talk_desc">Co microfono desactivado, prema e manteña para usar a función «Prema para falar»</string>
+    <string name="nc_refresh">Actualizar</string>
     <string name="nc_remind">Lembrarmo más adiante</string>
     <string name="nc_remote_audio_off">Son remoto desactivado</string>
     <string name="nc_remove_from_favorites">Retirar de favoritos</string>

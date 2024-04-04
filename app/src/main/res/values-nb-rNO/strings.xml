@@ -338,6 +338,7 @@
     <string name="nc_push_disabled">Push notifisering deaktivert</string>
     <string name="nc_push_to_talk">Trykk-for-å-snakke</string>
     <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk &amp; hold for å bruke klikk-for-å-snakke</string>
+    <string name="nc_refresh">Oppdater</string>
     <string name="nc_remind">Påminnn meg senere</string>
     <string name="nc_remote_audio_off">Ekstern lyd av</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>

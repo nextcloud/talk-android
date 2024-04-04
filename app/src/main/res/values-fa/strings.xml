@@ -276,6 +276,7 @@
     <string name="nc_push_disabled">دریافت اعلانات غیرفعال است</string>
     <string name="nc_push_to_talk">برای صحبت کردن فشار دهید</string>
     <string name="nc_push_to_talk_desc">با غیر فعال کردن میکروفن، برای استفاده از Push-to-talk کلیک &amp; نگه‌داشتن را انجام دهید</string>
+    <string name="nc_refresh">تازه‌سازی</string>
     <string name="nc_remind">بعدا به من یادآوری کن</string>
     <string name="nc_remote_audio_off">Remote audio off</string>
     <string name="nc_remove_from_favorites">حذف کردن از مورد علاقه‌ها</string>

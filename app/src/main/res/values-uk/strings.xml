@@ -254,6 +254,7 @@
     <string name="nc_push_disabled">Push сповіщення вимкнено</string>
     <string name="nc_push_to_talk">Тисни-та-кажи</string>
     <string name="nc_push_to_talk_desc">Натисніть і утримуйте &amp; для використання PTT при вимкненому мікрофоні</string>
+    <string name="nc_refresh">Оновити</string>
     <string name="nc_remind">Нагадати пізніше</string>
     <string name="nc_remote_audio_off">Віддалене аудіо відключено</string>
     <string name="nc_remove_from_favorites">Вилучено з улюбленого</string>

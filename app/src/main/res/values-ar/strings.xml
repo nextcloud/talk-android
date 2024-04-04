@@ -338,6 +338,7 @@
     <string name="nc_push_disabled">الإشعارات معطلة</string>
     <string name="nc_push_to_talk">اضغط للتحدث</string>
     <string name="nc_push_to_talk_desc">في وضعية تعطل المايكرفون، علق على الزر &amp; لاستخدام اضغط للتحدث</string>
+    <string name="nc_refresh">إنعاش</string>
     <string name="nc_remind">ذكرني لاحقا</string>
     <string name="nc_remote_audio_off">الصَّوت القصِي remote موقوف</string>
     <string name="nc_remove_from_favorites">إزالتها مِن المفضلة</string>

@@ -300,6 +300,7 @@
     <string name="nc_push_disabled">Push upozorňování vypnutá</string>
     <string name="nc_push_to_talk">Vysílačka</string>
     <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte a dokud držíte, můžete mluvit – jako u vysílačky</string>
+    <string name="nc_refresh">Znovu načíst</string>
     <string name="nc_remind">Připomenout později</string>
     <string name="nc_remote_audio_off">Ztlumení mikrofonu na dálku</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>

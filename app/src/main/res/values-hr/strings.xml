@@ -213,6 +213,7 @@
     <string name="nc_push_disabled">Push obavijesti su onemogućene</string>
     <string name="nc_push_to_talk">Pritisni za govor</string>
     <string name="nc_push_to_talk_desc">Kada je mikrofon onemogućen, kliknite i držite za uporabu značajke Pritisni za govor</string>
+    <string name="nc_refresh">Osvježi</string>
     <string name="nc_remind">Podsjeti me kasnije</string>
     <string name="nc_remote_audio_off">Udaljeno isključivanje zvuka</string>
     <string name="nc_remove_from_favorites">Ukloni iz favorita</string>
