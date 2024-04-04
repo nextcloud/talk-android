@@ -271,6 +271,7 @@
     <string name="nc_push_disabled">Всплывающие уведомления отключены</string>
     <string name="nc_push_to_talk"> PTT (нажми чтобы говорить)</string>
     <string name="nc_push_to_talk_desc">Нажмите и удерживайте для использования PTT при отключённом микрофоне</string>
+    <string name="nc_refresh">Обновить</string>
     <string name="nc_remind">Напомнить позже</string>
     <string name="nc_remote_audio_off">Отключить звук удалённо</string>
     <string name="nc_remove_from_favorites">Удалить из избранного</string>

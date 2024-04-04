@@ -285,6 +285,7 @@
     <string name="nc_push_disabled">通知推送已禁用</string>
     <string name="nc_push_to_talk">按键讲话</string>
     <string name="nc_push_to_talk_desc">禁用麦克风的情况下，点击&amp;并按住使用“按键讲话”功能</string>
+    <string name="nc_refresh">刷新</string>
     <string name="nc_remind">以后提醒我 </string>
     <string name="nc_remote_audio_off">远程音频关闭</string>
     <string name="nc_remove_from_favorites">取消收藏</string>

@@ -338,6 +338,7 @@
     <string name="nc_push_disabled">取消推送通知</string>
     <string name="nc_push_to_talk">按住以說話</string>
     <string name="nc_push_to_talk_desc">在停用麥克風的情況下，點擊並按住即可使用按住以說話</string>
+    <string name="nc_refresh">重新整理</string>
     <string name="nc_remind">稍後提醒我</string>
     <string name="nc_remote_audio_off">遠端音訊關閉</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>

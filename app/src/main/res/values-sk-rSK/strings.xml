@@ -338,6 +338,7 @@
     <string name="nc_push_disabled">Push notifikácie vypnuté</string>
     <string name="nc_push_to_talk">Stlač a hovor PTT</string>
     <string name="nc_push_to_talk_desc">S vypnutým mikrofónom, kliknite &amp;podržte pre použitie funkcie Stlač a hovor PTT</string>
+    <string name="nc_refresh">Obnoviť</string>
     <string name="nc_remind">Pripomenúť neskôr</string>
     <string name="nc_remote_audio_off">Vypnúť vzdialené audio</string>
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>

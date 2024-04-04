@@ -246,6 +246,7 @@
     <string name="nc_push_disabled">푸시 알림이 비활성화됨</string>
     <string name="nc_push_to_talk">눌러 말하기</string>
     <string name="nc_push_to_talk_desc">마이크가 비활성화된 상태에서 &amp;를 누르고 있으면 눌러 말하기 사용</string>
+    <string name="nc_refresh">새로 고침</string>
     <string name="nc_remind">나중에 다시 알림</string>
     <string name="nc_remote_audio_off">원격 오디오 끄기</string>
     <string name="nc_remove_from_favorites">즐겨찾기에서 제거</string>

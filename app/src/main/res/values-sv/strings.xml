@@ -186,6 +186,7 @@
     <string name="nc_push_disabled">Push-aviseringar inaktiverade</string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Med mikrofon inaktiverad klickar du på &amp;vänta för att använda Push-to-talk</string>
+    <string name="nc_refresh">Uppdatera</string>
     <string name="nc_remind">Påminn mig senare</string>
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
     <string name="nc_remove_participant">Ta bort deltagare</string>

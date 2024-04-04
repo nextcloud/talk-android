@@ -322,6 +322,7 @@
     <string name="nc_push_disabled">Notificaciones push desactivadas</string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Con el micrófono deshabilitado, mantén pulsado &amp; para usar Push-to-talk</string>
+    <string name="nc_refresh">Actualizar</string>
     <string name="nc_remind">Recuérdamelo más tarde</string>
     <string name="nc_remote_audio_off">Audio remoto apagado</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>

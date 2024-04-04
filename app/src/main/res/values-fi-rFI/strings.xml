@@ -212,6 +212,7 @@
     <string name="nc_public_call">Uusi julkinen keskustelu</string>
     <string name="nc_push_disabled">Push-ilmoitukset pois käytöstä</string>
     <string name="nc_push_to_talk">Paina puhuaksesi</string>
+    <string name="nc_refresh">Päivitä</string>
     <string name="nc_remind">Muistuta myöhemmin</string>
     <string name="nc_remove_from_favorites">Poista suosikeista</string>
     <string name="nc_remove_group_and_members">Poista ryhmä ja jäsenet</string>

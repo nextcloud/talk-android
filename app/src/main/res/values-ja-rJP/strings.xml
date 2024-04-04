@@ -230,6 +230,7 @@
     <string name="nc_push_disabled">プッシュ通知が無効になっています</string>
     <string name="nc_push_to_talk">プッシュトゥートーク</string>
     <string name="nc_push_to_talk_desc">マイクを無効にして、プッシュツートークを使用する場合は &amp; ホールド</string>
+    <string name="nc_refresh">更新</string>
     <string name="nc_remind">後で通知する</string>
     <string name="nc_remote_audio_off">リモート音声オフ</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>

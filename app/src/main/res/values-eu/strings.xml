@@ -293,6 +293,7 @@
     <string name="nc_push_disabled">Push jakinarazpenak desgaiturik</string>
     <string name="nc_push_to_talk">Sakatu-hitz-egiteko</string>
     <string name="nc_push_to_talk_desc">Mikrofonoa desgaituta daukazunean, egin klik &amp;mantendu sakatzerakoan hitz egiteko</string>
+    <string name="nc_refresh">Freskatu</string>
     <string name="nc_remind">Gogoratu geroago</string>
     <string name="nc_remote_audio_off">Urruneko audioa itzalita</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
