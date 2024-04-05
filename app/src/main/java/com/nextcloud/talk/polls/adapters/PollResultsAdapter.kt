@@ -17,6 +17,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
 class PollResultsAdapter(
     private val user: User,
+    private val roomToken: String,
     private val clickListener: PollResultItemClickListener,
     private val viewThemeUtils: ViewThemeUtils
 ) : RecyclerView.Adapter<PollResultViewHolder>() {
@@ -40,7 +41,7 @@ class PollResultsAdapter(
                     parent,
                     false
                 )
-                viewHolder = PollResultVoterViewHolder(user, itemBinding, viewThemeUtils)
+                viewHolder = PollResultVoterViewHolder(user, roomToken, itemBinding, viewThemeUtils)
             }
             PollResultVotersOverviewItem.VIEW_TYPE -> {
                 val itemBinding = PollResultVotersOverviewItemBinding.inflate(
@@ -48,7 +49,7 @@ class PollResultsAdapter(
                     parent,
                     false
                 )
-                viewHolder = PollResultVotersOverviewViewHolder(user, itemBinding)
+                viewHolder = PollResultVotersOverviewViewHolder(user, roomToken, itemBinding)
             }
         }
         return viewHolder!!
