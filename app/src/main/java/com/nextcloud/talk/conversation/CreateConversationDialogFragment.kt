@@ -208,6 +208,7 @@ class CreateConversationDialogFragment : DialogFragment() {
                     Log.e(TAG, "Failed to create conversation")
                     showError()
                 }
+
                 else -> {}
             }
         }
@@ -256,13 +257,14 @@ class CreateConversationDialogFragment : DialogFragment() {
     }
 
     private fun initiateConversation(roomToken: String) {
-        val bundle = Bundle()
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-
-        val chatIntent = Intent(context, ChatActivity::class.java)
-        chatIntent.putExtras(bundle)
-        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(chatIntent)
+        activity?.let {
+            val bundle = Bundle()
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+            val chatIntent = Intent(it, ChatActivity::class.java)
+            chatIntent.putExtras(bundle)
+            chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(chatIntent)
+        }
 
         dismiss()
     }
