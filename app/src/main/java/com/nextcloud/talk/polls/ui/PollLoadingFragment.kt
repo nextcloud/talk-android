@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import autodagger.AutoInjector
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
@@ -27,34 +26,24 @@ class PollLoadingFragment : Fragment() {
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
-    var fragmentHeight = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        fragmentHeight = arguments?.getInt(KEY_FRAGMENT_HEIGHT)!!
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogPollLoadingBinding.inflate(inflater, container, false)
-        binding.root.layoutParams.height = fragmentHeight
+        binding.root.layoutParams.height = HEIGHT
         viewThemeUtils.platform.colorCircularProgressBar(binding.pollLoadingProgressbar, ColorRole.PRIMARY)
         return binding.root
     }
 
     companion object {
-        private val TAG = PollLoadingFragment::class.java.simpleName
-        private const val KEY_FRAGMENT_HEIGHT = "keyFragmentHeight"
+        private const val HEIGHT = 300
 
         @JvmStatic
-        fun newInstance(fragmentHeight: Int): PollLoadingFragment {
-            val args = bundleOf(
-                KEY_FRAGMENT_HEIGHT to fragmentHeight
-            )
-
-            val fragment = PollLoadingFragment()
-            fragment.arguments = args
-            return fragment
+        fun newInstance(): PollLoadingFragment {
+            return PollLoadingFragment()
         }
     }
 }
