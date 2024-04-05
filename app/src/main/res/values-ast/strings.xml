@@ -283,6 +283,7 @@
     <string name="record_stopping">Dexando de grabar…</string>
     <string name="renamed_conversation">Renomóse la conversación «%1$s»</string>
     <string name="save">Guardar</string>
+    <string name="scope_federated_title">Federada</string>
     <string name="scope_local_description">Namás ye visible pa les persones d\'esta instancia y los convidaos</string>
     <string name="scope_local_title">Llocal</string>
     <string name="scope_private_title">Priváu</string>
@@ -319,6 +320,7 @@
     <string name="translation_error_message">Nun se pudo detectar la llingua</string>
     <string name="translation_from">De</string>
     <string name="translation_to">Pa</string>
+    <string name="unread">Ensin lleer</string>
     <string name="user_info_address">Direición</string>
     <string name="user_info_displayname">Nome completu</string>
     <string name="user_info_email">Corréu electrónicu</string>

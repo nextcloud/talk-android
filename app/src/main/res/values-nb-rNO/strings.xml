@@ -116,6 +116,7 @@
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
     <string name="nc_certificate_error">Ditt SSL-oppsett forhindret tilkobling</string>
     <string name="nc_change_cert_auth">Endre sertifikat for autentisering</string>
+    <string name="nc_check_your_internet">Vennligst kontroller internettforbindelsen din</string>
     <string name="nc_clear_edit_button">Tøm redigeringsknapp</string>
     <string name="nc_clear_edit_message">Fjern redigeringsmelding</string>
     <string name="nc_clear_history">Slett alle meldinger</string>
