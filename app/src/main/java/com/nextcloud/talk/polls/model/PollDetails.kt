@@ -20,8 +20,10 @@
 
 package com.nextcloud.talk.polls.model
 
+import com.nextcloud.talk.models.json.participants.Participant
+
 data class PollDetails(
-    val actorType: String?,
+    val actorType: Participant.ActorType?,
     val actorId: String?,
     val actorDisplayName: String?,
     val optionId: Int

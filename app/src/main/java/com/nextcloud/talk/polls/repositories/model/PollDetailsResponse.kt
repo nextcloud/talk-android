@@ -22,13 +22,15 @@ package com.nextcloud.talk.polls.repositories.model
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
+import com.nextcloud.talk.models.json.participants.Participant
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject
 data class PollDetailsResponse(
-    @JsonField(name = ["actorType"])
-    var actorType: String? = null,
+    @JsonField(name = ["actorType"], typeConverter = EnumActorTypeConverter::class)
+    var actorType: Participant.ActorType? = null,
 
     @JsonField(name = ["actorId"])
     var actorId: String,

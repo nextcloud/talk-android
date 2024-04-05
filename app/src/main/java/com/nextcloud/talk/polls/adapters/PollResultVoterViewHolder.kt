@@ -30,7 +30,6 @@ import com.nextcloud.talk.databinding.PollResultVoterItemBinding
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.polls.model.PollDetails
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -55,7 +54,7 @@ class PollResultVoterViewHolder(
     }
 
     private fun loadAvatar(pollDetail: PollDetails, avatar: ImageView) {
-        when (EnumActorTypeConverter().getFromString(pollDetail.actorType)) {
+        when (pollDetail.actorType) {
             Participant.ActorType.GUESTS -> {
                 var displayName = NextcloudTalkApplication.sharedApplication?.resources?.getString(R.string.nc_guest)
                 if (!TextUtils.isEmpty(pollDetail.actorDisplayName)) {
