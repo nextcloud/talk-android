@@ -79,10 +79,6 @@ class PollResultVotersOverviewViewHolder(
                 avatar.loadGuestAvatar(user, displayName!!, false)
             }
 
-            Participant.ActorType.USERS -> {
-                avatar.loadUserAvatar(user, pollDetail.actorId!!, false, false)
-            }
-
             Participant.ActorType.FEDERATED -> {
                 val darkTheme = if (DisplayUtils.isDarkModeOn(binding.root.context)) 1 else 0
                 avatar.loadFederatedUserAvatar(
@@ -96,7 +92,9 @@ class PollResultVotersOverviewViewHolder(
                 )
             }
 
-            else -> {}
+            else -> {
+                avatar.loadUserAvatar(user, pollDetail.actorId!!, false, false)
+            }
         }
     }
 
